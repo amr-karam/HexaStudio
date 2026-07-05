@@ -1,4 +1,5 @@
 # AI HANDOFF — HexaStudio Project State
+**Last Updated:** July 05, 2026
 
 This file enables any AI agent to pick up work exactly where the last agent stopped.
 
@@ -6,60 +7,76 @@ This file enables any AI agent to pick up work exactly where the last agent stop
 
 ## 1. PROJECT ESSENCE
 
-**HexaStudio** (HexaStudio.net) = 3D architecture visualization platform with Next.js 15 frontend, NestJS backend (BFF), Strapi 5 CMS, Docker Compose infra, and an "Awwwards-level" luxury aesthetic.
+**HexaStudio** (HexaStudio.net) = 3D architecture visualization platform with Next.js 15 frontend, NestJS backend (BFF), Strapi 5 CMS, Docker Compose infra (14 services), and "Awwwards-level" luxury aesthetic.
 
-**Monorepo structure:** `apps/{frontend,backend,cms}` + `packages/{types,utils}` + `docker/` + `scripts/`
+**Monorepo:** `apps/{frontend,backend,cms}` + `packages/{types,utils}` + `docker/` + `scripts/`
 
 ---
 
 ## 2. LAST SESSION: What Was Accomplished
 
-### Completed
-- **AGENTS.md updated** — Sections 37-46 added: UI Review, Brand Guardian, Continuous Improvement, Production Readiness, Critical Thinking Mode, ADR, Visual Regression Checklist, Future-Proof Rule, AI Collaboration Rules, Sprint Exit Criteria, Quality Gate Controller
-- **Lint fixed both apps** — Created `eslint.config.mjs` for frontend + backend (ESLint 9 flat config). Removed unused imports/vars, fixed `any` types in `ExperienceCanvas.tsx` and `cn()` in `services/page.tsx`, fixed unused `pos/rot` in `SceneContent.tsx`, unused `_` in `GlobalErrorBoundary.tsx`. Both pass `npm run lint`.
-- **Typecheck passing** — `npm run typecheck` succeeds locally.
-- **Deleted local .tar.gz** — Freed ~250MB on C:\ (now 0.24GB free — critically low).
-- **SSH to server** — Connected to 19.16.1.100 as root via `ssh_keys/id_ed25519_final`. Project at `/home/hexa/hexastudio/`.
-- **Dockerfiles fixed** — Removed `COPY node_modules` + added `RUN npm install --production --legacy-peer-deps` + `node_modules` to `.dockerignore`.
-- **npm update** — Ran on server (up to date, 2062 packages audited).
+### Infrastructure & Deployment
+- **Nginx stopped** on production server — was blocking Traefik on port 80
+- **PostgreSQL volume recreated** — old credentials were incompatible
+- **MinIO health check fixed** — replaced `wget` with `curl` in container
+- **Backup container fixed** — base image changed from `alpine` to `postgres:16-alpine` (had no `pg_dump`)
+- **CMS fix** — Added `DATABASE_URL` env var to match Strapi 5 config (was using individual fields)
+- **Deploy script health checks fixed** — replaced `localhost` curl with Docker exec `node -e fetch()`
+- **Redis health check fixed** — added `REDIS_PASSWORD` auth
+- **Watchtower fixed** — pinned `containrrr/watchtower:1.7.1` + set `DOCKER_API_VERSION=1.40`
+- **All 14 containers running** + all 7 health checks passing
 
-### Incomplete / Blocked
-- **Docker compose build on server times out** (>120s). Build context too large, npm install inside container takes too long. Previous builds may have cached bad layers from the old Dockerfiles that copied host node_modules.
-- **QualityToggle.tsx** exists as a file on server but NOT in local repo. Server's version has a syntax error: `className={px-3 py-1 ...}` should be `className="px-3 py-1 ..."`. This blocks the frontend Docker build.
-- **Local C: drive 0.24GB free** — Cannot run `npm install` locally (ENOSPC). All local dev is blocked.
-- **Server Node v24.16.0** — CMS (Strapi 5) requires `>=20 <=22`. Unsupported engine warning.
+### Brand & Design
+- **Real logo deployed** — `logo.webp` from client (replaced SVG approximation)
+- **Favicon updated** — `favicon.webp`
+- **All logo references updated** — Navbar, Footer, LoadingScreen, layout.tsx, StructuredData
 
-### Key Decisions Made
-- Removed root `package.json` overrides for `react@^19.0.0` + `react-dom@^19.0.0` to fix Strapi CMS build (Strapi needs React 18).
-- Dockerfiles now install deps INSIDE container (proper Docker practice, clean builds, no host node_modules).
-- `node_modules` added to `.dockerignore` at root level.
+### MCP Server
+- **Local dev MCP server** — Created `scripts/mcp/` with server.js + package.json
+- **Local opencode.json updated** — Added `dev-server-local` pointing to `localhost:3001`
+
+### Production Server (19.16.1.100)
+- **OpenCode CLI installed** — v1.17.13 at `/root/.opencode/bin/opencode`
+- **OpenCode Server installed** — systemd service on port 4096, starts on boot
+- **Traefik route configured** — `opencode.hexastudio.net` → `172.20.0.1:4096` with Let's Encrypt
+- **DNS record added** — Hostinger API: `opencode A 156.206.135.186`
+- **OpenCode server config** — `/root/.config/opencode/opencode.json` → localhost:3001 MCP
+
+### Code & Docs
+- **All changes committed** to `stage` branch (49 files, 3123 insertions)
+- **Git push pending** — needs GitHub auth
+- **Synced server configs back to local** — deploy.sh, .env, dynamic.yml
+- **AI_CONTEXT.md, AI_HANDOFF.md, CHANGELOG.md** — updated to reflect latest state
 
 ---
 
 ## 3. IMMEDIATE NEXT STEPS (Priority Order)
 
-### [1] Fix QualityToggle.tsx on Server
-- File is at `/home/hexa/hexastudio/apps/frontend/src/components/QualityToggle.tsx`
-- Fix: `className={px-3 py-1 ...}` → `className="px-3 py-1 ..."`
-- Use `sed` or heredoc on server via SSH.
-- After fix: `npm run build` inside frontend Docker context to verify.
+### [1] Push to GitHub
+- `git push origin stage` — hangs waiting for GitHub credentials
+- Use `gh auth login` or personal access token
 
-### [2] Complete Docker Build on Server
-- `docker compose build --no-cache` then `docker compose up -d`
-- If build times out: try building individual services first (`docker compose build frontend`, `docker compose build backend`), or increase Docker timeout in daemon.json.
-- Verify: `docker compose ps` + health checks (use `bash scripts/deploy.sh status` on server).
+### [2] SSL Certificate for opencode.hexastudio.net
+- DNS `A` record added → `156.206.135.186`
+- Traefik configured with `certResolver: letsencrypt`
+- Need DNS propagation → restart Traefik → Let's Encrypt issues cert
+- Alternative: use SSH tunnel (`ssh -L 4096:localhost:4096 root@19.16.1.100`) + localhost
 
-### [3] Perform Quality Gate Review
-- Run the full Quality Gate Controller checklist from AGENTS.md §46.
-- Generate: `QUALITY_GATE_REPORT.md`, `QUALITY_SCORECARD.md`, `RELEASE_DECISION.md`, `BLOCKING_ISSUES.md`, `OPTIONAL_IMPROVEMENTS.md`
-- Target ≥9.5/10 across all categories.
+### [3] Production Rebuild
+- Pull latest code on server or scp source files
+- `docker compose build --no-cache frontend backend`
+- `docker compose up -d`
 
-### [4] Phase 5 — Final Polish & Launch
-Per IMPLEMENTATION_ROADMAP.md:
-- Visual Regression Testing
-- Performance Audit (Lighthouse >95)
-- SEO Finalization (JSON-LD, Dynamic Metadata, Sitemap)
-- Launch Readiness (Sentry config, Cloudflare WAF, DB backups)
+### [4] Phase 5 Completion
+- Per IMPLEMENTATION_ROADMAP.md:
+  - Visual Regression Testing
+  - Lighthouse Audit (target >95)
+  - SEO Finalization (mostly done)
+  - Launch Readiness (Sentry OK, backups OK, Cloudflare WAF pending)
+
+### [5] Quality Gate Review
+- Run AGENTS.md §46 checklist
+- Generate reports (QUALITY_GATE_REPORT.md, etc.)
 
 ---
 
@@ -67,40 +84,34 @@ Per IMPLEMENTATION_ROADMAP.md:
 
 | Field | Value |
 |-------|-------|
-| IP | `19.16.1.100` |
-| User | `root` |
-| Key | `ssh_keys/id_ed25519_final` |
-| Project path | `/home/hexa/hexastudio/` |
-| Deploy script | `bash scripts/deploy.sh <command>` |
-| SSH command | `ssh -i ssh_keys/id_ed25519_final root@19.16.1.100` |
-| Node version | v24.16.0 |
-| npm version | 11+ |
+| SSH | `root@19.16.1.100` (public IP: 156.206.135.186) |
+| Project path | `/opt` |
+| Deploy script | `/opt/scripts/deploy.sh <status\|start\|stop\|restart\|logs\|...>` |
+| OpenCode CLI | `/root/.opencode/bin/opencode` |
+| MCP Server | `http://localhost:3001` (Docker container `mcp-server`) |
+| OpenCode Server | `http://localhost:4096` (systemd, password-protected) |
+| Docker compose | `cd /opt && docker compose up -d` |
 
-### Key server commands:
+### Key server files:
 ```bash
-# Connect
-ssh -i ssh_keys/id_ed25519_final root@19.16.1.100
-
-# After connecting (cd to project):
-cd /home/hexa/hexastudio
-
-# Build all services
-docker compose build --no-cache
-
-# Build single service
-docker compose build --no-cache frontend
-
-# Start all
-docker compose up -d
-
-# Check status
-bash scripts/deploy.sh status
+# Check service status
+/opt/scripts/deploy.sh status
 
 # View logs
-bash scripts/deploy.sh logs frontend
+/opt/scripts/deploy.sh logs frontend
 
-# Quick fix QualityToggle.tsx
-sed -i "s/className={px-3 py-1/className=\"px-3 py-1/g" apps/frontend/src/components/QualityToggle.tsx
+# Rebuild & deploy
+cd /opt && docker compose build --no-cache frontend && docker compose up -d
+
+# OpenCode server
+systemctl status opencode-server
+systemctl restart opencode-server
+
+# Traefik config (dynamic routes)
+/opt/docker/traefik/dynamic.yml
+
+# Environment
+/opt/.env
 ```
 
 ---
@@ -109,72 +120,31 @@ sed -i "s/className={px-3 py-1/className=\"px-3 py-1/g" apps/frontend/src/compon
 
 | Issue | Severity | Status |
 |-------|----------|--------|
-| QualityToggle.tsx className syntax error on server | Critical | Not fixed |
-| Docker build timeout (>120s) | High | Needs workaround |
-| Local C: 0.24GB free — ENOSPC | High | Blocking local dev |
-| Node v24 unsupported for Strapi (needs <=22) | Medium | nvm or volta on server |
-| apps/frontend uses deprecated `next lint` (Next.js 16) | Low | Migrate to eslint CLI |
-| Missing `clsx` and `tailwind-merge` in frontend package.json | Medium | Used in lib/utils.ts but not declared |
-| No tests anywhere (unit/integration/E2E) | Critical | Must add |
-| BFF pattern not implemented (frontend calls direct) | Medium | Architecture gap |
-| 3D scene core value prop not started | Critical | Phase 2 architecture exists but no real scene |
-| Sentry installed but not configured | Low | Need DSN + setup |
+| SSL cert for `opencode.hexastudio.net` pending DNS propagation | Medium | Waiting |
+| `git push` hangs (no GitHub auth) | Medium | Manual step |
+| Server Node v24 (Strapi needs <=22) | Medium | Works for now |
+| No tests (unit/integration/E2E) | Critical | Must add |
+| Disk space on server — needs monitoring | Low | OK for now |
 
 ---
 
-## 6. ARCHITECTURE SCORECARD (from PROJECT_AUDIT.md)
-
-| Component | Grade | Status |
-|-----------|-------|--------|
-| Infrastructure | A | Production-ready |
-| DevOps/CI | B | Deploy exists, no quality gates |
-| Frontend | C+ | Scaffolding, no 3D |
-| Backend | D+ | Health check only |
-| CMS | C | 1 of ~6 content types |
-| Testing | F | Zero |
-| Documentation | A- | Comprehensive |
-
-**Overall Architecture Review Grade: B-**
-
----
-
-## 7. KEY FILE LOCATIONS
-
-| File | Purpose |
-|------|---------|
-| `AGENTS.md` | Complete operating manual (46 sections) |
-| `IMPLEMENTATION_ROADMAP.md` | Phase plan (Phase 5 pending) |
-| `ARCHITECTURE_REVIEW.md` | Architecture evaluation |
-| `PROJECT_AUDIT.md` | Full project audit |
-| `.env` | Environment config (dev values) |
-| `docker-compose.yml` | All 14 services defined |
-| `scripts/deploy.sh` | Deployment orchestration |
-| `docs/ADR/*.md` | Architecture Decision Records (6) |
-| `ssh_keys/id_ed25519_final` | SSH key for server |
-| `apps/frontend/eslint.config.mjs` | Frontend ESLint 9 flat config |
-| `apps/backend/eslint.config.mjs` | Backend ESLint 9 flat config |
-
----
-
-## 8. AGENTS.MD CRITICAL SECTIONS FOR NEXT AGENT
+## 6. AGENTS.MD CRITICAL SECTIONS
 
 - **§37** UI Review Requirements (score 1-10 before merging)
 - **§38** Brand Guardian (reject generic/cheap/outdated)
-- **§39** Continuous Improvement (leave codebase better)
-- **§40** Production Readiness (every commit = prod deploy)
-- **§43** Future-Proof Rule (extensibility over quick)
 - **§46** Quality Gate Controller (final approval authority)
 
 ---
 
-## 9. HANDOFF CHECKLIST FOR NEXT AGENT
+## 7. HANDOFF CHECKLIST FOR NEXT AGENT
 
 - [ ] Read this file completely
 - [ ] Read `AGENTS.md` completely
-- [ ] Read `IMPLEMENTATION_ROADMAP.md` for phase context
-- [ ] Connect to server via SSH and verify project state
-- [ ] Fix QualityToggle.tsx className syntax
-- [ ] Complete Docker build + verify services
+- [ ] Push to GitHub (authenticate with gh CLI or PAT)
+- [ ] Verify SSL certificate for `opencode.hexastudio.net`
+- [ ] Rebuild frontend/backend on server with latest code
+- [ ] Run Lighthouse audit
 - [ ] Run Quality Gate review
-- [ ] Begin Phase 5 (Final Polish & Launch)
-- [ ] Update this file when done (or add to .memory/)
+- [ ] Fix Node.js version for Strapi (nvm or volta)
+- [ ] Add tests
+- [ ] Update this file when done

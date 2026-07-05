@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { Card } from '@/components/ui/cards/Card';
 import { useProjects } from '@/features/portfolio/hooks/useProjects';
 import Link from 'next/link';
@@ -30,10 +31,12 @@ const ProjectCard = ({ title, category, image, slug, index }: ProjectCardProps) 
     <Link href={`/portfolio/${slug}`}>
       <Card variant="solid" className="overflow-hidden p-0 aspect-[3/4]">
         <div className="h-full w-full relative overflow-hidden bg-surface-light">
-          <img
+          <Image
             src={image}
             alt={title}
-            className="h-full w-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000 ease-out-expo"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+            className="object-cover opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000 ease-out-expo"
           />
           
           {/* Cinematic Overlay */}

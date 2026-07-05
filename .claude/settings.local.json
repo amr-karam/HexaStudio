@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(wsl --version)",
+      "PowerShell(wsl --status)",
+      "PowerShell(wsl --shutdown; Start-Sleep -Seconds 3; Get-ChildItem \"$env:LOCALAPPDATA\\\\Temp\" -Directory -Filter \"????????-????-????-????-????????????\" -ErrorAction SilentlyContinue | ForEach-Object { if \\(Test-Path \"$\\($_.FullName\\)\\\\swap.vhdx\"\\) { Remove-Item $_.FullName -Recurse -Force -ErrorAction SilentlyContinue; \"Removed stale temp dir: $\\($_.Name\\)\" } }; \"Done clearing temp\")",
+      "PowerShell(wsl -l -v)",
+      "PowerShell(wsl -d Ubuntu-24.04 -- echo \"WSL is working: $\\(uname -a\\)\")",
+      "PowerShell(wsl -d Ubuntu-24.04 -- bash -lc 'echo BOOT_OK; uname -r; free -h; swapon --show')",
+      "PowerShell(wsl -d Ubuntu-24.04 -- bash -lc 'grep -qxF '\\\\''export PATH=\"$HOME/.local/bin:$PATH\"'\\\\'' ~/.bashrc || echo '\\\\''export PATH=\"$HOME/.local/bin:$PATH\"'\\\\'' >> ~/.bashrc; grep -qxF '\\\\''export PATH=\"$HOME/.local/bin:$PATH\"'\\\\'' ~/.profile || echo '\\\\''export PATH=\"$HOME/.local/bin:$PATH\"'\\\\'' >> ~/.profile; echo \"--- PATH entries added ---\"; export PATH=\"$HOME/.local/bin:$PATH\"; which claude && claude --version')",
+      "PowerShell(wsl -d Ubuntu-24.04 -- bash -lic \"which claude; claude --version\")"
+    ]
+  }
+}

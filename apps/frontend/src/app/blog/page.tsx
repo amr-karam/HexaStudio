@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { useArticles } from '@/features/blog';
 import Link from 'next/link';
 
@@ -96,13 +97,15 @@ export default function BlogPage() {
               >
                 <Link href={`/blog/${article.slug}`} className="group block">
                   <div className="aspect-[16/10] bg-surface-light overflow-hidden relative mb-8">
-                    {article.coverImage ? (
-                      <img
-                        src={article.coverImage}
-                        alt={article.title}
-                        className="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000 ease-out-expo"
-                      />
-                    ) : (
+                      {article.coverImage ? (
+                        <Image
+                          src={article.coverImage}
+                          alt={article.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
+                          className="object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000 ease-out-expo"
+                        />
+                      ) : (
                       <div className="w-full h-full bg-surface-dark" />
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60" />

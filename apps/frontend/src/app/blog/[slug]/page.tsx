@@ -3,6 +3,7 @@
 import React from 'react';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { useArticles } from '@/features/blog/hooks/useArticles'; // Assuming this hook exists based on useArticles in blog/page.tsx
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
@@ -39,13 +40,15 @@ export default function ArticleDetailPage() {
           transition={{ duration: 1.2, ease: 'var(--ease-out-expo)' }}
           className="absolute inset-0"
         >
-          {article.coverImage ? (
-            <img 
-              src={article.coverImage} 
-              alt={article.title} 
-              className="w-full h-full object-cover opacity-60" 
-            />
-          ) : (
+           {article.coverImage ? (
+             <Image 
+               src={article.coverImage} 
+               alt={article.title} 
+               fill
+               priority
+               className="object-cover opacity-60" 
+             />
+           ) : (
             <div className="w-full h-full bg-surface-dark" />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
@@ -103,17 +106,18 @@ export default function ArticleDetailPage() {
                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
                </p>
                
-               <div className="relative my-16 group">
-                 <div className="absolute -inset-4 border border-accent/20 group-hover:border-accent/50 transition-colors duration-700" />
-                 <img 
-                   src={article.coverImage || '/api/placeholder/1200/600'} 
-                   alt="detail" 
-                   className="w-full grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000" 
-                 />
-                 <span className="absolute -bottom-8 left-0 text-[10px] uppercase tracking-widest text-neutral-600">
-                   Figure 1.0 — Architectural Detail
-                 </span>
-               </div>
+                <div className="relative my-16 group h-[600px]">
+                  <div className="absolute -inset-4 border border-accent/20 group-hover:border-accent/50 transition-colors duration-700" />
+                  <Image 
+                    src={article.coverImage || '/api/placeholder/1200/600'} 
+                    alt="detail" 
+                    fill
+                    className="object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000" 
+                  />
+                  <span className="absolute -bottom-8 left-0 text-[10px] uppercase tracking-widest text-neutral-600">
+                    Figure 1.0 — Architectural Detail
+                  </span>
+                </div>
 
                <p>
                  Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.

@@ -1,133 +1,102 @@
 # AI Context & Project State — HEXA Studio
-**Last Updated:** July 04, 2026
-**Status:** Security Hardening Complete → Entering Sprint 4 (Content & SEO)
+**Last Updated:** July 05, 2026
+**Status:** Phase 5 — Production Deployment Live → Final Polish
 
-This file is the **primary entry point** for any AI agent joining the HEXA Studio project. It provides a high-level overview of the project's current state, architectural decisions, and the path forward.
+This file is the **primary entry point** for any AI agent joining the HEXA Studio project.
 
 ---
 
 ## 1. Project Essence
-HEXA Studio is a luxury 3D Architecture Visualization platform. It is not a standard website; it is a premium digital experience designed to communicate precision, luxury, and architectural excellence.
+HEXA Studio is a luxury 3D Architecture Visualization platform.
 
 **Core Mantra:** *Design First. Quality over Speed. Cinematic Experience.*
 
 ---
 
-## 2. The Knowledge Map (Read Order)
-If you are new to this project, read these files in this specific order:
-1. **`PROJECT_DIRECTIVE.md`**: The "North Star". Defines the visual and creative quality bar.
-2. **`AGENTS.md`**: The "Operating Manual". Defines coding standards, tech stack, and architectural rules.
-3. **`IMPLEMENTATION_ROADMAP.md`**: The "Tactical Plan". Detailed phases of what needs to be built.
-4. **`AI_CONTEXT.md`** (This file): The "Current State". Summary of what is done and where we are.
-5. **`IMPROVEMENT_ROADMAP.md`**: Sprint-by-sprint implementation tracking with checkboxes.
+## 2. Knowledge Map (Read Order)
+1. **`PROJECT_DIRECTIVE.md`** — The "North Star"
+2. **`AGENTS.md`** — The "Operating Manual" (46 sections)
+3. **`IMPLEMENTATION_ROADMAP.md`** — The "Tactical Plan"
+4. **`AI_CONTEXT.md`** (This file) — The "Current State"
+5. **`IMPROVEMENT_ROADMAP.md`** — Sprint tracking
 
 ---
 
 ## 3. Technical Blueprint
 ### Tech Stack
-- **Frontend**: Next.js 15 (App Router), TypeScript, TailwindCSS 4.
-- **3D Engine**: Three.js, React Three Fiber (R3F), @react-three/drei.
-- **Animation**: GSAP (Complex sequences), Framer Motion (UI transitions).
-- **Backend**: NestJS (BFF Pattern), PostgreSQL 16, Redis 7.
-- **CMS**: Strapi 5 (Headless Content Source).
-- **Infrastructure**: Docker Compose, Nginx, MinIO (S3 Storage).
+- **Frontend**: Next.js 15 (App Router), TypeScript, TailwindCSS 4, Framer Motion, GSAP, Three.js / R3F
+- **Backend**: NestJS (BFF Pattern), PostgreSQL 16, Redis 7
+- **CMS**: Strapi 5
+- **Infrastructure**: Docker Compose, Traefik v3, MinIO, Prometheus/Grafana/Loki
+- **Deployment**: Production at 19.16.1.100 (public IP 156.206.135.186)
 
 ### Architecture
-- **Monorepo Structure**:
-    - `/apps/frontend`: The cinematic user interface.
-    - `/apps/backend`: The API orchestration layer (BFF).
-    - `/apps/cms`: Strapi 5 content management system.
-    - `/packages/types`: Shared TypeScript interfaces (Single Source of Truth).
-    - `/packages/utils`: Shared helper functions (`cn()`, `formatDate`, `slugify`, `truncate`).
-
-### Security Architecture
-- **Env Validation**: Zod schema in `apps/backend/src/config/env.ts` validates all required env vars at startup — throws with clear errors if missing.
-- **JWT**: httpOnly cookies (not localStorage) — `Set-Cookie` on login/register, `credentials: 'include'` on frontend fetch.
-- **Storage**: Bucket whitelist, path traversal protection, presigned URL expiry bounds (60–86400s).
-- **Docker Networks**: Segmented into `hexa_web` (frontend, nginx, backend, cms), `hexa_data` (postgres, redis, minio — internal only), `hexa_monitoring` (prometheus, grafana).
-- **Redis**: Password-protected via `REDIS_PASSWORD` env var with `requirepass`.
+- **Monorepo**: `apps/{frontend,backend,cms}` + `packages/{types,utils}` + `docker/` + `scripts/`
+- **Networks**: `hexa_web` (public), `hexa_data` (internal), `hexa_monitoring`
+- **14 Docker services**: traefik, postgres, redis, minio, backend, frontend, cms, prometheus, grafana, loki, promtail, node-exporter, watchtower, backup
 
 ---
 
 ## 4. Current Progress (What's Done)
-### ✅ Sprint 1 — Architecture Refactor (v0.1.0)
-- [x] Feature-based folder structure in frontend/backend.
-- [x] Shared packages `@hexastudio/types` and `@hexastudio/utils`.
-- [x] Global error handling (`GlobalErrorBoundary` + `GlobalExceptionFilter`).
-- [x] Lazy loading infrastructure, barrel exports, hooks scaffolding.
 
-### ✅ Sprint 2 — Foundation Services (v0.3.0)
-- [x] Strapi CMS content types: Portfolio, Article, Service, Category.
-- [x] BFF integration: `ProjectsModule`, `ArticlesModule`, `ServicesModule` fetch from Strapi.
-- [x] JWT auth: `AuthModule` with register/login/me/refresh endpoints.
-- [x] Frontend auth: `AuthProvider` context + `useAuth` hook.
-- [x] Frontend pages: `/portfolio`, `/blog`.
-- [x] MinIO storage: Private buckets, `MinioService`, presigned URLs.
-- [x] CI: GitHub Actions with lint, typecheck, build, security audit.
-- [x] Sentry integration (client/server/edge config).
-- [x] Accessibility: Skip-to-content, `focus-visible`, `prefers-reduced-motion`.
+### Phase 1-4: Design System, 3D, Pages, Performance — All Complete ✓
 
-### ✅ Sprint 3 — 3D Core Fixes (v0.4.0)
-- [x] Fixed `SceneCanvas.tsx` — now delegates to `ExperienceCanvas`.
-- [x] Fixed dual animation loop — migrated from `requestAnimationFrame` to R3F's `useFrame`.
-- [x] Fixed camera control conflict — `OrbitControls` disables rotate/zoom during GSAP transitions.
-- [x] Added `SceneErrorBoundary` wrapping R3F Canvas.
-- [x] Added `prefers-reduced-motion` integration in `useCinematicCamera`.
-- [x] Added geometry/material disposal on `ArchitecturalModel` unmount.
-- [x] Added loading fallback scene (wireframe box) during Suspense.
-- [x] Added fog for depth cues, removed conflicting `BakeShadows`.
+### Phase 5: Final Polish & Launch
+- [x] **Cinematic Hero**: 3D landing scene with scroll-linked camera (useScrollCamera, CameraController)
+- [x] **Post-Processing**: Bloom, Chromatic Aberration, Depth of Field, Noise, Vignette
+- [x] **3D Optimization**: Draco compression, adaptive quality (LOD), geometry/memory management
+- [x] **Accessibility**: SceneAccessibility (parallel semantic DOM), keyboard nav, skip-to-content, reduced-motion
+- [x] **Type Safety**: Strict TypeScript across monorepo, shared types in packages/types
+- [x] **SEO**: StructuredData (JSON-LD), dynamic metadata, robots.txt, sitemap.ts
+- [x] **Security**: JWT httpOnly cookies, env validation (Zod), Docker network segmentation, Redis auth, bucket whitelist
+- [x] **Brand Identity**: Logo (real logo.webp from client), slogan "Living Spaces. Visualized.", favicon
+- [x] **Sentry**: Client/server/edge config with DSN env variable
+- [x] **ADR**: 6 Architecture Decision Records in docs/ADR/
+- [x] **CI**: GitHub Actions (lint, typecheck, build, security audit)
+- [x] **Production Deployment**: All 14 containers running + healthy on 19.16.1.100
+- [x] **Deploy Script**: `/opt/scripts/deploy.sh` with 14 commands, health checks via Docker exec
+- [x] **MCP Server**: Running on production (Docker, port 3001) + local dev version in scripts/mcp/
+- [x] **OpenCode Server**: v1.17.13 systemd service on production (port 4096)
+- [x] **DNS**: `opencode.hexastudio.net → 156.206.135.186` configured (Traefik route + SSL pending)
 
-### ✅ Security Hardening (v0.5.0)
-- [x] **SEC-01/02**: Removed hardcoded JWT secret and MinIO credentials — both validated at startup via `getEnv()`.
-- [x] **SEC-03**: Migrated JWT from localStorage to httpOnly cookies with logout endpoint.
-- [x] **SEC-04**: Fixed Strapi v5 relation mapping — handles both v4 `{ data: { id, attributes } }` and v5 `{ id, name, slug }` shapes.
-- [x] **SEC-05**: Added bucket whitelist and path traversal protection to storage endpoint.
-- [x] **SEC-06**: Segmented Docker networks (web, data-internal, monitoring).
-- [x] **SEC-07**: Added Redis authentication via `REDIS_PASSWORD`.
-- [x] **SEC-08**: Swagger disabled in production.
+### Remaining
+- [ ] SSL certificate for `opencode.hexastudio.net` (Let's Encrypt — needs DNS to propagate)
+- [ ] Lighthouse audit (target >95)
+- [ ] Visual regression testing
+- [ ] Cloudflare WAF configuration
+- [ ] Push to GitHub (`git push` needs auth)
 
 ---
 
-## 5. The Immediate Horizon (What's Next)
-We are entering **Sprint 4 — Content & SEO**.
+## 5. Infrastructure Details
 
-**Sprint 4 Priorities:**
-1. **Portfolio Gallery**: ISR (Incremental Static Regeneration) for project listing, dynamic project detail pages with 3D model embed.
-2. **Editorial Project Detail**: Magazine-style layout with project metadata, gallery, and interactive 3D viewer.
-3. **SEO Foundation**: Dynamic metadata via `generateMetadata`, JSON-LD structured data, auto-generated `sitemap.xml`, `robots.txt`.
-4. **Blog Enhancement**: Article detail pages with rich content rendering.
-5. **Lighthouse CI**: Add Lighthouse performance audit to CI pipeline.
+### Production Server
+| Field | Value |
+|-------|-------|
+| SSH | `root@19.16.1.100` |
+| Public IP | `156.206.135.186` |
+| Project path | `/opt` (docker-compose.yml) |
+| Deploy | `/opt/scripts/deploy.sh` |
+| OpenCode | v1.17.13 at `/root/.opencode/bin/opencode` |
+| Node | v24.16.0 |
 
-**After Sprint 4:**
-- **Sprint 5**: Motion Orchestration (GSAP timelines syncing 3D camera with UI reveals, scroll-driven narrative).
-- **Sprint 6**: Design System Polish (Awwwards-level typography, spacing, micro-interactions).
-- **Sprint 7**: Contact & Studio pages, form validation, email integration.
-- **Sprint 8**: Performance optimization, final QA, production deployment.
-
----
-
-## 6. Critical Constraints for AI
-- **No Generic UI**: Avoid standard Tailwind templates. Every section must feel handcrafted.
-- **Performance Budget**: 3D scenes must maintain 60 FPS. Use Draco compression and adaptive quality.
-- **Type Safety**: Never use `any`. Shared types must live in `/packages/types`.
-- **Self-Documenting**: Code must be clean. Only add comments to explain "Why", not "What".
-- **Security First**: Always use `getEnv()` for secrets. Never hardcode credentials. Use httpOnly cookies for JWT.
-- **Strapi v5 Relations**: Relations are `{ data: { id, attributes: { ... } } }` — always handle null/undefined.
-- **R3F Rules**: Use `useFrame` for animation loops, not `requestAnimationFrame`. Dispose geometries/materials on unmount.
+### Key Config Files
+| File | Purpose |
+|------|---------|
+| `/opt/docker-compose.yml` | Full stack (14 services) |
+| `/opt/.env` | All environment secrets |
+| `/opt/scripts/deploy.sh` | Deploy orchestration (14 commands) |
+| `/opt/docker/traefik/traefik.yml` | Traefik static config |
+| `/opt/docker/traefik/dynamic.yml` | Traefik dynamic routes (includes opencode) |
+| `/etc/systemd/system/opencode-server.service` | OpenCode server systemd service |
+| `~/.config/opencode/opencode.json` | OpenCode MCP config (local dev-server + dev-server-local) |
 
 ---
 
-## 7. Key Files Quick Reference
-| Purpose | Path |
-|---------|------|
-| Env validation | `apps/backend/src/config/env.ts` |
-| Auth (cookie-based) | `apps/backend/src/modules/auth/auth.controller.ts` |
-| JWT strategy | `apps/backend/src/modules/auth/strategies/jwt.strategy.ts` |
-| Frontend auth hook | `apps/frontend/src/features/auth/hooks/useAuth.tsx` |
-| Strapi relation helpers | `apps/backend/src/modules/projects/projects.service.ts` |
-| 3D canvas entry | `apps/frontend/src/features/scene/components/ExperienceCanvas.tsx` |
-| Camera transitions | `apps/frontend/src/features/scene/hooks/useCinematicCamera.ts` |
-| Scene error boundary | `apps/frontend/src/features/scene/components/SceneErrorBoundary.tsx` |
-| Docker networks | `docker-compose.yml` |
-| Shared types | `packages/types/index.ts` |
-| Changelog | `CHANGELOG.md` |
+## 6. Critical Constraints
+- **Performance**: 60 FPS in 3D scenes, LCP < 1.2s, bundle < 200KB
+- **Type Safety**: No `any`. Shared types in `/packages/types`
+- **Security**: `getEnv()` for secrets, httpOnly cookies for JWT
+- **R3F**: `useFrame` not `requestAnimationFrame`, dispose geometries/materials
+- **Logo**: Real logo at `/logo.webp` (replaced SVG approximation)
+- **Brand**: "Precision — Purpose — Vision" tagline, "Living Spaces. Visualized." slogan

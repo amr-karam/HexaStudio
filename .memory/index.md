@@ -1,0 +1,5 @@
+- [[project-state]] — Where we left off, last commit, immediate next steps
+- [[infrastructure]] — Production server, Docker services, Traefik, SSL
+- [[brand-identity]] — Logo, favicon, slogan updates
+- [[quality-gate]] — Phase 5 completion, pending checks
+- [[git-workflow]] — Branch strategy, push status, auth

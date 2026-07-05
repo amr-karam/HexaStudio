@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 export const StudioSection = () => {
   return (
@@ -14,10 +15,12 @@ export const StudioSection = () => {
           transition={{ duration: 1, ease: 'var(--ease-out-expo)' }}
           className="relative aspect-square bg-surface-light overflow-hidden group"
         >
-          <img 
+          <Image 
             src="https://images.unsplash.com/photo-1497366811353-6870744d04b2" 
             alt="Studio" 
-            className="h-full w-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-80 group-hover:scale-110 transition-all duration-1000 ease-out-expo"
+            fill
+            sizes="(max-width: 1200px) 100vw, 50vw"
+            className="object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-80 group-hover:scale-110 transition-all duration-1000 ease-out-expo"
           />
           <div className="absolute inset-0 border-[30px] border-background/20 pointer-events-none group-hover:border-background/10 transition-all duration-700" />
           <div className="absolute inset-0 bg-gradient-to-tr from-background via-transparent to-transparent opacity-60" />

@@ -33,6 +33,15 @@ function ProceduralArchitecture() {
     });
   }, []);
 
+  const { floatGeom, floatMat, lightGeom, lightMat } = useMemo(() => {
+    return {
+      floatGeom: new THREE.BoxGeometry(0.1, 0.5, 0.1),
+      floatMat: new THREE.MeshPhysicalMaterial({ color: '#c9a96e', roughness: 0, metalness: 1, envMapIntensity: 2 }),
+      lightGeom: new THREE.SphereGeometry(0.04, 16, 16),
+      lightMat: new THREE.MeshPhysicalMaterial({ color: '#c9a96e', emissive: '#c9a96e', emissiveIntensity: 5 }),
+    };
+  }, []);
+
   return (
     <Float speed={0.6} rotationIntensity={0.1} floatIntensity={0.1}>
       <group position={[0, 1.8, 0]}>
@@ -91,8 +100,8 @@ function ProceduralArchitecture() {
             castShadow 
             position={[floatElements.positions[i*3], floatElements.positions[i*3+1], floatElements.positions[i*3+2]]}
             rotation={[floatElements.rotations[i*3], floatElements.rotations[i*3+1], floatElements.rotations[i*3+2]]}
-            geometry={new THREE.BoxGeometry(0.1, 0.5, 0.1)}
-            material={new THREE.MeshPhysicalMaterial({ color: '#c9a96e', roughness: 0, metalness: 1, envMapIntensity: 2 })}
+            geometry={floatGeom}
+            material={floatMat}
           />
         ))}
 
@@ -101,8 +110,8 @@ function ProceduralArchitecture() {
           <mesh
             key={`base-light-opt-${i}`}
             position={pos as [number, number, number]}
-            geometry={new THREE.SphereGeometry(0.04, 16, 16)}
-            material={new THREE.MeshPhysicalMaterial({ color: '#c9a96e', emissive: '#c9a96e', emissiveIntensity: 5 })}
+            geometry={lightGeom}
+            material={lightMat}
           />
         ))}
       </group>

@@ -55,12 +55,22 @@ This roadmap outlines the strategic path to transform HEXA Studio into a world-c
 - [x] **Accessibility**: 
     - [x] Implement semantic DOM parallel to 3D scenes.
     - [x] Ensure full keyboard navigation for all 3D hotspots.
-- [x] **Type Safety**: Ensure 100% type coverage from Strapi $\rightarrow$ NestJS $\rightarrow$ Frontend.
+- [x] **Type Safety**: Ensure 100% type coverage from Strapi → NestJS → Frontend.
 
 ## Phase 5: Final Polish & Launch
 *Goal: Emotional resonance and production readiness.*
 
+- [x] **Brand Identity**: Real logo deployed (`logo.webp`), favicon, slogan, tagline.
+- [x] **SEO Foundation**: JSON-LD structured data, dynamic metadata, robots.txt, sitemap.
+- [x] **Sentry Config**: Error tracking configured (client/server/edge).
+- [x] **Production Deployment**: 14 Docker services running on 19.16.1.100.
+- [x] **Deploy Script**: `/opt/scripts/deploy.sh` with health checks.
+- [x] **MCP Server**: Production + local dev MCP servers.
+- [x] **OpenCode Server**: v1.17.13 installed on production.
+- [x] **Security Hardening**: JWT cookies, env validation, network segmentation, Redis auth.
+- [ ] **SSL Certificate**: For `opencode.hexastudio.net` (DNS propagated, Traefik pending).
 - [ ] **Visual Regression Testing**: Ensure pixel-perfection across all breakpoints.
 - [ ] **Performance Audit**: Final Lighthouse check (Target >95).
-- [ ] **SEO Finalization**: JSON-LD, Dynamic Metadata, Sitemap.
-- [ ] **Launch Readiness**: Sentry config, Cloudflare WAF, DB backups.
+- [ ] **Cloudflare WAF**: Web application firewall configuration.
+- [ ] **DNS/SSL for Main Domain**: `hexastudio.net` → production IP.
+- [ ] **CI/CD Pipeline**: Auto-deploy on push to `main`.
