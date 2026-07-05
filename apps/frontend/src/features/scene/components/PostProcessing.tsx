@@ -17,7 +17,7 @@ export const PostProcessing = ({ quality }: PostProcessingProps) => {
   if (quality === 'low') return null;
 
   return (
-    <EffectComposer disableNormalPass>
+    <EffectComposer enableNormalPass={false}>
       <>
         {/* Bloom: Mimics light bleeding from architectural highlights */}
         <Bloom 

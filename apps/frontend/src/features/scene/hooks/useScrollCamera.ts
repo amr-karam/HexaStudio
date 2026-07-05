@@ -3,7 +3,7 @@ import { useThree, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 
-interface ScrollPathNode {
+export interface ScrollPathNode {
   position: [number, number, number];
   lookAt: [number, number, number];
 }

@@ -3,7 +3,7 @@
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import { useCinematicCamera } from '@/features/scene/hooks/useCinematicCamera';
-import { useScrollCamera } from '@/features/scene/hooks/useScrollCamera';
+import { useScrollCamera, ScrollPathNode } from '@/features/scene/hooks/useScrollCamera';
 
 /**
  * CameraController manages the camera behavior based on the current page.
@@ -16,7 +16,7 @@ export const CameraController = () => {
 
   if (isHomePage) {
     // Define the cinematic scroll path for the Home Hero
-    const heroPath = [
+    const heroPath: ScrollPathNode[] = [
       { position: [8, 6, 8], lookAt: [0, 1, 0] },   // Start: Wide shot
       { position: [5, 4, 5], lookAt: [0, 1.2, 0] }, // Mid: Moving closer
       { position: [3, 2, 3], lookAt: [0, 1.5, 0] }, // Close: Focusing on detail
