@@ -1,39 +1,64 @@
-# Prioritized Implementation Roadmap: HEXA Vision
+# HEXA Studio — IMPLEMENTATION ROADMAP
+Version: 1.0
 
-## 🚩 Phase 1: Foundation & Architecture (Sprint 1)
-**Goal:** Establish a scalable codebase and secure communication.
+This roadmap outlines the strategic path to transform HEXA Studio into a world-class, award-winning architecture visualization platform.
 
-| Task ID | Task Description | Priority | Effort | Dependency |
-|---------|-------------------|----------|--------|------------|
-| F1.1 | **Architecture Refactor:** Implement feature-based folder structure in Frontend and Backend | Critical | Medium | None |
-| F1.2 | **Shared Types Package:** Create `@hexastudio/types` for E2E type safety | Critical | Low | F1.1 |
-| F1.3 | **Auth Engine:** Implement full JWT flow (NestJS $\rightarrow$ Frontend) | Critical | Medium | F1.1 |
-| F1.4 | **SSL/TLS Setup:** Configure Traefik ACME / Cloudflare Certs | Critical | Low | None |
-| F1.5 | **CMS Schema Expansion:** Build Portfolio, Blog, Services in Strapi | Critical | Low | None |
+## Phase 1: Design System & Foundation (The "Luxury" Base)
+*Goal: Establish a pixel-perfect, consistent visual language.*
 
-## 🎨 Phase 2: The Visual Core (Sprint 2)
-**Goal:** Implement the high-end 3D visualization experience.
+- [x] **Tailwind 4 Audit**: Refine colors, typography (luxury serif + modern sans), and spacing scales.
+- [x] **Typography Hierarchy**: Implement a strict scale for headings and body text to create an editorial feel.
+- [x] **Motion Core**: Setup GSAP and Framer Motion globals for consistent easing (`power3.out`).
+- [x] **Global UI Refinement**: 
+    - [x] Redesign `Navbar` and `Footer` for extreme minimalism.
+    - [x] Polish `Button` and `Input` components for premium feel.
+    - [x] Implement `CustomCursor` and `SmoothScroll` (Lenis) integration.
 
-| Task ID | Task Description | Priority | Effort | Dependency |
-|---------|-------------------|----------|--------|------------|
-| V2.1 | **R3F Scene Setup:** Basic lighting, environment, and camera orchestration | Critical | Medium | F1.1 |
-| V2.2 | **Asset Pipeline:** MinIO integration + Draco/KTX2 loading system | Critical | Medium | F1.5 |
-| V2.3 | **BFF Integration:** NestJS API as an aggregator for Strapi content | High | Medium | F1.3, F1.5 |
-| V2.4 | **Cinematic Animations:** GSAP camera transitions and entry animations | High | Medium | V2.1 |
-| V2.5 | **Interactive Hotspots:** 3D annotations and UI triggers | High | Medium | V2.1 |
+## Phase 2: The Cinematic Experience (3D & Immersive)
+*Goal: Create the "Wow" factor that defines the brand.*
 
-## 🚀 Phase 3: Production Polish (Sprint 3)
-**Goal:** Reach Awwwards-grade quality and enterprise stability.
+- [x] **Hero Experience**: 
+    - [x] Develop a cinematic 3D landing scene (R3F).
+    - [x] Implement camera storytelling (automated paths) on scroll.
+    - [x] Add high-end lighting and post-processing (Bloom, SSAO, Chromatic Aberration).
+- [x] **Project Viewer**: 
+    - [x] Create an immersive 3D project showcase.
+    - [x] Implement adaptive quality (LOD) based on device performance.
+    - [x] Develop "hotspot" navigation within 3D spaces.
+- [x] **Motion Storytelling**:
+    - [x] Replace standard transitions with cinematic GSAP/Framer sequences.
+    - [x] Implement "scroll-triggered" storytelling for the Home page.
 
-| Task ID | Task Description | Priority | Effort | Dependency |
-|---------|-------------------|----------|--------|------------|
-| P3.1 | **Performance Tuning:** InstancedMesh and LOD implementation | High | High | V2.1 |
-| P3.2 | **Advanced SEO:** Dynamic Sitemaps and JSON-LD structured data | Medium | Low | F1.5 |
-| P3.3 | **Accessibility Layer:** Semantic parallel DOM for 3D scenes | Medium | Medium | V2.1 |
-| P3.4 | **E2E Testing:** Playwright suite for critical user flows | Medium | High | F1.3 |
-| P3.5 | **Monitoring Dashboards:** Custom Grafana panels for API/Infra | Low | Low | None |
+## Phase 3: Page-by-Page Architectural Refinement
+*Goal: Ensure every page feels handcrafted and intentional.*
 
-## 🛠️ Effort Estimation Legend
-- **Low:** 1-3 days
-- **Medium:** 4-7 days
-- **High:** 8+ days
+- [ ] **Home Page**: Transformation from "corporate" to "cinematic".
+- [ ] **Portfolio**: 
+    - [ ] Editorial layout with immersive imagery.
+    - [ ] Seamless transition from gallery to 3D view.
+- [ ] **Services**: Interactive visualization of services using motion and 3D elements.
+- [ ] **About & Contact**: Minimalist storytelling focusing on precision and luxury.
+- [ ] **Blog**: High-end editorial layout for architectural thought leadership.
+
+## Phase 4: Performance, A11y & Engineering Excellence
+*Goal: Zero compromise on speed and accessibility.*
+
+- [ ] **3D Optimization**: 
+    - [ ] Integrate Draco compression for all GLTF models.
+    - [ ] Implement texture compression (Basis/KTX2).
+    - [ ] Optimize geometry and draw calls.
+- [ ] **Web Vitals**: 
+    - [ ] Target LCP < 1.2s.
+    - [ ] Zero CLS through proper aspect-ratio handling.
+- [ ] **Accessibility**: 
+    - [ ] Implement semantic DOM parallel to 3D scenes.
+    - [ ] Ensure full keyboard navigation for all 3D hotspots.
+- [ ] **Type Safety**: Ensure 100% type coverage from Strapi $\rightarrow$ NestJS $\rightarrow$ Frontend.
+
+## Phase 5: Final Polish & Launch
+*Goal: Emotional resonance and production readiness.*
+
+- [ ] **Visual Regression Testing**: Ensure pixel-perfection across all breakpoints.
+- [ ] **Performance Audit**: Final Lighthouse check (Target >95).
+- [ ] **SEO Finalization**: JSON-LD, Dynamic Metadata, Sitemap.
+- [ ] **Launch Readiness**: Sentry config, Cloudflare WAF, DB backups.

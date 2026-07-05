@@ -1,70 +1,98 @@
 'use client';
 
-import React, { Suspense } from 'react';
+import React, { Suspense, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, Environment, ContactShadows, BakeShadows } from '@react-three/drei';
+import {
+  OrbitControls,
+  PerspectiveCamera,
+  Environment,
+  ContactShadows,
+} from '@react-three/drei';
 import { SceneContent } from './SceneContent';
 import { CameraController } from './CameraController';
-import { LoadingScreen } from '@/components/LoadingScreen';
 import { PostProcessing } from './PostProcessing';
+import * as THREE from 'three';
 import { useAdaptiveQuality } from '@/hooks/useAdaptiveQuality';
+import { ProjectHotspot } from '@hexastudio/types';
+import { useCameraStore } from '../store/camera-store';
 
-/**
- * ExperienceCanvas is the primary 3D entry point.
- * It configures the Three.js environment for architectural visualization.
- */
-export const ExperienceCanvas = () => {
+interface ExperienceCanvasProps {
+  projectModelUrl?: string;
+  hotspots?: ProjectHotspot[];
+}
+
+function SceneFallback() {
+  return (
+    <mesh>
+      <boxGeometry args={[1, 1, 1]} />
+      <meshStandardMaterial color="#1a1a24" wireframe />
+    </mesh>
+  );
+}
+
+export const ExperienceCanvas = ({
+  projectModelUrl,
+  hotspots,
+}: ExperienceCanvasProps) => {
   const { level, settings } = useAdaptiveQuality();
+  const { isTransitioning } = useCameraStore();
+  const controlsRef = useRef<any>(null);
 
   return (
-    <div className="absolute inset-0 -z-10 h-full w-full bg-neutral-base">
+    <div className="absolute inset-0 -z-10 h-full w-full">
       <Canvas
         shadows
         dpr={settings.dpr}
-        gl={{ 
-          antialias: true, 
+        gl={{
+          antialias: true,
           powerPreference: 'high-performance',
-          toneMappingExposure: 1.2 
+          toneMapping: THREE.ACESFilmicToneMapping,
+          toneMappingExposure: 1.0,
         }}
       >
-        <Suspense fallback={null}>
+        <Suspense fallback={<SceneFallback />}>
           <PerspectiveCamera makeDefault position={[5, 5, 5]} fov={45} />
           <CameraController />
-          
-          {/* OrbitControls are disabled in Hero for cinematic experience, 
-              but kept for other project views */}
-          <OrbitControls 
-            enablePan={false} 
-            minPolarAngle={Math.PI / 4} 
-            maxPolarAngle={Math.PI / 2} 
-            makeDefault 
+
+          <OrbitControls
+            ref={controlsRef}
+            enablePan={false}
+            minPolarAngle={Math.PI / 4}
+            maxPolarAngle={Math.PI / 2}
+            enableRotate={!isTransitioning}
+            enableZoom={!isTransitioning}
+            dampingFactor={0.05}
+            enableDamping
           />
-          
-          {/* Cinematic HDRI Lighting */}
+
           <Environment preset="city" />
-          <ambientLight intensity={0.5} />
-          <directionalLight 
-            position={[10, 10, 5]} 
-            intensity={1} 
-            castShadow 
-            shadow-mapSize={[1024, 1024]} 
+          <ambientLight intensity={0.3} />
+          <directionalLight
+            position={[10, 15, 5]}
+            intensity={1.5}
+            castShadow
+            shadow-mapSize={[2048, 2048]}
+            shadow-bias={-0.001}
           />
-          
-          <SceneContent />
-          
-          <ContactShadows 
-            position={[0, -0.01, 0]} 
-            opacity={0.4} 
-            scale={10} 
-            blur={2} 
-            far={4.5} 
+          <directionalLight position={[-5, 5, -5]} intensity={0.3} color="#c9a96e" />
+
+          <fog attach="fog" args={['#050508', 15, 30]} />
+
+          <SceneContent projectModelUrl={projectModelUrl} hotspots={hotspots} />
+
+          <ContactShadows
+            position={[0, -0.01, 0]}
+            opacity={0.5}
+            scale={15}
+            blur={2.5}
+            far={6}
           />
-          <BakeShadows />
-          
-          {/* Cinematic Post-Processing Stack */}
+
           <PostProcessing quality={level} />
         </Suspense>
       </Canvas>
     </div>
   );
 };
+
+export type { ExperienceCanvasProps };

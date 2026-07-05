@@ -237,3 +237,14 @@ Stop and request human intervention if:
 - **Dependency Updates:** Monthly review of `package.json` for updates.
 - **Log Rotation:** Ensure Loki/Promtail are not consuming excessive disk space.
 - **Asset Audit:** Periodically prune unused 3D models from MinIO.
+
+## 36. Critical Thinking Mode
+Do not blindly follow instructions.
+
+If you identify a better technical or design solution:
+1. Explain why.
+2. Compare alternatives.
+3. Recommend the best option.
+4. Implement it only if it does not conflict with project goals.
+
+Your responsibility is to improve the project, not just execute tasks.

@@ -14,15 +14,17 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center p-4 text-center">
-      <h2 className="mb-4 text-2xl font-light text-neutral-900">Something went wrong.</h2>
-      <p className="mb-8 text-sm text-neutral-500">
+    <div className="flex h-screen w-full flex-col items-center justify-center p-8 text-center">
+      <h2 className="mb-4 text-3xl font-light tracking-tight text-foreground">
+        Something went wrong.
+      </h2>
+      <p className="mb-10 text-sm text-neutral-500 max-w-md leading-relaxed">
         The experience encountered an unexpected error. Please try again.
       </p>
       <button
         type="button"
         onClick={reset}
-        className="border border-black px-6 py-2 text-xs uppercase tracking-widest transition-all duration-300 hover:bg-black hover:text-white"
+        className="border border-accent/30 px-8 py-3 text-[10px] uppercase tracking-widest text-accent transition-all duration-300 hover:bg-accent hover:text-background"
       >
         Try Again
       </button>

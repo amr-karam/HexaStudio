@@ -9,27 +9,30 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, label, error, ...props }, ref) => {
     return (
-      <div className="flex flex-col gap-1.5 w-full">
+      <div className="flex flex-col gap-2 w-full group">
         {label && (
-          <label className="text-[10px] uppercase tracking-widest text-neutral-400 font-medium">
+          <label className="text-[10px] uppercase tracking-[0.3em] text-neutral-500 font-medium transition-colors duration-500 group-focus-within:text-accent">
             {label}
           </label>
         )}
-        <input
-          ref={ref}
-          className={cn(
-            'w-full bg-transparent border-b border-neutral-700 py-2 px-0 text-sm transition-all duration-300 outline-none focus:border-brand-accent',
-            error && 'border-red-500',
-            className
-          )}
-          {...props}
-        />
+        <div className="relative w-full">
+          <input
+            ref={ref}
+            className={cn(
+              'w-full bg-transparent border-b border-border py-3 px-0 text-sm transition-all duration-500 outline-none focus:border-accent text-foreground placeholder:text-neutral-600 placeholder:text-xs placeholder:uppercase placeholder:tracking-widest',
+              error && 'border-red-500',
+              className,
+            )}
+            {...props}
+          />
+          <div className="absolute bottom-0 left-0 h-[1px] w-0 bg-accent transition-all duration-500 ease-out-expo group-focus-within:w-full" />
+        </div>
         {error && (
-          <span className="text-[10px] text-red-500">{error}</span>
+          <span className="text-[10px] text-red-500 uppercase tracking-widest mt-1">{error}</span>
         )}
       </div>
     );
-  }
+  },
 );
 
 Input.displayName = 'Input';

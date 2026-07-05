@@ -5,4 +5,7 @@ export const LazySceneCanvas = createDynamicComponent(
   { ssr: false },
 );
 
+export { ExperienceCanvas } from './components/ExperienceCanvas';
+export { SceneErrorBoundary } from './components/SceneErrorBoundary';
+
 export type { SceneViewState } from '@/types';

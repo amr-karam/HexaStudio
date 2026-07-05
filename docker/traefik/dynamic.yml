@@ -24,3 +24,8 @@ tls:
     default:
       minVersion: VersionTLS12
       sniStrict: true
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /etc/traefik/certs/default.crt
+        keyFile: /etc/traefik/certs/default.key

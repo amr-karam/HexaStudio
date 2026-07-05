@@ -11,10 +11,6 @@ interface State {
   hasError: boolean;
 }
 
-/**
- * Global Error Boundary to prevent the entire app from crashing
- * when a component (especially the 3D scene) fails.
- */
 export class GlobalErrorBoundary extends Component<Props, State> {
   public state: State = {
     hasError: false,
@@ -30,17 +26,23 @@ export class GlobalErrorBoundary extends Component<Props, State> {
 
   public render() {
     if (this.state.hasError) {
-      return this.props.fallback || (
-        <div className="flex h-screen w-full flex-col items-center justify-center p-4 text-center">
-          <h2 className="mb-4 text-2xl font-light text-neutral-900">Something went wrong.</h2>
-          <p className="mb-8 text-sm text-neutral-500">The experience encountered an unexpected error. Please refresh the page.</p>
-          <button 
-            onClick={() => window.location.reload()}
-            className="px-6 py-2 text-xs uppercase tracking-widest border border-black hover:bg-black hover:text-white transition-all duration-300"
-          >
-            Reload Page
-          </button>
-        </div>
+      return (
+        this.props.fallback || (
+          <div className="flex h-screen w-full flex-col items-center justify-center p-8 text-center bg-background">
+            <h2 className="mb-4 text-3xl font-light tracking-tight text-foreground">
+              Something went wrong.
+            </h2>
+            <p className="mb-10 text-sm text-neutral-500 max-w-md leading-relaxed">
+              The experience encountered an unexpected error. Please refresh the page.
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="border border-accent/30 px-8 py-3 text-[10px] uppercase tracking-widest text-accent transition-all duration-300 hover:bg-accent hover:text-background"
+            >
+              Reload Page
+            </button>
+          </div>
+        )
       );
     }
 

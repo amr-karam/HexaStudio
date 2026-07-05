@@ -22,11 +22,11 @@ export const Modal = ({ isOpen, onClose, title, children, className }: ModalProp
       
       {/* Content */}
       <div className={cn(
-        'relative w-full max-w-lg overflow-hidden bg-neutral-900 border border-neutral-800 p-8 transition-all duration-300',
+        'relative w-full max-w-lg overflow-hidden bg-surface border border-border p-8 transition-all duration-300',
         className
       )}>
         {title && (
-          <h2 className="mb-6 text-2xl font-light tracking-tight text-white">
+          <h2 className="mb-6 text-2xl font-light tracking-tight text-foreground">
             {title}
           </h2>
         )}
@@ -35,7 +35,7 @@ export const Modal = ({ isOpen, onClose, title, children, className }: ModalProp
         </div>
         <button 
           onClick={onClose}
-          className="absolute top-4 right-4 text-neutral-500 hover:text-white transition-colors"
+          className="absolute top-4 right-4 text-neutral-500 hover:text-foreground transition-colors"
         >
           ✕
         </button>

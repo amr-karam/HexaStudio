@@ -1,28 +1,60 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface LoadingScreenProps {
   children?: React.ReactNode;
 }
 
-/**
- * High-end loading screen with a minimalist aesthetic.
- * Used for initial app load and heavy asset transitions.
- */
 export const LoadingScreen = ({ children }: LoadingScreenProps) => {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setProgress((p) => {
+        const next = p + Math.random() * 12;
+        return next >= 100 ? 100 : next;
+      });
+    }, 150);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
-      <div className="relative flex flex-col items-center">
-        {/* Minimalist Loader */}
-        <div className="h-12 w-12 overflow-hidden">
-          <div className="h-full w-full animate-pulse bg-black" style={{ clipPath: 'inset(0 50% 0 0)' }} />
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.8, ease: 'var(--ease-out-expo)' }}
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-background"
+      >
+        <div className="relative flex flex-col items-center gap-12">
+          <div className="flex items-center gap-4">
+            <motion.div 
+              animate={{ rotate: 360 }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+              className="h-4 w-4 border border-accent/50" 
+            />
+            <span className="text-xs uppercase tracking-[0.5em] text-foreground font-medium">
+              HexaStudio
+            </span>
+          </div>
+
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-48 h-[1px] bg-border relative overflow-hidden">
+              <motion.div
+                className="absolute inset-y-0 left-0 bg-accent"
+                animate={{ width: `${progress}%` }}
+                transition={{ duration: 0.4, ease: 'var(--ease-out-expo)' }}
+              />
+            </div>
+            <span className="text-[9px] uppercase tracking-[0.4em] text-neutral-600 font-light">
+              Initializing Environment <span className="ml-2 text-accent">{Math.round(progress)}%</span>
+            </span>
+          </div>
         </div>
-        <span className="mt-4 text-[10px] uppercase tracking-[0.3em] text-neutral-400">
-          Loading Experience
-        </span>
-      </div>
-      {children}
-    </div>
+        {children}
+      </motion.div>
+    </AnimatePresence>
   );
 };

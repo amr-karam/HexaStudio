@@ -2,46 +2,71 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Card } from '@/components/ui/cards/Card';
 
 export const StudioSection = () => {
   return (
-    <section className="px-8 py-32 bg-neutral-900/30 border-y border-neutral-800/50">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
-        <div className="relative aspect-square bg-neutral-800 overflow-hidden">
+    <section className="px-8 md:px-16 py-32 bg-surface border-y border-border/50 overflow-hidden">
+      <div className="max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+        <motion.div 
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, ease: 'var(--ease-out-expo)' }}
+          className="relative aspect-square bg-surface-light overflow-hidden group"
+        >
           <img 
             src="https://images.unsplash.com/photo-1497366811353-6870744d04b2" 
             alt="Studio" 
-            className="h-full w-full object-cover grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-1000"
+            className="h-full w-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-80 group-hover:scale-110 transition-all duration-1000 ease-out-expo"
           />
-          <div className="absolute inset-0 border-[20px] border-neutral-900/50 pointer-events-none" />
-        </div>
+          <div className="absolute inset-0 border-[30px] border-background/20 pointer-events-none group-hover:border-background/10 transition-all duration-700" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-background via-transparent to-transparent opacity-60" />
+          
+          {/* Decorative Corner Accent */}
+          <div className="absolute bottom-0 right-0 w-32 h-32 border-b-2 border-r-2 border-accent/30 group-hover:border-accent transition-colors duration-700" />
+        </motion.div>
         
-        <div className="flex flex-col gap-8">
-          <div>
-            <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-500 mb-4 block">The Studio</span>
-            <h2 className="text-4xl font-light tracking-tighter text-white mb-6">
-              Precision in <span className="italic">Every</span> Pixel
+        <motion.div 
+          initial={{ opacity: 0, x: 30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, delay: 0.2, ease: 'var(--ease-out-expo)' }}
+          className="flex flex-col gap-12"
+        >
+          <div className="flex flex-col gap-6">
+            <span className="text-[10px] uppercase tracking-[0.5em] text-neutral-500">The Studio</span>
+            <h2 className="text-5xl md:text-7xl font-serif font-light tracking-tighter text-foreground leading-tight">
+              Precision in <br />
+              <span className="italic text-accent">Every Pixel</span>
             </h2>
-            <p className="text-neutral-400 font-light leading-relaxed mb-8">
+            <p className="text-lg text-neutral-400 font-light leading-relaxed max-w-lg">
               We don't just render buildings; we capture the atmosphere. By combining 
               technical architectural data with cinematic lighting, we create spaces 
               that evoke emotion before they are even built.
             </p>
           </div>
           
-          <div className="grid grid-cols-2 gap-8">
-            <div>
-              <h4 className="text-white text-xs uppercase tracking-widest mb-2">Immersion</h4>
-              <p className="text-neutral-500 text-xs font-light">Interactive 3D environments via R3F.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-12">
+            <div className="flex flex-col gap-3 group">
+              <h4 className="text-xs uppercase tracking-[0.3em] text-foreground group-hover:text-accent transition-colors duration-500">
+                Immersion
+              </h4>
+              <p className="text-xs text-neutral-500 font-light leading-relaxed">
+                Interactive 3D environments powered by R3F, enabling intuitive exploration.
+              </p>
             </div>
-            <div>
-              <h4 className="text-white text-xs uppercase tracking-widest mb-2">Fidelity</h4>
-              <p className="text-neutral-500 text-xs font-light">8K photorealistic rendering.</p>
+            <div className="flex flex-col gap-3 group">
+              <h4 className="text-xs uppercase tracking-[0.3em] text-foreground group-hover:text-accent transition-colors duration-500">
+                Fidelity
+              </h4>
+              <p className="text-xs text-neutral-500 font-light leading-relaxed">
+                8K photorealistic rendering with a focus on material authenticity.
+              </p>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
 };
+

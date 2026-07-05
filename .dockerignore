@@ -1,6 +1,4 @@
-node_modules
-.next
-dist
+# .dockerignore
 .git
 .env
 .env.*

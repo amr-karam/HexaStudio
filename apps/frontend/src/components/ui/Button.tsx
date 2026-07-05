@@ -9,17 +9,17 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const buttonStyles = {
-  base: 'inline-flex items-center justify-center rounded-none transition-all duration-300 font-medium active:scale-95 disabled:opacity-50',
+  base: 'inline-flex items-center justify-center rounded-none transition-all duration-500 font-medium active:scale-95 disabled:opacity-50 ease-out-expo',
   variants: {
-    primary: 'bg-black text-white hover:bg-neutral-800',
-    secondary: 'bg-neutral-200 text-black hover:bg-neutral-300',
-    outline: 'border border-black text-black hover:bg-black hover:text-white',
-    ghost: 'text-neutral-600 hover:bg-neutral-100 hover:text-black',
+    primary: 'bg-accent text-background hover:bg-accent-light shadow-sm',
+    secondary: 'bg-foreground text-background hover:bg-neutral-200',
+    outline: 'border border-border-light text-neutral-400 hover:border-accent hover:text-accent',
+    ghost: 'text-neutral-500 hover:text-foreground',
   },
   sizes: {
-    sm: 'px-3 py-1.5 text-xs',
-    md: 'px-4 py-2 text-sm',
-    lg: 'px-6 py-3 text-base',
+    sm: 'px-4 py-2 text-[10px] uppercase tracking-[0.2em]',
+    md: 'px-6 py-3 text-[10px] uppercase tracking-[0.2em]',
+    lg: 'px-10 py-4 text-[10px] uppercase tracking-[0.2em]',
   },
 };
 
@@ -60,7 +60,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button ref={ref} className={classes} disabled={isLoading} {...props}>
         {isLoading ? (
-          <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+          <span className="mr-3 h-3 w-3 animate-spin rounded-full border border-current border-t-transparent" />
         ) : null}
         {children}
       </button>

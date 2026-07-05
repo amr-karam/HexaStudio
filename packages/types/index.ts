@@ -3,10 +3,16 @@ export interface Project {
   title: string;
   slug: string;
   description: string;
+  shortDescription?: string;
   coverImage: string;
-  category: Category;
-  modelUrl: string;
+  category?: Category;
+  modelUrl?: string;
   hotspots: ProjectHotspot[];
+  client?: string;
+  location?: string;
+  year?: number;
+  area?: string;
+  services?: string[];
   isPublished: boolean;
   createdAt: string;
   updatedAt: string;
@@ -43,6 +49,59 @@ export interface User {
   email: string;
   username: string;
   role: 'admin' | 'editor' | 'user';
+}
+
+export interface Article {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: unknown[];
+  coverImage: string;
+  category?: Category;
+  author: string;
+  readTime: number;
+  tags: string[];
+  seoTitle?: string;
+  seoDescription?: string;
+  isPublished: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ArticleResponse {
+  articles: Article[];
+  total: number;
+}
+
+export interface Service {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  icon?: string;
+  features: string[];
+  order: number;
+  isPublished: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ServiceResponse {
+  services: Service[];
+  total: number;
+}
+
+export interface ContactMessage {
+  name: string;
+  email: string;
+  company?: string;
+  message: string;
+}
+
+export interface AuthResponse {
+  user: User;
+  jwt: string;
 }
 
 export interface ApiResponse<T> {

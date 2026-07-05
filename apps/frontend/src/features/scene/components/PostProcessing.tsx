@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { EffectComposer, Bloom, DepthOfField, Noise, Vignette } from '@react-three/postprocessing';
+import { EffectComposer, Bloom, DepthOfField, Noise, Vignette, ChromaticAberration } from '@react-three/postprocessing';
 import { QualityLevel } from '@/hooks/useAdaptiveQuality';
 
 interface PostProcessingProps {
@@ -10,38 +10,44 @@ interface PostProcessingProps {
 
 /**
  * PostProcessing manages the cinematic visual stack.
- * It adjusts the effects based on the detected quality level.
+ * It implements a high-end architectural render style: 
+ * sharp focus, subtle bloom, and organic film grain.
  */
 export const PostProcessing = ({ quality }: PostProcessingProps) => {
   if (quality === 'low') return null;
 
   return (
-    <EffectComposer enableNormalPass={false}>
+    <EffectComposer disableNormalPass>
       <>
-        {/* Bloom for architectural highlights */}
+        {/* Bloom: Mimics light bleeding from architectural highlights */}
         <Bloom 
-          intensity={quality === 'high' ? 1.2 : 0.8} 
-          luminanceThreshold={1} 
+          intensity={quality === 'high' ? 0.6 : 0.4} 
+          luminanceThreshold={0.9} 
           luminanceSmoothing={0.1} 
-          radius={0.4} 
+          radius={0.3} 
         />
         
-        {/* DOF for cinematic focus - Only for high quality */}
-        {quality === 'high' ? (
+        {/* DOF: Cinematic depth of field for high-end feel */}
+        {quality === 'high' && (
           <DepthOfField 
-            focusDistance={0} 
-            focalLength={0.025} 
+            focusDistance={0.025} 
+            focalLength={0.05} 
             bokehScale={2} 
           />
-        ) : <></>}
+        )}
         
-        {/* Subtle noise to remove digital flatness */}
-        <Noise opacity={0.05} />
+        {/* Chromatic Aberration: Subtle lens imperfection for organic look */}
+        {quality === 'high' && (
+          <ChromaticAberration offset={[0.0005, 0.0005]} />
+        )}
         
-        {/* Vignette to focus on the center */}
-        <Vignette eskil={false} offset={0.1} darkness={1.1} />
+        {/* Noise: Removes digital banding and adds film-like texture */}
+        <Noise opacity={quality === 'high' ? 0.03 : 0.02} />
+        
+        {/* Vignette: Draws eye toward the center architectural focus */}
+        <Vignette offset={0.2} darkness={1.2} />
       </>
     </EffectComposer>
   );
-
 };
+

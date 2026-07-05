@@ -1,9 +1,11 @@
 'use client';
 
+import { ExperienceCanvas, ExperienceCanvasProps } from './ExperienceCanvas';
+
 /**
- * Placeholder 3D scene shell. Will be replaced with R3F implementation in Sprint 3.
- * Lazy-loaded via createDynamicComponent when integrated into routes.
+ * SceneCanvas delegates to ExperienceCanvas.
+ * This is the lazy-loaded entry point for the 3D scene (SSR disabled).
  */
-export default function SceneCanvas() {
-  return null;
+export default function SceneCanvas(props: ExperienceCanvasProps) {
+  return <ExperienceCanvas {...props} />;
 }

@@ -1,27 +1,19 @@
-# --- Stage 1: Base ---
-FROM node:22 AS base
+# --- Base Image ---
+FROM node:22
 WORKDIR /app
 
-# --- Stage 2: Builder ---
-FROM base AS builder
-COPY . .
-RUN npm install
-RUN npm run build --workspace=apps/backend
-
-# --- Stage 3: Runner ---
-FROM base AS runner
-WORKDIR /app
+# --- Environment ---
 ENV NODE_ENV production
-COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/apps/backend/package.json ./apps/backend/package.json
-COPY --from=builder /app/apps/frontend/package.json ./apps/frontend/package.json
-COPY --from=builder /app/apps/cms/package.json ./apps/cms/package.json
-COPY --from=builder /app/packages/types/package.json ./packages/types/package.json
-COPY --from=builder /app/packages/utils/package.json ./packages/utils/package.json
+
+# --- Copy Pre-built Assets ---
+COPY apps/backend/dist ./apps/backend/dist
+COPY node_modules ./node_modules
+COPY package.json ./package.json
+COPY apps/backend/package.json ./apps/backend/package.json
+COPY apps/frontend/package.json ./apps/frontend/package.json
+COPY apps/cms/package.json ./apps/cms/package.json
+COPY packages/types/package.json ./packages/types/package.json
+COPY packages/utils/package.json ./packages/utils/package.json
 
 EXPOSE 4000
 CMD ["npm", "run", "start", "--workspace=apps/backend"]
-
-

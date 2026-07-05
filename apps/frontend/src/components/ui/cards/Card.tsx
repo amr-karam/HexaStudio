@@ -9,8 +9,8 @@ interface CardProps {
 
 export const Card = ({ children, className, variant = 'glass' }: CardProps) => {
   const variants = {
-    glass: 'bg-[var(--glass-bg)] backdrop-blur-[12px] border border-[var(--glass-border)]',
-    solid: 'bg-neutral-900 border border-neutral-800',
+    glass: 'bg-[var(--glass-bg)] backdrop-blur-[12px] border border-[var(--glass-border)] hover:bg-[var(--glass-bg-hover)] hover:border-[var(--glass-border-hover)]',
+    solid: 'bg-surface border border-border hover:bg-surface-light',
   };
 
   return (
