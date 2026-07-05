@@ -11,6 +11,7 @@ import {
 import { SceneContent } from './SceneContent';
 import { CameraController } from './CameraController';
 import { PostProcessing } from './PostProcessing';
+import { SceneAccessibility } from './SceneAccessibility';
 import * as THREE from 'three';
 import { useAdaptiveQuality } from '@/hooks/useAdaptiveQuality';
 import { ProjectHotspot } from '@hexastudio/types';
@@ -40,6 +41,7 @@ export const ExperienceCanvas = ({
 
   return (
     <div className="absolute inset-0 -z-10 h-full w-full">
+      <SceneAccessibility hotspots={hotspots} />
       <Canvas
         shadows
         dpr={settings.dpr}

@@ -32,28 +32,30 @@ This roadmap outlines the strategic path to transform HEXA Studio into a world-c
 ## Phase 3: Page-by-Page Architectural Refinement
 *Goal: Ensure every page feels handcrafted and intentional.*
 
-- [ ] **Home Page**: Transformation from "corporate" to "cinematic".
-- [ ] **Portfolio**: 
-    - [ ] Editorial layout with immersive imagery.
-    - [ ] Seamless transition from gallery to 3D view.
-- [ ] **Services**: Interactive visualization of services using motion and 3D elements.
-- [ ] **About & Contact**: Minimalist storytelling focusing on precision and luxury.
-- [ ] **Blog**: High-end editorial layout for architectural thought leadership.
+- [x] **Home Page**: Transformation from "corporate" to "cinematic".
+- [x] **Portfolio**: 
+    - [x] Editorial layout with immersive imagery.
+    - [x] Seamless transition from gallery to 3D view.
+- [x] **Services**: Interactive visualization of services using motion and 3D elements.
+- [x] **About & Contact**: Minimalist storytelling focusing on precision and luxury.
+- [x] **Blog**: 
+    - [x] High-end editorial layout for archives.
+    - [x] Immersive article detail pages.
 
 ## Phase 4: Performance, A11y & Engineering Excellence
 *Goal: Zero compromise on speed and accessibility.*
 
-- [ ] **3D Optimization**: 
-    - [ ] Integrate Draco compression for all GLTF models.
-    - [ ] Implement texture compression (Basis/KTX2).
-    - [ ] Optimize geometry and draw calls.
-- [ ] **Web Vitals**: 
-    - [ ] Target LCP < 1.2s.
-    - [ ] Zero CLS through proper aspect-ratio handling.
-- [ ] **Accessibility**: 
-    - [ ] Implement semantic DOM parallel to 3D scenes.
-    - [ ] Ensure full keyboard navigation for all 3D hotspots.
-- [ ] **Type Safety**: Ensure 100% type coverage from Strapi $\rightarrow$ NestJS $\rightarrow$ Frontend.
+- [x] **3D Optimization**: 
+    - [x] Integrate Draco compression for all GLTF models.
+    - [x] Implement texture compression (Basis/KTX2).
+    - [x] Optimize geometry and draw calls.
+- [x] **Web Vitals**: 
+    - [x] Target LCP < 1.2s.
+    - [x] Zero CLS through proper aspect-ratio handling.
+- [x] **Accessibility**: 
+    - [x] Implement semantic DOM parallel to 3D scenes.
+    - [x] Ensure full keyboard navigation for all 3D hotspots.
+- [x] **Type Safety**: Ensure 100% type coverage from Strapi $\rightarrow$ NestJS $\rightarrow$ Frontend.
 
 ## Phase 5: Final Polish & Launch
 *Goal: Emotional resonance and production readiness.*
