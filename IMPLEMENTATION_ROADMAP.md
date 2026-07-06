@@ -72,5 +72,5 @@ This roadmap outlines the strategic path to transform HEXA Studio into a world-c
 - [x] **Visual Regression Testing**: Ensure pixel-perfection across all breakpoints.
 - [x] **Performance Audit**: Final Lighthouse check (Target >95).
 - [x] **Cloudflare WAF**: Web application firewall configuration.
-- [ ] **DNS/SSL for Main Domain**: `hexastudio.net` → production IP.
+- [x] **DNS/SSL for Main Domain**: `hexastudio.net` → Cloudflare → Let's Encrypt certs.
 - [x] **CI/CD Pipeline**: Auto-deploy on push to `main`.

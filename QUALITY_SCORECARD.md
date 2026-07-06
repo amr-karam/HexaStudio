@@ -2,17 +2,17 @@
 
 | # | Category | Score | Rationale |
 |---|----------|-------|-----------|
-| 1 | **Architecture** | **7/10** | Clean monorepo with feature-based frontend/module-based backend. Good network isolation. **-2** for duplicate Traefik configs causing confusion. **-1** for placeholder backend modules that should be removed or implemented. |
-| 2 | **Code Quality** | **7/10** | TypeScript strict mode passes. No ESLint errors. **-2** for only 1 test file (4 tests) against AGENTS.md testing strategy. **-1** for one `any` type and `Record<string, unknown>` patterns. |
-| 3 | **Visual Design** | **9/10** | Luxury gold accent on deep dark, comprehensive design system, glass cards, clean typography. **-1** for placeholder social links (`href="#"`) and no observed 404 page. |
-| 4 | **Brand Identity** | **9/10** | Strong "Living Spaces. Visualized." messaging. Consistent voice. Premium feel. Logo animation. **-1** for no favicon/icon variety (only logo.webp). |
-| 5 | **UX** | **8/10** | Skip-to-content, smooth scroll, page transitions, loading screen, error boundaries. **-1** for `cursor: none` globally (disorienting). **-1** for no toast/notification system. |
-| 6 | **Animation** | **9/10** | GSAP + Framer Motion, custom easings, cinematic page transitions, text reveal, parallax, 3D scene auto-rotation. **-1** for minor: animation timing consistency could be refined. |
-| 7 | **Performance** | **7/10** | InstancedMesh, adaptive LOD, code splitting. **-2** for 578kB first-load JS (exceeds 200KB budget). **-1** for no preload links on fonts or critical assets. |
-| 8 | **Accessibility** | **7/10** | Skip link, focus-visible, reduced-motion, semantic HTML, scene a11y. **-2** for global `cursor: none` breaking expected behavior. **-1** for missing `aria-current`, no explicit focus management. |
-| 9 | **SEO** | **7/10** | Global metadata, OG/Twitter, JSON-LD. **-2** for no sitemap.xml generation, no per-page canonicals. **-1** for no hreflang, no `generateStaticParams` for dynamic routes. |
-| 10 | **Security** | **4/10** | **-3** for hardcoded DB password in committed code. **-2** for no CSP, broken TLS (self-signed), Traefik dashboard exposed. **-1** for duplicate/inconsistent cert resolver configs. |
-| 11 | **Documentation** | **8/10** | Extensive AGENTS.md, design system docs, env example. **-1** for no ADRs in `docs/ADR/`. **-1** for duplicate Traefik configs creating confusion about authoritative source. |
+| 1 | **Architecture** | **8/10** | Clean monorepo, strict network isolation, 14 Docker services. **-1** for placeholder backend modules. **-1** for Traefik dashboard exposed. |
+| 2 | **Code Quality** | **8/10** | TypeScript strict, no ESLint errors. 14 backend tests + Playwright E2E scaffold (up from 4). **-1** for some `Record<string, unknown>` patterns. **-1** for no E2E in CI yet. |
+| 3 | **Visual Design** | **9/10** | Luxury gold accent, comprehensive design system, glass cards, clean typography. **-1** for placeholder social links (`href="#"`). |
+| 4 | **Brand Identity** | **9/10** | Strong "Living Spaces. Visualized." Real logo deployed. Consistent voice. Premium feel. **-1** for no favicon variety. |
+| 5 | **UX** | **8/10** | Skip-to-content, smooth scroll, page transitions, loading screen, error boundaries. **-1** for `cursor: none` globally. **-1** for no toast/notification system. |
+| 6 | **Animation** | **9/10** | GSAP + Framer Motion, custom easings, cinematic page transitions, text reveal, parallax. **-1** for minor timing consistency. |
+| 7 | **Performance** | **7/10** | InstancedMesh, adaptive LOD, code splitting. **-2** for 578kB first-load JS (exceeds 200KB budget). **-1** for no preload links. |
+| 8 | **Accessibility** | **7/10** | Skip link, focus-visible, reduced-motion, scene a11y. **-2** for global `cursor: none`. **-1** for no explicit focus management. |
+| 9 | **SEO** | **8/10** | Global metadata, OG/Twitter, JSON-LD, sitemap.ts. **-1** for no per-page canonicals. **-1** for no hreflang. |
+| 10 | **Security** | **7/10** | CSP added, Let's Encrypt HTTPS active, hardcoded passwords removed. **-2** for Traefik dashboard exposed (insecure: true). **-1** for CMS admin publicly routed. |
+| 11 | **Documentation** | **9/10** | Extensive AGENTS.md, ADRs in place (001-006), design system docs, env example. **-1** for CHANGELOG needing v0.8.0 entry. |
 
 ---
 
@@ -20,8 +20,7 @@
 
 | Metric | Value |
 |--------|-------|
-| **Average Score** | **7.5/10** |
-| **Weighted Score** | **7.3/10** |
-| **Highest** | Visual Design, Brand Identity, Animation (9/10) |
-| **Lowest** | Security (4/10) |
-| **Critical Gaps** | Testing, Security, TLS |
+| **Average Score** | **8.1/10** |
+| **Highest** | Visual Design, Brand Identity, Animation, Documentation (9/10) |
+| **Lowest** | Performance, Accessibility (7/10) |
+| **Critical Gaps** | JS bundle >200kB, Traefik dashboard security, accessibility refinement |

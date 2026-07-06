@@ -26,7 +26,7 @@
 
 | Risk | Severity | Detail | Mitigation | Status |
 |------|----------|--------|------------|--------|
-| Unencrypted HTTP | High | ACME disabled in `.env.example` | Enable Let's Encrypt / Cloudflare Origin | Pending |
+| Unencrypted HTTP | High | ACME disabled in `.env.example` | Enable Let's Encrypt / Cloudflare Origin | ✅ Resolved — Let's Encrypt certs active via DNS-01 |
 | MinIO anonymous download | Medium | `init-buckets.sh` sets public read | Private buckets + presigned URLs | Pending |
 | Traefik dashboard insecure | Medium | `api.insecure: true` on :8080 | Disable or protect with auth | Pending |
 | CMS admin exposed | Medium | `cms.localhost/admin` | IP allowlist + 2FA | Pending |

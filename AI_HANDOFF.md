@@ -1,5 +1,5 @@
 # AI HANDOFF — HexaStudio Project State
-**Last Updated:** July 05, 2026
+**Last Updated:** July 06, 2026
 
 This file enables any AI agent to pick up work exactly where the last agent stopped.
 
@@ -13,70 +13,73 @@ This file enables any AI agent to pick up work exactly where the last agent stop
 
 ---
 
-## 2. LAST SESSION: What Was Accomplished
+## 2. LAST SESSION: What Was Accomplished (July 06)
 
 ### Infrastructure & Deployment
-- **Nginx stopped** on production server — was blocking Traefik on port 80
-- **PostgreSQL volume recreated** — old credentials were incompatible
-- **MinIO health check fixed** — replaced `wget` with `curl` in container
-- **Backup container fixed** — base image changed from `alpine` to `postgres:16-alpine` (had no `pg_dump`)
-- **CMS fix** — Added `DATABASE_URL` env var to match Strapi 5 config (was using individual fields)
-- **Deploy script health checks fixed** — replaced `localhost` curl with Docker exec `node -e fetch()`
-- **Redis health check fixed** — added `REDIS_PASSWORD` auth
-- **Watchtower fixed** — pinned `containrrr/watchtower:1.7.1` + set `DOCKER_API_VERSION=1.40`
-- **All 14 containers running** + all 7 health checks passing
+- **Traefik downgraded** v3.4.5 → v2.11 for Docker API version compatibility
+- **All 14 services stable** — traefik, postgres, redis, minio, backend, frontend, cms, monitoring stack all passing
+- **Hardcoded passwords removed** from `apps/cms/config/database.ts` and duplicate Traefik configs cleaned
 
-### Brand & Design
-- **Real logo deployed** — `logo.webp` from client (replaced SVG approximation)
-- **Favicon updated** — `favicon.webp`
-- **All logo references updated** — Navbar, Footer, LoadingScreen, layout.tsx, StructuredData
+### DNS & Cloudflare Migration
+- **DNS fixed via Hostinger API** — A records updated for `@`, `api`, `cms`, `traefik` → `156.206.135.186`
+- **Cloudflare account created** — Zone `hexastudio.net` added (zone ID `214e4603a28f73d7279946baf820f5ed`)
+- **Nameservers changed** — Hostinger `ns1.dns-parking.com` → Cloudflare `kip.ns.cloudflare.com` / `lara.ns.cloudflare.com`
+- **All DNS records migrated** — A, CNAME tunnel records, MX/SPF/DKIM/DMARC/Zeptomail/Google verification all recreated in Cloudflare
 
-### MCP Server
-- **Local dev MCP server** — Created `scripts/mcp/` with server.js + package.json
-- **Local opencode.json updated** — Added `dev-server-local` pointing to `localhost:3001`
+### Cloudflare Tunnel
+- **Cloudflare Tunnel installed** — `cloudflared` running as systemd service
+- **2 connections active** — via `mrs06`, `mrs04` (protocol HTTP/2, token-based auth)
+- **Port forwarding eliminated** — Tunnel connects to `http://localhost:80`, bypassing NAT entirely
+- **Traefik updated** — HTTP→HTTPS redirect removed from web entrypoint, `web` entrypoint added to all routers
 
-### Production Server (19.16.1.100)
-- **OpenCode CLI installed** — v1.17.13 at `/root/.opencode/bin/opencode`
-- **OpenCode Server installed** — systemd service on port 4096, starts on boot
-- **Traefik route configured** — `opencode.hexastudio.net` → `172.20.0.1:4096` with Let's Encrypt
-- **DNS record added** — Hostinger API: `opencode A 156.206.135.186`
-- **OpenCode server config** — `/root/.config/opencode/opencode.json` → localhost:3001 MCP
+### Let's Encrypt Certificates
+- **DNS-01 challenge configured** — Cloudflare API provider in Traefik
+- **All 5 certificates issued:**
+  - `hexastudio.net` + 1 SAN (`www.hexastudio.net`)
+  - `api.hexastudio.net`, `cms.hexastudio.net`, `opencode.hexastudio.net`, `ai.hexastudio.net`
+- **Certs valid** Jul 6 – Oct 4 2026 (Let's Encrypt YR1)
+- **Public verification** — `hexastudio.net` returns 200 OK with valid LE cert through Cloudflare
+
+### E2E Testing
+- **Playwright scaffolded** — `e2e/playwright.config.ts` + `e2e/pages.spec.ts`
+- **Tests cover** — navigation, all pages load, 404 handling, SEO metadata, accessibility skip-link
+- **Scripts added** — `test:e2e` and `test:e2e:ui` to `package.json`
 
 ### Code & Docs
-- **All changes committed** to `stage` branch (49 files, 3123 insertions)
-- **Git push pending** — needs GitHub auth
-- **Synced server configs back to local** — deploy.sh, .env, dynamic.yml
-- **AI_CONTEXT.md, AI_HANDOFF.md, CHANGELOG.md** — updated to reflect latest state
+- **5 new commits** today (Traefix fixes, security fixes, tests, E2E, `.agents` fix)
+- **`.agents/skills/gemini-skills`** — converted from broken submodule to tracked files
+- **`stage` → `main`** — merged and pushed to GitHub
+- **Local configs synced** — `docker-compose.prod.yml`, `traefik.yml`, `dynamic.yml` all match server
+- **Self-signed cert files removed** from server and compose mounts
+- **`.env.example`** — added `CLOUDFLARE_EMAIL` / `CLOUDFLARE_API_KEY`
+- **BLOCKING_ISSUES.md, RELEASE_DECISION.md, CHANGELOG.md, IMPLEMENTATION_ROADMAP.md** — updated
+- **QUALITY_SCORECARD.md** — scores updated (Architecture 8, Code Quality 8, Security 7, Documentation 9, SEO 8)
 
 ---
 
 ## 3. IMMEDIATE NEXT STEPS (Priority Order)
 
-### [1] Push to GitHub
-- `git push origin stage` — hangs waiting for GitHub credentials
-- Use `gh auth login` or personal access token
+### [1] Secure Traefik Dashboard (B8)
+- `api.insecure: true` exposes port 8080 without auth
+- Fix: add basic auth middleware or set `api.insecure: false` + internal network only
 
-### [2] SSL Certificate for opencode.hexastudio.net
-- DNS `A` record added → `156.206.135.186`
-- Traefik configured with `certResolver: letsencrypt`
-- Need DNS propagation → restart Traefik → Let's Encrypt issues cert
-- Alternative: use SSH tunnel (`ssh -L 4096:localhost:4096 root@19.16.1.100`) + localhost
+### [2] Optimize JS Bundle (B9)
+- 578kB first-load JS vs 200kB budget
+- Fix: dynamic import Three.js/GSAP, lazy-load below-the-fold sections
 
-### [3] Production Rebuild
-- Pull latest code on server or scp source files
+### [3] Full Playwright Test Integration
+- E2E scaffold exists but not run in CI
+- Add `playwright` step to `.github/workflows/ci.yml`
+- Run tests in headless Chromium against built frontend
+
+### [4] Production Rebuild
+- Pull latest `main` on server
 - `docker compose build --no-cache frontend backend`
 - `docker compose up -d`
 
-### [4] Phase 5 Completion
-- Per IMPLEMENTATION_ROADMAP.md:
-  - Visual Regression Testing
-  - Lighthouse Audit (target >95)
-  - SEO Finalization (mostly done)
-  - Launch Readiness (Sentry OK, backups OK, Cloudflare WAF pending)
-
-### [5] Quality Gate Review
+### [5] Quality Gate Re-Evaluation
 - Run AGENTS.md §46 checklist
-- Generate reports (QUALITY_GATE_REPORT.md, etc.)
+- Previous score: 8.5/10 (quality gate approval pending)
 
 ---
 
