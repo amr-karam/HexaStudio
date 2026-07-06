@@ -30,7 +30,7 @@ export const HomeHero = () => {
 
   return (
     <section
-      className="relative flex min-h-screen flex-col items-center justify-center px-8 pt-20 overflow-hidden"
+      className="relative flex min-h-screen flex-col items-center justify-center px-4 sm:px-8 pt-20 overflow-hidden"
       onMouseMove={handleMouseMove}
     >
       <SceneErrorBoundary>
@@ -51,16 +51,16 @@ export const HomeHero = () => {
           </span>
         </TextReveal>
 
-        <div className="overflow-hidden mb-8">
+        <div className="overflow-hidden mb-6 md:mb-8">
           <TextReveal delay={0.1}>
-            <h1 className="text-6xl md:text-8xl font-light tracking-tighter text-white">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-light tracking-tighter text-white leading-[1.1]">
               Living <span className="italic">Spaces.</span> <br />
               Visualized.
             </h1>
           </TextReveal>
         </div>
 
-        <TextReveal delay={0.2} className="mx-auto max-w-xl text-lg font-light text-neutral-400 mb-12 leading-relaxed">
+        <TextReveal delay={0.2} className="mx-auto max-w-xl text-base md:text-lg font-light text-neutral-400 mb-8 md:mb-12 leading-relaxed px-4">
           Immersive 3D architectural experiences for the world&apos;s most ambitious projects.
           Where vision takes shape.
         </TextReveal>
@@ -69,7 +69,7 @@ export const HomeHero = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3, ease: 'var(--ease-luxury)' }}
-          className="flex items-center justify-center gap-6 pointer-events-auto"
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pointer-events-auto"
         >
           <Button variant="primary" size="lg">
             Explore Works

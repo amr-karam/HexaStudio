@@ -48,14 +48,20 @@ export const LoadingScreen = ({ children }: LoadingScreenProps) => {
           </div>
 
           <div className="flex flex-col items-center gap-4">
-            <div className="w-48 h-[1px] bg-border relative overflow-hidden">
+            <div
+              role="progressbar"
+              aria-valuenow={Math.round(progress)}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              className="w-48 h-[1px] bg-border relative overflow-hidden"
+            >
               <motion.div
                 className="absolute inset-y-0 left-0 bg-accent"
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.4, ease: 'var(--ease-out-expo)' }}
               />
             </div>
-            <span className="text-[9px] uppercase tracking-[0.4em] text-neutral-600 font-light">
+            <span className="text-[9px] uppercase tracking-[0.4em] text-neutral-600 font-light" aria-live="polite">
               Initializing Environment <span className="ml-2 text-accent">{Math.round(progress)}%</span>
             </span>
           </div>
