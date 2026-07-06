@@ -5,15 +5,16 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
-  asChild?: boolean;
 }
 
 const buttonStyles = {
   base: 'inline-flex items-center justify-center rounded-none transition-all duration-500 font-medium active:scale-95 disabled:opacity-50 ease-out-expo',
   variants: {
-    primary: 'bg-accent text-background hover:bg-accent-light shadow-sm',
+    primary:
+      'bg-accent text-background hover:bg-accent-light shadow-sm hover:shadow-[0_0_24px_-4px_rgba(201,169,110,0.3)]',
     secondary: 'bg-foreground text-background hover:bg-neutral-200',
-    outline: 'border border-border-light text-neutral-400 hover:border-accent hover:text-accent',
+    outline:
+      'border border-border-light text-neutral-400 hover:border-accent hover:text-accent',
     ghost: 'text-neutral-500 hover:text-foreground',
   },
   sizes: {
@@ -23,19 +24,6 @@ const buttonStyles = {
   },
 };
 
-function getButtonClassName(
-  variant: ButtonProps['variant'],
-  size: ButtonProps['size'],
-  className?: string,
-) {
-  return cn(
-    buttonStyles.base,
-    buttonStyles.variants[variant ?? 'primary'],
-    buttonStyles.sizes[size ?? 'md'],
-    className,
-  );
-}
-
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
@@ -43,22 +31,23 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       variant = 'primary',
       size = 'md',
       isLoading,
-      asChild = false,
       children,
       ...props
     },
     ref,
   ) => {
-    const classes = getButtonClassName(variant, size, className);
-
-    if (asChild && React.isValidElement(children)) {
-      return React.cloneElement(children as React.ReactElement<{ className?: string }>, {
-        className: cn(classes, (children as React.ReactElement<{ className?: string }>).props.className),
-      });
-    }
-
     return (
-      <button ref={ref} className={classes} disabled={isLoading} {...props}>
+      <button
+        ref={ref}
+        className={cn(
+          buttonStyles.base,
+          buttonStyles.variants[variant],
+          buttonStyles.sizes[size],
+          className,
+        )}
+        disabled={isLoading}
+        {...props}
+      >
         {isLoading ? (
           <span className="mr-3 h-3 w-3 animate-spin rounded-full border border-current border-t-transparent" />
         ) : null}

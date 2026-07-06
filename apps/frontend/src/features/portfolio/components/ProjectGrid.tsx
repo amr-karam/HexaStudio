@@ -70,7 +70,7 @@ const fallbackProjects = [
   {
     title: 'Lumina Pavilion',
     category: 'Commercial',
-    image: 'https://images.unsplash.com/photo-1487958449943-2429e8beL_S_S_S_S?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1487958449943-2429e8be6c6?w=800&q=80',
     slug: 'lumina-pavilion',
   },
   {

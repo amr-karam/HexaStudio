@@ -21,11 +21,11 @@ export function CustomCursor() {
 
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      const isInteractive = 
+      const isInteractive =
         window.getComputedStyle(target).cursor === 'pointer' ||
         target.closest('a') ||
         target.closest('button');
-      
+
       setIsPointer(!!isInteractive);
       setIsHoveringLink(!!target.closest('a'));
     };
@@ -44,26 +44,23 @@ export function CustomCursor() {
       className="fixed top-0 left-0 pointer-events-none z-[9999] mix-blend-difference"
       style={{ x: springX, y: springY }}
     >
-      {/* Main Dot */}
-      <motion.div 
-        animate={{ 
+      <motion.div
+        animate={{
           scale: isPointer ? 1.5 : 1,
-          backgroundColor: isPointer ? 'var(--color-accent)' : '#fff' 
+          backgroundColor: isPointer ? 'var(--color-accent)' : '#fff',
         }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-1.5 w-1.5 rounded-full transition-colors duration-300" 
-      />
-      
-      {/* Trailing Ring */}
-      <motion.div 
-        animate={{ 
-          scale: isPointer ? 2.5 : 1.5,
-          borderColor: isPointer ? 'var(--color-accent)' : 'rgba(255,255,255,0.5)',
-          opacity: isPointer ? 1 : 0.6
-        }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-8 w-8 rounded-full border border-white transition-all duration-500 ease-out-expo" 
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-1.5 w-1.5 rounded-full transition-colors duration-300"
       />
 
-      {/* Link Text Hover Effect */}
+      <motion.div
+        animate={{
+          scale: isPointer ? 2.5 : 1.5,
+          borderColor: isPointer ? 'var(--color-accent)' : 'rgba(255,255,255,0.5)',
+          opacity: isPointer ? 1 : 0.6,
+        }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-8 w-8 rounded-full border border-white transition-all duration-500 ease-out-expo"
+      />
+
       <AnimatePresence>
         {isHoveringLink && (
           <motion.div

@@ -10,8 +10,7 @@ import { TextReveal } from '@/components/ui/TextReveal';
 
 export const HomeHero = () => {
   const { scrollYProgress } = useScroll();
-  
-  // Mouse tracking for parallax
+
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
@@ -26,16 +25,14 @@ export const HomeHero = () => {
     mouseY.set((clientY / innerHeight) - 0.5);
   };
 
-  // Transform scroll progress into cinematic animations
   const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.1], [1, 0.9]);
 
   return (
-    <section 
+    <section
       className="relative flex min-h-screen flex-col items-center justify-center px-8 pt-20 overflow-hidden"
       onMouseMove={handleMouseMove}
     >
-      {/* 3D Background Experience */}
       <SceneErrorBoundary>
         <Suspense fallback={<LoadingScreen />}>
           <LazySceneCanvas />
@@ -44,7 +41,7 @@ export const HomeHero = () => {
 
       <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background/80 pointer-events-none z-[1]" />
 
-      <motion.div 
+      <motion.div
         style={{ opacity, scale, x: translateX, y: translateY }}
         className="relative z-10 max-w-5xl text-center pointer-events-none"
       >
@@ -64,11 +61,11 @@ export const HomeHero = () => {
         </div>
 
         <TextReveal delay={0.2} className="mx-auto max-w-xl text-lg font-light text-neutral-400 mb-12 leading-relaxed">
-          Immersive 3D architectural experiences for the world's most ambitious projects. 
+          Immersive 3D architectural experiences for the world&apos;s most ambitious projects.
           Where vision takes shape.
         </TextReveal>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3, ease: 'var(--ease-luxury)' }}
@@ -83,8 +80,7 @@ export const HomeHero = () => {
         </motion.div>
       </motion.div>
 
-      {/* Scroll Indicator */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 1 }}

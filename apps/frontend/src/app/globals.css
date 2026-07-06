@@ -1,25 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  /* Color Palette - Deep Architectural Tones */
   --color-background: #050508;
   --color-foreground: #f4f4f5;
-  
+
   --color-surface: #0a0a0f;
   --color-surface-light: #12121a;
   --color-surface-dark: #030305;
-  
+
   --color-border: #1a1a24;
   --color-border-light: #262634;
   --color-border-dark: #111118;
-  
-  /* Accent - Luxury Gold */
+
   --color-accent: #c9a96e;
   --color-accent-light: #d4bf8a;
   --color-accent-dark: #a8884a;
   --color-accent-muted: rgba(201, 169, 110, 0.4);
-  
-  /* Neutral Scale */
+
   --color-neutral-50: #fafafa;
   --color-neutral-100: #f4f4f5;
   --color-neutral-200: #e4e4e7;
@@ -32,11 +29,9 @@
   --color-neutral-900: #18181b;
   --color-neutral-950: #09090b;
 
-  /* Typography */
   --font-sans: var(--font-inter), system-ui, sans-serif;
   --font-serif: var(--font-playfair), Georgia, serif;
 
-  /* Custom Spacing/Sizing for Architectural Precision */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
@@ -47,7 +42,6 @@
   --spacing-4xl: 6rem;
   --spacing-5xl: 8rem;
 
-  /* Animation Easings - Cinematic Standard */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
@@ -59,6 +53,7 @@
   --glass-border: rgba(255, 255, 255, 0.05);
   --glass-bg-hover: rgba(255, 255, 255, 0.04);
   --glass-border-hover: rgba(255, 255, 255, 0.08);
+  --glass-highlight: rgba(255, 255, 255, 0.01);
 }
 
 body {
@@ -67,12 +62,7 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  cursor: none;
   overflow-x: hidden;
-}
-
-a, button, input, textarea, select {
-  cursor: none;
 }
 
 ::selection {
@@ -97,13 +87,11 @@ a, button, input, textarea, select {
   background: var(--color-border-light);
 }
 
-/* Focus styles for accessibility */
 *:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
 
-/* Skip to content link */
 .skip-link {
   position: absolute;
   top: -40px;
@@ -119,7 +107,6 @@ a, button, input, textarea, select {
   top: 0;
 }
 
-/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
