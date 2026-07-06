@@ -56,12 +56,8 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Sentry CLI
-        uses: sentry-cli/sentry-cli-action@v1
-        with:
-          sentry-auth-token: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          organization: ${{ secrets.SENTRY_ORG }}
-          project: ${{ secrets.SENTRY_PROJECT }}
+      - name: Install Sentry CLI
+        run: npm install -g @sentry/cli
 
       - name: Create Sentry Release
         run: |
