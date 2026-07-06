@@ -14,12 +14,7 @@ RUN npm ci
 # Stage 3: Builder
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/apps/frontend/node_modules ./apps/frontend/node_modules
-COPY --from=deps /app/packages/types/node_modules ./packages/types/node_modules
-COPY --from=deps /app/packages/utils/node_modules ./packages/utils/node_modules
 COPY . .
-# We need to build the workspace packages if they have build steps, 
-# but here they seem to be pure TS.
 RUN npm run build --workspace=apps/frontend
 
 # Stage 4: Runner

@@ -82,9 +82,20 @@ jobs:
       - name: Build Frontend
         run: npm run build --workspace=apps/frontend
 
+      - name: Start Server
+        run: nohup npm run start --workspace=apps/frontend > /tmp/server.log 2>&1 &
+
+      - name: Wait for Server
+        run: |
+          for i in {1..30}; do
+            curl -s http://localhost:3000 > /dev/null && break
+            sleep 1
+          done
+
       - name: Run Lighthouse CI
         uses: treosh/lighthouse-ci-action@v12
         with:
+          urls: http://localhost:3000
           uploadArtifacts: true
           temporaryPublicStorage: true
 
@@ -109,13 +120,15 @@ jobs:
       - name: Install axe-core
         run: npm install --save-dev @axe-core/cli
 
-      - name: Start Dev Server
-        run: npm run dev --workspace=apps/frontend &
-        env:
-          PORT: 3000
+      - name: Start Server
+        run: nohup npm run start --workspace=apps/frontend > /tmp/server.log 2>&1 &
 
       - name: Wait for Server
-        run: sleep 10
+        run: |
+          for i in {1..30}; do
+            curl -s http://localhost:3000 > /dev/null && break
+            sleep 1
+          done
 
       - name: Run Accessibility Audit
         run: npx axe http://localhost:3000 --exit
