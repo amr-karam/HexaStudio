@@ -1,4 +1,3 @@
-# Dynamic Traefik configuration (TLS, middlewares)
 http:
   middlewares:
     secure-headers:
@@ -10,6 +9,7 @@ http:
         stsSeconds: 31536000
         stsIncludeSubdomains: true
         stsPreload: true
+        contentSecurityPolicy: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https: wss:; media-src 'self' https:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'"
 
     rate-limit:
       rateLimit:
@@ -18,6 +18,11 @@ http:
 
     compress:
       compress: {}
+
+    redirect-https:
+      redirectScheme:
+        scheme: https
+        permanent: true
 
   routers:
     opencode:
@@ -41,6 +46,35 @@ http:
         - secure-headers
         - rate-limit
 
+    frontend-https:
+      rule: "Host(`hexastudio.net`) || Host(`www.hexastudio.net`)"
+      entryPoints:
+        - websecure
+      service: frontend
+      tls: {}
+      middlewares:
+        - secure-headers
+        - compress
+
+    backend-https:
+      rule: "Host(`api.hexastudio.net`)"
+      entryPoints:
+        - websecure
+      service: backend
+      tls: {}
+      middlewares:
+        - secure-headers
+        - compress
+
+    cms-https:
+      rule: "Host(`cms.hexastudio.net`)"
+      entryPoints:
+        - websecure
+      service: cms
+      tls: {}
+      middlewares:
+        - secure-headers
+
   services:
     opencode:
       loadBalancer:
@@ -51,6 +85,21 @@ http:
       loadBalancer:
         servers:
           - url: "http://172.17.0.1:1234"
+
+    frontend:
+      loadBalancer:
+        servers:
+          - url: "http://frontend:3000"
+
+    backend:
+      loadBalancer:
+        servers:
+          - url: "http://backend:4000"
+
+    cms:
+      loadBalancer:
+        servers:
+          - url: "http://cms:1337"
 
 tls:
   options:

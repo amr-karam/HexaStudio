@@ -204,7 +204,7 @@ services:
       DATABASE_USERNAME: ${POSTGRES_USER:-hexastudio}
       DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
       DATABASE_SSL: "false"
-      DATABASE_URL: postgresql://hexastudio:1091949815f2db0f0c16ec255c3e5d6a@postgres:5432/hexastudio_cms
+      DATABASE_URL: postgresql://${POSTGRES_USER:-hexastudio}:${POSTGRES_PASSWORD}@postgres:5432/hexastudio_cms
       APP_KEYS: ${STRAPI_APP_KEYS:?STRAPI_APP_KEYS is required}
       API_TOKEN_SALT: ${STRAPI_API_TOKEN_SALT:?STRAPI_API_TOKEN_SALT is required}
       ADMIN_JWT_SECRET: ${STRAPI_ADMIN_JWT_SECRET:?STRAPI_ADMIN_JWT_SECRET is required}

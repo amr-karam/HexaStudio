@@ -13,6 +13,8 @@ entryPoints:
           permanent: true
   websecure:
     address: ":443"
+  traefik:
+    address: ":8080"
 
 providers:
   docker:
