@@ -130,8 +130,8 @@ services:
   # ---------------------------------------------------------------------------
   backend:
     build:
-      context: ./apps/backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/backend/Dockerfile
     <<: *default-restart
     logging: *default-logging
     environment:
@@ -167,8 +167,8 @@ services:
 
   frontend:
     build:
-      context: ./apps/frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/frontend/Dockerfile
       args:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://api.localhost}
         NEXT_PUBLIC_CMS_URL: ${NEXT_PUBLIC_CMS_URL:-http://cms.localhost}
@@ -191,8 +191,8 @@ services:
 
   cms:
     build:
-      context: ./apps/cms
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/cms/Dockerfile
     <<: *default-restart
     logging: *default-logging
     environment:
