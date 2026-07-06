@@ -1,0 +1,7 @@
+process.env.NODE_ENV = 'test';
+process.env.PORT ??= '4001';
+process.env.JWT_SECRET ??= 'test-jwt-secret-that-is-at-least-32-chars-long-for-testing';
+process.env.CMS_URL ??= 'http://test-cms:1337';
+process.env.REDIS_PASSWORD ??= 'test-redis-password';
+process.env.MINIO_ROOT_USER ??= 'test-minio-user';
+process.env.MINIO_ROOT_PASSWORD ??= 'test-minio-password-at-least-8';
