@@ -20,6 +20,7 @@ import { useCameraStore } from '../store/camera-store';
 interface ExperienceCanvasProps {
   projectModelUrl?: string;
   hotspots?: ProjectHotspot[];
+  projectTitle?: string;
 }
 
 function SceneFallback() {
@@ -34,6 +35,7 @@ function SceneFallback() {
 export const ExperienceCanvas = ({
   projectModelUrl,
   hotspots,
+  projectTitle,
 }: ExperienceCanvasProps) => {
   const { level, settings } = useAdaptiveQuality();
   const { isTransitioning } = useCameraStore();
@@ -42,7 +44,7 @@ export const ExperienceCanvas = ({
 
   return (
     <div className="absolute inset-0 -z-10 h-full w-full">
-      <SceneAccessibility hotspots={hotspots} />
+      <SceneAccessibility hotspots={hotspots} projectTitle={projectTitle} />
       <Canvas
         shadows
         dpr={settings.dpr}

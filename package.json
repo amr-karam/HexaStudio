@@ -20,7 +20,9 @@
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
     "docker:build": "docker compose build",
-    "docker:logs": "docker compose logs -f"
+    "docker:logs": "docker compose logs -f",
+    "test:e2e": "npm run test:e2e --workspace=apps/frontend",
+    "test:e2e:ui": "playwright test --ui --config e2e/playwright.config.ts"
   },
   "engines": {
     "node": ">=20"

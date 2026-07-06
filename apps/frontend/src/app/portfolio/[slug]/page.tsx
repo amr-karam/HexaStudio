@@ -1,47 +1,92 @@
-'use client';
-
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import React, { Suspense } from 'react';
-import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { useProject } from '@/features/portfolio/hooks/useProjects';
+import { fetchProject } from '@/features/portfolio/lib/fetchProjects';
 import { ExperienceCanvas } from '@/features/scene/components/ExperienceCanvas';
 import { SceneErrorBoundary } from '@/features/scene/components/SceneErrorBoundary';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { Button } from '@/components/ui/Button';
+import { ProjectStructuredData } from '@/components/ProjectStructuredData';
 import Link from 'next/link';
+import { Project } from '@hexastudio/types';
 
-export default function ProjectDetailPage() {
-  const { slug } = useParams<{ slug: string }>();
-  const { data: project, isLoading, isError } = useProject(slug);
+interface PageProps {
+  params: { slug: string };
+}
 
-  if (isLoading) return <LoadingScreen />;
-  if (isError || !project) return (
-    <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
-      <div className="text-center">
-        <h1 className="text-4xl font-serif font-light mb-4">Project Not Found</h1>
-        <Link href="/portfolio">
-          <Button variant="outline">Return to Portfolio</Button>
-        </Link>
-      </div>
-    </div>
-  );
+export const revalidate = 3600;
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const project = await fetchProject(params.slug);
+
+  if (!project) {
+    return {
+      title: 'Project Not Found | HexaStudio',
+    };
+  }
+
+  const baseUrl = 'https://hexastudio.net';
+  const imageUrl = project.coverImage ? `${project.coverImage}?w=1200&q=80` : `${baseUrl}/logo.webp`;
+
+  return {
+    title: `${project.title} | HexaStudio`,
+    description: project.shortDescription || project.description,
+    openGraph: {
+      title: project.title,
+      description: project.shortDescription || project.description,
+      url: `${baseUrl}/portfolio/${project.slug}`,
+      siteName: 'HexaStudio',
+      locale: 'en_US',
+      type: 'website',
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: project.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: project.title,
+      description: project.shortDescription || project.description,
+      images: [imageUrl],
+    },
+  };
+}
+
+export default async function ProjectDetailPage({ params }: PageProps) {
+  const project = await fetchProject(params.slug);
+
+  if (!project) {
+    notFound();
+  }
 
   return (
+    <>
+      <ProjectStructuredData project={project} />
+      <ProjectContent project={project} />
+    </>
+  );
+}
+
+function ProjectContent({ project }: { project: Project }) {
+  return (
     <main className="relative h-screen w-full overflow-hidden bg-background">
-      {/* 3D Immersive Experience */}
       <SceneErrorBoundary>
         <Suspense fallback={<LoadingScreen />}>
           <ExperienceCanvas 
             projectModelUrl={project.modelUrl} 
-            hotspots={project.hotspots} 
+            hotspots={project.hotspots}
+            projectTitle={project.title}
           />
         </Suspense>
       </SceneErrorBoundary>
 
-      {/* Cinematic Overlay */}
       <div className="absolute inset-0 pointer-events-none z-[1] bg-gradient-to-t from-background via-transparent to-transparent opacity-60" />
 
-      {/* Project Info Interface */}
       <div className="absolute inset-0 z-10 flex flex-col justify-between p-8 md:p-16 pointer-events-none">
         <div className="flex justify-between items-start pointer-events-auto">
           <Link 
@@ -83,7 +128,6 @@ export default function ProjectDetailPage() {
         </div>
       </div>
 
-      {/* Camera Instructions */}
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

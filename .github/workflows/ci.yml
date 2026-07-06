@@ -30,3 +30,59 @@ jobs:
 
       - name: Test
         run: npm run test --workspace=apps/backend
+
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Frontend
+        run: npm run build --workspace=apps/frontend
+
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+  accessibility:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Frontend
+        run: npm run build --workspace=apps/frontend
+
+      - name: Install axe-core
+        run: npm install --save-dev @axe-core/cli
+
+      - name: Start Dev Server
+        run: npm run dev --workspace=apps/frontend &
+        env:
+          PORT: 3000
+
+      - name: Wait for Server
+        run: sleep 10
+
+      - name: Run Accessibility Audit
+        run: npx axe http://localhost:3000 --exit

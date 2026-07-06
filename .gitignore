@@ -44,6 +44,8 @@ apps/cms/public/uploads/
 
 # Testing
 coverage/
+test-results/
+playwright-report/
 
 # Internal docs (not for public repo)
 competitor-research-progress.md

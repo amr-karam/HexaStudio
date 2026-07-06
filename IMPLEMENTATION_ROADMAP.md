@@ -69,8 +69,8 @@ This roadmap outlines the strategic path to transform HEXA Studio into a world-c
 - [x] **OpenCode Server**: v1.17.13 installed on production.
 - [x] **Security Hardening**: JWT cookies, env validation, network segmentation, Redis auth.
 - [x] **SSL Certificate**: For `opencode.hexastudio.net` (DNS propagated, Traefik pending).
-- [ ] **Visual Regression Testing**: Ensure pixel-perfection across all breakpoints.
-- [ ] **Performance Audit**: Final Lighthouse check (Target >95).
-- [ ] **Cloudflare WAF**: Web application firewall configuration.
+- [x] **Visual Regression Testing**: Ensure pixel-perfection across all breakpoints.
+- [x] **Performance Audit**: Final Lighthouse check (Target >95).
+- [x] **Cloudflare WAF**: Web application firewall configuration.
 - [ ] **DNS/SSL for Main Domain**: `hexastudio.net` → production IP.
 - [x] **CI/CD Pipeline**: Auto-deploy on push to `main`.

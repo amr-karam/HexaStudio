@@ -4,13 +4,16 @@ import { StudioSection } from "@/features/portfolio/components/StudioSection";
 import { TestimonialsSection } from "@/features/portfolio/components/TestimonialsSection";
 import { AchievementsSection } from "@/features/portfolio/components/AchievementsSection";
 import { CTASection } from "@/components/CTASection";
+import { fetchProjects } from '@/features/portfolio/lib/fetchProjects';
 
-export default function HomePage() {
+export default async function HomePage() {
+  const projectsData = await fetchProjects();
+
   return (
     <>
       <HomeHero />
       <AchievementsSection />
-      <ProjectGrid />
+      <ProjectGrid projects={projectsData.projects ?? []} />
       <TestimonialsSection />
       <StudioSection />
       <CTASection />

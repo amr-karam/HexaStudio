@@ -70,33 +70,33 @@
 
 ---
 
-## Sprint 4 — Content & SEO (Current)
+## Sprint 4 — Content & SEO ✅ COMPLETED
 
 **Goal:** CMS-driven pages with SEO.
 
-| ID | Task | Priority | Effort |
-|----|------|----------|--------|
-| S4-01 | Portfolio gallery page (ISR) | High | 1 week |
-| S4-02 | Project detail page with 3D embed | Critical | 1 week |
-| S4-03 | Dynamic `generateMetadata` | High | 2 days |
-| S4-04 | robots.txt + sitemap.xml | High | 1 day |
-| S4-05 | JSON-LD structured data | Medium | 2 days |
-| S4-06 | Lighthouse CI in GitHub Actions | Medium | 1 day |
+| ID | Task | Priority | Effort | Status |
+|----|------|----------|--------|--------|
+| S4-01 | Portfolio gallery page (ISR) | High | 1 week | Done |
+| S4-02 | Project detail page with 3D embed | Critical | 1 week | Done |
+| S4-03 | Dynamic `generateMetadata` | High | 2 days | Done |
+| S4-04 | robots.txt + sitemap.xml | High | 1 day | Done |
+| S4-05 | JSON-LD structured data | Medium | 2 days | Done |
+| S4-06 | Lighthouse CI in GitHub Actions | Medium | 1 day | Done |
 
 ---
 
-## Sprint 5 — Polish & A11y
+## Sprint 5 — Polish & A11y ✅ COMPLETED
 
 **Goal:** Awwwards quality with accessibility.
 
-| ID | Task | Priority | Effort |
-|----|------|----------|--------|
-| S5-01 | 3D semantic layer for screen readers | High | 1 week |
-| S5-02 | Keyboard scene navigation | High | 1 week |
-| S5-03 | Interactive hotspots + annotations | High | 1 week |
-| S5-04 | KTX2 texture pipeline | Medium | 3 days |
-| S5-05 | InstancedMesh for repetitive geometry | Medium | 3 days |
-| S5-06 | axe-core accessibility CI | Medium | 4 hr |
+| ID | Task | Priority | Effort | Status |
+|----|------|----------|--------|--------|
+| S5-01 | 3D semantic layer for screen readers | High | 1 week | Done |
+| S5-02 | Keyboard scene navigation | High | 1 week | Done |
+| S5-03 | Interactive hotspots + annotations | High | 1 week | Done |
+| S5-04 | KTX2 texture pipeline | Medium | 3 days | Done |
+| S5-05 | InstancedMesh for repetitive geometry | Medium | 3 days | Done |
+| S5-06 | axe-core accessibility CI | Medium | 4 hr | Done |
 
 ---
 
