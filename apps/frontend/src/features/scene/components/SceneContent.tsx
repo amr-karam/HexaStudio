@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { Float, Instances } from '@react-three/drei';
+import { Float } from '@react-three/drei';
 import * as THREE from 'three';
 import { ArchitecturalModel } from './ArchitecturalModel';
 import { Hotspot } from './Hotspot';
@@ -82,30 +82,27 @@ function ProceduralArchitecture() {
           />
         </mesh>
 
-        {/* Optimized Floating Geometric Elements using Instances */}
-        <Instances>
-          <boxGeometry args={[0.1, 0.5, 0.1]} />
-          <meshPhysicalMaterial
-            color="#c9a96e"
-            roughness={0}
-            metalness={1}
-            envMapIntensity={2}
-          />
-        </Instances>
-        
-        {/* Using shared material and geometry for the floating elements to allow Three.js to batch them */}
+        {/* Optimized Floating Geometric Elements using shared geometry/material */}
         {floatElements.positions.map((_, i) => (
           <mesh 
             key={`float-opt-${i}`} 
             castShadow 
-            position={[floatElements.positions[i*3], floatElements.positions[i*3+1], floatElements.positions[i*3+2]]}
-            rotation={[floatElements.rotations[i*3], floatElements.rotations[i*3+1], floatElements.rotations[i*3+2]]}
+            position={[
+              floatElements.positions[i * 3],
+              floatElements.positions[i * 3 + 1],
+              floatElements.positions[i * 3 + 2]
+            ]}
+            rotation={[
+              floatElements.rotations[i * 3],
+              floatElements.rotations[i * 3 + 1],
+              floatElements.rotations[i * 3 + 2]
+            ]}
             geometry={floatGeom}
             material={floatMat}
           />
         ))}
 
-        {/* Optimized Base Lights */}
+        {/* Optimized Base Lights using shared geometry/material */}
         {lightPositions.map((pos, i) => (
           <mesh
             key={`base-light-opt-${i}`}

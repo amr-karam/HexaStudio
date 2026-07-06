@@ -4,8 +4,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Card } from '@/components/ui/cards/Card';
-import { useProjects } from '@/features/portfolio/hooks/useProjects';
 import Link from 'next/link';
+import { Project } from '@hexastudio/types';
 
 interface ProjectCardProps {
   title: string;
@@ -27,6 +27,7 @@ const ProjectCard = ({ title, category, image, slug, index }: ProjectCardProps) 
     }}
     whileHover={{ y: -12 }}
     className="group cursor-pointer"
+    data-testid="project-card"
   >
     <Link href={`/portfolio/${slug}`}>
       <Card variant="solid" className="overflow-hidden p-0 aspect-[3/4]">
@@ -86,11 +87,13 @@ const fallbackProjects = [
   },
 ];
 
-export const ProjectGrid = () => {
-  const { data, isLoading } = useProjects();
+interface ProjectGridProps {
+  projects: Project[];
+}
 
-  const projects =
-    data?.projects?.map((p) => ({
+export const ProjectGrid = ({ projects }: ProjectGridProps) => {
+  const mappedProjects =
+    projects?.map((p) => ({
       title: p.title,
       category: p.category?.name ?? 'Project',
       image: p.coverImage ? `${p.coverImage}?w=800&q=80` : '',
@@ -130,22 +133,11 @@ export const ProjectGrid = () => {
         </motion.p>
       </div>
 
-      {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {[1, 2, 3, 4].map((i) => (
-            <div
-              key={i}
-              className="aspect-[3/4] bg-surface-light animate-pulse"
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {projects.map((project, idx) => (
-            <ProjectCard key={idx} {...project} index={idx} />
-          ))}
-        </div>
-      )}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {mappedProjects.map((project, idx) => (
+          <ProjectCard key={project.slug} {...project} index={idx} />
+        ))}
+      </div>
     </section>
   );
 };
