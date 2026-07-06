@@ -29,7 +29,6 @@ export const HomeHero = () => {
   // Transform scroll progress into cinematic animations
   const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.1], [1, 0.9]);
-  const y = useTransform(scrollYProgress, [0, 0.1], [0, -50]);
 
   return (
     <section 
@@ -46,7 +45,7 @@ export const HomeHero = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background/80 pointer-events-none z-[1]" />
 
       <motion.div 
-        style={{ opacity, scale, y, x: translateX, y: translateY }}
+        style={{ opacity, scale, x: translateX, y: translateY }}
         className="relative z-10 max-w-5xl text-center pointer-events-none"
       >
         <TextReveal delay={0} className="mb-6">

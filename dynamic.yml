@@ -1,0 +1,111 @@
+http:
+  middlewares:
+    secure-headers:
+      headers:
+        frameDeny: true
+        contentTypeNosniff: true
+        browserXssFilter: true
+        referrerPolicy: "strict-origin-when-cross-origin"
+        stsSeconds: 31536000
+        stsIncludeSubdomains: true
+        stsPreload: true
+
+    rate-limit:
+      rateLimit:
+        average: 100
+        burst: 50
+
+    compress:
+      compress: {}
+
+    redirect-https:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+  routers:
+    opencode:
+      rule: "Host(`opencode.hexastudio.net`)"
+      entryPoints:
+        - websecure
+      service: opencode
+      tls: {}
+      middlewares:
+        - secure-headers
+        - rate-limit
+
+    ai:
+      rule: "Host(`ai.hexastudio.net`)"
+      entryPoints:
+        - websecure
+      service: lmstudio
+      tls: {}
+      middlewares:
+        - secure-headers
+        - rate-limit
+
+    frontend-https:
+      rule: "Host(`hexastudio.net`) || Host(`www.hexastudio.net`)"
+      entryPoints:
+        - websecure
+      service: frontend
+      tls: {}
+      middlewares:
+        - secure-headers
+        - compress
+
+    backend-https:
+      rule: "Host(`api.hexastudio.net`)"
+      entryPoints:
+        - websecure
+      service: backend
+      tls: {}
+      middlewares:
+        - secure-headers
+        - compress
+
+    cms-https:
+      rule: "Host(`cms.hexastudio.net`)"
+      entryPoints:
+        - websecure
+      service: cms
+      tls: {}
+      middlewares:
+        - secure-headers
+
+  services:
+    opencode:
+      loadBalancer:
+        servers:
+          - url: "http://172.20.0.1:4096"
+
+    lmstudio:
+      loadBalancer:
+        servers:
+          - url: "http://172.17.0.1:1234"
+
+    frontend:
+      loadBalancer:
+        servers:
+          - url: "http://frontend:3000"
+
+    backend:
+      loadBalancer:
+        servers:
+          - url: "http://backend:4000"
+
+    cms:
+      loadBalancer:
+        servers:
+          - url: "http://cms:1337"
+
+tls:
+  options:
+    default:
+      minVersion: VersionTLS12
+      sniStrict: false
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /etc/traefik/certs/default.crt
+        keyFile: /etc/traefik/certs/default.key
