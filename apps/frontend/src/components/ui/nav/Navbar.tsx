@@ -18,6 +18,7 @@ const NavItem = ({ label, href, active, onClick }: NavItemProps) => (
   <Link
     href={href}
     onClick={onClick}
+    aria-current={active ? 'page' : undefined}
     className={cn(
       'relative py-2 text-[10px] uppercase tracking-[0.3em] transition-colors duration-500',
       active
@@ -50,6 +51,21 @@ export const Navbar = () => {
   }, []);
 
   useEffect(() => {
+    document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isMenuOpen]);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsMenuOpen(false);
+    };
+    if (isMenuOpen) {
+      document.addEventListener('keydown', handleEscape);
+      return () => document.removeEventListener('keydown', handleEscape);
+    }
+  }, [isMenuOpen]);
+
+  useEffect(() => {
     setIsMenuOpen(false);
   }, [pathname]);
 
@@ -64,6 +80,8 @@ export const Navbar = () => {
   return (
     <>
       <nav
+        role="navigation"
+        aria-label="Main navigation"
         className={cn(
           'fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 md:px-16 transition-all duration-700 ease-out-expo',
           isScrolled
@@ -106,7 +124,9 @@ export const Navbar = () => {
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="md:hidden flex flex-col gap-1.5 py-2"
-          aria-label="Toggle menu"
+          aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={isMenuOpen}
+          aria-controls="mobile-menu"
         >
           <motion.span
             animate={isMenuOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
@@ -126,6 +146,10 @@ export const Navbar = () => {
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
+            id="mobile-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile navigation"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -143,8 +167,9 @@ export const Navbar = () => {
                 <Link
                   href={item.href}
                   onClick={() => setIsMenuOpen(false)}
+                  aria-current={pathname === item.href ? 'page' : undefined}
                   className={cn(
-                    'text-4xl font-light tracking-tighter transition-colors duration-500',
+                    'block text-3xl sm:text-4xl font-light tracking-tighter transition-colors duration-500 py-2 min-h-[44px] flex items-center justify-center',
                     pathname === item.href
                       ? 'text-accent'
                       : 'text-neutral-500 hover:text-foreground'

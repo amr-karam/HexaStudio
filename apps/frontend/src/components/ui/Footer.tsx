@@ -22,8 +22,8 @@ export const Footer = () => {
 
   return (
     <footer className="bg-surface border-t border-border/50">
-      <div className="max-w-7xl mx-auto px-8 md:px-16 py-24 md:py-32">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 md:gap-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-16 py-16 md:py-32">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-24">
 
           <div className="lg:col-span-5 flex flex-col gap-8">
             <Link href="/" className="flex items-center gap-3 group w-fit">
@@ -53,7 +53,7 @@ export const Footer = () => {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-xs text-neutral-500 hover:text-accent transition-colors duration-500 w-fit"
+                  className="text-xs text-neutral-500 hover:text-accent transition-colors duration-500 w-fit py-1"
                 >
                   {item.name}
                 </Link>
@@ -72,7 +72,7 @@ export const Footer = () => {
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-neutral-500 hover:text-accent transition-colors duration-500 w-fit"
+                  className="text-xs text-neutral-500 hover:text-accent transition-colors duration-500 w-fit py-1"
                 >
                   {link.name}
                 </a>
@@ -81,7 +81,7 @@ export const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-24 pt-8 border-t border-border/50 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="mt-16 md:mt-24 pt-8 border-t border-border/50 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6">
           <p className="text-[10px] uppercase tracking-widest text-neutral-600">
             &copy; {currentYear} HexaStudio. All rights reserved.
           </p>
