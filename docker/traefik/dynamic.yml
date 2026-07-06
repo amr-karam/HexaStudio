@@ -28,10 +28,11 @@ http:
     opencode:
       rule: "Host(`opencode.hexastudio.net`)"
       entryPoints:
+        - web
         - websecure
       service: opencode
       tls:
-        certResolver: letsencrypt
+        certResolver: cloudflare
       middlewares:
         - secure-headers
         - rate-limit
@@ -39,39 +40,47 @@ http:
     ai:
       rule: "Host(`ai.hexastudio.net`)"
       entryPoints:
+        - web
         - websecure
       service: lmstudio
-      tls: {}
+      tls:
+        certResolver: cloudflare
       middlewares:
         - secure-headers
         - rate-limit
 
-    frontend-https:
+    frontend:
       rule: "Host(`hexastudio.net`) || Host(`www.hexastudio.net`)"
       entryPoints:
+        - web
         - websecure
       service: frontend
-      tls: {}
+      tls:
+        certResolver: cloudflare
       middlewares:
         - secure-headers
         - compress
 
-    backend-https:
+    backend:
       rule: "Host(`api.hexastudio.net`)"
       entryPoints:
+        - web
         - websecure
       service: backend
-      tls: {}
+      tls:
+        certResolver: cloudflare
       middlewares:
         - secure-headers
         - compress
 
-    cms-https:
+    cms:
       rule: "Host(`cms.hexastudio.net`)"
       entryPoints:
+        - web
         - websecure
       service: cms
-      tls: {}
+      tls:
+        certResolver: cloudflare
       middlewares:
         - secure-headers
 
@@ -105,9 +114,4 @@ tls:
   options:
     default:
       minVersion: VersionTLS12
-      sniStrict: false
-  stores:
-    default:
-      defaultCertificate:
-        certFile: /etc/traefik/certs/default.crt
-        keyFile: /etc/traefik/certs/default.key
+      sniStrict: true

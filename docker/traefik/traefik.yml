@@ -5,12 +5,6 @@ api:
 entryPoints:
   web:
     address: ":80"
-    http:
-      redirections:
-        entryPoint:
-          to: websecure
-          scheme: https
-          permanent: true
   websecure:
     address: ":443"
   traefik:
@@ -33,13 +27,6 @@ certificatesResolvers:
       caServer: https://acme-v02.api.letsencrypt.org/directory
       dnsChallenge:
         provider: cloudflare
-        # CLOUDFLARE_EMAIL and CLOUDFLARE_API_KEY env vars required
-  letsencrypt:
-    acme:
-      email: admin@hexastudio.net
-      storage: /letsencrypt/acme.json
-      caServer: https://acme-v02.api.letsencrypt.org/directory
-      tlsChallenge: {}
 
 log:
   level: INFO
