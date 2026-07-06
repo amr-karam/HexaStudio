@@ -1,5 +1,29 @@
 # Changelog: HEXA Vision
 
+## [0.8.0] - 2026-07-06
+### Added
+- **Cloudflare Migration:**
+    - DNS nameservers changed from Hostinger → Cloudflare (`kip.ns.cloudflare.com` / `lara.ns.cloudflare.com`)
+    - All A, CNAME, MX, TXT (SPF/DKIM/DMARC) records migrated to Cloudflare zone
+    - Cloudflare Tunnel (systemd service) deployed to bypass NAT — ports 80/443 no longer need forwarding
+    - SSL set to Flexible mode with Always Use HTTPS
+- **Let's Encrypt Certificates:**
+    - DNS-01 challenge via Cloudflare API — all 5 certs issued (`hexastudio.net` + `www`, `api`, `cms`, `opencode`, `ai`)
+    - Certificates valid Jul 6 – Oct 4 2026
+    - `sniStrict: true` enabled to force ACME resolution
+- **Playwright E2E Test Scaffold:**
+    - `e2e/playwright.config.ts` + `e2e/pages.spec.ts` — covers navigation, all pages, 404, SEO metadata, accessibility
+    - Test scripts added to `package.json` (`test:e2e`, `test:e2e:ui`)
+    - `@playwright/test` added to frontend devDependencies
+- **Git Workflow:**
+    - `.agents/skills/gemini-skills` converted from broken submodule to tracked files
+
+### Fixed
+- **Traefik:** Removed duplicate `letsencrypt` resolver; added `certResolver: cloudflare` to all routers
+- **Config Sync:** Removed HTTP→HTTPS redirect from `web` entrypoint (tunnel handles HTTP)
+- **Self-Signed Certs:** Removed old default.crt/default.key files and certs mount from compose
+- **.env.sync:** Added `CLOUDFLARE_EMAIL` / `CLOUDFLARE_API_KEY` to `.env.example` and compose
+
 ## [0.7.0] - 2026-07-05
 ### Added
 - **Brand Identity:**
