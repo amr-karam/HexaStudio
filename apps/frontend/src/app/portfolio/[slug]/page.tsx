@@ -3,8 +3,7 @@ import { notFound } from 'next/navigation';
 import React, { Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { fetchProject } from '@/features/portfolio/lib/fetchProjects';
-import { ExperienceCanvas } from '@/features/scene/components/ExperienceCanvas';
-import { SceneErrorBoundary } from '@/features/scene/components/SceneErrorBoundary';
+import { LazySceneCanvas, SceneErrorBoundary } from '@/features/scene';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { Button } from '@/components/ui/Button';
 import { ProjectStructuredData } from '@/components/ProjectStructuredData';
@@ -12,13 +11,14 @@ import Link from 'next/link';
 import { Project } from '@hexastudio/types';
 
 interface PageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export const revalidate = 3600;
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const project = await fetchProject(params.slug);
+  const { slug } = await params;
+  const project = await fetchProject(slug);
 
   if (!project) {
     return {
@@ -58,7 +58,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function ProjectDetailPage({ params }: PageProps) {
-  const project = await fetchProject(params.slug);
+  const { slug } = await params;
+  const project = await fetchProject(slug);
 
   if (!project) {
     notFound();
@@ -77,7 +78,7 @@ function ProjectContent({ project }: { project: Project }) {
     <main className="relative h-screen w-full overflow-hidden bg-background">
       <SceneErrorBoundary>
         <Suspense fallback={<LoadingScreen />}>
-          <ExperienceCanvas 
+          <LazySceneCanvas 
             projectModelUrl={project.modelUrl} 
             hotspots={project.hotspots}
             projectTitle={project.title}

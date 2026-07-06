@@ -3,7 +3,7 @@
 import React, { Suspense } from 'react';
 import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
-import { ExperienceCanvas } from '@/features/scene/components/ExperienceCanvas';
+import { LazySceneCanvas } from '@/features/scene';
 import { SceneErrorBoundary } from '@/features/scene/components/SceneErrorBoundary';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { TextReveal } from '@/components/ui/TextReveal';
@@ -38,7 +38,7 @@ export const HomeHero = () => {
       {/* 3D Background Experience */}
       <SceneErrorBoundary>
         <Suspense fallback={<LoadingScreen />}>
-          <ExperienceCanvas />
+          <LazySceneCanvas />
         </Suspense>
       </SceneErrorBoundary>
 

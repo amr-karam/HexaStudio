@@ -55,3 +55,6 @@ competitor-research-progress.md
 .turbo/
 server.log
 *.err
+
+# LLM chat history
+.llm-chat-history/
