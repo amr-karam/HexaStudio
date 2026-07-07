@@ -9,7 +9,7 @@ COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 COPY apps/frontend/package.json ./apps/frontend/
 COPY packages/types/package.json ./packages/types/
 COPY packages/utils/package.json ./packages/utils/
-RUN npm install --no-audit --no-fund
+RUN npm ci --no-audit --no-fund
 
 # Stage 3: Builder
 FROM base AS builder
