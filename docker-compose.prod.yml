@@ -158,12 +158,6 @@ services:
     networks:
       - web
       - internal
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.backend.rule=Host(`${API_HOST:-api.localhost}`)
-      - traefik.http.routers.backend.entrypoints=web
-      - traefik.http.routers.backend.middlewares=secure-headers@file,compress@file
-      - traefik.http.services.backend.loadbalancer.server.port=4000
 
   frontend:
     build:
@@ -182,12 +176,6 @@ services:
       - backend
     networks:
       - web
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.frontend.rule=Host(`${FRONTEND_HOST:-localhost}`)
-      - traefik.http.routers.frontend.entrypoints=web
-      - traefik.http.routers.frontend.middlewares=secure-headers@file,compress@file
-      - traefik.http.services.frontend.loadbalancer.server.port=3000
 
   cms:
     build:
@@ -220,12 +208,6 @@ services:
     networks:
       - web
       - internal
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.cms.rule=Host(`${CMS_HOST:-cms.localhost}`)
-      - traefik.http.routers.cms.entrypoints=web
-      - traefik.http.routers.cms.middlewares=secure-headers@file
-      - traefik.http.services.cms.loadbalancer.server.port=1337
 
   # ---------------------------------------------------------------------------
   # Monitoring
@@ -244,11 +226,6 @@ services:
     networks:
       - web
       - internal
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.prometheus.rule=Host(`${PROMETHEUS_HOST:-prometheus.localhost}`)
-      - traefik.http.routers.prometheus.entrypoints=web
-      - traefik.http.services.prometheus.loadbalancer.server.port=9090
 
   grafana:
     image: grafana/grafana:11.3.0
@@ -268,11 +245,6 @@ services:
     networks:
       - web
       - internal
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.grafana.rule=Host(`${GRAFANA_HOST:-grafana.localhost}`)
-      - traefik.http.routers.grafana.entrypoints=web
-      - traefik.http.services.grafana.loadbalancer.server.port=3000
 
   loki:
     image: grafana/loki:3.2.1
