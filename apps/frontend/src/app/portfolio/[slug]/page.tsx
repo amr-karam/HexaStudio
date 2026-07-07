@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import React, { Suspense } from 'react';
 import { motion } from 'framer-motion';
-import { fetchProject } from '@/features/portfolio/lib/fetchProjects';
+import { fetchProject, fetchProjects } from '@/features/portfolio/lib/fetchProjects';
 import { LazySceneCanvas, SceneErrorBoundary } from '@/features/scene';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { Button } from '@/components/ui/Button';
@@ -15,6 +15,17 @@ interface PageProps {
 }
 
 export const revalidate = 3600;
+
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
+  try {
+    const projectsData = await fetchProjects();
+    return (projectsData.projects ?? []).map((project) => ({ slug: project.slug }));
+  } catch {
+    return [];
+  }
+}
+
+
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
@@ -145,3 +156,5 @@ function ProjectContent({ project }: { project: Project }) {
     </main>
   );
 }
+
+

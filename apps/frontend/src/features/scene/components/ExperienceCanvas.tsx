@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Suspense, useRef } from 'react';
+import React, { Suspense, useRef, lazy } from 'react';
 import { Canvas } from '@react-three/fiber';
 import {
   OrbitControls,
@@ -10,7 +10,7 @@ import {
 } from '@react-three/drei';
 import { SceneContent } from './SceneContent';
 import { CameraController } from './CameraController';
-import { PostProcessing } from './PostProcessing';
+const PostProcessing = lazy(() => import('./PostProcessing').then((module) => ({ default: module.PostProcessing })));
 import { SceneAccessibility } from './SceneAccessibility';
 import * as THREE from 'three';
 import { useAdaptiveQuality } from '@/hooks/useAdaptiveQuality';
@@ -93,7 +93,9 @@ export const ExperienceCanvas = ({
             far={6}
           />
 
-          <PostProcessing quality={level} />
+          <Suspense fallback={null}>
+            <PostProcessing quality={level} />
+          </Suspense>
         </Suspense>
       </Canvas>
     </div>
@@ -101,3 +103,4 @@ export const ExperienceCanvas = ({
 };
 
 export type { ExperienceCanvasProps };
+
