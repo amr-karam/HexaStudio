@@ -13,6 +13,24 @@ This file enables any AI agent to pick up work exactly where the last agent stop
 
 ---
 
+## 2. LAST SESSION: What Was Accomplished (July 07 — Session 2)
+
+### Full-Width Layout
+- Removed `max-w-screen-2xl`/`max-w-5xl` from all pages (services, contact, about, blog, ProjectGrid, HeaderSection, HomeHero)
+- Frontend lint + TypeScript check pass
+
+### CMS Container Fixed (was blocking production)
+- **3 root causes found and fixed:**
+  1. Dockerfile runner stage — missing `COPY apps/cms/config ./config` (config files not in image)
+  2. Database config — `username` → `user` (pg driver expects `user`, not `username`)
+  3. Missing `public/uploads/` directory in Docker image
+- Strapi 5.49.0 now running, connected to postgres, healthy on `/_health` (204)
+
+### Infrastructure
+- `.js` config files created for all 6 CMS configs (Strapi 5 only loads .js/.json)
+- Automated SSH deployment via Python/paramiko (no local SSH key needed)
+- Cloudflare cache purge failed — API key auth error (needs credential update)
+
 ## 2. LAST SESSION: What Was Accomplished (July 07)
 
 ### Infrastructure & Deployment
@@ -54,6 +72,13 @@ This file enables any AI agent to pick up work exactly where the last agent stop
 - **`.env.example`** — added `CLOUDFLARE_EMAIL` / `CLOUDFLARE_API_KEY`
 - **BLOCKING_ISSUES.md, RELEASE_DECISION.md, CHANGELOG.md, IMPLEMENTATION_ROADMAP.md** — updated
 - **QUALITY_SCORECARD.md** — scores updated (Architecture 8, Code Quality 8, Security 7, Documentation 9, SEO 8)
+
+### Latest Fixes (v0.9.1 - July 07 — 4 commits)
+- **Full-width layout**: Removed `max-w-screen-2xl`/`max-w-5xl` from all pages (services, contact, about, blog, ProjectGrid, HeaderSection, HomeHero)
+- **CMS Dockerfile**: Added COPY for config/ dir and mkdir for public/uploads/
+- **Database config**: Fixed `username`→`user` for pg driver compatibility in Strapi 5
+- **CMS running**: Strapi 5.49.0 connected to postgres, healthy on port 1337
+- **SSH deploy**: Automated via WSL+paramiko Python script (no local SSH key needed)
 
 ### Latest Fixes (v0.9.0 - July 07 — 5 commits)
 - **SSR Crash**: SmoothScroll wrapped in dynamic import, JSX comments stripped across all components
@@ -137,7 +162,7 @@ systemctl restart opencode-server
 | Server Node.js v22.23.1 — compatible with Strapi 5 (v24 info was outdated) | None | ✅ No action needed |
 | Tests — 14 backend tests exist and all pass | None | ✅ Already done |
 | Disk space on server (82% used, 17G free) — needs monitoring | Low | Monitor |
-| CMS container fails to start (database config) — pre-existing issue | High | Needs fix |
+| CMS container fails to start — fixed: Dockerfile missing config/ COPY, 'username'→'user' in DB config, missing public/uploads/ dir | High | ✅ Resolved |
 | CI/CD — GitHub Actions billing lock prevents automated deployment | High | Needs billing fix |
 
 ---
@@ -157,7 +182,8 @@ systemctl restart opencode-server
 - [x] Push to GitHub (authenticate with gh CLI or PAT) — `gh` installed and authenticated
 - [x] Verify SSL certificate for `opencode.hexastudio.net` — cert issued, routing works
 - [x] Rebuild frontend on server with latest code — full-width layout fixes deployed
-- [ ] Run Lighthouse audit
+- [x] Fix CMS container startup (Dockerfile + config + uploads)
+- [x] Run Lighthouse audit
 - [ ] Run Quality Gate review
 - [x] Fix Node.js version for Strapi — v22 already installed
 - [x] Add tests — 14 backend tests exist and pass

@@ -115,7 +115,7 @@ function ProjectContent({ project }: { project: Project }) {
           </div>
         </div>
 
-        <div className="max-w-3xl">
+        <div>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -125,7 +125,7 @@ function ProjectContent({ project }: { project: Project }) {
             <h1 className="text-5xl md:text-8xl font-serif font-light tracking-tighter text-foreground mb-6 leading-tight">
               {project.title}
             </h1>
-            <p className="text-lg md:text-xl font-light text-neutral-400 leading-relaxed mb-12 max-w-xl">
+            <p className="text-lg md:text-xl font-light text-neutral-400 leading-relaxed mb-12">
               {project.description}
             </p>
             <div className="flex gap-6">
