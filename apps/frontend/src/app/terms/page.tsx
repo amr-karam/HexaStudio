@@ -10,7 +10,7 @@ export default function TermsPage() {
   return (
     <main className="min-h-screen bg-background pt-40 pb-32">
       <div className="max-w-3xl mx-auto px-8 md:px-16">
-        <span className="text-[11px] uppercase tracking-[0.5em] text-neutral-500 mb-6 block">Legal</span>
+        <span className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block">Legal</span>
         <h1 className="text-5xl md:text-7xl font-serif font-light tracking-tight text-foreground mb-12 leading-tight">
           Terms of <span className="italic text-accent">Service</span>
         </h1>
@@ -35,7 +35,7 @@ export default function TermsPage() {
             For questions about these terms, email us at <a href="mailto:hello@hexastudio.net" className="text-accent hover:underline">hello@hexastudio.net</a>.
           </p>
           <div className="pt-12">
-            <Link href="/" className="text-[11px] uppercase tracking-widest text-accent hover:underline">
+            <Link href="/" className="text-xs uppercase tracking-widest text-accent hover:underline">
               &larr; Back to Home
             </Link>
           </div>
