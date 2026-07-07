@@ -19,10 +19,6 @@ http:
     compress:
       compress: {}
 
-    redirect-https:
-      redirectScheme:
-        scheme: https
-        permanent: true
 
   routers:
     opencode:
@@ -55,7 +51,6 @@ http:
         - web
       service: frontend
       middlewares:
-        - redirect-https
         - secure-headers
         - compress
 
@@ -76,7 +71,6 @@ http:
         - web
       service: backend
       middlewares:
-        - redirect-https
         - secure-headers
         - compress
 
@@ -97,7 +91,6 @@ http:
         - web
       service: cms
       middlewares:
-        - redirect-https
         - secure-headers
 
     cms:
