@@ -28,7 +28,7 @@ export const ArchitecturalModel = ({ url, position = [0, 0, 0], scale = 1 }: Mod
     if (!model) return;
 
     // Implement Adaptive Quality (LOD) on Materials
-    model.traverse((child) => {
+    model.traverse((child: THREE.Object3D) => {
       if (child instanceof THREE.Mesh) {
         const mat = child.material;
         

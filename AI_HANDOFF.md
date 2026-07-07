@@ -1,5 +1,5 @@
 # AI HANDOFF — HexaStudio Project State
-**Last Updated:** July 06, 2026
+**Last Updated:** July 07, 2026
 
 This file enables any AI agent to pick up work exactly where the last agent stopped.
 
@@ -13,7 +13,7 @@ This file enables any AI agent to pick up work exactly where the last agent stop
 
 ---
 
-## 2. LAST SESSION: What Was Accomplished (July 06)
+## 2. LAST SESSION: What Was Accomplished (July 07)
 
 ### Infrastructure & Deployment
 - **Traefik downgraded** v3.4.5 → v2.11 for Docker API version compatibility
@@ -54,6 +54,15 @@ This file enables any AI agent to pick up work exactly where the last agent stop
 - **`.env.example`** — added `CLOUDFLARE_EMAIL` / `CLOUDFLARE_API_KEY`
 - **BLOCKING_ISSUES.md, RELEASE_DECISION.md, CHANGELOG.md, IMPLEMENTATION_ROADMAP.md** — updated
 - **QUALITY_SCORECARD.md** — scores updated (Architecture 8, Code Quality 8, Security 7, Documentation 9, SEO 8)
+
+### Latest Fixes (v0.9.0 - July 07 — 5 commits)
+- **SSR Crash**: SmoothScroll wrapped in dynamic import, JSX comments stripped across all components
+- **Framer Motion v12**: Replaced all `ease: 'var(--ease-out-expo)'` with inline `[0.16, 1, 0.3, 1]` cubic-bezier
+- **Studio 404 Fixed**: `/studio` page now redirects to `/about`
+- **Portfolio Grid Fix**: Reformatted `ProjectGrid.tsx`, fixed card hover overlays, responsive text sizing
+- **Blog Fallback**: 3 hardcoded fallback articles display when CMS API fails
+- **Font Size Polish**: `text-[11px]` → `text-xs`, `text-[9px]` → `text-[10px] md:text-xs` across UI
+- **Dockerfile**: Pinned `framer-motion` in root deps; switched to `npm ci` for reproducible builds; added `wget`, `ARG/ENV` for `NEXT_PUBLIC_*`, `--no-audit --no-fund` flags
 
 ---
 

@@ -1,5 +1,17 @@
 # Changelog: HEXA Vision
 
+## [0.9.0] - 2026-07-07
+### Fixed
+- **SSR Crash:** Wrapped `SmoothScroll` in dynamic import to prevent `window is not defined` during server-side rendering; stripped JSX comments across all components for cleaner builds.
+- **Framer Motion v12 Compatibility:** Replaced all `ease: 'var(--ease-out-expo)'` references with inline cubic-bezier `[0.16, 1, 0.3, 1]` — framer-motion v12 no longer supports CSS variable easing strings.
+- **Studio 404:** Created `/studio` page that redirects to `/about` — resolves client navigation to "Studio" link.
+- **Portfolio Card Visibility:** Reformatted `ProjectGrid.tsx` with proper line breaks and indentation; fixed card hover overlay translation; added responsive font sizing (`text-[10px] md:text-xs`, `text-lg md:text-xl lg:text-2xl`).
+- **Blog Fallback Content:** Added 3 hardcoded fallback articles displayed when the API fails or returns empty — prevents blank page on CMS outage.
+- **Font Size Polish:** Migrated hardcoded `text-[11px]`, `text-[9px]` to Tailwind text scale classes throughout UI components.
+
+### Changed
+- **Dockerfile (Frontend):** Pinned `framer-motion` in root `package.json`; switched from `npm install` to `npm ci` for reproducible builds; added `--no-audit --no-fund` flags; added `wget` to base stage; added `ARG`/`ENV` declarations for `NEXT_PUBLIC_*` build-time variables.
+
 ## [0.8.0] - 2026-07-06
 ### Added
 - **Cloudflare Migration:**

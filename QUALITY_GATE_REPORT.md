@@ -1,6 +1,6 @@
 # QUALITY GATE REPORT — HEXA Vision
 
-**Date:** 2026-07-06
+**Date:** 2026-07-07
 **Branch:** `stage`
 **Reviewer:** Quality Gate Controller (AI Agent)
 
@@ -115,7 +115,7 @@
 ## 6. Animation (Score: 9/10)
 
 - GSAP + Framer Motion both configured
-- Custom easing curves: `ease-out-expo`, `ease-luxury`, `ease-in-out-expo`
+- Custom easing curves: GSAP uses `power3.out`; Framer Motion uses inline cubic-bezier `[0.16, 1, 0.3, 1]` (v12 no longer supports CSS var easings)
 - Page transitions with scale-Y overlay
 - Text reveal animations
 - Parallax on hero (mouse tracking)
