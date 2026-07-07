@@ -2,9 +2,20 @@ import { ProjectResponse } from '@hexastudio/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://api.localhost';
 
+async function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutMs = 5000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    return response;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export async function fetchProjects(): Promise<ProjectResponse> {
   try {
-    const response = await fetch(`${API_URL}/api/projects`, {
+    const response = await fetchWithTimeout(`${API_URL}/api/projects`, {
       next: { revalidate: 3600 },
     });
 
@@ -20,7 +31,7 @@ export async function fetchProjects(): Promise<ProjectResponse> {
 
 export async function fetchProject(slug: string) {
   try {
-    const response = await fetch(`${API_URL}/api/projects/${slug}`, {
+    const response = await fetchWithTimeout(`${API_URL}/api/projects/${slug}`, {
       next: { revalidate: 3600 },
     });
 
