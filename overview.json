@@ -1,0 +1,2026 @@
+{
+  "rootFolder": "c:\\Users\\amrmo\\Desktop\\Desktop\\HexaStudio",
+  "analyzedAt": "2026-07-07T13:14:37.608Z",
+  "rootStructure": [
+    {
+      "name": ".github",
+      "type": "dir"
+    },
+    {
+      "name": ".gitignore",
+      "type": "file",
+      "size": 695,
+      "lines": 61
+    },
+    {
+      "name": "ACCESSIBILITY_REPORT.md",
+      "type": "file",
+      "size": 4032,
+      "lines": 114
+    },
+    {
+      "name": "AGENTS.md",
+      "type": "file",
+      "size": 18324,
+      "lines": 573
+    },
+    {
+      "name": "AI_CONTEXT.md",
+      "type": "file",
+      "size": 4775,
+      "lines": 103
+    },
+    {
+      "name": "AI_HANDOFF.md",
+      "type": "file",
+      "size": 6214,
+      "lines": 154
+    },
+    {
+      "name": "apps",
+      "type": "dir"
+    },
+    {
+      "name": "ARCHITECTURE_REVIEW.md",
+      "type": "file",
+      "size": 5539,
+      "lines": 107
+    },
+    {
+      "name": "BLOCKING_ISSUES.md",
+      "type": "file",
+      "size": 2712,
+      "lines": 76
+    },
+    {
+      "name": "CHANGELOG.md",
+      "type": "file",
+      "size": 7117,
+      "lines": 129
+    },
+    {
+      "name": "cleanup-programdata.ps1",
+      "type": "file",
+      "size": 1071,
+      "lines": 30
+    },
+    {
+      "name": "competitor-research-progress.md",
+      "type": "file",
+      "size": 348,
+      "lines": 17
+    },
+    {
+      "name": "COMPONENT_GUIDE.md",
+      "type": "file",
+      "size": 1782,
+      "lines": 42
+    },
+    {
+      "name": "DEPENDENCY_REPORT.md",
+      "type": "file",
+      "size": 4121,
+      "lines": 112
+    },
+    {
+      "name": "deploy-local.sh",
+      "type": "file",
+      "size": 745,
+      "lines": 30
+    },
+    {
+      "name": "DESIGN_SYSTEM.md",
+      "type": "file",
+      "size": 1979,
+      "lines": 35
+    },
+    {
+      "name": "DESIGN_TOKENS.md",
+      "type": "file",
+      "size": 3458,
+      "lines": 85
+    },
+    {
+      "name": "docker",
+      "type": "dir"
+    },
+    {
+      "name": "docker-compose.dev.yml.example",
+      "type": "file",
+      "size": 582,
+      "lines": 27
+    },
+    {
+      "name": "docker-compose.prod.yml",
+      "type": "file",
+      "size": 11862,
+      "lines": 357
+    },
+    {
+      "name": "docker-compose.yml",
+      "type": "file",
+      "size": 4956,
+      "lines": 195
+    },
+    {
+      "name": "docs",
+      "type": "dir"
+    },
+    {
+      "name": "e2e",
+      "type": "dir"
+    },
+    {
+      "name": "FOLDER_STRUCTURE.md",
+      "type": "file",
+      "size": 2910,
+      "lines": 72
+    },
+    {
+      "name": "FRONTEND_EXCELLENCE_STRATEGY.md",
+      "type": "file",
+      "size": 4058,
+      "lines": 60
+    },
+    {
+      "name": "healthcheck.sh",
+      "type": "file",
+      "size": 803,
+      "lines": 33
+    },
+    {
+      "name": "IMPLEMENTATION_ROADMAP.md",
+      "type": "file",
+      "size": 4066,
+      "lines": 77
+    },
+    {
+      "name": "IMPROVEMENT_ROADMAP.md",
+      "type": "file",
+      "size": 5484,
+      "lines": 149
+    },
+    {
+      "name": "LOCAL_DEPLOYMENT.md",
+      "type": "file",
+      "size": 910,
+      "lines": 47
+    },
+    {
+      "name": "LOCAL_TESTING.md",
+      "type": "file",
+      "size": 1124,
+      "lines": 25
+    },
+    {
+      "name": "node_modules",
+      "type": "dir"
+    },
+    {
+      "name": "OPTIONAL_IMPROVEMENTS.md",
+      "type": "file",
+      "size": 7504,
+      "lines": 179
+    },
+    {
+      "name": "package-lock.json",
+      "type": "file",
+      "size": 1198675,
+      "lines": 31968
+    },
+    {
+      "name": "package.json",
+      "type": "file",
+      "size": 1135,
+      "lines": 36
+    },
+    {
+      "name": "packages",
+      "type": "dir"
+    },
+    {
+      "name": "PERFORMANCE_REPORT.md",
+      "type": "file",
+      "size": 1714,
+      "lines": 34
+    },
+    {
+      "name": "project-setup-progress.md",
+      "type": "file",
+      "size": 480,
+      "lines": 23
+    },
+    {
+      "name": "project.zip",
+      "type": "file",
+      "size": 684312,
+      "lines": 2643
+    },
+    {
+      "name": "PROJECT_AUDIT.md",
+      "type": "file",
+      "size": 5889,
+      "lines": 155
+    },
+    {
+      "name": "PROJECT_DIRECTIVE.md",
+      "type": "file",
+      "size": 5757,
+      "lines": 415
+    },
+    {
+      "name": "PROJECT_REVIEW.md",
+      "type": "file",
+      "size": 3210,
+      "lines": 56
+    },
+    {
+      "name": "QUALITY_GATE_REPORT.md",
+      "type": "file",
+      "size": 11096,
+      "lines": 280
+    },
+    {
+      "name": "QUALITY_SCORECARD.md",
+      "type": "file",
+      "size": 2327,
+      "lines": 27
+    },
+    {
+      "name": "README.md",
+      "type": "file",
+      "size": 2870,
+      "lines": 91
+    },
+    {
+      "name": "REFACTOR_SUMMARY.md",
+      "type": "file",
+      "size": 3236,
+      "lines": 96
+    },
+    {
+      "name": "RELEASE_DECISION.md",
+      "type": "file",
+      "size": 1830,
+      "lines": 41
+    },
+    {
+      "name": "RESPONSIVE_REPORT.md",
+      "type": "file",
+      "size": 2487,
+      "lines": 41
+    },
+    {
+      "name": "scripts",
+      "type": "dir"
+    },
+    {
+      "name": "SECURITY_REPORT.md",
+      "type": "file",
+      "size": 3946,
+      "lines": 96
+    },
+    {
+      "name": "SEO_REPORT.md",
+      "type": "file",
+      "size": 3426,
+      "lines": 122
+    },
+    {
+      "name": "SERVER_STRUCTURE.md",
+      "type": "file",
+      "size": 1285,
+      "lines": 29
+    },
+    {
+      "name": "TECH_DEBT.md",
+      "type": "file",
+      "size": 3884,
+      "lines": 92
+    },
+    {
+      "name": "THREEJS_GUIDE.md",
+      "type": "file",
+      "size": 2427,
+      "lines": 45
+    },
+    {
+      "name": "TROUBLESHOOTING.md",
+      "type": "file",
+      "size": 1289,
+      "lines": 42
+    },
+    {
+      "name": "tsconfig.json",
+      "type": "file",
+      "size": 249,
+      "lines": 13
+    },
+    {
+      "name": "UI_REVIEW.md",
+      "type": "file",
+      "size": 2741,
+      "lines": 43
+    },
+    {
+      "name": "UX_IMPROVEMENTS.md",
+      "type": "file",
+      "size": 2653,
+      "lines": 34
+    }
+  ],
+  "rootFileSnippets": {
+    "ACCESSIBILITY_REPORT.md": [
+      "# Accessibility Report: HEXA Vision",
+      "",
+      "**Report Date:** 2026-06-30",
+      "**Standard Target:** WCAG 2.1 AA",
+      "",
+      "---",
+      "",
+      "## 1. Current State",
+      "",
+      "| Criterion | Status | Notes |"
+    ],
+    "AGENTS.md": [
+      "# AGENTS.md — AI Operating Manual for HEXA Vision",
+      "",
+      "This document is the **single source of truth** and the permanent operating manual for all AI Agents contributing to the HEXA Vision project. Every agent must read and adhere to these guidelines to ensure architectural consistency, production-grade quality, and seamless collaboration.",
+      "",
+      "---",
+      "",
+      "## 1. Project Overview",
+      "HEXA Vision (HexaStudio.net) is a world-class 3D Architecture Visualization platform. It is designed to showcase architectural projects through immersive, interactive 3D experiences with an \"Awwwards-level\" visual aesthetic, backed by an enterprise-grade software architecture.",
+      "",
+      "## 2. Mission"
+    ],
+    "AI_CONTEXT.md": [
+      "# AI Context & Project State — HEXA Studio",
+      "**Last Updated:** July 05, 2026",
+      "**Status:** Phase 5 — Production Deployment Live → Final Polish",
+      "",
+      "This file is the **primary entry point** for any AI agent joining the HEXA Studio project.",
+      "",
+      "---",
+      "",
+      "## 1. Project Essence",
+      "HEXA Studio is a luxury 3D Architecture Visualization platform."
+    ],
+    "AI_HANDOFF.md": [
+      "# AI HANDOFF — HexaStudio Project State",
+      "**Last Updated:** July 06, 2026",
+      "",
+      "This file enables any AI agent to pick up work exactly where the last agent stopped.",
+      "",
+      "---",
+      "",
+      "## 1. PROJECT ESSENCE",
+      "",
+      "**HexaStudio** (HexaStudio.net) = 3D architecture visualization platform with Next.js 15 frontend, NestJS backend (BFF), Strapi 5 CMS, Docker Compose infra (14 services), and \"Awwwards-level\" luxury aesthetic."
+    ],
+    "ARCHITECTURE_REVIEW.md": [
+      "# Architecture Review: HEXA Vision",
+      "",
+      "**Review Date:** 2026-06-30",
+      "**Architecture Style:** Monorepo Microservices-lite with BFF (planned)",
+      "",
+      "---",
+      "",
+      "## 1. System Design Evaluation",
+      "",
+      "### Strengths"
+    ],
+    "BLOCKING_ISSUES.md": [
+      "# BLOCKING ISSUES — Must Fix Before Production",
+      "",
+      "---",
+      "",
+      "## ✅ RESOLVED",
+      "",
+      "### B1. Hardcoded Database Password",
+      "**Status: ✅ RESOLVED** (Commit `1c4dfeb`)",
+      "**File:** `apps/cms/config/database.ts:9`",
+      "**Fix:** Replaced `\"staging_pwd_2026\"` with `process.env.DATABASE_PASSWORD`."
+    ],
+    "CHANGELOG.md": [
+      "# Changelog: HEXA Vision",
+      "",
+      "## [0.8.0] - 2026-07-06",
+      "### Added",
+      "- **Cloudflare Migration:**",
+      "- DNS nameservers changed from Hostinger → Cloudflare (`kip.ns.cloudflare.com` / `lara.ns.cloudflare.com`)",
+      "- All A, CNAME, MX, TXT (SPF/DKIM/DMARC) records migrated to Cloudflare zone",
+      "- Cloudflare Tunnel (systemd service) deployed to bypass NAT — ports 80/443 no longer need forwarding",
+      "- SSL set to Flexible mode with Always Use HTTPS",
+      "- **Let's Encrypt Certificates:**"
+    ],
+    "cleanup-programdata.ps1": [
+      "Write-Host \"=== Cleaning C:\\ProgramData protected folders ===\" -ForegroundColor Cyan",
+      "",
+      "# Stop Symantec service if running",
+      "if (Get-Service -Name \"*Symantec*\" -ErrorAction SilentlyContinue) {",
+      "Stop-Service -Name \"*Symantec*\" -Force -ErrorAction SilentlyContinue",
+      "}",
+      "",
+      "$targets = @(",
+      "\"C:\\ProgramData\\Symantec\",",
+      "\"C:\\ProgramData\\Package Cache\","
+    ],
+    "competitor-research-progress.md": [
+      "# Competitor Research Progress: [Pending Industry/Niche]",
+      "",
+      "## 1. Discovery",
+      "- [ ] Identify main competitors",
+      "- [ ] Define research scope",
+      "",
+      "## 2. Analysis",
+      "- [ ] Feature comparison",
+      "- [ ] Pricing models",
+      "- [ ] Market positioning"
+    ],
+    "COMPONENT_GUIDE.md": [
+      "# Component Guide: HEXA Vision",
+      "",
+      "This guide documents the standardized UI components of the HEXA Vision design system. All components are built using Tailwind 4 and CSS variables.",
+      "",
+      "## 1. Button System",
+      "- **Component:** `Button.tsx`",
+      "- **Variants:**",
+      "- `primary`: Black background, white text. High emphasis.",
+      "- `secondary`: Neutral light background. Medium emphasis.",
+      "- `outline`: Bordered, transparent background. Low emphasis."
+    ],
+    "DEPENDENCY_REPORT.md": [
+      "# Dependency Report: HEXA Vision",
+      "",
+      "**Report Date:** 2026-06-30",
+      "",
+      "---",
+      "",
+      "## 1. Frontend (`apps/frontend`)",
+      "",
+      "| Package | Version | Role | Status |",
+      "|---------|---------|------|--------|"
+    ],
+    "deploy-local.sh": [
+      "#!/bin/bash",
+      "",
+      "set -e",
+      "",
+      "echo \"🚀 Starting Local Staging Deployment for HEXA Vision...\"",
+      "",
+      "# 1. Environment Setup",
+      "if [ ! -f .env ]; then",
+      "echo \"⚠️ .env file not found. Creating from .env.example...\"",
+      "cp .env.example .env"
+    ],
+    "DESIGN_SYSTEM.md": [
+      "# Design System: HEXA Vision",
+      "",
+      "## 1. Philosophy",
+      "The HEXA Vision design system is built on the principles of **Hyper-Minimalism**, **Precision**, and **Immersion**. The goal is to remove all visual noise, allowing the 3D architectural visualizations to be the sole focus of the user's attention.",
+      "",
+      "### Core Pillars",
+      "- **Whitespace as a Tool:** Large margins and generous padding are used to create a sense of luxury and breathability.",
+      "- **Precision Typography:** Use of high-contrast weight pairings (e.g., ExtraLight with Bold) and tight letter-spacing for headings.",
+      "- **Depth via Glassmorphism:** Instead of heavy shadows, we use translucent, blurred surfaces to create a sense of layered depth.",
+      "- **Intentional Motion:** Every transition must feel natural and purposeful, avoiding \"bouncy\" or \"cheap\" animations."
+    ],
+    "DESIGN_TOKENS.md": [
+      "# Design Tokens: HEXA Vision",
+      "",
+      "This document serves as the technical reference for the design tokens used across the HEXA Vision platform. All tokens are implemented as CSS variables in `apps/frontend/src/app/globals.css`.",
+      "",
+      "## 1. Color Tokens",
+      "",
+      "### Brand Palette",
+      "| Token | Value (Dark) | Value (Light) | Usage |",
+      "|--------|--------------|--------------|--------|",
+      "| `--brand-primary` | `#000000` | `#FFFFFF` | Primary brand identity, main actions |"
+    ],
+    "docker-compose.dev.yml.example": [
+      "# Development overrides — copy to docker-compose.override.yml if needed",
+      "# This file is NOT loaded automatically (rename to docker-compose.override.yml)",
+      "",
+      "services:",
+      "backend:",
+      "build:",
+      "target: builder",
+      "command: npm run dev",
+      "volumes:",
+      "- ./apps/backend/src:/app/src:ro"
+    ],
+    "docker-compose.prod.yml": [
+      "name: hexastudio",
+      "",
+      "x-logging: &default-logging",
+      "driver: json-file",
+      "options:",
+      "max-size: \"10m\"",
+      "max-file: \"3\"",
+      "",
+      "x-restart: &default-restart",
+      "restart: unless-stopped"
+    ],
+    "docker-compose.yml": [
+      "",
+      "services:",
+      "# --- Database ---",
+      "postgres:",
+      "image: postgres:16-alpine",
+      "container_name: hexa-postgres",
+      "environment:",
+      "POSTGRES_USER: ${POSTGRES_USER}",
+      "POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}",
+      "POSTGRES_DB: ${POSTGRES_DB}"
+    ],
+    "FOLDER_STRUCTURE.md": [
+      "# Folder Structure: HEXA Vision",
+      "",
+      "This document describes the standardized folder structure for the HEXA Vision monorepo. All agents must adhere to this layout to ensure maintainability and scalability.",
+      "",
+      "## 1. Root Level",
+      "- `/apps`: Contains the main deployable applications.",
+      "- `/packages`: Contains shared libraries used across multiple apps.",
+      "- `/docker`: Infrastructure as Code (IaC) and Docker configurations.",
+      "- `/docs`: High-level architectural and project documentation.",
+      "- `/scripts`: Automation scripts for setup, deployment, and maintenance."
+    ],
+    "FRONTEND_EXCELLENCE_STRATEGY.md": [
+      "# Frontend Excellence Strategy",
+      "",
+      "**Goal:** Make HexaStudio the best frontend experience in architectural visualization—fast, cinematic, mobile-native, and SEO-perfect.",
+      "",
+      "---",
+      "",
+      "## Strategy Table",
+      "",
+      "| Pillar | Initiative | Target Metric | Owner / Agent | Status | Blocking Dependencies |",
+      "|---:|---|---|---|---|---|"
+    ],
+    "healthcheck.sh": [
+      "#!/bin/bash",
+      "",
+      "echo \"🏥 Checking service health...\"",
+      "",
+      "SERVICES=(\"postgres\" \"redis\" \"minio\" \"backend\" \"cms\" \"frontend\" \"nginx\")",
+      "FAILED=0",
+      "",
+      "for service in \"${SERVICES[@]}\"; do",
+      "if docker ps --filter \"name=hexa-$service\" | grep -q \"Up\"; then",
+      "echo \"✅ $service is running.\""
+    ],
+    "IMPLEMENTATION_ROADMAP.md": [
+      "# HEXA Studio — IMPLEMENTATION ROADMAP",
+      "Version: 1.0",
+      "",
+      "This roadmap outlines the strategic path to transform HEXA Studio into a world-class, award-winning architecture visualization platform.",
+      "",
+      "## Phase 1: Design System & Foundation (The \"Luxury\" Base)",
+      "*Goal: Establish a pixel-perfect, consistent visual language.*",
+      "",
+      "- [x] **Tailwind 4 Audit**: Refine colors, typography (luxury serif + modern sans), and spacing scales.",
+      "- [x] **Typography Hierarchy**: Implement a strict scale for headings and body text to create an editorial feel."
+    ],
+    "IMPROVEMENT_ROADMAP.md": [
+      "# Improvement Roadmap: HEXA Vision",
+      "",
+      "**Last Updated:** 2026-06-30",
+      "**Planning Horizon:** 12 weeks",
+      "",
+      "---",
+      "",
+      "## Priority Legend",
+      "",
+      "| Level | Definition |"
+    ],
+    "LOCAL_DEPLOYMENT.md": [
+      "# Local Staging Deployment Guide",
+      "",
+      "This guide describes how to deploy the HEXA Vision platform to a local Ubuntu Server (24.04 LTS) for staging purposes.",
+      "",
+      "## Prerequisites",
+      "- Ubuntu Server 24.04 LTS",
+      "- Docker Engine v24+",
+      "- Docker Compose v2.20+",
+      "- Git",
+      ""
+    ],
+    "LOCAL_TESTING.md": [
+      "# Local Testing Protocol",
+      "",
+      "To ensure the staging environment behaves exactly like production, follow this testing suite.",
+      "",
+      "## 1. Visual & Functional Verification",
+      "- [ ] **Hero Section:** Verify 3D canvas loads, mouse parallax works, and cinematic fly-throughs are smooth.",
+      "- [ ] **Project Gallery:** Ensure all project cards load images and transition to detail views.",
+      "- [ ] **Navigation:** Test all links in the Navbar (Portfolio, Services, Studio, Contact).",
+      "- [ ] **CMS Integration:** Log into Strapi (`/cms/admin`), create a test project, and verify it appears on the frontend.",
+      ""
+    ],
+    "OPTIONAL_IMPROVEMENTS.md": [
+      "# OPTIONAL IMPROVEMENTS — Future Sprints",
+      "",
+      "Non-critical improvements to address in future development cycles.",
+      "",
+      "---",
+      "",
+      "## Architecture",
+      "",
+      "### A1. Clean Up Duplicate Traefik Configs",
+      "**Files:** Root `traefik.yml` + `dynamic.yml` vs `docker/traefik/traefik.yml` + `dynamic.yml`"
+    ],
+    "package-lock.json": [
+      "{",
+      "\"name\": \"hexastudio\",",
+      "\"version\": \"0.1.0\",",
+      "\"lockfileVersion\": 3,",
+      "\"requires\": true,",
+      "\"packages\": {",
+      "\"\": {",
+      "\"name\": \"hexastudio\",",
+      "\"version\": \"0.1.0\",",
+      "\"workspaces\": ["
+    ],
+    "package.json": [
+      "{",
+      "\"name\": \"hexastudio\",",
+      "\"version\": \"0.1.0\",",
+      "\"private\": true,",
+      "\"description\": \"HexaStudio.net — 3D creative studio platform\",",
+      "\"workspaces\": [",
+      "\"apps/frontend\",",
+      "\"apps/backend\",",
+      "\"apps/cms\",",
+      "\"packages/types\","
+    ],
+    "PERFORMANCE_REPORT.md": [
+      "# Performance Report: Cinematic Hero Section",
+      "",
+      "## 1. Frame Rate Analysis",
+      "- **Target:** Stable 60 FPS.",
+      "- **Current Status:** Achieved on Mid-to-High end GPUs.",
+      "- **Bottlenecks:** Post-processing (Bloom + DOF) on integrated graphics.",
+      "",
+      "## 2. Optimization Metrics",
+      "",
+      "### GPU & Memory"
+    ],
+    "project-setup-progress.md": [
+      "# Project Setup Progress: [Hexa Studio]",
+      "",
+      "## 1. Initialization",
+      "",
+      "- [ ] Define language/framework and project name",
+      "- [ ] Create directory structure",
+      "- [ ] Initialize Git repository",
+      "",
+      "## 2. Configuration",
+      ""
+    ],
+    "project.zip": [
+      "PK\u0003\u0004\u0014\u0000\u0000\u0000\b\u0000���\\�kGA\u0007\u0000\u0000\u0000\u0005\u0000\u0000\u0000\u0011\u0000\u0000\u0000.anima\\.gitignoreKNL�H\u0005\u0000PK\u0003\u0004\u0014\u0000\u0000\u0000\b\u0000���\\E�\u0005�\u0010\u0000\u0000\u0000\u000e\u0000\u0000\u0000\u0016\u0000\u0000\u0000.anima\\components.json�V�M,I�H-V����\u0005\u0000PK\u0003\u0004\u0014\u0000\u0000\u0000\b\u0000���\\�В\u001f�\u0000\u0000\u0000D\u0001\u0000\u0000\u0017\u0000\u0000\u0000.anima\\conventions.jsone��N\u0003A\f��e�\u0000���DA�\u0002�qv}�����%9!�\u001d���!:�\u001b���t �*/��nrn�B+�U��LG\u0006^�\u0016Pd�|3h;�1E�ad�ou���n�R\u0001Sg����g��\u0010�X��\u0006$4t�\u000f���W^��6l���M�#���N\u0018Lhj�0y\u0010d�\u001e",
+      "���\u0003�Y[�\u0014Ox�W\u001d����.\u0019Ӡ��'��jZ�D�W�|�\u001a�����q\b>V8f�n�!\u000b~}\u0003PK\u0003\u0004\u0014\u0000\u0000\u0000\b\u0000���\\I�\u0002M�\u0000\u0000\u0000�\u0000\u0000\u0000\u0017\u0000\u0000\u0000.anima\\enrichments.json���\u000e�0\u0010��%s��\u001b�g�\u0001Ą\u0018Bb��k.�]�J�w�\u0010m\u0017\u0016V��-?]��\u001dSL�s�ݓ�1�/��U��\u0002��PM�@Y��\u0006�����\"�\u001baU��aN��.�)\u0007�ц.��\u0011\u0007OK������w�/4�g�/%��p�S{�\u0014N\u0003��,�ގ�/�\t�\u0001PK\u0003\u0004\u0014\u0000\u0000\u0000\b\u0000�2�\\��\u0019\u0007aV\u0003\u0000,V*\u0000\u0013\u0000\u0000\u0000.anima\\library.json�is�H�0�ݿ�aFL�#�Q̹\u0011n��J��ֶ�֊��<O�1\u0001\u0012E\u0011#\u0010@㠤�����u�(\u0000U�lK�\u000f\u0012�Bfݕ��W��d2y�!y\u0011���\u0017��<��E��҄$eA�~�)4����h\u001d�$��x�`�H��LՓ\u0002��QH�F�<�\bI�&���)�Ӭ02�I!Y\u0006U\\��ɂ$$a�#�\\�f,�y��$H��o<�y�m��8-\u000b\u001b�*�t��y��O��3�l����^����z6���\u0015�M��\u001f?�~1��׳��O��\u0014x�݊ۢ$�Yy\u001b�\u000f���E��bE������<{V��\tK�n���ؠ���9\t�4�o'�D�Ӵ\u001d��ݯ���\u001dFE0�=G���0'�o�\u0015e\u001e%��)I����>膟�`Q��i��e��>�(��g�/��M���jQ�9���n9��\f�����S\u001a��b/gi^\u0006��-qP\u0014d����iIg\u0019������Ue�ȅf$��7�.��6�0s\"��\u000e\u0018\t�),2{�3�\u001aЋ<H���Ž��ϷC�=c��N�'[Г?M~�ȉC\u001b�\u001eg\u0018H��瓐d9YP�\u0019���`qKG�$7��\u0014��w5İ|�%�z�%JU}�09�wC��\u0015Ekf�M�c�\t��&T+��4\u000b\r��",
+      "r�5q6\u0001��쓅�ܽ*174�\u0018Wl��j��\u001a��!��8J(�2�?�W�轞ZY�\u0002h��P���`�H^F�2P9Y��~N)II���\u0014��$!�s��im�M}:��J{'�!�]w�{Bt\u0019ѩ�M�8\u0003�fE\u0016W�����\u0017��������'��[T\u0019�6E��LR�\r�\u0012h�� O�s�X2��\u000f�a�V�6�\u0005�\u0005��G�p�͂�*�w)�;?��%�Cs�ˈ�\u0015\u001d�OO�dE����S���AĨ�\u001e�է�=5�)OIR�tC\u0018�^hypy�M�5/��)e��h�2�\u000bbk�*",
+      "C;?�;^�u���2\u000e�3�\u000f/I��\u001fa�H\u001c3z�%��N�c��Y\u000f\u0019}�r\t\u001bL\u0019�����4���&����\u0007�D��r��O���\\��4���\"��=�Ln�������K9\f�e��1I�x��\u0012��\u000fW�qM��|���x��9J��\u0019PQ�R� _��\u000b#L��uT�\u000f��v@y�?�c\u001f/�(\u0014p��\u0017/ALy\u0004�֔ ��h\u0011\u0018�σ$!�xYЉ,\u001fa>��\u001b���՚\u0012� ���z��\u0010�s�A~��\u0018���e*;�,�$2ʧ���aK����C&��\t�̈́\u0016\u001b\u0015��I#��^�{�h\u0014��\bo�(�nY\u0007�o\u0015!�\\\u0019�6\u000f��(6�F&��,Ғ`\u0013]��L�\u000bQ��|�m\u0015z�\u0000���K�lu�f���lz�^�Ƈ�p\u0015\u000b�Zb�+�v�\u0015\u0005�\u0002����{\u001c\u0019�Y��\u0016HA�\\\u0015z�\u001a�W�>}��S\"G��!����\u0018�2Z��JJ",
+      "u%ᭌd��\\�\u0011<\u001aK\u0000^��Z��9e�}(���^�m@���9�F\tt�\r��\f���tZF�\u001d����\u001f.�����~hEZ�~[nN6^�\u000f",
+      "�ZOI}��t\u0011�}9�7AF9�8��W[Y\u000ei\u000ed�\u0017}\u0016l���T?��4a-�y�\u0017w�H�\u000b��g��\u0017����\u001e\u001f�b����\u0003ˀ�\u0015�\u0007�^�",
+      "YT���h�� 1�R}�\u0001w.�C��\\\u000es�Q�U�i\u001a�&|{k�\u0006��6���6\\�L��V\u0012��^+�\u000e\u0018=\u000e.��!YDkSRl�\u000b�T��l�KBw�\"����\u0018x�\u001f.NO|���'����\\�/���\"�8$�\\���'�ڀ�'���iFy��v��Q\u0013ʖ-�\r�U]\bWl�i��S\r��Z\u0015��ot��ٷW\u0015�%y��[\u0005\u0005H��h�\u0004d�>+��\u000f\u0011�a��\u0017$�E\\\u0015�������N�*�Y����m}�,�G��s��՝}�\u0000v��6\u0013t�~nuA\u0019\\�\u0017�S�\u0018�I\u0010���\\b~֚� \u0017:�_yf\"+�:��|Z3��A[\u0010]�P�\u0001�e��W��*-�J���:��z���oZ��ŕ\u0000(��f��y!��\u0017��D-�G�<��Q6?A�<��Q6��y�ͣl^��l\u001ee�ݸ(�G��v5A������沷y��N���V��\t����\te!I>�K\f�6-�Z���(Y����$�N^�XiД�N\u001e������\r\u001av�QП�&*M�\u0019˶�o�9ݵ.����\u0017��u\u001fmI\u000b�v�Zt�\u0011\u001d��ŧ�S�7�Ua|~�*ˬx��O��3\u0005W���:� '�\u000b$��w�~pv��F\u0014<���s�\\Ⱦ�o/�h����&P�`W,�\u001a\u0001�\b�F\u0018�\u001eT#�\u001a\u0001�\b�F��\u001c�P��j\u0004T#�\u001a\u0001�\b\u0012\u0006�\b�F@5\u0002�\u0011P�0�\u0005�\u001a��\u000bT#|u5���\u0000��a�YV\t����B��j݌ˢ\u001a��J�d���4��7��ANX�\u0007\t���˜�<\u0011�A^�S^~�w[\u0001�i�&p�\u0013Z��Ӱ�I�oQ\u0017��\u0012�\u001c�Y���S��s0jEZ�h{��Պ4�G�s�\u0005�\"�`W�H�� ߽���\u0015�_\u000f١�0(ȸ\f�!goN\u0011P��`�\b=�\u0004��/Q\u0011�ڹF$\u0013����\u000f���量y��#Ͱ�G�ܳ��է�,ջY�~��+\u001f�\"l\u001b��V�\r�E_\f���w\u0011�>A�����N\u0018@��ؤQ�\u001d�=K�\u0015-�W\u0016�@g'�ϣ,�\u001f\u0013�ua�_���\"�\u0016�-�a\u0004h[|A��l�1=�����\u001d~zZܮ�\u0014��lT�Hu��t�J�\u001c���\\Jׂ0\u0004I�|�KN=���B�\\iY�\u0014��f)\u001f�H=)�H�Y�+������y\u001aJ���TM̸\b�MP�\u0017Sl�g�|�T�@��Z?��Q\u0010�\u0019���2�\u0012�P�-���|[v�\bB\u0005-sRbfB���u\u0019�8,��nG��F5T\r�n��wX�E>�U>�M>�]>�C>�Ӑ�\u001b�*�UM��R��O�9��2�����`gw�,��j.\u000b�\"��D�/\u000e�_cB�%T\u001c��NUJ���\\}��W�D�/}TMM\u0002�0�4\u0002B�ފE\u001ee�\u0015zUe��95�MZ���\u0012\u0002$�\u000eY�(�Xf�\u0013���ߤ�^��e�y5��C\u0002\u0017�Z�մF`$����%\u0005Y�\u0014M�&\u0012�:P�\u0014�;(Q����((ǹ��ꉱ��M��\r�\u0015\u001d�\f\u0014���X�\u0012��3�AtJ���Y�Ìi\u000bj\u0002�Xꢔ� \u000f\u0016rnȉQ�6n�NaC���M׊�\\��&\"R�Rl��\f�Ī\u001d��45�U��x��*]D�&��8�δZ)$KEOH���\"�P��.�a��ǒ�\u0001Y�i@7�\u001b#Ml#�pM,��BSEHI6i�!�,���*�It�*�",
+      "�\u000b:�\u000bƞ�����)�Q2x�H�G�\u0015eخUһ8Mu��U���vX{{_{;Wo(� 9�+ݶ�5�b��)ɛo?�-���y��}wy��>,�\u0006\r&g�\u00184\u001a4�Ȣ����-�,m�^D�.���\u0015\u001d6���Q\\��$�L>���\"�F� ��\u0018��A����@\u0003U���\u0004�\f��m��\u0019W\u0004у|K����|3J�b��Qzn\u0010\u0011Ջ�[Q�I���\u001a7\u001e�5P\u001a��R�^�A=�)��\u000eE\u0016�]��=\u0002x\u0017\u0016�`4�y�6�����\r�02��u\u001d�z�\f��\u001e4\u001b�\r\rF\u0006�L��7\u001b�3��c1=D�A4\u001f\u0014�F�A4\u001f��h>�FD�A4\u001f\u0004\u00184\u001ftBD��Ѩh>����|�I�6_�JOZ<Y��C��\u0013�o%��һo�\u000b��{�0��Q���e����~�`!�s�)���(�N�\u0011��a���*P2\u001cԦ����!�\rж�_=���\u0000�����Dh+&�k�;8�5Ӯ���IF�\b�Äq�W\u0006��\u0001\u001b�YFq�N\u0005�B\u0018�#�\u0011��\u0018�2+\u001c���ɩ��ӂ\\�^����?CBk;N�,�\u0011�\u000f�\u0001b��\r�P��`˟�S�p�\u0013�`Փ0pǝ��r�e$H\u0012g\u0006e\u0017t�f�K��L�t-���u-��\u001a�Z�[1�͒�9�/��er;��Y�l_�\b��Q�Ln\u0017!�4��}�.��7����yz3kX���\u0016@�L#��$�\u0016�\u001d��;O�7@3�U)-P�#��.�E?N�\"E�\u0010ߋW�s��+�`S���}Qk\u000fԏ��l��E�g�Kx\u0012_l�Q=��^\u0019ʷl;�| ��U�hai\u001d�_��\u0005\u0003B��\u0007fщ�Xl'0l\u0013�S�",
+      "Du*�S۸�\u0015\u001d��ZQԊ�k�h�H÷\\�\u0015E_Q�\u0015E_Qi�����+����+��|E��y��f\fٚ��_�&Q\"�]?~~�b��g�we(�_7�<֫pf%%�S��>\u0016u0J=�\u0012ש|�\u0003�%4�y�O�C\u000f��0�\u00190`�5@�q�`</�NFg��һ",
+      ":�\u000b�763!�m�\u001a߬!�\u0000vTx9\u0000l��SE�\f*\u0007�{�mh���\u0004�rdA�\u001a\u0019��T�\u0018M��,\u0005�~�\"Ę�\u0005����qS�\u0012�eK��\u0003/Ӷ�ck���\u001f:\u0004��vX2ã�\u001d�%���l2I!ҟ\u0017*\u001c�����޹A)�f4{R\u001c��ɫ��R��J�[+�ﭔ�R�9r��)�\u0011�VM�V��dׂ��\u0016d�!90���z�6U�K[\u001fe��;�HY��|����7�����?̗��[�WM35١\u001difi�\u001b\u001b��w�y�4Ժn�J�^�^+�<�C�vÏ�Θ�4)?\u0012F�\\Q�۫���1���_AُL�۵u��G��ت'���>��;(�{�Z�ܩ��{;��b�L�`��اALn\u000e��.���<b��=&a���s�yK\u0011g+�f�F\t��}[a�Zy\u0017��أ)�G�ڏ�g�h�\u0004��\u0003�����>�\u0012�]�1<\u0012�<��+�B�:\u000f(�]\u000e۴_��Ռ�\u001fY\u0015\u001c�/�\u0014�~4R {QI�\t�#\u0001W;˂�\u000f����\u0007�^^\u0007�e�\u001c���mb��\u001a�>+�ܻ|���#\u001f'�~��s�m��3�\u001c�|�Q���v�`�xϔ��QXZ�>v�(�-2J����\u001e� ��.ދ����N2\u0007�� ���C-��Z�\"\u0004�ߒ\u0010�>k�)�|��ܫ����aiA�q�'����@�xK\u001f\u000e\u0006����\u001d�c86\u00103=�{L���׫�$������^���S=�+G~��\u0001�k�q�� ����C�^\u0013����P8��3�\u001e������B�\u001c�\u0017����L�6,�V\f����K�\u0004i�j?�n/t��~r/\u000f\u001e؃���zڎb5+���/r>#��羹���}&�x\u0002����P�>B��\b���>D��\u0010����H�]�Q���,�<�\u0014ߴ�.z�ZZ����iʀ��\u0014=M��\u0014`\u001e��)F��V�\u0018�\u001b#|c�o���.��ޅ�.��1�%\u001d]�'蒎.�蒎.�����C�t��.��\u0011]��%}�.��%�I����W�t�\u000f׏*\u000f��\u0013�p�q�\u0005'Lڮ���\u0013�:\u000e\u0005��\u0018��M�9�6��}#Yv\u0018�S�c���Ƒ\u001a�*J��Fz�o��=���q\u0019ݴo�\b�E\u001aWe�X����m�}\u001ee���\u0013�5��\u001a>���n\f���n��h$fyĮJj�F\u0016)��o}��$��o����\u001b����=x�\u0016�Z�wy�1I�1f�ۇ���~��\u001d\u0007\u0005�D�\u001d,��\u0003��;>�؂��\u0000k��ùX��++���n&���Ѻ\"C.��%\u0019MO`�|����]\u0019ֻ6,�r����Iz\u001eP\\��\u0015��\u0002tC�BXy%�����j�1h���j^����\u0004\r��P\r\r�\u0018\f\u001a���\u001a\u001a���\u001a\u001a����\u0013.\u001a�9���\u001a\u001a���\u001a�04T�6T{Ҩ�K��6j�H#e�@��ퟙ΂�S�E�\u000bx��X�)�\u0019�p�"
+    ],
+    "PROJECT_AUDIT.md": [
+      "# Project Audit: HEXA Vision",
+      "",
+      "**Audit Date:** 2026-06-30",
+      "**Repository:** [github.com/justfilmk/HexaStudio](https://github.com/justfilmk/HexaStudio)",
+      "**Version:** 0.1.0",
+      "**Auditor:** Principal Engineering Team (Master Agent)",
+      "",
+      "---",
+      "",
+      "## 1. Executive Summary"
+    ],
+    "PROJECT_DIRECTIVE.md": [
+      "# HEXA Studio — MASTER PROJECT DIRECTIVE",
+      "Version: 1.0",
+      "",
+      "You are the Principal Software Architect, Creative Director, Senior Product Designer, Senior Frontend Engineer, DevOps Engineer, QA Lead and Performance Engineer for the HEXA Studio project.",
+      "",
+      "You own the technical and creative quality of this project.",
+      "",
+      "Your responsibility is to transform this repository into a world-class digital experience.",
+      "",
+      "========================================================"
+    ],
+    "PROJECT_REVIEW.md": [
+      "# Production Readiness Review: HEXA Vision",
+      "",
+      "## 1. Executive Summary",
+      "The project has successfully implemented a high-fidelity 3D architectural visualization platform. The architecture is scalable, and the visual core is world-class. However, to move from \"working\" to \"production-ready\", several critical refinements are needed in memory management, accessibility, and SEO.",
+      "",
+      "---",
+      "",
+      "## 2. Detailed Analysis",
+      "",
+      "### 🛠 Code Quality & Architecture"
+    ],
+    "QUALITY_GATE_REPORT.md": [
+      "# QUALITY GATE REPORT — HEXA Vision",
+      "",
+      "**Date:** 2026-07-06",
+      "**Branch:** `stage`",
+      "**Reviewer:** Quality Gate Controller (AI Agent)",
+      "",
+      "---",
+      "",
+      "## 1. Architecture (Score: 7/10)",
+      ""
+    ],
+    "QUALITY_SCORECARD.md": [
+      "# QUALITY SCORECARD — HEXA Vision",
+      "",
+      "| # | Category | Score | Rationale |",
+      "|---|----------|-------|-----------|",
+      "| 1 | **Architecture** | **8/10** | Clean monorepo, strict network isolation, 14 Docker services. **-1** for placeholder backend modules. **-1** for Traefik dashboard exposed. |",
+      "| 2 | **Code Quality** | **8/10** | TypeScript strict, no ESLint errors. 14 backend tests + Playwright E2E scaffold (up from 4). **-1** for some `Record<string, unknown>` patterns. **-1** for no E2E in CI yet. |",
+      "| 3 | **Visual Design** | **9/10** | Luxury gold accent, comprehensive design system, glass cards, clean typography. **-1** for placeholder social links (`href=\"#\"`). |",
+      "| 4 | **Brand Identity** | **9/10** | Strong \"Living Spaces. Visualized.\" Real logo deployed. Consistent voice. Premium feel. **-1** for no favicon variety. |",
+      "| 5 | **UX** | **8/10** | Skip-to-content, smooth scroll, page transitions, loading screen, error boundaries. **-1** for `cursor: none` globally. **-1** for no toast/notification system. |",
+      "| 6 | **Animation** | **9/10** | GSAP + Framer Motion, custom easings, cinematic page transitions, text reveal, parallax. **-1** for minor timing consistency. |"
+    ],
+    "README.md": [
+      "# 🏛️ HEXA Studio — Architectural Visualization",
+      "",
+      "<p align=\"center\">",
+      "<img src=\"apps/frontend/public/logo.webp\" alt=\"HEXA Studio Logo\" width=\"300\" />",
+      "</p>",
+      "",
+      "<p align=\"center\">",
+      "<strong>Living Spaces. Visualized.</strong><br>",
+      "<i>Immersive 3D architectural experiences for the world's most ambitious projects.</i>",
+      "</p>"
+    ],
+    "REFACTOR_SUMMARY.md": [
+      "# Refactor Summary: Sprint 1",
+      "",
+      "**Completed:** 2026-06-30",
+      "**Sprint Goal:** Architecture refactor only — UI and functionality unchanged.",
+      "",
+      "---",
+      "",
+      "## Summary",
+      "",
+      "Sprint 1 established clean architecture patterns across the monorepo: feature-based frontend structure, shared packages, lazy-loading infrastructure, monorepo-aware Docker builds, and build-blocking bug fixes."
+    ],
+    "RELEASE_DECISION.md": [
+      "# RELEASE DECISION",
+      "",
+      "## ⚠ APPROVED WITH WARNINGS",
+      "",
+      "---",
+      "",
+      "### Decision: APPROVED FOR STAGING — 8/10 Critical Blockers Resolved",
+      "",
+      "The project is **functionally ready for production** but has **two remaining high-severity issues** that should be addressed post-launch.",
+      ""
+    ],
+    "RESPONSIVE_REPORT.md": [
+      "# Responsive Report: Cross-Platform Immersion",
+      "",
+      "## Current Analysis",
+      "The current implementation uses a standard mobile-first Tailwind approach. While the layout doesn't \"break\", the **experience** is not optimized for different device archetypes. The 3D canvas, in particular, behaves identically on desktop and mobile, which is a mistake for immersive experiences.",
+      "",
+      "## Device-Specific Challenges & Solutions",
+      "",
+      "### 1. Mobile (320px - 768px)",
+      "- **The Challenge:** Limited screen real estate and touch-based interaction. The current `OrbitControls` can conflict with page scrolling.",
+      "- **The Solution:**"
+    ],
+    "SECURITY_REPORT.md": [
+      "# Security Report: HEXA Vision",
+      "",
+      "**Report Date:** 2026-06-30",
+      "**Grade:** B+ (structural) / C (operational hardening pending)",
+      "",
+      "---",
+      "",
+      "## 1. Security Strengths",
+      "",
+      "| Control | Implementation | Status |"
+    ],
+    "SEO_REPORT.md": [
+      "# SEO Report: HEXA Vision",
+      "",
+      "**Report Date:** 2026-06-30",
+      "",
+      "---",
+      "",
+      "## 1. Current SEO State",
+      "",
+      "| Element | Status | Notes |",
+      "|---------|--------|-------|"
+    ],
+    "SERVER_STRUCTURE.md": [
+      "# Server Structure: Local Staging",
+      "",
+      "## Directory Layout",
+      "```text",
+      "/home/ubuntu/hexastudio/",
+      "├── .env                     # Environment secrets",
+      "├── docker-compose.yml       # Orchestration",
+      "├── .dockerignore            # Docker exclusion list",
+      "├── deploy-local.sh          # Automation script",
+      "├── healthcheck.sh           # Verification script"
+    ],
+    "TECH_DEBT.md": [
+      "# Technical Debt Report: HEXA Vision",
+      "",
+      "**Last Updated:** 2026-06-30",
+      "**Debt Register Version:** 2.0 (post-audit refresh)",
+      "",
+      "---",
+      "",
+      "## 1. Critical Debt (Blockers)",
+      "",
+      "| ID | Item | Impact | Effort | Status |"
+    ],
+    "THREEJS_GUIDE.md": [
+      "# Three.js Cinematic Guide: HexaStudio Hero",
+      "",
+      "## 1. Visual Pipeline",
+      "To achieve \"Awwwards-level\" fidelity, the pipeline moves from standard rendering to a cinematic post-processing stack.",
+      "",
+      "### Post-Processing Stack",
+      "- **Bloom:** Used to create a \"glow\" effect on high-intensity lights and metallic highlights.",
+      "- *Settings:* Threshold: 1.0, Strength: 0.5, Radius: 0.4.",
+      "- **Depth of Field (DOF):** Mimics a real camera lens to focus attention on architectural details while blurring the foreground/background.",
+      "- *Settings:* Focal length: 35mm, Bokeh: Circular."
+    ],
+    "TROUBLESHOOTING.md": [
+      "# Troubleshooting Guide: Local Staging",
+      "",
+      "## Common Issues & Solutions",
+      "",
+      "### 1. Containers fail to start",
+      "**Symptom:** `docker compose up` shows errors for `backend` or `cms`.",
+      "**Fix:** Check the health of the database.",
+      "```bash",
+      "docker compose logs postgres",
+      "```"
+    ],
+    "tsconfig.json": [
+      "{",
+      "\"compilerOptions\": {",
+      "\"target\": \"ES2022\",",
+      "\"module\": \"ESNext\",",
+      "\"moduleResolution\": \"bundler\",",
+      "\"strict\": true,",
+      "\"esModuleInterop\": true,",
+      "\"skipLibCheck\": true,",
+      "\"forceConsistentCasingInFileNames\": true",
+      "},"
+    ],
+    "UI_REVIEW.md": [
+      "# UI Review: HexaStudio Premium Transformation",
+      "",
+      "## Current State Analysis",
+      "The current interface follows a \"minimalist-dark\" aesthetic. While clean and functional, it lacks the \"Awwwards-level\" cinematic depth and emotional resonance required for a world-class architecture visualization studio. It feels like a standard SaaS landing page rather than a luxury portfolio.",
+      "",
+      "## Critical Evaluation",
+      "",
+      "### 1. Layout & Composition",
+      "- **Current:** Standard centered containers and symmetrical grids.",
+      "- **Review:** Too predictable. Luxury design often utilizes asymmetric balance and unconventional grid layouts to create visual tension and interest."
+    ],
+    "UX_IMPROVEMENTS.md": [
+      "# UX Improvements: The \"Luxury\" Roadmap",
+      "",
+      "## The Vision",
+      "Transform HexaStudio from a \"website that shows 3D models\" into an \"immersive architectural journey\". The focus is on **frictionless elegance** and **cinematic pacing**.",
+      "",
+      "## Implementation Roadmap",
+      "",
+      "### 1. Motion & Interaction (The \"Feel\")",
+      "- **Smooth Scrolling:** Integrate **Lenis** for buttery-smooth momentum scrolling, removing the \"stutter\" of native browser scrolling.",
+      "- **Page Transitions:** Implement seamless route transitions using Framer Motion's `AnimatePresence` to avoid jarring hard cuts."
+    ]
+  },
+  "importantFolders": [
+    {
+      "path": ".agents\\skills\\gemini-api-dev",
+      "category": "backend",
+      "fileCount": 1
+    },
+    {
+      "path": ".agents\\skills\\gemini-interactions-api",
+      "category": "backend",
+      "fileCount": 2
+    },
+    {
+      "path": ".agents\\skills\\gemini-live-api-dev",
+      "category": "backend",
+      "fileCount": 1
+    },
+    {
+      "path": ".agents\\skills\\gemini-skills\\skills\\gemini-omni-flash-api",
+      "category": "backend",
+      "fileCount": 5,
+      "primaryLanguage": "Python"
+    },
+    {
+      "path": ".agents\\skills\\gemini-skills\\skills\\gemini-omni-flash-api\\scripts",
+      "category": "scripts",
+      "fileCount": 4,
+      "primaryLanguage": "Python"
+    },
+    {
+      "path": ".kilo\\skills\\web-design-guidelines",
+      "category": "frontend",
+      "fileCount": 1
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\.agents\\skills\\gemini-api-dev",
+      "category": "backend",
+      "fileCount": 1
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\.agents\\skills\\gemini-interactions-api",
+      "category": "backend",
+      "fileCount": 2
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\.agents\\skills\\gemini-live-api-dev",
+      "category": "backend",
+      "fileCount": 1
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\.agents\\skills\\gemini-skills\\skills\\gemini-omni-flash-api",
+      "category": "backend",
+      "fileCount": 5,
+      "primaryLanguage": "Python"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\.agents\\skills\\gemini-skills\\skills\\gemini-omni-flash-api\\scripts",
+      "category": "scripts",
+      "fileCount": 4,
+      "primaryLanguage": "Python"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps",
+      "category": "frontend",
+      "fileCount": 176,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\backend",
+      "category": "backend",
+      "fileCount": 51,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\backend\\src\\config",
+      "category": "config",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\backend\\src\\core",
+      "category": "core",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\backend\\src\\modules\\services",
+      "category": "backend",
+      "fileCount": 4,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\backend\\test",
+      "category": "tests",
+      "fileCount": 7,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\cms\\config",
+      "category": "config",
+      "fileCount": 6,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\cms\\src\\api",
+      "category": "backend",
+      "fileCount": 16,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\cms\\src\\api\\article\\routes",
+      "category": "build",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\cms\\src\\api\\article\\services",
+      "category": "backend",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\cms\\src\\api\\category\\routes",
+      "category": "build",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\cms\\src\\api\\category\\services",
+      "category": "backend",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\cms\\src\\api\\portfolio\\routes",
+      "category": "build",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\cms\\src\\api\\portfolio\\services",
+      "category": "backend",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\cms\\src\\api\\service",
+      "category": "backend",
+      "fileCount": 4,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\cms\\src\\api\\service\\content-types\\service",
+      "category": "backend",
+      "fileCount": 1
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\cms\\src\\api\\service\\routes",
+      "category": "build",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\cms\\src\\api\\service\\services",
+      "category": "backend",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\frontend",
+      "category": "frontend",
+      "fileCount": 98,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\frontend\\public",
+      "category": "assets",
+      "fileCount": 9
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\frontend\\src\\app",
+      "category": "frontend",
+      "fileCount": 18,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\frontend\\src\\app\\about",
+      "category": "build",
+      "fileCount": 2,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\frontend\\src\\app\\services",
+      "category": "backend",
+      "fileCount": 2,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\frontend\\src\\components",
+      "category": "frontend",
+      "fileCount": 18,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\frontend\\src\\components\\ui",
+      "category": "frontend",
+      "fileCount": 8,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\frontend\\src\\features\\portfolio\\components",
+      "category": "frontend",
+      "fileCount": 6,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\frontend\\src\\features\\portfolio\\lib",
+      "category": "core",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\frontend\\src\\features\\scene\\components",
+      "category": "frontend",
+      "fileCount": 9,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\frontend\\src\\features\\services",
+      "category": "backend",
+      "fileCount": 2,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\apps\\frontend\\src\\lib",
+      "category": "core",
+      "fileCount": 4,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\docker",
+      "category": "docs",
+      "fileCount": 10,
+      "primaryLanguage": "Shell"
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\docs",
+      "category": "docs",
+      "fileCount": 8
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\scripts",
+      "category": "scripts",
+      "fileCount": 7,
+      "primaryLanguage": "Shell"
+    },
+    {
+      "path": ".projectmanager\\tests",
+      "category": "tests",
+      "fileCount": 1
+    },
+    {
+      "path": "apps",
+      "category": "frontend",
+      "fileCount": 182,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\backend",
+      "category": "backend",
+      "fileCount": 51,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\backend\\src\\config",
+      "category": "config",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\backend\\src\\core",
+      "category": "core",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\backend\\src\\modules\\services",
+      "category": "backend",
+      "fileCount": 4,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\backend\\test",
+      "category": "tests",
+      "fileCount": 7,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\cms\\config",
+      "category": "config",
+      "fileCount": 6,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\cms\\public",
+      "category": "assets",
+      "fileCount": 1
+    },
+    {
+      "path": "apps\\cms\\src\\api",
+      "category": "backend",
+      "fileCount": 16,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\cms\\src\\api\\article\\routes",
+      "category": "build",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\cms\\src\\api\\article\\services",
+      "category": "backend",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\cms\\src\\api\\category\\routes",
+      "category": "build",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\cms\\src\\api\\category\\services",
+      "category": "backend",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\cms\\src\\api\\portfolio\\routes",
+      "category": "build",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\cms\\src\\api\\portfolio\\services",
+      "category": "backend",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\cms\\src\\api\\service",
+      "category": "backend",
+      "fileCount": 4,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\cms\\src\\api\\service\\content-types\\service",
+      "category": "backend",
+      "fileCount": 1
+    },
+    {
+      "path": "apps\\cms\\src\\api\\service\\routes",
+      "category": "build",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\cms\\src\\api\\service\\services",
+      "category": "backend",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\frontend",
+      "category": "frontend",
+      "fileCount": 103,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\frontend\\public",
+      "category": "assets",
+      "fileCount": 9
+    },
+    {
+      "path": "apps\\frontend\\src\\app",
+      "category": "frontend",
+      "fileCount": 20,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\frontend\\src\\app\\about",
+      "category": "build",
+      "fileCount": 2,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\frontend\\src\\app\\services",
+      "category": "backend",
+      "fileCount": 2,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\frontend\\src\\components",
+      "category": "frontend",
+      "fileCount": 19,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\frontend\\src\\components\\ui",
+      "category": "frontend",
+      "fileCount": 8,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\frontend\\src\\features\\blog\\lib",
+      "category": "core",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\frontend\\src\\features\\portfolio\\components",
+      "category": "frontend",
+      "fileCount": 6,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\frontend\\src\\features\\portfolio\\lib",
+      "category": "core",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\frontend\\src\\features\\scene\\components",
+      "category": "frontend",
+      "fileCount": 9,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\frontend\\src\\features\\services",
+      "category": "backend",
+      "fileCount": 2,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "apps\\frontend\\src\\lib",
+      "category": "core",
+      "fileCount": 4,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "docker",
+      "category": "docs",
+      "fileCount": 10,
+      "primaryLanguage": "Shell"
+    },
+    {
+      "path": "docs",
+      "category": "docs",
+      "fileCount": 8
+    },
+    {
+      "path": "scripts",
+      "category": "scripts",
+      "fileCount": 9,
+      "primaryLanguage": "Shell"
+    }
+  ],
+  "readmeParagraphs": {
+    ".agents\\skills\\gemini-skills": "# Gemini API skills\r\n\r\nA library of skills for the Gemini API, SDK and model interactions.\r",
+    ".kilo\\worktrees\\main\\.agents\\skills\\gemini-skills": "# Gemini API skills\r\n\r\nA library of skills for the Gemini API, SDK and model interactions.\r",
+    ".kilo\\worktrees\\main\\.memory": "- [[project-state]] — Where we left off, last commit, immediate next steps\r\n- [[infrastructure]] — Production server, Docker services, Traefik, SSL\r\n- [[brand-identity]] — Logo, favicon, slogan updates\r",
+    ".kilo\\worktrees\\main\\docs\\ADR": "# Architecture Decision Records (ADR)\r\n\r\nThis directory contains Architecture Decision Records for HEXA Vision.\r",
+    ".kilo\\worktrees\\main": "# 🏛️ HEXA Studio — Architectural Visualization\r\n\r\n<p align=\"center\">\r",
+    ".memory": "- [[project-state]] — Where we left off, last commit, immediate next steps\r\n- [[infrastructure]] — Production server, Docker services, Traefik, SSL\r\n- [[brand-identity]] — Logo, favicon, slogan updates\r",
+    ".projectmanager\\tests": "# Testing Documents",
+    "docs\\ADR": "# Architecture Decision Records (ADR)\r\n\r\nThis directory contains Architecture Decision Records for HEXA Vision.\r",
+    "root": "# 🏛️ HEXA Studio — Architectural Visualization\r\n\r\n<p align=\"center\">\r"
+  },
+  "totals": {
+    "numFiles": 593,
+    "numDirs": 267,
+    "totalSizeBytes": 8900571,
+    "totalLinesOfCode": 13459
+  },
+  "fileCategories": {
+    "documentation": 127,
+    "other": 69,
+    "source": 327,
+    "config": 70
+  },
+  "linesOfCodePerLanguage": {
+    "Python": 2226,
+    "PowerShell": 69,
+    "TypeScript": 10118,
+    "Shell": 742,
+    "JavaScript": 304
+  },
+  "filesPerLanguage": {
+    "Python": 8,
+    "PowerShell": 3,
+    "TypeScript": 300,
+    "Shell": 14,
+    "JavaScript": 2
+  },
+  "projectTypes": [
+    "JavaScript/Node.js"
+  ],
+  "frameworks": [
+    "React",
+    "Next.js"
+  ],
+  "entryPoints": [
+    ".agents\\skills\\gemini-skills\\skills\\gemini-omni-flash-api\\scripts\\upload_file.py",
+    ".agents\\skills\\gemini-skills\\skills\\gemini-omni-flash-api\\scripts\\video\\generate_video.py",
+    ".agents\\skills\\gemini-skills\\skills\\gemini-omni-flash-api\\scripts\\video\\inspect_video.py",
+    ".agents\\skills\\gemini-skills\\skills\\gemini-omni-flash-api\\scripts\\video\\prep_video.py",
+    ".kilo\\worktrees\\main\\.agents\\skills\\gemini-skills\\skills\\gemini-omni-flash-api\\scripts\\upload_file.py",
+    ".kilo\\worktrees\\main\\.agents\\skills\\gemini-skills\\skills\\gemini-omni-flash-api\\scripts\\video\\generate_video.py",
+    ".kilo\\worktrees\\main\\.agents\\skills\\gemini-skills\\skills\\gemini-omni-flash-api\\scripts\\video\\inspect_video.py",
+    ".kilo\\worktrees\\main\\.agents\\skills\\gemini-skills\\skills\\gemini-omni-flash-api\\scripts\\video\\prep_video.py",
+    ".kilo\\worktrees\\main\\deploy-local.sh",
+    ".kilo\\worktrees\\main\\docker\\backup\\backup.sh",
+    ".kilo\\worktrees\\main\\docker\\minio\\init-buckets.sh",
+    ".kilo\\worktrees\\main\\healthcheck.sh",
+    ".kilo\\worktrees\\main\\scripts\\deploy.sh",
+    ".kilo\\worktrees\\main\\scripts\\generate-secrets.sh",
+    ".kilo\\worktrees\\main\\scripts\\setup-server.sh",
+    "deploy-local.sh",
+    "docker\\backup\\backup.sh",
+    "docker\\minio\\init-buckets.sh",
+    "healthcheck.sh",
+    "scripts\\deploy.sh",
+    "scripts\\generate-secrets.sh",
+    "scripts\\setup-server.sh"
+  ],
+  "ciCdTools": [
+    "Docker",
+    "GitHub Actions"
+  ],
+  "packageManagers": [
+    "npm/yarn"
+  ],
+  "topLevelDirectories": [
+    {
+      "name": "apps",
+      "numFiles": 182,
+      "totalLoc": 3633,
+      "dominantLanguage": "TypeScript"
+    },
+    {
+      "name": "scripts",
+      "numFiles": 9,
+      "totalLoc": 404,
+      "dominantLanguage": "Shell"
+    },
+    {
+      "name": "e2e",
+      "numFiles": 2,
+      "totalLoc": 245,
+      "dominantLanguage": "TypeScript"
+    },
+    {
+      "name": "docker",
+      "numFiles": 10,
+      "totalLoc": 56,
+      "dominantLanguage": "Shell"
+    },
+    {
+      "name": "docs",
+      "numFiles": 8,
+      "totalLoc": 0
+    }
+  ],
+  "detailedDirectories": [
+    {
+      "path": "apps",
+      "name": "apps",
+      "level": 1,
+      "numFiles": 182,
+      "totalLoc": 3633,
+      "dominantLanguage": "TypeScript",
+      "category": "Application",
+      "description": "Application module with 182 files (TypeScript)",
+      "subdirectories": [
+        {
+          "path": "apps\\frontend",
+          "name": "frontend",
+          "level": 2,
+          "numFiles": 103,
+          "totalLoc": 1975,
+          "dominantLanguage": "TypeScript",
+          "category": "Web/UI",
+          "description": "Web/UI module with 103 files (TypeScript)",
+          "subdirectories": [
+            {
+              "path": "apps\\frontend\\src",
+              "name": "src",
+              "level": 3,
+              "numFiles": 82,
+              "totalLoc": 1901,
+              "dominantLanguage": "TypeScript",
+              "category": "General",
+              "description": "General module with 82 files (TypeScript)",
+              "subdirectories": []
+            },
+            {
+              "path": "apps\\frontend\\public",
+              "name": "public",
+              "level": 3,
+              "numFiles": 9,
+              "totalLoc": 0,
+              "category": "General",
+              "description": "General module with 9 files",
+              "subdirectories": []
+            }
+          ]
+        },
+        {
+          "path": "apps\\backend",
+          "name": "backend",
+          "level": 2,
+          "numFiles": 51,
+          "totalLoc": 1523,
+          "dominantLanguage": "TypeScript",
+          "category": "General",
+          "description": "General module with 51 files (TypeScript)",
+          "subdirectories": [
+            {
+              "path": "apps\\backend\\src",
+              "name": "src",
+              "level": 3,
+              "numFiles": 37,
+              "totalLoc": 1155,
+              "dominantLanguage": "TypeScript",
+              "category": "General",
+              "description": "General module with 37 files (TypeScript)",
+              "subdirectories": []
+            },
+            {
+              "path": "apps\\backend\\test",
+              "name": "test",
+              "level": 3,
+              "numFiles": 7,
+              "totalLoc": 352,
+              "dominantLanguage": "TypeScript",
+              "category": "Testing",
+              "description": "Testing module with 7 files (TypeScript)",
+              "subdirectories": []
+            }
+          ]
+        },
+        {
+          "path": "apps\\cms",
+          "name": "cms",
+          "level": 2,
+          "numFiles": 28,
+          "totalLoc": 135,
+          "dominantLanguage": "TypeScript",
+          "category": "General",
+          "description": "General module with 28 files (TypeScript)",
+          "subdirectories": [
+            {
+              "path": "apps\\cms\\src",
+              "name": "src",
+              "level": 3,
+              "numFiles": 17,
+              "totalLoc": 65,
+              "dominantLanguage": "TypeScript",
+              "category": "General",
+              "description": "General module with 17 files (TypeScript)",
+              "subdirectories": []
+            },
+            {
+              "path": "apps\\cms\\config",
+              "name": "config",
+              "level": 3,
+              "numFiles": 6,
+              "totalLoc": 70,
+              "dominantLanguage": "TypeScript",
+              "category": "Configuration",
+              "description": "Configuration module with 6 files (TypeScript)",
+              "subdirectories": []
+            },
+            {
+              "path": "apps\\cms\\public",
+              "name": "public",
+              "level": 3,
+              "numFiles": 1,
+              "totalLoc": 0,
+              "category": "General",
+              "description": "General module with 1 files",
+              "subdirectories": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "scripts",
+      "name": "scripts",
+      "level": 1,
+      "numFiles": 9,
+      "totalLoc": 404,
+      "dominantLanguage": "Shell",
+      "category": "Tools/Scripts",
+      "description": "Tools/Scripts module with 9 files (Shell)",
+      "subdirectories": [
+        {
+          "path": "scripts\\mcp",
+          "name": "mcp",
+          "level": 2,
+          "numFiles": 5,
+          "totalLoc": 152,
+          "dominantLanguage": "JavaScript",
+          "category": "General",
+          "description": "General module with 5 files (JavaScript)",
+          "subdirectories": []
+        }
+      ]
+    },
+    {
+      "path": "e2e",
+      "name": "e2e",
+      "level": 1,
+      "numFiles": 2,
+      "totalLoc": 245,
+      "dominantLanguage": "TypeScript",
+      "category": "General",
+      "description": "General module with 2 files (TypeScript)",
+      "subdirectories": []
+    },
+    {
+      "path": "docker",
+      "name": "docker",
+      "level": 1,
+      "numFiles": 10,
+      "totalLoc": 56,
+      "dominantLanguage": "Shell",
+      "category": "Documentation",
+      "description": "Documentation module with 10 files (Shell)",
+      "subdirectories": [
+        {
+          "path": "docker\\minio",
+          "name": "minio",
+          "level": 2,
+          "numFiles": 1,
+          "totalLoc": 29,
+          "dominantLanguage": "Shell",
+          "category": "General",
+          "description": "General module with 1 files (Shell)",
+          "subdirectories": []
+        },
+        {
+          "path": "docker\\backup",
+          "name": "backup",
+          "level": 2,
+          "numFiles": 1,
+          "totalLoc": 27,
+          "dominantLanguage": "Shell",
+          "category": "General",
+          "description": "General module with 1 files (Shell)",
+          "subdirectories": []
+        },
+        {
+          "path": "docker\\loki",
+          "name": "loki",
+          "level": 2,
+          "numFiles": 2,
+          "totalLoc": 0,
+          "category": "General",
+          "description": "General module with 2 files",
+          "subdirectories": []
+        },
+        {
+          "path": "docker\\grafana",
+          "name": "grafana",
+          "level": 2,
+          "numFiles": 1,
+          "totalLoc": 0,
+          "category": "General",
+          "description": "General module with 1 files",
+          "subdirectories": [
+            {
+              "path": "docker\\grafana\\provisioning",
+              "name": "provisioning",
+              "level": 3,
+              "numFiles": 1,
+              "totalLoc": 0,
+              "category": "General",
+              "description": "General module with 1 files",
+              "subdirectories": []
+            }
+          ]
+        },
+        {
+          "path": "docker\\nginx",
+          "name": "nginx",
+          "level": 2,
+          "numFiles": 1,
+          "totalLoc": 0,
+          "category": "General",
+          "description": "General module with 1 files",
+          "subdirectories": []
+        }
+      ]
+    },
+    {
+      "path": "docs",
+      "name": "docs",
+      "level": 1,
+      "numFiles": 8,
+      "totalLoc": 0,
+      "category": "Documentation",
+      "description": "Documentation module with 8 files",
+      "subdirectories": [
+        {
+          "path": "docs\\ADR",
+          "name": "ADR",
+          "level": 2,
+          "numFiles": 7,
+          "totalLoc": 0,
+          "category": "General",
+          "description": "# Architecture Decision Records (ADR)\r",
+          "subdirectories": []
+        }
+      ]
+    }
+  ],
+  "architecturalInsights": {
+    "coreApplications": [
+      {
+        "path": "apps",
+        "name": "apps",
+        "level": 1,
+        "numFiles": 182,
+        "totalLoc": 3633,
+        "dominantLanguage": "TypeScript",
+        "category": "Application",
+        "description": "Application module with 182 files (TypeScript)",
+        "subdirectories": [
+          {
+            "path": "apps\\frontend",
+            "name": "frontend",
+            "level": 2,
+            "numFiles": 103,
+            "totalLoc": 1975,
+            "dominantLanguage": "TypeScript",
+            "category": "Web/UI",
+            "description": "Web/UI module with 103 files (TypeScript)",
+            "subdirectories": [
+              {
+                "path": "apps\\frontend\\src",
+                "name": "src",
+                "level": 3,
+                "numFiles": 82,
+                "totalLoc": 1901,
+                "dominantLanguage": "TypeScript",
+                "category": "General",
+                "description": "General module with 82 files (TypeScript)",
+                "subdirectories": []
+              },
+              {
+                "path": "apps\\frontend\\public",
+                "name": "public",
+                "level": 3,
+                "numFiles": 9,
+                "totalLoc": 0,
+                "category": "General",
+                "description": "General module with 9 files",
+                "subdirectories": []
+              }
+            ]
+          },
+          {
+            "path": "apps\\backend",
+            "name": "backend",
+            "level": 2,
+            "numFiles": 51,
+            "totalLoc": 1523,
+            "dominantLanguage": "TypeScript",
+            "category": "General",
+            "description": "General module with 51 files (TypeScript)",
+            "subdirectories": [
+              {
+                "path": "apps\\backend\\src",
+                "name": "src",
+                "level": 3,
+                "numFiles": 37,
+                "totalLoc": 1155,
+                "dominantLanguage": "TypeScript",
+                "category": "General",
+                "description": "General module with 37 files (TypeScript)",
+                "subdirectories": []
+              },
+              {
+                "path": "apps\\backend\\test",
+                "name": "test",
+                "level": 3,
+                "numFiles": 7,
+                "totalLoc": 352,
+                "dominantLanguage": "TypeScript",
+                "category": "Testing",
+                "description": "Testing module with 7 files (TypeScript)",
+                "subdirectories": []
+              }
+            ]
+          },
+          {
+            "path": "apps\\cms",
+            "name": "cms",
+            "level": 2,
+            "numFiles": 28,
+            "totalLoc": 135,
+            "dominantLanguage": "TypeScript",
+            "category": "General",
+            "description": "General module with 28 files (TypeScript)",
+            "subdirectories": [
+              {
+                "path": "apps\\cms\\src",
+                "name": "src",
+                "level": 3,
+                "numFiles": 17,
+                "totalLoc": 65,
+                "dominantLanguage": "TypeScript",
+                "category": "General",
+                "description": "General module with 17 files (TypeScript)",
+                "subdirectories": []
+              },
+              {
+                "path": "apps\\cms\\config",
+                "name": "config",
+                "level": 3,
+                "numFiles": 6,
+                "totalLoc": 70,
+                "dominantLanguage": "TypeScript",
+                "category": "Configuration",
+                "description": "Configuration module with 6 files (TypeScript)",
+                "subdirectories": []
+              },
+              {
+                "path": "apps\\cms\\public",
+                "name": "public",
+                "level": 3,
+                "numFiles": 1,
+                "totalLoc": 0,
+                "category": "General",
+                "description": "General module with 1 files",
+                "subdirectories": []
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "entryPointDetails": [
+      {
+        "path": "..\\..\\..\\AppData\\Local\\Programs\\Microsoft VS Code\\.agents\\skills\\gemini-skills\\skills\\gemini-omni-flash-api\\scripts\\upload_file.py",
+        "type": "Unknown",
+        "description": ""
+      },
+      {
+        "path": "..\\..\\..\\AppData\\Local\\Programs\\Microsoft VS Code\\.agents\\skills\\gemini-skills\\skills\\gemini-omni-flash-api\\scripts\\video\\generate_video.py",
+        "type": "Unknown",
+        "description": ""
+      },
+      {
+        "path": "..\\..\\..\\AppData\\Local\\Programs\\Microsoft VS Code\\.agents\\skills\\gemini-skills\\skills\\gemini-omni-flash-api\\scripts\\video\\inspect_video.py",
+        "type": "Unknown",
+        "description": ""
+      },
+      {
+        "path": "..\\..\\..\\AppData\\Local\\Programs\\Microsoft VS Code\\.agents\\skills\\gemini-skills\\skills\\gemini-omni-flash-api\\scripts\\video\\prep_video.py",
+        "type": "Unknown",
+        "description": ""
+      },
+      {
+        "path": "..\\..\\..\\AppData\\Local\\Programs\\Microsoft VS Code\\.kilo\\worktrees\\main\\.agents\\skills\\gemini-skills\\skills\\gemini-omni-flash-api\\scripts\\upload_file.py",
+        "type": "Unknown",
+        "description": ""
+      },
+      {
+        "path": "..\\..\\..\\AppData\\Local\\Programs\\Microsoft VS Code\\.kilo\\worktrees\\main\\.agents\\skills\\gemini-skills\\skills\\gemini-omni-flash-api\\scripts\\video\\generate_video.py",
+        "type": "Unknown",
+        "description": ""
+      },
+      {
+        "path": "..\\..\\..\\AppData\\Local\\Programs\\Microsoft VS Code\\.kilo\\worktrees\\main\\.agents\\skills\\gemini-skills\\skills\\gemini-omni-flash-api\\scripts\\video\\inspect_video.py",
+        "type": "Unknown",
+        "description": ""
+      },
+      {
+        "path": "..\\..\\..\\AppData\\Local\\Programs\\Microsoft VS Code\\.kilo\\worktrees\\main\\.agents\\skills\\gemini-skills\\skills\\gemini-omni-flash-api\\scripts\\video\\prep_video.py",
+        "type": "Unknown",
+        "description": ""
+      },
+      {
+        "path": "..\\..\\..\\AppData\\Local\\Programs\\Microsoft VS Code\\.kilo\\worktrees\\main\\deploy-local.sh",
+        "type": "Unknown",
+        "description": ""
+      },
+      {
+        "path": "..\\..\\..\\AppData\\Local\\Programs\\Microsoft VS Code\\.kilo\\worktrees\\main\\docker\\backup\\backup.sh",
+        "type": "Unknown",
+        "description": ""
+      },
+      {
+        "path": "..\\..\\..\\AppData\\Local\\Programs\\Microsoft VS Code\\.kilo\\worktrees\\main\\docker\\minio\\init-buckets.sh",
+        "type": "Unknown",
+        "description": ""
+      },
+      {
+        "path": "..\\..\\..\\AppData\\Local\\Programs\\Microsoft VS Code\\.kilo\\worktrees\\main\\healthcheck.sh",
+        "type": "Unknown",
+        "description": ""
+      },
+      {
+        "path": "..\\..\\..\\AppData\\Local\\Programs\\Microsoft VS Code\\.kilo\\worktrees\\main\\scripts\\deploy.sh",
+        "type": "Unknown",
+        "description": ""
+      },
+      {
+        "path": "..\\..\\..\\AppData\\Local\\Programs\\Microsoft VS Code\\.kilo\\worktrees\\main\\scripts\\generate-secrets.sh",
+        "type": "Unknown",
+        "description": ""
+      },
+      {
+        "path": "..\\..\\..\\AppData\\Local\\Programs\\Microsoft VS Code\\.kilo\\worktrees\\main\\scripts\\setup-server.sh",
+        "type": "Unknown",
+        "description": ""
+      },
+      {
+        "path": "..\\..\\..\\AppData\\Local\\Programs\\Microsoft VS Code\\deploy-local.sh",
+        "type": "Unknown",
+        "description": ""
+      },
+      {
+        "path": "..\\..\\..\\AppData\\Local\\Programs\\Microsoft VS Code\\docker\\backup\\backup.sh",
+        "type": "Unknown",
+        "description": ""
+      },
+      {
+        "path": "..\\..\\..\\AppData\\Local\\Programs\\Microsoft VS Code\\docker\\minio\\init-buckets.sh",
+        "type": "Unknown",
+        "description": ""
+      },
+      {
+        "path": "..\\..\\..\\AppData\\Local\\Programs\\Microsoft VS Code\\healthcheck.sh",
+        "type": "Unknown",
+        "description": ""
+      },
+      {
+        "path": "..\\..\\..\\AppData\\Local\\Programs\\Microsoft VS Code\\scripts\\deploy.sh",
+        "type": "Unknown",
+        "description": ""
+      },
+      {
+        "path": "..\\..\\..\\AppData\\Local\\Programs\\Microsoft VS Code\\scripts\\generate-secrets.sh",
+        "type": "Unknown",
+        "description": ""
+      },
+      {
+        "path": "..\\..\\..\\AppData\\Local\\Programs\\Microsoft VS Code\\scripts\\setup-server.sh",
+        "type": "Unknown",
+        "description": ""
+      }
+    ],
+    "serviceArchitecture": {
+      "microservices": [],
+      "monoliths": [],
+      "libraries": []
+    },
+    "layeredArchitecture": {
+      "presentation": [],
+      "business": [],
+      "data": [],
+      "infrastructure": []
+    }
+  },
+  "largeFiles": [
+    {
+      "path": ".anima\\library.json",
+      "sizeMb": 2.65
+    },
+    {
+      "path": ".kilo\\worktrees\\main\\package-lock.json",
+      "sizeMb": 1.14
+    },
+    {
+      "path": "package-lock.json",
+      "sizeMb": 1.14
+    }
+  ],
+  "dependencies": {
+    "production": [
+      "@reduxjs/toolkit",
+      "libsodium-wrappers",
+      "react-redux"
+    ],
+    "development": [],
+    "total": 3
+  },
+  "complexity": {
+    "averageFileSize": 22.6964586846543,
+    "maxFileSize": 27787.264,
+    "nestedDepth": 0,
+    "estimatedComplexity": "high"
+  },
+  "gitRepo": {
+    "firstCommitDate": "2026-07-07",
+    "totalCommits": 35,
+    "numContributors": 0,
+    "currentBranch": "stage",
+    "remoteUrls": [
+      "https://github.com/amr-karam/HexaStudio.git"
+    ]
+  }
+}

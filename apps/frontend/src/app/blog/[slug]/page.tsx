@@ -77,7 +77,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
         <motion.div
           initial={{ scale: 1.1, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1.2, ease: 'var(--ease-out-expo)' }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           className="absolute inset-0"
         >
           {article.coverImage ? (
@@ -99,7 +99,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
             <motion.span
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4, ease: 'var(--ease-out-expo)' }}
+              transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
               className="text-[10px] uppercase tracking-[0.5em] text-accent mb-6 block"
             >
               {article.category?.name || 'Journal'}
@@ -107,7 +107,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6, ease: 'var(--ease-out-expo)' }}
+              transition={{ duration: 0.8, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
               className="text-5xl md:text-8xl font-serif font-light tracking-tighter leading-tight mb-8"
             >
               {article.title}
@@ -132,7 +132,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: 'var(--ease-out-expo)' }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="prose prose-invert prose-neutral max-w-none"
           >
             <p className="text-xl md:text-2xl font-light text-neutral-300 leading-relaxed mb-12 italic">
