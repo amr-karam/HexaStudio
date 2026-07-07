@@ -9,10 +9,20 @@ COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 COPY apps/frontend/package.json ./apps/frontend/
 COPY packages/types/package.json ./packages/types/
 COPY packages/utils/package.json ./packages/utils/
-RUN npm ci
+RUN npm install --no-audit --no-fund
 
 # Stage 3: Builder
 FROM base AS builder
+
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_CMS_URL
+ARG NEXT_PUBLIC_SITE_URL
+ARG NEXT_PUBLIC_SENTRY_DSN
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_CMS_URL=$NEXT_PUBLIC_CMS_URL
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
+ENV NEXT_PUBLIC_SENTRY_DSN=$NEXT_PUBLIC_SENTRY_DSN
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build --workspace=apps/frontend

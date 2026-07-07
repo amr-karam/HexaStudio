@@ -56,7 +56,7 @@ export default function BlogPage() {
           <motion.span 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: 'var(--ease-out-expo)' }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="text-[11px] uppercase tracking-[0.5em] text-neutral-500 mb-6 block"
           >
             Thoughts & Insights
@@ -64,7 +64,7 @@ export default function BlogPage() {
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1, ease: 'var(--ease-out-expo)' }}
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             className="text-6xl md:text-8xl font-serif font-light tracking-tighter text-foreground leading-tight"
           >
             The Architectural <br />
@@ -73,7 +73,7 @@ export default function BlogPage() {
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: 'var(--ease-out-expo)' }}
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="text-neutral-400 text-lg font-light max-w-2xl mt-8 leading-relaxed"
           >
             Exploring the intersection of spatial design, real-time technology, and the 
@@ -93,7 +93,7 @@ export default function BlogPage() {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: idx * 0.1, ease: 'var(--ease-out-expo)' }}
+                transition={{ duration: 0.8, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
               >
                 <Link href={`/blog/${article.slug}`} className="group block">
                   <div className="aspect-[16/10] bg-surface-light overflow-hidden relative mb-8">

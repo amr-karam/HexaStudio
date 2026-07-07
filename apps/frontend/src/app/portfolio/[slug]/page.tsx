@@ -119,7 +119,7 @@ function ProjectContent({ project }: { project: Project }) {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: 'var(--ease-out-expo)', delay: 0.5 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
             className="pointer-events-auto"
           >
             <h1 className="text-5xl md:text-8xl font-serif font-light tracking-tighter text-foreground mb-6 leading-tight">
