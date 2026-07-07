@@ -29,7 +29,11 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.12.0",
+    "framer-motion": "^11.18.2",
     "libsodium-wrappers": "^0.8.4",
     "react-redux": "^9.3.0"
+  },
+  "overrides": {
+    "framer-motion": "^11.18.2"
   }
 }
