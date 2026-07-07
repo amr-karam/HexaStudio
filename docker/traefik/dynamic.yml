@@ -49,10 +49,19 @@ http:
         - secure-headers
         - rate-limit
 
-    frontend:
+    frontend-http:
       rule: "Host(`hexastudio.net`) || Host(`www.hexastudio.net`)"
       entryPoints:
         - web
+      service: frontend
+      middlewares:
+        - redirect-https
+        - secure-headers
+        - compress
+
+    frontend:
+      rule: "Host(`hexastudio.net`) || Host(`www.hexastudio.net`)"
+      entryPoints:
         - websecure
       service: frontend
       tls:
@@ -61,10 +70,19 @@ http:
         - secure-headers
         - compress
 
-    backend:
+    backend-http:
       rule: "Host(`api.hexastudio.net`)"
       entryPoints:
         - web
+      service: backend
+      middlewares:
+        - redirect-https
+        - secure-headers
+        - compress
+
+    backend:
+      rule: "Host(`api.hexastudio.net`)"
+      entryPoints:
         - websecure
       service: backend
       tls:
@@ -73,10 +91,18 @@ http:
         - secure-headers
         - compress
 
-    cms:
+    cms-http:
       rule: "Host(`cms.hexastudio.net`)"
       entryPoints:
         - web
+      service: cms
+      middlewares:
+        - redirect-https
+        - secure-headers
+
+    cms:
+      rule: "Host(`cms.hexastudio.net`)"
+      entryPoints:
         - websecure
       service: cms
       tls:
