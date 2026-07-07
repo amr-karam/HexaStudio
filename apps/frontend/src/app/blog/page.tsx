@@ -47,7 +47,7 @@ export default function BlogPage() {
 
   return (
     <main className="min-h-screen bg-background pt-32 pb-24">
-      <div className="max-w-screen-2xl mx-auto px-8 md:px-16">
+      <div className="px-8 md:px-16">
         <header className="mb-24">
           <motion.span 
             initial={{ opacity: 0, y: 10 }}
