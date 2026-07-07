@@ -21,10 +21,18 @@ http:
 
 
   routers:
-    opencode:
+    opencode-http:
       rule: "Host(`opencode.hexastudio.net`)"
       entryPoints:
         - web
+      service: opencode
+      middlewares:
+        - secure-headers
+        - rate-limit
+
+    opencode:
+      rule: "Host(`opencode.hexastudio.net`)"
+      entryPoints:
         - websecure
       service: opencode
       tls:
@@ -33,10 +41,18 @@ http:
         - secure-headers
         - rate-limit
 
-    ai:
+    ai-http:
       rule: "Host(`ai.hexastudio.net`)"
       entryPoints:
         - web
+      service: lmstudio
+      middlewares:
+        - secure-headers
+        - rate-limit
+
+    ai:
+      rule: "Host(`ai.hexastudio.net`)"
+      entryPoints:
         - websecure
       service: lmstudio
       tls:
