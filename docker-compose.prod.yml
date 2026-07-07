@@ -150,6 +150,7 @@ services:
       MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-hexastudio}
       MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
       MINIO_USE_SSL: "false"
+\      CMS_URL: \\n      REDIS_PASSWORD: \\n      MINIO_ROOT_USER: \\n      MINIO_ROOT_PASSWORD: 
     depends_on:
       postgres:
         condition: service_healthy
