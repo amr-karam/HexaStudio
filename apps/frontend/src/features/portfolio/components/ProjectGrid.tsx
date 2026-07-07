@@ -101,7 +101,7 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
   const displayProjects = mappedProjects.length > 0 ? mappedProjects : fallbackProjects;
 
   return (
-    <section className="px-8 md:px-16 py-32 max-w-screen-2xl mx-auto">
+    <section className="px-8 md:px-16 py-32">
       <div className="flex flex-col lg:flex-row justify-between items-end mb-24 gap-12">
         <div className="max-w-3xl">
           <motion.span
