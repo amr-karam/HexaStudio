@@ -19,6 +19,7 @@ COPY --from=builder /app/apps/cms/dist ./dist
 COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/package.json /app/package.json
 COPY --from=builder /app/apps/cms/package.json ./package.json
+RUN mkdir -p /app/apps/cms/public/uploads
 COPY --from=builder /app/apps/cms/config ./config
 COPY --from=builder /app/apps/backend/package.json /app/apps/backend/package.json
 COPY --from=builder /app/apps/frontend/package.json /app/apps/frontend/package.json
