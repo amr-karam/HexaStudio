@@ -1,5 +1,5 @@
 # AI Context & Project State — HEXA Studio
-**Last Updated:** July 05, 2026
+**Last Updated:** July 07, 2026
 **Status:** Phase 5 — Production Deployment Live → Final Polish
 
 This file is the **primary entry point** for any AI agent joining the HEXA Studio project.
@@ -58,6 +58,14 @@ HEXA Studio is a luxury 3D Architecture Visualization platform.
 - [x] **MCP Server**: Running on production (Docker, port 3001) + local dev version in scripts/mcp/
 - [x] **OpenCode Server**: v1.17.13 systemd service on production (port 4096)
 - [x] **DNS**: `opencode.hexastudio.net → 156.206.135.186` configured (Traefik route + SSL pending)
+
+### Recent Fixes (v0.9.0 - July 07)
+- [x] **SSR Crash Fixed**: SmoothScroll dynamic wrapper, JSX comments stripped
+- [x] **Framer Motion v12**: All `ease: 'var(--ease-out-expo)'` replaced with inline cubic-bezier `[0.16, 1, 0.3, 1]`
+- [x] **Studio 404**: `/studio` → redirect to `/about`
+- [x] **Blog Fallback**: 3 fallback articles shown when API fails
+- [x] **Portfolio Grid**: Reformatted, responsive font sizes, fixed hover overlays
+- [x] **Dockerfile**: Reproducible builds with `npm ci`, ARG/ENV for build vars, wget added
 
 ### Remaining
 - [ ] SSL certificate for `opencode.hexastudio.net` (Let's Encrypt — needs DNS to propagate)

@@ -7,12 +7,12 @@
 | 3 | **Visual Design** | **9/10** | Luxury gold accent, comprehensive design system, glass cards, clean typography. **-1** for placeholder social links (`href="#"`). |
 | 4 | **Brand Identity** | **9/10** | Strong "Living Spaces. Visualized." Real logo deployed. Consistent voice. Premium feel. **-1** for no favicon variety. |
 | 5 | **UX** | **8/10** | Skip-to-content, smooth scroll, page transitions, loading screen, error boundaries. **-1** for `cursor: none` globally. **-1** for no toast/notification system. |
-| 6 | **Animation** | **9/10** | GSAP + Framer Motion, custom easings, cinematic page transitions, text reveal, parallax. **-1** for minor timing consistency. |
+| 6 | **Animation** | **9/10** | GSAP + Framer Motion, custom easings (GSAP power3.out / FM cubic-bezier), cinematic page transitions, text reveal, parallax. **-1** for minor timing consistency. |
 | 7 | **Performance** | **7/10** | InstancedMesh, adaptive LOD, code splitting. **-2** for 578kB first-load JS (exceeds 200KB budget). **-1** for no preload links. |
 | 8 | **Accessibility** | **7/10** | Skip link, focus-visible, reduced-motion, scene a11y. **-2** for global `cursor: none`. **-1** for no explicit focus management. |
 | 9 | **SEO** | **8/10** | Global metadata, OG/Twitter, JSON-LD, sitemap.ts. **-1** for no per-page canonicals. **-1** for no hreflang. |
 | 10 | **Security** | **7/10** | CSP added, Let's Encrypt HTTPS active, hardcoded passwords removed. **-2** for Traefik dashboard exposed (insecure: true). **-1** for CMS admin publicly routed. |
-| 11 | **Documentation** | **9/10** | Extensive AGENTS.md, ADRs in place (001-006), design system docs, env example. **-1** for CHANGELOG needing v0.8.0 entry. |
+| 11 | **Documentation** | **9/10** | Extensive AGENTS.md, ADRs in place (001-006), design system docs, env example, CHANGELOG up to date (v0.9.0). |
 
 ---
 

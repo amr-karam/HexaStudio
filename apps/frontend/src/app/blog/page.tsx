@@ -40,33 +40,10 @@ const fallbackArticles = [
 ];
 
 export default function BlogPage() {
-  const { data, isLoading, error } = useArticles();
-
-  if (isLoading) {
-    return (
-      <main className="min-h-screen bg-background pt-32 pb-24">
-        <div className="max-w-screen-2xl mx-auto px-8 md:px-16">
-          <header className="mb-24">
-            <h1 className="text-6xl md:text-8xl font-serif font-light tracking-tighter text-foreground mb-4">
-              Journal
-            </h1>
-          </header>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="animate-pulse">
-                <div className="aspect-[16/10] bg-surface-light mb-6" />
-                <div className="h-6 bg-surface-light w-3/4 mb-2" />
-                <div className="h-4 bg-surface-light w-full" />
-              </div>
-            ))}
-          </div>
-        </div>
-      </main>
-    );
-  }
+  const { data } = useArticles();
 
   const apiArticles = data?.articles ?? [];
-  const articles = apiArticles.length > 0 && !error ? apiArticles : fallbackArticles;
+  const articles = apiArticles.length > 0 ? apiArticles : fallbackArticles;
 
   return (
     <main className="min-h-screen bg-background pt-32 pb-24">
