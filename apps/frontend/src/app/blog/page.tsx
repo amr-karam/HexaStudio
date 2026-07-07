@@ -70,7 +70,7 @@ export default function BlogPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="text-neutral-400 text-lg font-light max-w-2xl mt-8 leading-relaxed"
+            className="text-neutral-400 text-lg font-light mt-8 leading-relaxed"
           >
             Exploring the intersection of spatial design, real-time technology, and the 
             emotional impact of architectural visualization.
