@@ -92,13 +92,13 @@ function ProjectContent({ project }: { project: Project }) {
         <div className="flex justify-between items-start pointer-events-auto">
           <Link 
             href="/portfolio" 
-            className="group flex items-center gap-4 text-[10px] uppercase tracking-[0.4em] text-neutral-500 hover:text-accent transition-colors duration-500"
+            className="group flex items-center gap-4 text-[11px] uppercase tracking-[0.4em] text-neutral-500 hover:text-accent transition-colors duration-500"
           >
             <span className="h-[1px] w-8 bg-neutral-700 group-hover:bg-accent transition-all duration-500" />
             Back to Portfolio
           </Link>
           <div className="text-right">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-neutral-500">
+            <span className="text-[11px] uppercase tracking-[0.4em] text-neutral-500">
               {project.category?.name}
             </span>
           </div>
@@ -135,7 +135,7 @@ function ProjectContent({ project }: { project: Project }) {
         transition={{ delay: 2 }}
         className="absolute bottom-8 right-8 z-10 text-right pointer-events-none"
       >
-        <p className="text-[10px] uppercase tracking-widest text-neutral-600">
+        <p className="text-[11px] uppercase tracking-widest text-neutral-600">
           Interact to Explore
         </p>
         <p className="text-[9px] uppercase tracking-widest text-neutral-700">

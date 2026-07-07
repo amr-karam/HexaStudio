@@ -4,16 +4,13 @@ import React from 'react';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { useArticles } from '@/features/blog/hooks/useArticles'; // Assuming this hook exists based on useArticles in blog/page.tsx
+import { useArticles } from '@/features/blog/hooks/useArticles';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 import { LoadingScreen } from '@/components/LoadingScreen';
 
 export default function ArticleDetailPage() {
   const { slug } = useParams<{ slug: string }>();
-  
-  // In a real app, we would have a useArticle(slug) hook. 
-  // For now, we'll simulate the data fetching using the existing useArticles and finding the one by slug.
   const { data, isLoading, isError } = useArticles();
 
   if (isLoading) return <LoadingScreen />;
@@ -60,7 +57,7 @@ export default function ArticleDetailPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4, ease: 'var(--ease-out-expo)' }}
-              className="text-[10px] uppercase tracking-[0.5em] text-accent mb-6 block"
+              className="text-[11px] uppercase tracking-[0.5em] text-accent mb-6 block"
             >
               {article.category?.name || 'Journal'}
             </motion.span>
@@ -100,7 +97,7 @@ export default function ArticleDetailPage() {
               {article.excerpt}
             </p>
             
-            {/* Simulated content sections to mimic a real editorial layout */}
+
             <div className="flex flex-col gap-12 text-neutral-400 font-light leading-relaxed text-lg">
                <p>
                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
@@ -114,7 +111,7 @@ export default function ArticleDetailPage() {
                     fill
                     className="object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000" 
                   />
-                  <span className="absolute -bottom-8 left-0 text-[10px] uppercase tracking-widest text-neutral-600">
+                  <span className="absolute -bottom-8 left-0 text-[11px] uppercase tracking-widest text-neutral-600">
                     Figure 1.0 — Architectural Detail
                   </span>
                 </div>
@@ -146,7 +143,7 @@ export default function ArticleDetailPage() {
             viewport={{ once: true }}
             className="flex flex-col items-center gap-4"
           >
-            <span className="text-[10px] uppercase tracking-[0.5em] text-neutral-500">
+            <span className="text-[11px] uppercase tracking-[0.5em] text-neutral-500">
               Continue Reading
             </span>
             <Link href="/blog">

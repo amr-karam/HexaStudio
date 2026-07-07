@@ -57,7 +57,7 @@ export default function BlogPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: 'var(--ease-out-expo)' }}
-            className="text-[10px] uppercase tracking-[0.5em] text-neutral-500 mb-6 block"
+            className="text-[11px] uppercase tracking-[0.5em] text-neutral-500 mb-6 block"
           >
             Thoughts & Insights
           </motion.span>
