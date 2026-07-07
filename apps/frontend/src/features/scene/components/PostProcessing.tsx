@@ -19,7 +19,7 @@ export const PostProcessing = ({ quality }: PostProcessingProps) => {
   return (
     <EffectComposer enableNormalPass={false}>
       <>
-        {/* Bloom: Mimics light bleeding from architectural highlights */}
+        
         <Bloom 
           intensity={quality === 'high' ? 0.6 : 0.4} 
           luminanceThreshold={0.9} 
@@ -27,7 +27,7 @@ export const PostProcessing = ({ quality }: PostProcessingProps) => {
           radius={0.3} 
         />
         
-        {/* DOF: Cinematic depth of field for high-end feel */}
+        
         {quality === 'high' && (
           <DepthOfField 
             focusDistance={0.025} 
@@ -36,15 +36,15 @@ export const PostProcessing = ({ quality }: PostProcessingProps) => {
           />
         )}
         
-        {/* Chromatic Aberration: Subtle lens imperfection for organic look */}
+        
         {quality === 'high' && (
           <ChromaticAberration offset={[0.0005, 0.0005]} />
         )}
         
-        {/* Noise: Removes digital banding and adds film-like texture */}
+        
         <Noise opacity={quality === 'high' ? 0.03 : 0.02} />
         
-        {/* Vignette: Draws eye toward the center architectural focus */}
+        
         <Vignette offset={0.2} darkness={1.2} />
       </>
     </EffectComposer>

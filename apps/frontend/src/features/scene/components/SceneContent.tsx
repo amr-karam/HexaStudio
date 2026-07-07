@@ -45,7 +45,7 @@ function ProceduralArchitecture() {
   return (
     <Float speed={0.6} rotationIntensity={0.1} floatIntensity={0.1}>
       <group position={[0, 1.8, 0]}>
-        {/* Main Architectural Base */}
+        
         <mesh castShadow receiveShadow position={[0, 0.3, 0]}>
           <boxGeometry args={[6, 0.2, 4]} />
           <meshPhysicalMaterial
@@ -56,7 +56,7 @@ function ProceduralArchitecture() {
           />
         </mesh>
 
-        {/* Primary Monolith */}
+        
         <mesh castShadow receiveShadow position={[0, 1, 0]}>
           <boxGeometry args={[3, 2, 2]} />
           <meshPhysicalMaterial
@@ -69,7 +69,7 @@ function ProceduralArchitecture() {
           />
         </mesh>
 
-        {/* Accent Column */}
+        
         <mesh castShadow receiveShadow position={[1.8, 1.5, 0]}>
           <boxGeometry args={[0.2, 3, 0.2]} />
           <meshPhysicalMaterial
@@ -82,7 +82,7 @@ function ProceduralArchitecture() {
           />
         </mesh>
 
-        {/* Optimized Floating Geometric Elements using shared geometry/material */}
+        
         {floatElements.positions.map((_, i) => (
           <mesh 
             key={`float-opt-${i}`} 
@@ -102,7 +102,7 @@ function ProceduralArchitecture() {
           />
         ))}
 
-        {/* Optimized Base Lights using shared geometry/material */}
+        
         {lightPositions.map((pos, i) => (
           <mesh
             key={`base-light-opt-${i}`}

@@ -1,6 +1,6 @@
 # Stage 1: Base
 FROM node:20-alpine AS base
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat wget
 WORKDIR /app
 
 # Stage 2: Dependencies
@@ -40,3 +40,4 @@ ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
 CMD ["node", "apps/frontend/server.js"]
+
