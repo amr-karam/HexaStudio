@@ -22,8 +22,8 @@ export default function LoginPage() {
       await login(form.identifier, form.password);
       toast.success('Welcome back to HexaStudio.');
       router.push('/portal');
-    } catch (error: any) {
-      toast.error(error.message || 'Invalid credentials. Please try again.');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Invalid credentials. Please try again.');
     } finally {
       setIsLoading(false);
     }

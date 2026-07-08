@@ -251,7 +251,7 @@ export default function PortalPage() {
                   <select 
                     className="w-full bg-transparent border-b border-border py-3 px-0 text-sm transition-all duration-500 outline-none focus:border-accent text-foreground placeholder:text-neutral-600 placeholder:text-xs placeholder:uppercase placeholder:tracking-widest"
                     value={requestForm.priority}
-                    onChange={(e) => setRequestForm({...requestForm, priority: e.target.value as any})}
+                    onChange={(e) => setRequestForm({...requestForm, priority: e.target.value as 'low' | 'medium' | 'high'})}
                   >
                     <option value="low" className="bg-surface">Low</option>
                     <option value="medium" className="bg-surface">Medium</option>

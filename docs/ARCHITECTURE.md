@@ -48,7 +48,7 @@ PostgreSQL and Redis have **no published ports**. Only services on both networks
 - Routes by `Host()` header using env vars (`FRONTEND_HOST`, `API_HOST`, etc.)
 - Dynamic middlewares: secure headers, compression, rate limiting
 - Prometheus metrics on `:8080`
-- Production: enable ACME/Let's Encrypt via `TRAEFIK_ACME_ENABLED` (TODO)
+- Production: enable ACME/Let's Encrypt via `TRAEFIK_ACME_ENABLED`
 
 ### Next.js Frontend (`apps/frontend`)
 
@@ -70,7 +70,7 @@ PostgreSQL and Redis have **no published ports**. Only services on both networks
 - **Standardized API:** Global Exception Filter ensures consistent `ApiResponse<T>` format across all endpoints.
 - Security: Helmet, CORS (env), `@nestjs/throttler` rate limiting
 - Validation: `class-validator` global pipe
-- JWT/Passport deps installed (auth modules TBD)
+- Authentication: JWT-based auth with `UsersModule` and `AuthModule` implemented
 - Sentry via `SENTRY_DSN`
 
 ### Strapi CMS (`apps/cms`)
@@ -87,7 +87,7 @@ PostgreSQL and Redis have **no published ports**. Only services on both networks
 ### Redis 7
 
 - Password-protected, AOF persistence
-- Use cases: sessions, cache, rate limiting, queues (wiring TBD)
+- Use cases: rate limiting (via `@nestjs/throttler`) and cache
 
 ### MinIO
 
@@ -142,7 +142,7 @@ cp .env.example .env
 3. Enable WAF rules, bot protection as needed
 4. Optional: restrict origin to Cloudflare IPs only (iptables/nginx)
 
-### SSL / TLS (TODO)
+### SSL / TLS
 
 - Option A: Cloudflare origin certificate on Traefik
 - Option B: Let's Encrypt via Traefik ACME (`TRAEFIK_ACME_ENABLED=true`)
@@ -169,18 +169,14 @@ docker compose up -d --build
 - [ ] Cloudflare WAF rules
 - [ ] Strapi admin hardening (2FA, IP allowlist)
 
-## What's Still TODO
+## Current Status
 
 1. **SSL/TLS** — Traefik ACME or Cloudflare origin certs
 2. **Cloudflare** — DNS, WAF, cache rules for static/3D assets
 3. **Sentry** — Add DSNs to production `.env`
-4. **Auth** — JWT login/register flows in NestJS
-5. **Strapi content types** — blog, portfolio, services, testimonials, SEO
-6. **MinIO integration** — Backend upload service for 3D assets
-7. **Redis wiring** — Sessions, Bull queues in NestJS
-8. **Grafana dashboards** — Pre-built panels for API/infra metrics
-9. **3D frontend** — R3F scene, GSAP animations, asset loading from MinIO
-10. **Cloudflare origin cert** — Install on Traefik for Full (strict) SSL
+4. **Strapi content types** — blog, portfolio, services, testimonials, SEO
+5. **MinIO integration** — Backend upload service for 3D assets
+6. **Grafana dashboards** — Pre-built panels for API/infra metrics
 
 ## Local Troubleshooting
 

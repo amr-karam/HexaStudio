@@ -7,7 +7,7 @@ export function usePerformanceMonitor() {
   useEffect(() => {
     let frameCount = 0;
     let lastTime = performance.now();
-    const frames = [];
+    const frames: number[] = [];
 
     const calculateFPS = () => {
       const now = performance.now();
