@@ -10,6 +10,7 @@ import { ServicesModule } from "./modules/services/services.module";
 import { ContactModule } from "./modules/contact/contact.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { StorageModule } from "./modules/storage/storage.module";
+import { OdooModule } from "./modules/odoo/odoo.module";
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { StorageModule } from "./modules/storage/storage.module";
     ContactModule,
     AuthModule,
     StorageModule,
+    OdooModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

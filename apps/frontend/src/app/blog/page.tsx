@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useArticles } from '@/features/blog';
 import Link from 'next/link';
+import { TextReveal } from '@/components/ui/TextReveal';
 
 const fallbackArticles = [
   {
@@ -53,24 +54,21 @@ export default function BlogPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block"
+            className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
           >
             Thoughts & Insights
           </motion.span>
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="text-6xl md:text-8xl font-serif font-light tracking-tighter text-foreground leading-tight"
-          >
-            The Architectural <br />
-            <span className="italic text-accent">Journal</span>
-          </motion.h1>
+          <div className="text-6xl md:text-8xl font-serif font-light tracking-tighter text-foreground leading-tight">
+            <TextReveal delay={0.1}>
+              The Architectural <br />
+              <span className="italic text-accent">Journal</span>
+            </TextReveal>
+          </div>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="text-neutral-400 text-lg font-light mt-8 leading-relaxed"
+            className="text-neutral-400 text-lg font-light mt-8 leading-relaxed max-w-3xl"
           >
             Exploring the intersection of spatial design, real-time technology, and the 
             emotional impact of architectural visualization.
@@ -105,11 +103,11 @@ export default function BlogPage() {
                 <div className="flex flex-col gap-4">
                   <div className="flex items-center gap-4">
                     {article.category && (
-                      <span className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-accent font-medium">
+                      <span className="text-[10px] md:text-xs uppercase tracking-[0.4em] text-accent font-mono">
                         {article.category.name}
                       </span>
                     )}
-                    <span className="text-[10px] md:text-xs uppercase tracking-widest text-neutral-600">
+                    <span className="text-[10px] md:text-xs uppercase tracking-widest text-neutral-600 font-mono">
                       {article.readTime} min read
                     </span>
                   </div>

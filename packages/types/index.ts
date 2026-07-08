@@ -12,6 +12,7 @@ export interface Project {
   location?: string;
   year?: number;
   area?: string;
+  status?: string;
   services?: string[];
   isPublished: boolean;
   createdAt: string;

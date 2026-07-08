@@ -27,7 +27,8 @@ function SceneFallback() {
   return (
     <mesh>
       <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color="#1a1a24" wireframe />
+       <meshStandardMaterial color="#1A1A1A" wireframe />
+
     </mesh>
   );
 }
@@ -79,9 +80,10 @@ export const ExperienceCanvas = ({
             shadow-mapSize={[2048, 2048]}
             shadow-bias={-0.001}
           />
-          <directionalLight position={[-5, 5, -5]} intensity={0.3} color="#c9a96e" />
+           <directionalLight position={[-5, 5, -5]} intensity={0.3} color="#D4AF37" />
 
-          <fog attach="fog" args={['#050508', 15, 30]} />
+
+          <fog attach="fog" args={['#050505', 15, 30]} />
 
           <SceneContent projectModelUrl={projectModelUrl} hotspots={hotspots} />
 

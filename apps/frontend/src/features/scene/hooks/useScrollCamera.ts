@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import gsap from 'gsap';
 
 export interface ScrollPathNode {
   position: [number, number, number];
@@ -20,7 +21,6 @@ export function useScrollCamera(path: ScrollPathNode[]) {
       const windowHeight = window.innerHeight;
       const scrollProgress = Math.min(Math.max(scrollY / windowHeight, 0), 1);
 
-      // Find the current segment of the path
       const segmentCount = path.length - 1;
       const segmentProgress = scrollProgress * segmentCount;
       const index = Math.floor(segmentProgress);
@@ -30,31 +30,45 @@ export function useScrollCamera(path: ScrollPathNode[]) {
         const start = path[index];
         const end = path[index + 1];
 
-        // Linear interpolation for position
         const currentPos = new THREE.Vector3().lerpVectors(
           new THREE.Vector3(...start.position),
           new THREE.Vector3(...end.position),
           t
         );
 
-        // Linear interpolation for lookAt
         const currentLookAt = new THREE.Vector3().lerpVectors(
           new THREE.Vector3(...start.lookAt),
           new THREE.Vector3(...end.lookAt),
           t
         );
 
-        camera.position.copy(currentPos);
+        // Use GSAP for smooth smoothing instead of direct assignment
+        gsap.to(camera.position, {
+          x: currentPos.x,
+          y: currentPos.y,
+          z: currentPos.z,
+          duration: 0.4,
+          ease: 'power2.out',
+          overwrite: 'auto',
+        });
+
+        // LookAt needs to be immediate or interpolated manually
         camera.lookAt(currentLookAt);
       } else if (index >= segmentCount) {
         const last = path[path.length - 1];
-        camera.position.set(...last.position);
+        gsap.to(camera.position, {
+          x: last.position[0],
+          y: last.position[1],
+          z: last.position[2],
+          duration: 0.4,
+          ease: 'power2.out',
+          overwrite: 'auto',
+        });
         camera.lookAt(new THREE.Vector3(...last.lookAt));
       }
     };
 
     window.addEventListener('scroll', handleScroll);
-    // Initial call to set camera
     handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);

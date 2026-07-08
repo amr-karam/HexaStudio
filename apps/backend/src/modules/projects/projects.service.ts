@@ -3,6 +3,7 @@ import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { Project, ProjectResponse, Category } from '@hexastudio/types';
 import { getEnv } from '../../config/env';
+import { OdooService } from '../odoo/odoo.service';
 
 interface StrapiRelation {
   data?: { id: number; attributes?: Record<string, unknown> };
@@ -40,7 +41,10 @@ function mapMedia(relation: StrapiRelation | undefined): string | undefined {
 
 @Injectable()
 export class ProjectsService {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly odooService: OdooService,
+  ) {}
 
   private get cmsUrl(): string {
     return getEnv().CMS_URL;
@@ -58,9 +62,31 @@ export class ProjectsService {
     );
 
     const data = response.data;
+    const projects = data.data.map((item: Record<string, unknown>) => this.mapProject(item));
+
+    // Enrich each project with Odoo status
+    const enrichedProjects = await Promise.all(
+      projects.map(async (project) => {
+        try {
+          const odooData = await this.odooService.searchRead(
+            'project.project',
+            [['x_slug', '=', project.slug]],
+            ['stage_id']
+          );
+          if (odooData && odooData.length > 0) {
+            const stage = odooData[0].stage_id;
+            project.status = Array.isArray(stage) ? stage[1] : (stage as any)?.name;
+          }
+        } catch (error) {
+          console.error(`Failed to enrich project ${project.slug} with Odoo data:`, error);
+        }
+        return project;
+      })
+    );
+
     return {
       total: data.meta?.pagination?.total ?? data.data.length,
-      projects: data.data.map((item: Record<string, unknown>) => this.mapProject(item)),
+      projects: enrichedProjects,
     };
   }
 
@@ -79,7 +105,27 @@ export class ProjectsService {
       throw new NotFoundException(`Project with slug "${slug}" not found`);
     }
 
-    return this.mapProject(items[0]);
+    const project = this.mapProject(items[0]);
+
+    try {
+      // Enrich with Odoo data
+      const odooData = await this.odooService.searchRead(
+        'project.project',
+        [['x_slug', '=', slug]],
+        ['stage_id']
+      );
+
+      if (odooData && odooData.length > 0) {
+        // In Odoo, stage_id is often [id, name]
+        const stage = odooData[0].stage_id;
+        project.status = Array.isArray(stage) ? stage[1] : (stage as any)?.name;
+      }
+    } catch (error) {
+      // We don't fail the whole request if Odoo is down (graceful degradation)
+      console.error(`Failed to enrich project ${slug} with Odoo data:`, error);
+    }
+
+    return project;
   }
 
   private mapProject(item: Record<string, unknown>): Project {

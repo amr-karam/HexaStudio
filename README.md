@@ -29,10 +29,12 @@ Our platform is built on three pillars:
 - **3D Engine**: Three.js $\rightarrow$ React Three Fiber $\rightarrow$ @react-three/drei
 - **Motion**: GSAP, Framer Motion, Lenis Smooth Scroll
 - **Styling**: TailwindCSS 4 (Luxury Design System)
+- **Observability**: Sentry-integrated FPS/LCP monitoring
 
 ### Backend (The Intelligence)
 - **BFF**: NestJS (Backend-for-Frontend)
 - **CMS**: Strapi 5 Headless CMS
+- **ERP**: Odoo Integration for real-time project state
 - **Auth**: JWT with httpOnly secure cookies
 - **Validation**: Zod & class-validator
 
@@ -78,10 +80,15 @@ docker compose up -d --build
 Our project utilizes a professional CI/CD pipeline:
 `GitHub Push` $\rightarrow$ `Lint & Test` $\rightarrow$ `Docker Build` $\rightarrow$ `GHCR Registry` $\rightarrow$ `Rolling Update (SSH)` $\rightarrow$ `Health Check` $\rightarrow$ `Live`
 
+---
+
 ## 📖 Documentation
-- [Architecture Guide](docs/ARCHITECTURE.md)
-- [Implementation Roadmap](IMPLEMENTATION_ROADMAP.md)
-- [AI Operating Manual](AGENTS.md)
+Our a-priori operational framework is detailed in the **HEXA-Vision-Playbook**.
+
+- [PROJECT CONSTITUTION](HEXA-Vision-Playbook/00-GOVERNANCE/PROJECT_CONSTITUTION.md) — The highest authority on quality.
+- [SYSTEM ARCHITECTURE](HEXA-Vision-Playbook/01-ARCHITECTURE/SYSTEM_ARCHITECTURE.md) — The technical blueprint.
+- [CODING STANDARDS](HEXA-Vision-Playbook/06-STANDARDS/CODING_STANDARDS.md) — The "Gold Standard" for development.
+- [AI AGENT GUIDE](HEXA-Vision-Playbook/04-AGENTS/AI_AGENT_GUIDE.md) — The manual for AI contributors.
 
 ---
 
