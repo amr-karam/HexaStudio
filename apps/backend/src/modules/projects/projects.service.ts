@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { Project, ProjectResponse, Category } from '@hexastudio/types';
@@ -41,6 +41,8 @@ function mapMedia(relation: StrapiRelation | undefined): string | undefined {
 
 @Injectable()
 export class ProjectsService {
+  private readonly logger = new Logger(ProjectsService.name);
+
   constructor(
     private readonly httpService: HttpService,
     private readonly odooService: OdooService,
@@ -78,7 +80,7 @@ export class ProjectsService {
             project.status = Array.isArray(stage) ? String(stage[1]) : String((stage as Record<string, unknown>)?.name ?? '');
           }
         } catch (error) {
-          console.error(`Failed to enrich project ${project.slug} with Odoo data:`, error);
+          this.logger.error(`Failed to enrich project ${project.slug} with Odoo data:`, error);
         }
         return project;
       })
@@ -121,8 +123,7 @@ export class ProjectsService {
         project.status = Array.isArray(stage) ? String(stage[1]) : String((stage as Record<string, unknown>)?.name ?? '');
       }
     } catch (error) {
-      // We don't fail the whole request if Odoo is down (graceful degradation)
-      console.error(`Failed to enrich project ${slug} with Odoo data:`, error);
+      this.logger.error(`Failed to enrich project ${slug} with Odoo data:`, error);
     }
 
     return project;
