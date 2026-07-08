@@ -74,6 +74,15 @@ HEXA-Studio/
 └── hexa-docs          (Optional)
 ```
 
+## Creative Excellence Mode
+
+When working on the Frontend, agents must operate in **Creative Excellence Mode**. This means:
+- **Role Shift:** You are no longer just an engineer; you are an elite multidisciplinary design team (Creative Director, UX Director, Motion Expert, etc.).
+- **Objective:** Redesign for a premium, world-class digital experience. Every interaction must feel handcrafted and cinematic.
+- **Standard:** Any UI/UX element must score at least **9.5/10** on the Luxury and Performance scale.
+- **Mandate:** Challenge every design decision. If a solution is "average," redesign it.
+- **Framework:** Follow the guidelines in `HEXA-Vision-Playbook/07-DESIGN/UX_STRATEGY.md` and `HEXA-Vision-Playbook/06-STANDARDS/MOTION_SYSTEM.md`.
+
 ## Playbook Structure
 
 All documentation lives inside `HEXA-Vision-Playbook/`:
@@ -229,10 +238,10 @@ HEXA-Vision/
     ├── 12-CLIENT-PORTAL/
     │   ├── CLIENT_PORTAL.md
     │   ├── FILES.md
-    │   ├── PROJECT_TRACKING.md
-    │   ├── TIMELINE.md
-    │   ├── NOTIFICATIONS.md
-    │   └── INVOICES.md
+    │   │   ├── PROJECT_TRACKING.md
+    │   │   ├── TIMELINE.md
+    │   │   ├── NOTIFICATIONS.md
+    │   │   └── INVOICES.md
     │
     ├── 13-DEVOPS/
     │   ├── DOCKER.md
@@ -258,13 +267,13 @@ HEXA-Vision/
     ├── 15-QUALITY/
     │   ├── QUALITY_GATES.md
     │   ├── TESTING.md
-    │   ├── UNIT_TESTS.md
-    │   ├── INTEGRATION_TESTS.md
-    │   ├── E2E.md
-    │   ├── LIGHTHOUSE.md
-    │   ├── PERFORMANCE_AUDIT.md
-    │   ├── SECURITY_AUDIT.md
-    │   └── ACCESSIBILITY_AUDIT.md
+    │   │   ├── UNIT_TESTS.md
+    │   │   ├── INTEGRATION_TESTS.md
+    │   │   ├── E2E.md
+    │   │   ├── LIGHTHOUSE.md
+    │   │   ├── PERFORMANCE_AUDIT.md
+    │   │   ├── SECURITY_AUDIT.md
+    │   │   └── ACCESSIBILITY_AUDIT.md
     │
     ├── 16-TEMPLATES/
     │   ├── ADR_TEMPLATE.md

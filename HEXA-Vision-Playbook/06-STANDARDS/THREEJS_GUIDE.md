@@ -1,44 +1,58 @@
-# Three.js Cinematic Guide: HexaStudio Hero
+# 🧊 THREE.JS & R3F GUIDE: HIGH-PERFORMANCE 3D
 
-## 1. Visual Pipeline
-To achieve "Awwwards-level" fidelity, the pipeline moves from standard rendering to a cinematic post-processing stack.
+**Version:** 1.0 | **Scope:** Frontend | **Standard:** Cinematic Quality / 60 FPS
 
-### Post-Processing Stack
-- **Bloom:** Used to create a "glow" effect on high-intensity lights and metallic highlights.
-    - *Settings:* Threshold: 1.0, Strength: 0.5, Radius: 0.4.
-- **Depth of Field (DOF):** Mimics a real camera lens to focus attention on architectural details while blurring the foreground/background.
-    - *Settings:* Focal length: 35mm, Bokeh: Circular.
-- **Chromatic Aberration:** Very subtle fringe at the edges of the screen to simulate lens imperfection.
-- **Tone Mapping:** Using `ACESFilmicToneMapping` for high dynamic range (HDR) results.
+## 1. THE GOLDEN RULE OF 3D
+**Performance is a Feature.** A beautiful scene that runs at 20 FPS is a failure. We target a consistent 60 FPS on mid-range hardware.
 
-### Lighting & Environment
-- **HDRI:** Using high-resolution `.exr` or `.hdr` maps for physically accurate reflections and ambient lighting.
-- **Contact Shadows:** Soft, blurred shadows directly beneath the model to prevent "floating" objects.
-- **Area Lights:** Strategically placed to define the architectural form and create contrast.
+---
 
-## 2. Interaction Model
-The camera is not static; it responds to the user to create a sense of presence.
+## 2. MEMORY MANAGEMENT (THE ANTI-LEAK PROTOCOL)
 
-- **Mouse Parallax:** The camera subtly shifts position based on mouse coordinates, creating a 3D depth effect.
-- **Spring-Based Motion:** Use `maath` or `GSAP` for smooth, damped movements that avoid abrupt stops.
-- **Focus Points:** The DOF focal point dynamically shifts based on the current active hotspot.
+### I. Manual Disposal
+Three.js does not automatically garbage collect GPU assets. Every custom asset must be disposed of when the component unmounts.
+- **Dispose:** Geometries, Materials, and Textures.
+- **R3F Pattern:** Use `useEffect` cleanup or the `dispose` prop where applicable.
 
-## 3. Optimization Strategy (The 60 FPS Target)
-High fidelity must not compromise performance.
+### II. Asset Optimization
+- **GLB/GLTF:** Always use `.glb` for production.
+- **Draco Compression:** All models MUST be Draco-compressed to reduce binary size.
+- **Texture Power of Two:** Use textures with dimensions that are powers of two (e.g., 1024x1024) for GPU optimization.
+- **KTX2/Basis:** Use KTX2 textures for complex materials to reduce VRAM usage.
 
-### GPU & Memory
-- **Texture Compression:** Use KTX2 or Basis Universal textures to reduce GPU VRAM usage.
-- **Geometry Optimization:** Use `InstancedMesh` for repetitive architectural elements.
-- **LOD (Level of Detail):** Implement simplified meshes for distant views.
+---
 
-### Adaptive Quality
-The system detects GPU capabilities and adjusts:
-- **High:** Full Bloom, DOF, High-res textures, 2x DPR.
-- **Medium:** Reduced Bloom, No DOF, Med-res textures, 1x DPR.
-- **Low:** No post-processing, Low-res textures, 1x DPR, simplified lighting.
+## 3. RENDERING STRATEGIES
 
-## 4. Fallback Mode
-For devices that cannot support WebGL2 or have extreme memory constraints:
-- Replace the 3D canvas with a high-resolution sequence of pre-rendered images (cinemagraph).
-- Disable all post-processing.
-- Use a static `PerspectiveCamera` with no interaction.
+### I. Draw Call Reduction
+- **InstancedMesh:** Use `InstancedMesh` for any repeated geometry (e.g., a forest of trees, a grid of panels).
+- **Merging:** Merge static geometries into a single mesh where possible.
+- **Atlas Textures:** Use texture atlases to reduce the number of materials and draw calls.
+
+### II. Lighting & Shadows
+- **Baked Lighting:** Prefer baked lightmaps over real-time shadows for static environments.
+- **Shadow Maps:** Use `PCFSoftShadowMap` for a luxury feel, but limit the number of shadow-casting lights.
+- **Ambient Occlusion:** Use SSAO (Screen Space Ambient Occlusion) for grounding objects in the scene.
+
+---
+
+## 4. INTERACTION & MOTION
+
+### I. Raycasting Optimization
+- **Layering:** Use `layers` to ensure the raycaster only checks interactable objects.
+- **Throttling:** Never raycast every frame. Throttle to 10-20 times per second.
+
+### II. Camera Transitions
+- **Lerping:** Use `Vector3.lerp` or `Quaternion.slerp` for smooth camera movement.
+- **Damping:** Use `THREE.Quaternion` for rotational stability to avoid gimbal lock.
+
+---
+
+## 5. QUALITY GATE: 3D AUDIT
+A 3D feature is "Done" only when:
+- [ ] FPS is stable at 60 (verified via `stats.js`).
+- [ ] No memory leaks (verified via Chrome Heap Snapshot).
+- [ ] All models are Draco-compressed.
+- [ ] Visuals are audited against the Design System (Materials/Lighting).
+
+*“The goal is not to simulate reality, but to create a cinematic version of it.”*

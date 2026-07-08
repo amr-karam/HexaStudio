@@ -1,0 +1,3 @@
+# Lighthouse
+
+Web performance auditing.
