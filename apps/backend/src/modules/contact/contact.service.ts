@@ -18,7 +18,7 @@ export class ContactService {
         success: true,
         message: 'Thank you for your message. We will get back to you within 24 hours.',
       };
-    } catch (error) {
+    } catch {
       return {
         success: false,
         message: 'Our email system is currently unavailable. Please try again later.',
