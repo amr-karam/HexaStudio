@@ -8,6 +8,7 @@ FROM base AS deps
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 COPY apps/frontend/package.json ./apps/frontend/
 COPY packages/types/package.json ./packages/types/
+COPY packages/ui/package.json ./packages/ui/
 COPY packages/utils/package.json ./packages/utils/
 RUN npm install --no-audit --no-fund --install-strategy=hoisted
 
