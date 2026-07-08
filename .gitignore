@@ -58,3 +58,6 @@ server.log
 
 # LLM chat history
 .llm-chat-history/
+
+# Deploy scripts
+deploy.py
