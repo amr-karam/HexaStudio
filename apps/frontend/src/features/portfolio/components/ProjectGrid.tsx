@@ -127,7 +127,7 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="text-neutral-500 font-light max-w-sm text-sm leading-relaxed"
+          className="text-neutral-500 font-light text-sm leading-relaxed"
         >
           A curation of architectural narratives defined by light, material, and space.
         </motion.p>
