@@ -1,21 +1,21 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #050508;
-  --color-foreground: #f4f4f5;
+  --color-background: #050505;
+  --color-foreground: #FFFFFF;
 
-  --color-surface: #0a0a0f;
-  --color-surface-light: #12121a;
-  --color-surface-dark: #030305;
+  --color-surface: #1A1A1A;
+  --color-surface-light: #262626;
+  --color-surface-dark: #030303;
 
-  --color-border: #1a1a24;
-  --color-border-light: #262634;
-  --color-border-dark: #111118;
+  --color-border: #333333;
+  --color-border-light: #444444;
+  --color-border-dark: #111111;
 
-  --color-accent: #c9a96e;
-  --color-accent-light: #d4bf8a;
-  --color-accent-dark: #a8884a;
-  --color-accent-muted: rgba(201, 169, 110, 0.4);
+  --color-accent: #D4AF37;
+  --color-accent-light: #E5C76B;
+  --color-accent-dark: #B8860B;
+  --color-accent-muted: rgba(212, 175, 55, 0.4);
 
   --color-neutral-50: #fafafa;
   --color-neutral-100: #f4f4f5;
@@ -30,17 +30,18 @@
   --color-neutral-950: #09090b;
 
   --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
   --font-serif: var(--font-playfair), Georgia, serif;
 
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  --spacing-2xl: 3rem;
-  --spacing-3xl: 4rem;
-  --spacing-4xl: 6rem;
-  --spacing-5xl: 8rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 4rem;
+  --spacing-2xl: 8rem;
+  --spacing-3xl: 12rem;
+  --spacing-4xl: 16rem;
+  --spacing-5xl: 20rem;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);

@@ -159,20 +159,26 @@ function ProjectContent({ project }: { project: Project }) {
       <div className="absolute inset-0 pointer-events-none z-[1] bg-gradient-to-t from-background via-transparent to-transparent opacity-60" />
 
       <div className="absolute inset-0 z-10 flex flex-col justify-between p-8 md:p-16 pointer-events-none">
-        <div className="flex justify-between items-start pointer-events-auto">
-          <Link
-            href="/portfolio"
-            className="group flex items-center gap-4 text-[11px] uppercase tracking-[0.4em] text-neutral-500 hover:text-accent transition-colors duration-500"
-          >
-            <span className="h-[1px] w-8 bg-neutral-700 group-hover:bg-accent transition-all duration-500" />
-            Back to Portfolio
-          </Link>
-          <div className="text-right">
-            <span className="text-[11px] uppercase tracking-[0.4em] text-neutral-500">
-              {project.category?.name}
-            </span>
-          </div>
-        </div>
+         <div className="flex justify-between items-start pointer-events-auto">
+           <Link
+             href="/portfolio"
+             className="group flex items-center gap-4 text-[11px] uppercase tracking-[0.4em] text-neutral-500 hover:text-accent transition-colors duration-500"
+           >
+             <span className="h-[1px] w-8 bg-neutral-700 group-hover:bg-accent transition-all duration-500" />
+             Back to Portfolio
+           </Link>
+           <div className="flex flex-col items-end gap-2">
+             <span className="text-[11px] uppercase tracking-[0.4em] text-neutral-500">
+               {project.category?.name}
+             </span>
+             {project.status && (
+               <span className="text-[9px] uppercase tracking-widest text-accent px-2 py-1 border border-accent/30 rounded-full bg-accent/10">
+                 {project.status}
+               </span>
+             )}
+           </div>
+         </div>
+
 
         <div>
           <motion.div

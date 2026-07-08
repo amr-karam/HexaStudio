@@ -44,7 +44,7 @@ const ProjectCard = ({ title, category, image, index, onClick }: ProjectCardProp
 
         <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
           <div className="transition-all duration-500 ease-out-expo">
-            <p className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-accent/80 group-hover:text-accent transition-colors duration-500 mb-2">
+            <p className="text-[10px] md:text-xs uppercase tracking-[0.4em] text-accent/80 group-hover:text-accent transition-colors duration-500 mb-2 font-mono">
               {category}
             </p>
             <h3 className="text-lg md:text-xl lg:text-2xl font-serif font-light text-foreground/90 group-hover:text-foreground transition-colors duration-500 leading-tight">
@@ -118,14 +118,14 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
       <section ref={sectionRef} className="px-8 md:px-16 py-32">
         <div className="flex flex-col lg:flex-row justify-between items-end mb-24 gap-12">
           <div>
-            <motion.span
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block"
-            >
-              Selected Works
-            </motion.span>
+              <motion.span
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
+              >
+                Selected Works
+              </motion.span>
             <motion.h2
               style={{ y: headingY }}
               initial={{ opacity: 0 }}

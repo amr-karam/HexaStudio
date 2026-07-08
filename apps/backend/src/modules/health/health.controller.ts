@@ -1,16 +1,30 @@
 import { Controller, Get } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { OdooService } from "../odoo/odoo.service";
 
 @ApiTags("health")
 @Controller("health")
 export class HealthController {
+  constructor(private readonly odooService: OdooService) {}
+
   @Get()
   @ApiOperation({ summary: "Health check" })
-  check() {
+  async check() {
+    let odooStatus = "unknown";
+    try {
+      await this.odooService.authenticate();
+      odooStatus = "ok";
+    } catch {
+      odooStatus = "error";
+    }
+
     return {
       status: "ok",
       timestamp: new Date().toISOString(),
       service: "hexastudio-api",
+      dependencies: {
+        odoo: odooStatus,
+      },
     };
   }
 }

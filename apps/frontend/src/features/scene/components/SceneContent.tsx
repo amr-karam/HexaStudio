@@ -33,14 +33,15 @@ function ProceduralArchitecture() {
     });
   }, []);
 
-  const { floatGeom, floatMat, lightGeom, lightMat } = useMemo(() => {
-    return {
-      floatGeom: new THREE.BoxGeometry(0.1, 0.5, 0.1),
-      floatMat: new THREE.MeshPhysicalMaterial({ color: '#c9a96e', roughness: 0, metalness: 1, envMapIntensity: 2 }),
-      lightGeom: new THREE.SphereGeometry(0.04, 16, 16),
-      lightMat: new THREE.MeshPhysicalMaterial({ color: '#c9a96e', emissive: '#c9a96e', emissiveIntensity: 5 }),
-    };
-  }, []);
+    const { floatGeom, floatMat, lightGeom, lightMat } = useMemo(() => {
+      return {
+        floatGeom: new THREE.BoxGeometry(0.1, 0.5, 0.1),
+        floatMat: new THREE.MeshPhysicalMaterial({ color: '#D4AF37', roughness: 0, metalness: 1, envMapIntensity: 2 }),
+        lightGeom: new THREE.SphereGeometry(0.04, 16, 16),
+        lightMat: new THREE.MeshPhysicalMaterial({ color: '#D4AF37', emissive: '#D4AF37', emissiveIntensity: 5 }),
+      };
+    }, []);
+
 
   return (
     <Float speed={0.6} rotationIntensity={0.1} floatIntensity={0.1}>
@@ -73,10 +74,10 @@ function ProceduralArchitecture() {
         <mesh castShadow receiveShadow position={[1.8, 1.5, 0]}>
           <boxGeometry args={[0.2, 3, 0.2]} />
           <meshPhysicalMaterial
-            color="#c9a96e"
+            color="#D4AF37"
             roughness={0.1}
             metalness={1}
-            emissive="#c9a96e"
+            emissive="#D4AF37"
             emissiveIntensity={0.2}
             envMapIntensity={2}
           />
@@ -132,18 +133,19 @@ export const SceneContent = ({
         <Hotspot key={hotspot.id} hotspot={hotspot} />
       ))}
 
-      <mesh
-        receiveShadow
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, -0.01, 0]}
-      >
-        <planeGeometry args={[100, 100]} />
-        <meshPhysicalMaterial
-          color="#050508"
-          roughness={0.4}
-          metalness={0.1}
-        />
-      </mesh>
+         <mesh
+           receiveShadow
+           rotation={[-Math.PI / 2, 0, 0]}
+           position={[0, -0.01, 0]}
+         >
+           <planeGeometry args={[100, 100]} />
+           <meshPhysicalMaterial
+             color="#050505"
+             roughness={0.4}
+             metalness={0.1}
+           />
+         </mesh>
+
     </group>
   );
 };

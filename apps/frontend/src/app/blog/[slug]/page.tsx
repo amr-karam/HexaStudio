@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { fetchArticle, fetchArticles } from '@/features/blog/lib/fetchArticles';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
+import { TextReveal } from '@/components/ui/TextReveal';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -100,23 +101,20 @@ export default async function ArticleDetailPage({ params }: PageProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="text-[10px] uppercase tracking-[0.5em] text-accent mb-6 block"
+              className="text-[10px] uppercase tracking-[0.5em] text-accent mb-6 block font-mono"
             >
               {article.category?.name || 'Journal'}
             </motion.span>
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="text-5xl md:text-8xl font-serif font-light tracking-tighter leading-tight mb-8"
-            >
-              {article.title}
-            </motion.h1>
+            <div className="text-5xl md:text-8xl font-serif font-light tracking-tighter leading-tight mb-8">
+              <TextReveal delay={0.6}>
+                {article.title}
+              </TextReveal>
+            </div>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.8 }}
-              className="flex items-center gap-6 text-neutral-400 text-xs uppercase tracking-widest"
+              className="flex items-center gap-6 text-neutral-400 text-xs uppercase tracking-widest font-mono"
             >
               <span>{article.readTime} min read</span>
               <span className="w-1 h-1 rounded-full bg-neutral-600" />
@@ -127,7 +125,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
       </section>
 
       <section className="px-8 md:px-16 py-24">
-        <div className="mx-auto">
+        <div className="mx-auto max-w-3xl">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -135,7 +133,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="prose prose-invert prose-neutral max-w-none"
           >
-            <p className="text-xl md:text-2xl font-light text-neutral-300 leading-relaxed mb-12 italic">
+            <p className="text-xl md:text-2xl font-light text-neutral-300 leading-relaxed mb-12 italic border-l-2 border-accent pl-6">
               {article.excerpt}
             </p>
 
@@ -160,7 +158,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
             viewport={{ once: true }}
             className="flex flex-col items-center gap-4"
           >
-            <span className="text-[10px] uppercase tracking-[0.5em] text-neutral-500">
+            <span className="text-[10px] uppercase tracking-[0.5em] text-neutral-500 font-mono">
               Continue Reading
             </span>
             <Link href="/blog">
@@ -174,4 +172,3 @@ export default async function ArticleDetailPage({ params }: PageProps) {
     </main>
   );
 }
-
