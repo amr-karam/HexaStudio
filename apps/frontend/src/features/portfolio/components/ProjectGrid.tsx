@@ -69,14 +69,14 @@ const fallbackProjects = [
   {
     title: 'Lumina Pavilion',
     category: 'Commercial',
-    image: 'https://images.unsplash.com/photo-1487958449943-2429e8be6c6?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
     slug: 'lumina-pavilion',
     description: 'A translucent commercial pavilion that appears to float above its waterfront site. ETFE cushions and precisions steel form a crystalline envelope that refracts sunlight throughout the day.',
   },
   {
     title: 'Azure Heights',
     category: 'Residential',
-    image: 'https://images.unsplash.com/photo-1600607687644-c94bf900a9a7?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80',
     slug: 'azure-heights',
     description: 'A vertical garden tower in the heart of the city, where every residence opens to sky terraces with cascading greenery. The facade breathes — opening and closing in response to solar exposure.',
   },
