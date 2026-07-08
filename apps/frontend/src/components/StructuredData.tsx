@@ -1,1 +1,29 @@
-import React from 'react';export function StructuredData() {  const schema = {    '@context': 'https://schema.org',    '@type': 'ProfessionalService',    name: 'HexaStudio',    description:      'Living Spaces. Visualized. Immersive 3D architectural experiences for the world\'s most ambitious projects.',    url: 'https://hexastudio.net',    logo: 'https://hexastudio.net/logo.svg',    sameAs: ['https://instagram.com/hexastudio', 'https://linkedin.com/company/hexastudio'],    areaServed: 'Worldwide',    serviceType: [      'Architectural Visualization',      'Real-Time 3D Experiences',      'Cinematic Animation',      'Visual Consulting',    ],  };  return (    <script      type="application/ld+json"      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}    />  );}
+import React from "react";
+export function StructuredData() {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    name: "HexaStudio",
+    description:
+      "Living Spaces. Visualized. Immersive 3D architectural experiences for the world's most ambitious projects.",
+    url: "https://hexastudio.net",
+    logo: "https://hexastudio.net/logo.svg",
+    sameAs: [
+      "https://instagram.com/hexastudio",
+      "https://linkedin.com/company/hexastudio",
+    ],
+    areaServed: "Worldwide",
+    serviceType: [
+      "Architectural Visualization",
+      "Real-Time 3D Experiences",
+      "Cinematic Animation",
+      "Visual Consulting",
+    ],
+  };
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
