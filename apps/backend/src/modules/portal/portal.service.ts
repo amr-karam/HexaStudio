@@ -28,7 +28,7 @@ export class PortalService {
 
   async getClientProjectData(clientId: string) {
     // In a real scenario, we'd filter projects by clientId
-    const projects = await this.projectsService.findAll();
+    const projects = (await this.projectsService.getAllProjects()).projects;
     const project = projects[0]; // Mocking for the first project
 
     return {

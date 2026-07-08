@@ -3,6 +3,7 @@
 import React, { useRef, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import gsap from 'gsap';
 import { useAssetLoader } from '@/features/scene/hooks/useAssetLoader';
 import { useCameraStore } from '../store/camera-store';
 import { useAdaptiveQuality } from '@/hooks/useAdaptiveQuality';
@@ -15,8 +16,7 @@ interface ModelProps {
 
 /**
  * ArchitecturalModel loads and displays a 3D project model with Draco compression.
- * It implements dynamic quality scaling by adjusting material properties 
- * based on the detected device performance.
+ * It implements dynamic quality scaling and a cinematic entrance animation.
  */
 export const ArchitecturalModel = ({ url, position = [0, 0, 0], scale = 1 }: ModelProps) => {
   const { model } = useAssetLoader(url);
@@ -27,12 +27,30 @@ export const ArchitecturalModel = ({ url, position = [0, 0, 0], scale = 1 }: Mod
   useEffect(() => {
     if (!model) return;
 
-    // Implement Adaptive Quality (LOD) on Materials
+    // 1. Cinematic Entrance Animation
+    if (groupRef.current) {
+      groupRef.current.scale.set(0, 0, 0);
+      gsap.to(groupRef.current.scale, {
+        x: scale,
+        y: scale,
+        z: scale,
+        duration: 1.5,
+        ease: 'power4.out',
+        delay: 0.2,
+      });
+      
+      gsap.from(groupRef.current.rotation, {
+        y: Math.PI * 0.2,
+        duration: 2,
+        ease: 'power2.out',
+      });
+    }
+
+    // 2. Adaptive Quality (LOD) on Materials
     model.traverse((child: THREE.Object3D) => {
       if (child instanceof THREE.Mesh) {
         const mat = child.material;
         
-        // Reduce sampling and complexity for lower quality levels
         if (level === 'low') {
           if (mat instanceof THREE.MeshPhysicalMaterial) {
             mat.clearcoat = 0;
@@ -46,7 +64,6 @@ export const ArchitecturalModel = ({ url, position = [0, 0, 0], scale = 1 }: Mod
             mat.envMapIntensity = 1.0;
           }
         } else {
-          // High quality: Maximum fidelity
           if (mat instanceof THREE.MeshPhysicalMaterial) {
             mat.clearcoat = 1;
             mat.roughness = 0.1;
@@ -70,16 +87,16 @@ export const ArchitecturalModel = ({ url, position = [0, 0, 0], scale = 1 }: Mod
         });
       }
     };
-  }, [model, level]);
+  }, [model, level, scale]);
 
   useFrame(() => {
     if (!groupRef.current || isTransitioning) return;
-    groupRef.current.rotation.y += 0.0005; // Slower, more elegant rotation
+    groupRef.current.rotation.y += 0.0005;
   });
 
   return (
-    <group ref={groupRef} position={position} scale={scale}>
-      <primitive object={model} />
+    <group ref={groupRef} position={position}>
+      <primitive object={model} scale={scale} />
     </group>
   );
 };
