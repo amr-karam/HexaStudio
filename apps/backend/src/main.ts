@@ -1,5 +1,5 @@
 import { NestFactory } from "@nestjs/core";
-import { ValidationPipe } from "@nestjs/common";
+import { Logger, ValidationPipe } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import helmet from "helmet";
 import * as Sentry from "@sentry/node";
@@ -18,6 +18,7 @@ async function bootstrap() {
   }
 
   const app = await NestFactory.create(AppModule);
+  const logger = new Logger('Bootstrap');
 
   app.use(helmet());
   app.setGlobalPrefix("api");
@@ -45,11 +46,11 @@ async function bootstrap() {
       .build();
     const document = SwaggerModule.createDocument(app, swaggerConfig);
     SwaggerModule.setup("api/docs", app, document);
-    console.log("Swagger docs available at /api/docs");
+    logger.log("Swagger docs available at /api/docs");
   }
 
   await app.listen(env.PORT, "0.0.0.0");
-  console.log(`API listening on port ${env.PORT}`);
+  logger.log(`API listening on port ${env.PORT}`);
 }
 
 bootstrap();
