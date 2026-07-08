@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { PortalService } from './portal.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
@@ -8,14 +8,12 @@ export class PortalController {
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
-  async getMyPortalData(@Param('clientId') clientId: string) {
-    // In real world, clientId comes from JWT token
-    return this.portalService.getClientProjectData('mock-client-id');
+  async getMyPortalData() {
+    return this.portalService.getClientProjectData();
   }
 
-  // For development/demo purpose, providing a public endpoint
   @Get('demo')
   async getDemoPortalData() {
-    return this.portalService.getClientProjectData('demo-client-id');
+    return this.portalService.getClientProjectData();
   }
 }

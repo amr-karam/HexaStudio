@@ -1,8 +1,8 @@
 # ADR-001: Monorepo Structure
 
-**Status:** Accepted  
-**Date:** 2026-07-08  
-**Deciders:** Chief Architect, DevOps Engineer  
+**Status:** Accepted
+**Date:** 2026-07-08
+**Deciders:** Chief Architect, DevOps Engineer
 
 ---
 
@@ -24,6 +24,7 @@ hexa-studio/
 │   └── cms/         # Strapi
 ├── packages/
 │   ├── types/       # Shared TypeScript types
+│   ├── ui/          # Shared UI components
 │   └── utils/       # Shared utilities
 ├── docker/           # Infrastructure configs
 ├── scripts/          # Utility scripts

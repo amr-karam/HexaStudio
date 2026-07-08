@@ -47,7 +47,7 @@ export class OdooService {
     }
   }
 
-  async execute(model: string, method: string, args: any[]): Promise<any> {
+  async execute<T = unknown>(model: string, method: string, args: unknown[]): Promise<T> {
     await this.authenticate();
 
     return new Promise((resolve, reject) => {
@@ -68,9 +68,9 @@ export class OdooService {
     });
   }
 
-  async searchRead(model: string, domain: any[], fields: string[]): Promise<any[]> {
-    const ids = await this.execute(model, 'search', [domain]);
+  async searchRead(model: string, domain: unknown[], fields: string[]): Promise<Record<string, unknown>[]> {
+    const ids = await this.execute<number[]>(model, 'search', [domain]);
     if (!ids || ids.length === 0) return [];
-    return this.execute(model, 'read', [ids, fields]);
+    return this.execute<Record<string, unknown>[]>(model, 'read', [ids, fields]);
   }
 }

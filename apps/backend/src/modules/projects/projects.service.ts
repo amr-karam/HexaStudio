@@ -75,7 +75,7 @@ export class ProjectsService {
           );
           if (odooData && odooData.length > 0) {
             const stage = odooData[0].stage_id;
-            project.status = Array.isArray(stage) ? stage[1] : (stage as any)?.name;
+            project.status = Array.isArray(stage) ? String(stage[1]) : String((stage as Record<string, unknown>)?.name ?? '');
           }
         } catch (error) {
           console.error(`Failed to enrich project ${project.slug} with Odoo data:`, error);
@@ -118,7 +118,7 @@ export class ProjectsService {
       if (odooData && odooData.length > 0) {
         // In Odoo, stage_id is often [id, name]
         const stage = odooData[0].stage_id;
-        project.status = Array.isArray(stage) ? stage[1] : (stage as any)?.name;
+        project.status = Array.isArray(stage) ? String(stage[1]) : String((stage as Record<string, unknown>)?.name ?? '');
       }
     } catch (error) {
       // We don't fail the whole request if Odoo is down (graceful degradation)

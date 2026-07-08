@@ -26,8 +26,7 @@ export interface PortalInvoice {
 export class PortalService {
   constructor(private readonly projectsService: ProjectsService) {}
 
-  async getClientProjectData(clientId: string) {
-    // In a real scenario, we'd filter projects by clientId
+  async getClientProjectData() {
     const projects = (await this.projectsService.getAllProjects()).projects;
     const project = projects[0]; // Mocking for the first project
 
