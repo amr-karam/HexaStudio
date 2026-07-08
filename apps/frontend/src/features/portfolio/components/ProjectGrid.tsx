@@ -103,7 +103,7 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
   return (
     <section className="px-8 md:px-16 py-32">
       <div className="flex flex-col lg:flex-row justify-between items-end mb-24 gap-12">
-        <div className="max-w-3xl">
+        <div>
           <motion.span
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
