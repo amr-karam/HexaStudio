@@ -95,7 +95,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
         </motion.div>
 
         <div className="absolute inset-0 flex flex-col justify-end px-8 md:px-16 pb-16">
-          <div className="max-w-4xl">
+          <div>
             <motion.span
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -127,7 +127,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
       </section>
 
       <section className="px-8 md:px-16 py-24">
-        <div className="max-w-3xl mx-auto">
+        <div className="mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -153,7 +153,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
       </section>
 
       <section className="px-8 md:px-16 py-32 border-t border-border/50 bg-surface">
-        <div className="max-w-3xl mx-auto flex flex-col items-center text-center gap-12">
+        <div className="flex flex-col items-center text-center gap-12">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
