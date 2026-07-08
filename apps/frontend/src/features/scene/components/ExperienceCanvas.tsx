@@ -1,13 +1,14 @@
 'use client';
 
-import React, { Suspense, useRef, lazy } from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Canvas } from '@react-three/fiber';
 import {
   OrbitControls,
   PerspectiveCamera,
-  Environment,
   ContactShadows,
+  Stage,
 } from '@react-three/drei';
+
 import { SceneContent } from './SceneContent';
 import { CameraController } from './CameraController';
 const PostProcessing = lazy(() => import('./PostProcessing').then((module) => ({ default: module.PostProcessing })));
@@ -28,7 +29,6 @@ function SceneFallback() {
     <mesh>
       <boxGeometry args={[1, 1, 1]} />
        <meshStandardMaterial color="#1A1A1A" wireframe />
-
     </mesh>
   );
 }
@@ -40,8 +40,6 @@ export const ExperienceCanvas = ({
 }: ExperienceCanvasProps) => {
   const { level, settings } = useAdaptiveQuality();
   const { isTransitioning } = useCameraStore();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const controlsRef = useRef<any>(null);
 
   return (
     <div className="absolute inset-0 -z-10 h-full w-full">
@@ -53,7 +51,7 @@ export const ExperienceCanvas = ({
           antialias: true,
           powerPreference: 'high-performance',
           toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.0,
+          toneMappingExposure: 1.2,
         }}
       >
         <Suspense fallback={<SceneFallback />}>
@@ -61,7 +59,6 @@ export const ExperienceCanvas = ({
           <CameraController />
 
           <OrbitControls
-            ref={controlsRef}
             enablePan={false}
             minPolarAngle={Math.PI / 4}
             maxPolarAngle={Math.PI / 2}
@@ -71,8 +68,15 @@ export const ExperienceCanvas = ({
             enableDamping
           />
 
-          <Environment preset="city" />
-          <ambientLight intensity={0.3} />
+          <Stage 
+            intensity={0.5} 
+            environment="city" 
+            shadows={true} 
+            adjustCamera={false}
+          >
+            <SceneContent projectModelUrl={projectModelUrl} hotspots={hotspots} />
+          </Stage>
+          
           <directionalLight
             position={[10, 15, 5]}
             intensity={1.5}
@@ -80,19 +84,16 @@ export const ExperienceCanvas = ({
             shadow-mapSize={[2048, 2048]}
             shadow-bias={-0.001}
           />
-           <directionalLight position={[-5, 5, -5]} intensity={0.3} color="#D4AF37" />
-
+           <directionalLight position={[-5, 5, -5]} intensity={0.5} color="#D4AF37" />
 
           <fog attach="fog" args={['#050505', 15, 30]} />
 
-          <SceneContent projectModelUrl={projectModelUrl} hotspots={hotspots} />
-
           <ContactShadows
             position={[0, -0.01, 0]}
-            opacity={0.5}
-            scale={15}
-            blur={2.5}
-            far={6}
+            opacity={0.6}
+            scale={20}
+            blur={3}
+            far={10}
           />
 
           <Suspense fallback={null}>
@@ -105,4 +106,5 @@ export const ExperienceCanvas = ({
 };
 
 export type { ExperienceCanvasProps };
+
 

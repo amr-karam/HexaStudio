@@ -66,7 +66,7 @@ export class ProjectsService {
 
     // Enrich each project with Odoo status
     const enrichedProjects = await Promise.all(
-      projects.map(async (project) => {
+      projects.map(async (project: Project) => {
         try {
           const odooData = await this.odooService.searchRead(
             'project.project',
