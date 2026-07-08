@@ -61,3 +61,12 @@ server.log
 
 # Deploy scripts
 deploy.py
+
+# Large 3D source assets (not web-ready)
+*.max
+*.rar
+*.zip
+*.7z
+*.fbx
+*.obj
+apps/frontend/public/models/.gitkeep
