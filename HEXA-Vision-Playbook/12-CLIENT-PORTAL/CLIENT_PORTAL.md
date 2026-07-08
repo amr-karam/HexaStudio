@@ -1,58 +1,61 @@
-# 💻 CLIENT PORTAL: THE EXCLUSIVE GATEWAY
+# Client Portal UX Strategy
 
-**Version:** 1.0 | **Scope:** Client $\rightarrow$ Project | **Standard:** White-Glove / Transparent
-
-## 1. THE PORTAL PHILOSOPHY
-The Client Portal is not a "dashboard"; it is a **Digital Concierge**. It is the place where the client feels the luxury of the HEXA experience through transparency and effortless access to their project.
+**Version:** 1.0.0  
+**Last Updated:** 2026-07-08  
 
 ---
 
-## 2. CORE FUNCTIONALITIES
+## Core Objective
 
-### I. Project Tracking (The Timeline)
-- **Visual Roadmap:** A high-fidelity timeline showing completed and upcoming milestones.
-- **Real-Time Status:** Sync with Odoo to show the current phase of the project.
-- **Milestone Approval:** Allow clients to "Sign-off" on milestones directly from the portal.
+The Client Portal is not just a file repository; it is a **concierge experience**. It must transform the anxiety of a construction/design project into a feeling of progress, transparency, and luxury.
 
-### II. Asset Management (The Vault)
-- **Document Hub:** Secure access to all project deliverables, contracts, and invoices.
-- **Version Control:** Clear history of all shared files.
-- **S3 Integration:** Fast, secure downloads via MinIO.
+## UX Pillars
 
-### III. Communication (The Direct Line)
-- **Message Center:** A dedicated channel for project-specific communication.
-- **Appointment Scheduling:** Integration with Odoo/Calendar for booking sync calls.
+### 1. Radical Transparency
+Clients should never have to email the studio to ask "What is the status of my project?".
+- **Live Timeline:** A visual progress bar showing completed and upcoming milestones.
+- **Real-time Updates:** Notifications for every la-log event (e.g., "Your la-logs have been updated").
+- **Direct Access:** Instant access to all approved deliverables.
 
----
+### 2. Frictionless Collaboration
+Collaboration should be intuitive and integrated.
+- **Contextual Feedback:** Ability to leave comments directly on specific deliverables.
+- **One-Click Approval:** Simple "Approve" button for milestones and proposals.
+- **Secure Uploads:** Drag-and-drop interface for reference images and documents.
 
-## 3. USER EXPERIENCE (The "White-Glove" Feel)
+### 3. Premium Aesthetic
+The portal must match the "Creative Excellence" of the main site.
+- **Glassmorphism:** Use of blur and transparency for overlays.
+- **Cinematic Transitions:** Smooth page entries and layout animations.
+- **Immersive Previews:** Embed 3D scenes directly in the portal.
 
-### I. Personalization
-- **Client Branding:** The portal adapts its colors and logo to match the client's brand.
-- **Welcome Experience:** A personalized greeting and a summary of "What's happening now."
+## User Journey Map
 
-### II. Simplicity
-- **One-Click Access:** The most important information (e.g., "Next Meeting", "Latest Deliverable") is always one click away.
-- **Zero Friction:** No complex navigation; a lean, focused interface.
+```
+Login → Dashboard (Summary) → Project View (Detail) → Files/Timeline/Messages
+```
 
----
+### Dashboard (The "At-a-Glance" View)
+- **Welcome:** Personalized greeting with current project status.
+- **Next Milestone:** Large card showing the upcoming deliverable and its date.
+- **Recent Activity:** List of the last 3 updates (e.g., "New render uploaded").
+- **Quick Actions:** "Request Call", "Upload File", "View Invoice".
 
-## 4. SECURITY & PRIVACY (The Fortress)
+### Project Detail (The "Deep Dive")
+- **Visual Gallery:** Grid of all approved renders.
+- **Interactive Timeline:** Expandable milestones with detailed descriptions.
+- **Team Section:** Profiles of the architects and artists working on the project.
 
-### I. Access Control
-- **JWT Authentication:** Secure, token-based access.
-- **Role-Based Access (RBAC):** Different levels of access for the Client CEO vs. the Client Project Manager.
+## Accessibility in the Portal
 
-### II. Data Isolation
-- **Strict Multi-Tenancy:** Ensure that Client A can never see Client B's data under any circumstances.
+Since clients may vary in technical ability:
+- **Simple Navigation:** No complex nested menus.
+- **Clear Call-to-Actions:** High-contrast buttons for primary tasks.
+- **Device Agnostic:** Full functionality on tablets and smartphones.
 
----
+## Success Metrics
 
-## 5. QUALITY GATE: PORTAL AUDIT
-A portal feature is "Portal-Done" only when:
-- [ ] The experience is "White-Glove" (Zero friction, high luxury).
-- [ ] Data is perfectly synced with Odoo.
-- [ ] All documents are secure and accessible.
-- [ ] The UI is fully responsive (Mobile/Tablet/Desktop).
-
-*“Transparency is the highest form of luxury.”*
+- **Login Frequency:** How often clients check their project status.
+- **Approval Time:** Average time from "Proposal Sent" to "Proposal Accepted".
+- **Support Tickets:** Reduction in "status update" emails.
+- **NPS:** Client satisfaction score upon project delivery.

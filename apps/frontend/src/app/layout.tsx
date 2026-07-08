@@ -8,6 +8,7 @@ import { PageTransition } from "@/components/PageTransition";
 import { SmoothScrollWrapper } from "@/components/SmoothScrollWrapper";
 import { CustomCursor } from "@/components/CustomCursor";
 import { BackToTop } from "@/components/BackToTop";
+import { CinematicPreloader } from "@/components/ui/overlays/CinematicPreloader";
 import "./globals.css";
 
 const inter = Inter({
@@ -75,6 +76,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable}`}>
       <body className="min-h-screen bg-background text-foreground antialiased">
         <AppProviders>
+          <CinematicPreloader />
           <StructuredData />
           <CustomCursor />
           <a

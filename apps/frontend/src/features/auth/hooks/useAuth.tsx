@@ -13,7 +13,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -24,26 +24,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     fetchUser();
   }, []);
 
-  const fetchUser = async () => {
-    try {
-      const response = await fetch(`${API_URL}/api/auth/me`, {
-        credentials: 'include', // Include cookies
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setUser(data.data ?? data);
-      } else {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch(`${API_URL}/users/me`, {
+          credentials: 'include', // Include cookies
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data.data ?? data);
+        } else {
+          setUser(null);
+        }
+      } catch {
         setUser(null);
+      } finally {
+        setIsLoading(false);
       }
-    } catch {
-      setUser(null);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    };
+
 
   const login = async (identifier: string, password: string) => {
-    const response = await fetch(`${API_URL}/api/auth/login`, {
+    const response = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include', // Include cookies
@@ -60,7 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const register = async (email: string, username: string, password: string) => {
-    const response = await fetch(`${API_URL}/api/auth/register`, {
+    const response = await fetch(`${API_URL}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include', // Include cookies
@@ -78,7 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = useCallback(async () => {
     try {
-      await fetch(`${API_URL}/api/auth/logout`, {
+      await fetch(`${API_URL}/auth/logout`, {
         method: 'POST',
         credentials: 'include',
       });

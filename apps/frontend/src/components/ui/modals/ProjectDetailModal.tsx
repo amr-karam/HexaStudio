@@ -13,6 +13,7 @@ interface ModalProject {
   image: string;
   slug: string;
   description?: string;
+  status?: string;
 }
 
 interface ProjectDetailModalProps {
@@ -85,14 +86,22 @@ export const ProjectDetailModal = ({ isOpen, onClose, project }: ProjectDetailMo
 
               <div className="lg:col-span-5 flex flex-col justify-center p-8 md:p-16 bg-surface gap-8">
                 <div>
-                  <motion.span
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                    className="text-[11px] uppercase tracking-[0.5em] text-accent font-mono"
-                  >
-                    {project.category}
-                  </motion.span>
+                    <div className="flex flex-col items-start gap-2">
+                      <motion.span
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.2, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                        className="text-[11px] uppercase tracking-[0.5em] text-accent font-mono"
+                      >
+                        {project.category}
+                      </motion.span>
+                      {project.status && (
+                        <span className="text-[9px] uppercase tracking-widest text-accent px-2 py-0.5 border border-accent/30 rounded-full bg-accent/10 font-mono">
+                          {project.status}
+                        </span>
+                      )}
+                    </div>
+
                   <div className="mt-6">
                     <TextReveal delay={0.3}>
                       <h2 className="text-4xl md:text-6xl font-serif font-light tracking-tight text-foreground leading-tight">
