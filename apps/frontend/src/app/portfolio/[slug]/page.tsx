@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const baseUrl = 'https://hexastudio.net';
-  const imageUrl = project.coverImage ? `${project.coverImage}?w=1200&q=80` : `${baseUrl}/logo.webp`;
+  const imageUrl = project.coverImage ? `${project.coverImage}?w=1200&q=80` : `${baseUrl}/logo.svg`;
 
   return {
     title: `${project.title} | HexaStudio`,

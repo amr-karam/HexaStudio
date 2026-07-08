@@ -11,6 +11,22 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      {
+        protocol: "https",
+        hostname: "*.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "storage.hexastudio.net",
+      },
+      {
+        protocol: "https",
+        hostname: "*.hexastudio.net",
+      },
+      {
+        protocol: "https",
+        hostname: "minio.*",
+      },
     ],
   },
 };
