@@ -8,5 +8,6 @@ import { OdooModule } from '../odoo/odoo.module';
   imports: [HttpModule, OdooModule],
   controllers: [ProjectsController],
   providers: [ProjectsService],
+  exports: [ProjectsService],
 })
 export class ProjectsModule {}
