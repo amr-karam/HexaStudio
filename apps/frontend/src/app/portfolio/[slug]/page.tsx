@@ -1,223 +1,186 @@
-import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import React, { Suspense } from 'react';
+import type { Metadata } from 'next';
 import { motion } from 'framer-motion';
-import { fetchProject, fetchProjects } from '@/features/portfolio/lib/fetchProjects';
-import { LazySceneCanvas, SceneErrorBoundary } from '@/features/scene';
-import { LoadingScreen } from '@/components/LoadingScreen';
-import { Button } from '@/components/ui/Button';
-import { ProjectStructuredData } from '@/components/ProjectStructuredData';
+import Image from 'next/image';
 import Link from 'next/link';
-import { Project } from '@hexastudio/types';
+import { useParams } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
+import { TextReveal } from '@/components/ui/TextReveal';
+import { Button } from '@/components/ui/Button';
+import { projectsService } from '@/services/projects.service';
 
-interface PageProps {
-  params: Promise<{ slug: string }>;
+interface ProjectPageProps {
+  params: { slug: string };
 }
 
-export const revalidate = 3600;
-
-const fallbackProjects: Record<string, Partial<Project>> = {
-  'obsidian-villa': {
-    id: 'fallback-1',
-    title: 'The Obsidian Villa',
-    slug: 'obsidian-villa',
-    description: 'A minimalist residential masterpiece carved into a volcanic hillside, where raw black stone meets floor-to-ceiling glass.',
-    shortDescription: 'Minimalist residential carved into volcanic hillside.',
-    coverImage: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80',
-    category: { id: 'cat-1', name: 'Residential', slug: 'residential' },
-    hotspots: [],
-    isPublished: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  'lumina-pavilion': {
-    id: 'fallback-2',
-    title: 'Lumina Pavilion',
-    slug: 'lumina-pavilion',
-    description: 'A translucent commercial pavilion that appears to float above its waterfront site. ETFE cushions and precision steel form a crystalline envelope.',
-    shortDescription: 'Translucent waterfront commercial pavilion.',
-    coverImage: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80',
-    category: { id: 'cat-2', name: 'Commercial', slug: 'commercial' },
-    hotspots: [],
-    isPublished: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  'azure-heights': {
-    id: 'fallback-3',
-    title: 'Azure Heights',
-    slug: 'azure-heights',
-    description: 'A vertical garden tower where every residence opens to sky terraces with cascading greenery. The facade breathes with solar exposure.',
-    shortDescription: 'Vertical garden tower with sky terraces.',
-    coverImage: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1200&q=80',
-    category: { id: 'cat-3', name: 'Residential', slug: 'residential' },
-    hotspots: [],
-    isPublished: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  'zenith-office': {
-    id: 'fallback-4',
-    title: 'Zenith Office',
-    slug: 'zenith-office',
-    description: 'A reimagined workplace where biophilic design meets cutting-edge technology. Triple-height atriums and living walls create an evolving environment.',
-    shortDescription: 'Biophilic workplace with cutting-edge technology.',
-    coverImage: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=1200&q=80',
-    category: { id: 'cat-4', name: 'Commercial', slug: 'commercial' },
-    hotspots: [],
-    isPublished: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-};
-
-export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  try {
-    const projectsData = await fetchProjects();
-    const apiSlugs = (projectsData.projects ?? []).map((project) => ({ slug: project.slug }));
-    const fallbackSlugs = Object.keys(fallbackProjects).map((slug) => ({ slug }));
-    return [...apiSlugs, ...fallbackSlugs];
-  } catch {
-    return Object.keys(fallbackProjects).map((slug) => ({ slug }));
-  }
-}
-
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const project = await fetchProject(slug);
-  const fallback = fallbackProjects[slug];
-  const data = project ?? fallback;
-
-  if (!data) {
-    return { title: 'Project Not Found | HexaStudio' };
-  }
-
-  const baseUrl = 'https://hexastudio.net';
-  const imageUrl = data.coverImage ? `${data.coverImage}?w=1200&q=80` : `${baseUrl}/logo.svg`;
-
+export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
+  const { slug } = params;
+  const project = await projectsService.getProjectBySlug(slug);
   return {
-    title: `${data.title} | HexaStudio`,
-    description: data.shortDescription || data.description,
-    openGraph: {
-      title: data.title,
-      description: data.shortDescription || data.description,
-      url: `${baseUrl}/portfolio/${data.slug}`,
-      siteName: 'HexaStudio',
-      locale: 'en_US',
-      type: 'website',
-      images: [{ url: imageUrl, width: 1200, height: 630, alt: data.title }],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: data.title,
-      description: data.shortDescription || data.description,
-      images: [imageUrl],
-    },
+    title: `${project?.title} | HexaStudio`,
+    description: project?.description || 'Architectural visualization project by HexaStudio',
   };
 }
 
-export default async function ProjectDetailPage({ params }: PageProps) {
-  const { slug } = await params;
-  const project = await fetchProject(slug);
-  const fallback = fallbackProjects[slug];
-  const data = project ?? fallback;
+export default function ProjectDetailPage() {
+  const params = useParams();
+  const slug = params.slug as string;
 
-  if (!data) {
-    notFound();
+  const { data: project, isLoading, isError } = useQuery({
+    queryKey: ['project', slug],
+    queryFn: () => projectsService.getProjectBySlug(slug),
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <motion.div 
+          animate={{ opacity: [0.5, 1, 0.5] }} 
+          transition={{ repeat: Infinity, duration: 1.5 }} 
+          className="text-xs uppercase tracking-[0.5em] text-neutral-500 font-mono"
+        >
+          Loading Project...
+        </motion.div>
+      </div>
+    );
+  }
+
+  if (isError || !project) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-neutral-500 mb-4">Project not found.</p>
+          <Link href="/portfolio">
+            <Button variant="outline">Back to Portfolio</Button>
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <>
-      <ProjectStructuredData project={data as Project} />
-      <ProjectContent project={data as Project} />
-    </>
-  );
-}
-
-const descriptions: Record<string, string> = {
-  'obsidian-villa': 'A minimalist residential masterpiece carved into a volcanic hillside, where raw black stone meets floor-to-ceiling glass. The interplay of shadow and light creates an ever-changing atmosphere across every surface.',
-  'lumina-pavilion': 'A translucent commercial pavilion that appears to float above its waterfront site. ETFE cushions and precision steel form a crystalline envelope that refracts sunlight throughout the day.',
-  'azure-heights': 'A vertical garden tower in the heart of the city, where every residence opens to sky terraces with cascading greenery. The facade breathes — opening and closing in response to solar exposure.',
-  'zenith-office': 'A reimagined workplace where biophilic design meets cutting-edge technology. Triple-height atriums, living walls, and adaptive lighting create an environment that evolves with its occupants.',
-};
-
-function ProjectContent({ project }: { project: Project }) {
-  const desc = descriptions[project.slug] || project.description;
-
-  return (
-    <main className="relative h-screen w-full overflow-hidden bg-background">
-      <SceneErrorBoundary>
-        <Suspense fallback={<LoadingScreen />}>
-          <LazySceneCanvas
-            projectModelUrl={project.modelUrl}
-            hotspots={project.hotspots}
-            projectTitle={project.title}
+    <main className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <section className="relative h-screen w-full overflow-hidden">
+        <motion.div 
+          initial={{ scale: 1.1, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+          className="absolute inset-0"
+        >
+          <Image 
+            src={project.image} 
+            alt={project.title} 
+            fill 
+            priority 
+            className="object-cover"
           />
-        </Suspense>
-      </SceneErrorBoundary>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-background" />
+        </motion.div>
 
-      <div className="absolute inset-0 pointer-events-none z-[1] bg-gradient-to-t from-background via-transparent to-transparent opacity-60" />
-
-      <div className="absolute inset-0 z-10 flex flex-col justify-between p-8 md:p-16 pointer-events-none">
-         <div className="flex justify-between items-start pointer-events-auto">
-           <Link
-             href="/portfolio"
-             className="group flex items-center gap-4 text-[11px] uppercase tracking-[0.4em] text-neutral-500 hover:text-accent transition-colors duration-500"
-           >
-             <span className="h-[1px] w-8 bg-neutral-700 group-hover:bg-accent transition-all duration-500" />
-             Back to Portfolio
-           </Link>
-           <div className="flex flex-col items-end gap-2">
-             <span className="text-[11px] uppercase tracking-[0.4em] text-neutral-500">
-               {project.category?.name}
-             </span>
-             {project.status && (
-               <span className="text-[9px] uppercase tracking-widest text-accent px-2 py-1 border border-accent/30 rounded-full bg-accent/10">
-                 {project.status}
-               </span>
-             )}
-           </div>
-         </div>
-
-
-        <div>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
+        <div className="relative h-full flex flex-col justify-end p-8 md:p-16 pb-24">
+          <motion.span 
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
-            className="pointer-events-auto"
+            transition={{ delay: 0.5, duration: 0.8 }}
+            className="text-xs uppercase tracking-[0.5em] text-accent mb-6 block font-mono"
           >
-            <h1 className="text-5xl md:text-8xl font-serif font-light tracking-tighter text-foreground mb-6 leading-tight">
+            {project.category}
+          </motion.span>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.8 }}
+            className="text-6xl md:text-9xl font-serif font-light tracking-tighter text-foreground leading-tight"
+          >
+            <TextReveal delay={0.2}>
               {project.title}
-            </h1>
-            <p className="text-lg md:text-xl font-light text-neutral-400 leading-relaxed mb-12">
-              {desc}
-            </p>
-            <div className="flex gap-6">
-              <Button variant="primary" size="lg">
-                View Technical Specs
-              </Button>
-              <Button variant="outline" size="lg">
-                Contact for Inquiry
-              </Button>
-            </div>
+            </TextReveal>
           </motion.div>
         </div>
-      </div>
+      </section>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2 }}
-        className="absolute bottom-8 right-8 z-10 text-right pointer-events-none"
-      >
-        <p className="text-[11px] uppercase tracking-widest text-neutral-600">
-          Interact to Explore
-        </p>
-        <p className="text-[9px] uppercase tracking-widest text-neutral-700">
-          Drag to Rotate • Scroll to Zoom
-        </p>
-      </motion.div>
+      {/* Content Section */}
+      <section className="py-24 px-8 md:px-16 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+          <div className="lg:col-span-4 space-y-12">
+            <div className="bg-surface border border-border/50 p-8 rounded-sm">
+              <h3 className="text-xs uppercase tracking-widest text-neutral-500 mb-6 font-mono">Project Details</h3>
+              <div className="space-y-6">
+                <div>
+                  <p className="text-[10px] uppercase text-neutral-600 mb-1">Client</p>
+                  <p className="text-sm text-foreground font-light">Confidential Luxury Estate</p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase text-neutral-600 mb-1">Year</p>
+                  <p className="text-sm text-foreground font-light">2026</p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase text-neutral-600 mb-1">Services</p>
+                  <p className="text-sm text-foreground font-light">3D Visualization, Interior Design, Lighting Study</p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase text-neutral-600 mb-1">Status</p>
+                  <p className="text-sm text-accent font-medium">{project.status || 'Completed'}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="lg:col-span-8 space-y-12">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="text-xl md:text-2xl text-neutral-400 font-light leading-relaxed"
+            >
+              <p>
+                {project.description || `This project exemplifies the intersection of organic architecture and futuristic luxury. Our approach focused on capturing the ethereal quality of natural light within a structured, minimalist environment, ensuring a seamless transition between indoor and outdoor spaces.`}
+              </p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {[1, 2].map((i) => (
+                <motion.div 
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.2, duration: 0.8 }}
+                  className="relative aspect-[4/5] bg-neutral-900 overflow-hidden rounded-sm border border-border/30"
+                >
+                  <Image 
+                    src={`/images/projects/${project.slug}-detail-${i}.jpg`} 
+                    alt={`${project.title} detail ${i}`} 
+                    fill 
+                    className="object-cover opacity-80 hover:opacity-100 transition-opacity duration-700"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = project.image;
+                    }}
+                  />
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer Navigation */}
+      <section className="py-24 border-t border-border/30 text-center">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="space-y-8"
+        >
+          <h2 className="text-3xl md:text-5xl font-serif font-light text-foreground">Explore More</h2>
+          <Link href="/portfolio">
+            <Button variant="outline" size="lg" className="text-xs uppercase tracking-widest">
+              Back to Portfolio
+            </Button>
+          </Link>
+        </motion.div>
+      </section>
     </main>
   );
 }

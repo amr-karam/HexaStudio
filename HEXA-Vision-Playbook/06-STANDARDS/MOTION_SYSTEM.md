@@ -1,48 +1,67 @@
-# 🎞️ MOTION SYSTEM: THE CINEMATIC STANDARD
+# Motion System
 
-**Version:** 2026 | **Standard:** Elite Luxury | **Goal:** Invisible, Purposeful Motion
-
-## 1. THE MOTION PHILOSOPHY
-At HEXA Studio, motion is not decoration; it is **communication**. We do not animate to "look cool"; we animate to guide, explain, and evoke emotion.
-
-**The Core Mandative:** Every movement must feel handcrafted and intentional. If an animation does not serve a purpose, it is noise.
+**Version:** 1.0.0  
+**Last Updated:** 2026-07-08  
 
 ---
 
-## 2. MOTION DESIGN PRINCIPLES
-Every animation must adhere to these five pillars:
-1. **Motion Explains:** Transitions should clarify the relationship between two states.
-2. **Motion Guides:** Use motion to lead the user's eye to the most important content.
-3. **Motion Reinforces Hierarchy:** More significant changes in state deserve more prominent motion.
-4. **Motion Provides Feedback:** Every interaction must have a tactile, visual response.
-5. **Motion Creates Emotion:** Use timing and easing to evoke luxury, stability, and prestige.
+## Motion Philosophy
 
----
+Motion is not "decoration"; it is **Communication**. Every animation must serve a purpose: guiding the eye, indicating state, or creating a feeling of luxury.
 
-## 3. ANIMATION QUALITY & EXECUTION
+## The "Cinematic" Standard
 
-### I. The "Natural" Feel
-- **Easing:** Strictly forbid linear timing. Use professional cubic-beziers (`power3.out`, `expo.out`) to simulate real-world physics.
-- **Timing:**
-  - Micro-interactions: 200ms - 400ms.
-  - UI Transitions: 500ms - 800ms.
-  - Cinematic Camera Moves: 1200ms - 2000ms.
-- **Responsive Timing:** Animations must adapt to the user's device performance.
+All animations must feel "handcrafted." We avoid linear motions and default easing.
 
-### II. Technical Implementation (The "Performance" Law)
-- **GPU Acceleration:** Use `transform` and `opacity` exclusively. Avoid animating `width`, `height`, `top`, `left` to prevent layout thrashing.
-- **60 FPS Guarantee:** Any animation that drops the frame rate below 60 FPS must be optimized or removed.
-- **Will-Change:** Use `will-change` strategically to hint the browser about upcoming animations.
-- **Lazy Loading:** Animations should only trigger when they enter the viewport.
+### 1. Easing (The Secret to Luxury)
+We use **Custom Cubic Beziers** to create organic, high-end movement.
 
----
+| Type | Curve | Feel | Use Case |
+|------|-------|------|-----------|
+| **Entrance** | `cubic-bezier(0.16, 1, 0.3, 1)` | Smooth, decelerating | Page loads, Hero entrance |
+| **Interaction** | `cubic-bezier(0.34, 1.56, 0.64, 1)` | Bouncy, playful | Button hover, Tooltips |
+| **Transition** | `cubic-bezier(0.25, 0.1, 0.25, 1)` | Balanced | Modal opens, Page slides |
+| **Sharp** | `cubic-bezier(0.4, 0, 0.6, 1)` | Fast, precise | Error messages, toggles |
 
-## 4. THE "ELITE" MOTION CHECKLIST
-Before committing any motion work, audit the result:
-- [ ] **Purpose:** Does this animation explain, guide, or provide feedback?
-- [ ] **Fluidity:** Is the easing natural or does it feel robotic?
-- [ ] **Rhythm:** Is there a balance between movement and stillness?
-- [ ] **Performance:** Does it maintain 60 FPS on mid-range devices?
-- [ ] **Accessibility:** Does it respect `prefers-reduced-motion`?
+### 2. Timing & Duration
 
-*“Stop when the movement feels invisible. Stop when the experience feels exceptional.”*
+| Element | Duration | Stagger | Note |
+|----------|----------|----------|------|
+| Micro-interactions | 150ms - 300ms | 0ms | Must feel instant |
+| Component transitions | 300ms - 500ms | 50ms | Smooth shift |
+| Page transitions | 600ms - 900ms | 100ms | Cinematic feel |
+| 3D Camera moves | 1s - 2s | 0ms | Avoid motion sickness |
+
+## Motion Patterns
+
+### The "Cascading Reveal"
+Elements should not appear all at once. Use a stagger effect:
+- Element 1 (T=0)
+- Element 2 (T=100ms)
+- Element 3 (T=200ms)
+
+### Parallax & Depth
+Use subtle parallax to create a 3D feel on 2D pages:
+- Background moves at 0.2x speed.
+- Midground moves at 0.5x speed.
+- Foreground moves at 1.0x speed.
+
+### The "Surgical" Hover
+Avoid jarring changes. Use transitions for:
+- `opacity`
+- `transform: scale()`
+- `box-shadow`
+- `border-color`
+
+## 3D Motion Guidelines
+
+1. **Damped Movement:** Use `lerp` or `damping` for camera movements to avoid robotic stops.
+2. **Avoid "Jump Cuts":** Always animate the transition between two camera positions.
+3. **Scale-in:** New 3D objects should scale from 0 to 1 with a spring effect.
+4. **Rotation:** Use slow, constant rotation for showcase objects.
+
+## Performance & Accessibility
+
+- **GPU Acceleration:** Only animate `transform` and `opacity`.
+- **Reduced Motion:** If `prefers-reduced-motion: reduce` is true, disable all non-essential animations.
+- **FPS Lock:** Ensure animations don't drop the frame rate below 60 FPS.

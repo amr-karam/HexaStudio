@@ -1,41 +1,65 @@
-# 📋 SOPs: STANDARD OPERATING PROCEDURES
+# Standard Operating Procedures (SOPs)
 
-**Version:** 1.0 | **Domain:** Business | **Focus:** Operational Consistency
-
-## 1. THE PURPOSE OF SOPs
-Standard Operating Procedures ensure that the quality of a HEXA project does not depend on *who* is working on it, but on the *system* they follow.
+**Version:** 1.0.0  
+**Last Updated:** 2026-07-08  
 
 ---
 
-## 2. CORE PROCEDURES
+## Purpose
 
-### SOP-01: New Project Onboarding
-1. **Folder Setup:** Create the project folder in the monorepo.
-2. **Doc Init:** Create the `PROJECT_LIFECYCLE.md` and `OPEN_TASKS.md`.
-3. **Asset Audit:** Verify all 3D assets are in the correct format and optimized.
-4. **Stakeholder Sync:** Conduct the lauch meeting to align on the "Luxury" vision.
+This document serves as the index for all Standard Operating Procedures within HEXA Studio. SOPs ensure that critical business and technical processes are executed consistently, regardless of who is performing the task.
 
-### SOP-02: The "Gold Standard" Commit
-1. **Linting:** Run `npm run lint` and fix all warnings.
-2. **Testing:** Run all relevant unit and integration tests.
-3. **Review:** Cross-reference the change with the `CODING_STANDARDS.md`.
-4. **Commit:** Use a Conventional Commit message.
+## SOP Hierarchy
 
-### SOP-03: Deployment to Production
-1. **Staging Validation:** Verify the build on the staging server.
-2. **Checklist:** Complete the `RELEASE_CHECKLIST.md`.
-3. **Backup:** Trigger a full database and asset backup.
-4. **Deploy:** Execute the GitHub Action pipeline.
-5. **Smoke Test:** Verify the LCP and 60 FPS in production.
+```
+SOPs (Index)
+  ├── Business Operations (BO)
+  │   ├── BO-01: Client Onboarding
+  │   ├── BO-02: Project Proposal & Contracting
+  │   ├── BO-03: Project Delivery & Handoff
+  │   └── BO-04: Invoicing & Payment Collection
+  │
+  ├── Technical Operations (TO)
+  │   ├── TO-01: New Feature Implementation
+  │   ├── TO-02: Emergency Hotfix Deployment
+  │   ├── TO-03: Database Backup & Recovery
+  │   └── TO-04: Security Vulnerability Patching
+  │
+  └── Content Operations (CO)
+      ├── CO-01: Project Content Publishing
+      ├── CO-02: Blog Post Creation
+      └── CO-03: Media Asset Optimization
+```
 
-### SOP-04: Asset Optimization Pipeline
-1. **Geometry:** Run meshes through Draco compression.
-2. **Textures:** Convert textures to WebP/Basis.
-3. **Validation:** Verify that the asset does not exceed the "Asset Size" budget.
+## Compliance
 
----
+- **Mandatory:** All team members and agents must follow the SOPs for the tasks listed.
+- **Updates:** SOPs are reviewed quarterly. Any process change must be reflected in the SOP before it becomes the standard.
+- **Feedback:** If an SOP is found to be inefficient or outdated, a PR must be opened to update it.
 
-## 3. SOP COMPLIANCE
-Any agent found skipping an SOP must redo the task from the start. SOPs are not "suggestions"; they are the **Standard**.
+## SOP Template
 
-*“Consistency is the foundation of quality.”*
+Every SOP document must follow this structure:
+
+1. **Goal:** What is the desired outcome?
+2. **Prerequisites:** What tools, access, or information are needed?
+3. **Step-by-Step Process:** Detailed, numbered instructions.
+4. **Verification:** How to confirm the task was completed correctly.
+5. **Exception Handling:** What to do when things go wrong.
+6. **Related Docs:** Links to Playbook sections or external tools.
+
+## Index of SOPs
+
+| ID | SOP Name | Status | Link |
+|----|-----------|--------|------|
+| BO-01 | Client Onboarding | ✅ Complete | [SOP_CLIENT_ONBOARDING.md](./SOP_CLIENT_ONBOARDING.md) |
+| BO-02 | Proposal & Contracting | ⬜ Pending | — |
+| BO-03 | Project Delivery | ⬜ Pending | — |
+| BO-04 | Invoicing | ⬜ Pending | — |
+| TO-01 | New Feature Implementation | ✅ Complete | [SOP_FEATURE_IMPLEMENTATION.md](./SOP_FEATURE_IMPLEMENTATION.md) |
+| TO-02 | Emergency Hotfix | ✅ Complete | [SOP_HOTFIX_DEPLOYMENT.md](./SOP_HOTFIX_DEPLOYMENT.md) |
+| TO-03 | DB Backup & Recovery | ✅ Complete | [SOP_DB_RECOVERY.md](./SOP_DB_RECOVERY.md) |
+| TO-04 | Security Patching | ⬜ Pending | — |
+| CO-01 | Project Publishing | ⬜ Pending | — |
+| CO-02 | Blog Creation | ⬜ Pending | — |
+| CO-03 | Asset Optimization | ⬜ Pending | — |

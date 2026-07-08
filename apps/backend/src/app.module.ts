@@ -11,6 +11,10 @@ import { ContactModule } from "./modules/contact/contact.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { StorageModule } from "./modules/storage/storage.module";
 import { OdooModule } from "./modules/odoo/odoo.module";
+import { PortalModule } from "./modules/portal/portal.module";
+import { UsersModule } from "./modules/users/users.module";
+import { EmailModule } from "./modules/email/email.module";
+import { RequestsModule } from "./modules/requests/requests.module";
 
 @Module({
   imports: [
@@ -29,6 +33,10 @@ import { OdooModule } from "./modules/odoo/odoo.module";
     AuthModule,
     StorageModule,
     OdooModule,
+    PortalModule,
+    UsersModule,
+    EmailModule,
+    RequestsModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

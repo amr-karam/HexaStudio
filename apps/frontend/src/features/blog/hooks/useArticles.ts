@@ -7,7 +7,7 @@ export function useArticles() {
   return useQuery<ArticleResponse>({
     queryKey: ['articles'],
     queryFn: async () => {
-      const response = await fetch(`${API_URL}/api/articles`);
+      const response = await fetch(`${API_URL}/articles`);
       if (!response.ok) throw new Error('Failed to fetch articles');
       return response.json();
     },
@@ -18,7 +18,7 @@ export function useArticle(slug: string) {
   return useQuery<Article>({
     queryKey: ['article', slug],
     queryFn: async () => {
-      const response = await fetch(`${API_URL}/api/articles/${slug}`);
+      const response = await fetch(`${API_URL}/articles/${slug}`);
       if (!response.ok) throw new Error('Failed to fetch article');
       return response.json();
     },

@@ -1,56 +1,75 @@
-# 🗺️ DOMAIN MODEL: THE DATA ONTOLOGY
+# Domain Model
 
-**Version:** 1.0 | **Domain:** Architecture | **Focus:** Entity Relationships
-
-## 1. THE CORE ENTITIES
-The HEXA Vision ecosystem is built around four primary domains: **Identity**, **Project**, **Asset**, and **Experience**.
+**Last Updated:** 2026-07-08
 
 ---
 
-## 2. ENTITY DEFINITIONS
+## Core Entities
 
-### I. Project (The Central Hub)
-The primary unit of value. A Project represents a physical architectural work.
-- **Attributes:** `id`, `slug`, `title`, `client`, `location`, `year`, `category`, `description`.
-- **Relationships:** Has many `Assets`, has one `ProjectManifest`, belongs to one `Architect`.
+The platform is modeled around four primary domains: **User**, **Project**, **Content**, and **Business**.
 
-### II. Asset (The Visual Component)
-The individual 3D or 2D files that make up a project.
-- **Attributes:** `id`, `projectId`, `type` (Mesh, Texture, HDR), `url`, `lodLevel`, `metadata`.
-- **Relationships:** Belongs to one `Project`.
+### 1. User Domain
+Manages identities and access.
 
-### III. ProjectManifest (The Scene Blueprint)
-A specialized entity that defines how assets are arranged in the 3D space.
-- **Attributes:** `id`, `projectId`, `initialCameraPosition`, `hotspots`, `lightingConfig`, `assetMap`.
-- **Relationships:** Belongs to one `Project`.
+- **User:** The root identity.
+- **Role:** Defines permissions (public, client, admin, etc.).
+- **Profile:** User-specific metadata (name, avatar, etc.).
+- **Session:** Temporary authentication state.
 
-### IV. User/Client (The Identity)
-The person interacting with the platform.
-- **Attributes:** `id`, `email`, `role` (Admin, Client, Guest), `preferences`.
-- **Relationships:** Has access to many `Projects`.
+### 2. Project Domain
+Manages the 3D architectural deliverables.
 
----
+- **Project:** The main entity representing an architectural work.
+- **Scene:** A specific 3D view or environment within a project.
+- **Hotspot:** An interactive point within a scene.
+- **Milestone:** A key deliverable in the project timeline.
+- **Deliverable:** A specific file (render, model, PDF) associated with a milestone.
 
-## 3. RELATIONSHIP MAP (ERD LOGIC)
+### 3. Content Domain
+Manages the marketing and educational content.
 
-- **Project $\rightarrow$ Assets:** One-to-Many (A project consists of many 3D models and textures).
-- **Project $\rightarrow$ Manifest:** One-to-One (Each project has one master scene configuration).
-- **Client $\rightarrow$ Projects:** Many-to-Many (A client may have multiple projects; a project may be shared among multiple clients).
-- **Architect $\rightarrow$ Projects:** One-to-Many (One architect manages multiple projects).
+- **Page:** A structured web page (landing, about, etc.).
+- **Blog Post:** A time-dated educational or news article.
+- **Service:** A definition of a service offered by the studio.
+- **Category:** A tag for grouping projects or blog posts.
+- **Media:** Images, videos, or 3D models used across the site.
 
----
+### 4. Business Domain (Odoo)
+Manages the operational aspects.
 
-## 4. DATA FLOW CONSTRAINTS
-- **Immutable History:** Project manifests are versioned. Changing a manifest creates a new version rather than overwriting the old one.
-- **Strict Ownership:** Assets cannot exist without a parent Project.
-- **Referential Integrity:** Deleting a project must trigger a cascade delete of its associated manifest and asset links (unless archived).
+- **Lead/Opportunity:** A potential client or project.
+- **Customer:** A converted lead with a contract.
+- **Contract/Sale Order:** The legal agreement and pricing.
+- **Task:** A specific work item within a project.
+- **Invoice:** A request for payment.
 
----
+## Entity Relationships
 
-## 5. EXTENSIBILITY
-The model is designed to support future additions:
-- **Interactive Elements:** Adding `Interaction` entities to the manifest for clickable hotspots.
-- **Material Variants:** Adding `MaterialOption` to allow users to switch between marble and wood in real-time.
-- **AI Metadata:** Adding `AI_Analysis` entities to store automatically generated descriptions of the architecture.
+```mermaid
+graph TD
+    User -- owns --> Project
+    Project -- has --> Scene
+    Scene -- contains --> Hotspot
+    Project -- progresses via --> Milestone
+    Milestone -- produces --> Deliverable
+    
+    Project -- categorized by --> Category
+    BlogPost -- categorized by --> Category
+    
+    User -- manages --> Content
+    
+    Customer -- signs --> SaleOrder
+    SaleOrder -- creates --> Project
+    Project -- generates --> Invoice
+```
 
-*“A strong domain model is the foundation of a stable system.”*
+## Data Consistency
+
+- **Source of Truth:**
+  - User data → PostgreSQL (Application DB)
+  - Project Content → Strapi CMS
+  - Business Data → Odoo ERP
+  - Files → MinIO
+- **Synchronization:**
+  - Odoo → Website (async, 30s latency)
+  - Strapi → Website (ISR, event-driven)

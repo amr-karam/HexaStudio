@@ -7,6 +7,7 @@ import { fetchArticle, fetchArticles } from '@/features/blog/lib/fetchArticles';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 import { TextReveal } from '@/components/ui/TextReveal';
+import { NewsletterSection } from '@/components/ui/NewsletterSection';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -169,6 +170,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
           </motion.div>
         </div>
       </section>
+      <NewsletterSection />
     </main>
   );
 }
