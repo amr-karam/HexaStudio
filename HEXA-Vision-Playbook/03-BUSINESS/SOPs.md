@@ -53,13 +53,13 @@ Every SOP document must follow this structure:
 | ID | SOP Name | Status | Link |
 |----|-----------|--------|------|
 | BO-01 | Client Onboarding | ✅ Complete | [SOP_CLIENT_ONBOARDING.md](./SOP_CLIENT_ONBOARDING.md) |
-| BO-02 | Proposal & Contracting | ⬜ Pending | — |
-| BO-03 | Project Delivery | ⬜ Pending | — |
-| BO-04 | Invoicing | ⬜ Pending | — |
+| BO-02 | Proposal & Contracting | ✅ Complete | [SOP_PROPOSAL_CONTRACTING.md](./SOP_PROPOSAL_CONTRACTING.md) |
+| BO-03 | Project Delivery | ✅ Complete | [SOP_PROJECT_DELIVERY.md](./SOP_PROJECT_DELIVERY.md) |
+| BO-04 | Invoicing | ✅ Complete | [SOP_INVOICING.md](./SOP_INVOICING.md) |
 | TO-01 | New Feature Implementation | ✅ Complete | [SOP_FEATURE_IMPLEMENTATION.md](./SOP_FEATURE_IMPLEMENTATION.md) |
 | TO-02 | Emergency Hotfix | ✅ Complete | [SOP_HOTFIX_DEPLOYMENT.md](./SOP_HOTFIX_DEPLOYMENT.md) |
 | TO-03 | DB Backup & Recovery | ✅ Complete | [SOP_DB_RECOVERY.md](./SOP_DB_RECOVERY.md) |
-| TO-04 | Security Patching | ⬜ Pending | — |
-| CO-01 | Project Publishing | ⬜ Pending | — |
-| CO-02 | Blog Creation | ⬜ Pending | — |
-| CO-03 | Asset Optimization | ⬜ Pending | — |
+| TO-04 | Security Patching | ✅ Complete | [SOP_SECURITY_PATCHING.md](./SOP_SECURITY_PATCHING.md) |
+| CO-01 | Project Publishing | ✅ Complete | [SOP_PROJECT_PUBLISHING.md](./SOP_PROJECT_PUBLISHING.md) |
+| CO-02 | Blog Creation | ✅ Complete | [SOP_BLOG_CREATION.md](./SOP_BLOG_CREATION.md) |
+| CO-03 | Asset Optimization | ✅ Complete | [SOP_ASSET_OPTIMIZATION.md](./SOP_ASSET_OPTIMIZATION.md) |

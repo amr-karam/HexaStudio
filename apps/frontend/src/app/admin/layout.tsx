@@ -5,7 +5,6 @@ import { Footer } from '@/components/ui/Footer';
 import { PageTransition } from '@/components/PageTransition';
 import { SmoothScrollWrapper } from '@/components/SmoothScrollWrapper';
 import { CustomCursor } from '@/components/CustomCursor';
-import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Studio Admin | HexaStudio',

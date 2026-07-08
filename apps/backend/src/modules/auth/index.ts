@@ -1,1 +1,1 @@
-export * from './auth.module.placeholder';
+export * from './auth.module';

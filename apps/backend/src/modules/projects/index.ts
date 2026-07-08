@@ -1,1 +1,1 @@
-export * from './projects.module.placeholder';
+export * from './projects.module';

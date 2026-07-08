@@ -32,4 +32,4 @@
 ## Next Meeting
 
 **Date:** YYYY-MM-DD  
-**Agenda Items:** TBD
+**Agenda Items:** [List upcoming topics]

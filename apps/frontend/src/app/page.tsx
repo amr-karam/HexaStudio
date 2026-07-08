@@ -1,4 +1,24 @@
-import { HomeHero } from "@/features/portfolio";import { ProjectGrid } from "@/features/portfolio/components/ProjectGrid";import { StudioSection } from "@/features/portfolio/components/StudioSection";import { TestimonialsSection } from "@/features/portfolio/components/TestimonialsSection";import { AchievementsSection } from "@/features/portfolio/components/AchievementsSection";import { CTASection } from "@/components/CTASection";import { Scene } from "@/components/three/Scene";import { fetchProjects } from '@/features/portfolio/lib/fetchProjects';export default async function HomePage() {  const projectsData = await fetchProjects();  return (    <>      <Scene />      <HomeHero />      <AchievementsSection />      <ProjectGrid projects={projectsData.projects ?? []} />      <TestimonialsSection />      <StudioSection />      <CTASection />    </>  );}
+import { HomeHero } from "@/features/portfolio";
+import { ProjectGrid } from "@/features/portfolio/components/ProjectGrid";
+import { StudioSection } from "@/features/portfolio/components/StudioSection";
+import { TestimonialsSection } from "@/features/portfolio/components/TestimonialsSection";
+import { AchievementsSection } from "@/features/portfolio/components/AchievementsSection";
+import { CTASection } from "@/components/CTASection";
+import { Scene } from "@/components/three/Scene";
+import { fetchProjects } from "@/features/portfolio/lib/fetchProjects";
 
-(End of file - total 1 lines)
-      <AchievementsSection />      <ProjectGrid projects={projectsData.projects ?? []} />      <TestimonialsSection />      <StudioSection />      <CTASection />    </>  );}
+export default async function HomePage() {
+  const projectsData = await fetchProjects();
+
+  return (
+    <>
+      <Scene />
+      <HomeHero />
+      <AchievementsSection />
+      <ProjectGrid projects={projectsData.projects ?? []} />
+      <TestimonialsSection />
+      <StudioSection />
+      <CTASection />
+    </>
+  );
+}
