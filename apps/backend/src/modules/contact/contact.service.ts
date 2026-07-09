@@ -25,12 +25,16 @@ export class ContactService {
       });
       this.logger.log(`Created Odoo CRM lead #${leadId} for ${message.email}`);
 
-      // Send email notification
-      await this.emailService.sendEmail(
-        'info@hexastudio.net',
-        `New Contact Request from ${message.name}`,
-        `From: ${message.email}\nCompany: ${message.company}\nMessage: ${message.message}`
-      );
+      // Try to send email notification (non-blocking)
+      try {
+        await this.emailService.sendEmail(
+          'info@hexastudio.net',
+          `New Contact Request from ${message.name}`,
+          `From: ${message.email}\nCompany: ${message.company}\nMessage: ${message.message}`
+        );
+      } catch (emailError) {
+        this.logger.warn(`Email notification failed (non-critical): ${emailError}`);
+      }
       
       return {
         success: true,

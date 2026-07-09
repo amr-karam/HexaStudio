@@ -46,7 +46,8 @@ export class OdooService {
         path: '/xmlrpc/2/object',
       });
 
-      objectClient.methodCall(method, [this.uid!, this.configService.get<string>('ODOO_DB'), model, ...args], (error, value) => {
+      const password = this.configService.get<string>('ODOO_PASSWORD');
+      objectClient.methodCall('execute_kw', [this.uid!, this.configService.get<string>('ODOO_DB'), password, model, method, args], (error, value) => {
         if (error) {
           this.logger.error(`Odoo execution error [${model}.${method}]: ${error}`);
           reject(new InternalServerErrorException(`Odoo error: ${error}`));
