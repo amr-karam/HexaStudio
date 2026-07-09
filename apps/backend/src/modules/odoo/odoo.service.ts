@@ -62,4 +62,12 @@ export class OdooService {
     if (!ids || ids.length === 0) return [];
     return this.execute<Record<string, unknown>[]>(model, 'read', [ids, fields]);
   }
+
+  async create(model: string, values: Record<string, unknown>): Promise<number> {
+    return this.execute<number>(model, 'create', [values]);
+  }
+
+  async write(model: string, ids: number[], values: Record<string, unknown>): Promise<boolean> {
+    return this.execute<boolean>(model, 'write', [ids, values]);
+  }
 }
