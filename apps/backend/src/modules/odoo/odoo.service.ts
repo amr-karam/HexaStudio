@@ -47,7 +47,8 @@ export class OdooService {
       });
 
       const password = this.configService.get<string>('ODOO_PASSWORD');
-      objectClient.methodCall('execute_kw', [this.uid!, this.configService.get<string>('ODOO_DB'), password, model, method, args], (error, value) => {
+      const db = this.configService.get<string>('ODOO_DB');
+      objectClient.methodCall('execute_kw', [db, this.uid!, password, model, method, args], (error, value) => {
         if (error) {
           this.logger.error(`Odoo execution error [${model}.${method}]: ${error}`);
           reject(new InternalServerErrorException(`Odoo error: ${error}`));
