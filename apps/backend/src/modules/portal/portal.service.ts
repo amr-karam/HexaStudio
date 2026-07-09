@@ -77,19 +77,19 @@ export class PortalService {
     }));
 
     // Fallback to mock data if no real data exists
-    let project = { title: 'No Project', category: '', status: '' };
+    let project: { title: string; category?: string; status?: string } = { title: 'No Project' };
     try {
       const projects = (await this.projectsService.getAllProjects()).projects;
-      if (projects[0]) project = projects[0];
+      if (projects[0]) project = projects[0] as { title: string; category?: string; status?: string };
     } catch (err) {
       this.logger.warn(`Failed to fetch projects from CMS: ${err}`);
     }
 
     return {
       project: {
-        title: project?.title || 'No Project',
-        category: project?.category || '',
-        status: project?.status || '',
+        title: project.title,
+        category: project.category || '',
+        status: project.status || '',
       },
       timeline: timeline.length > 0 ? timeline : [
         { phase: 'Concept Design', status: 'completed', description: 'Initial moodboards approved.', date: '2026-05-12' },
