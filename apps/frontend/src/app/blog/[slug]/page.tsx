@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { NewsletterSection } from '@/components/ui/NewsletterSection';
+import { StrapiBlocks } from '@/components/ui/StrapiBlocks';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -139,13 +140,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
             </p>
 
             <div className="flex flex-col gap-12 text-neutral-400 font-light leading-relaxed text-lg">
-              {Array.isArray(article.content)
-                ? article.content
-                    .filter(Boolean)
-                    .map((block, idx) => (
-                      <p key={idx}>{typeof block === 'string' ? block : JSON.stringify(block)}</p>
-                    ))
-                : <p>{String(article.content)}</p>}
+              <StrapiBlocks content={article.content} />
             </div>
           </motion.div>
         </div>

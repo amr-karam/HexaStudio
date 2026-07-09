@@ -1,10 +1,9 @@
 import { Article, ArticleResponse } from '@hexastudio/types';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://api.localhost';
+import { API_BASE_URL } from '@/config/constants';
 
 export async function fetchArticles(): Promise<ArticleResponse> {
   try {
-    const response = await fetch(`${API_URL}/api/articles`, {
+    const response = await fetch(`${API_BASE_URL}/api/articles`, {
       next: { revalidate: 3600 },
     });
 
@@ -20,7 +19,7 @@ export async function fetchArticles(): Promise<ArticleResponse> {
 
 export async function fetchArticle(slug: string): Promise<Article | null> {
   try {
-    const response = await fetch(`${API_URL}/api/articles/${slug}`, {
+    const response = await fetch(`${API_BASE_URL}/api/articles/${slug}`, {
       next: { revalidate: 3600 },
     });
 
