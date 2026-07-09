@@ -76,3 +76,4 @@ deploy.py
 *.fbx
 *.obj
 apps/frontend/public/models/.gitkeep
+docker/odoo/
