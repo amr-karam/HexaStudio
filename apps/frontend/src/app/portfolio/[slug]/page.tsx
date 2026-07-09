@@ -39,7 +39,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
       <section className="relative h-screen w-full overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src={project.image}
+            src={project.coverImage}
             alt={project.title}
             fill
             priority
@@ -49,7 +49,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
         </div>
         <div className="relative h-full flex flex-col justify-end p-8 md:p-16 pb-24">
           <span className="text-xs uppercase tracking-[0.5em] text-accent mb-6 block font-mono">
-            {project.category}
+            {project.category?.name}
           </span>
           <h1 className="text-6xl md:text-9xl font-serif font-light tracking-tighter text-foreground leading-tight">
             {project.title}
@@ -65,15 +65,15 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
               <div className="space-y-6">
                 <div>
                   <p className="text-[10px] uppercase text-neutral-600 mb-1">Client</p>
-                  <p className="text-sm text-foreground font-light">Confidential Luxury Estate</p>
+                  <p className="text-sm text-foreground font-light">{project.client ?? 'Confidential'}</p>
                 </div>
                 <div>
                   <p className="text-[10px] uppercase text-neutral-600 mb-1">Year</p>
-                  <p className="text-sm text-foreground font-light">2026</p>
+                  <p className="text-sm text-foreground font-light">{project.year ?? 'N/A'}</p>
                 </div>
                 <div>
                   <p className="text-[10px] uppercase text-neutral-600 mb-1">Services</p>
-                  <p className="text-sm text-foreground font-light">3D Visualization, Interior Design, Lighting Study</p>
+                  <p className="text-sm text-foreground font-light">{project.services?.join(', ') ?? 'Architectural Visualization'}</p>
                 </div>
                 <div>
                   <p className="text-[10px] uppercase text-neutral-600 mb-1">Status</p>
