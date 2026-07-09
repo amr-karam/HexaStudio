@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HttpService } from '@nestjs/axios';
 import { of, throwError } from 'rxjs';
 import { ProjectsService } from '../src/modules/projects/projects.service';
+import { OdooService } from '../src/modules/odoo/odoo.service';
 import { NotFoundException } from '@nestjs/common';
 
 describe('ProjectsService', () => {
@@ -34,6 +35,10 @@ describe('ProjectsService', () => {
         {
           provide: HttpService,
           useValue: { get: vi.fn() },
+        },
+        {
+          provide: OdooService,
+          useValue: { searchRead: vi.fn().mockResolvedValue([]) },
         },
       ],
     }).compile();

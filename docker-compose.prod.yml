@@ -154,6 +154,11 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-hexastudio}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      ODOO_HOST: ${ODOO_HOST:-odoo}
+      ODOO_PORT: ${ODOO_PORT:-8069}
+      ODOO_DB: ${ODOO_DB:-hexastudio_odoo}
+      ODOO_USER: ${ODOO_USER:-admin}
+      ODOO_PASSWORD: ${ODOO_PASSWORD:?ODOO_PASSWORD is required}
     depends_on:
       postgres:
         condition: service_healthy
@@ -213,6 +218,41 @@ services:
         condition: service_healthy
     volumes:
       - cms_uploads:/opt/app/public/uploads
+    networks:
+      - web
+      - internal
+
+  # ---------------------------------------------------------------------------
+  # Odoo ERP
+  # ---------------------------------------------------------------------------
+  odoo:
+    image: odoo:17.0
+    <<: *default-restart
+    logging: *default-logging
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      HOST: postgres
+      PORT: 5432
+      USER: ${POSTGRES_USER:-hexastudio}
+      PASSWORD: ${POSTGRES_PASSWORD}
+      DBNAME: ${ODOO_DB:-hexastudio_odoo}
+    volumes:
+      - odoo_data:/var/lib/odoo
+      - ./docker/odoo/odoo.conf:/etc/odoo/odoo.conf:ro
+      - ./docker/odoo/addons:/mnt/extra-addons:ro
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.odoo-http.rule=Host(`${ODOO_HOST:-odoo.localhost}`)
+      - traefik.http.routers.odoo-http.entrypoints=web
+      - traefik.http.routers.odoo-http.service=odoo
+      - traefik.http.routers.odoo.rule=Host(`${ODOO_HOST:-odoo.localhost}`)
+      - traefik.http.routers.odoo.entrypoints=websecure
+      - traefik.http.routers.odoo.service=odoo
+      - traefik.http.routers.odoo.tls.certResolver=cloudflare
+      - traefik.http.services.odoo.loadbalancer.server.port=8069
+      - com.centurylinklabs.watchtower.enable=true
     networks:
       - web
       - internal
@@ -353,4 +393,5 @@ volumes:
   prometheus_data:
   grafana_data:
   loki_data:
+  odoo_data:
   backup_data:
