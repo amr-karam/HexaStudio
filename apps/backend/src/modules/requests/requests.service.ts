@@ -1,4 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { OdooService } from '../odoo/odoo.service';
 
 export interface ProjectRequest {
   id: string;
@@ -13,11 +14,24 @@ export interface ProjectRequest {
 
 @Injectable()
 export class RequestsService {
-  private requests: ProjectRequest[] = [];
+  private readonly logger = new Logger(RequestsService.name);
+
+  constructor(private readonly odooService: OdooService) {}
 
   async createRequest(data: Partial<ProjectRequest>): Promise<ProjectRequest> {
-    const newRequest: ProjectRequest = {
-      id: `REQ-${Math.floor(Math.random() * 10000)}`,
+    const leadId = await this.odooService.create('crm.lead', {
+      name: `[Request] ${data.title || 'Untitled Request'}`,
+      partner_name: data.clientId || 'Unknown Client',
+      description: `<p><strong>Project:</strong> ${data.projectId || 'N/A'}</p>
+<p><strong>Priority:</strong> ${data.priority || 'medium'}</p>
+<p><strong>Description:</strong></p><p>${data.description || ''}</p>`,
+      priority: data.priority === 'high' ? '3' : data.priority === 'low' ? '1' : '2',
+    });
+
+    this.logger.log(`Created Odoo request lead #${leadId}`);
+
+    return {
+      id: `REQ-${leadId}`,
       projectId: data.projectId || 'default',
       clientId: data.clientId || 'default',
       title: data.title || 'Untitled Request',
@@ -26,23 +40,71 @@ export class RequestsService {
       status: 'pending',
       createdAt: new Date().toISOString(),
     };
-    this.requests.push(newRequest);
-    return newRequest;
   }
 
-  async getRequestsByClient(clientId: string): Promise<ProjectRequest[]> {
-    return this.requests.filter(r => r.clientId === clientId);
+  async getRequestsByClient(clientEmail: string): Promise<ProjectRequest[]> {
+    const leads = await this.odooService.searchRead(
+      'crm.lead',
+      [['email_from', '=', clientEmail]],
+      ['name', 'partner_name', 'description', 'priority', 'stage_id', 'create_date'],
+    );
+
+    return leads.map((lead: Record<string, unknown>) => ({
+      id: `REQ-${lead.id}`,
+      projectId: 'odoo',
+      clientId: (lead.partner_name as string) || clientEmail,
+      title: ((lead.name as string) || '').replace('[Request] ', ''),
+      description: (lead.description as string) || '',
+      priority: lead.priority === '3' ? 'high' : lead.priority === '1' ? 'low' : 'medium',
+      status: 'pending',
+      createdAt: (lead.create_date as string) || new Date().toISOString(),
+    }));
   }
 
   async updateRequestStatus(id: string, status: ProjectRequest['status']): Promise<ProjectRequest> {
-    const request = this.requests.find(r => r.id === id);
-    if (!request) throw new NotFoundException(`Request ${id} not found`);
-    
-    request.status = status;
-    return request;
+    const odooId = parseInt(id.replace('REQ-', ''), 10);
+    if (isNaN(odooId)) throw new NotFoundException(`Invalid request ID: ${id}`);
+
+    const stageMap: Record<string, string> = {
+      pending: '1',
+      reviewed: '2',
+      completed: '3',
+    };
+
+    await this.odooService.write('crm.lead', [odooId], {
+      stage_id: parseInt(stageMap[status] || '1', 10),
+    });
+
+    this.logger.log(`Updated Odoo lead #${odooId} status to ${status}`);
+
+    return {
+      id,
+      projectId: 'odoo',
+      clientId: '',
+      title: '',
+      description: '',
+      priority: 'medium',
+      status,
+      createdAt: new Date().toISOString(),
+    };
   }
 
   async findAll(): Promise<ProjectRequest[]> {
-    return this.requests;
+    const leads = await this.odooService.searchRead(
+      'crm.lead',
+      [['name', 'like', '[Request]%']],
+      ['name', 'partner_name', 'description', 'priority', 'stage_id', 'create_date'],
+    );
+
+    return leads.map((lead: Record<string, unknown>) => ({
+      id: `REQ-${lead.id}`,
+      projectId: 'odoo',
+      clientId: (lead.partner_name as string) || '',
+      title: ((lead.name as string) || '').replace('[Request] ', ''),
+      description: (lead.description as string) || '',
+      priority: lead.priority === '3' ? 'high' : lead.priority === '1' ? 'low' : 'medium',
+      status: 'pending',
+      createdAt: (lead.create_date as string) || new Date().toISOString(),
+    }));
   }
 }
