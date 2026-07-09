@@ -30,7 +30,7 @@ export async function fetchProjects(): Promise<ProjectResponse> {
 
 export async function fetchProject(slug: string): Promise<Project | null> {
   try {
-    const response = await fetchWithTimeout(`${API_URL}/api/projects/${slug}`, {
+    const response = await fetchWithTimeout(`${API_BASE_URL}/api/projects/${slug}`, {
       next: { revalidate: 3600 },
     });
 

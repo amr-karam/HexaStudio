@@ -65,7 +65,8 @@ function renderBlock(block: StrapiBlock, key: string): React.ReactNode {
 
     case 'heading': {
       const level = block.level ?? 2;
-      const Tag = `h${level}` as keyof JSX.IntrinsicElements;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const Tag = `h${level}` as any;
       const sizeClass =
         level === 1
           ? 'text-4xl md:text-5xl'
@@ -86,7 +87,8 @@ function renderBlock(block: StrapiBlock, key: string): React.ReactNode {
     }
 
     case 'list': {
-      const Tag = block.format === 'ordered' ? 'ol' : 'ul';
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const Tag = (block.format === 'ordered' ? 'ol' : 'ul') as any;
       const listClass =
         block.format === 'ordered'
           ? 'list-decimal list-inside'

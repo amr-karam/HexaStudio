@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { fetchProject } from '@/features/portfolio/lib/fetchProjects';
+import { ProjectSceneWrapper } from '@/features/portfolio/components/ProjectSceneWrapper';
 
 interface ProjectPageProps {
   params: Promise<{ slug: string }>;
@@ -36,18 +37,23 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
   return (
     <main className="min-h-screen bg-background">
-      <section className="relative h-screen w-full overflow-hidden">
-        <div className="absolute inset-0">
-          <Image
-            src={project.coverImage}
-            alt={project.title}
-            fill
-            priority
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-background" />
-        </div>
-        <div className="relative h-full flex flex-col justify-end p-8 md:p-16 pb-24">
+      {/* Cinematic 3D Header */}
+      <section className="relative h-[80vh] w-full overflow-hidden bg-obsidian">
+        {project.modelUrl ? (
+          <ProjectSceneWrapper project={project} />
+        ) : (
+          <div className="absolute inset-0">
+            <Image
+              src={project.coverImage}
+              alt={project.title}
+              fill
+              priority
+              className="object-cover opacity-60"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-obsidian/20 via-transparent to-background" />
+          </div>
+        )}
+        <div className="relative h-full flex flex-col justify-end p-8 md:p-16 pb-24 pointer-events-none">
           <span className="text-xs uppercase tracking-[0.5em] text-accent mb-6 block font-mono">
             {project.category?.name}
           </span>

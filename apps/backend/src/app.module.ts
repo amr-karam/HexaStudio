@@ -10,6 +10,7 @@ import { ServicesModule } from "./modules/services/services.module";
 import { ContactModule } from "./modules/contact/contact.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { StorageModule } from "./modules/storage/storage.module";
+import { RedisModule } from "./modules/storage/redis.module";
 import { OdooModule } from "./modules/odoo/odoo.module";
 import { PortalModule } from "./modules/portal/portal.module";
 import { UsersModule } from "./modules/users/users.module";
@@ -32,6 +33,7 @@ import { RequestsModule } from "./modules/requests/requests.module";
     ContactModule,
     AuthModule,
     StorageModule,
+    RedisModule,
     OdooModule,
     PortalModule,
     UsersModule,
