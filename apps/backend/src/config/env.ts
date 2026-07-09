@@ -14,7 +14,7 @@ const envSchema = z.object({
   MINIO_USE_SSL: z
     .string()
     .default('false')
-    .transform((v) => v === 'true'),
+    .transform((v: string) => v === 'true'),
 
   // Optional
   PORT: z.coerce.number().default(4000),
