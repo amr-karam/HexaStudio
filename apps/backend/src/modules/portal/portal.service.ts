@@ -34,11 +34,16 @@ export class PortalService {
 
   async getClientProjectData(clientEmail?: string) {
     // Fetch real project tasks from Odoo
-    const tasks = await this.odooService.searchRead(
-      'project.task',
-      [],
-      ['name', 'stage_id', 'state', 'date_deadline'],
-    );
+    let tasks: Record<string, unknown>[] = [];
+    try {
+      tasks = await this.odooService.searchRead(
+        'project.task',
+        [],
+        ['name', 'stage_id', 'state', 'date_deadline'],
+      );
+    } catch (err) {
+      this.logger.warn(`Failed to fetch tasks from Odoo: ${err}`);
+    }
 
     // Map Odoo tasks to timeline
     const timeline = tasks.map((task: Record<string, unknown>) => {
@@ -53,11 +58,16 @@ export class PortalService {
     });
 
     // Fetch invoices from Odoo
-    const invoices = await this.odooService.searchRead(
-      'account.move',
-      [['move_type', '=', 'out_invoice']],
-      ['name', 'amount_total', 'invoice_date', 'payment_state'],
-    );
+    let invoices: Record<string, unknown>[] = [];
+    try {
+      invoices = await this.odooService.searchRead(
+        'account.move',
+        [['move_type', '=', 'out_invoice']],
+        ['name', 'amount_total', 'invoice_date', 'payment_state'],
+      );
+    } catch (err) {
+      this.logger.warn(`Failed to fetch invoices from Odoo: ${err}`);
+    }
 
     const invoiceData = invoices.map((inv: Record<string, unknown>) => ({
       id: (inv.name as string) || 'INV-000',
@@ -67,8 +77,13 @@ export class PortalService {
     }));
 
     // Fallback to mock data if no real data exists
-    const projects = (await this.projectsService.getAllProjects()).projects;
-    const project = projects[0];
+    let project = { title: 'No Project', category: '', status: '' };
+    try {
+      const projects = (await this.projectsService.getAllProjects()).projects;
+      if (projects[0]) project = projects[0];
+    } catch (err) {
+      this.logger.warn(`Failed to fetch projects from CMS: ${err}`);
+    }
 
     return {
       project: {
