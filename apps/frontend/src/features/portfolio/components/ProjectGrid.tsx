@@ -1,10 +1,12 @@
 'use client';
-import React, { useState, useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useState, useRef, useMemo } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import Image from 'next/image';
 import { Card } from '@/components/ui/cards/Card';
 import { ProjectDetailModal } from '@/components/ui/modals/ProjectDetailModal';
 import { Project } from '@hexastudio/types';
+import { Magnetic } from '@/components/ui/Magnetic';
+import { cn } from '@/lib/utils';
 
 interface ProjectCardProps {
   title: string;
@@ -16,6 +18,7 @@ interface ProjectCardProps {
 
 const ProjectCard = ({ title, category, image, index, onClick }: ProjectCardProps) => (
   <motion.div
+    layout
     initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
@@ -95,29 +98,42 @@ interface ProjectGridProps {
 
 export const ProjectGrid = ({ projects }: ProjectGridProps) => {
   const [selectedProject, setSelectedProject] = useState<typeof fallbackProjects[0] | null>(null);
+  const [activeCategory, setActiveCategory] = useState('All');
   const sectionRef = useRef<HTMLDivElement>(null);
+  
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start end', 'end start'],
   });
   const headingY = useTransform(scrollYProgress, [0, 0.5], [60, 0]);
 
-  const mappedProjects =
-    projects?.map((p) => ({
+  const allProjects = useMemo(() => {
+    const mapped = projects?.map((p) => ({
       title: p.title,
       category: p.category?.name ?? 'Project',
       image: p.coverImage ? `${p.coverImage}?w=800&q=80` : '',
       slug: p.slug,
       description: p.shortDescription || p.description,
     })) ?? fallbackProjects;
+    return mapped;
+  }, [projects]);
 
-  const displayProjects = mappedProjects.length > 0 ? mappedProjects : fallbackProjects;
+  const categories = useMemo(() => {
+    const cats = new Set(['All']);
+    allProjects.forEach(p => cats.add(p.category));
+    return Array.from(cats);
+  }, [allProjects]);
+
+  const filteredProjects = useMemo(() => {
+    if (activeCategory === 'All') return allProjects;
+    return allProjects.filter(p => p.category === activeCategory);
+  }, [allProjects, activeCategory]);
 
   return (
     <>
       <section ref={sectionRef} className="px-8 md:px-16 py-32">
         <div className="flex flex-col lg:flex-row justify-between items-end mb-24 gap-12">
-          <div>
+          <div className="max-w-3xl">
               <motion.span
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -142,16 +158,47 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="text-neutral-500 font-light text-sm leading-relaxed"
+            className="text-neutral-500 font-light text-sm leading-relaxed max-w-xs"
           >
             A curation of architectural narratives defined by light, material, and space.
           </motion.p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {displayProjects.map((project, idx) => (
-            <ProjectCard key={project.slug} title={project.title} category={project.category} image={project.image} index={idx} onClick={() => setSelectedProject(project)} />
+
+        <div className="flex flex-wrap justify-center gap-4 mb-16">
+          {categories.map((cat) => (
+            <Magnetic key={cat}>
+              <button
+                onClick={() => setActiveCategory(cat)}
+                className={cn(
+                  'px-6 py-2 text-[10px] uppercase tracking-[0.3em] transition-all duration-500 rounded-full border',
+                  activeCategory === cat 
+                    ? 'bg-accent text-obsidian border-accent' 
+                    : 'bg-transparent text-neutral-500 border-border hover:border-neutral-400'
+                )}
+              >
+                {cat}
+              </button>
+            </Magnetic>
           ))}
         </div>
+
+        <motion.div 
+          layout 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+        >
+          <AnimatePresence mode="popLayout">
+            {filteredProjects.map((project, idx) => (
+              <ProjectCard 
+                key={project.slug} 
+                title={project.title} 
+                category={project.category} 
+                image={project.image} 
+                index={idx} 
+                onClick={() => setSelectedProject(project)} 
+              />
+            ))}
+          </AnimatePresence>
+        </motion.div>
       </section>
 
       <ProjectDetailModal

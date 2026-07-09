@@ -63,15 +63,8 @@ const fallbackServices: (Service & { accent: string })[] = [
   },
 ];
 
-const accentColors = [
-  'var(--color-accent)',
-  'var(--color-accent-light)',
-  'var(--color-accent-dark)',
-  'var(--color-accent)',
-];
-
 export default function ServicesPage() {
-  const { data, isLoading } = useServices();
+  const { data } = useServices();
   const services = data?.services?.length ? data.services : fallbackServices;
 
   return (
