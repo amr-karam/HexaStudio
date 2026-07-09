@@ -18,7 +18,7 @@ const envSchema = z.object({
 
   // Optional
   PORT: z.coerce.number().default(4000),
-  SENTRY_DSN: z.string().url().optional(),
+  SENTRY_DSN: z.string().url().or(z.literal('')).optional().transform(v => v === '' ? undefined : v),
   CORS_ORIGINS: z.string().optional(),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 });
