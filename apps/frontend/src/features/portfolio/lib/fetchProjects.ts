@@ -1,4 +1,4 @@
-import { ProjectResponse } from '@hexastudio/types';
+import { Project, ProjectResponse } from '@hexastudio/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://api.localhost';
 
@@ -29,7 +29,7 @@ export async function fetchProjects(): Promise<ProjectResponse> {
   }
 }
 
-export async function fetchProject(slug: string) {
+export async function fetchProject(slug: string): Promise<Project | null> {
   try {
     const response = await fetchWithTimeout(`${API_URL}/api/projects/${slug}`, {
       next: { revalidate: 3600 },

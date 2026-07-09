@@ -5,7 +5,8 @@ describe('ContactService', () => {
   let service: ContactService;
 
   beforeAll(() => {
-    service = new ContactService();
+    const mockEmailService = { sendEmail: vi.fn().mockResolvedValue(undefined) };
+    service = new ContactService(mockEmailService as any);
   });
 
   it('sendMessage returns success for valid message', async () => {
