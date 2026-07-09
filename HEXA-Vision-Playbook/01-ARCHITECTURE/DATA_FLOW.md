@@ -1,50 +1,123 @@
-# 🌊 DATA FLOW: THE INFORMATION STREAM
+# Data Flow Architecture
 
-**Version:** 1.0 | **Domain:** Architecture | **Focus:** Data Lifecycle
-
-## 1. THE DATA PIPELINE PHILOSOPHY
-In HEXA Vision, data is not just "fetched"; it is **curated**. We move from **High-Volume/Low-Structure** (Raw Assets) to **Low-Volume/High-Structure** (Experience-Ready JSON).
+**Last Updated:** 2026-07-08
 
 ---
 
-## 2. THE THREE STAGES OF FLOW
+## Primary Data Flows
 
-### I. The Ingestion Stage (Content $\rightarrow$ CMS)
-- **Source:** Architect uploads GLB files and metadata to Strapi.
-- **Process:** Strapi validates the content and pushes the heavy binaries to MinIO.
-- **Result:** A "Raw Asset" exists in the cloud, linked to a Strapi entry.
+### Content Publishing Flow
 
-### II. The Orchestration Stage (CMS $\rightarrow$ BFF)
-- **Trigger:** Next.js requests a Project Manifest.
-- **Process:** NestJS queries Strapi for the project structure and resolves all asset URLs.
-- **Optimization:** NestJS strips unused metadata and compresses the JSON payload.
-- **Result:** An "Experience-Ready Manifest" is delivered to the frontend.
+```
+Strapi CMS
+  │
+  ├── Webhook: content.publish
+  │
+  ▼
+NestJS API
+  │
+  ├── Validate content
+  ├── Transform data (add computed fields)
+  ├── Cache invalidation (Redis)
+  ├── Trigger Next.js ISR
+  │
+  ▼
+Next.js
+  │
+  ├── Re-generate pages (ISR)
+  ├── CDN cache purge (Cloudflare)
+  │
+  ▼
+Client Browser
+```
 
-### III. The Consumption Stage (BFF $\rightarrow$ Frontend)
-- **Trigger:** The manifest arrives at the Next.js client.
-- **Process:** R3F parses the manifest and begins asynchronous loading of assets.
-- **Caching:** Assets are cached locally via the browser and Redis at the edge.
-- **Result:** A seamless, high-fidelity 3D scene is rendered.
+### User Authentication Flow
+
+```
+Client Browser
+  │
+  ├── POST /api/auth/login
+  │     { email, password }
+  │
+  ▼
+Traefik → NestJS API
+  │
+  ├── Validate credentials
+  ├── Generate JWT (15min TTL)
+  ├── Generate Refresh Token (7 day TTL)
+  ├── Return tokens (HTTP-only cookie)
+  │
+  ▼
+Client Browser stores tokens
+  │
+  ├── Attach JWT to subsequent requests
+  ├── Auto-refresh on expiry
+```
+
+### Business Data Synchronization
+
+```
+NestJS API
+  │
+  ├── Website Contact Form → Odoo CRM Opportunity
+  ├── Odoo Project → Website Project Page
+  ├── Odoo Client → Website Portal User
+  │
+  ▼
+Odoo ERP
+  │
+  ├── CRM: Opportunities → Sales Pipeline
+  ├── Projects: Milestones → Timeline
+  ├── Documents: Files → MinIO
+```
 
 ---
 
-## 3. THE STATE SYNC FLOW (REAL-TIME)
+## Caching Strategy
 
-When a user interacts with the scene (e.g., changes a material):
-1. **Input:** User selects "Marble" in the UI.
-2. **Local Update:** Zustand updates the local state $\rightarrow$ R3F updates the material immediately.
-3. **Persistence:** Next.js sends a `PATCH` request to NestJS $\rightarrow$ Strapi updates the project preference.
-4. **Sync:** Other connected clients (if any) receive a WebSocket update to sync the change.
+```
+Cache Level 1: Browser Cache
+  ├── Static assets: Cache-Control: public, max-age=31536000, immutable
+  ├── API responses: Cache-Control: no-cache (stale while revalidate)
 
----
+Cache Level 2: Cloudflare CDN
+  ├── HTML pages: 60s TTL (or until ISR purge)
+  ├── Static assets: 1 year TTL
+  ├── Images: 30 day TTL (optimized by Cloudflare)
+  └── API: Not cached at CDN level
 
-## 4. PERFORMANCE BOTTLENECKS & MITIGATIONS
+Cache Level 3: Redis
+  ├── API responses: 30s-300s TTL (depends on endpoint)
+  ├── Session data: Session duration
+  ├── User permissions: 5 minutes
+  └── Content metadata: Until content update
 
-| Potential Bottleneck | Mitigation Strategy |
-|----------------------|----------------------|
-| **Large GLB Files** | Draco compression + Progressive loading |
-| **Slow CMS Queries** | Redis caching at the BFF layer |
-| **Network Latency** | Cloudflare Edge caching for assets |
-| **JS Main Thread Block**| Offloading heavy calculations to Web Workers |
+Cache Level 4: TanStack Query (Client)
+  ├── staleTime: 30s
+  ├── gcTime: 5 minutes
+  └── Refetch on focus: true
+```
 
-*“Data should move like water: effortless, directed, and pure.”*
+## Error Handling Flow
+
+```
+Client Request
+  │
+  ▼
+NestJS API
+  │
+  ├── ValidationPipe → 400 Bad Request
+  ├── AuthGuard → 401 Unauthorized
+  ├── RolesGuard → 403 Forbidden
+  ├── ThrottlerGuard → 429 Too Many Requests
+  │
+  ▼
+Global ExceptionFilter
+  │
+  ├── Format error: { status, message, code, details, timestamp }
+  ├── Log to console (structured JSON)
+  ├── Send to Sentry (if server error)
+  │
+  ▼
+Client receives structured error response
+```
