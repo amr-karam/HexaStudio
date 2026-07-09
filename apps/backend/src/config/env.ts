@@ -4,11 +4,10 @@ const envSchema = z.object({
   // Required — throw if missing
   JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters'),
   CMS_URL: z.string().url('CMS_URL must be a valid URL'),
-  REDIS_PASSWORD: z.string().min(1, 'REDIS_PASSWORD is required'),
 
   // MinIO
   MINIO_ROOT_USER: z.string().min(1, 'MINIO_ROOT_USER is required'),
-  MINIO_ROOT_PASSWORD: z.string().min(8, 'MINIO_ROOT_PASSWORD must be at least 8 characters'),
+  MINIO_ROOT_PASSWORD: z.string().min(8, 'MINIO_ROOT_PASSWORD is at least 8 characters'),
   MINIO_HOST: z.string().default('minio'),
   MINIO_PORT: z.coerce.number().default(9000),
   MINIO_USE_SSL: z
@@ -16,8 +15,22 @@ const envSchema = z.object({
     .default('false')
     .transform((v: string) => v === 'true'),
 
+  // Odoo
+  ODOO_HOST: z.string().url('ODOO_HOST must be a valid URL'),
+  ODOO_PORT: z.coerce.number().default(8069),
+  ODOO_DB: z.string().min(1, 'ODOO_DB is required'),
+  ODOO_USER: z.string().min(1, 'ODOO_USER is required'),
+  ODOO_PASSWORD: z.string().min(1, 'ODOO_PASSWORD is required'),
+  ODOO_WEBHOOK_SECRET: z.string().min(32, 'ODOO_WEBHOOK_SECRET must be at least 32 characters'),
+
+  // Redis
+  REDIS_HOST: z.string().default('redis'),
+  REDIS_PORT: z.coerce.number().default(6379),
+  REDIS_PASSWORD: z.string().min(1, 'REDIS_PASSWORD is required'),
+
   // Optional
   PORT: z.coerce.number().default(4000),
+
   SENTRY_DSN: z.string().url().or(z.literal('')).optional().transform(v => v === '' ? undefined : v),
   CORS_ORIGINS: z.string().optional(),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
