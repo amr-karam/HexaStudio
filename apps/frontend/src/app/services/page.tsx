@@ -5,39 +5,75 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 import { TextReveal } from '@/components/ui/TextReveal';
+import { useServices } from '@/features/services/hooks/useServices';
+import { Service } from '@/types';
 
-const services = [
+const fallbackServices: (Service & { accent: string })[] = [
   {
+    id: '1',
     title: 'Architectural Visualization',
+    slug: 'architectural-visualization',
     description:
       'Photorealistic still renderings that capture materials, lighting, and atmosphere with uncompromising fidelity.',
-    items: ['Exterior & Interior renderings', 'Material studies', 'Contextual site visuals'],
+    features: ['Exterior & Interior renderings', 'Material studies', 'Contextual site visuals'],
+    order: 1,
+    isPublished: true,
+    createdAt: '',
+    updatedAt: '',
     accent: 'var(--color-accent)',
   },
   {
+    id: '2',
     title: 'Real-Time 3D Experiences',
+    slug: 'real-time-3d',
     description:
       'Interactive web-based walkthroughs built with React Three Fiber, allowing clients to explore spaces in real time.',
-    items: ['Browser-based walkthroughs', 'Interactive hotspots', 'Quality-adaptive rendering'],
+    features: ['Browser-based walkthroughs', 'Interactive hotspots', 'Quality-adaptive rendering'],
+    order: 2,
+    isPublished: true,
+    createdAt: '',
+    updatedAt: '',
     accent: 'var(--color-accent-light)',
   },
   {
+    id: '3',
     title: 'Cinematic Animation',
+    slug: 'cinematic-animation',
     description:
       'Narrative-driven film sequences that guide viewers through architectural spaces with cinematic pacing and camera work.',
-    items: ['Flythrough animations', 'Camera choreography', 'Post-production grading'],
+    features: ['Flythrough animations', 'Camera choreography', 'Post-production grading'],
+    order: 3,
+    isPublished: true,
+    createdAt: '',
+    updatedAt: '',
     accent: 'var(--color-accent-dark)',
   },
   {
+    id: '4',
     title: 'Visual Consulting',
+    slug: 'visual-consulting',
     description:
       'Strategic visual direction for architectural projects, from material selection to lighting design and presentation strategy.',
-    items: ['Visual strategy sessions', 'Material & lighting consultation', 'Presentation design'],
+    features: ['Visual strategy sessions', 'Material & lighting consultation', 'Presentation design'],
+    order: 4,
+    isPublished: true,
+    createdAt: '',
+    updatedAt: '',
     accent: 'var(--color-accent)',
   },
 ];
 
+const accentColors = [
+  'var(--color-accent)',
+  'var(--color-accent-light)',
+  'var(--color-accent-dark)',
+  'var(--color-accent)',
+];
+
 export default function ServicesPage() {
+  const { data, isLoading } = useServices();
+  const services = data?.services?.length ? data.services : fallbackServices;
+
   return (
     <div className="bg-background text-foreground">
       <section className="relative min-h-screen flex flex-col items-center justify-center px-8 overflow-hidden">
@@ -60,7 +96,7 @@ export default function ServicesPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-7xl mx-auto w-full">
           {services.map((service, idx) => (
             <motion.div
-              key={service.title}
+              key={service.id || service.title}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -78,7 +114,7 @@ export default function ServicesPage() {
                   {service.description}
                 </p>
                 <ul className="space-y-3 mb-12">
-                  {service.items.map((item, i) => (
+                  {service.features.map((item, i) => (
                     <li key={i} className="flex items-center gap-3 text-sm text-neutral-500 font-light">
                       <span className="w-1 h-1 bg-accent rounded-full" />
                       {item}
