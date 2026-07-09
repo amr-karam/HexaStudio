@@ -33,7 +33,7 @@ async function bootstrap() {
 
   const corsOrigins = (env.CORS_ORIGINS ?? "http://localhost:3000")
     .split(",")
-    .map((o) => o.trim());
+    .map((o: string) => o.trim());
   app.enableCors({ origin: corsOrigins, credentials: true });
 
   // Only enable Swagger in development
