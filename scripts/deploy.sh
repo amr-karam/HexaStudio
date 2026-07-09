@@ -7,7 +7,7 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-PROJECT_DIR="/opt"
+PROJECT_DIR="/home/hexa/hexastudio"
 LOG_FILE="/opt/deploy.log"
 
 log() { echo -e "${GREEN}[$(date '+%Y-%m-%d %H:%M:%S')]${NC} $1" | tee -a "$LOG_FILE"; }
@@ -84,10 +84,12 @@ cmd_check_service() {
 }
 
 cmd_update() {
-    log "Updating HexaStudio with Zero-Downtime strategy..."
+    local branch="${1:-main}"
+    log "Updating HexaStudio from branch: $branch"
     cd "$PROJECT_DIR"
     log "Pulling latest code..."
-    git pull origin main
+    git fetch origin
+    git reset --hard "origin/$branch"
     cmd_deploy
 }
 
