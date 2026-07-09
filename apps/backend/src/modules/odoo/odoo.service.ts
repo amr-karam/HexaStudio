@@ -19,32 +19,21 @@ export class OdooService {
   async authenticate(): Promise<number> {
     if (this.uid) return this.uid;
 
-    try {
-      const db = this.configService.get<string>('ODOO_DB');
-      const username = this.configService.get<string>('ODOO_USER');
-      const password = this.configService.get<string>('ODOO_PASSWORD');
+    const db = this.configService.get<string>('ODOO_DB');
+    const username = this.configService.get<string>('ODOO_USER');
+    const password = this.configService.get<string>('ODOO_PASSWORD');
 
+    return new Promise((resolve, reject) => {
       this.client.methodCall('authenticate', [db, username, password, {}], (error, value) => {
-        if (error) throw error;
-        this.uid = value;
+        if (error) {
+          this.logger.error(`Odoo authentication failed: ${error}`);
+          reject(new InternalServerErrorException('Odoo authentication failed'));
+        } else {
+          this.uid = value;
+          resolve(value);
+        }
       });
-
-      // xmlrpc is callback based, wrapping it in a promise
-      return new Promise((resolve, reject) => {
-        this.client.methodCall('authenticate', [db, username, password, {}], (error, value) => {
-          if (error) {
-            this.logger.error(`Odoo authentication failed: ${error}`);
-            reject(new InternalServerErrorException('Odoo authentication failed'));
-          } else {
-            this.uid = value;
-            resolve(value);
-          }
-        });
-      });
-    } catch (error) {
-      this.logger.error(`Odoo auth error: ${error}`);
-      throw new InternalServerErrorException('Could not connect to Odoo');
-    }
+    });
   }
 
   async execute<T = unknown>(model: string, method: string, args: unknown[]): Promise<T> {
