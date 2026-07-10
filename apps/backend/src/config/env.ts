@@ -16,7 +16,7 @@ const envSchema = z.object({
     .transform((v: string) => v === 'true'),
 
   // Odoo
-  ODOO_HOST: z.string().url('ODOO_HOST must be a valid URL'),
+  ODOO_HOST: z.string().min(1, 'ODOO_HOST is required'),
   ODOO_PORT: z.coerce.number().default(8069),
   ODOO_DB: z.string().min(1, 'ODOO_DB is required'),
   ODOO_USER: z.string().min(1, 'ODOO_USER is required'),
