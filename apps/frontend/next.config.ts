@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   output: "standalone",
   reactStrictMode: true,
   poweredByHeader: false,
-  transpilePackages: ["@hexastudio/types", "@hexastudio/utils"],
+  transpilePackages: ["@hexastudio/types", "@hexastudio/utils", "@hexastudio/ui"],
   typescript: {
     ignoreBuildErrors: true,
   },
