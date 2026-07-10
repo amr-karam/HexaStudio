@@ -25,6 +25,7 @@ ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 ENV NEXT_PUBLIC_SENTRY_DSN=$NEXT_PUBLIC_SENTRY_DSN
 
 COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/apps/frontend/node_modules ./apps/frontend/node_modules 2>/dev/null || true
 COPY . .
 RUN npm run build --workspace=apps/frontend
 
