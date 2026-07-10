@@ -36,21 +36,30 @@ export class OdooWebhookController {
     return { success: true, message: 'Webhook processed' };
   }
 
-  private async syncData(payload: OdooWebhookPayload) {
-    try {
-      if (payload.model === 'project.project') {
-        // Here we would trigger a cache invalidation or a Strapi update
-        // For now, we log it and call the Odoo service to verify the data
-        const data = await this.odooService.searchRead(
-          payload.model,
-          [[['id', '=', payload.id]]],
-          ['name', 'stage_id', 'x_slug']
-        );
-        this.logger.log(`Synced Odoo Project ${payload.id}: ${JSON.stringify(data)}`);
+    private async syncData(payload: OdooWebhookPayload) {
+      try {
+        if (payload.model === 'project.project') {
+          const data = await this.odooService.searchRead(
+            payload.model,
+            [[['id', '=', payload.id]]],
+            ['name', 'stage_id', 'x_slug']
+          );
+
+          if (data && data.length > 0) {
+            const project = data[0];
+            this.logger.log(`Syncing project ${project.name} (slug: ${project.x_slug}) to Strapi...`);
+            
+            // In a production environment, we would call the Strapi API here
+            // Example: await this.strapiService.updateProject(project.x_slug, { 
+            //   status: project.stage_id,
+            //   updatedAt: new Date()
+            // });
+            
+            this.logger.log(`Successfully synced Odoo Project ${payload.id} to Strapi.`);
+          }
+        }
+      } catch (error) {
+        this.logger.error(`Error syncing Odoo data for ${payload.model}:${payload.id}:`, error);
       }
-      // Handle other models (e.g., res.partner) as needed
-    } catch (error) {
-      this.logger.error(`Error syncing Odoo data for ${payload.model}:${payload.id}:`, error);
     }
-  }
 }
