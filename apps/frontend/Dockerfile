@@ -26,7 +26,7 @@ ENV NEXT_PUBLIC_SENTRY_DSN=$NEXT_PUBLIC_SENTRY_DSN
 
 COPY . .
 WORKDIR /app/apps/frontend
-RUN npm run build
+RUN echo "=== checking app directory ===" && ls -la src/app/ && echo "=== checking next.config ===" && cat next.config.ts | head -5 && echo "=== checking tsconfig ===" && cat tsconfig.json | head -10 && npm run build 2>&1 | grep -E "Route|Generating|Compiled|Failed|page|error|Error|warn|Warning|App" | head -30
 
 # Stage 4: Runner
 FROM node:20-alpine AS runner
