@@ -16,50 +16,75 @@ interface ProjectCardProps {
   onClick: () => void;
 }
 
-const ProjectCard = ({ title, category, image, index, onClick }: ProjectCardProps) => (
-  <motion.div
-    layout
-    initial={{ opacity: 0, y: 30 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{
-      duration: 0.8,
-      delay: (index % 4) * 0.1,
-      ease: [0.16, 1, 0.3, 1]
-    }}
-    whileHover={{ y: -12 }}
-    className="group cursor-pointer"
-    data-testid="project-card"
-    onClick={onClick}
-  >
-    <Card variant="solid" className="overflow-hidden p-0 aspect-[3/4]">
-      <div className="absolute inset-0 bg-accent/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
-      <div className="h-full w-full relative overflow-hidden bg-surface-light">
-        <Image
-          src={image}
-          alt={title}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-          className="object-cover opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000 ease-out-expo"
-        />
+const ProjectCard = ({ title, category, image, index, onClick, isFocused }: ProjectCardProps & { isFocused: boolean }) => {
+  const [rotate, setRotate] = useState({ x: 0, y: 0 });
 
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-700" />
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setRotate({ x: -y * 10, y: x * 10 });
+  };
 
-        <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
-          <div className="transition-all duration-500 ease-out-expo">
-            <p className="text-[10px] md:text-xs uppercase tracking-[0.4em] text-accent/80 group-hover:text-accent transition-colors duration-500 mb-2 font-mono">
-              {category}
-            </p>
-            <h3 className="text-lg md:text-xl lg:text-2xl font-serif font-light text-foreground/90 group-hover:text-foreground transition-colors duration-500 leading-tight">
-              {title}
-            </h3>
-            <div className="h-[1px] w-0 group-hover:w-full bg-accent transition-all duration-700 mt-4" />
+  const handleMouseLeave = () => setRotate({ x: 0, y: 0 });
+
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{
+        duration: 1.2,
+        delay: (index % 4) * 0.1,
+        ease: [0.16, 1, 0.3, 1]
+      }}
+      className="group cursor-pointer perspective-1000"
+      data-testid="project-card"
+      onClick={onClick}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      <motion.div 
+        style={{ 
+          rotateX: rotate.x, 
+          rotateY: rotate.y,
+          filter: isFocused ? 'blur(0px) grayscale(0%)' : 'blur(2px) grayscale(20%)',
+          opacity: isFocused ? 1 : 0.7
+        }}
+        transition={{ type: 'spring', stiffness: 150, damping: 20 }}
+        className="transition-all duration-700 ease-out"
+      >
+        <Card variant="solid" className="overflow-hidden p-0 aspect-[3/4]">
+          <div className="absolute inset-0 bg-accent/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
+          <div className="h-full w-full relative overflow-hidden bg-surface-light">
+            <Image
+              src={image}
+              alt={title}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+              className="object-cover opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000 ease-out-expo"
+            />
+
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-700" />
+
+            <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
+              <div className="transition-all duration-500 ease-out-expo">
+                <p className="text-[10px] md:text-xs uppercase tracking-[0.4em] text-accent/80 group-hover:text-accent transition-colors duration-500 mb-2 font-mono">
+                  {category}
+                </p>
+                <h3 className="text-lg md:text-xl lg:text-2xl font-serif font-light text-foreground/90 group-hover:text-foreground transition-colors duration-500 leading-tight">
+                  {title}
+                </h3>
+                <div className="h-[1px] w-0 group-hover:w-full bg-accent transition-all duration-700 mt-4" />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </Card>
-  </motion.div>
-);
+        </Card>
+      </motion.div>
+    </motion.div>
+  );
+};
 
 const fallbackProjects = [
   {
@@ -99,6 +124,7 @@ interface ProjectGridProps {
 export const ProjectGrid = ({ projects }: ProjectGridProps) => {
   const [selectedProject, setSelectedProject] = useState<typeof fallbackProjects[0] | null>(null);
   const [activeCategory, setActiveCategory] = useState('All');
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   
   const { scrollYProgress } = useScroll({
@@ -184,18 +210,25 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
 
         <motion.div 
           layout 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+          className="columns-1 md:columns-2 lg:columns-4 gap-8 space-y-8"
         >
           <AnimatePresence mode="popLayout">
             {filteredProjects.map((project, idx) => (
-              <ProjectCard 
+              <div 
                 key={project.slug} 
-                title={project.title} 
-                category={project.category} 
-                image={project.image} 
-                index={idx} 
-                onClick={() => setSelectedProject(project)} 
-              />
+                className="break-inside-avoid"
+                onMouseEnter={() => setHoveredIndex(idx)}
+                onMouseLeave={() => setHoveredIndex(null)}
+              >
+                <ProjectCard 
+                  title={project.title} 
+                  category={project.category} 
+                  image={project.image} 
+                  index={idx} 
+                  isFocused={hoveredIndex === idx}
+                  onClick={() => setSelectedProject(project)} 
+                />
+              </div>
             ))}
           </AnimatePresence>
         </motion.div>

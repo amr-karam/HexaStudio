@@ -5,25 +5,31 @@ import { Canvas } from '@react-three/fiber';
 import { Environment, ContactShadows, PerspectiveCamera } from '@react-three/drei';
 import { HexaCrystal } from './HexaCrystal';
 import { SceneModel } from './SceneModel';
-
-const MODEL_PATH = process.env.NEXT_PUBLIC_MODEL_PATH;
+import { getModelConfig } from '@/features/scene/config/model-registry';
 
 function SceneContent() {
-  if (MODEL_PATH) {
-    return (
-      <Suspense fallback={<HexaCrystal />}>
-        <SceneModel modelUrl={MODEL_PATH} />
-      </Suspense>
-    );
-  }
+  const config = getModelConfig();
 
-  return <HexaCrystal />;
+  return (
+    <Suspense fallback={<HexaCrystal />}>
+      <SceneModel config={config} />
+    </Suspense>
+  );
 }
 
 export function Scene() {
   return (
     <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
-      <Canvas dpr={[1, 2]} shadows>
+      <Canvas 
+        dpr={[1, 2]} 
+        shadows 
+        gl={{ 
+          antialias: true, 
+          powerPreference: 'high-performance',
+          stencil: false,
+          depth: true 
+        }}
+      >
         <PerspectiveCamera makeDefault position={[0, 0, 4]} fov={50} />
 
         <ambientLight intensity={0.5} />

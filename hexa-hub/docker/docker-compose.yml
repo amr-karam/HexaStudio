@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  # Database: PostgreSQL
+  hub-postgres:
+    image: postgres:16-alpine
+    container_name: hub-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-hub_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hub_password}
+      POSTGRES_DB: ${POSTGRES_DB:-hub_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - hub-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hub_user} -d ${POSTGRES_DB:-hub_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Cache & Pub/Sub: Redis
+  hub-redis:
+    image: redis:7-alpine
+    container_name: hub-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - hub-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Object Storage: MinIO
+  hub-minio:
+    image: minio/minio
+    container_name: hub-minio
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    command: server /data --console-address ":9001"
+    volumes:
+      - hub-minio-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Realtime Server: Socket.IO
+  hub-realtime:
+    build: 
+      context: ..
+      dockerfile: apps/realtime/Dockerfile
+    container_name: hub-realtime
+    restart: always
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      REDIS_URL: redis://hub-redis:6379
+      JWT_SECRET: ${JWT_SECRET:-hexa-hub-super-secret-key}
+    depends_on:
+      hub-redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  hub-postgres-data:
+  hub-redis-data:
+  hub-minio-data:

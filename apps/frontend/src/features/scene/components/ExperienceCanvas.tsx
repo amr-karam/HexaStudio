@@ -6,7 +6,7 @@ import {
   OrbitControls,
   PerspectiveCamera,
   ContactShadows,
-  Stage,
+  Environment,
 } from '@react-three/drei';
 
 import { SceneContent } from './SceneContent';
@@ -68,23 +68,16 @@ export const ExperienceCanvas = ({
             enableDamping
           />
 
-          <Stage 
-            intensity={0.5} 
-            environment="city" 
-            shadows={true} 
-            adjustCamera={false}
-          >
-            <SceneContent projectModelUrl={projectModelUrl} hotspots={hotspots} />
-          </Stage>
+          <Environment preset="city" />
+          <SceneContent projectModelUrl={projectModelUrl} hotspots={hotspots} />
           
           <directionalLight
             position={[10, 15, 5]}
             intensity={1.5}
             castShadow
             shadow-mapSize={[2048, 2048]}
-            shadow-bias={-0.001}
           />
-           <directionalLight position={[-5, 5, -5]} intensity={0.5} color="#D4AF37" />
+          <directionalLight position={[-5, 5, -5]} intensity={0.5} color="#D4AF37" />
 
           <fog attach="fog" args={['#050505', 15, 30]} />
 

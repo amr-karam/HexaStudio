@@ -21,7 +21,7 @@ const Card = ({ title, description, image, variant = 'featured', children, class
         'group relative overflow-hidden rounded-2xl border transition-all duration-500',
         variant === 'featured' && 'border-white/20 bg-gradient-to-b from-white/10 to-transparent',
         variant === 'minimal' && 'border-transparent hover:bg-white/5',
-        variant === 'glass' && 'bg-white/5 backdrop-blur-md border-white/10',
+        variant === 'glass' && 'bg-[var(--glass-bg)] backdrop-blur-md border-[var(--glass-border)]',
         variant === 'solid' && 'bg-surface border-border/50',
         className
       )}
@@ -37,7 +37,7 @@ const Card = ({ title, description, image, variant = 'featured', children, class
       )}
       <div className="p-6">
         {title && (
-          <h3 className="text-xl font-serif mb-2 group-hover:text-gold transition-colors duration-300">
+          <h3 className="text-xl font-serif mb-2 group-hover:text-accent transition-colors duration-300">
             {title}
           </h3>
         )}
