@@ -10,10 +10,10 @@ COPY apps/frontend/package.json ./apps/frontend/
 COPY packages/types/package.json ./packages/types/
 COPY packages/ui/package.json ./packages/ui/
 COPY packages/utils/package.json ./packages/utils/
-RUN npm install --no-audit --no-fund --install-strategy=hoisted
+RUN npm install --no-audit --no-fund
 
 # Stage 3: Builder
-FROM base AS builder
+FROM deps AS builder
 
 ARG NEXT_PUBLIC_API_URL
 ARG NEXT_PUBLIC_CMS_URL
@@ -24,8 +24,6 @@ ENV NEXT_PUBLIC_CMS_URL=$NEXT_PUBLIC_CMS_URL
 ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 ENV NEXT_PUBLIC_SENTRY_DSN=$NEXT_PUBLIC_SENTRY_DSN
 
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/apps/frontend/node_modules ./apps/frontend/node_modules 2>/dev/null || true
 COPY . .
 RUN npm run build --workspace=apps/frontend
 
@@ -52,4 +50,3 @@ ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
 CMD ["node", "apps/frontend/server.js"]
-
