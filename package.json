@@ -8,6 +8,10 @@
     "apps/frontend",
     "apps/backend",
     "apps/cms",
+    "hexa-hub/apps/web",
+    "hexa-hub/apps/api",
+    "hexa-hub/apps/realtime",
+    "hexa-hub/apps/worker",
     "packages/types",
     "packages/ui",
     "packages/utils"
