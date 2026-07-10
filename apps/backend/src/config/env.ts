@@ -21,7 +21,7 @@ const envSchema = z.object({
   ODOO_DB: z.string().min(1, 'ODOO_DB is required'),
   ODOO_USER: z.string().min(1, 'ODOO_USER is required'),
   ODOO_PASSWORD: z.string().min(1, 'ODOO_PASSWORD is required'),
-  ODOO_WEBHOOK_SECRET: z.string().min(32, 'ODOO_WEBHOOK_SECRET must be at least 32 characters'),
+  ODOO_WEBHOOK_SECRET: z.string().min(32, 'ODOO_WEBHOOK_SECRET must be at least 32 characters').optional(),
 
   // Redis
   REDIS_HOST: z.string().default('redis'),
