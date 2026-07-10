@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { FadeIn } from '@/components/ui/motion/FadeIn';
 import { TextReveal } from '@/components/ui/TextReveal';
 
 export const metadata: Metadata = {
@@ -12,14 +12,11 @@ export default function TermsPage() {
   return (
     <main className="min-h-screen bg-background pt-40 pb-32">
       <div className="max-w-3xl mx-auto px-8 md:px-16">
-        <motion.span 
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
-        >
-          Legal
-        </motion.span>
+        <FadeIn delay={0}>
+          <span className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono">
+            Legal
+          </span>
+        </FadeIn>
         <div className="text-5xl md:text-7xl font-serif font-light tracking-tight text-foreground mb-12 leading-tight">
           <TextReveal delay={0.1}>
             Terms of <span className="italic text-accent">Service</span>
