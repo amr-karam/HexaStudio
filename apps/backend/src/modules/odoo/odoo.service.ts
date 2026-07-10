@@ -25,9 +25,23 @@ export class OdooService implements OnModuleInit {
 
   constructor(private readonly redisService: RedisService) {
     const env = getEnv();
+    let host = env.ODOO_HOST;
+    let port = env.ODOO_PORT || 8069;
+
+    // Parse URL format if provided (e.g., "http://odoo:8069")
+    try {
+      if (host.startsWith('http://') || host.startsWith('https://')) {
+        const url = new URL(host);
+        host = url.hostname;
+        port = url.port ? parseInt(url.port, 10) : port;
+      }
+    } catch {
+      // Use as-is if URL parsing fails
+    }
+
     this.client = xmlrpc.createClient({
-      host: env.ODOO_HOST,
-      port: env.ODOO_PORT || 8069,
+      host,
+      port,
       path: '/xmlrpc/2/common',
     });
   }
@@ -107,9 +121,22 @@ export class OdooService implements OnModuleInit {
 
     return new Promise<T>((resolve, reject) => {
       const env = getEnv();
+      let host = env.ODOO_HOST;
+      let port = env.ODOO_PORT || 8069;
+
+      try {
+        if (host.startsWith('http://') || host.startsWith('https://')) {
+          const url = new URL(host);
+          host = url.hostname;
+          port = url.port ? parseInt(url.port, 10) : port;
+        }
+      } catch {
+        // Use as-is
+      }
+
       const objectClient = xmlrpc.createClient({
-        host: env.ODOO_HOST,
-        port: env.ODOO_PORT || 8069,
+        host,
+        port,
         path: '/xmlrpc/2/object',
       });
 
