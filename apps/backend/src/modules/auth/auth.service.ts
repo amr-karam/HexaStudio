@@ -1,12 +1,22 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  Injectable,
+  Logger,
+  ServiceUnavailableException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { JwtService } from '@nestjs/jwt';
+import { AxiosError } from 'axios';
 import { firstValueFrom } from 'rxjs';
 import { User, AuthResponse } from '@hexastudio/types';
 import { getEnv } from '../../config/env';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly httpService: HttpService,
     private readonly jwtService: JwtService,
@@ -16,14 +26,49 @@ export class AuthService {
     return getEnv().CMS_URL;
   }
 
-  async register(email: string, username: string, password: string): Promise<AuthResponse> {
-    const response = await firstValueFrom(
-      this.httpService.post(`${this.cmsUrl}/api/auth/local/register`, {
-        email,
-        username,
-        password,
-      }),
+  /**
+   * Translates an upstream CMS (Strapi) failure into a meaningful HTTP error.
+   * Without this, any auth failure surfaces to the client as a generic 500,
+   * hiding the real cause (e.g. invalid credentials or a duplicate account).
+   */
+  private toHttpException(error: unknown, fallbackMessage: string): HttpException {
+    if (error instanceof AxiosError) {
+      const status = error.response?.status;
+      const cmsMessage =
+        (error.response?.data as { error?: { message?: string } } | undefined)?.error?.message;
+
+      if (status === undefined) {
+        this.logger.error(`CMS unreachable during auth: ${error.message}`);
+        return new ServiceUnavailableException('Authentication service is temporarily unavailable');
+      }
+
+      if (status === 400 || status === 401 || status === 403) {
+        return new BadRequestException(cmsMessage ?? fallbackMessage);
+      }
+
+      this.logger.error(`Unexpected CMS auth response (${status}): ${cmsMessage ?? error.message}`);
+      return new ServiceUnavailableException('Authentication service is temporarily unavailable');
+    }
+
+    this.logger.error(
+      `Unexpected auth error: ${error instanceof Error ? error.message : String(error)}`,
     );
+    return new ServiceUnavailableException(fallbackMessage);
+  }
+
+  async register(email: string, username: string, password: string): Promise<AuthResponse> {
+    let response;
+    try {
+      response = await firstValueFrom(
+        this.httpService.post(`${this.cmsUrl}/api/auth/local/register`, {
+          email,
+          username,
+          password,
+        }),
+      );
+    } catch (error) {
+      throw this.toHttpException(error, 'Registration failed');
+    }
 
     const data = response.data;
     const user = this.mapUser(data.user);
@@ -37,12 +82,23 @@ export class AuthService {
   }
 
   async login(identifier: string, password: string): Promise<AuthResponse> {
-    const response = await firstValueFrom(
-      this.httpService.post(`${this.cmsUrl}/api/auth/local`, {
-        identifier,
-        password,
-      }),
-    );
+    let response;
+    try {
+      response = await firstValueFrom(
+        this.httpService.post(`${this.cmsUrl}/api/auth/local`, {
+          identifier,
+          password,
+        }),
+      );
+    } catch (error) {
+      if (error instanceof AxiosError && error.response?.status !== undefined) {
+        const status = error.response.status;
+        if (status === 400 || status === 401 || status === 403) {
+          throw new UnauthorizedException('Invalid credentials');
+        }
+      }
+      throw this.toHttpException(error, 'Login failed');
+    }
 
     const data = response.data;
     const user = this.mapUser(data.user);

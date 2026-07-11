@@ -9,11 +9,13 @@ export async function fetchArticles(): Promise<ArticleResponse> {
     });
 
     if (!response.ok) {
+      console.error(`fetchArticles: API responded with ${response.status} ${response.statusText}`);
       return { articles: [], total: 0 };
     }
 
     return response.json();
-  } catch {
+  } catch (error) {
+    console.error('fetchArticles: failed to reach articles API:', error);
     return { articles: [], total: 0 };
   }
 }
@@ -25,11 +27,13 @@ export async function fetchArticle(slug: string): Promise<Article | null> {
     });
 
     if (!response.ok) {
+      console.error(`fetchArticle(${slug}): API responded with ${response.status} ${response.statusText}`);
       return null;
     }
 
     return response.json();
-  } catch {
+  } catch (error) {
+    console.error(`fetchArticle(${slug}): failed to reach articles API:`, error);
     return null;
   }
 }
