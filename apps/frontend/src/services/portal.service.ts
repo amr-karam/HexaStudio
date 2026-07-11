@@ -1,4 +1,5 @@
 import { API_BASE_URL } from '@/config/constants';
+import { fetchJson } from '@/lib/api';
 
 export interface PortalProjectStatus {
   phase: string;
@@ -50,25 +51,27 @@ export interface PortalData {
 }
 
 export const portalService = {
-  async getDemoData(): Promise<PortalData> {
-    const response = await fetch(`${API_BASE_URL}/portal/demo`);
-    if (!response.ok) throw new Error('Failed to fetch portal data');
-    return response.json();
+  getDemoData(): Promise<PortalData> {
+    return fetchJson<PortalData>(`${API_BASE_URL}/portal/demo`, undefined, 'Failed to fetch portal data');
   },
 
-  async sendRequest(requestData: Partial<ProjectRequest>): Promise<ProjectRequest> {
-    const response = await fetch(`${API_BASE_URL}/requests`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(requestData),
-    });
-    if (!response.ok) throw new Error('Failed to send request');
-    return response.json();
+  sendRequest(requestData: Partial<ProjectRequest>): Promise<ProjectRequest> {
+    return fetchJson<ProjectRequest>(
+      `${API_BASE_URL}/requests`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestData),
+      },
+      'Failed to send request',
+    );
   },
 
-  async getClientRequests(clientId: string): Promise<ProjectRequest[]> {
-    const response = await fetch(`${API_BASE_URL}/requests/client/${clientId}`);
-    if (!response.ok) throw new Error('Failed to fetch requests');
-    return response.json();
+  getClientRequests(clientId: string): Promise<ProjectRequest[]> {
+    return fetchJson<ProjectRequest[]>(
+      `${API_BASE_URL}/requests/client/${clientId}`,
+      undefined,
+      'Failed to fetch requests',
+    );
   },
 };
