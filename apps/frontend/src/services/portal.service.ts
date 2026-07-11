@@ -61,6 +61,7 @@ export const portalService = {
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(requestData),
       },
       'Failed to send request',
@@ -70,7 +71,7 @@ export const portalService = {
   getClientRequests(clientId: string): Promise<ProjectRequest[]> {
     return fetchJson<ProjectRequest[]>(
       `${API_BASE_URL}/requests/client/${clientId}`,
-      undefined,
+      { credentials: 'include' },
       'Failed to fetch requests',
     );
   },
