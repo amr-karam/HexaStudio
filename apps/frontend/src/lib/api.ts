@@ -43,10 +43,12 @@ export async function fetchJsonSafe<T>(
       timeoutMs !== undefined ? AbortSignal.timeout(timeoutMs) : options.signal;
     const response = await fetch(url, { ...options, signal });
     if (!response.ok) {
+      console.error(`fetchJsonSafe: ${url} responded with ${response.status} ${response.statusText}`);
       return fallback;
     }
     return (await response.json()) as T;
-  } catch {
+  } catch (error) {
+    console.error(`fetchJsonSafe: request to ${url} failed:`, error);
     return fallback;
   }
 }
