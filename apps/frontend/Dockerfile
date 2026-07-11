@@ -5,15 +5,15 @@ WORKDIR /app
 
 # Stage 2: Dependencies
 FROM base AS deps
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+COPY package.json package-lock.json ./
 COPY apps/frontend/package.json ./apps/frontend/
 COPY packages/types/package.json ./packages/types/
 COPY packages/ui/package.json ./packages/ui/
 COPY packages/utils/package.json ./packages/utils/
-RUN npm install --no-audit --no-fund --install-strategy=hoisted
+RUN npm install --no-audit --no-fund --legacy-peer-deps
 
 # Stage 3: Builder
-FROM base AS builder
+FROM deps AS builder
 
 ARG NEXT_PUBLIC_API_URL
 ARG NEXT_PUBLIC_CMS_URL
@@ -24,9 +24,10 @@ ENV NEXT_PUBLIC_CMS_URL=$NEXT_PUBLIC_CMS_URL
 ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 ENV NEXT_PUBLIC_SENTRY_DSN=$NEXT_PUBLIC_SENTRY_DSN
 
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN npm run build --workspace=apps/frontend
+WORKDIR /app/apps/frontend
+ENV NODE_ENV=production
+RUN npx next build
 
 # Stage 4: Runner
 FROM node:20-alpine AS runner
@@ -51,4 +52,3 @@ ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
 CMD ["node", "apps/frontend/server.js"]
-

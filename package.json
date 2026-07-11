@@ -2,22 +2,30 @@
   "name": "hexastudio",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "npm@11.17.0",
   "description": "HexaStudio.net — 3D creative studio platform",
   "workspaces": [
     "apps/frontend",
     "apps/backend",
     "apps/cms",
+    "hexa-hub/apps/web",
+    "hexa-hub/apps/api",
+    "hexa-hub/apps/realtime",
+    "hexa-hub/apps/worker",
     "packages/types",
     "packages/ui",
     "packages/utils"
   ],
   "scripts": {
-    "dev:frontend": "npm run dev --workspace=apps/frontend",
-    "dev:backend": "npm run dev --workspace=apps/backend",
-    "dev:cms": "npm run develop --workspace=apps/cms",
-    "build": "npm run build --workspaces --if-present",
-    "lint": "npm run lint --workspaces --if-present",
-    "typecheck": "npm run typecheck --workspaces --if-present",
+    "dev": "turbo run dev",
+    "dev:frontend": "turbo run dev --filter=frontend",
+    "dev:backend": "turbo run dev --filter=backend",
+    "dev:cms": "turbo run dev --filter=cms",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "clean": "turbo run clean",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
     "docker:build": "docker compose build",
@@ -37,5 +45,8 @@
   },
   "overrides": {
     "framer-motion": "^11.18.2"
+  },
+  "devDependencies": {
+    "turbo": "^2.10.4"
   }
 }

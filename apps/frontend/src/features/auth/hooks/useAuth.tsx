@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, createContext, useContext } from 'react';
 import { User } from '@/types';
+import { API_BASE_URL } from '@/config/constants';
 
 interface AuthContextType {
   user: User | null;
@@ -12,8 +13,6 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -26,7 +25,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const fetchUser = async () => {
       try {
-        const response = await fetch(`${API_URL}/users/me`, {
+        const response = await fetch(`${API_BASE_URL}/api/users/me`, {
           credentials: 'include', // Include cookies
         });
         if (response.ok) {
@@ -44,7 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 
   const login = async (identifier: string, password: string) => {
-    const response = await fetch(`${API_URL}/auth/login`, {
+    const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include', // Include cookies
@@ -61,7 +60,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const register = async (email: string, username: string, password: string) => {
-    const response = await fetch(`${API_URL}/auth/register`, {
+    const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include', // Include cookies
@@ -79,7 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = useCallback(async () => {
     try {
-      await fetch(`${API_URL}/auth/logout`, {
+      await fetch(`${API_BASE_URL}/api/auth/logout`, {
         method: 'POST',
         credentials: 'include',
       });

@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cn } from '@/lib/utils';
@@ -10,7 +12,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 const variants = {
-  primary: 'bg-gold text-obsidian hover:bg-gold/90 shadow-lg shadow-gold/20',
+  primary: 'bg-accent text-background hover:bg-accent/90 shadow-lg shadow-accent/20',
   secondary: 'bg-white/10 text-white border border-white/20 hover:bg-white/20',
   ghost: 'bg-transparent text-white hover:bg-white/5',
   danger: 'bg-red-500 text-white hover:bg-red-600',
@@ -30,8 +32,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <Component
         className={cn(
-          'inline-flex items-center justify-center rounded-full font-medium transition-all duration-300',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian',
+          'inline-flex items-center justify-center rounded-full font-medium transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
           'disabled:opacity-50 disabled:pointer-events-none active:scale-95',
           variants[variant],
           sizes[size],
