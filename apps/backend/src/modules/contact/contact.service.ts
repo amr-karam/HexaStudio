@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ContactMessage } from '@hexastudio/types';
 import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class ContactService {
+  private readonly logger = new Logger(ContactService.name);
+
   constructor(private readonly emailService: EmailService) {}
 
   async sendMessage(message: ContactMessage): Promise<{ success: boolean; message: string }> {
@@ -18,7 +20,11 @@ export class ContactService {
         success: true,
         message: 'Thank you for your message. We will get back to you within 24 hours.',
       };
-    } catch {
+    } catch (error) {
+      this.logger.error(
+        `Failed to deliver contact message from ${message.email}`,
+        error instanceof Error ? error.stack : String(error),
+      );
       return {
         success: false,
         message: 'Our email system is currently unavailable. Please try again later.',

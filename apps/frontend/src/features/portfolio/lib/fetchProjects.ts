@@ -20,11 +20,13 @@ export async function fetchProjects(): Promise<ProjectResponse> {
     });
 
     if (!response.ok) {
+      console.error(`fetchProjects: API responded with ${response.status} ${response.statusText}`);
       return { projects: [], total: 0 };
     }
 
     return response.json();
-  } catch {
+  } catch (error) {
+    console.error('fetchProjects: failed to reach projects API:', error);
     return { projects: [], total: 0 };
   }
 }
@@ -36,11 +38,13 @@ export async function fetchProject(slug: string): Promise<Project | null> {
     });
 
     if (!response.ok) {
+      console.error(`fetchProject(${slug}): API responded with ${response.status} ${response.statusText}`);
       return null;
     }
 
     return response.json();
-  } catch {
+  } catch (error) {
+    console.error(`fetchProject(${slug}): failed to reach projects API:`, error);
     return null;
   }
 }
