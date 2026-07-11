@@ -1,38 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { Article, ArticleResponse, Category } from '@hexastudio/types';
+import { Article, ArticleResponse } from '@hexastudio/types';
 import { getEnv } from '../../config/env';
-
-interface StrapiRelation {
-  data?: { id: number; attributes?: Record<string, unknown> };
-  id?: number;
-  name?: string;
-  slug?: string;
-}
-
-function mapCategory(relation: StrapiRelation | undefined): Category | undefined {
-  if (!relation) return undefined;
-  if (relation.id && relation.name) {
-    return { id: String(relation.id), name: relation.name, slug: relation.slug ?? '' };
-  }
-  if (relation.data) {
-    return {
-      id: String(relation.data.id),
-      name: (relation.data.attributes?.name as string) ?? '',
-      slug: (relation.data.attributes?.slug as string) ?? '',
-    };
-  }
-  return undefined;
-}
-
-function mapMedia(relation: StrapiRelation | undefined): string | undefined {
-  if (!relation) return undefined;
-  if (typeof relation === 'string') return relation;
-  if ('url' in relation) return relation.url as string;
-  if (relation.data?.attributes?.url) return relation.data.attributes.url as string;
-  return undefined;
-}
+import {
+  StrapiRelation,
+  getAttributes,
+  getTotal,
+  mapCategory,
+  mapMedia,
+} from '../../common/strapi.util';
 
 @Injectable()
 export class ArticlesService {
@@ -55,7 +32,7 @@ export class ArticlesService {
 
     const data = response.data;
     return {
-      total: data.meta?.pagination?.total ?? data.data.length,
+      total: getTotal(data),
       articles: data.data.map((item: Record<string, unknown>) => this.mapArticle(item)),
     };
   }
@@ -79,7 +56,7 @@ export class ArticlesService {
   }
 
   private mapArticle(item: Record<string, unknown>): Article {
-    const attrs = (item.attributes ?? item) as Record<string, unknown>;
+    const attrs = getAttributes(item);
     return {
       id: String(item.id),
       title: attrs.title as string,

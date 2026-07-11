@@ -1,35 +1,20 @@
 import { Article, ArticleResponse } from '@hexastudio/types';
+import { fetchJsonSafe } from '@/lib/api';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://api.localhost';
 
 export async function fetchArticles(): Promise<ArticleResponse> {
-  try {
-    const response = await fetch(`${API_URL}/api/articles`, {
-      next: { revalidate: 3600 },
-    });
-
-    if (!response.ok) {
-      return { articles: [], total: 0 };
-    }
-
-    return response.json();
-  } catch {
-    return { articles: [], total: 0 };
-  }
+  return fetchJsonSafe<ArticleResponse>(
+    `${API_URL}/api/articles`,
+    { articles: [], total: 0 },
+    { next: { revalidate: 3600 } },
+  );
 }
 
 export async function fetchArticle(slug: string): Promise<Article | null> {
-  try {
-    const response = await fetch(`${API_URL}/api/articles/${slug}`, {
-      next: { revalidate: 3600 },
-    });
-
-    if (!response.ok) {
-      return null;
-    }
-
-    return response.json();
-  } catch {
-    return null;
-  }
+  return fetchJsonSafe<Article | null>(
+    `${API_URL}/api/articles/${slug}`,
+    null,
+    { next: { revalidate: 3600 } },
+  );
 }
