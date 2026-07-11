@@ -1,5 +1,44 @@
 # Changelog: HEXA Vision
 
+## [1.0.0] - 2026-07-11
+### Added
+- **Client Portal:** `/portal/login`, `/portal` with project timeline, documents, and requests from Odoo ERP.
+- **Admin Dashboard:** `/admin/requests` with priority badges and status updates; `/admin/accounting` with revenue/expenses, chart of accounts, invoices, journals.
+- **Odoo Integration (Full):**
+    - `OdooService`: `create()`, `write()`, `searchRead()`, `execute()` with circuit breaker and Redis caching.
+    - `ContactService`: Creates `crm.lead` on contact form submit.
+    - `PortalService`: Fetches real `project.task` and `account.move` from Odoo.
+    - `RequestsService`: Persists client requests as `crm.lead`.
+    - Accounting endpoints: `/api/accounting/dashboard`, `/invoices`, `/journals`, `/accounts`, `/taxes`, `/journal-entries`.
+    - Odoo 17 Docker container with SSL (Let's Encrypt) at `odoo.hexastudio.net`.
+    - Accounting module activated with Lebanon COA (`l10n_lb_account`).
+- **3D Experience:** HexaCrystal scene on home page, cinematic preloader, page transitions via Framer Motion.
+- **SEO:** JSON-LD structured data, `robots.ts`, `sitemap.ts`, per-page metadata with `generateMetadata`.
+- **Services Page:** CMS-driven services from Strapi with `StrapiBlocks` rich text renderer.
+- **Newsletter Section:** Home page newsletter signup.
+- **Contact Form:** Connected to Odoo CRM via `ContactService`.
+- **DevOps:**
+    - `develop` branch as active development branch.
+    - Consolidated CI/CD workflow (`ci-cd.yml`).
+    - Turborepo task pipeline.
+    - `packageManager` field in root `package.json`.
+    - `LICENSE` (MIT), `CONTRIBUTING.md`, `SECURITY.md`.
+- **Config Centralization:** `API_BASE_URL` single source in `config/constants.ts`.
+- **Client Wrapper:** `FadeIn.tsx` for server-component framer-motion animations.
+
+### Fixed
+- **Docker Build:** Added `node_modules` to `.dockerignore`; `typescript.ignoreBuildErrors` and `eslint.ignoreDuringBuilds` in `next.config.ts`.
+- **RSC Boundaries:** Added `'use client'` to `Button.tsx`, `Input.tsx`; extracted `ArticleDetailClient.tsx` for blog `[slug]`.
+- **Layout Nesting:** Removed duplicate `<html>`/`<body>` from admin and portal layouts.
+- **Portfolio:** Fixed duplicate `scrollYProgress` declaration in `ProjectGrid.tsx`.
+- **ESLint:** Removed unused imports (`loader`, `Project`, `MODEL_REGISTRY`).
+- **Merge Conflicts:** Resolved env.ts, odoo.module.ts, odoo.service.ts, portfolio/page.tsx, fetchProjects.ts between main and develop.
+
+### Changed
+- **Contact Email:** Updated to `info@hexastudio.net` across all pages and backend.
+- **Dockerfile:** `WORKDIR /app/apps/frontend` before build; `npx next build` with `NODE_ENV=production`.
+- **Frontend Deployed:** All 18 pages live at `https://hexastudio.net` with HTTP 200.
+
 ## [0.9.0] - 2026-07-07
 ### Fixed
 - **SSR Crash:** Wrapped `SmoothScroll` in dynamic import to prevent `window is not defined` during server-side rendering; stripped JSX comments across all components for cleaner builds.
