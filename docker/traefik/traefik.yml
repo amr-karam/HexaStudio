@@ -15,7 +15,6 @@ providers:
     endpoint: "unix:///var/run/docker.sock"
     exposedByDefault: false
     network: hexastudio_web
-    apiVersion: "1.40"
   file:
     filename: /etc/traefik/dynamic.yml
     watch: true
