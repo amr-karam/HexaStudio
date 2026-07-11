@@ -9,3 +9,5 @@ yarn-debug.log*
 yarn-error.log*
 .DS_Store
 docker
+node_modules
+**/node_modules

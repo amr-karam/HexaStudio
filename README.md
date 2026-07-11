@@ -55,7 +55,7 @@ Our platform is built on three pillars:
 ### 2. Local Setup
 ```bash
 # Clone the repository
-git clone https://github.com/justfilmk/HexaStudio.git
+git clone https://github.com/amr-karam/HexaStudio.git
 cd HexaStudio
 
 # Configure environment
@@ -89,6 +89,20 @@ Our a-priori operational framework is detailed in the **HEXA-Vision-Playbook**.
 - [SYSTEM ARCHITECTURE](HEXA-Vision-Playbook/01-ARCHITECTURE/SYSTEM_ARCHITECTURE.md) — The technical blueprint.
 - [CODING STANDARDS](HEXA-Vision-Playbook/06-STANDARDS/CODING_STANDARDS.md) — The "Gold Standard" for development.
 - [AI AGENT GUIDE](HEXA-Vision-Playbook/04-AGENTS/AI_AGENT_GUIDE.md) — The manual for AI contributors.
+
+---
+
+## 🤝 Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+
+## 🔒 Security
+
+Please read [SECURITY.md](SECURITY.md) for details on our security practices and how to report vulnerabilities.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 

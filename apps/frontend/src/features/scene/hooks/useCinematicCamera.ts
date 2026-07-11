@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { useCameraStore } from '@/features/scene/store/camera-store';
 import * as THREE from 'three';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { getModelConfig } from '@/features/scene/config/model-registry';
 
 export function useCinematicCamera() {
   const { camera, gl } = useThree();
@@ -11,13 +12,13 @@ export function useCinematicCamera() {
   const mouse = useRef({ x: 0, y: 0 });
   const reducedMotion = useReducedMotion();
 
-  const targets: Record<
-    string,
-    { position: [number, number, number]; lookAt: [number, number, number] }
-  > = {
-    hero: { position: [5, 5, 5], lookAt: [0, 0, 0] },
-    'detail-1': { position: [2, 1, 2], lookAt: [0, 0.5, 0] },
-    'detail-2': { position: [-3, 2, 1], lookAt: [0, 0.5, 0] },
+  // Resolve targets from the active model configuration
+  const activeConfig = getModelConfig();
+  const targets: Record<string, { position: [number, number, number]; lookAt: [number, number, number] }> = {
+    ...activeConfig.cinematicPoints.reduce((acc, point) => {
+      acc[point.name] = { position: point.position, lookAt: point.lookAt };
+      return acc;
+    }, {} as Record<string, { position: [number, number, number]; lookAt: [number, number, number] }>),
     overview: { position: [10, 10, 10], lookAt: [0, 0, 0] },
   };
 
@@ -30,7 +31,6 @@ export function useCinematicCamera() {
     return () => gl.domElement.removeEventListener('pointermove', handleMouseMove);
   }, [gl]);
 
-  // Parallax effect using useFrame (no dual rAF loop)
   useFrame(() => {
     if (isTransitioning || reducedMotion) return;
 
@@ -42,7 +42,6 @@ export function useCinematicCamera() {
     camera.lookAt(0, 0, 0);
   });
 
-  // Camera transition via GSAP
   useEffect(() => {
     if (!currentTarget || !targets[currentTarget]) return;
 
@@ -76,5 +75,5 @@ export function useCinematicCamera() {
         camera.lookAt(proxy);
       },
     });
-  }, [currentTarget, camera, setTransitioning, reducedMotion]);
+  }, [currentTarget, camera, setTransitioning, reducedMotion, targets]);
 }

@@ -73,15 +73,27 @@ export const ProjectDetailModal = ({ isOpen, onClose, project }: ProjectDetailMo
 
             <div className="grid grid-cols-1 lg:grid-cols-12 h-full overflow-hidden">
               <div className="relative lg:col-span-7 h-[50vh] lg:h-auto overflow-hidden bg-surface-light">
-                <Image
-                  src={project.image}
-                  alt={project.title}
-                  fill
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 60vw"
-                  className="object-cover scale-105 group-hover:scale-100 transition-transform duration-1000"
+                <motion.div
+                  initial={{ scale: 1.1 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
+                  className="h-full w-full relative"
+                >
+                  <Image
+                    src={project.image}
+                    alt={project.title}
+                    fill
+                    priority
+                    sizes="(max-width: 1024px) 100vw, 60vw"
+                    className="object-cover"
+                  />
+                </motion.div>
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3, duration: 1 }}
+                  className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent lg:bg-gradient-to-r lg:from-background/40 lg:via-transparent lg:to-transparent" 
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent lg:bg-gradient-to-r lg:from-background/40 lg:via-transparent lg:to-transparent" />
               </div>
 
               <div className="lg:col-span-5 flex flex-col justify-center p-8 md:p-16 bg-surface gap-8">

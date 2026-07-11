@@ -56,6 +56,12 @@ competitor-research-progress.md
 server.log
 *.err
 
+# Temporary scripts
+tmp_*.py
+
+# Backend build output (not committed)
+apps/backend/dist/
+
 # LLM chat history
 .llm-chat-history/
 
@@ -70,3 +76,5 @@ deploy.py
 *.fbx
 *.obj
 apps/frontend/public/models/.gitkeep
+docker/odoo/
+docker/odoo/

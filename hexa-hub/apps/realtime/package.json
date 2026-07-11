@@ -1,0 +1,24 @@
+{
+  "name": "@hexa-hub/realtime",
+  "version": "0.1.0",
+  "description": "HEXA Hub Realtime Server",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "dev": "ts-node-dev --respawn src/index.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "socket.io": "^4.7.0",
+    "@socket.io/redis-adapter": "^8.2.0",
+    "ioredis": "^5.3.0",
+    "dotenv": "^16.3.0",
+    "jsonwebtoken": "^9.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "@types/node": "^20.0.0"
+  }
+}
