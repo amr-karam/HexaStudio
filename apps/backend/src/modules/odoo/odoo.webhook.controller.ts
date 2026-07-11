@@ -41,7 +41,7 @@ export class OdooWebhookController {
         if (payload.model === 'project.project') {
           const data = await this.odooService.searchRead(
             payload.model,
-            [[['id', '=', payload.id]]],
+            [['id', '=', payload.id]],
             ['name', 'stage_id', 'x_slug']
           );
 

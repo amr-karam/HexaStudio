@@ -1,8 +1,11 @@
-import { Controller, Get, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { AccountingService } from './accounting.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Accounting')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('accounting')
 export class AccountingController {
   constructor(private readonly accountingService: AccountingService) {}

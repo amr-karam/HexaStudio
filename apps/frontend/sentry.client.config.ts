@@ -1,20 +1,20 @@
-import type { NextConfig } from 'next';
+import * as Sentry from '@sentry/nextjs';
 
-const sentryOptions = {
-  silent: true,
-  org: process.env.SENTRY_ORG,
-  project: process.env.SENTRY_PROJECT,
-};
+const SENTRY_DSN = process.env.NEXT_PUBLIC_SENTRY_DSN;
 
-const withSentryConfig = (config: NextConfig) => {
-  if (!process.env.SENTRY_DSN) {
-    return config;
-  }
-
-  return {
-    ...config,
-    sentryOptions,
-  };
-};
-
-export default withSentryConfig;
+if (SENTRY_DSN) {
+  Sentry.init({
+    dsn: SENTRY_DSN,
+    enabled: process.env.NODE_ENV === 'production',
+    tracesSampleRate: 0.1,
+    replaysSessionSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1.0,
+    integrations: [
+      Sentry.replayIntegration({
+        maskAllText: true,
+        blockAllMedia: true,
+      }),
+    ],
+    tunnel: '/api/sentry',
+  });
+}
