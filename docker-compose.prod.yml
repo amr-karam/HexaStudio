@@ -25,6 +25,7 @@ services:
     environment:
       CLOUDFLARE_EMAIL: ${CLOUDFLARE_EMAIL:?CLOUDFLARE_EMAIL is required}
       CLOUDFLARE_API_KEY: ${CLOUDFLARE_API_KEY:?CLOUDFLARE_API_KEY is required}
+      DOCKER_API_VERSION: "1.40"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./docker/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
