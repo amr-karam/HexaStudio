@@ -8,10 +8,29 @@ import {
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { JwtService } from '@nestjs/jwt';
-import { AxiosError } from 'axios';
 import { firstValueFrom } from 'rxjs';
 import { User, AuthResponse } from '@hexastudio/types';
 import { getEnv } from '../../config/env';
+
+interface UpstreamHttpError {
+  response?: { status?: number; data?: unknown };
+  message?: string;
+}
+
+/**
+ * Structural check for an Axios error. `instanceof AxiosError` is unreliable
+ * here because the monorepo can resolve more than one copy of axios, so the
+ * error thrown by the HTTP layer may not be an instance of the `AxiosError`
+ * this module imported. The `isAxiosError` flag is set by axios on every error
+ * it raises and is stable across copies/versions.
+ */
+function isUpstreamHttpError(error: unknown): error is UpstreamHttpError {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    (error as { isAxiosError?: unknown }).isAxiosError === true
+  );
+}
 
 @Injectable()
 export class AuthService {
@@ -32,7 +51,7 @@ export class AuthService {
    * hiding the real cause (e.g. invalid credentials or a duplicate account).
    */
   private toHttpException(error: unknown, fallbackMessage: string): HttpException {
-    if (error instanceof AxiosError) {
+    if (isUpstreamHttpError(error)) {
       const status = error.response?.status;
       const cmsMessage =
         (error.response?.data as { error?: { message?: string } } | undefined)?.error?.message;
@@ -46,7 +65,9 @@ export class AuthService {
         return new BadRequestException(cmsMessage ?? fallbackMessage);
       }
 
-      this.logger.error(`Unexpected CMS auth response (${status}): ${cmsMessage ?? error.message}`);
+      this.logger.error(
+        `Unexpected CMS auth response (${status}): ${cmsMessage ?? error.message}`,
+      );
       return new ServiceUnavailableException('Authentication service is temporarily unavailable');
     }
 
@@ -91,7 +112,7 @@ export class AuthService {
         }),
       );
     } catch (error) {
-      if (error instanceof AxiosError && error.response?.status !== undefined) {
+      if (isUpstreamHttpError(error) && error.response?.status !== undefined) {
         const status = error.response.status;
         if (status === 400 || status === 401 || status === 403) {
           throw new UnauthorizedException('Invalid credentials');
