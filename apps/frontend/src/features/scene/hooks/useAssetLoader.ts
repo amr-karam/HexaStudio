@@ -1,34 +1,31 @@
-import { useGLTF } from '@react-three/drei';
-import { useCallback, useEffect } from 'react';
+import { useGLTF, useProgress } from '@react-three/drei';
+import { useEffect } from 'react';
+import { useAssetStore } from '@/features/scene/store/asset-store';
 
-/**
- * useAssetLoader is a specialized hook for loading 3D models with:
- * - Draco compression for geometry (reduces model size by ~90%)
- * - KTX2/Basis Universal texture compression (reduces texture size by ~75%)
- * It ensures decoders are correctly configured and implements preloading.
- */
+const DRACO_URL = 'https://www.gstatic.com/draco/versioned/decoders/1.5.6/';
+
 export function useAssetLoader(url: string) {
-  // Draco decoder for geometry compression
-  const dracoUrl = 'https://www.gstatic.com/draco/versioned/decoders/1.5.6/';
+  const setProgress = useAssetStore((s) => s.setProgress);
+  const { progress, loaded, total } = useProgress();
+  const gltf = useGLTF(url, DRACO_URL);
 
-  const gltf = useGLTF(url, dracoUrl);
+  useEffect(() => {
+    setProgress(progress);
+  }, [progress, setProgress]);
 
-  // Preload the model for faster subsequent loads
   useEffect(() => {
     if (url) {
-      useGLTF.preload(url, dracoUrl);
+      useGLTF.preload(url, DRACO_URL);
     }
   }, [url]);
-
-  const getModel = useCallback(() => {
-    return gltf.scene;
-  }, [gltf]);
 
   return {
     model: gltf.scene,
     animations: gltf.animations,
     nodes: gltf.nodes,
     materials: gltf.materials,
-    getModel,
+    loaded,
+    total,
+    progress,
   };
 }

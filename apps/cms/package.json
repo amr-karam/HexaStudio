@@ -20,7 +20,7 @@
     "styled-components": "^6.1.13"
   },
   "engines": {
-    "node": ">=20 <=22"
+    "node": ">=20"
   },
   "strapi": {
     "uuid": "hexastudio-cms-v1"

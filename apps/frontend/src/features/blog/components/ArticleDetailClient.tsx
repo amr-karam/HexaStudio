@@ -12,7 +12,7 @@ interface Article {
   title: string;
   slug: string;
   excerpt?: string;
-  content?: unknown;
+  content?: unknown[];
   coverImage?: string;
   readTime?: number;
   category?: { name: string };
@@ -89,7 +89,7 @@ export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
             </p>
 
             <div className="flex flex-col gap-12 text-neutral-400 font-light leading-relaxed text-lg">
-              <StrapiBlocks content={article.content} />
+              <StrapiBlocks content={article.content || []} />
             </div>
           </motion.div>
         </div>

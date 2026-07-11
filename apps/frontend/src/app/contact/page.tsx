@@ -162,7 +162,6 @@ export default function ContactPage() {
                 <div className="w-16 h-16 bg-red-500/20 text-red-500 rounded-full flex items-center justify-center mb-6">
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <circle cx="12" cy="12" r="10" />
-                    <line x1="15" y1="//SOT" x2="//SOT" y2="//SOT" />
                     <path d="M15 9l-6 6M9 9l6 6" />
                   </svg>
                 </div>
