@@ -16,7 +16,11 @@ export default function AdminRequestsPage() {
   const { data: requests, isLoading } = useQuery<ProjectRequest[]>({
     queryKey: ['admin-requests'],
     queryFn: () =>
-      fetchJson<ProjectRequest[]>(`${API_BASE_URL}/requests/admin`, undefined, 'Failed to fetch requests'),
+      fetchJson<ProjectRequest[]>(
+        `${API_BASE_URL}/requests/admin`,
+        { credentials: 'include' },
+        'Failed to fetch requests',
+      ),
   });
 
   const mutation = useMutation({
@@ -26,6 +30,7 @@ export default function AdminRequestsPage() {
         {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
           body: JSON.stringify({ status }),
         },
         'Failed to update status',
