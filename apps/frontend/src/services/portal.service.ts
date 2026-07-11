@@ -60,6 +60,7 @@ export const portalService = {
     const response = await fetch(`${API_BASE_URL}/requests`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify(requestData),
     });
     if (!response.ok) throw new Error('Failed to send request');
@@ -67,7 +68,9 @@ export const portalService = {
   },
 
   async getClientRequests(clientId: string): Promise<ProjectRequest[]> {
-    const response = await fetch(`${API_BASE_URL}/requests/client/${clientId}`);
+    const response = await fetch(`${API_BASE_URL}/requests/client/${clientId}`, {
+      credentials: 'include',
+    });
     if (!response.ok) throw new Error('Failed to fetch requests');
     return response.json();
   },

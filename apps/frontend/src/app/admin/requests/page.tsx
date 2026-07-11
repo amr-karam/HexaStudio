@@ -15,7 +15,9 @@ export default function AdminRequestsPage() {
   const { data: requests, isLoading } = useQuery<ProjectRequest[]>({
     queryKey: ['admin-requests'],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/requests/admin`);
+      const response = await fetch(`${API_BASE_URL}/requests/admin`, {
+        credentials: 'include',
+      });
       if (!response.ok) throw new Error('Failed to fetch requests');
       return response.json();
     },
@@ -26,6 +28,7 @@ export default function AdminRequestsPage() {
       const response = await fetch(`${API_BASE_URL}/requests/${id}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ status }),
       });
       if (!response.ok) throw new Error('Failed to update status');
