@@ -39,7 +39,7 @@ http:
         - web
       service: opencode
       middlewares:
-        - redirect-https
+        - secure-headers
 
     opencode:
       rule: "Host(`opencode.hexastudio.net`)"
@@ -58,7 +58,7 @@ http:
         - web
       service: lmstudio
       middlewares:
-        - redirect-https
+        - secure-headers
 
     ai:
       rule: "Host(`ai.hexastudio.net`)"
@@ -77,7 +77,8 @@ http:
         - web
       service: frontend
       middlewares:
-        - redirect-https
+        - secure-headers
+        - compress
 
     frontend:
       rule: "Host(`hexastudio.net`) || Host(`www.hexastudio.net`)"
@@ -96,7 +97,8 @@ http:
         - web
       service: backend
       middlewares:
-        - redirect-https
+        - secure-headers
+        - compress
 
     backend:
       rule: "Host(`api.hexastudio.net`)"
@@ -115,7 +117,7 @@ http:
         - web
       service: cms
       middlewares:
-        - redirect-https
+        - secure-headers
 
     cms:
       rule: "Host(`cms.hexastudio.net`)"
@@ -133,7 +135,7 @@ http:
         - web
       service: grafana
       middlewares:
-        - redirect-https
+        - secure-headers
 
     grafana:
       rule: "Host(`grafana.hexastudio.net`)"
@@ -162,7 +164,7 @@ http:
         - web
       service: minio-api
       middlewares:
-        - redirect-https
+        - secure-headers
 
     minio-console:
       rule: "Host(`storage-console.hexastudio.net`)"
@@ -181,7 +183,7 @@ http:
         - web
       service: minio-console
       middlewares:
-        - redirect-https
+        - secure-headers
 
   services:
     opencode:
