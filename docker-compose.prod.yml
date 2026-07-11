@@ -287,7 +287,7 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-hexastudio}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-      GF_SERVER_ROOT_URL: http://${GRAFANA_HOST:-grafana.localhost}
+      GF_SERVER_ROOT_URL: https://${GRAFANA_HOST:-grafana.hexastudio.net}
     volumes:
       - grafana_data:/var/lib/grafana
       - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
