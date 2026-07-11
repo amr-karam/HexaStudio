@@ -1,43 +1,16 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { Project, ProjectResponse, Category } from '@hexastudio/types';
+import { Project, ProjectResponse } from '@hexastudio/types';
 import { getEnv } from '../../config/env';
 import { OdooService } from '../odoo/odoo.service';
-
-interface StrapiRelation {
-  data?: { id: number; attributes?: Record<string, unknown> };
-  id?: number;
-  name?: string;
-  slug?: string;
-}
-
-function mapCategory(relation: StrapiRelation | undefined): Category | undefined {
-  if (!relation) return undefined;
-  // Strapi v5: flat relation { id, name, slug }
-  if (relation.id && relation.name) {
-    return { id: String(relation.id), name: relation.name, slug: relation.slug ?? '' };
-  }
-  // Strapi v4: nested relation { data: { id, attributes: { name, slug } } }
-  if (relation.data) {
-    return {
-      id: String(relation.data.id),
-      name: (relation.data.attributes?.name as string) ?? '',
-      slug: (relation.data.attributes?.slug as string) ?? '',
-    };
-  }
-  return undefined;
-}
-
-function mapMedia(relation: StrapiRelation | undefined): string | undefined {
-  if (!relation) return undefined;
-  // Strapi v5: flat media { url, name }
-  if (typeof relation === 'string') return relation;
-  if ('url' in relation) return relation.url as string;
-  // Strapi v4: nested media { data: { attributes: { url } } }
-  if (relation.data?.attributes?.url) return relation.data.attributes.url as string;
-  return undefined;
-}
+import {
+  StrapiRelation,
+  getAttributes,
+  getTotal,
+  mapCategory,
+  mapMedia,
+} from '../../common/strapi.util';
 
 @Injectable()
 export class ProjectsService {
@@ -87,7 +60,7 @@ export class ProjectsService {
     );
 
     return {
-      total: data.meta?.pagination?.total ?? data.data.length,
+      total: getTotal(data),
       projects: enrichedProjects,
     };
   }
@@ -130,7 +103,7 @@ export class ProjectsService {
   }
 
   private mapProject(item: Record<string, unknown>): Project {
-    const attrs = (item.attributes ?? item) as Record<string, unknown>;
+    const attrs = getAttributes(item);
     return {
       id: String(item.id),
       title: attrs.title as string,

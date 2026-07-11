@@ -3,19 +3,7 @@ import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { Service, ServiceResponse } from '@hexastudio/types';
 import { getEnv } from '../../config/env';
-
-interface StrapiMedia {
-  data?: { id: number; attributes?: { url?: string } };
-  url?: string;
-}
-
-function mapMedia(relation: StrapiMedia | undefined): string | undefined {
-  if (!relation) return undefined;
-  if (typeof relation === 'string') return relation;
-  if (relation.url) return relation.url;
-  if (relation.data?.attributes?.url) return relation.data.attributes.url;
-  return undefined;
-}
+import { StrapiRelation, getAttributes, getTotal, mapMedia } from '../../common/strapi.util';
 
 @Injectable()
 export class ServicesService {
@@ -38,7 +26,7 @@ export class ServicesService {
 
     const data = response.data;
     return {
-      total: data.meta?.pagination?.total ?? data.data.length,
+      total: getTotal(data),
       services: data.data.map((item: Record<string, unknown>) => this.mapService(item)),
     };
   }
@@ -62,13 +50,13 @@ export class ServicesService {
   }
 
   private mapService(item: Record<string, unknown>): Service {
-    const attrs = (item.attributes ?? item) as Record<string, unknown>;
+    const attrs = getAttributes(item);
     return {
       id: String(item.id),
       title: attrs.title as string,
       slug: attrs.slug as string,
       description: attrs.description as string,
-      icon: mapMedia(attrs.icon as StrapiMedia) ?? 'settings',
+      icon: mapMedia(attrs.icon as StrapiRelation) ?? 'settings',
       features: (attrs.features as string[]) ?? [],
       order: (attrs.order as number) ?? 0,
       isPublished: (attrs.isPublished as boolean) ?? true,
