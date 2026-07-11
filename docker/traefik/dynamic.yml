@@ -119,6 +119,24 @@ http:
       middlewares:
         - secure-headers
 
+    grafana-http:
+      rule: "Host(`grafana.hexastudio.net`)"
+      entryPoints:
+        - web
+      service: grafana
+      middlewares:
+        - secure-headers
+
+    grafana:
+      rule: "Host(`grafana.hexastudio.net`)"
+      entryPoints:
+        - websecure
+      service: grafana
+      tls:
+        certResolver: cloudflare
+      middlewares:
+        - secure-headers
+
   services:
     opencode:
       loadBalancer:
@@ -144,6 +162,11 @@ http:
       loadBalancer:
         servers:
           - url: "http://cms:1337"
+
+    grafana:
+      loadBalancer:
+        servers:
+          - url: "http://grafana:3000"
 
 tls:
   options:
