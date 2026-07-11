@@ -1,39 +1,58 @@
 'use client';
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
+import { motion, animate } from 'framer-motion';
 
 const stats = [
-  { value: '12+', label: 'Countries Served' },
-  { value: '200+', label: 'Projects Delivered' },
-  { value: '8', label: 'Years Excellence' },
-  { value: '100%', label: 'Client Satisfaction' },
+  { value: 12, label: 'Countries Served', suffix: '+' },
+  { value: 200, label: 'Projects Delivered', suffix: '+' },
+  { value: 8, label: 'Years Excellence', suffix: '' },
+  { value: 100, label: 'Client Satisfaction', suffix: '%' },
 ];
+
+const StatItem = ({ stat, index }: { stat: typeof stats[0], index: number }) => {
+  const [displayValue, setDisplayValue] = useState('0');
+  
+  useEffect(() => {
+    const controls = animate(0, stat.value, {
+      duration: 2,
+      ease: [0.16, 1, 0.3, 1],
+      onUpdate: (value) => setDisplayValue(Math.round(value).toString()),
+    });
+    return () => controls.stop();
+  }, [stat.value]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+      className="text-center group relative"
+    >
+      <div className="absolute -inset-4 bg-accent/5 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-full" />
+      <span className="text-5xl md:text-7xl font-serif text-accent font-light block mb-4 transition-all duration-500 group-hover:scale-110 group-hover:text-white relative z-10">
+        {displayValue}{stat.suffix}
+      </span>
+      <span className="text-[10px] uppercase tracking-[0.5em] text-neutral-500 group-hover:text-neutral-300 transition-colors duration-500 block relative z-10">
+        {stat.label}
+      </span>
+    </motion.div>
+  );
+};
 
 export const AchievementsSection = () => {
   return (
-    <section className="px-8 md:px-16 py-24 bg-background">
-      <div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 md:gap-24">
+    <section className="px-8 md:px-16 py-32 bg-background relative overflow-hidden">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-24 bg-gradient-to-b from-transparent via-accent/50 to-transparent" />
+      <div className="max-w-7xl mx-auto relative z-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-16 md:gap-24">
           {stats.map((stat, idx) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="text-center group"
-            >
-              <span className="text-5xl md:text-6xl font-serif text-accent font-light block mb-4 transition-transform duration-500 group-hover:scale-110">
-                {stat.value}
-              </span>
-              <span className="text-xs uppercase tracking-[0.4em] text-neutral-500 group-hover:text-neutral-300 transition-colors duration-500">
-                {stat.label}
-              </span>
-            </motion.div>
+            <StatItem key={stat.label} stat={stat} index={idx} />
           ))}
         </div>
       </div>
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-px h-24 bg-gradient-to-t from-transparent via-accent/50 to-transparent" />
     </section>
   );
 };

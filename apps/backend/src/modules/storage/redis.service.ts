@@ -29,7 +29,7 @@ export class RedisService {
     return data ? JSON.parse(data) : null;
   }
 
-  async set(key: string, value: any, ttl = 3600): Promise<void> {
+  async set(key: string, value: unknown, ttl = 3600): Promise<void> {
     await this.client.set(key, JSON.stringify(value), 'EX', ttl);
   }
 
