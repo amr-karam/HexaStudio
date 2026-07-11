@@ -104,14 +104,14 @@
 
 **Goal:** Production readiness.
 
-| ID | Task | Priority | Effort |
-|----|------|----------|--------|
-| S6-01 | Playwright E2E test suite | High | 1 week |
-| S6-02 | Unit tests for utils + services | High | 1 week |
-| S6-03 | Cloudflare WAF configuration | Medium | 1 day |
-| S6-04 | CMS admin IP allowlist | Medium | 4 hr |
-| S6-05 | Database backup verification | Medium | 4 hr |
-| S6-06 | Performance profiling + budget enforcement | Medium | 3 days |
+| ID | Task | Priority | Effort | Status |
+|----|------|----------|--------|--------|
+| S6-01 | Playwright E2E test suite | High | 1 week | Scaffolded |
+| S6-02 | Unit tests for utils + services | High | 1 week | Pending |
+| S6-03 | Cloudflare WAF configuration | Medium | 1 day | Done |
+| S6-04 | CMS admin IP allowlist | Medium | 4 hr | Pending |
+| S6-05 | Database backup verification | Medium | 4 hr | Pending |
+| S6-06 | Performance profiling + budget enforcement | Medium | 3 days | Pending |
 
 ---
 

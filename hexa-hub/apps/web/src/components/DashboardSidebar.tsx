@@ -10,7 +10,8 @@ import {
   FolderKanban, 
   Settings, 
   LogOut,
-  User 
+  User,
+  TrendingUp
 } from 'lucide-react';
 import { useAuth } from '@/providers/AuthProvider';
 
@@ -19,6 +20,10 @@ const navItems = [
   { icon: MessageSquare, label: 'Messages', href: '/dashboard/messages' },
   { icon: FolderKanban, label: 'Projects', href: '/dashboard/projects' },
   { icon: Settings, label: 'Settings', href: '/dashboard/settings' },
+];
+
+const executiveItems = [
+  { icon: TrendingUp, label: 'Executive View', href: '/dashboard/executive' },
 ];
 
 export function DashboardSidebar() {
@@ -33,31 +38,52 @@ export function DashboardSidebar() {
         </h2>
       </div>
 
-      <nav className="flex-1 px-4 space-y-2">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href;
-          return (
-            <Link 
-              key={item.href} 
-              href={item.href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 ${
-                isActive 
-                  ? 'bg-gold/10 text-gold' 
-                  : 'text-neutral-500 hover:bg-white/5 hover:text-neutral-300'
-              }`}
-            >
-              <item.icon size={20} />
-              <span className="text-sm font-light tracking-wide">{item.label}</span>
-              {isActive && (
-                <motion.div 
-                  layoutId="nav-pill" 
-                  className="absolute left-0 w-1 h-6 bg-gold rounded-r-full" 
-                />
-              )}
-            </Link>
-          );
-        })}
-      </nav>
+       <nav className="flex-1 px-4 space-y-2">
+         {navItems.map((item) => {
+           const isActive = pathname === item.href;
+           return (
+             <Link 
+               key={item.href} 
+               href={item.href}
+               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 ${
+                 isActive 
+                   ? 'bg-gold/10 text-gold' 
+                   : 'text-neutral-500 hover:bg-white/5 hover:text-neutral-300'
+               }`}
+             >
+               <item.icon size={20} />
+               <span className="text-sm font-light tracking-wide">{item.label}</span>
+               {isActive && (
+                 <motion.div 
+                   layoutId="nav-pill" 
+                   className="absolute left-0 w-1 h-6 bg-gold rounded-r-full" 
+                 />
+               )}
+             </Link>
+           );
+         })}
+
+         {user?.role === 'SUPER_ADMIN' && (
+           <div className="pt-4 mt-4 border-t border-border/50">
+             <span className="px-4 text-[10px] uppercase tracking-widest text-neutral-600 mb-2 block">Executive</span>
+             {executiveItems.map((item) => (
+               <Link 
+                 key={item.href} 
+                 href={item.href}
+                 className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 ${
+                   pathname === item.href 
+                     ? 'bg-gold/10 text-gold' 
+                     : 'text-neutral-500 hover:bg-white/5 hover:text-neutral-300'
+                 }`}
+               >
+                 <item.icon size={20} />
+                 <span className="text-sm font-light tracking-wide">{item.label}</span>
+               </Link>
+             ))}
+           </div>
+         )}
+       </nav>
+
 
       <div className="p-4 border-t border-border">
         <div className="flex items-center gap-3 px-4 py-3 mb-4">
