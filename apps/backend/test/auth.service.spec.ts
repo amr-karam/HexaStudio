@@ -11,6 +11,14 @@ import {
 } from '@nestjs/common';
 import { AuthService } from '../src/modules/auth/auth.service';
 
+const httpResponse = (data: unknown) => ({
+  data,
+  status: 200,
+  statusText: 'OK',
+  headers: {},
+  config: {} as any,
+});
+
 function axiosError(status: number | undefined, message?: string): AxiosError {
   const error = new AxiosError('Request failed');
   if (status !== undefined) {
@@ -25,67 +33,126 @@ function axiosError(status: number | undefined, message?: string): AxiosError {
   return error;
 }
 
-describe('AuthService error propagation', () => {
+describe('AuthService', () => {
   let service: AuthService;
   let httpService: HttpService;
+  let jwtService: JwtService;
 
-  const mockUser = { id: 1, email: 'a@b.com', username: 'ab' };
+  const cmsUser = {
+    id: 7,
+    email: 'user@example.com',
+    username: 'user',
+    role: { type: 'authenticated' },
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
-        { provide: HttpService, useValue: { post: vi.fn(), get: vi.fn() } },
-        { provide: JwtService, useValue: { sign: vi.fn().mockReturnValue('jwt') } },
+        {
+          provide: HttpService,
+          useValue: { post: vi.fn(), get: vi.fn() },
+        },
+        {
+          provide: JwtService,
+          useValue: { sign: vi.fn().mockReturnValue('signed-jwt-token') },
+        },
       ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
     httpService = module.get<HttpService>(HttpService);
+    jwtService = module.get<JwtService>(JwtService);
   });
 
-  it('login maps CMS 400 to UnauthorizedException instead of leaking a 500', async () => {
-    vi.mocked(httpService.post).mockReturnValueOnce(
-      throwError(() => axiosError(400, 'Invalid identifier or password')),
-    );
+  it('register returns a jwt and mapped user', async () => {
+    vi.mocked(httpService.post).mockReturnValueOnce(of(httpResponse({ user: cmsUser })));
 
-    await expect(service.login('a@b.com', 'wrong')).rejects.toBeInstanceOf(UnauthorizedException);
-  });
+    const result = await service.register('user@example.com', 'user', 'password123');
 
-  it('login maps an unreachable CMS to ServiceUnavailableException', async () => {
-    vi.mocked(httpService.post).mockReturnValueOnce(
-      throwError(() => axiosError(undefined)),
-    );
-
-    await expect(service.login('a@b.com', 'pw')).rejects.toBeInstanceOf(
-      ServiceUnavailableException,
-    );
-  });
-
-  it('register surfaces the CMS validation message as a BadRequestException', async () => {
-    vi.mocked(httpService.post).mockReturnValueOnce(
-      throwError(() => axiosError(400, 'Email is already taken')),
-    );
-
-    await expect(service.register('a@b.com', 'ab', 'password123')).rejects.toMatchObject({
-      status: 400,
-      message: 'Email is already taken',
+    expect(result.jwt).toBe('signed-jwt-token');
+    expect(result.user).toEqual({
+      id: '7',
+      email: 'user@example.com',
+      username: 'user',
+      role: 'user',
     });
+    expect(httpService.post).toHaveBeenCalledWith(
+      expect.stringContaining('/api/auth/local/register'),
+      { email: 'user@example.com', username: 'user', password: 'password123' },
+    );
   });
 
-  it('login succeeds and returns a signed token', async () => {
+  it('login returns a jwt and maps admin role', async () => {
     vi.mocked(httpService.post).mockReturnValueOnce(
-      of({
-        data: { user: mockUser },
-        status: 200,
-        statusText: 'OK',
-        headers: {},
-        config: {} as any,
-      }),
+      of(httpResponse({ user: { ...cmsUser, role: { type: 'admin' } } })),
     );
 
-    const result = await service.login('a@b.com', 'password123');
-    expect(result.jwt).toBe('jwt');
-    expect(result.user.email).toBe('a@b.com');
+    const result = await service.login('user@example.com', 'password123');
+
+    expect(result.jwt).toBe('signed-jwt-token');
+    expect(result.user.role).toBe('admin');
+    expect(httpService.post).toHaveBeenCalledWith(
+      expect.stringContaining('/api/auth/local'),
+      { identifier: 'user@example.com', password: 'password123' },
+    );
+  });
+
+  it('validateToken returns the mapped user on success', async () => {
+    vi.mocked(httpService.get).mockReturnValueOnce(of(httpResponse(cmsUser)));
+
+    const user = await service.validateToken('a-token');
+
+    expect(user.id).toBe('7');
+    expect(user.email).toBe('user@example.com');
+    expect(httpService.get).toHaveBeenCalledWith(
+      expect.stringContaining('/api/users/me'),
+      { headers: { Authorization: 'Bearer a-token' } },
+    );
+  });
+
+  it('validateToken throws UnauthorizedException when the request fails', async () => {
+    vi.mocked(httpService.get).mockReturnValueOnce(throwError(() => new Error('boom')));
+
+    await expect(service.validateToken('bad-token')).rejects.toThrow(UnauthorizedException);
+  });
+
+  it('refreshToken issues a new jwt for the user', async () => {
+    vi.mocked(httpService.get).mockReturnValueOnce(of(httpResponse(cmsUser)));
+
+    const result = await service.refreshToken('7');
+
+    expect(result.jwt).toBe('signed-jwt-token');
+    expect(result.user.id).toBe('7');
+    expect(jwtService.sign).toHaveBeenCalled();
+  });
+
+  describe('error propagation', () => {
+    it('login maps CMS 400 to UnauthorizedException instead of leaking a 500', async () => {
+      vi.mocked(httpService.post).mockReturnValueOnce(
+        throwError(() => axiosError(400, 'Invalid identifier or password')),
+      );
+
+      await expect(service.login('a@b.com', 'wrong')).rejects.toBeInstanceOf(UnauthorizedException);
+    });
+
+    it('login maps an unreachable CMS to ServiceUnavailableException', async () => {
+      vi.mocked(httpService.post).mockReturnValueOnce(throwError(() => axiosError(undefined)));
+
+      await expect(service.login('a@b.com', 'pw')).rejects.toBeInstanceOf(
+        ServiceUnavailableException,
+      );
+    });
+
+    it('register surfaces the CMS validation message as a BadRequestException', async () => {
+      vi.mocked(httpService.post).mockReturnValueOnce(
+        throwError(() => axiosError(400, 'Email is already taken')),
+      );
+
+      await expect(service.register('a@b.com', 'ab', 'password123')).rejects.toMatchObject({
+        status: 400,
+        message: 'Email is already taken',
+      });
+    });
   });
 });
