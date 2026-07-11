@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { toast } from 'sonner';
 import { API_BASE_URL } from '@/config/constants';
+import { fetchJson } from '@/lib/api';
 import { ProjectRequest } from '@/services/portal.service';
 
 export default function AdminRequestsPage() {
@@ -14,23 +15,21 @@ export default function AdminRequestsPage() {
 
   const { data: requests, isLoading } = useQuery<ProjectRequest[]>({
     queryKey: ['admin-requests'],
-    queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/requests/admin`);
-      if (!response.ok) throw new Error('Failed to fetch requests');
-      return response.json();
-    },
+    queryFn: () =>
+      fetchJson<ProjectRequest[]>(`${API_BASE_URL}/requests/admin`, undefined, 'Failed to fetch requests'),
   });
 
   const mutation = useMutation({
-    mutationFn: async ({ id, status }: { id: string, status: ProjectRequest['status'] }) => {
-      const response = await fetch(`${API_BASE_URL}/requests/${id}/status`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status }),
-      });
-      if (!response.ok) throw new Error('Failed to update status');
-      return response.json();
-    },
+    mutationFn: ({ id, status }: { id: string, status: ProjectRequest['status'] }) =>
+      fetchJson<ProjectRequest>(
+        `${API_BASE_URL}/requests/${id}/status`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status }),
+        },
+        'Failed to update status',
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-requests'] });
       toast.success('Request status updated.');
