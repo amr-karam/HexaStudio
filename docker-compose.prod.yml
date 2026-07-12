@@ -41,6 +41,20 @@ services:
       - traefik.http.routers.traefik-dashboard.middlewares=traefik-auth@file
 
   # ---------------------------------------------------------------------------
+  # Cloudflare Tunnel (no public IP required)
+  # ---------------------------------------------------------------------------
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    <<: *default-restart
+    logging: *default-logging
+    command: tunnel run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:?CLOUDFLARE_TUNNEL_TOKEN is required}
+    networks:
+      - web
+      - internal
+
+  # ---------------------------------------------------------------------------
   # Data Stores (internal network only — no public ports)
   # ---------------------------------------------------------------------------
   postgres:
