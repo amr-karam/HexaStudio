@@ -70,6 +70,7 @@ temp_*.sh
 --output
 project.zip
 standalone
+apps/frontend/app/
 
 # Backend build output (not committed)
 apps/backend/dist/
