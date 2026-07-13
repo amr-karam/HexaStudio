@@ -27,3 +27,11 @@ export interface AiJobPayload {
   taskType: 'summary' | 'action_items' | 'search' | 'custom';
   context?: Record<string, unknown>;
 }
+
+export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  status: 'TODO' | 'IN_PROGRESS' | 'REVIEW' | 'DONE';
+  dueDate?: Date;
+}

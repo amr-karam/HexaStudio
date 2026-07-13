@@ -1,38 +1,28 @@
-# ⏱️ CURRENT SPRINT: ENTERPRISE HARDENING — COMPLETE
+# ⏱️ CURRENT SPRINT: CLIENT PORTAL ALPHA — COMPLETE
 
-**Sprint ID:** S-006 | **Focus:** Enterprise Hardening & v1.0.0 Release | **Status:** ✅ COMPLETE | **Completed:** 2026-07-12
+**Sprint ID:** S-007 | **Focus:** Client Experience & Secure Portal | **Status:** ✅ COMPLETE | **Completed:** 2026-07-13
 
 ## 1. SPRINT OBJECTIVE
 
-Close all production blockers, enforce quality gates in CI/CD, and ship **v1.0.0** with enterprise-grade security, performance, and test coverage.
+Establish the foundation of the Client Portal, enabling secure access for clients to monitor project progress and interact with the HEXA ecosystem.
 
 ---
 
 ## 2. HIGH-PRIORITY DELIVERABLES
 
-### 🏗️ Infrastructure & CI/CD
-- [x] **CI Pipeline:** Typecheck, lint, test, build jobs for monorepo workspaces
-- [x] **CD Pipeline:** GHCR image build + SSH deploy to production server
-- [x] **E2E in CI:** Playwright job using `e2e/playwright.config.ts`
-- [x] **Docker Build Fix:** Build args + monorepo workspace build in Dockerfile
-- [x] **v1.0.0 Tag:** All versions aligned; `git tag v1.0.0` ready to push after QA sign-off
+### 🏗️ Frontend (Client Portal)
+- [x] **Client Dashboard Shell:** Scaffold `/client` route and basic layout.
+- [x] **Role-Based Redirection:** Update login flow to redirect `CLIENT` role to `/client`.
+- [x] **Client Project View:** Read-only view of project milestones and status.
+- [x] **Client Notifications:** Real-time in-app notifications for project updates.
 
-### 🔒 Security Hardening
-- [x] **B8 Traefik:** Dashboard secured (`api.insecure: false`, IP allowlist, TLS-only router)
-- [x] **CMS IP Allowlist:** Restrict Strapi admin to trusted IPs (admin-ip-guard middleware + CMS_ALLOWED_IPS)
-- [x] **CSP Headers:** Strict Content-Security-Policy via Traefik middleware
-- [x] **JWT + Redis Auth:** Backend authentication hardened
-
-### ⚡ Performance
-- [x] **B9 Lazy Loading:** Dynamic imports for Three.js/R3F/GSAP — home 188 kB, all routes ≤ 200 kB
-- [x] **Bundle Budget:** First-load JS ≤ 200 kB achieved on all routes
-- [x] **Lighthouse Audit:** LHCI configured (config + CI job) targeting score > 90
+### 🔐 Backend (API)
+- [x] **Client API Endpoints:** Implement scoped endpoints for client-facing data (projects, tasks, milestones).
+- [x] **RBRB Enforcement:** Ensure `CLIENT` role cannot access `EMPLOYEE` or `SUPER_ADMIN` resources.
 
 ### 🧪 Quality
-- [x] **Backend Tests:** 67 specs across 14 files (auth, accounting, portal, requests, users, email, odoo, redis, health, and more)
-- [x] **Playwright E2E:** Navigation, pages, 404, SEO, a11y scaffold
-- [x] **Frontend Component Tests:** 53 specs — Vitest + RTL for UI components, hooks, lib
-- [x] **Database Backup Verification:** verify-backup.sh + backup-verify Docker service
+- [x] **Client Auth Testing:** Verify authentication and redirection logic for different roles.
+- [x] **E2E Scenarios:** Client journey: Login -> Dashboard -> Project View.
 
 ---
 
@@ -40,11 +30,9 @@ Close all production blockers, enforce quality gates in CI/CD, and ship **v1.0.0
 
 | Metric | Target | Final | Status |
 |--------|---------|-------|--------|
-| **Story Points** | 40 pts | 40 pts | 🟢 Complete |
+| **Story Points** | 25 pts | 25 pts | 🟢 Complete |
 | **Code Coverage** | 80% | ~75% | 🟡 Target met (120 tests) |
-| **First Load JS (all routes)** | ≤ 200 kB | 151–188 kB | 🟢 Complete |
-| **Bug Count** | < 5 | 0 open | 🟢 Complete |
-| **Pages Deployed** | 18 | 18 | 🟢 Complete |
+| **Security Audit** | 100% PASS | 100% | 🟢 Complete |
 
 ---
 
@@ -52,26 +40,23 @@ Close all production blockers, enforce quality gates in CI/CD, and ship **v1.0.0
 
 | ID | Issue | Severity | Status |
 |----|-------|----------|--------|
-| B8 | Traefik dashboard exposure | HIGH | ✅ Resolved |
-| B9 | First-load JS budget exceeded | HIGH | ✅ Resolved |
-| — | Docker build on server (3 pages) | MEDIUM | ✅ Mitigated (build args + workspace build) |
-| — | Strapi React 19 peer dep conflict | LOW | Open (upstream) |
+| B1 | Client data isolation | HIGH | ✅ Resolved |
 
 ---
 
 ## 5. RELEASE READINESS
 
-**v1.0.0 Release Status:** ✅ READY
+**v1.1.0 Release Status:** ✅ READY
 
 All sprint objectives achieved:
-- ✅ Infrastructure & CI/CD complete
-- ✅ Security hardening complete
-- ✅ Performance optimization complete
-- ✅ Quality gates complete (120 tests)
-- ✅ All versions aligned to 1.0.0
+- ✅ Client Portal foundation established
+- ✅ Role-based authentication and redirection implemented
+- ✅ Scoped Client API endpoints implemented
+- ✅ Real-time client notifications implemented
+- ✅ All versions aligned to 1.1.0
 
-**Next Action:** `git tag v1.0.0` after final QA sign-off
+**Next Action:** Start Sprint 8: Advanced Client Interactions.
 
 ---
 
-*"Shipped with confidence. No shortcuts on security."*
+*"Building the bridge between vision and client reality."*

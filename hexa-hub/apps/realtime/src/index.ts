@@ -4,6 +4,7 @@ import { Redis } from 'ioredis';
 import dotenv from 'dotenv';
 import { createServer } from 'http';
 import { verify } from 'jsonwebtoken';
+import { logger } from './logger';
 
 dotenv.config();
 
@@ -43,19 +44,22 @@ async function bootstrap() {
 
   io.on('connection', (socket) => {
     const user = socket.data.user;
-    console.log(`User connected: ${user.email} (${user.id})`);
+    logger.info(`User connected: ${user.email} (${user.id})`);
 
     // Join personal room for targeted notifications
     socket.join(`user:${user.sub}`);
 
     socket.on('disconnect', () => {
-      console.log(`User disconnected: ${user.email}`);
+      logger.info(`User disconnected: ${user.email}`);
     });
   });
 
   httpServer.listen(PORT, () => {
-    console.log(`HEXA Hub Realtime Server running on port ${PORT}`);
+    logger.info(`HEXA Hub Realtime Server running on port ${PORT}`);
   });
 }
 
-bootstrap().catch(console.error);
+bootstrap().catch((err) => {
+  logger.error('Worker failed to start:', err);
+  process.exit(1);
+});
