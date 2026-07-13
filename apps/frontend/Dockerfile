@@ -3,8 +3,13 @@ FROM node:20-alpine AS base
 RUN apk add --no-cache libc6-compat wget
 WORKDIR /app
 
-# Stage 2: Builder
-FROM base AS builder
+# Stage 2: Dependencies (with full source for workspace resolution)
+FROM base AS deps
+COPY . .
+RUN npm install --no-audit --no-fund --legacy-peer-deps
+
+# Stage 3: Builder
+FROM deps AS builder
 
 ARG NEXT_PUBLIC_API_URL
 ARG NEXT_PUBLIC_CMS_URL
@@ -14,14 +19,11 @@ ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_CMS_URL=$NEXT_PUBLIC_CMS_URL
 ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 ENV NEXT_PUBLIC_SENTRY_DSN=$NEXT_PUBLIC_SENTRY_DSN
-
-COPY . .
-WORKDIR /app
 ENV NODE_ENV=production
 ENV SKIP_ENV_VALIDATION=true
-RUN npm install --no-audit --no-fund --legacy-peer-deps && npm run build --workspace=apps/frontend
+RUN npm run build --workspace=apps/frontend
 
-# Stage 3: Runner
+# Stage 4: Runner
 FROM node:20-alpine AS runner
 WORKDIR /app
 
