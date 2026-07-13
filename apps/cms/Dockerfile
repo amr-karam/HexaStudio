@@ -9,7 +9,7 @@ COPY . .
 RUN npm install --no-audit --no-fund
 RUN npm install esbuild react-redux --legacy-peer-deps --no-audit --no-fund
 RUN npm run build --workspace=apps/cms
-RUN cp -r /app/apps/cms/dist/src/* /app/apps/cms/dist/ && rm -rf /app/apps/cms/dist/src
+RUN cp -r /app/apps/cms/dist/src/* /app/apps/cms/dist/
 
 # --- Stage 3: Runner ---
 FROM node:22-slim AS runner
@@ -18,7 +18,6 @@ WORKDIR /app/apps/cms
 ENV NODE_ENV=production
 COPY --from=builder /app/apps/cms/dist ./dist
 COPY --from=builder /app/apps/cms/dist/config ./config
-COPY --from=builder /app/apps/cms/src/api ./src/api
 COPY --from=builder /app/apps/cms/public ./public
 COPY --from=builder /app/apps/cms/package.json ./package.json
 COPY --from=builder /app/node_modules /app/node_modules
