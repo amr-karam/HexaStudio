@@ -3,13 +3,9 @@ FROM node:20-alpine AS base
 RUN apk add --no-cache libc6-compat wget
 WORKDIR /app
 
-# Stage 2: Dependencies
+# Stage 2: Dependencies (with full source for workspace resolution)
 FROM base AS deps
-COPY package.json package-lock.json ./
-COPY apps/frontend/package.json ./apps/frontend/
-COPY packages/types/package.json ./packages/types/
-COPY packages/ui/package.json ./packages/ui/
-COPY packages/utils/package.json ./packages/utils/
+COPY . .
 RUN npm install --no-audit --no-fund --legacy-peer-deps
 
 # Stage 3: Builder
@@ -23,11 +19,9 @@ ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_CMS_URL=$NEXT_PUBLIC_CMS_URL
 ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 ENV NEXT_PUBLIC_SENTRY_DSN=$NEXT_PUBLIC_SENTRY_DSN
-
-COPY . .
-WORKDIR /app/apps/frontend
 ENV NODE_ENV=production
-RUN npx next build
+ENV SKIP_ENV_VALIDATION=true
+RUN npm run build --workspace=apps/frontend
 
 # Stage 4: Runner
 FROM node:20-alpine AS runner
