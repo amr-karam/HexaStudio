@@ -18,6 +18,7 @@ WORKDIR /app/apps/cms
 ENV NODE_ENV=production
 COPY --from=builder /app/apps/cms/dist ./dist
 COPY --from=builder /app/apps/cms/dist/config ./config
+COPY --from=builder /app/apps/cms/src/api ./src/api
 COPY --from=builder /app/apps/cms/public ./public
 COPY --from=builder /app/apps/cms/package.json ./package.json
 COPY --from=builder /app/node_modules /app/node_modules
