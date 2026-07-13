@@ -1,0 +1,4 @@
+- Feature modules follow a consistent file layout of `module.ts` + `controller.ts` + `service.ts` (plus optional `index.ts` barrel) under `src/modules/<domain>/`.
+- Cross-app contracts are imported from workspace packages `@hexastudio/types`, `@hexastudio/utils`, and `@hexastudio/ui` rather than duplicated locally.
+- Environment variables are read through a typed helper (`src/config/env.ts` on the backend, `src/lib/env.ts` on the frontend) instead of direct `process.env` access.
+- Domain-specific data fetching is co-located inside `src/features/<domain>/lib/` (e.g. `fetchArticles.ts`, `fetchProjects.ts`) and exposed via hooks under `hooks/`.

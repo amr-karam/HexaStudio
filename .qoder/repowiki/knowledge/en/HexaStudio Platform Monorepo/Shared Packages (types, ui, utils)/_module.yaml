@@ -1,0 +1,8 @@
+schema_version: 1
+module_path: shared_packages
+title: Shared Packages (types, ui, utils)
+scope:
+    - packages/
+source_files: []
+depends_on: []
+related_to: []

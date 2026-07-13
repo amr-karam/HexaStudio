@@ -1,0 +1,1 @@
+Monorepo hosting HexaStudio's NestJS API backend, Strapi content-management system, and Next.js marketing/portal frontend as three independently built applications.

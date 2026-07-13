@@ -1,0 +1,1 @@
+Placeholder workspace for shared TypeScript/JavaScript packages — currently contains only empty type definitions, UI components, and utility modules directories.

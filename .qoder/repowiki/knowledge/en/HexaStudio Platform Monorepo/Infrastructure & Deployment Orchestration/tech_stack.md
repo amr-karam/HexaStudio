@@ -1,0 +1,1 @@
+Traefik v3 (ACME Let's Encrypt, file provider watching `dynamic.yml`), Loki+Promtail for structured log aggregation, Prometheus + Grafana for metrics, MinIO S3-compatible object store, Odoo 17, PostgreSQL 16, and a custom Node 20 MCP server using `@modelcontextprotocol/sdk` over SSE.
