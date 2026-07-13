@@ -3,7 +3,7 @@ import { createAdapter } from '@socket.io/redis-adapter';
 import { Redis } from 'ioredis';
 import dotenv from 'dotenv';
 import { createServer } from 'http';
-import { jwtVerify } from 'jsonwebtoken';
+import { verify } from 'jsonwebtoken';
 
 dotenv.config();
 
@@ -33,7 +33,7 @@ async function bootstrap() {
     }
 
     try {
-      const decoded = await jwtVerify(token, JWT_SECRET);
+      const decoded = verify(token, JWT_SECRET) as { payload: Record<string, unknown> };
       socket.data.user = decoded.payload;
       next();
     } catch (err) {

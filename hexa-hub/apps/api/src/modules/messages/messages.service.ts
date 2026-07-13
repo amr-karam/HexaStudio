@@ -10,7 +10,7 @@ export class MessagesService {
     private readonly messageRepo: Repository<Message>,
   ) {}
 
-  async sendMessage(senderId: string, receiverId: string, content: string, type = 'text', fileUrl?: string) {
+  async sendMessage(senderId: string, receiverId: string, content: string, type: 'text' | 'file' | 'system' = 'text', fileUrl?: string) {
     const message = this.messageRepo.create({
       senderId,
       receiverId,

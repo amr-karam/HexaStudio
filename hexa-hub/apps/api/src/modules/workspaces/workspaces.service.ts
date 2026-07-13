@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Workspace } from './entities/workspace.entity';
 import { Task } from './entities/task.entity';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class WorkspacesService {
@@ -18,10 +19,28 @@ export class WorkspacesService {
   }
 
   async findOne(id: string) {
-    return this.workspaceRepo.findOne({ 
+    const workspace = await this.workspaceRepo.findOne({ 
       where: { id }, 
       relations: ['owner', 'tasks'] 
     });
+    if (!workspace) throw new NotFoundException('Workspace not found');
+    return workspace;
+  }
+
+  async findByClient(clientId: string) {
+    return this.workspaceRepo.find({
+      where: { client: { id: clientId } },
+      relations: ['client'],
+    });
+  }
+
+  async findByClientIdAndId(clientId: string, workspaceId: string) {
+    const workspace = await this.workspaceRepo.findOne({
+      where: { id: workspaceId, client: { id: clientId } },
+      relations: ['tasks', 'tasks.assignee', 'client'],
+    });
+    if (!workspace) throw new NotFoundException('Workspace not found or access denied');
+    return workspace;
   }
 
   async create(data: Partial<Workspace>) {
