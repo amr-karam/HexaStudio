@@ -69,6 +69,7 @@ temp_*.sh
 # Stale build/export artifacts
 --output
 project.zip
+standalone
 
 # Backend build output (not committed)
 apps/backend/dist/

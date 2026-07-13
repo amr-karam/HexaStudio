@@ -1,0 +1,1 @@
+The authoritative operating manual for HEXA Studio, covering governance, architecture decisions, standards, agent guides, prompts, and operational runbooks across 17 numbered domains.

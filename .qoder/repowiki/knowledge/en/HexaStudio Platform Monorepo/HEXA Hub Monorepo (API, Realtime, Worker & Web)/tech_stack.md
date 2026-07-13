@@ -1,0 +1,1 @@
+NestJS + TypeORM + PostgreSQL for the API; Socket.IO + ioredis + @socket.io/redis-adapter for horizontally scalable real-time messaging; BullMQ for background job processing; Next.js for the frontend; Turbo v2 for monorepo build/dev orchestration; docker-compose for local infra (Postgres 16, Redis 7, MinIO).

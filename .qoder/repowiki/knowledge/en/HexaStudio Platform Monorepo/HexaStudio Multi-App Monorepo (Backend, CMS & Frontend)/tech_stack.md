@@ -1,0 +1,1 @@
+NestJS 10 + Passport-JWT + class-validator/class-transformer + ioredis + MinIO + xmlrpc (Odoo) on the backend; Strapi v5 with PostgreSQL on the CMS; Next.js 15 + React 19 + Tailwind v4 + Three.js ecosystem (@react-three/fiber/drei/postprocessing) + Zustand + TanStack Query + Framer Motion + GSAP + Lenis on the frontend, all instrumented with Sentry.

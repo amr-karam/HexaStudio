@@ -1,0 +1,1 @@
+Each app runs its own dev/build/start scripts (`npm run dev` / `build` / `start`) and is containerised via a per-app `Dockerfile`; the frontend's e2e suite lives outside this scope and is invoked through `npm run test:e2e` which delegates to Playwright in `../../e2e/playwright.config.ts`.
