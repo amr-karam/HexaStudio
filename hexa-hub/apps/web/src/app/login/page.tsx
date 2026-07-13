@@ -21,7 +21,13 @@ export default function LoginPage() {
       const response = await axios.post(`${API_URL}/auth/login`, { email, password });
       localStorage.setItem('hub_token', response.data.access_token);
       localStorage.setItem('hub_user', JSON.stringify(response.data.user));
-      router.push('/dashboard');
+      
+      const role = response.data.user.role;
+      if (role === 'CLIENT') {
+        router.push('/client');
+      } else {
+        router.push('/dashboard');
+      }
     } catch (error) {
       alert('Invalid credentials. Please try again.');
     } finally {

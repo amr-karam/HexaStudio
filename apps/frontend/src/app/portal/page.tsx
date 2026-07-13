@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { TextReveal } from '@/components/ui/TextReveal';
@@ -196,9 +197,9 @@ export default function PortalPage() {
               <h2 className="text-xl font-serif font-light text-foreground mb-6">Project Lead</h2>
               <div className="flex items-center gap-4 mb-8">
                 <div className="w-12 h-12 rounded-full bg-neutral-800 border border-border/50 overflow-hidden">
-                  <img src={data.lead.avatar} alt={data.lead.name} className="w-full h-full object-cover opacity-60" onError={(e) => {
+                  <Image src={data.lead.avatar} alt={data.lead.name} width={48} height={48} className="w-full h-full object-cover opacity-60" onError={(e) => {
                     (e.target as HTMLImageElement).src = 'https://via.placeholder.com/48';
-                  }} />
+                  }} unoptimized />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-foreground">{data.lead.name}</p>

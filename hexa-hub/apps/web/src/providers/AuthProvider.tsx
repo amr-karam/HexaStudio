@@ -34,14 +34,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = (newToken: string, newUser: User) => {
     localStorage.setItem('hub_token', newToken);
     localStorage.setItem('hub_user', JSON.stringify(newUser));
+    
+    // Set cookie for middleware access
+    document.cookie = `hub_role=${newUser.role}; path=/; SameSite=Lax`;
+    
     setToken(newToken);
     setUser(newUser);
-    router.push('/dashboard');
   };
 
   const logout = () => {
     localStorage.removeItem('hub_token');
     localStorage.removeItem('hub_user');
+    document.cookie = 'hub_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     setToken(null);
     setUser(null);
     router.push('/login');
