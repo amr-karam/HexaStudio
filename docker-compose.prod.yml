@@ -385,6 +385,24 @@ services:
     networks:
       - internal
 
+  backup-verify:
+    image: postgres:16-alpine
+    logging: *default-logging
+    profiles:
+      - verify  # Run manually: docker compose --profile verify run backup-verify
+    entrypoint: /bin/sh
+    command: /scripts/verify-backup.sh
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: ${POSTGRES_USER:-hexastudio}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      BACKUP_DIR: /backups
+    volumes:
+      - ./docker/backup/verify-backup.sh:/scripts/verify-backup.sh:ro
+      - backup_data:/backups:ro
+    networks:
+      - internal
+
 networks:
   web:
     name: hexastudio_web

@@ -2,7 +2,6 @@
 
 import React, { Suspense, useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import gsap from 'gsap';
 import { Button } from '@/components/ui/Button';
 import { Magnetic } from '@/components/ui/Magnetic';
 import { LazySceneCanvas } from '@/features/scene';
@@ -23,23 +22,38 @@ export const HomeHero = () => {
   useEffect(() => {
     if (prefersReducedMotion) return;
 
+    let gsapInstance: typeof import('gsap').default | null = null;
+    let cancelled = false;
+
+    void import('gsap').then(({ default: gsap }) => {
+      if (cancelled) return;
+      gsapInstance = gsap;
+    });
+
     const handleMouseMove = (e: MouseEvent) => {
+      if (!gsapInstance || !contentRef.current) return;
+
       const { clientX, clientY } = e;
       const { innerWidth, innerHeight } = window;
-      
-      const xPos = (clientX / innerWidth) - 0.5;
-      const yPos = (clientY / innerHeight) - 0.5;
 
-      gsap.to(contentRef.current, {
-        x: xPos * 30,
-        y: yPos * 30,
-        duration: 1.2,
+      const xPos = clientX / innerWidth - 0.5;
+      const yPos = clientY / innerHeight - 0.5;
+
+      gsapInstance.to(contentRef.current, {
+        x: xPos * 45,
+        y: yPos * 45,
+        rotateX: -yPos * 5,
+        rotateY: xPos * 5,
+        duration: 1.5,
         ease: 'power3.out',
       });
     };
 
     window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    return () => {
+      cancelled = true;
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
   }, [prefersReducedMotion]);
 
   return (
@@ -53,7 +67,7 @@ export const HomeHero = () => {
         </Suspense>
       </SceneErrorBoundary>
 
-      <div className="absolute inset-0 bg-gradient-to-b from-obsidian/40 via-transparent to-obsidian pointer-events-none z-[1]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-obsidian/60 via-transparent to-obsidian pointer-events-none z-[1]" />
 
       <motion.div
         ref={contentRef}
@@ -68,10 +82,15 @@ export const HomeHero = () => {
 
         <div className="overflow-hidden mb-6 md:mb-8">
           <TextReveal delay={0.1}>
-            <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-light tracking-tighter text-white leading-[1.05]">
+            <motion.h1 
+              initial={{ letterSpacing: "-0.05em" }}
+              animate={{ letterSpacing: "-0.02em" }}
+              transition={{ duration: 2, ease: "easeInOut", repeat: Infinity, repeatType: "reverse" }}
+              className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-light tracking-tighter text-white leading-[1.05]"
+            >
               Living <span className="font-serif italic text-gold">Spaces.</span> <br />
               Visualized.
-            </h1>
+            </motion.h1>
           </TextReveal>
         </div>
 

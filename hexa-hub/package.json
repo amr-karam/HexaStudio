@@ -1,0 +1,23 @@
+{
+  "name": "hexa-hub",
+  "version": "0.1.0",
+  "private": true,
+  "description": "HEXA Hub - Internal collaboration platform",
+  "workspaces": [
+    "apps/web",
+    "apps/api",
+    "apps/realtime",
+    "apps/worker",
+    "packages/types"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test"
+  },
+  "devDependencies": {
+    "turbo": "^2.10.4"
+  }
+}

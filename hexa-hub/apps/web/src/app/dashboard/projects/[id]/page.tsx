@@ -25,11 +25,13 @@ export default function ProjectWorkspacePage({ params }: { params: { id: string 
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+
   useEffect(() => {
     const loadData = async () => {
       try {
         const api = axios.create({
-          baseURL: 'http://localhost:3000/api',
+          baseURL: API_URL,
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -48,7 +50,7 @@ export default function ProjectWorkspacePage({ params }: { params: { id: string 
     };
 
     if (token) loadData();
-  }, [token, params.id]);
+  }, [token, params.id, API_URL]);
 
   if (isLoading) return <div className="min-h-screen bg-background flex items-center justify-center text-white">Loading Workspace...</div>;
 

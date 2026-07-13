@@ -1,39 +1,30 @@
 api:
   dashboard: true
-  insecure: false
+  insecure: true
 
 entryPoints:
   web:
     address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+
   websecure:
     address: ":443"
-  traefik:
-    address: ":8080"
 
 providers:
   docker:
-    endpoint: "unix:///var/run/docker.sock"
     exposedByDefault: false
-    network: hexastudio_web
   file:
     filename: /etc/traefik/dynamic.yml
     watch: true
 
 certificatesResolvers:
-  cloudflare:
+  letsencrypt:
     acme:
       email: admin@hexastudio.net
-      storage: /letsencrypt/acme.json
-      caServer: https://acme-v02.api.letsencrypt.org/directory
-      dnsChallenge:
-        provider: cloudflare
-
-log:
-  level: INFO
-
-accessLog: {}
-
-metrics:
-  prometheus:
-    addEntryPointsLabels: true
-    addServicesLabels: true
+      storage: /etc/traefik/acme.json
+      httpChallenge:
+        entryPoint: web

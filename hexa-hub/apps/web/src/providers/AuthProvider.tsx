@@ -2,13 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-
-interface User {
-  id: string;
-  email: string;
-  fullName: string;
-  role: 'SUPER_ADMIN' | 'EMPLOYEE' | 'CLIENT';
-}
+import type { User } from '@hexa-hub/types';
 
 interface AuthContextType {
   user: User | null;

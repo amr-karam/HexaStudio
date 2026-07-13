@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ScrollFadeIn } from '@/components/ScrollFadeIn';
 
 const testimonials = [
@@ -26,9 +26,18 @@ const testimonials = [
 ];
 
 export const TestimonialsSection = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % testimonials.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
-    <section className="px-8 md:px-16 py-32 bg-surface border-y border-border/50">
-      <div>
+    <section className="px-8 md:px-16 py-32 bg-surface border-y border-border/50 overflow-hidden">
+      <div className="max-w-5xl mx-auto">
         <ScrollFadeIn className="mb-24 text-center">
           <span className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block">
             Client Testimonials
@@ -37,27 +46,49 @@ export const TestimonialsSection = () => {
             What Our Partners <span className="italic text-accent">Say</span>
           </h2>
         </ScrollFadeIn>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {testimonials.map((item, idx) => (
+        
+        <div className="relative h-[300px] md:h-[200px] flex items-center justify-center">
+          <AnimatePresence mode="wait">
             <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="p-12 border border-border hover:border-accent/30 transition-all duration-700 bg-background/30 group"
+              key={activeIndex}
+              initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, y: -20, filter: 'blur(10px)' }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute inset-0 flex flex-col items-center text-center px-4"
             >
-              <blockquote className="text-base text-neutral-400 font-light leading-relaxed mb-12 italic">
-                &ldquo;{item.quote}&rdquo;
+              <blockquote className="text-xl md:text-3xl text-neutral-300 font-light italic leading-relaxed max-w-3xl mb-8">
+                &ldquo;{testimonials[activeIndex].quote}&rdquo;
               </blockquote>
-              <div>
-                <p className="text-sm font-medium text-foreground">{item.author}</p>
-                <p className="text-xs text-neutral-600">{item.role}</p>
+              <div className="flex flex-col items-center gap-1">
+                <p className="text-sm font-medium text-foreground tracking-widest uppercase">
+                  {testimonials[activeIndex].author}
+                </p>
+                <p className="text-xs text-accent/60 font-mono">
+                  {testimonials[activeIndex].role}
+                </p>
               </div>
             </motion.div>
+          </AnimatePresence>
+        </div>
+        
+        <div className="flex justify-center gap-3 mt-12">
+          {testimonials.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setActiveIndex(idx)}
+              className={cn(
+                "h-1 transition-all duration-500 rounded-full",
+                activeIndex === idx ? "w-12 bg-accent" : "w-4 bg-neutral-800"
+              )}
+            />
           ))}
         </div>
       </div>
     </section>
   );
 };
+
+function cn(...classes: string[]) {
+  return classes.filter(Boolean).join(' ');
+}

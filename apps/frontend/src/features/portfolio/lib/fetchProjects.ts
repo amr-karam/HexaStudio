@@ -14,23 +14,34 @@ async function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutM
 
 export async function fetchProjects(): Promise<ProjectResponse> {
   try {
-    const response = await fetchWithTimeout(`${API_BASE_URL}/api/projects`, {
+    // Use internal Docker DNS for server-side calls to avoid loopback issues
+    const baseUrl = typeof window === 'undefined' 
+      ? 'http://backend:4000' 
+      : API_BASE_URL;
+
+    const response = await fetchWithTimeout(`${baseUrl}/api/projects`, {
       next: { revalidate: 3600 },
     });
 
     if (!response.ok) {
+      console.error(`API Error: ${response.status} ${response.statusText}`);
       return { projects: [], total: 0 };
     }
 
-    return response.json();
-  } catch {
+    return await response.json();
+  } catch (error) {
+    console.error('Fetch Projects Error:', error);
     return { projects: [], total: 0 };
   }
 }
 
 export async function fetchProject(slug: string): Promise<Project | null> {
   try {
-    const response = await fetchWithTimeout(`${API_BASE_URL}/api/projects/${slug}`, {
+    const baseUrl = typeof window === 'undefined' 
+      ? 'http://backend:4000' 
+      : API_BASE_URL;
+
+    const response = await fetchWithTimeout(`${baseUrl}/api/projects/${slug}`, {
       next: { revalidate: 3600 },
     });
 
@@ -38,8 +49,9 @@ export async function fetchProject(slug: string): Promise<Project | null> {
       return null;
     }
 
-    return response.json();
-  } catch {
+    return await response.json();
+  } catch (error) {
+    console.error(`Fetch Project (${slug}) Error:`, error);
     return null;
   }
 }

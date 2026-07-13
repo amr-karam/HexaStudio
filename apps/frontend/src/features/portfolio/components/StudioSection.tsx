@@ -15,16 +15,36 @@ export const StudioSection = () => {
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
           className="relative aspect-square bg-surface-light overflow-hidden group"
         >
-          <Image
-            src="https://images.unsplash.com/photo-1497366811353-6870744d04b2"
-            alt="Studio"
-            fill
-            sizes="(max-width: 1200px) 100vw, 50vw"
-            className="object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-80 group-hover:scale-110 transition-all duration-1000 ease-out-expo"
-          />
+          <motion.div 
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+            className="h-full w-full relative"
+          >
+            <Image
+              src="https://images.unsplash.com/photo-1497366811353-6870744d04b2"
+              alt="Studio"
+              fill
+              sizes="(max-width: 1200px) 100vw, 50vw"
+              className="object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-80 transition-all duration-1000 ease-out-expo"
+            />
+          </motion.div>
+          
           <div className="absolute inset-0 border-[30px] border-background/20 pointer-events-none group-hover:border-background/10 transition-all duration-700" />
           <div className="absolute inset-0 bg-gradient-to-tr from-background via-transparent to-transparent opacity-60" />
-          <div className="absolute bottom-0 right-0 w-32 h-32 border-b-2 border-r-2 border-accent/30 group-hover:border-accent transition-colors duration-700" />
+          
+          {/* Technical Detail Overlay */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileHover={{ opacity: 1 }}
+            className="absolute bottom-8 left-8 right-8 p-6 bg-black/40 backdrop-blur-xl border border-white/10 text-white transition-opacity duration-500 pointer-events-none"
+          >
+            <p className="text-[10px] uppercase tracking-[0.3em] text-gold mb-2 font-mono">Technical Spec</p>
+            <p className="text-xs font-light leading-relaxed opacity-80">
+              Utilizing OctaneRender & Unreal Engine 5 for real-time photorealistic light simulation.
+            </p>
+          </motion.div>
+          
+          <div className="absolute top-0 right-0 w-32 h-32 border-t-2 border-r-2 border-accent/30 group-hover:border-accent transition-colors duration-700" />
         </motion.div>
 
         <motion.div
@@ -48,7 +68,7 @@ export const StudioSection = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-12">
-            <div className="flex flex-col gap-3 group">
+            <div className="flex flex-col gap-3 group cursor-default">
               <h4 className="text-xs uppercase tracking-[0.3em] text-foreground group-hover:text-accent transition-colors duration-500">
                 Immersion
               </h4>
@@ -56,7 +76,7 @@ export const StudioSection = () => {
                 Interactive 3D environments powered by R3F, enabling intuitive exploration.
               </p>
             </div>
-            <div className="flex flex-col gap-3 group">
+            <div className="flex flex-col gap-3 group cursor-default">
               <h4 className="text-xs uppercase tracking-[0.3em] text-foreground group-hover:text-accent transition-colors duration-500">
                 Fidelity
               </h4>

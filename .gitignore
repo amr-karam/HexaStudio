@@ -46,6 +46,7 @@ apps/cms/public/uploads/
 coverage/
 test-results/
 playwright-report/
+e2e/*-snapshots/
 
 # Internal docs (not for public repo)
 competitor-research-progress.md
@@ -58,6 +59,16 @@ server.log
 
 # Temporary scripts
 tmp_*.py
+temp_*.py
+temp_*.sh
+
+# Files containing secrets — NEVER commit
+*.secret
+*.secrets
+
+# Stale build/export artifacts
+--output
+project.zip
 
 # Backend build output (not committed)
 apps/backend/dist/

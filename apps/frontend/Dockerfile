@@ -25,9 +25,10 @@ ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 ENV NEXT_PUBLIC_SENTRY_DSN=$NEXT_PUBLIC_SENTRY_DSN
 
 COPY . .
-WORKDIR /app/apps/frontend
+WORKDIR /app
 ENV NODE_ENV=production
-RUN npx next build
+ENV SKIP_ENV_VALIDATION=true
+RUN npm run build --workspace=apps/frontend
 
 # Stage 4: Runner
 FROM node:20-alpine AS runner

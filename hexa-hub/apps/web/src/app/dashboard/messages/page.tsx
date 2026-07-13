@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/providers/AuthProvider';
+import { useSocket } from '@/providers/SocketProvider';
 import axios from 'axios';
 import { Send, Search, User as UserIcon } from 'lucide-react';
 
@@ -22,10 +23,13 @@ interface Contact {
 
 export default function MessagesPage() {
   const { token, user } = useAuth();
+  const { socket } = useSocket();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
+
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 
   useEffect(() => {
     if (token) {
@@ -33,9 +37,25 @@ export default function MessagesPage() {
     }
   }, [token]);
 
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on('new_message', (newMessage: Message) => {
+      if (selectedContact && (newMessage.senderId === selectedContact.id || newMessage.receiverId === selectedContact.id)) {
+        setMessages((prev) => [...prev, newMessage]);
+      } else {
+        fetchInbox();
+      }
+    });
+
+    return () => {
+      socket.off('new_message');
+    };
+  }, [socket, selectedContact]);
+
   const fetchInbox = async () => {
     try {
-      const res = await axios.get('http://localhost:3000/api/messages/inbox', {
+      const res = await axios.get(`${API_URL}/messages/inbox`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       // Transform messages to contacts
@@ -56,7 +76,7 @@ export default function MessagesPage() {
 
   const fetchMessages = async (contactId: string) => {
     try {
-      const res = await axios.get(`http://localhost:3000/api/messages/conversation/${contactId}`, {
+      const res = await axios.get(`${API_URL}/messages/conversation/${contactId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setMessages(res.data);
@@ -71,7 +91,7 @@ export default function MessagesPage() {
 
     try {
       const msg = { receiverId: selectedContact.id, content: input };
-      await axios.post('http://localhost:3000/api/messages/send', msg, {
+      await axios.post(`${API_URL}/messages/send`, msg, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setInput('');
@@ -109,7 +129,7 @@ export default function MessagesPage() {
                   <UserIcon size={18} />
                 </div>
                 <div className="overflow-hidden">
-                  <p className="text-sm font-medium truncate">{contact.fullName}</p>
+                  <p className="text-sm font-medium truncate text-white">{contact.fullName}</p>
                   <p className="text-xs text-neutral-600 truncate">{contact.lastMessage}</p>
                 </div>
               </div>

@@ -12,11 +12,13 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/login', { email, password });
+      const response = await axios.post(`${API_URL}/auth/login`, { email, password });
       localStorage.setItem('hub_token', response.data.access_token);
       localStorage.setItem('hub_user', JSON.stringify(response.data.user));
       router.push('/dashboard');
@@ -71,14 +73,13 @@ export default function LoginPage() {
             />
           </div>
 
-          <Button 
+          <button 
             type="submit" 
-            variant="primary" 
-            className="w-full py-6 text-sm uppercase tracking-widest"
+            className="w-full py-6 text-sm uppercase tracking-widest bg-gold text-obsidian rounded-lg hover:bg-gold/90 transition-all disabled:opacity-50"
             disabled={isLoading}
           >
             {isLoading ? 'Authenticating...' : 'Enter Workspace'}
-          </Button>
+          </button>
         </form>
       </motion.div>
     </div>
