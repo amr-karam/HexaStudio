@@ -14,3 +14,4 @@ node_modules
 .next
 **/.next
 standalone
+apps/frontend/app/
