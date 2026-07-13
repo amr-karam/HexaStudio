@@ -31,4 +31,4 @@ RUN mkdir -p /app/node_modules/@strapi/admin/dist/server/server/build
 COPY --from=builder /app/apps/cms/dist/build/ /app/node_modules/@strapi/admin/dist/server/server/build/
 
 EXPOSE 1337
-CMD ["node", "start.js"]
+CMD ["npm", "run", "start"]
