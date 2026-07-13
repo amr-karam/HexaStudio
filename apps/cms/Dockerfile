@@ -25,6 +25,8 @@ COPY --from=builder /app/apps/frontend/package.json /app/apps/frontend/package.j
 COPY --from=builder /app/packages/types/package.json /app/packages/types/package.json
 COPY --from=builder /app/packages/utils/package.json /app/packages/utils/package.json
 
-RUN rm -f /app/apps/cms/config/*.ts
+RUN rm -rf /app/apps/cms/config
+RUN mkdir -p /app/apps/cms/config
+COPY --from=builder /app/apps/cms/dist/config/ /app/apps/cms/config/
 EXPOSE 1337
 CMD ["npm", "run", "start"]
