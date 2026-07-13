@@ -9,10 +9,11 @@ export interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  children?: React.ReactNode;
+  children?: any;
   variant?: 'centered' | 'full-screen' | 'side-panel';
   className?: string;
 }
+
 
 const Modal = ({ isOpen, onClose, title, children, variant = 'centered', className }: ModalProps) => {
   return (

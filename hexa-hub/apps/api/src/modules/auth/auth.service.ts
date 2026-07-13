@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
-import { UserRole } from '../users/entities/user-role.enum';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -30,7 +30,7 @@ export class AuthService {
     };
   }
 
-  async register(userData: any) {
+  async register(userData: CreateUserDto) {
     const hashedPass = await bcrypt.hash(userData.password, 10);
     return this.usersService.create({
       ...userData,

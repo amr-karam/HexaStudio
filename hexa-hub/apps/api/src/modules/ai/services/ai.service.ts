@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
+import { Task } from '@hexa-hub/types';
 
 @Injectable()
 export class AiService {
   constructor(private configService: ConfigService) {}
 
-  async generateProjectSummary(tasks: any[]) {
+  async generateProjectSummary(tasks: Task[]) {
     const prompt = `Summarize the following project tasks into a concise executive report: ${JSON.stringify(tasks)}`;
     
     try {
@@ -21,7 +22,7 @@ export class AiService {
     }
   }
 
-  async suggestNextAction(task: any) {
+  async suggestNextAction(task: Task) {
     const prompt = `Given this task: ${task.title} - ${task.description}. Suggest the next most logical professional action step.`;
     
     try {

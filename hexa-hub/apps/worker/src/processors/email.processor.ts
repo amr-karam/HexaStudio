@@ -1,11 +1,14 @@
 import { Job } from 'bull';
 import { EmailJobPayload } from '@hexa-hub/types';
 import nodemailer from 'nodemailer';
+import { Logger } from '@nestjs/common';
+
+const logger = new Logger('EmailProcessor');
 
 export async function processEmailJob(job: Job<EmailJobPayload>): Promise<void> {
   const { to, subject, template, context } = job.data;
 
-  console.log(`[email] Processing job ${job.id}: "${subject}" → ${to} (template: ${template})`);
+  logger.log(`[email] Processing job ${job.id}: "${subject}" → ${to} (template: ${template})`);
 
   try {
     await job.progress(25);
@@ -26,16 +29,16 @@ export async function processEmailJob(job: Job<EmailJobPayload>): Promise<void> 
     await job.progress(50);
 
     // Simulate email sending
-    console.log(`[email] Sending email to ${to} with subject "${subject}"...`);
+    logger.log(`[email] Sending email to ${to} with subject "${subject}"...`);
     
     // In a real scenario, you'd use transporter.sendMail(...)
     // For now, we'll just log it and complete the job.
     
     await job.progress(90);
-    console.log(`[email] Job ${job.id} completed successfully.`);
+    logger.log(`[email] Job ${job.id} completed successfully.`);
     await job.progress(100);
   } catch (error: any) {
-    console.error(`[email] Error processing job ${job.id}:`, error.message);
+    logger.error(`[email] Error processing job ${job.id}: ${error.message}`);
     throw error;
   }
 }

@@ -2,11 +2,14 @@ import { Job } from 'bull';
 import { AiJobPayload } from '@hexa-hub/types';
 import axios from 'axios';
 import { env } from '../config/env';
+import { Logger } from '@nestjs/common';
+
+const logger = new Logger('AiProcessor');
 
 export async function processAiJob(job: Job<AiJobPayload>): Promise<void> {
   const { userId, prompt, taskType, context } = job.data;
 
-  console.log(`[ai] Processing job ${job.id}: ${taskType} for user ${userId}`);
+  logger.log(`[ai] Processing job ${job.id}: ${taskType} for user ${userId}`);
 
   if (!env.geminiApiKey) {
     throw new Error('GEMINI_API_KEY is not configured in environment variables');
@@ -39,12 +42,12 @@ export async function processAiJob(job: Job<AiJobPayload>): Promise<void> {
     await job.progress(90);
     
     // In a real app, we might save this to a database or send it via another service
-    console.log(`[ai] Result for job ${job.id}: ${aiResult.slice(0, 100)}...`);
+    logger.log(`[ai] Result for job ${job.id}: ${aiResult.slice(0, 100)}...`);
 
     await job.progress(100);
-    console.log(`[ai] Job ${job.id} completed`);
+    logger.log(`[ai] Job ${job.id} completed`);
   } catch (error: any) {
-    console.error(`[ai] Error processing job ${job.id}:`, error.message);
+    logger.error(`[ai] Error processing job ${job.id}: ${error.message}`);
     throw error;
   }
 }
