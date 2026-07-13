@@ -17,22 +17,24 @@ export default function ExecutiveDashboard() {
   const [aiInsights, setAiInsights] = useState('Analyzing current project trends...');
   const [isLoading, setIsLoading] = useState(true);
 
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+
   useEffect(() => {
     const loadExecutiveData = async () => {
       try {
         const api = axios.create({
-          baseURL: 'http://localhost:3000/api',
+          baseURL: API_URL,
           headers: { Authorization: `Bearer ${token}` }
         });
 
         // In a real app, these would be separate endpoints
         const [projectsRes] = await Promise.all([
-          api.get('/workspaces')
+          api.get<any[]>('/workspaces')
         ]);
 
         // Simulated AI insight generation based on project data
         const summaryRes = await api.post('/ai/summarize', { 
-          tasks: projectsRes.data.map(p => ({ title: p.name })) 
+          tasks: projectsRes.data.map((p: any) => ({ title: p.name })) 
         });
 
         setAiInsights(summaryRes.data.summary);
@@ -44,7 +46,7 @@ export default function ExecutiveDashboard() {
     };
 
     if (token) loadExecutiveData();
-  }, [token]);
+  }, [token, API_URL]);
 
   return (
     <div className="p-8 md:p-12">

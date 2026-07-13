@@ -57,7 +57,7 @@ services:
 
   # Realtime Server: Socket.IO
   hub-realtime:
-    build: 
+    build:
       context: ..
       dockerfile: apps/realtime/Dockerfile
     container_name: hub-realtime

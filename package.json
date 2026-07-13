@@ -1,6 +1,6 @@
 {
   "name": "hexastudio",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "packageManager": "npm@11.17.0",
   "description": "HexaStudio.net — 3D creative studio platform",
@@ -43,6 +43,7 @@
     "framer-motion": "^11.18.2"
   },
   "devDependencies": {
+    "@lhci/cli": "^0.14.0",
     "turbo": "^2.10.4"
   }
 }

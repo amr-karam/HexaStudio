@@ -1,233 +1,138 @@
 http:
-  middlewares:
-    redirect-https:
-      redirectScheme:
-        scheme: https
-        permanent: true
-
-    secure-headers:
-      headers:
-        frameDeny: true
-        contentTypeNosniff: true
-        browserXssFilter: true
-        referrerPolicy: "strict-origin-when-cross-origin"
-        stsSeconds: 31536000
-        stsIncludeSubdomains: true
-        stsPreload: true
-        contentSecurityPolicy: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https: wss:; media-src 'self' https:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'"
-
-    rate-limit:
-      rateLimit:
-        average: 100
-        burst: 50
-
-    compress:
-      compress: {}
-
-    traefik-auth:
-      ipWhiteList:
-        sourceRange:
-          - "127.0.0.1/32"
-          - "10.0.0.0/8"
-          - "172.16.0.0/12"
-          - "192.168.0.0/16"
-
   routers:
-    opencode-http:
-      rule: "Host(`opencode.hexastudio.net`)"
-      entryPoints:
-        - web
-      service: opencode
-      middlewares:
-        - secure-headers
+    # Main Website
+    website:
+      rule: "Host(`hexastudio.net`)"
+      service: frontend
+      tls: { certResolver: letsencrypt }
 
-    opencode:
-      rule: "Host(`opencode.hexastudio.net`)"
-      entryPoints:
-        - websecure
-      service: opencode
-      tls:
-        certResolver: cloudflare
-      middlewares:
-        - secure-headers
-        - rate-limit
+    # Odoo ERP
+    odoo:
+      rule: "Host(`odoo.hexastudio.net`)"
+      service: odoo
+      tls: { certResolver: letsencrypt }
 
-    ai-http:
-      rule: "Host(`ai.hexastudio.net`)"
-      entryPoints:
-        - web
-      service: lmstudio
-      middlewares:
-        - secure-headers
+    # Backend API
+    api:
+      rule: "Host(`api.hexastudio.net`)"
+      service: backend
+      tls: { certResolver: letsencrypt }
 
+    # CMS
+    cms:
+      rule: "Host(`cms.hexastudio.net`)"
+      service: cms
+      tls: { certResolver: letsencrypt }
+
+    # Storage / Files
+    files:
+      rule: "Host(`files.hexastudio.net`)"
+      service: minio
+      tls: { certResolver: letsencrypt }
+
+    # Storage Console
+    files-console:
+      rule: "Host(`files-console.hexastudio.net`)"
+      service: minio-console
+      tls: { certResolver: letsencrypt }
+
+    # Monitoring (Grafana)
+    monitor:
+      rule: "Host(`monitor.hexastudio.net`)"
+      service: grafana
+      tls: { certResolver: letsencrypt }
+
+    # Monitoring (Prometheus)
+    prometheus:
+      rule: "Host(`prometheus.hexastudio.net`)"
+      service: prometheus
+      tls: { certResolver: letsencrypt }
+
+    # Uptime
+    uptime:
+      rule: "Host(`uptime.hexastudio.net`)"
+      service: uptime-kuma
+      tls: { certResolver: letsencrypt }
+
+    # AI Services
     ai:
       rule: "Host(`ai.hexastudio.net`)"
-      entryPoints:
-        - websecure
-      service: lmstudio
-      tls:
-        certResolver: cloudflare
-      middlewares:
-        - secure-headers
-        - rate-limit
+      service: ai-service
+      tls: { certResolver: letsencrypt }
 
-    frontend-http:
-      rule: "Host(`hexastudio.net`) || Host(`www.hexastudio.net`)"
-      entryPoints:
-        - web
-      service: frontend
-      middlewares:
-        - secure-headers
-        - compress
+    # Auth
+    auth:
+      rule: "Host(`auth.hexastudio.net`)"
+      service: auth-service
+      tls: { certResolver: letsencrypt }
 
-    frontend:
-      rule: "Host(`hexastudio.net`) || Host(`www.hexastudio.net`)"
-      entryPoints:
-        - websecure
-      service: frontend
-      tls:
-        certResolver: cloudflare
-      middlewares:
-        - secure-headers
-        - compress
+    # Analytics
+    analytics:
+      rule: "Host(`analytics.hexastudio.net`)"
+      service: analytics-service
+      tls: { certResolver: letsencrypt }
 
-    backend-http:
-      rule: "Host(`api.hexastudio.net`)"
-      entryPoints:
-        - web
-      service: backend
-      middlewares:
-        - secure-headers
-        - compress
+    # Communication Hub
+    hub:
+      rule: "Host(`hub.hexastudio.net`)"
+      service: hub-service
+      tls: { certResolver: letsencrypt }
 
-    backend:
-      rule: "Host(`api.hexastudio.net`)"
-      entryPoints:
-        - websecure
-      service: backend
-      tls:
-        certResolver: cloudflare
-      middlewares:
-        - secure-headers
-        - compress
+    # Documentation
+    docs:
+      rule: "Host(`docs.hexastudio.net`)"
+      service: docs-service
+      tls: { certResolver: letsencrypt }
 
-    cms-http:
-      rule: "Host(`cms.hexastudio.net`)"
-      entryPoints:
-        - web
-      service: cms
-      middlewares:
-        - secure-headers
-
-    cms:
-      rule: "Host(`cms.hexastudio.net`)"
-      entryPoints:
-        - websecure
-      service: cms
-      tls:
-        certResolver: cloudflare
-      middlewares:
-        - secure-headers
-
-    grafana-http:
-      rule: "Host(`grafana.hexastudio.net`)"
-      entryPoints:
-        - web
-      service: grafana
-      middlewares:
-        - secure-headers
-
-    grafana:
-      rule: "Host(`grafana.hexastudio.net`)"
-      entryPoints:
-        - websecure
-      service: grafana
-      tls:
-        certResolver: cloudflare
-      middlewares:
-        - secure-headers
-
-    minio-api:
-      rule: "Host(`storage.hexastudio.net`)"
-      entryPoints:
-        - websecure
-      service: minio-api
-      tls:
-        certResolver: cloudflare
-      middlewares:
-        - secure-headers
-        - traefik-auth
-
-    minio-api-http:
-      rule: "Host(`storage.hexastudio.net`)"
-      entryPoints:
-        - web
-      service: minio-api
-      middlewares:
-        - secure-headers
-
-    minio-console:
-      rule: "Host(`storage-console.hexastudio.net`)"
-      entryPoints:
-        - websecure
-      service: minio-console
-      tls:
-        certResolver: cloudflare
-      middlewares:
-        - secure-headers
-        - traefik-auth
-
-    minio-console-http:
-      rule: "Host(`storage-console.hexastudio.net`)"
-      entryPoints:
-        - web
-      service: minio-console
-      middlewares:
-        - secure-headers
+    # Status Page
+    status:
+      rule: "Host(`status.hexastudio.net`)"
+      service: status-service
+      tls: { certResolver: letsencrypt }
 
   services:
-    opencode:
-      loadBalancer:
-        servers:
-          - url: "http://172.20.0.1:4096"
-
-    lmstudio:
-      loadBalancer:
-        servers:
-          - url: "http://172.17.0.1:1234"
-
     frontend:
       loadBalancer:
-        servers:
-          - url: "http://frontend:3000"
-
+        servers: [{ url: "http://frontend:3000" }]
     backend:
       loadBalancer:
-        servers:
-          - url: "http://backend:4000"
-
+        servers: [{ url: "http://backend:4000" }]
     cms:
       loadBalancer:
-        servers:
-          - url: "http://cms:1337"
-
-    grafana:
+        servers: [{ url: "http://cms:1337" }]
+    odoo:
       loadBalancer:
-        servers:
-          - url: "http://grafana:3000"
-
-    minio-api:
+        servers: [{ url: "http://odoo:8069" }]
+    minio:
       loadBalancer:
-        servers:
-          - url: "http://minio:9000"
-
+        servers: [{ url: "http://minio:9000" }]
     minio-console:
       loadBalancer:
-        servers:
-          - url: "http://minio:9001"
-
-tls:
-  options:
-    default:
-      minVersion: VersionTLS12
-      sniStrict: true
+        servers: [{ url: "http://minio-console:9001" }]
+    grafana:
+      loadBalancer:
+        servers: [{ url: "http://grafana:3000" }]
+    prometheus:
+      loadBalancer:
+        servers: [{ url: "http://prometheus:9090" }]
+    uptime-kuma:
+      loadBalancer:
+        servers: [{ url: "http://uptime-kuma:3001" }]
+    ai-service:
+      loadBalancer:
+        servers: [{ url: "http://ai-service:8080" }]
+    auth-service:
+      loadBalancer:
+        servers: [{ url: "http://auth-service:8080" }]
+    analytics-service:
+      loadBalancer:
+        servers: [{ url: "http://analytics-service:8080" }]
+    hub-service:
+      loadBalancer:
+        servers: [{ url: "http://hub-service:8080" }]
+    docs-service:
+      loadBalancer:
+        servers: [{ url: "http://docs-service:8080" }]
+    status-service:
+      loadBalancer:
+        servers: [{ url: "http://status-service:8080" }]

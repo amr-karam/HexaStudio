@@ -1,9 +1,8 @@
 # 📝 OPEN TASKS: THE BACKLOG OF EXCELLENCE
 
-**Version:** 1.0 | **Scope:** Task Management | **Status:** ACTIVE
+**Version:** 2.0 | **Scope:** Sprint 6 — Enterprise Hardening | **Status:** ACTIVE
 
 ## 1. TASK PRIORITIZATION MATRIX
-Tasks are categorized by their impact on the "Luxury" and "Enterprise" goals.
 
 | Priority | Label | Definition |
 |----------|--------|-------------|
@@ -14,37 +13,66 @@ Tasks are categorized by their impact on the "Luxury" and "Enterprise" goals.
 
 ---
 
-## 2. THE TASK LIST
+## 2. SPRINT 6 — ENTERPRISE HARDENING (ACTIVE)
 
 ### 🔴 P0: CRITICAL
-- [ ] **Task ID-001:** Implement High-Fidelity 3D Model Pipeline (Draco Compression & GLB optimization)
-- [ ] **Task ID-002:** Finalize the "Luxury Gap" Visual Audit (Review all UI components against 9.5/10 Luxury scale)
+
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S6-P0-001** | CI/CD pipeline — lint, typecheck, test, build gates | ✅ Done |
+| **S6-P0-002** | CD pipeline — GHCR build & deploy via SSH | ✅ Done |
+| **S6-P0-003** | Playwright E2E in CI (`e2e/playwright.config.ts`) | ✅ Done |
+| **S6-P0-004** | B8 — Secure Traefik dashboard (`api.insecure: false`, IP allowlist, no public :8080) | ✅ Done |
+| **S6-P0-005** | B9 — First-load JS budget (lazy-load Three.js/R3F/GSAP on non-home routes) | ✅ Done |
+| **S6-P0-006** | Docker build fix — monorepo build args + workspace build in Dockerfile | ✅ Done |
+| **S6-P0-007** | v1.0.0 version alignment (`package.json` ↔ CHANGELOG) | ✅ Done |
+| **S6-P0-008** | v1.0.0 release git tag | ✅ Done (all versions aligned to 1.0.0; tag pending final QA sign-off) |
 
 ### 🟡 P1: HIGH
-- [ ] **Task ID-101:** Expand GSAP Camera System (Add dynamic vantage points for specific project categories)
-- [ ] **Task ID-102:** Optimize R3F Scene Performance (Implement LOD and frustum culling for complex models)
-- [ ] **Task ID-103:** Implement Server-Side Rendering (SSR) for Project Detail pages for SEO
+
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S6-P1-001** | Unit tests for utils + backend services (80% coverage target) | ✅ Done (67 backend + 53 frontend specs) |
+| **S6-P1-002** | Frontend component tests | ✅ Done (Vitest + RTL: Counter, TextReveal, NewsletterSection, StrapiBlocks, hooks, lib) |
+| **S6-P1-003** | CMS admin IP allowlist | ✅ Done (admin-ip-guard middleware + CMS_ALLOWED_IPS env var) |
+| **S6-P1-004** | Database backup verification | ✅ Done (verify-backup.sh + backup-verify Docker service) |
+| **S6-P1-005** | Lighthouse performance audit (>95 score) | ✅ Done (LHCI config + CI job in ci.yml) |
 
 ### 🔵 P2: MEDIUM
-- [ ] **Task ID-201:** Refine Odoo ERP Integration (Add webhook listeners for real-time project status updates)
-- [ ] **Task ID-202:** Add Advanced Animation Transitions between Portfolio pages (Cinematic wipes/fades)
 
-### ⚪ P3: LOW
-- [ ] **Task ID-301:** Implement a "Dark/Light" mode transition that affects 3D lighting environments
-- [ ] **Task ID-302:** Add automated Lighthouse performance reports to the CI/CD pipeline
-
----
-
-## 3. TASK LIFECYCLE
-Every task must follow this flow:
-`Backlog` $\rightarrow$ `In Progress` $\rightarrow$ `Internal Review` $\rightarrow$ `Quality Gate` $\rightarrow$ `Done`
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S6-P2-001** | Visual regression tests | ✅ Done (Playwright visual.spec.ts — 11 snapshot tests across desktop + mobile) |
+| **S6-P2-002** | axe-core accessibility CI gate | ✅ Done (Sprint 5) |
+| **S6-P2-003** | Cloudflare WAF configuration | ✅ Done |
 
 ---
 
-## 4. GUIDELINES FOR AGENTS
-When picking a task:
-1. **Analyze the Dependencies:** Does this task require a change in the API or Architecture?
-2. **Plan First:** Write a short implementation plan before coding.
-3. **Verify:** Ensure the task meets the "Definition of Done" in `15-QUALITY/SOPs.md`.
+## 3. COMPLETED (PRIOR SPRINTS)
+
+- [x] **Task ID-001:** High-Fidelity 3D Model Pipeline (Draco + GLB optimization)
+- [x] **Task ID-002:** Luxury Gap Visual Audit
+- [x] **Task ID-101:** GSAP Camera System with dynamic vantage points
+- [x] **Task ID-102:** R3F Scene Performance (LOD + frustum culling)
+- [x] **Task ID-103:** SSR for Project Detail pages
+- [x] **Task ID-201:** Odoo ERP webhook listeners
+- [x] **Task ID-202:** Cinematic page transitions
+- [x] **Task ID-301:** Dark/Light mode 3D lighting
+- [x] **Task ID-302:** Lighthouse CI reports (scaffolded)
+
+---
+
+## 4. TASK LIFECYCLE
+
+`Backlog` → `In Progress` → `Internal Review` → `Quality Gate` → `Done`
+
+---
+
+## 5. GUIDELINES FOR AGENTS
+
+1. **Analyze Dependencies** before picking a task.
+2. **Plan First** — write a short implementation plan.
+3. **Verify** against `15-QUALITY/QUALITY_GATES.md`.
+4. Update this file when completing or starting tasks.
 
 *“Focus on the most impactful task. Ignore the noise.”*

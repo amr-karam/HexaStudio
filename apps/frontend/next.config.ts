@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   transpilePackages: ["@hexastudio/types", "@hexastudio/utils", "@hexastudio/ui"],
+  experimental: {
+    optimizePackageImports: ["three", "@react-three/fiber", "@react-three/drei", "gsap"],
+  },
   typescript: {
     ignoreBuildErrors: true,
   },

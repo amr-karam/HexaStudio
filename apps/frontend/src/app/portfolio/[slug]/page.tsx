@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { fetchProject } from '@/features/portfolio/lib/fetchProjects';
-import { ProjectSceneWrapper } from '@/features/portfolio/components/ProjectSceneWrapper';
+import { LazyProjectSceneWrapper } from '@/features/portfolio/components/LazyProjectSceneWrapper';
 
 interface ProjectPageProps {
   params: Promise<{ slug: string }>;
@@ -56,7 +56,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
       {/* Cinematic 3D Header */}
       <section className="relative h-[80vh] w-full overflow-hidden bg-obsidian">
         {project.modelUrl ? (
-          <ProjectSceneWrapper project={project} />
+          <LazyProjectSceneWrapper project={project} />
         ) : (
           <div className="absolute inset-0">
             <Image

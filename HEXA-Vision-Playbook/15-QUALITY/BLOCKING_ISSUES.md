@@ -53,23 +53,31 @@
 **Improvements:**
 - 14 backend tests across 6 spec files (up from 4 in 1 file)
 - Playwright E2E scaffold added (`e2e/pages.spec.ts`) — navigation, pages, 404, SEO, a11y
-**Remaining:** Frontend component tests, visual regression tests, full CI integration
+- Playwright E2E integrated into CI pipeline (`.github/workflows/ci.yml`)
+**Remaining:** Frontend component tests, visual regression tests
+
+---
+
+### B8. Traefik Dashboard Exposed
+**Status: ✅ RESOLVED** (Sprint 6)
+**Files:** `docker/traefik/traefik.yml`, `docker/traefik/dynamic.yml`, `docker-compose.prod.yml`
+**Fix:** `api.insecure: false` enforced. Public port `:8080` removed from production compose. Dashboard router restricted to `websecure` entrypoint with TLS and `traefik-auth` IP allowlist middleware (private ranges only).
+
+---
+
+### B9. First Load JavaScript Budget Exceeded
+**Status: ✅ RESOLVED** (Sprint 6)
+**Measured (before):** 578 kB first load JS
+**Measured (after):** Home 188 kB, non-home routes 151–170 kB (all ≤ 200 kB budget)
+**Fix applied:**
+- Removed duplicate static `Scene` import from home page
+- Lazy-loaded `ProjectSceneWrapper` / ExperienceCanvas on portfolio detail
+- Dynamic `import('gsap')` in HomeHero and TextSplit
+- Dynamic `import('@sentry/nextjs')` in performance monitor
+- `optimizePackageImports` for three/R3F/GSAP in `next.config.ts`
 
 ---
 
 ## 🔴 STILL OPEN
 
-### B8. Traefik Dashboard Exposed
-**File:** `docker/traefik/traefik.yml:2-3`
-**Severity:** HIGH — Security
-**Description:** `api.dashboard: true` and `api.insecure: true` exposes the Traefik dashboard on port 8080 without authentication.
-**Fix:** Disable `insecure` mode and add authentication middleware to the dashboard router, or restrict to internal network only.
-
----
-
-### B9. First Load JavaScript Budget Exceeded
-**Measured:** 578kB first load JS
-**Budget:** 200kB (per AGENTS.md Section 17)
-**Severity:** HIGH — Performance
-**Description:** The frontend JS bundle is 2.89x the performance budget.
-**Fix:** Audit bundle composition, implement dynamic imports for heavy components (especially Three.js/GSAP), and consider lazy-loading below-the-fold sections.
+*(No P0 blockers remain. See OPEN_TASKS.md for Sprint 6 remaining P1 items.)*

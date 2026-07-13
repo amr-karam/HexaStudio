@@ -52,8 +52,15 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="bg-background text-foreground min-h-screen">
+    <div className="bg-background text-foreground min-h-screen overflow-hidden">
       <section className="relative flex min-h-screen flex-col items-center justify-center px-8 overflow-hidden">
+        {/* Cinematic Background */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-accent/10 blur-[120px] rounded-full animate-pulse" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/5 blur-[120px] rounded-full" />
+          <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10" />
+        </div>
+
         <div className="text-center relative z-10 mb-16">
           <motion.span
             initial={{ opacity: 0, y: 10 }}
@@ -70,112 +77,113 @@ export default function ContactPage() {
           </TextReveal>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="relative z-10 w-full max-w-2xl bg-surface/50 backdrop-blur-xl border border-border/50 p-8 md:p-12 rounded-sm shadow-2xl"
-        >
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex flex-col gap-2">
-              <Input
-                placeholder="Full Name"
-                value={formState.name}
-                onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                className={errors.name ? 'border-red-500' : ''}
-              />
-              {errors.name && <span className="text-[10px] text-red-500 uppercase tracking-widest">{errors.name}</span>}
-            </div>
+        <AnimatePresence mode="wait">
+          {status !== 'sent' && status !== 'error' ? (
+            <motion.div
+              key="form"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="relative z-10 w-full max-w-3xl bg-surface/30 backdrop-blur-2xl border border-border/50 p-8 md:p-16 rounded-sm shadow-2xl"
+            >
+              <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+                <div className="flex flex-col gap-2 group">
+                  <label className="text-[10px] uppercase tracking-widest text-neutral-500 group-focus-within:text-accent transition-colors duration-500">Full Name</label>
+                  <Input
+                    placeholder="John Doe"
+                    value={formState.name}
+                    onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+                    className={cn("bg-transparent border-b border-border focus:border-accent transition-all duration-500 rounded-none px-0", errors.name && "border-red-500")}
+                  />
+                  {errors.name && <span className="text-[9px] text-red-500 uppercase tracking-widest">{errors.name}</span>}
+                </div>
 
-            <div className="flex flex-col gap-2">
-              <Input
-                placeholder="Email Address"
-                type="email"
-                value={formState.email}
-                onChange={(e) => setFormState({ ...formState, email: e.target.value })}
-                className={errors.email ? 'border-red-500' : ''}
-              />
-              {errors.email && <span className="text-[10px] text-red-500 uppercase tracking-widest">{errors.email}</span>}
-            </div>
+                <div className="flex flex-col gap-2 group">
+                  <label className="text-[10px] uppercase tracking-widest text-neutral-500 group-focus-within:text-accent transition-colors duration-500">Email Address</label>
+                  <Input
+                    placeholder="email@example.com"
+                    type="email"
+                    value={formState.email}
+                    onChange={(e) => setFormState({ ...formState, email: e.target.value })}
+                    className={cn("bg-transparent border-b border-border focus:border-accent transition-all duration-500 rounded-none px-0", errors.email && "border-red-500")}
+                  />
+                  {errors.email && <span className="text-[9px] text-red-500 uppercase tracking-widest">{errors.email}</span>}
+                </div>
 
-            <div className="flex flex-col gap-2 md:col-span-2">
-              <Input
-                placeholder="Company (Optional)"
-                value={formState.company}
-                onChange={(e) => setFormState({ ...formState, company: e.target.value })}
-              />
-            </div>
+                <div className="flex flex-col gap-2 md:col-span-2 group">
+                  <label className="text-[10px] uppercase tracking-widest text-neutral-500 group-focus-within:text-accent transition-colors duration-500">Company (Optional)</label>
+                  <Input
+                    placeholder="Studio or Firm Name"
+                    value={formState.company}
+                    onChange={(e) => setFormState({ ...formState, company: e.target.value })}
+                    className="bg-transparent border-b border-border focus:border-accent transition-all duration-500 rounded-none px-0"
+                  />
+                </div>
 
-            <div className="flex flex-col gap-2 md:col-span-2">
-              <textarea
-                placeholder="Tell us about your vision..."
-                value={formState.message}
-                onChange={(e) => setFormState({ ...formState, message: e.target.value })}
-                className="w-full h-40 bg-background border border-border text-foreground p-4 rounded-sm focus:outline-none focus:border-accent transition-colors duration-300 resize-none font-light"
-              />
-              {errors.message && <span className="text-[10px] text-red-500 uppercase tracking-widest">{errors.message}</span>}
-            </div>
+                <div className="flex flex-col gap-2 md:col-span-2 group">
+                  <label className="text-[10px] uppercase tracking-widest text-neutral-500 group-focus-within:text-accent transition-colors duration-500">Your Vision</label>
+                  <textarea
+                    placeholder="Tell us about your architectural goals..."
+                    value={formState.message}
+                    onChange={(e) => setFormState({ ...formState, message: e.target.value })}
+                    className="w-full h-48 bg-transparent border-b border-border text-foreground p-0 focus:outline-none focus:border-accent transition-colors duration-300 resize-none font-light leading-relaxed"
+                  />
+                  {errors.message && <span className="text-[9px] text-red-500 uppercase tracking-widest">{errors.message}</span>}
+                </div>
 
-            <div className="md:col-span-2 flex justify-end">
-              <Button 
-                variant="primary" 
-                size="lg" 
-                disabled={status === 'sending'}
-                className="min-w-[160px]"
-              >
-                {status === 'sending' ? 'Sending...' : 'Send Message'}
-              </Button>
-            </div>
-          </form>
-
-          <AnimatePresence>
-            {status === 'sent' && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-surface text-center p-8"
-              >
-                <div className="w-16 h-16 bg-accent/20 text-accent rounded-full flex items-center justify-center mb-6">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <div className="md:col-span-2 flex justify-end mt-8">
+                  <Button 
+                    variant="primary" 
+                    size="lg" 
+                    disabled={status === 'sending'}
+                    className="min-w-[200px] group relative overflow-hidden"
+                  >
+                    <span className="relative z-10">
+                      {status === 'sending' ? 'Transmitting...' : 'Send Message'}
+                    </span>
+                  </Button>
+                </div>
+              </form>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="status"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="relative z-10 w-full max-w-2xl text-center p-12 bg-surface/30 backdrop-blur-3xl border border-border/50 rounded-sm"
+            >
+              <div className={cn(
+                "w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-8 transition-colors duration-700",
+                status === 'sent' ? "bg-accent/20 text-accent" : "bg-red-500/20 text-red-500"
+              )}>
+                {status === 'sent' ? (
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                     <path d="M22 11.08V12a10 10 0 1 1-20 0v-0.92" />
                     <polyline points="22 4 12 14.01 9 11.01" />
                   </svg>
-                </div>
-                <h2 className="text-2xl font-serif font-light mb-4">Message Received</h2>
-                <p className="text-neutral-400 font-light mb-8">
-                  Thank you for reaching out. Our architects will review your vision and respond shortly.
-                </p>
-                <Button variant="outline" onClick={() => setStatus('idle')}>
-                  Send Another
-                </Button>
-              </motion.div>
-            )}
-
-            {status === 'error' && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-surface text-center p-8"
-              >
-                <div className="w-16 h-16 bg-red-500/20 text-red-500 rounded-full flex items-center justify-center mb-6">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                ) : (
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                     <circle cx="12" cy="12" r="10" />
                     <path d="M15 9l-6 6M9 9l6 6" />
                   </svg>
-                </div>
-                <h2 className="text-2xl font-serif font-light mb-4">Transmission Failed</h2>
-                <p className="text-neutral-400 font-light mb-8">
-                  Our systems are experiencing a momentary glitch. Please try again in a few moments.
-                </p>
-                <Button variant="outline" onClick={() => setStatus('idle')}>
-                  Try Again
-                </Button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
+                )}
+              </div>
+              <h2 className="text-4xl font-serif font-light mb-4">
+                {status === 'sent' ? 'Message Received' : 'Transmission Failed'}
+              </h2>
+              <p className="text-neutral-400 font-light mb-12 max-w-md mx-auto leading-relaxed">
+                {status === 'sent' 
+                  ? 'Thank you for reaching out. Our architects will review your vision and respond shortly.' 
+                  : 'Our systems are experiencing a momentary glitch. Please try again in a few moments.'}
+              </p>
+              <Button variant="outline" onClick={() => setStatus('idle')}>
+                {status === 'sent' ? 'Send Another' : 'Try Again'}
+              </Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 pointer-events-none">
           <span className="text-xs uppercase tracking-widest text-neutral-600 font-mono">Back to top</span>
@@ -184,4 +192,8 @@ export default function ContactPage() {
       </section>
     </div>
   );
+}
+
+function cn(...classes: (string | undefined | false | null)[]) {
+  return classes.filter(Boolean).join(' ');
 }

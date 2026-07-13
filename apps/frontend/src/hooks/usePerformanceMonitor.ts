@@ -1,13 +1,29 @@
 'use client';
 
 import { useEffect } from 'react';
-import * as Sentry from '@sentry/nextjs';
 
 export function usePerformanceMonitor() {
   useEffect(() => {
     let frameCount = 0;
     let lastTime = performance.now();
     const frames: number[] = [];
+    let frameId = 0;
+
+    const reportToSentry = async (
+      message: string,
+      extra: Record<string, unknown>,
+      type: string,
+    ) => {
+      const Sentry = await import('@sentry/nextjs');
+      Sentry.captureMessage(message, {
+        level: 'warning',
+        extra,
+        tags: {
+          metric: 'performance',
+          type,
+        },
+      });
+    };
 
     const calculateFPS = () => {
       const now = performance.now();
@@ -21,24 +37,18 @@ export function usePerformanceMonitor() {
         const avgFps = frames.reduce((a, b) => a + b, 0) / frames.length;
 
         if (avgFps < 55) {
-          Sentry.captureMessage(`Performance Drop: ${avgFps.toFixed(1)} FPS`, {
-            level: 'warning',
-            extra: {
-              avgFps,
-              url: window.location.pathname,
-            },
-            tags: {
-              metric: 'performance',
-              type: 'fps_drop',
-            },
-          });
+          void reportToSentry(
+            `Performance Drop: ${avgFps.toFixed(1)} FPS`,
+            { avgFps, url: window.location.pathname },
+            'fps_drop',
+          );
         }
 
         frameCount = 0;
         lastTime = now;
       }
 
-      requestAnimationFrame(calculateFPS);
+      frameId = requestAnimationFrame(calculateFPS);
     };
 
     const handleLCP = () => {
@@ -48,20 +58,17 @@ export function usePerformanceMonitor() {
         const lcp = lastEntry.startTime;
 
         if (lcp > 1200) {
-          Sentry.captureMessage(`LCP Threshold Exceeded: ${lcp.toFixed(0)}ms`, {
-            level: 'warning',
-            extra: { lcp, url: window.location.pathname },
-            tags: {
-              metric: 'performance',
-              type: 'lcp_slow',
-            },
-          });
+          void reportToSentry(
+            `LCP Threshold Exceeded: ${lcp.toFixed(0)}ms`,
+            { lcp, url: window.location.pathname },
+            'lcp_slow',
+          );
         }
       });
       observer.observe({ type: 'largest-contentful-paint', buffered: true });
     };
 
-    const frameId = requestAnimationFrame(calculateFPS);
+    frameId = requestAnimationFrame(calculateFPS);
     handleLCP();
 
     return () => {

@@ -1,5 +1,43 @@
 # Changelog: HEXA Vision
 
+## [1.0.0] - 2026-07-12
+
+### Sprint 6 — Enterprise Hardening
+
+#### Added
+- **Frontend Testing Suite (53 specs):** Vitest + React Testing Library setup with jsdom environment.
+    - UI component tests: Counter, TextReveal, NewsletterSection, StrapiBlocks
+    - Hook tests: use-media-query, use-reduced-motion, useScrollProgress
+    - Lib tests: utils (`cn()` helper), env validation
+    - Config: `vitest.config.ts`, `test/setup.ts`, test scripts in `package.json`
+- **Backend Testing Suite (67 specs across 14 files):**
+    - `auth.service.spec.ts` — JWT login, register, token refresh
+    - `accounting.service.spec.ts` — dashboard, invoices, journals, accounts, taxes
+    - `portal.service.spec.ts` — client project data, timeline, invoices
+    - `requests.service.spec.ts` — CRM lead creation, request CRUD
+    - `users.service.spec.ts` — user lookup by email/id, profile operations
+    - `email.service.spec.ts` — email sending with mock transport
+    - `minio.service.spec.ts` — file storage (skipped — requires real MinIO)
+    - Plus existing: odoo, redis, health, contact, services, projects, articles, utils
+- **CMS Admin IP Allowlist:** Custom `admin-ip-guard.ts` middleware for Strapi 5. Restricts `/admin` routes to IPs in `CMS_ALLOWED_IPS` env var. Returns 403 for untrusted IPs. Disabled when env var is unset (local dev).
+- **Lighthouse CI:** `.lighthouserc.cjs` with 6 target URLs, 3 runs each, performance ≥0.90 assertions. CI job in `ci.yml` runs after build.
+- **Database Backup Verification:** `docker/backup/verify-backup.sh` — validates `.dump` files via `pg_restore --list`, optional restore-to-tempdb sanity check. `backup-verify` Docker service in `docker-compose.prod.yml` with `verify` profile.
+- **Visual Regression Tests:** `e2e/visual.spec.ts` — 11 Playwright snapshot tests covering:
+    - Desktop (1440×900): Home above-fold, Home full-page, About, Services, Portfolio, Blog, Contact
+    - Components: Navbar, Footer
+    - Mobile (375×812): Home, Portfolio
+    - Animation freeze CSS for deterministic screenshots
+- **CI Visual Regression Job:** Dedicated `visual-regression` job in `ci.yml` with `--update-snapshots` for baseline generation.
+
+#### Changed
+- All `package.json` versions aligned to `1.0.0` (frontend, backend, cms, root)
+- `PROJECT_STATUS.md` updated to v1.0.0 READY status
+- `CURRENT_SPRINT.md` marked Sprint 6 COMPLETE
+- `OPEN_TASKS.md` — all P0, P1, P2 tasks marked ✅ Done
+- `.env.example` — added `CMS_ALLOWED_IPS` documentation
+- `playwright.config.ts` — added `visual-regression` project
+- `.gitignore` — added `e2e/*-snapshots/` exclusion
+
 ## [1.0.0] - 2026-07-11
 ### Added
 - **Client Portal:** `/portal/login`, `/portal` with project timeline, documents, and requests from Odoo ERP.

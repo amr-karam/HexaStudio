@@ -4,5 +4,6 @@
     "enabled": false,
     "provider": "kilo",
     "model": "mistralai/mistral-embed-2312"
-  }
+  },
+  "snapshot": false
 }
