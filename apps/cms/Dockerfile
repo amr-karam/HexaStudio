@@ -9,6 +9,7 @@ COPY . .
 RUN npm install --no-audit --no-fund
 RUN npm install esbuild react-redux --legacy-peer-deps --no-audit --no-fund
 RUN npm run build --workspace=apps/cms
+RUN cp -r /app/apps/cms/dist/src/* /app/apps/cms/dist/ && rm -rf /app/apps/cms/dist/src
 
 # --- Stage 3: Runner ---
 FROM base AS runner
