@@ -29,5 +29,7 @@ COPY --from=builder /app/packages/utils/package.json /app/packages/utils/package
 RUN rm -rf /app/apps/cms/config
 RUN mkdir -p /app/apps/cms/config
 COPY --from=builder /app/apps/cms/dist/config/ /app/apps/cms/config/
+RUN mkdir -p /app/node_modules/@strapi/admin/dist/server/server/build
+COPY --from=builder /app/apps/cms/dist/build/ /app/node_modules/@strapi/admin/dist/server/server/build/
 EXPOSE 1337
 CMD ["npm", "run", "start"]
