@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Project } from './entities/project.entity';
-import { OdooService } from '../../odoo/odoo.service';
+import { OdooService } from '../odoo/odoo.service';
 
 @Injectable()
 export class ProjectsService {

@@ -5,12 +5,14 @@ import { motion } from 'framer-motion';
 import { Button } from '@hexastudio/ui';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { useAuth } from '@/providers/AuthProvider';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { login } = useAuth();
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 
@@ -19,8 +21,7 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       const response = await axios.post(`${API_URL}/auth/login`, { email, password });
-      localStorage.setItem('hub_token', response.data.access_token);
-      localStorage.setItem('hub_user', JSON.stringify(response.data.user));
+      login(response.data.access_token, response.data.user);
       
       const role = response.data.user.role;
       if (role === 'CLIENT') {

@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
+import { Task } from './task.entity';
 
 @Entity('workspaces')
 export class Workspace {
@@ -20,6 +21,9 @@ export class Workspace {
 
   @ManyToOne(() => User)
   owner: User;
+
+  @ManyToOne(() => User, { nullable: true })
+  client: User;
 
   @OneToMany(() => Task, (task) => task.workspace)
   tasks: Task[];

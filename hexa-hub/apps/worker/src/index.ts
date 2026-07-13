@@ -1,3 +1,4 @@
+import Bull from 'bull';
 import { env } from './config/env';
 import { createQueues, shutdownQueues } from './queues/create-queues';
 import { processEmailJob } from './processors/email.processor';
@@ -14,7 +15,7 @@ async function bootstrap(): Promise<void> {
   queues.notifications.process(env.concurrency, processNotificationJob);
   queues.ai.process(Math.max(1, Math.floor(env.concurrency / 2)), processAiJob);
 
-  const attachListeners = (name: string, queue: typeof queues.email) => {
+  const attachListeners = <T>(name: string, queue: Bull.Queue<T>) => {
     queue.on('completed', (job) => console.log(`[${name}] ✓ ${job.id}`));
     queue.on('failed', (job, err) => console.error(`[${name}] ✗ ${job?.id}:`, err.message));
     queue.on('error', (err) => console.error(`[${name}] queue error:`, err.message));

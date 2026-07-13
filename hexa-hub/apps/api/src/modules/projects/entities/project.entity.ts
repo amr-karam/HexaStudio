@@ -34,7 +34,7 @@ export class Project {
   @Column({ nullable: true })
   area: string;
 
-  @Column({ nullable: 'array', type: 'text', nullable: true })
+  @Column({ type: 'text', array: true, nullable: true })
   services: string[];
 
   @Column({ default: true })
