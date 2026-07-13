@@ -1,46 +1,36 @@
 # Product Backlog
 
-**Last Updated:** 2026-07-08
+**Last Updated:** 2026-07-13
+
+---
+
+## Completed (v1.0.0)
+
+All Phase 1–3 items delivered:
+- ✅ Design system, landing pages, 3D project viewer
+- ✅ Project gallery, blog, services, contact, about pages
+- ✅ SEO metadata, accessibility pass
+- ✅ Odoo CRM integration, lead capture, project lifecycle
+- ✅ NestJS BFF layer, JWT auth, website↔Odoo sync
+- ✅ 120 tests, 7 CI jobs, security hardening
 
 ---
 
 ## Backlog Items
 
-### Phase 1: Website Excellence
+### Phase 4: Intelligence (AI Evolution)
 
 | Priority | Item | Story Points | Dependencies |
 |----------|------|-------------|--------------|
-| P0 | Design system implementation | XL | — |
-| P0 | Landing page hero section | L | Design tokens |
-| P0 | 3D project viewer base | XL | R3F setup |
-| P1 | Project gallery page | L | Design system |
-| P1 | Blog index + single post | M | Strapi setup |
-| P1 | Services page | S | Content from Strapi |
-| P1 | Contact form | M | Backend endpoint |
-| P2 | About page | S | Content |
-| P2 | SEO metadata implementation | M | Per page |
-| P2 | Accessibility pass | L | All pages |
-
-### Phase 2: Business Platform
-
-| Priority | Item | Story Points | Dependencies |
-|----------|------|-------------|--------------|
-| P0 | Odoo CRM integration | XL | Odoo setup |
-| P1 | Lead capture pipeline | L | Odoo CRM |
-| P1 | Project lifecycle management | XL | Odoo Projects |
-| P2 | Document generation | L | Odoo Documents |
-| P2 | User management + RBAC | M | Auth system |
-| P3 | Strapi content types setup | M | Strapi |
-
-### Phase 3: Integration
-
-| Priority | Item | Story Points | Dependencies |
-|----------|------|-------------|--------------|
-| P0 | NestJS BFF layer | XL | — |
-| P0 | JWT authentication | L | BFF layer |
-| P1 | Website ↔ Odoo sync | XL | BFF + Odoo |
-| P1 | Webhook ISR trigger | M | Strapi webhooks |
-| P2 | Error handling middleware | M | — |
+| P0 | Vector database setup (Qdrant/Weaviate) | XL | Server resources |
+| P0 | Embedding pipeline (Strapi → vectors) | XL | Vector DB |
+| P1 | Semantic search API (`/api/search`) | L | Embedding pipeline |
+| P1 | AI agent scaffold (NestJS) | XL | — |
+| P1 | Auto-tagging for portfolio projects | L | Embeddings |
+| P2 | Project recommendation engine | L | Vector search |
+| P2 | Smart summaries generation | M | AI agent |
+| P3 | VR/AR mode | XL | 3D engine |
+| P3 | Mobile app | XL | API |
 
 ### Technical Debt
 
@@ -58,7 +48,4 @@
 Items deferred indefinitely:
 
 - Multi-language support
-- VR/AR mode
-- Mobile app
-- AI content generation
-- Third-party integrations
+- Third-party integrations (beyond Odoo/Strapi)
