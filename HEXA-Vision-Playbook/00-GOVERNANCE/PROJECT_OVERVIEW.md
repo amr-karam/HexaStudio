@@ -85,4 +85,4 @@ HEXA Vision is a unified platform that provides:
 
 ## Current Status
 
-The project is in **Phase 0 — Foundation**. The Playbook is being established before any new development begins. The existing codebase contains the initial application scaffolding.
+The project is at **v1.0.0** — released 2026-07-13. All phases 1–3 complete (Foundation, Expansion, Interaction). Sprint 6 (Enterprise Hardening) delivered 120 tests, 7 CI jobs, security hardening, and full production deployment at hexastudio.net. Next: Phase 4 — Intelligence (AI Evolution).
