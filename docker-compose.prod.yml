@@ -137,6 +137,7 @@ services:
   # Applications
   # ---------------------------------------------------------------------------
   backend:
+    container_name: hexa-backend-${SOT:-blue}
     build:
       context: .
       dockerfile: apps/backend/Dockerfile
@@ -176,13 +177,14 @@ services:
       - web
       - internal
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4000/api/health"]
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:4000/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
 
   frontend:
+    container_name: hexa-frontend-${SOT:-blue}
     build:
       context: .
       dockerfile: apps/frontend/Dockerfile
@@ -200,13 +202,14 @@ services:
     networks:
       - web
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:3000"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
 
   cms:
+    container_name: hexa-cms-${SOT:-blue}
     build:
       context: .
       dockerfile: apps/cms/Dockerfile
@@ -242,7 +245,7 @@ services:
       - web
       - internal
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:1337/health"]
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:1337/_health"]
       interval: 30s
       timeout: 10s
       retries: 3

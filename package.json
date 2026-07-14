@@ -2,8 +2,41 @@
   "name": "hexastudio",
   "version": "1.0.0",
   "private": true,
-  "packageManager": "npm@11.17.0",
   "description": "HexaStudio.net — 3D creative studio platform",
+  "packageManager": "npm@11.17.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "clean": "turbo run clean",
+    "dev": "turbo run dev",
+    "dev:backend": "turbo run dev --filter=backend",
+    "dev:cms": "turbo run dev --filter=cms",
+    "dev:frontend": "turbo run dev --filter=frontend",
+    "docker:build": "docker compose build",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "docker:up": "docker compose up -d",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "test:e2e": "npm run test:e2e --workspace=apps/frontend",
+    "test:e2e:ui": "playwright test --ui --config e2e/playwright.config.ts",
+    "typecheck": "turbo run typecheck"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.12.0",
+    "axios": "^1.18.1",
+    "framer-motion": "^11.18.2",
+    "libsodium-wrappers": "^0.8.4"
+  },
+  "devDependencies": {
+    "@lhci/cli": "^0.14.0",
+    "turbo": "^2.10.4"
+  },
+  "overrides": {
+    "framer-motion": "^11.18.2"
+  },
   "workspaces": [
     "apps/frontend",
     "apps/backend",
@@ -11,50 +44,5 @@
     "packages/types",
     "packages/ui",
     "packages/utils"
-  ],
-  "scripts": {
-    "dev": "turbo run dev",
-    "dev:frontend": "turbo run dev --filter=frontend",
-    "dev:backend": "turbo run dev --filter=backend",
-    "dev:cms": "turbo run dev --filter=cms",
-    "build": "turbo run build",
-    "lint": "turbo run lint",
-    "typecheck": "turbo run typecheck",
-    "test": "turbo run test",
-    "setup": "bash .setup.sh",
-    "hooks:install": "bash scripts/install-hooks.sh",
-    "hooks:uninstall": "git config --unset core.hooksPath",
-    "worktree:add": "bash scripts/worktree-add.sh",
-    "paseo:hooks:install": "bash paseo-hooks/install.sh",
-    "paseo:hooks:uninstall": "bash paseo-hooks/uninstall.sh",
-    "paseo:worktree:create": "bash paseo-hooks/paseo-worktree.sh create",
-    "paseo:worktree:create-pr": "bash paseo-hooks/paseo-worktree.sh create-pr",
-    "paseo:worktree:archive": "bash paseo-hooks/paseo-worktree.sh archive",
-    "paseo:worktree:list": "bash paseo-hooks/paseo-worktree.sh list",
-    "clean": "turbo run clean",
-    "docker:up": "docker compose up -d",
-    "docker:down": "docker compose down",
-    "docker:build": "docker compose build",
-    "docker:logs": "docker compose logs -f",
-    "test:e2e": "npm run test:e2e --workspace=apps/frontend",
-    "test:e2e:ui": "playwright test --ui --config e2e/playwright.config.ts"
-  },
-  "engines": {
-    "node": ">=20"
-  },
-  "dependencies": {
-    "@reduxjs/toolkit": "^2.12.0",
-    "framer-motion": "^11.18.2",
-    "libsodium-wrappers": "^0.8.4",
-    "react-redux": "^9.3.0",
-    "zod": "^3.24.0"
-  },
-  "overrides": {
-    "framer-motion": "^11.18.2",
-    "ws": "8.21.0"
-  },
-  "devDependencies": {
-    "@lhci/cli": "^0.14.0",
-    "turbo": "^2.10.4"
-  }
+  ]
 }

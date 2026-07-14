@@ -1,17 +1,9 @@
-# .dockerignore
+node_modules
 .git
 .env
-.env.*
-!.env.example
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.DS_Store
-docker
-node_modules
-**/node_modules
+*.md
+dist
 .next
-**/.next
-standalone
-apps/frontend/app/
+.cache
+.turbo
+coverage
