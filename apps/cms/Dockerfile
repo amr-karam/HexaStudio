@@ -16,6 +16,7 @@ FROM node:22-slim AS runner
 RUN apt-get update && apt-get install -y build-essential gcc g++ make python3
 WORKDIR /app/apps/cms
 ENV NODE_ENV=production
+ENV NODE_PATH=/app/node_modules
 COPY --from=builder /app/apps/cms/dist ./dist
 COPY --from=builder /app/apps/cms/dist/config ./config
 COPY --from=builder /app/apps/cms/public ./public
