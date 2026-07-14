@@ -50,7 +50,8 @@
     "zod": "^3.24.0"
   },
   "overrides": {
-    "framer-motion": "^11.18.2"
+    "framer-motion": "^11.18.2",
+    "ws": "8.21.0"
   },
   "devDependencies": {
     "@lhci/cli": "^0.14.0",
