@@ -25,6 +25,17 @@ certificatesResolvers:
   letsencrypt:
     acme:
       email: admin@hexastudio.net
-      storage: /etc/traefik/acme.json
+      storage: /letsencrypt/acme.json
       httpChallenge:
         entryPoint: web
+
+  cloudflare:
+    acme:
+      email: admin@hexastudio.net
+      storage: /letsencrypt/acme.json
+      dnsChallenge:
+        provider: cloudflare
+        resolvers:
+          - "1.1.1.1:53"
+          - "8.8.8.8:53"
+        delayBeforeCheck: 60
