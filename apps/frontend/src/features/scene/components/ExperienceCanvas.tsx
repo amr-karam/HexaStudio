@@ -58,15 +58,15 @@ export const ExperienceCanvas = ({
           <PerspectiveCamera makeDefault position={[5, 5, 5]} fov={45} />
           <CameraController />
 
-          <OrbitControls
-            enablePan={false}
-            minPolarAngle={Math.PI / 4}
-            maxPolarAngle={Math.PI / 2}
-            enableRotate={!isTransitioning}
-            enableZoom={!isTransitioning}
-            dampingFactor={0.05}
-            enableDamping
-          />
+          {!isTransitioning && (
+            <OrbitControls
+              enablePan={false}
+              minPolarAngle={Math.PI / 4}
+              maxPolarAngle={Math.PI / 2}
+              dampingFactor={0.05}
+              enableDamping
+            />
+          )}
 
           <Environment preset="city" />
           <SceneContent projectModelUrl={projectModelUrl} hotspots={hotspots} />

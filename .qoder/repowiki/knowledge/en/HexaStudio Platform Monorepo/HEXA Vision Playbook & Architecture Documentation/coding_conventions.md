@@ -1,4 +1,0 @@
-- Domain folders are zero-padded two-digit numbers (00–17) so alphabetical sort matches intended reading order, and each domain owns its own README plus a flat collection of Markdown files.
-- Architecture Decision Records follow a fixed filename pattern `NNN-short-name.md` and a uniform section header template (Status, Date, Context, Decision, Alternatives Considered, Rationale, Consequences, References).
-- Prompt and agent guide pairs are kept side-by-side using parallel numbering (e.g. `002_CHIEF_ARCHITECT.md` paired with `002_PROMPT.md`) so role definition and executable prompt stay co-located.
-- Cross-domain references use relative Markdown links rather than a central table of contents, letting readers navigate between playbooks without a generated index.

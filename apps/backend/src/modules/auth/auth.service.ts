@@ -29,8 +29,8 @@ export class AuthService {
     const user = this.mapUser(data.user);
 
     const jwt = this.jwtService.sign(
-      { sub: user.id, email: user.email },
-      { expiresIn: '7d' },
+      { sub: user.id, email: user.email, role: user.role },
+      { expiresIn: '15m' },
     );
 
     return { jwt, user };
@@ -48,8 +48,8 @@ export class AuthService {
     const user = this.mapUser(data.user);
 
     const jwt = this.jwtService.sign(
-      { sub: user.id, email: user.email },
-      { expiresIn: '7d' },
+      { sub: user.id, email: user.email, role: user.role },
+      { expiresIn: '15m' },
     );
 
     return { jwt, user };
@@ -78,12 +78,12 @@ export class AuthService {
 
     const user = this.mapUser(response.data);
 
-    const jwt = this.jwtService.sign(
-      { sub: user.id, email: user.email },
-      { expiresIn: '7d' },
+    const accessToken = this.jwtService.sign(
+      { sub: user.id, email: user.email, role: user.role },
+      { expiresIn: '15m' },
     );
 
-    return { jwt, user };
+    return { jwt: accessToken, user };
   }
 
   private mapUser(data: { id: number; email: string; username: string; role?: { type: string } }): User {
@@ -91,7 +91,7 @@ export class AuthService {
       id: String(data.id),
       email: data.email,
       username: data.username,
-      role: data.role?.type === 'admin' ? 'admin' : 'user',
+      role: data.role?.type === 'admin' ? 'admin' : data.role?.type === 'editor' ? 'editor' : 'user',
     };
   }
 }

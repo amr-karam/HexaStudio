@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject, forwardRef } from '@nestjs/common';
 import { EmbeddingService } from '../ai/embedding.service';
 import { ProjectsService } from '../projects/projects.service';
 
@@ -7,6 +7,7 @@ export class VectorSyncService {
   private readonly logger = new Logger(VectorSyncService.name);
 
   constructor(
+    @Inject(forwardRef(() => EmbeddingService))
     private readonly embeddingService: EmbeddingService,
     private readonly projectsService: ProjectsService,
   ) {}

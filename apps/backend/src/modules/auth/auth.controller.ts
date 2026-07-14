@@ -5,6 +5,7 @@ import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { User } from '@hexastudio/types';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { CsrfGuard, generateCsrfToken, CSRF_COOKIE_NAME } from './guards/csrf.guard';
 
 class RegisterDto {
   @IsEmail()
@@ -36,7 +37,7 @@ const COOKIE_OPTIONS = {
   secure: process.env.NODE_ENV === 'production',
   sameSite: 'lax' as const,
   path: '/',
-  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  maxAge: 15 * 60 * 1000, // 15 minutes (matches access token TTL)
 };
 
 @ApiTags('Auth')
@@ -55,6 +56,8 @@ export class AuthController {
   ): Promise<{ user: User }> {
     const result = await this.authService.register(body.email, body.username, body.password);
     res.cookie('auth_token', result.jwt, COOKIE_OPTIONS);
+    const csrfToken = generateCsrfToken();
+    res.cookie(CSRF_COOKIE_NAME, csrfToken, { ...COOKIE_OPTIONS, httpOnly: false });
     return { user: result.user };
   }
 
@@ -69,6 +72,8 @@ export class AuthController {
   ): Promise<{ user: User }> {
     const result = await this.authService.login(body.identifier, body.password);
     res.cookie('auth_token', result.jwt, COOKIE_OPTIONS);
+    const csrfToken = generateCsrfToken();
+    res.cookie(CSRF_COOKIE_NAME, csrfToken, { ...COOKIE_OPTIONS, httpOnly: false });
     return { user: result.user };
   }
 
@@ -98,10 +103,13 @@ export class AuthController {
   }
 
   @Post('logout')
+  @UseGuards(CsrfGuard)
   @ApiOperation({ summary: 'Logout (clear cookie)' })
   @ApiResponse({ status: 200, description: 'Logged out' })
+  @ApiResponse({ status: 403, description: 'CSRF token mismatch' })
   async logout(@Res({ passthrough: true }) res: Response): Promise<{ success: boolean }> {
     res.clearCookie('auth_token', { path: '/' });
+    res.clearCookie(CSRF_COOKIE_NAME, { path: '/' });
     return { success: true };
   }
 }

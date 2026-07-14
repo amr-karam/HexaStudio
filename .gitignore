@@ -78,6 +78,15 @@ apps/backend/dist/
 # LLM chat history
 .llm-chat-history/
 
+# AI tool configs (not project code)
+.claude/
+.kilo/
+.memory/
+.qoder/
+.trae/
+paseo-hooks/
+.gitwandrc
+
 # Deploy scripts
 deploy.py
 

@@ -13,6 +13,12 @@ export interface ModelConfig {
   }[];
 }
 
+/**
+ * Static model registry — maps project identifiers to 3D model configurations.
+ *
+ * TODO: Replace with API-driven config loaded from backend alongside project data
+ * so the registry scales without code changes as the portfolio grows.
+ */
 export const MODEL_REGISTRY: Record<string, ModelConfig> = {
   'default': {
     path: '/models/hexa-crystal.glb',
@@ -41,6 +47,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
   },
 };
 
+/** Returns the config for a given project ID, falling back to the default model. */
 export function getModelConfig(projectId?: string): ModelConfig {
-  return MODEL_REGISTRY[projectId || 'default'];
+  return MODEL_REGISTRY[projectId || 'default'] ?? MODEL_REGISTRY['default'];
 }

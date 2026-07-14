@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject, forwardRef } from '@nestjs/common';
 import { VectorService } from '../vector/vector.service';
 import { Project } from '@hexastudio/types';
 
@@ -7,7 +7,10 @@ import { Project } from '@hexastudio/types';
 export class EmbeddingService {
   private readonly logger = new Logger(EmbeddingService.name);
 
-  constructor(private readonly vectorService: VectorService) {}
+  constructor(
+    @Inject(forwardRef(() => VectorService))
+    private readonly vectorService: VectorService
+  ) {}
 
   async embedProject(project: Project): Promise<void> {
     try {
