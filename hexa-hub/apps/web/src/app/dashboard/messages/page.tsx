@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/providers/AuthProvider';
 import { useSocket } from '@/providers/SocketProvider';
@@ -31,29 +31,7 @@ export default function MessagesPage() {
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 
-  useEffect(() => {
-    if (token) {
-      fetchInbox();
-    }
-  }, [token]);
-
-  useEffect(() => {
-    if (!socket) return;
-
-    socket.on('new_message', (newMessage: Message) => {
-      if (selectedContact && (newMessage.senderId === selectedContact.id || newMessage.receiverId === selectedContact.id)) {
-        setMessages((prev) => [...prev, newMessage]);
-      } else {
-        fetchInbox();
-      }
-    });
-
-    return () => {
-      socket.off('new_message');
-    };
-  }, [socket, selectedContact]);
-
-  const fetchInbox = async () => {
+  const fetchInbox = useCallback(async () => {
     try {
       const res = await axios.get(`${API_URL}/messages/inbox`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -72,7 +50,29 @@ export default function MessagesPage() {
     } catch (e) {
       console.error('Failed to fetch inbox', e);
     }
-  };
+  }, [token, API_URL]);
+
+  useEffect(() => {
+    if (token) {
+      fetchInbox();
+    }
+  }, [token, fetchInbox]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on('new_message', (newMessage: Message) => {
+      if (selectedContact && (newMessage.senderId === selectedContact.id || newMessage.receiverId === selectedContact.id)) {
+        setMessages((prev) => [...prev, newMessage]);
+      } else {
+        fetchInbox();
+      }
+    });
+
+    return () => {
+      socket.off('new_message');
+    };
+  }, [socket, selectedContact, fetchInbox]);
 
   const fetchMessages = async (contactId: string) => {
     try {

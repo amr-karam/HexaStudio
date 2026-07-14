@@ -17,7 +17,7 @@ export class OdooService {
     this.password = this.configService.get<string>('ODOO_PASSWORD') || 'password';
   }
 
-  private async jsonRpc(method: string, params: any[]) {
+  private async jsonRpc(method: string, params: unknown[]) {
     try {
       const response = await axios.post(`${this.baseUrl}/jsonrpc`, {
         jsonrpc: '2.0',
@@ -37,15 +37,15 @@ export class OdooService {
     }
   }
 
-  async searchRead(model: string, domain: any[] = [], fields: string[] = []) {
+  async searchRead(model: string, domain: unknown[] = [], fields: string[] = []) {
     return this.jsonRpc('object', [model, 'search_read', domain, { fields }]);
   }
 
-  async create(model: string, data: any) {
+  async create(model: string, data: Record<string, unknown>) {
     return this.jsonRpc('object', [model, 'create', [data]]);
   }
 
-  async write(model: string, id: number | string, data: any) {
+  async write(model: string, id: number | string, data: Record<string, unknown>) {
     return this.jsonRpc('object', [model, 'write', [[id], data]]);
   }
 

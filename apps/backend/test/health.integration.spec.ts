@@ -6,6 +6,8 @@ import request from 'supertest';
 import { HealthModule } from '../src/modules/health/health.module';
 import { OdooService } from '../src/modules/odoo/odoo.service';
 import { RedisService } from '../src/modules/storage/redis.service';
+import { VectorSyncService } from '../src/modules/vector/vector-sync.service';
+import { VectorModule } from '../src/modules/vector/vector.module';
 
 const mockRedisService = {
   get: vi.fn().mockResolvedValue(null),
@@ -24,17 +26,24 @@ const mockOdooService = {
   execute: vi.fn().mockResolvedValue({}),
 };
 
+const mockVectorSyncService = {
+  syncAllProjects: vi.fn().mockResolvedValue(undefined),
+  syncProject: vi.fn().mockResolvedValue(undefined),
+};
+
 describe('HealthModule', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [ConfigModule.forRoot({ isGlobal: true }), HealthModule],
+      imports: [ConfigModule.forRoot({ isGlobal: true }), HealthModule, VectorModule],
     })
       .overrideProvider(RedisService)
       .useValue(mockRedisService)
       .overrideProvider(OdooService)
       .useValue(mockOdooService)
+      .overrideProvider(VectorSyncService)
+      .useValue(mockVectorSyncService)
       .compile();
 
     app = moduleFixture.createNestApplication();

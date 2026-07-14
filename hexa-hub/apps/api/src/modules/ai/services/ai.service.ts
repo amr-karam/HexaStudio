@@ -17,7 +17,7 @@ export class AiService {
       });
       
       return response.data.candidates[0].content.parts[0].text;
-    } catch (error) {
+    } catch {
       return 'AI Summary currently unavailable. Please check the task board for details.';
     }
   }
@@ -31,7 +31,7 @@ export class AiService {
       });
       
       return response.data.candidates[0].content.parts[0].text;
-    } catch (error) {
+    } catch {
       return 'Continue as planned.';
     }
   }

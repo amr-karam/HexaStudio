@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Body, Param, Patch, UseGuards } from '@nestjs/common';
 import { WorkspacesService } from './workspaces.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Workspace } from './entities/workspace.entity';
+import { Task } from './entities/task.entity';
 
 @Controller('workspaces')
 export class WorkspacesController {
@@ -20,7 +22,7 @@ export class WorkspacesController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() body: any) {
+  async create(@Body() body: Partial<Workspace>) {
     return this.workspacesService.create(body);
   }
 
@@ -32,7 +34,7 @@ export class WorkspacesController {
 
   @UseGuards(JwtAuthGuard)
   @Patch('tasks/:id')
-  async updateTask(@Param('id') id: string, @Body() body: any) {
+  async updateTask(@Param('id') id: string, @Body() body: Partial<Task>) {
     return this.workspacesService.updateTask(id, body);
   }
 }

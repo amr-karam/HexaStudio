@@ -18,7 +18,7 @@ export default function DashboardPage() {
           Welcome back, <span className="text-gold">{user?.fullName || 'User'}</span>
         </h1>
         <p className="text-neutral-500 font-light mb-12">
-          Here is what's happening across your workspace today.
+          Here is what&apos;s happening across your workspace today.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

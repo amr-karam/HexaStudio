@@ -17,6 +17,8 @@ import { UsersModule } from "./modules/users/users.module";
 import { EmailModule } from "./modules/email/email.module";
 import { RequestsModule } from "./modules/requests/requests.module";
 import { AccountingModule } from "./modules/accounting/accounting.module";
+import { VectorModule } from "./modules/vector/vector.module";
+import { AIModule } from "./modules/ai/ai.module";
 
 @Module({
   imports: [
@@ -41,6 +43,8 @@ import { AccountingModule } from "./modules/accounting/accounting.module";
     EmailModule,
     RequestsModule,
     AccountingModule,
+    VectorModule,
+    AIModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
