@@ -119,3 +119,21 @@ export interface ApiResponse<T> {
     code: string;
   };
 }
+
+export interface VectorEmbedding {
+  id: string;
+  vector: number[];
+  payload: Record<string, unknown>;
+  score: number;
+}
+
+export interface SemanticSearchRequest {
+  query: string;
+  limit?: number;
+  filter?: Record<string, unknown>;
+}
+
+export interface SemanticSearchResponse {
+  results: VectorEmbedding[];
+  total: number;
+}

@@ -33,8 +33,9 @@ export async function processNotificationJob(job: Job<NotificationJobPayload>): 
 
     await job.progress(100);
     logger.log(`[notifications] Job ${job.id} completed`);
-  } catch (error: any) {
-    logger.error(`[notifications] Error processing job ${job.id}: ${error.message}`);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    logger.error(`[notifications] Error processing job ${job.id}: ${message}`);
     throw error;
   }
 }

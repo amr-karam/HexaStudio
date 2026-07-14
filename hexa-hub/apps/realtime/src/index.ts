@@ -37,7 +37,7 @@ async function bootstrap() {
       const decoded = verify(token, JWT_SECRET) as { payload: Record<string, unknown> };
       socket.data.user = decoded.payload;
       next();
-    } catch (err) {
+    } catch {
       next(new Error('Authentication error: Invalid token'));
     }
   });

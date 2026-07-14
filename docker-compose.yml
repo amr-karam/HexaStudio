@@ -34,6 +34,24 @@ services:
       timeout: 5s
       retries: 5
 
+  # --- Vector Store ---
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: hexa-qdrant
+    restart: always
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - hexa_data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
   # --- Storage ---
   minio:
     image: minio/minio
@@ -195,5 +213,6 @@ volumes:
   postgres_data:
   minio_data:
   redis_data:
+  qdrant_data:
   prometheus_data:
   grafana_data:

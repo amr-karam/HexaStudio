@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Project } from './entities/project.entity';
 
 @Controller('projects')
 export class ProjectsController {
@@ -20,7 +21,7 @@ export class ProjectsController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() body: any) {
+  async create(@Body() body: Partial<Project>) {
     return this.projectsService.create(body);
   }
 

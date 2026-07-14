@@ -28,6 +28,11 @@ const envSchema = z.object({
   REDIS_PORT: z.coerce.number().default(6379),
   REDIS_PASSWORD: z.string().min(1, 'REDIS_PASSWORD is required'),
 
+  // Vector Store (Qdrant)
+  VECTOR_HOST: z.string().default('qdrant'),
+  VECTOR_PORT: z.coerce.number().default(6333),
+  VECTOR_API_KEY: z.string().optional(),
+
   // Optional
   PORT: z.coerce.number().default(4000),
 

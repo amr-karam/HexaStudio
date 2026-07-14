@@ -46,8 +46,9 @@ export async function processAiJob(job: Job<AiJobPayload>): Promise<void> {
 
     await job.progress(100);
     logger.log(`[ai] Job ${job.id} completed`);
-  } catch (error: any) {
-    logger.error(`[ai] Error processing job ${job.id}: ${error.message}`);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    logger.error(`[ai] Error processing job ${job.id}: ${message}`);
     throw error;
   }
 }
