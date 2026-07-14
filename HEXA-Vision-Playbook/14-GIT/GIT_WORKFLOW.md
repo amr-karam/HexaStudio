@@ -210,13 +210,35 @@ We prefer linear history in `main` and `develop`:
 
 ## Git Hooks
 
-Husky manages git hooks:
+Git hooks are **version-controlled** in `scripts/git-hooks/` and deployed via `core.hooksPath`.
+
+### Installation
+
+```bash
+npm run hooks:install        # Git hooks (core.hooksPath)
+npm run paseo:hooks:install  # Paseo daemon hooks (~/.paseo/config.json)
+```
+
+### Git Hooks (scripts/git-hooks/)
 
 | Hook | Action |
 |------|--------|
-| `pre-commit` | lint-staged runs ESLint + Prettier |
-| `commit-msg` | Validates Conventional Commit format |
-| `pre-push` | Runs lint, typecheck, and tests |
+| `pre-commit` | Warns if `.env` missing, runs GitWand secrets scan, typechecks staged files |
+| `commit-msg` | Validates Conventional Commit format (`feat:`, `fix:`, etc.) |
+| `post-checkout` | Auto-runs `.setup.sh` on uninitialized worktrees; reinstalls deps if `package-lock.json` changed |
+| `post-merge` | Reinstalls deps when `package.json` changes, rebuilds on config changes |
+| `post-rewrite` | Same as post-merge for rebase/amend |
+
+### Lifecycle Hooks (paseo-hooks/)
+
+These are written into Paseo's daemon program at `~/.paseo/hooks/worktree/` and fire during Paseo worktree operations:
+
+| Event | Hook | Trigger |
+|-------|------|---------|
+| `post-create` | `hooks/worktree/post-create` | After `create_worktree` — installs deps & builds |
+| `pre-archive` | `hooks/worktree/pre-archive` | Before `archive_worktree` — stops docker, stashes WIP |
+| `post-archive` | `hooks/worktree/post-archive` | After `archive_worktree` — prunes refs, cleans PR branch |
+| `post-merge` | `hooks/worktree/post-merge` | On auto-archive after merge — updates main, reinstalls |
 
 ---
 

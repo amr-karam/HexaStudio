@@ -8,7 +8,14 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('api');
-  app.enableCors();
+  app.enableCors({
+    origin: (process.env.CORS_ORIGINS
+      ?? 'http://localhost:3000,https://hexastudio.net,https://www.hexastudio.net'
+    ).split(',').map((o) => o.trim()),
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  });
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
     transform: true,
