@@ -1,0 +1,50 @@
+#!/bin/bash
+set -euo pipefail
+
+# post-checkout — Worktree-aware lifecycle hook
+# Fires after git checkout, git switch, git clone, or git worktree operations.
+# Args: <prev-head> <new-head> <1=branch-checkout|0=file-checkout>
+
+# Only run on branch checkouts (not file-level checkouts)
+[ "$3" = "0" ] && exit 0
+
+ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"
+[ -z "$ROOT" ] && exit 0
+
+cd "$ROOT"
+
+# ── Skip if HEAD is detached or unborn ──────────────────────────────────────
+HEAD=$(git rev-parse --short HEAD 2>/dev/null || echo "unborn")
+
+# ── Detect new/uninitialized worktree ────────────────────────────────────────
+if [ ! -d "node_modules" ]; then
+  echo ""
+  echo "━━━ Worktree Lifecycle ─────────────────────────────────────────────"
+  echo "  Detected uninitialized worktree (no node_modules)."
+  echo "  Running worktree setup..."
+  echo "────────────────────────────────────────────────────────────────────"
+  echo ""
+
+  if [ -f ".setup.sh" ]; then
+    bash .setup.sh
+  else
+    npm install --no-audit --no-fund && npm run build
+  fi
+
+  echo ""
+  echo "━━━ Worktree ready ─────────────────────────────────────────────────"
+  exit 0
+fi
+
+# ── Detect dependency changes vs previous checkout ──────────────────────────
+if [ -f "package-lock.json" ]; then
+  LOCK_DIFF=$(git diff HEAD@{1} -- package-lock.json 2>/dev/null || true)
+  if [ -n "$LOCK_DIFF" ]; then
+    echo ""
+    echo "━━━ Worktree Lifecycle ─────────────────────────────────────────────"
+    echo "  package-lock.json changed since last checkout."
+    echo "  Running npm install..."
+    echo "────────────────────────────────────────────────────────────────────"
+    npm install --no-audit --no-fund
+  fi
+fi

@@ -1,0 +1,14 @@
+#!/bin/bash
+set -euo pipefail
+
+# post-rewrite — Worktree-aware lifecycle hook
+# Fires after git commit --amend or git rebase.
+# Delegates to post-merge for dependency/build checks.
+
+ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"
+[ -z "$ROOT" ] && exit 0
+
+cd "$ROOT"
+
+POST_MERGE="$(dirname "$0")/post-merge"
+[ -f "$POST_MERGE" ] && bash "$POST_MERGE"

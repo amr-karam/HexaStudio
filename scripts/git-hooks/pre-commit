@@ -1,0 +1,55 @@
+#!/bin/bash
+set -euo pipefail
+
+# pre-commit — Worktree-aware lifecycle hook
+# Quality gates before every commit:
+#   1. .env present (warning)
+#   2. GitWand secrets scan (delegates to existing hook if present)
+#   3. TypeScript typecheck on staged files
+
+ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"
+[ -z "$ROOT" ] && exit 0
+
+cd "$ROOT"
+
+FAILED=false
+
+# ── 1. Check .env exists ────────────────────────────────────────────────────
+if [ ! -f ".env" ]; then
+  echo ""
+  echo "⚠  Worktree Lifecycle: No .env file found."
+  echo "   Run: cp .env.example .env (then edit secrets)"
+  echo ""
+fi
+
+# ── 2. GitWand secrets scan ─────────────────────────────────────────────────
+GITWAND_HOOK=".git/hooks/pre-commit"
+if [ -f "$GITWAND_HOOK" ]; then
+  HOOK_CONTENT=$(head -1 "$GITWAND_HOOK" 2>/dev/null || echo "")
+  if echo "$HOOK_CONTENT" | grep -q "gitwand"; then
+    if ! bash "$GITWAND_HOOK"; then
+      FAILED=true
+    fi
+  fi
+else
+  # Built-in GitWand scan via npx
+  npx --yes @gitwand/cli scan --staged --strict --json 2>/dev/null || true
+fi
+
+# ── 3. Typecheck staged files (lightweight) ─────────────────────────────────
+STAGED_TS=$(git diff --cached --name-only --diff-filter=ACM | grep -c '\.tsx\?$' || true)
+if [ "$STAGED_TS" -gt 0 ]; then
+  if command -v npx &>/dev/null; then
+    npx --yes turbo run typecheck --filter="$(git diff --cached --name-only --diff-filter=ACM | grep -oP '^(apps|packages)/[^/]+' | sort -u | tr '\n' ',' | sed 's/,$//')" 2>/dev/null || true
+  fi
+fi
+
+# ── 4. Exit ──────────────────────────────────────────────────────────────────
+if [ "$FAILED" = true ]; then
+  echo ""
+  echo "  Commit blocked. Fix issues above or use: git commit --no-verify"
+  echo ""
+  exit 1
+fi
+
+exit 0
