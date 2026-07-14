@@ -4,85 +4,85 @@ http:
     website:
       rule: "Host(`hexastudio.net`)"
       service: frontend
-      tls: { certResolver: letsencrypt }
+      tls: { certResolver: cloudflare }
 
     # Backend API
     api:
       rule: "Host(`api.hexastudio.net`)"
       service: backend
-      tls: { certResolver: letsencrypt }
+      tls: { certResolver: cloudflare }
 
     # CMS
     cms:
       rule: "Host(`cms.hexastudio.net`)"
       service: cms
-      tls: { certResolver: letsencrypt }
+      tls: { certResolver: cloudflare }
 
     # Storage / Files
     files:
       rule: "Host(`files.hexastudio.net`)"
       service: minio
-      tls: { certResolver: letsencrypt }
+      tls: { certResolver: cloudflare }
 
     # Storage Console
     files-console:
       rule: "Host(`files-console.hexastudio.net`)"
       service: minio-console
-      tls: { certResolver: letsencrypt }
+      tls: { certResolver: cloudflare }
 
     # Monitoring (Grafana)
     monitor:
       rule: "Host(`monitor.hexastudio.net`)"
       service: grafana
-      tls: { certResolver: letsencrypt }
+      tls: { certResolver: cloudflare }
 
     # Monitoring (Prometheus)
     prometheus:
       rule: "Host(`prometheus.hexastudio.net`)"
       service: prometheus
-      tls: { certResolver: letsencrypt }
+      tls: { certResolver: cloudflare }
 
     # Uptime
     uptime:
       rule: "Host(`uptime.hexastudio.net`)"
       service: uptime-kuma
-      tls: { certResolver: letsencrypt }
+      tls: { certResolver: cloudflare }
 
     # AI Services
     ai:
       rule: "Host(`ai.hexastudio.net`)"
       service: ai-service
-      tls: { certResolver: letsencrypt }
+      tls: { certResolver: cloudflare }
 
     # Auth
     auth:
       rule: "Host(`auth.hexastudio.net`)"
       service: auth-service
-      tls: { certResolver: letsencrypt }
+      tls: { certResolver: cloudflare }
 
     # Analytics
     analytics:
       rule: "Host(`analytics.hexastudio.net`)"
       service: analytics-service
-      tls: { certResolver: letsencrypt }
+      tls: { certResolver: cloudflare }
 
     # Communication Hub
     hub:
       rule: "Host(`hub.hexastudio.net`)"
       service: hub-service
-      tls: { certResolver: letsencrypt }
+      tls: { certResolver: cloudflare }
 
     # Documentation
     docs:
       rule: "Host(`docs.hexastudio.net`)"
       service: docs-service
-      tls: { certResolver: letsencrypt }
+      tls: { certResolver: cloudflare }
 
     # Status Page
     status:
       rule: "Host(`status.hexastudio.net`)"
       service: status-service
-      tls: { certResolver: letsencrypt }
+      tls: { certResolver: cloudflare }
 
   services:
     frontend:
