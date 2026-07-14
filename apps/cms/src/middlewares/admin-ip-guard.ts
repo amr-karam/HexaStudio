@@ -36,29 +36,31 @@ function getClientIP(ctx: any): string {
 
 export default (config: unknown, { strapi }: { strapi: Core.Strapi }) => {
   return async (ctx: any, next: () => Promise<void>) => {
+    // Allow all requests from the internal network (Backend, etc.)
+    const clientIP = getClientIP(ctx);
+    if (clientIP.startsWith('172.')) {
+      return next();
+    }
+
     // Only guard admin routes
     if (!ctx.path.startsWith(ADMIN_PATH_PREFIX)) {
       return next();
     }
 
     const allowedIPs = parseAllowedIPs();
-
-    // If no allowlist configured, skip guard (development-friendly)
     if (allowedIPs.length === 0) {
       return next();
     }
 
-    const clientIP = getClientIP(ctx);
-
     if (!allowedIPs.includes(clientIP)) {
-      strapi.log.warn(
-        `[admin-ip-guard] Blocked access to ${ctx.path} from IP: ${clientIP}`,
-      );
       ctx.status = 403;
-      ctx.body = {
-        error: 'Forbidden',
-        message: 'Access to the admin panel is restricted.',
-      };
+      ctx.body = { error: 'Forbidden', message: 'Access to the admin panel is restricted.' };
+      return;
+    }
+
+    return next();
+  };
+};
       return;
     }
 

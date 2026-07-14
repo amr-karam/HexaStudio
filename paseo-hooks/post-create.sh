@@ -25,31 +25,22 @@ if [ ! -d "$WORKTREE_PATH" ]; then
   exit 0
 fi
 
-info "Initializing worktree: $BRANCH ($WORKTREE_PATH)"
-
 cd "$WORKTREE_PATH"
 
-# ── 1. Copy .env if missing ────────────────────────────────────────────────────
-if [ ! -f ".env" ] && [ -f ".env.example" ]; then
-  cp .env.example .env
-  warn "Created .env from .env.example — edit secrets."
-fi
-
-# ── 2. Install dependencies ────────────────────────────────────────────────────
-if [ ! -d "node_modules" ]; then
-  info "Installing dependencies..."
-  npm install --no-audit --no-fund 2>&1 | tail -1
-  ok "Dependencies installed."
+# ── 1. Canonical worktree setup ────────────────────────────────────────────────
+# All new worktrees (git worktree add, Paseo create, worktree-add.sh) funnel
+# through .setup.sh so dependency install + build + validation stay consistent.
+if [ -f ".setup.sh" ]; then
+  info "Initializing worktree via .setup.sh: $BRANCH"
+  bash ./.setup.sh
 else
-  info "node_modules exists, skipping install."
+  warn "No .setup.sh found; running minimal setup..."
+  [ ! -f ".env" ] && [ -f ".env.example" ] && cp .env.example .env
+  npm install --no-audit --no-fund
+  npm run build 2>/dev/null || true
 fi
 
-# ── 3. Build ───────────────────────────────────────────────────────────────────
-info "Building..."
-npm run build 2>&1 | tail -3
-ok "Build complete."
-
-# ── 4. Register with Paseo workspace tracking ─────────────────────────────────
+# ── 2. Register with Paseo workspace tracking ─────────────────────────────────
 if [ -n "$WORKSPACE_ID" ]; then
   PASEO_PROJECTS="$HOME/.paseo/projects/workspaces.json"
   if [ -f "$PASEO_PROJECTS" ]; then

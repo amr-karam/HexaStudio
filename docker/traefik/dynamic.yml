@@ -6,12 +6,6 @@ http:
       service: frontend
       tls: { certResolver: letsencrypt }
 
-    # Odoo ERP
-    odoo:
-      rule: "Host(`odoo.hexastudio.net`)"
-      service: odoo
-      tls: { certResolver: letsencrypt }
-
     # Backend API
     api:
       rule: "Host(`api.hexastudio.net`)"

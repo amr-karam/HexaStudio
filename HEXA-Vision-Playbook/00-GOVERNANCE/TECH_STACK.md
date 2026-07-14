@@ -166,8 +166,8 @@
 | **Prettier** | Code formatting |
 | **Playwright** | E2E testing |
 | **Vitest** | Unit/integration testing |
-| **Husky** | Git hooks |
-| **lint-staged** | Pre-commit linting |
+| **scripts/git-hooks/** | Version-controlled Git hooks (core.hooksPath) |
+| **paseo-hooks/** | Paseo daemon worktree lifecycle hooks |
 
 ---
 

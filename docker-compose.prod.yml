@@ -270,9 +270,6 @@ services:
       - ./docker/odoo/addons:/mnt/extra-addons:ro
     labels:
       - traefik.enable=true
-      - traefik.http.routers.odoo-http.rule=Host(`${ODOO_HOST:-odoo.localhost}`)
-      - traefik.http.routers.odoo-http.entrypoints=web
-      - traefik.http.routers.odoo-http.service=odoo
       - traefik.http.routers.odoo.rule=Host(`${ODOO_HOST:-odoo.localhost}`)
       - traefik.http.routers.odoo.entrypoints=websecure
       - traefik.http.routers.odoo.service=odoo
