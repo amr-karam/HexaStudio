@@ -61,10 +61,3 @@ export default (config: unknown, { strapi }: { strapi: Core.Strapi }) => {
     return next();
   };
 };
-      return;
-    }
-
-    strapi.log.debug(`[admin-ip-guard] Allowed ${clientIP} → ${ctx.path}`);
-    return next();
-  };
-};
