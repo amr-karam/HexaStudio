@@ -8,4 +8,10 @@ const app = strapi.createStrapi({
   distDir: path.join(__dirname, 'dist'),
 });
 
-app.start();
+app.start().then(() => {
+  console.log('=== REGISTERED CONTENT TYPES ===');
+  Object.keys(app.contentTypes).forEach(ct => console.log(ct));
+  console.log('===============================');
+}).catch(e => {
+  console.error('Startup Error:', e);
+});
