@@ -1,0 +1,39 @@
+#!/bin/bash
+set -euo pipefail
+
+# post-merge — Worktree-aware lifecycle hook
+# Fires after git pull or git merge.
+# Reinstalls dependencies if package files changed, then rebuilds.
+
+ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"
+[ -z "$ROOT" ] && exit 0
+
+cd "$ROOT"
+
+# ── Detect dependency changes ────────────────────────────────────────────────
+DEP_CHANGED=false
+
+if git diff HEAD@{1} --name-only 2>/dev/null | grep -qE 'package\.json$|package-lock\.json$'; then
+  DEP_CHANGED=true
+  echo ""
+  echo "━━━ Worktree Lifecycle ─────────────────────────────────────────────"
+  echo "  Dependencies changed (package.json / package-lock.json)."
+  echo "  Running npm install..."
+  echo "────────────────────────────────────────────────────────────────────"
+
+  if command -v npm &>/dev/null; then
+    npm install --no-audit --no-fund
+  fi
+fi
+
+# ── Detect build config changes ──────────────────────────────────────────────
+if git diff HEAD@{1} --name-only 2>/dev/null | grep -qE 'turbo\.json$|tsconfig.*\.json$'; then
+  echo ""
+  echo "━━━ Worktree Lifecycle ─────────────────────────────────────────────"
+  echo "  Build configuration changed."
+  echo "  Rebuilding..."
+  echo "────────────────────────────────────────────────────────────────────"
+  npm run build 2>/dev/null || npm run typecheck 2>/dev/null || true
+elif [ "$DEP_CHANGED" = true ]; then
+  npm run build 2>/dev/null || true
+fi

@@ -58,15 +58,68 @@ Our platform is built on three pillars:
 git clone https://github.com/amr-karam/HexaStudio.git
 cd HexaStudio
 
-# Configure environment
-cp .env.example .env
-# Edit .env with your secrets
+# Automated preparation (installs deps, builds, validates)
+bash .setup.sh
+# Or: npm run setup
 
 # Launch the ecosystem
 docker compose up -d --build
 ```
 
-### 3. Access Points
+### 3. Install Git Hooks
+```bash
+# Deploy worktree lifecycle hooks (version-controlled in scripts/git-hooks/)
+npm run hooks:install
+```
+
+This activates:
+- **`post-checkout`** — auto-installs deps & rebuilds on branch switch
+- **`post-merge`** — reinstalls deps when `package.json` changes
+- **`post-rewrite`** — same for rebase/amend
+- **`pre-commit`** — `.env` check, GitWand secrets scan, staged typecheck
+- **`commit-msg`** — validates Conventional Commit format
+
+### 4. Paseo Worktree Lifecycle Hooks
+```bash
+# Install Paseo lifecycle hooks (registers with Paseo daemon)
+npm run paseo:hooks:install
+```
+
+This registers version-controlled lifecycle scripts (`paseo-hooks/`) with Paseo:
+
+| Event | Hook Script | What it does |
+|-------|------------|-------------|
+| `post-create` | `paseo-hooks/post-create.sh` | Auto-installs deps & builds new worktrees |
+| `pre-archive` | `paseo-hooks/pre-archive.sh` | Stops docker services, stashes WIP before removal |
+| `post-archive` | `paseo-hooks/post-archive.sh` | Cleans up stale refs, notifies GitHub |
+| `post-merge` | `paseo-hooks/post-merge.sh` | Updates main worktree after PR merge |
+
+Worktree lifecycle management:
+```bash
+# Create a worktree (with full lifecycle)
+npm run paseo:worktree:create -- feature/my-branch
+
+# Create from PR
+npm run paseo:worktree:create-pr -- 42
+
+# Archive (triggers pre-archive + post-archive hooks)
+npm run paseo:worktree:archive -- feature/my-branch
+
+# List all worktrees with status
+npm run paseo:worktree:list
+```
+
+### 5. Worktrees (Parallel Branches)
+```bash
+# Create a worktree (auto-runs setup in the new tree)
+npm run worktree:add -- feature/my-branch
+
+# Or manually then setup
+git worktree add -b feature/my-branch ../worktrees/my-branch
+bash .setup.sh
+```
+
+### 6. Access Points
 | Service | URL |
 | :--- | :--- |
 | **Frontend** | `http://localhost` |

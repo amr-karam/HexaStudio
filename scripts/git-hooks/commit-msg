@@ -1,0 +1,29 @@
+#!/bin/bash
+set -euo pipefail
+
+# commit-msg — Validates Conventional Commit format
+# Args: <commit-message-file>
+
+COMMIT_MSG_FILE="$1"
+[ ! -f "$COMMIT_MSG_FILE" ] && exit 0
+
+COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
+
+# Skip merge and revert commits
+echo "$COMMIT_MSG" | grep -qE '^(Merge|Revert)\b' && exit 0
+
+# Validate Conventional Commit format
+if ! echo "$COMMIT_MSG" | grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?!?:\s.+'; then
+  echo ""
+  echo "━━━ Worktree Lifecycle ─────────────────────────────────────────────"
+  echo "  Invalid commit message format."
+  echo ""
+  echo "  Expected: <type>(<scope>): <subject>"
+  echo "  Example:  feat(backend): add vector search endpoint"
+  echo ""
+  echo "  Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert"
+  echo "────────────────────────────────────────────────────────────────────"
+  echo "  To commit anyway: git commit --no-verify"
+  echo ""
+  exit 1
+fi

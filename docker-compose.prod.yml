@@ -175,6 +175,12 @@ services:
     networks:
       - web
       - internal
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   frontend:
     build:
@@ -193,6 +199,12 @@ services:
       - backend
     networks:
       - web
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   cms:
     build:
@@ -229,6 +241,12 @@ services:
     networks:
       - web
       - internal
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:1337/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   # ---------------------------------------------------------------------------
   # Odoo ERP
