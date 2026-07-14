@@ -13,6 +13,7 @@ enum CircuitState {
 export class OdooService implements OnModuleInit {
   private readonly logger = new Logger(OdooService.name);
   private client: xmlrpc.Client;
+  private objectClient: xmlrpc.Client;
   private uid: number | null = null;
 
   // Circuit Breaker State
@@ -20,7 +21,8 @@ export class OdooService implements OnModuleInit {
   private failureCount = 0;
   private successCount = 0;
   private lastFailureTime = 0;
-  private readonly FAILURE_THRESHOLD = 0.2; // 20% failure rate opens the circuit
+  private readonly FAILURE_THRESHOLD = 0.4; // 40% failure rate opens the circuit
+  private readonly ABSOLUTE_FAILURE_LIMIT = 5; // Or 5 absolute failures in window
   private readonly RESET_TIMEOUT = 30000; // 30 seconds before half-open
 
   constructor(private readonly redisService: RedisService) {
@@ -43,6 +45,11 @@ export class OdooService implements OnModuleInit {
       host,
       port,
       path: '/xmlrpc/2/common',
+    });
+    this.objectClient = xmlrpc.createClient({
+      host,
+      port,
+      path: '/xmlrpc/2/object',
     });
   }
 
@@ -79,10 +86,23 @@ export class OdooService implements OnModuleInit {
     this.failureCount++;
     this.lastFailureTime = Date.now();
     const totalRequests = this.successCount + this.failureCount;
-    if (totalRequests > 10 && this.failureCount / totalRequests > this.FAILURE_THRESHOLD) {
+    if (totalRequests > 10 && (this.failureCount / totalRequests > this.FAILURE_THRESHOLD || this.failureCount >= this.ABSOLUTE_FAILURE_LIMIT)) {
       this.circuitState = CircuitState.OPEN;
-      this.logger.error('Circuit breaker OPENED. Failure rate exceeded 20%.');
+      this.logger.error(`Circuit breaker OPENED. Failure rate: ${(this.failureCount / totalRequests * 100).toFixed(0)}% (${this.failureCount}/${totalRequests}).`);
     }
+  }
+
+  /** Lightweight health probe — calls xmlrpc/2/common version() instead of full auth. */
+  async ping(): Promise<boolean> {
+    return new Promise<boolean>((resolve) => {
+      this.client.methodCall('version', [], (error, value) => {
+        if (error || !value) {
+          resolve(false);
+        } else {
+          resolve(true);
+        }
+      });
+    });
   }
 
   async authenticate(): Promise<number> {
@@ -121,28 +141,9 @@ export class OdooService implements OnModuleInit {
 
     return new Promise<T>((resolve, reject) => {
       const env = getEnv();
-      let host = env.ODOO_HOST;
-      let port = env.ODOO_PORT || 8069;
-
-      try {
-        if (host.startsWith('http://') || host.startsWith('https://')) {
-          const url = new URL(host);
-          host = url.hostname;
-          port = url.port ? parseInt(url.port, 10) : port;
-        }
-      } catch {
-        // Use as-is
-      }
-
-      const objectClient = xmlrpc.createClient({
-        host,
-        port,
-        path: '/xmlrpc/2/object',
-      });
-
       const password = env.ODOO_PASSWORD;
       const db = env.ODOO_DB;
-      objectClient.methodCall('execute_kw', [db, this.uid!, password, model, method, args], (error, value) => {
+      this.objectClient.methodCall('execute_kw', [db, this.uid!, password, model, method, args], (error, value) => {
         if (error) {
           this.recordFailure();
           reject(new InternalServerErrorException(`Odoo error: ${error}`));

@@ -1,1 +1,0 @@
-Docker Compose service definitions, reverse-proxy routing, observability stack, and server hardening/deployment scripts for the HexaStudio platform.

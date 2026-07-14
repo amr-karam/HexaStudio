@@ -1,7 +1,8 @@
 import { createDynamicComponent } from '@/lib/dynamic-component';
+import type { ExperienceCanvasProps } from './components/ExperienceCanvas';
 
-export const LazySceneCanvas = createDynamicComponent(
-  () => import('./components/SceneCanvas'),
+export const LazySceneCanvas = createDynamicComponent<ExperienceCanvasProps>(
+  () => import('./components/ExperienceCanvas').then((mod) => ({ default: mod.ExperienceCanvas })),
   { ssr: false },
 );
 

@@ -15,12 +15,13 @@ describe('Utility Functions', () => {
     it('should return true for valid email addresses', () => {
       expect(isValidEmail('test@example.com')).toBe(true);
       expect(isValidEmail('user.name@domain.co.uk')).toBe(true);
+      expect(isValidEmail('test@domain')).toBe(true); // RFC 5322: single-label domains are valid
     });
 
     it('should return false for invalid email addresses', () => {
       expect(isValidEmail('invalid-email')).toBe(false);
-      expect(isValidEmail('test@domain')).toBe(false);
       expect(isValidEmail('@domain.com')).toBe(false);
+      expect(isValidEmail('test@')).toBe(false);
     });
   });
 

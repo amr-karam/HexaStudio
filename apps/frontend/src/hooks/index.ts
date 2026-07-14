@@ -1,4 +1,4 @@
-export { useReducedMotion } from './use-reduced-motion';
+export { useReducedMotion } from './useReducedMotion';
 export { useMediaQuery } from './use-media-query';
 export { useAdaptiveQuality } from './useAdaptiveQuality';
 export { usePerformanceMonitor } from './usePerformanceMonitor';

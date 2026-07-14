@@ -1,1 +1,0 @@
-Monorepo for the HEXA internal collaboration platform, composing a NestJS API, Socket.IO realtime server, BullMQ background worker, Next.js web app, and shared TypeScript types.

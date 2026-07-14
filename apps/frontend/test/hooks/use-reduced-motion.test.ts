@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 describe('useReducedMotion', () => {
   let listeners: ((event: MediaQueryListEvent) => void)[];

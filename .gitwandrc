@@ -1,9 +1,0 @@
-{
-  "llmFallback": {
-    "enabled": false,
-    "provider": "claude",
-    "minPostMergeScore": 80,
-    "contextLines": 50,
-    "minMode": "strict"
-  }
-}

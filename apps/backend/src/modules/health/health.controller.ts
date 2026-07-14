@@ -12,8 +12,8 @@ export class HealthController {
   async check() {
     let odooStatus = "unknown";
     try {
-      await this.odooService.authenticate();
-      odooStatus = "ok";
+      const isHealthy = await this.odooService.ping();
+      odooStatus = isHealthy ? "ok" : "error";
     } catch {
       odooStatus = "error";
     }

@@ -1,5 +1,0 @@
-- Every shell script starts with `set -euo pipefail` (or `set -e`) so failures abort immediately rather than silently continuing.
-- Service credentials are injected exclusively through environment variables (e.g. `${POSTGRES_PASSWORD}`, `${MINIO_ROOT_PASSWORD}`) instead of being hardcoded in configs.
-- Per-service Docker Compose configurations live in their own `docker/<service>/` directory tree, keeping one service's config files co-located.
-- Rolling deployments follow a pull → `docker compose up -d --no-deps <service>` → health-check loop pattern with explicit rollback on failure.
-- Provisioning scripts wait for dependencies before acting (MinIO init loops until `mc alias set` succeeds; backup waits for Postgres connectivity).

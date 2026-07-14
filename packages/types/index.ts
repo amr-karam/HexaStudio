@@ -52,12 +52,24 @@ export interface User {
   role: 'admin' | 'editor' | 'user';
 }
 
+/** Strapi rich text / dynamic zone block. */
+export interface RichTextBlock {
+  type: string;
+  children?: RichTextBlock[];
+  text?: string;
+  url?: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+  [key: string]: unknown;
+}
+
 export interface Article {
   id: string;
   title: string;
   slug: string;
   excerpt: string;
-  content: unknown[];
+  content: RichTextBlock[];
   coverImage: string;
   category?: Category;
   author: string;

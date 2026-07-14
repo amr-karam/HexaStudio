@@ -1,4 +1,0 @@
-- Each NestJS feature lives in `src/modules/<domain>/` with a colocated `<domain>.module.ts`, controller, service, and optional `entities/` and `dto/` subfolders, keeping domain boundaries explicit.
-- Cross-app contracts are kept as plain TypeScript interfaces in `packages/types/src/*.ts` and re-exported through `index.ts` rather than duplicated across apps.
-- Background workers register queue processors via `queue.process(concurrency, handler)` and attach uniform `completed`/`failed`/`error` listeners through a shared `attachListeners` helper.
-- Realtime connections require a JWT token passed in `socket.handshake.auth.token`, verified with `jwtVerify`, and the decoded payload is attached to `socket.data.user` before joining a `user:<sub>` room.

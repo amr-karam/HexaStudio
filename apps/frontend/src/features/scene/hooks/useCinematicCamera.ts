@@ -3,7 +3,7 @@ import { useThree, useFrame } from '@react-three/fiber';
 import gsap from 'gsap';
 import { useCameraStore } from '@/features/scene/store/camera-store';
 import * as THREE from 'three';
-import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { getModelConfig } from '@/features/scene/config/model-registry';
 
 const IDLE_RADIUS = 12;

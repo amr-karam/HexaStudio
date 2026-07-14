@@ -6,36 +6,21 @@ import { getEnv } from '../../config/env';
 import { OdooService } from '../odoo/odoo.service';
 
 interface StrapiRelation {
-  data?: { id: number; attributes?: Record<string, unknown> };
   id?: number;
   name?: string;
   slug?: string;
+  url?: string;
 }
 
 function mapCategory(relation: StrapiRelation | undefined): Category | undefined {
-  if (!relation) return undefined;
-  // Strapi v5: flat relation { id, name, slug }
-  if (relation.id && relation.name) {
-    return { id: String(relation.id), name: relation.name, slug: relation.slug ?? '' };
-  }
-  // Strapi v4: nested relation { data: { id, attributes: { name, slug } } }
-  if (relation.data) {
-    return {
-      id: String(relation.data.id),
-      name: (relation.data.attributes?.name as string) ?? '',
-      slug: (relation.data.attributes?.slug as string) ?? '',
-    };
-  }
-  return undefined;
+  if (!relation?.id || !relation.name) return undefined;
+  return { id: String(relation.id), name: relation.name, slug: relation.slug ?? '' };
 }
 
 function mapMedia(relation: StrapiRelation | undefined): string | undefined {
   if (!relation) return undefined;
-  // Strapi v5: flat media { url, name }
   if (typeof relation === 'string') return relation;
-  if ('url' in relation) return relation.url as string;
-  // Strapi v4: nested media { data: { attributes: { url } } }
-  if (relation.data?.attributes?.url) return relation.data.attributes.url as string;
+  if ('url' in relation && relation.url) return relation.url;
   return undefined;
 }
 
@@ -66,29 +51,34 @@ export class ProjectsService {
     const data = response.data;
     const projects = data.data.map((item: Record<string, unknown>) => this.mapProject(item));
 
-    // Enrich each project with Odoo status
-    const enrichedProjects = await Promise.all(
-      projects.map(async (project: Project) => {
-        try {
-          const odooData = await this.odooService.searchRead(
-            'project.project',
-            [['x_slug', '=', project.slug]],
-            ['stage_id']
-          );
-          if (odooData && odooData.length > 0) {
-            const stage = odooData[0].stage_id;
-            project.status = Array.isArray(stage) ? String(stage[1]) : String((stage as Record<string, unknown>)?.name ?? '');
-          }
-        } catch (error) {
-          this.logger.error(`Failed to enrich project ${project.slug} with Odoo data:`, error);
-        }
-        return project;
-      })
-    );
+    // Batch Odoo status lookup in a single query instead of N+1
+    const slugs = projects.map((p: Project) => p.slug);
+    try {
+      const odooData = await this.odooService.searchRead(
+        'project.project',
+        [['x_slug', 'in', slugs]],
+        ['x_slug', 'stage_id']
+      );
+      const stageMap = new Map<string, string>();
+      for (const row of odooData) {
+        const slug = row.x_slug as string;
+        const stage = row.stage_id;
+        const stageName = Array.isArray(stage)
+          ? String(stage[1])
+          : String((stage as Record<string, unknown>)?.name ?? '');
+        if (slug) stageMap.set(slug, stageName);
+      }
+      for (const project of projects) {
+        const status = stageMap.get(project.slug);
+        if (status) project.status = status;
+      }
+    } catch (error) {
+      this.logger.error('Failed to batch-enrich projects with Odoo data:', error);
+    }
 
     return {
       total: data.meta?.pagination?.total ?? data.data.length,
-      projects: enrichedProjects,
+      projects,
     };
   }
 

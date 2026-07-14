@@ -2,7 +2,7 @@ import { useGLTF, useProgress } from '@react-three/drei';
 import { useEffect } from 'react';
 import { useAssetStore } from '@/features/scene/store/asset-store';
 
-const DRACO_URL = 'https://www.gstatic.com/draco/versioned/decoders/1.5.6/';
+const DRACO_URL = process.env.NEXT_PUBLIC_DRACO_URL || 'https://www.gstatic.com/draco/versioned/decoders/1.5.6/';
 
 export function useAssetLoader(url: string) {
   const setProgress = useAssetStore((s) => s.setProgress);

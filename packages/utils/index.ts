@@ -22,10 +22,10 @@ export const slugify = (text: string): string => {
 };
 
 /**
- * Basic validation for emails.
+ * RFC 5322-compliant email validation (HTML5 pattern).
  */
 export const isValidEmail = (email: string): boolean => {
-  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
   return re.test(email);
 };
 

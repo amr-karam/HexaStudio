@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { Float } from '@react-three/drei';
 import * as THREE from 'three';
 import { ArchitecturalModel } from './ArchitecturalModel';
@@ -33,14 +33,23 @@ function ProceduralArchitecture() {
     });
   }, []);
 
-    const { floatGeom, floatMat, lightGeom, lightMat } = useMemo(() => {
-      return {
-        floatGeom: new THREE.BoxGeometry(0.1, 0.5, 0.1),
-        floatMat: new THREE.MeshPhysicalMaterial({ color: '#D4AF37', roughness: 0, metalness: 1, envMapIntensity: 2 }),
-        lightGeom: new THREE.SphereGeometry(0.04, 16, 16),
-        lightMat: new THREE.MeshPhysicalMaterial({ color: '#D4AF37', emissive: '#D4AF37', emissiveIntensity: 5 }),
-      };
-    }, []);
+  const { floatGeom, floatMat, lightGeom, lightMat } = useMemo(() => {
+    return {
+      floatGeom: new THREE.BoxGeometry(0.1, 0.5, 0.1),
+      floatMat: new THREE.MeshPhysicalMaterial({ color: '#D4AF37', roughness: 0, metalness: 1, envMapIntensity: 2 }),
+      lightGeom: new THREE.SphereGeometry(0.04, 16, 16),
+      lightMat: new THREE.MeshPhysicalMaterial({ color: '#D4AF37', emissive: '#D4AF37', emissiveIntensity: 5 }),
+    };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      floatGeom.dispose();
+      floatMat.dispose();
+      lightGeom.dispose();
+      lightMat.dispose();
+    };
+  }, [floatGeom, floatMat, lightGeom, lightMat]);
 
 
   return (

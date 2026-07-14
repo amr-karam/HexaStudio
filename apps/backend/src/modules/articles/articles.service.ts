@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { Article, ArticleResponse, Category } from '@hexastudio/types';
+import { Article, ArticleResponse, Category, RichTextBlock } from '@hexastudio/types';
 import { getEnv } from '../../config/env';
 
 interface StrapiRelation {
@@ -85,7 +85,7 @@ export class ArticlesService {
       title: attrs.title as string,
       slug: attrs.slug as string,
       excerpt: attrs.excerpt as string,
-      content: (attrs.content as unknown[]) ?? [],
+      content: (attrs.content as RichTextBlock[]) ?? [],
       coverImage: mapMedia(attrs.coverImage as StrapiRelation) ?? '',
       category: mapCategory(attrs.category as StrapiRelation),
       author: attrs.author as string,

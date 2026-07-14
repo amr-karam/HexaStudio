@@ -1,1 +1,0 @@
-Run the full stack locally with `npm run dev` (Turbo parallelizes all apps); compose up the infra and services via `docker compose -f docker/docker-compose.yml up --build`; each app has its own `.env.example` that must be copied to `.env` before running.

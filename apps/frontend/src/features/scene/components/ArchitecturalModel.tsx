@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import gsap from 'gsap';
 import { useAssetLoader } from '@/features/scene/hooks/useAssetLoader';
@@ -23,6 +23,8 @@ export const ArchitecturalModel = ({ url, position = [0, 0, 0], scale = 1 }: Mod
   const groupRef = useRef<THREE.Group>(null);
   const { isTransitioning } = useCameraStore();
   const { level } = useAdaptiveQuality();
+  const { camera } = useThree();
+  const lastDistanceRef = useRef(0);
 
   useEffect(() => {
     if (!model) return;
@@ -90,8 +92,36 @@ export const ArchitecturalModel = ({ url, position = [0, 0, 0], scale = 1 }: Mod
   }, [model, level, scale]);
 
   useFrame(() => {
-    if (!groupRef.current || isTransitioning) return;
+    if (!groupRef.current || isTransitioning || !model) return;
     groupRef.current.rotation.y += 0.0005;
+
+    // Distance-based LOD: adjust material complexity based on camera distance
+    const distance = camera.position.distanceTo(groupRef.current.position);
+    if (Math.abs(distance - lastDistanceRef.current) < 2) return; // Avoid frequent updates
+    lastDistanceRef.current = distance;
+
+    model.traverse((child: THREE.Object3D) => {
+      if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshPhysicalMaterial) {
+        const mat = child.material;
+        if (distance > 20) {
+          // Far: lowest quality
+          mat.clearcoat = 0;
+          mat.roughness = 0.5;
+          mat.envMapIntensity = 0.3;
+        } else if (distance > 10) {
+          // Mid
+          mat.clearcoat = 0.3;
+          mat.roughness = 0.3;
+          mat.envMapIntensity = 0.8;
+        } else {
+          // Close: full quality (respecting adaptive quality level)
+          mat.clearcoat = level === 'low' ? 0 : level === 'medium' ? 0.5 : 1;
+          mat.roughness = level === 'low' ? 0.5 : level === 'medium' ? 0.3 : 0.1;
+          mat.envMapIntensity = level === 'low' ? 0.5 : level === 'medium' ? 1.0 : 1.5;
+        }
+        mat.needsUpdate = true;
+      }
+    });
   });
 
   return (
