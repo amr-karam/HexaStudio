@@ -88,8 +88,10 @@ paseo-hooks/
 .gitwandrc
 opencode.json
 
-# Deploy scripts
+# Deploy scripts (keep local — contain server connection logic)
 deploy.py
+sshrun.py
+upload_script*.py
 
 # Large 3D source assets (not web-ready)
 *.max
