@@ -36,8 +36,7 @@ services:
       - traefik.enable=true
       - traefik.http.routers.traefik-dashboard.rule=Host(`${TRAEFIK_DASHBOARD_HOST:-traefik.hexastudio.net}`)
       - traefik.http.routers.traefik-dashboard.service=api@internal
-      - traefik.http.routers.traefik-dashboard.entrypoints=websecure
-      - traefik.http.routers.traefik-dashboard.tls.certResolver=cloudflare
+      - traefik.http.routers.traefik-dashboard.entrypoints=web
       - traefik.http.routers.traefik-dashboard.middlewares=traefik-auth@file
 
   # ---------------------------------------------------------------------------
@@ -132,6 +131,21 @@ services:
     networks:
       - internal
     restart: "no"
+
+  # ---------------------------------------------------------------------------
+  # Vector Store (Qdrant)
+  # ---------------------------------------------------------------------------
+  qdrant:
+    image: qdrant/qdrant:latest
+    <<: *default-restart
+    logging: *default-logging
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - internal
+    expose:
+      - "6333"
+      - "6334"
 
   # ---------------------------------------------------------------------------
   # Applications
@@ -274,9 +288,8 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.odoo.rule=Host(`${ODOO_HOST:-odoo.localhost}`)
-      - traefik.http.routers.odoo.entrypoints=websecure
+      - traefik.http.routers.odoo.entrypoints=web
       - traefik.http.routers.odoo.service=odoo
-      - traefik.http.routers.odoo.tls.certResolver=cloudflare
       - traefik.http.services.odoo.loadbalancer.server.port=8069
       - com.centurylinklabs.watchtower.enable=true
     networks:
@@ -439,3 +452,4 @@ volumes:
   loki_data:
   odoo_data:
   backup_data:
+  qdrant_data:
