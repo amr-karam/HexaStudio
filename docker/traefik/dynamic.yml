@@ -2,7 +2,7 @@ http:
   routers:
     # Main Website
     website:
-      rule: "Host(`hexastudio.net`)"
+      rule: "Host(`hexastudio.net`) || Host(`www.hexastudio.net`)"
       service: frontend
       
 
@@ -16,6 +16,12 @@ http:
     cms:
       rule: "Host(`cms.hexastudio.net`)"
       service: cms
+      
+
+    # ERP / Odoo
+    odoo:
+      rule: "Host(`odoo.hexastudio.net`)"
+      service: odoo
       
 
     # Storage / Files
