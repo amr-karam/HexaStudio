@@ -1,9 +1,30 @@
-node_modules
-.git
+# Node dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+.next/
+out Certaines/*
+ .strapi/
+.tmp/
+
+# Environment
 .env
-*.md
-dist
-.next
-.cache
-.turbo
-coverage
+.env.local
+.env.*.local
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/*
+.vscode/*
+!
