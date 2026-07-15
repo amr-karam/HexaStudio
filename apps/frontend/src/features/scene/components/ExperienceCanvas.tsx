@@ -45,7 +45,7 @@ export const ExperienceCanvas = ({
     <div className="absolute inset-0 -z-10 h-full w-full">
       <SceneAccessibility hotspots={hotspots} projectTitle={projectTitle} />
       <Canvas
-        shadows
+        shadows={settings.shadows}
         dpr={settings.dpr}
         gl={{
           antialias: true,
@@ -74,7 +74,7 @@ export const ExperienceCanvas = ({
           <directionalLight
             position={[10, 15, 5]}
             intensity={1.5}
-            castShadow
+            castShadow={settings.shadows}
             shadow-mapSize={[2048, 2048]}
           />
           <directionalLight position={[-5, 5, -5]} intensity={0.5} color="#D4AF37" />

@@ -97,7 +97,7 @@ export default function PortalPage() {
 
   return (
     <main className="min-h-screen bg-background pt-32 pb-24 px-8 md:px-16">
-      <div className="max-w-7xl mx-auto">
+      <div className="w-full">
         <header className="mb-24">
           <motion.span 
             initial={{ opacity: 0, y: 10 }}

@@ -45,7 +45,7 @@ export const AchievementsSection = () => {
   return (
     <section className="px-8 md:px-16 py-32 bg-background relative overflow-hidden">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-24 bg-gradient-to-b from-transparent via-accent/50 to-transparent" />
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="w-full relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-16 md:gap-24">
           {stats.map((stat, idx) => (
             <StatItem key={stat.label} stat={stat} index={idx} />

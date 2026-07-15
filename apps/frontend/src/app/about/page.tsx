@@ -44,7 +44,7 @@ export default function AboutPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="text-neutral-400 text-lg font-light max-w-2xl mx-auto leading-relaxed"
+            className="text-neutral-400 text-lg font-light w-full max-w-4xl mx-auto leading-relaxed"
           >
             We are a multidisciplinary studio specializing in the intersection of architecture and digital art. 
             Our mission is to create photorealistic environments that transcend traditional rendering.
@@ -53,7 +53,7 @@ export default function AboutPage() {
       </section>
 
       <section className="px-8 md:px-16 py-32 bg-surface border-y border-border/50">
-        <div className="max-w-7xl mx-auto">
+        <div className="w-full">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
             <div className="relative aspect-square overflow-hidden bg-surface-light border border-border/30 group">
               <motion.div 
@@ -92,7 +92,7 @@ export default function AboutPage() {
       </section>
 
       <section className="px-8 md:px-16 py-32 relative">
-        <div className="max-w-4xl mx-auto">
+        <div className="w-full">
           <div className="text-center mb-24">
             <span className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono">Our Journey</span>
             <h2 className="text-5xl md:text-7xl font-serif font-light text-foreground">Evolution of Vision</h2>
@@ -110,7 +110,7 @@ export default function AboutPage() {
                 <div className="absolute -left-[41px] top-0 w-4 h-4 bg-background border-2 border-accent rounded-full z-10" />
                 <span className="text-3xl font-serif italic text-accent block mb-2">{m.year}</span>
                 <h3 className="text-xl font-medium text-foreground mb-3">{m.label}</h3>
-                <p className="text-neutral-500 font-light text-sm leading-relaxed max-w-xl">
+                <p className="text-neutral-500 font-light text-sm leading-relaxed w-full max-w-3xl">
                   {m.description}
                 </p>
               </motion.div>
@@ -120,7 +120,7 @@ export default function AboutPage() {
       </section>
 
       <section className="px-8 md:px-16 py-32 bg-surface/30">
-        <div className="max-w-7xl mx-auto">
+        <div className="w-full">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
             {values.map((v, i) => (
               <motion.div

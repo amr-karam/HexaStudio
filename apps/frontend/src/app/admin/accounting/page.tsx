@@ -131,7 +131,7 @@ export default function AdminAccountingPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground px-8 py-16">
-      <div className="max-w-7xl mx-auto">
+      <div className="w-full">
         <div className="mb-12">
           <motion.span
             initial={{ opacity: 0, y: 10 }}

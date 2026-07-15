@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useArticles } from '@/features/blog';
 import Link from 'next/link';
 import { TextReveal } from '@/components/ui/TextReveal';
+import { cn } from '@/lib/utils';
 
 const fallbackArticles = [
   {
@@ -68,7 +69,7 @@ export default function BlogPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="text-neutral-400 text-lg font-light mt-12 leading-relaxed max-w-3xl"
+            className="text-neutral-400 text-lg font-light mt-12 leading-relaxed w-full max-w-5xl"
           >
             Exploring the intersection of spatial design, real-time technology, and the 
             emotional impact of architectural visualization.
@@ -133,7 +134,7 @@ export default function BlogPage() {
                     </h2>
                     <p className={cn(
                       "text-neutral-500 font-light leading-relaxed line-clamp-2",
-                      isFeatured ? "text-lg max-w-2xl" : "text-sm"
+                      isFeatured ? "text-lg w-full" : "text-sm"
                     )}>
                       {article.excerpt}
                     </p>
@@ -149,6 +150,3 @@ export default function BlogPage() {
   );
 }
 
-function cn(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ScrollFadeIn } from '@/components/ScrollFadeIn';
+import { cn } from '@/lib/utils';
 
 const testimonials = [
   {
@@ -37,7 +38,7 @@ export const TestimonialsSection = () => {
 
   return (
     <section className="px-8 md:px-16 py-32 bg-surface border-y border-border/50 overflow-hidden">
-      <div className="max-w-5xl mx-auto">
+      <div className="w-full">
         <ScrollFadeIn className="mb-24 text-center">
           <span className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block">
             Client Testimonials
@@ -57,7 +58,7 @@ export const TestimonialsSection = () => {
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               className="absolute inset-0 flex flex-col items-center text-center px-4"
             >
-              <blockquote className="text-xl md:text-3xl text-neutral-300 font-light italic leading-relaxed max-w-3xl mb-8">
+              <blockquote className="text-xl md:text-3xl text-neutral-300 font-light italic leading-relaxed max-w-5xl mb-8">
                 &ldquo;{testimonials[activeIndex].quote}&rdquo;
               </blockquote>
               <div className="flex flex-col items-center gap-1">
@@ -88,7 +89,3 @@ export const TestimonialsSection = () => {
     </section>
   );
 };
-
-function cn(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}

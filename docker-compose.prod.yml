@@ -414,6 +414,7 @@ services:
       - ./docker/backup/backup.sh:/scripts/backup.sh:ro
       - backup_data:/backups
     networks:
+      - web
       - internal
 
   backup-verify:

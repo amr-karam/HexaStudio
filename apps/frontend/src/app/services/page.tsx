@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { useServices } from '@/features/services/hooks/useServices';
 import { Service } from '@/types';
+import { cn } from '@/lib/utils';
 
 const fallbackServices: (Service & { accent: string })[] = [
   {
@@ -89,7 +90,7 @@ export default function ServicesPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 max-w-7xl mx-auto w-full relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 w-full relative z-10">
           {services.map((service, idx) => {
             const isLarge = idx === 0 || idx === 2;
             return (
@@ -145,6 +146,3 @@ export default function ServicesPage() {
   );
 }
 
-function cn(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}

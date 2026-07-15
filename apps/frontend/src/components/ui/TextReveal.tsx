@@ -3,25 +3,29 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { useHEXAMotion } from '@/hooks/useHEXAMotion';
 
 interface TextRevealProps {
   children: React.ReactNode;
   className?: string;
   delay?: number;
-  duration?: number;
+  duration?: 'component' | 'page';
 }
 
-export const TextReveal = ({ children, className, delay = 0, duration = 0.8 }: TextRevealProps) => {
+/**
+ * Masked text reveal — the signature HEXA entrance. The content slides up from
+ * behind a clip mask using the standard `entrance` easing. Respects
+ * reduced-motion automatically via useHEXAMotion.
+ */
+export const TextReveal = ({ children, className, delay = 0, duration = 'page' }: TextRevealProps) => {
+  const { transition } = useHEXAMotion();
+
   return (
     <div className={cn('overflow-hidden', className)}>
       <motion.div
-        initial={{ y: '100%' }}
-        animate={{ y: 0 }}
-        transition={{ 
-          duration, 
-          delay, 
-          ease: [0.33, 1, 0.68, 1] // Custom cubic-bezier for a luxury feel
-        }}
+        initial={{ y: '110%' }}
+        animate={{ y: '0%' }}
+        transition={transition('entrance', duration, delay)}
       >
         {children}
       </motion.div>

@@ -83,7 +83,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
       </section>
 
 
-      <section className="py-24 px-8 md:px-16 max-w-7xl mx-auto">
+      <section className="py-24 px-8 md:px-16 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
           <div className="lg:col-span-4 space-y-12">
             <div className="bg-surface border border-border/50 p-8 rounded-sm">

@@ -48,7 +48,30 @@
 
 ---
 
-## 3. COMPLETED (PRIOR SPRINTS)
+## 3. FRONTEND EXCELLENCE INITIATIVE (ACTIVE)
+
+Elevating `apps/frontend` to HEXA Creative Excellence standard. All gates green
+(lint / typecheck / 64 tests / production build).
+
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **FE-001** | Centralized Motion System (`src/lib/motion.ts`) — single source of truth for easings, durations, stagger, variants | ✅ Done |
+| **FE-002** | `useHEXAMotion` hook — reduced-motion-aware transition/variant builder | ✅ Done |
+| **FE-003** | Global reduced-motion gate via `<MotionConfig reducedMotion="user">` in `AppProviders` | ✅ Done |
+| **FE-004** | Wire `useAdaptiveQuality` (`settings.shadows` + `settings.dpr`) into live `ExperienceCanvas` | ✅ Done |
+| **FE-005** | Propagate motion system to `FadeIn` / `TextReveal` (reduced-motion safe) | ✅ Done |
+| **FE-006** | `matchMedia` polyfill in test setup (`test/setup.ts`) for jsdom | ✅ Done |
+| **FE-007** | Frontend Excellence Handbook (`07-DESIGN/FRONTEND_EXCELLENCE.md`) | ✅ Done |
+| **FE-008** | Remove dead `src/components/three/Scene.tsx` (superseded by `features/scene`) | ⏳ Pending arch decision (do NOT delete without approval) |
+| **FE-009** | `PageTransition` — drop GPU-costly `blur()` filter, source easing from `EASE.entrance`, reduced-motion crossfade | ✅ Done |
+| **FE-010** | `CustomCursor` — disable on touch (coarse pointer) + reduced motion; `aria-hidden` | ✅ Done |
+| **FE-011** | `Magnetic` — disable pull on reduced motion / coarse pointer (static wrapper fallback) | ✅ Done |
+| **FE-012** | `CinematicPreloader` — `role="status"` + reduced-motion fast path; source `EASE.entrance` | ✅ Done |
+| **FE-013** | `ProjectDetailModal` — `role="dialog"` + `aria-modal` + focus move-in/restore on open/close | ✅ Done |
+
+---
+
+## 4. COMPLETED (PRIOR SPRINTS)
 
 - [x] **Task ID-001:** High-Fidelity 3D Model Pipeline (Draco + GLB optimization)
 - [x] **Task ID-002:** Luxury Gap Visual Audit
