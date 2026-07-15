@@ -40,7 +40,6 @@
   "workspaces": [
     "apps/frontend",
     "apps/backend",
-    "apps/cms",
     "packages/types",
     "packages/ui",
     "packages/utils"

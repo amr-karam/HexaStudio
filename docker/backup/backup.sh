@@ -15,6 +15,20 @@ DBS="hexastudio_api hexastudio_cms hexastudio_odoo"
 
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 
+# ---------------------------------------------------------------------------
+# Ensure 'mc' (MinIO client) is available for authenticated offsite upload.
+# The postgres image does not ship it; download the static binary once.
+# ---------------------------------------------------------------------------
+if ! command -v mc >/dev/null 2>&1; then
+  echo "[$(date)] Downloading minio-client..."
+  wget -q https://dl.min.io/client/mc/release/linux-amd64/mc -O /usr/local/bin/mc && chmod +x /usr/local/bin/mc \
+    || echo "[$(date)] WARN: could not download minio-client"
+fi
+if command -v mc >/dev/null 2>&1 && [ -n "${MINIO_SK}" ]; then
+  mc alias set hexabackup "http://${MINIO_ENDPOINT}" "${MINIO_AK}" "${MINIO_SK}" >/dev/null 2>&1 || true
+  mc mb --ignore-existing "hexabackup/${MINIO_BUCKET}" >/dev/null 2>&1 || true
+fi
+
 while true; do
   echo "[$(date)] Starting backup cycle..."
 
@@ -33,14 +47,12 @@ while true; do
   echo "[$(date)] Pruning backups older than 30 days..."
   find "${BACKUP_DIR}" -name "*.dump" -mtime +30 -delete
 
-  if [ -n "${MINIO_SK}" ] && command -v curl >/dev/null 2>&1; then
+  if command -v mc >/dev/null 2>&1 && [ -n "${MINIO_SK}" ]; then
     for f in "${BACKUP_DIR}"/*"${TIMESTAMP}".dump; do
       [ -f "$f" ] || continue
       filename=$(basename "$f")
       echo "[$(date)] Uploading ${filename} to MinIO..."
-      curl -s -X PUT "http://${MINIO_ENDPOINT}/${MINIO_BUCKET}/${filename}" \
-        -H "Host: ${MINIO_ENDPOINT}" \
-        --upload-file "$f" || echo "[$(date)] MinIO upload failed for ${filename}"
+      mc cp "$f" "hexabackup/${MINIO_BUCKET}/${filename}" || echo "[$(date)] MinIO upload failed for ${filename}"
     done
   fi
 

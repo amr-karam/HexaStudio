@@ -33,6 +33,13 @@ entryPoints:
   websecure:
     address: ":443"
 
+metrics:
+  prometheus:
+    entryPoint: traefik
+    addEntryPointsLabels: true
+    addServicesLabels: true
+    addRoutersLabels: true
+
 providers:
   docker:
     exposedByDefault: false

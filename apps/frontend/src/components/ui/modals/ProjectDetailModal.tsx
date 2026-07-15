@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -23,6 +23,9 @@ interface ProjectDetailModalProps {
 }
 
 export const ProjectDetailModal = ({ isOpen, onClose, project }: ProjectDetailModalProps) => {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const previouslyFocused = useRef<HTMLElement | null>(null);
+
   useEffect(() => {
     if (!isOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -30,9 +33,15 @@ export const ProjectDetailModal = ({ isOpen, onClose, project }: ProjectDetailMo
     };
     document.addEventListener('keydown', handleKeyDown);
     document.body.style.overflow = 'hidden';
+
+    // Move focus into the dialog and remember the trigger for restoration.
+    previouslyFocused.current = document.activeElement as HTMLElement;
+    dialogRef.current?.focus();
+
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = '';
+      previouslyFocused.current?.focus();
     };
   }, [isOpen, onClose]);
 
@@ -55,6 +64,11 @@ export const ProjectDetailModal = ({ isOpen, onClose, project }: ProjectDetailMo
           />
 
           <motion.div
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="project-modal-title"
+            tabIndex={-1}
             initial={{ opacity: 0, scale: 0.98, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.98, y: 20 }}
@@ -115,11 +129,11 @@ export const ProjectDetailModal = ({ isOpen, onClose, project }: ProjectDetailMo
                     </div>
 
                   <div className="mt-6">
-                    <TextReveal delay={0.3}>
-                      <h2 className="text-4xl md:text-6xl font-serif font-light tracking-tight text-foreground leading-tight">
-                        {project.title}
-                      </h2>
-                    </TextReveal>
+                     <TextReveal delay={0.3}>
+                       <h2 id="project-modal-title" className="text-4xl md:text-6xl font-serif font-light tracking-tight text-foreground leading-tight">
+                         {project.title}
+                       </h2>
+                     </TextReveal>
                   </div>
                 </div>
 

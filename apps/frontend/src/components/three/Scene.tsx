@@ -20,14 +20,14 @@ function SceneContent() {
 export function Scene() {
   return (
     <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
-      <Canvas 
-        dpr={[1, 2]} 
-        shadows 
-        gl={{ 
-          antialias: true, 
+      <Canvas
+        dpr={[1, 2]}
+        shadows
+        gl={{
+          antialias: true,
           powerPreference: 'high-performance',
           stencil: false,
-          depth: true 
+          depth: true,
         }}
       >
         <PerspectiveCamera makeDefault position={[0, 0, 4]} fov={50} />

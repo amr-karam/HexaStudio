@@ -86,6 +86,7 @@ apps/backend/dist/
 .trae/
 paseo-hooks/
 .gitwandrc
+opencode.json
 
 # Deploy scripts
 deploy.py
@@ -98,3 +99,7 @@ deploy.py
 *.fbx
 *.obj
 apps/frontend/public/models/.gitkeep
+
+.vercel
+.vercel-tmp/
+.env*

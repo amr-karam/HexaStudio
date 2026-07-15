@@ -19,6 +19,7 @@ import { RequestsModule } from "./modules/requests/requests.module";
 import { AccountingModule } from "./modules/accounting/accounting.module";
 import { VectorModule } from "./modules/vector/vector.module";
 import { AIModule } from "./modules/ai/ai.module";
+import { MetricsModule } from "./modules/metrics/metrics.module";
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { AIModule } from "./modules/ai/ai.module";
     AccountingModule,
     VectorModule,
     AIModule,
+    MetricsModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

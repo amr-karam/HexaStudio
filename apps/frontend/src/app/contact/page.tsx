@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/inputs/Input';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { isValidEmail } from '@hexastudio/utils';
+import { cn } from '@/lib/utils';
 
 interface FormErrors {
   name?: string;
@@ -85,7 +86,7 @@ export default function ContactPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="relative z-10 w-full max-w-3xl bg-surface/30 backdrop-blur-2xl border border-border/50 p-8 md:p-16 rounded-sm shadow-2xl"
+              className="relative z-10 w-full max-w-5xl bg-surface/30 backdrop-blur-2xl border border-border/50 p-8 md:p-16 rounded-sm shadow-2xl"
             >
               <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
                 <div className="flex flex-col gap-2 group">
@@ -152,7 +153,7 @@ export default function ContactPage() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="relative z-10 w-full max-w-2xl text-center p-12 bg-surface/30 backdrop-blur-3xl border border-border/50 rounded-sm"
+              className="relative z-10 w-full max-w-4xl text-center p-12 bg-surface/30 backdrop-blur-3xl border border-border/50 rounded-sm"
             >
               <div className={cn(
                 "w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-8 transition-colors duration-700",
@@ -173,7 +174,7 @@ export default function ContactPage() {
               <h2 className="text-4xl font-serif font-light mb-4">
                 {status === 'sent' ? 'Message Received' : 'Transmission Failed'}
               </h2>
-              <p className="text-neutral-400 font-light mb-12 max-w-md mx-auto leading-relaxed">
+              <p className="text-neutral-400 font-light mb-12 w-full max-w-3xl mx-auto leading-relaxed">
                 {status === 'sent' 
                   ? 'Thank you for reaching out. Our architects will review your vision and respond shortly.' 
                   : 'Our systems are experiencing a momentary glitch. Please try again in a few moments.'}
@@ -194,6 +195,3 @@ export default function ContactPage() {
   );
 }
 
-function cn(...classes: (string | undefined | false | null)[]) {
-  return classes.filter(Boolean).join(' ');
-}
