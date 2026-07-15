@@ -1,4 +1,4 @@
-import React, { type ElementType } from 'react';
+import React from 'react';
 import Image from 'next/image';
 
 interface StrapiTextNode {
@@ -65,8 +65,6 @@ function renderBlock(block: StrapiBlock, key: string): React.ReactNode {
 
     case 'heading': {
       const level = block.level ?? 2;
-      const headingTags: Record<number, ElementType> = { 1: 'h1', 2: 'h2', 3: 'h3', 4: 'h4' };
-      const Tag: ElementType = headingTags[level] ?? 'h2';
       const sizeClass =
         level === 1
           ? 'text-4xl md:text-5xl'
@@ -75,41 +73,34 @@ function renderBlock(block: StrapiBlock, key: string): React.ReactNode {
             : level === 3
               ? 'text-2xl md:text-3xl'
               : 'text-xl md:text-2xl';
-
-      return (
-        <Tag
-          key={key}
-          className={`${sizeClass} font-serif font-light text-foreground tracking-tight mt-12 mb-6`}
-        >
-          {children}
-        </Tag>
-      );
+      const cls = `${sizeClass} font-serif font-light text-foreground tracking-tight mt-12 mb-6`;
+      if (level === 1) return <h1 key={key} className={cls}>{children}</h1>;
+      if (level === 3) return <h3 key={key} className={cls}>{children}</h3>;
+      if (level === 4) return <h4 key={key} className={cls}>{children}</h4>;
+      return <h2 key={key} className={cls}>{children}</h2>;
     }
 
     case 'list': {
-      const Tag: ElementType = block.format === 'ordered' ? 'ol' : 'ul';
-      const listClass =
+      const listClassBase =
         block.format === 'ordered'
           ? 'list-decimal list-inside'
           : 'space-y-2';
-
-      return (
-        <Tag key={key} className={`${listClass} text-neutral-400 font-light text-lg`}>
-          {(block.children ?? []).map((item, idx) => {
-            if (item.type === 'list-item' || item.type === 'list') {
-              return (
-                <li key={idx} className="flex items-start gap-3">
-                  {block.format !== 'ordered' && (
-                    <span className="w-1.5 h-1.5 bg-accent rounded-full mt-2.5 shrink-0" />
-                  )}
-                  <span>{renderInlineNodes((item as StrapiBlock).children ?? [], `${key}-${idx}`)}</span>
-                </li>
-              );
-            }
-            return <li key={idx}>{renderText(item as StrapiTextNode, idx)}</li>;
-          })}
-        </Tag>
-      );
+      const listClassName = `${listClassBase} text-neutral-400 font-light text-lg`;
+      const listItems = (block.children ?? []).map((item, idx) => {
+        if (item.type === 'list-item' || item.type === 'list') {
+          return (
+            <li key={idx} className="flex items-start gap-3">
+              {block.format !== 'ordered' && (
+                <span className="w-1.5 h-1.5 bg-accent rounded-full mt-2.5 shrink-0" />
+              )}
+              <span>{renderInlineNodes((item as StrapiBlock).children ?? [], `${key}-${idx}`)}</span>
+            </li>
+          );
+        }
+        return <li key={idx}>{renderText(item as StrapiTextNode, idx)}</li>;
+      });
+      if (block.format === 'ordered') return <ol key={key} className={listClassName}>{listItems}</ol>;
+      return <ul key={key} className={listClassName}>{listItems}</ul>;
     }
 
     case 'quote':

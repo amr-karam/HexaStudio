@@ -2,7 +2,6 @@ import { Injectable, Logger, Inject, forwardRef } from '@nestjs/common';
 import { VectorService } from '../vector/vector.service';
 import { EmbeddingService } from '../ai/embedding.service';
 import { ProjectsService } from '../projects/projects.service';
-import { Project } from '@hexastudio/types';
 
 export interface SimilarProjectResult {
   slug: string;
