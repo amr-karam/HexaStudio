@@ -68,6 +68,10 @@ Elevating `apps/frontend` to HEXA Creative Excellence standard. All gates green
 | **FE-011** | `Magnetic` — disable pull on reduced motion / coarse pointer (static wrapper fallback) | ✅ Done |
 | **FE-012** | `CinematicPreloader` — `role="status"` + reduced-motion fast path; source `EASE.entrance` | ✅ Done |
 | **FE-013** | `ProjectDetailModal` — `role="dialog"` + `aria-modal` + focus move-in/restore on open/close | ✅ Done |
+| **FE-014** | `ScrollFadeIn` — source easing/duration from `EASE.entrance` / `DURATION` (consistency) | ✅ Done |
+| **FE-015** | `Counter` — jump to final value under reduced motion (no count-up) | ✅ Done |
+| **FE-016** | `LoadingScreen` — centralize `EASE.entrance`; stop infinite pulse under reduced motion | ✅ Done |
+| **FE-017** | `Navbar` — verified WCAG-solid (dialog/focus-trap/aria-current/scroll-lock); no change | ✅ Verified |
 
 ---
 

@@ -1,26 +1,30 @@
-"use client";
-import React from "react";
-import { motion } from "framer-motion";
+'use client';
+
+import React from 'react';
+import { motion } from 'framer-motion';
+import { EASE, DURATION } from '@/lib/motion';
+
 interface ScrollFadeInProps {
   children: React.ReactNode;
   className?: string;
   delay?: number;
 }
-export function ScrollFadeIn({
-  children,
-  className,
-  delay = 0,
-}: ScrollFadeInProps) {
+
+/**
+ * Reusable scroll-triggered reveal. Sources easing/duration from the HEXA
+ * motion system. Reduced motion is handled globally by `MotionConfig` in
+ * AppProviders (transform collapses to opacity-only).
+ */
+export function ScrollFadeIn({ children, className, delay = 0 }: ScrollFadeInProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.7, delay, ease: [0.34, 1.56, 0.64, 1] }}
+      viewport={{ once: true, margin: '-80px' }}
+      transition={{ duration: DURATION.component, delay, ease: EASE.entrance }}
       className={className}
     >
-      {" "}
-      {children}{" "}
+      {children}
     </motion.div>
   );
 }
