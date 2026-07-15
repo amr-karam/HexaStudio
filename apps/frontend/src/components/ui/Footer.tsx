@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ScrollFadeIn } from '@/components/ScrollFadeIn';
+import { Magnetic } from '@/components/ui/Magnetic';
 
 const socialLinks = [
   { name: 'Instagram', href: 'https://instagram.com/hexastudio' },
@@ -23,6 +24,23 @@ export const Footer = () => {
 
   return (
     <footer className="bg-surface border-t border-border/50">
+      {/* Mini CTA Banner */}
+      <div className="px-4 sm:px-8 md:px-16 py-12 border-b border-border/30">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <p className="text-sm text-neutral-400 font-light">
+            Have a project in mind? Let&apos;s create something extraordinary.
+          </p>
+          <Magnetic>
+            <Link
+              href="/contact"
+              className="text-xs uppercase tracking-[0.3em] text-accent hover:text-accent-light transition-colors duration-500 whitespace-nowrap"
+            >
+              Start a Project &rarr;
+            </Link>
+          </Magnetic>
+        </div>
+      </div>
+
       <ScrollFadeIn className="px-4 sm:px-8 md:px-16 py-16 md:py-32">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-24">
           <div className="lg:col-span-5 flex flex-col gap-8">

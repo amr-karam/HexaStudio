@@ -75,7 +75,21 @@ Elevating `apps/frontend` to HEXA Creative Excellence standard. All gates green
 
 ---
 
-## 4. COMPLETED (PRIOR SPRINTS)
+## 4. SPRINT 8 — AI EVOLUTION (COMPLETED)
+
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S8-AI-001** | Qdrant Vector Database Integration | ✅ Done |
+| **S8-AI-002** | Semantic Search API (`/vector/search/public`) | ✅ Done |
+| **S8-AI-003** | Auto-Tagging Service (GPT-powered) | ✅ Done |
+| **S8-AI-004** | Project Recommendation Engine | ✅ Done |
+| **S8-AI-005** | Smart Summaries Generation Service | ✅ Done |
+| **S8-AI-006** | AI Agent Scaffold (NestJS + ReAct Loop) | ✅ Done |
+| **S8-AI-007** | TypeScript Strict Mode Compliance (Full) | ✅ Done |
+
+---
+
+## 5. COMPLETED (PRIOR SPRINTS)
 
 - [x] **Task ID-001:** High-Fidelity 3D Model Pipeline (Draco + GLB optimization)
 - [x] **Task ID-002:** Luxury Gap Visual Audit

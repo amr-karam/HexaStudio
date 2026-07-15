@@ -19,6 +19,7 @@ import { AccountingModule } from "./modules/accounting/accounting.module";
 import { VectorModule } from "./modules/vector/vector.module";
 import { AIModule } from "./modules/ai/ai.module";
 import { MetricsModule } from "./modules/metrics/metrics.module";
+import { AgentsModule } from "./modules/agents/agents.module";
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { MetricsModule } from "./modules/metrics/metrics.module";
     VectorModule,
     AIModule,
     MetricsModule,
+    AgentsModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
