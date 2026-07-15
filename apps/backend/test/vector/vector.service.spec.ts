@@ -1,14 +1,7 @@
 import '../setup';
-import '../setup';
 import { Test, TestingModule } from '@nestjs/testing';
 import { VectorService } from '../../src/modules/vector/vector.service';
-import { VectorSyncService } from '../../src/modules/vector/vector-sync.service';
 import { EmbeddingService } from '../../src/modules/ai/embedding.service';
-import { ProjectsService } from '../../src/modules/projects/projects.service';
-import { HttpService } from '@nestjs/axios';
-import { OdooService } from '../../src/modules/odoo/odoo.service';
-import { RedisService } from '../../src/modules/storage/redis.service';
-import { ConfigService } from '@nestjs/config';
 
 vi.mock('@qdrant/js-client-rest', () => {
   return {
@@ -23,38 +16,16 @@ vi.mock('@qdrant/js-client-rest', () => {
 
 describe('VectorService', () => {
   let service: VectorService;
-  let mockHttpService: any;
-  let mockOdooService: any;
-  let mockRedisService: any;
-  let mockConfigService: any;
+
+  const mockEmbeddingService = {
+    generateEmbedding: vi.fn().mockResolvedValue(new Array(1536).fill(0.1)),
+  };
 
   beforeEach(async () => {
-    mockHttpService = {
-      get: vi.fn(),
-    };
-    mockOdooService = {
-      searchRead: vi.fn(),
-    };
-    mockRedisService = {
-      get: vi.fn(),
-      set: vi.fn(),
-    };
-    mockConfigService = {
-      get: vi.fn().mockReturnValue({
-        CMS_URL: 'http://cms:1337',
-        VECTOR_HOST: 'localhost',
-        VECTOR_PORT: 6333,
-        VECTOR_API_KEY: '',
-      }),
-    };
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         VectorService,
-        { provide: HttpService, useValue: mockHttpService },
-        { provide: OdooService, useValue: mockOdooService },
-        { provide: RedisService, useValue: mockRedisService },
-        { provide: ConfigService, useValue: mockConfigService },
+        { provide: EmbeddingService, useValue: mockEmbeddingService },
       ],
     }).compile();
 
