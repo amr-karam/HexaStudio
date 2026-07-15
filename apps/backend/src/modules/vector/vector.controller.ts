@@ -3,6 +3,7 @@ import { VectorService } from './vector.service';
 import { VectorSyncService } from './vector-sync.service';
 import { RecommendationService, SimilarProjectResult } from './recommendation.service';
 import { AutoTagService } from '../ai/auto-tag.service';
+import { LightingService } from '../ai/lighting.service';
 import { ProjectsService } from '../projects/projects.service';
 import { SemanticSearchRequest, SemanticSearchResponse } from '@hexastudio/types';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -51,6 +52,14 @@ export class VectorController {
     const project = await this.projectsService.getProjectBySlug(slug);
     const tags = await this.autoTagService.generateTags(project);
     return { tags };
+  }
+
+  @Post('lighting/:slug')
+  @UseGuards(JwtAuthGuard)
+  async getLighting(@Param('slug') slug: string, @Query('limit') limit?: string): Promise<{ id: string; score: number }[]> {
+    const project = await this.projectsService.getProjectBySlug(slug);
+    const result = await this.lightingService.recommendLighting(project, limit ? parseInt(limit, 10) : 3);
+    return result;
   }
 
   @Get('recommendations/:slug')
