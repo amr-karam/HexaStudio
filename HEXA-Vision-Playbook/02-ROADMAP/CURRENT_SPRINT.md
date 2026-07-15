@@ -88,7 +88,7 @@ Completed:
 - ✅ 144 tests passing (80 backend + 64 frontend)
 - ✅ Zero typecheck and lint errors
 
-**Next Action:** Final testing with live Qdrant + OpenAI, then release v1.2.0.
+**Next Action:** Release v1.2.0 (all TIER 1–5 tasks completed: code quality, UX/SEO, 3D/perf, DevOps hardening; backend type errors resolved; frontend 69 tests passing).
 
 ---
 

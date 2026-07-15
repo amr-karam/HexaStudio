@@ -2,11 +2,11 @@
 
 import React, { Suspense, useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Magnetic } from '@/components/ui/Magnetic';
 import { LazySceneCanvas } from '@/features/scene';
 import { SceneErrorBoundary } from '@/features/scene/components/SceneErrorBoundary';
-import { LoadingScreen } from '@/components/LoadingScreen';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { useReducedMotion } from '@/hooks';
 
@@ -62,7 +62,14 @@ export const HomeHero = () => {
       className="relative flex min-h-screen flex-col items-center justify-center px-4 sm:px-8 pt-20 overflow-hidden bg-obsidian"
     >
       <SceneErrorBoundary>
-        <Suspense fallback={<LoadingScreen />}>
+        <Suspense fallback={
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-8 h-[1px] bg-accent/40 animate-pulse" />
+              <span className="text-[9px] uppercase tracking-[0.4em] text-white/30 font-mono">Loading scene</span>
+            </div>
+          </div>
+        }>
           <LazySceneCanvas />
         </Suspense>
       </SceneErrorBoundary>
@@ -106,14 +113,10 @@ export const HomeHero = () => {
             className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pointer-events-auto"
           >
             <Magnetic>
-              <Button variant="primary" size="lg">
-                Explore Works
-              </Button>
+              <Link href="/portfolio"><Button variant="primary" size="lg">Explore Works</Button></Link>
             </Magnetic>
             <Magnetic>
-              <Button variant="secondary" size="lg">
-                Our Process
-              </Button>
+              <Link href="/services"><Button variant="secondary" size="lg">Our Process</Button></Link>
             </Magnetic>
           </motion.div>
       </motion.div>

@@ -43,6 +43,17 @@ export const metadata: Metadata = {
     "architectural design",
     "HexaStudio",
   ],
+  alternates: {
+    canonical: "https://hexastudio.net",
+    languages: {
+      en: "https://hexastudio.net",
+      "x-default": "https://hexastudio.net",
+    },
+  },
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#050508" },
+  ],
   openGraph: {
     title: "HexaStudio — Living Spaces. Visualized.",
     description:
@@ -63,8 +74,11 @@ export const metadata: Metadata = {
     follow: true,
   },
   icons: {
-    icon: "/logo.svg",
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/apple-icon.png",
   },
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({

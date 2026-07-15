@@ -42,7 +42,10 @@ export function CustomCursor() {
         target.closest('a') ||
         target.closest('button');
       setIsPointer(!!isInteractive);
-      setIsHoveringLink(!!target.closest('a'));
+      // Only show "View" label on project/portfolio links, not nav or footer links
+      const link = target.closest('a');
+      const isProjectLink = link && (link.href.includes('/portfolio/') || link.href.includes('/project/'));
+      setIsHoveringLink(!!isProjectLink);
     };
     window.addEventListener('mousemove', moveCursor);
     window.addEventListener('mouseover', handleMouseOver);

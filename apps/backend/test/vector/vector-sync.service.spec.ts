@@ -6,16 +6,16 @@ import { ProjectsService } from '../../src/modules/projects/projects.service';
 
 describe('VectorSyncService', () => {
   let service: VectorSyncService;
-  let embeddingService: jest.Mocked<EmbeddingService>;
-  let projectsService: jest.Mocked<ProjectsService>;
+  let embeddingService: EmbeddingService;
+  let projectsService: ProjectsService;
 
   beforeEach(async () => {
     const mockEmbeddingService = {
-      embedProject: jest.fn(),
+      embedProject: vi.fn(),
     };
     const mockProjectsService = {
-      getProjectBySlug: jest.fn(),
-      getAllProjects: jest.fn(),
+      getProjectBySlug: vi.fn(),
+      getAllProjects: vi.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -37,16 +37,16 @@ describe('VectorSyncService', () => {
 
   it('should sync a single project successfully', async () => {
     const mockProject = { slug: 'test-project', title: 'Test' };
-    projectsService.getProjectBySlug.mockResolvedValue(mockProject as any);
-    embeddingService.embedProject.mockResolvedValue(undefined as any);
+    (projectsService.getProjectBySlug as any).mockResolvedValue(mockProject as any);
+    (embeddingService as any).embedProject.mockResolvedValue(undefined as any);
 
     await service.syncProject('test-project');
     expect(projectsService.getProjectBySlug).toHaveBeenCalledWith('test-project');
-    expect(embeddingService.embedProject).toHaveBeenCalledWith(mockProject);
+    expect((embeddingService as any).embedProject).toHaveBeenCalledWith(mockProject);
   });
 
   it('should throw an error if syncProject fails', async () => {
-    projectsService.getProjectBySlug.mockRejectedValue(new Error('Not found'));
+    (projectsService.getProjectBySlug as any).mockRejectedValue(new Error('Not found'));
 
     await expect(service.syncProject('missing-project')).rejects.toThrow('Not found');
   });
@@ -56,14 +56,14 @@ describe('VectorSyncService', () => {
       { slug: 'p1', title: 'P1' },
       { slug: 'p2', title: 'P2' },
     ];
-    projectsService.getAllProjects.mockResolvedValue({ projects: mockProjects } as any);
-    embeddingService.embedProject.mockImplementation((p: any) => {
+    (projectsService.getAllProjects as any).mockResolvedValue({ projects: mockProjects } as any);
+    (embeddingService as any).embedProject.mockImplementation((p: any) => {
       if (p.slug === 'p2') return Promise.reject(new Error('Failed'));
       return Promise.resolve(undefined as any);
     });
 
     await service.syncAllProjects();
     expect(projectsService.getAllProjects).toHaveBeenCalled();
-    expect(embeddingService.embedProject).toHaveBeenCalledTimes(2);
+    expect((embeddingService as any).embedProject).toHaveBeenCalledTimes(2);
   });
 });

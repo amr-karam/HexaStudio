@@ -119,14 +119,37 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
         </div>
       </section>
 
-      <section className="py-24 border-t border-border/30 text-center">
-        <div className="space-y-8">
-          <h2 className="text-3xl md:text-5xl font-serif font-light text-foreground">Explore More</h2>
-          <Link href="/portfolio">
-            <Button variant="outline" size="lg" className="text-xs uppercase tracking-widest">
-              Back to Portfolio
-            </Button>
-          </Link>
+      <section className="py-32 border-t border-border/30">
+        <div className="px-8 md:px-16 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <div>
+              <span className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono">
+                Like What You See?
+              </span>
+              <h2 className="text-4xl md:text-5xl font-serif font-light tracking-tight text-foreground mb-6 leading-tight">
+                Let&apos;s Create Something <span className="italic text-accent">Extraordinary</span>
+              </h2>
+              <p className="text-neutral-400 font-light leading-relaxed mb-8 max-w-lg">
+                Every project starts with a conversation. Tell us about your vision and we&apos;ll bring it to life.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link href="/contact">
+                  <Button variant="primary" size="lg" className="group">
+                    Start a Project
+                    <span className="ml-3 transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
+                  </Button>
+                </Link>
+                <Link href="/portfolio">
+                  <Button variant="outline" size="lg">
+                    More Projects
+                  </Button>
+                </Link>
+              </div>
+            </div>
+            <div className="flex justify-center md:justify-end">
+              <div className="w-px h-48 bg-gradient-to-b from-transparent via-accent/30 to-transparent hidden md:block" />
+            </div>
+          </div>
         </div>
       </section>
     </main>
