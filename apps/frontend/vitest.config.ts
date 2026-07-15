@@ -2,7 +2,6 @@ import { defineConfig } from 'vitest/config';
 import path from 'path';
 
 export default defineConfig({
-  // @ts-expect-error -- esbuild.jsx overrides tsconfig jsx: 'preserve' for Vitest
   esbuild: { jsx: 'automatic' as const },
   oxc: false,
   resolve: {

@@ -4,6 +4,7 @@ import { StudioSection } from "@/features/portfolio/components/StudioSection";
 import { TestimonialsSection } from "@/features/portfolio/components/TestimonialsSection";
 import { AchievementsSection } from "@/features/portfolio/components/AchievementsSection";
 import { CTASection } from "@/components/CTASection";
+import { NewsletterSection } from "@/components/ui/NewsletterSection";
 import { fetchProjects } from "@/features/portfolio/lib/fetchProjects";
 
 export default async function HomePage() {
@@ -17,6 +18,7 @@ export default async function HomePage() {
       <TestimonialsSection />
       <StudioSection />
       <CTASection />
+      <NewsletterSection />
     </div>
   );
 }

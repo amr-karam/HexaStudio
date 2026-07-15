@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display, JetBrains_Mono } from "next/font/google";
 import { AppProviders } from "@/providers/app-providers";
 import { Navbar } from "@/components/ui/nav/Navbar";
@@ -29,6 +29,13 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#050508" },
+  ],
+};
+
 export const metadata: Metadata = {
   title: {
     default: "HexaStudio — 3D Architectural Visualization",
@@ -50,10 +57,6 @@ export const metadata: Metadata = {
       "x-default": "https://hexastudio.net",
     },
   },
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#050508" },
-  ],
   openGraph: {
     title: "HexaStudio — Living Spaces. Visualized.",
     description:

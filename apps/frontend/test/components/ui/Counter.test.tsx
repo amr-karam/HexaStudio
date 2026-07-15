@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import type { ReactNode } from 'react';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import { screen } from '@testing-library/dom';
 import { Counter } from '@/components/ui/Counter';
 
 // Mock framer-motion to avoid animation issues in tests

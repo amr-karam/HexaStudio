@@ -15,6 +15,7 @@ interface Article {
   content?: unknown[];
   coverImage?: string;
   readTime?: number;
+  publishedAt?: string;
   category?: { name: string };
 }
 
@@ -69,7 +70,7 @@ export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
             >
               <span>{article.readTime} min read</span>
               <span className="w-1 h-1 rounded-full bg-neutral-600" />
-              <span>Published 2026</span>
+              <span>{article.publishedAt ? new Date(article.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Coming soon'}</span>
             </motion.div>
           </div>
         </div>
