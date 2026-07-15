@@ -5,11 +5,14 @@ BACKUP_DIR="${BACKUP_DIR:-/backups}"
 PG_HOST="${POSTGRES_HOST:-postgres}"
 PG_USER="${POSTGRES_USER:-hexastudio}"
 PG_PASS="${POSTGRES_PASSWORD}"
-PG_DB="${POSTGRES_DB:-hexastudio}"
 MINIO_ENDPOINT="${MINIO_ENDPOINT:-minio:9000}"
 MINIO_AK="${MINIO_ACCESS_KEY:-hexastudio}"
 MINIO_SK="${MINIO_SECRET_KEY}"
 MINIO_BUCKET="${MINIO_BUCKET:-backups}"
+
+# Real application databases (POSTGRES_DB is just the default, not an app DB)
+DBS="hexastudio_api hexastudio_cms hexastudio_odoo"
+
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 
 while true; do
@@ -17,14 +20,15 @@ while true; do
 
   mkdir -p "${BACKUP_DIR}"
 
-  echo "[$(date)] Dumping ${PG_DB}..."
-  export PGPASSWORD="${PG_PASS}"
-  pg_dump -h "${PG_HOST}" -U "${PG_USER}" -d "${PG_DB}" -Fc \
-    -f "${BACKUP_DIR}/hexastudio_api_${TIMESTAMP}.dump"
-
-  echo "[$(date)] Dumping hexastudio_cms..."
-  pg_dump -h "${PG_HOST}" -U "${PG_USER}" -d hexastudio_cms -Fc \
-    -f "${BACKUP_DIR}/hexastudio_cms_${TIMESTAMP}.dump"
+  for db in ${DBS}; do
+    out="${BACKUP_DIR}/${db}_${TIMESTAMP}.dump"
+    echo "[$(date)] Dumping ${db}..."
+    PGPASSWORD="${PG_PASS}" pg_dump -h "${PG_HOST}" -U "${PG_USER}" -d "${db}" -Fc -f "${out}"
+    if [ ! -s "${out}" ]; then
+      echo "[$(date)] WARNING: ${db} dump is empty, removing."
+      rm -f "${out}"
+    fi
+  done
 
   echo "[$(date)] Pruning backups older than 30 days..."
   find "${BACKUP_DIR}" -name "*.dump" -mtime +30 -delete
