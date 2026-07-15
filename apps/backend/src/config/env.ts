@@ -33,6 +33,11 @@ const envSchema = z.object({
   VECTOR_PORT: z.coerce.number().default(6333),
   VECTOR_API_KEY: z.string().optional(),
 
+  // AI / OpenAI
+  OPENAI_API_KEY: z.string().min(1).optional(),
+  OPENAI_MODEL: z.string().default('gpt-4o-mini'),
+  OPENAI_EMBEDDING_MODEL: z.string().default('text-embedding-3-small'),
+
   // Optional
   PORT: z.coerce.number().default(4000),
 

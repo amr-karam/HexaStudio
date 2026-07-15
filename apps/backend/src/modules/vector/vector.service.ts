@@ -1,14 +1,18 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit, Inject, forwardRef } from '@nestjs/common';
 import { QdrantClient } from '@qdrant/js-client-rest';
 import { getEnv } from '../../config/env';
 import { VectorEmbedding, SemanticSearchRequest, SemanticSearchResponse } from '@hexastudio/types';
+import { EmbeddingService } from '../ai/embedding.service';
 
 @Injectable()
 export class VectorService implements OnModuleInit {
   private readonly logger = new Logger(VectorService.name);
   private client: QdrantClient;
 
-  constructor() {
+  constructor(
+    @Inject(forwardRef(() => EmbeddingService))
+    private readonly embeddingService: EmbeddingService,
+  ) {
     const env = getEnv();
     this.client = new QdrantClient({
       host: env.VECTOR_HOST,
@@ -45,13 +49,10 @@ export class VectorService implements OnModuleInit {
   async search(collectionName: string, request: SemanticSearchRequest): Promise<SemanticSearchResponse> {
     try {
       const { limit = 10 } = request;
-      // In a real implementation, this would call an embedding service first.
-      // For MVP, we assume vector is passed or we placeholder here.
-      // For demo, we'll mock the vector generation.
-      const dummyVector = new Array(1536).fill(0).map(() => Math.random());
+      const vector = await this.embeddingService.generateEmbedding(request.query || '');
 
       const result = await this.client.search(collectionName, {
-        vector: dummyVector,
+        vector,
         limit,
         with_payload: true,
       });
@@ -67,6 +68,29 @@ export class VectorService implements OnModuleInit {
       };
     } catch (error) {
       this.logger.error(`Vector search error: ${error}`);
+      throw error;
+    }
+  }
+
+  async searchByVector(collectionName: string, vector: number[], limit = 10): Promise<SemanticSearchResponse> {
+    try {
+      const result = await this.client.search(collectionName, {
+        vector,
+        limit,
+        with_payload: true,
+      });
+
+      return {
+        results: result.map(r => ({
+          id: r.id.toString(),
+          vector: (r.vector as number[]) ?? [],
+          payload: (r.payload as Record<string, unknown>) ?? {},
+          score: r.score,
+        })) as VectorEmbedding[],
+        total: result.length,
+      };
+    } catch (error) {
+      this.logger.error(`Vector search by vector error: ${error}`);
       throw error;
     }
   }
