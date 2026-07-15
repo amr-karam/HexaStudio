@@ -17,5 +17,5 @@ coverage
 test-results
 playwright-report
 apps/cms
-apps/backend/node_modules
+apps/backend
 docker/data

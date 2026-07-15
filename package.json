@@ -39,7 +39,6 @@
   },
   "workspaces": [
     "apps/frontend",
-    "apps/backend",
     "packages/types",
     "packages/ui",
     "packages/utils"
