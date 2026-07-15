@@ -5,9 +5,8 @@ describe('ContactService', () => {
   let service: ContactService;
 
   beforeAll(() => {
-    const mockEmailService = { sendEmail: vi.fn().mockResolvedValue(undefined) };
     const mockOdooService = { create: vi.fn().mockResolvedValue(1) };
-    service = new ContactService(mockEmailService as any, mockOdooService as any);
+    service = new ContactService(mockOdooService as any);
   });
 
   it('sendMessage returns success for valid message', async () => {

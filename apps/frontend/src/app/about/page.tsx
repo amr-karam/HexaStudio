@@ -24,7 +24,7 @@ const values = [
 export default function AboutPage() {
   return (
     <div className="bg-background text-foreground">
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-8 overflow-hidden">
+      <section className="relative min-h-screen flex flex-col items-center justify-center px-8 pt-20 overflow-hidden">
         <div className="text-center relative z-10">
           <motion.span
             initial={{ opacity: 0, y: 10 }}
@@ -138,6 +138,52 @@ export default function AboutPage() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="px-8 md:px-16 py-32 border-t border-border/30">
+        <div className="w-full text-center">
+          <motion.span
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
+          >
+            Work With Us
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="text-4xl md:text-6xl font-serif font-light tracking-tight text-foreground mb-8 leading-tight"
+          >
+            Ready to <span className="italic text-accent">Collaborate?</span>
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="text-neutral-400 font-light leading-relaxed mb-12 max-w-2xl mx-auto"
+          >
+            We partner with architects, developers, and visionaries worldwide. Let&apos;s create something extraordinary together.
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <Link href="/contact">
+              <Button variant="primary" size="lg" className="group">
+                Start a Conversation
+                <span className="ml-3 transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
+              </Button>
+            </Link>
+          </motion.div>
         </div>
       </section>
     </div>

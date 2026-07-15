@@ -83,10 +83,24 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /opt/hexastudio
-            # Copy deployment script from repo to server (assuming it's already there via git pull)
-            # Since we are in a GitHub Action, the repo is checked out. 
-            # We can use scp or just write the script to the server.
-            # For now, we assume the script is committed to the repo and pulled.
             git pull origin main
             bash scripts/deploy-zero-downtime.sh
             docker image prune -f
+
+      - name: Post-deploy Healthcheck
+        uses: appleboy/ssh-action@v1
+        with:
+          host: 19.16.1.100
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "Waiting for services to settle..."
+            sleep 15
+            echo "Checking container health..."
+            docker ps --filter "health=healthy" --format "{{.Names}}" | grep -q "hexa-backend" || { echo "Backend unhealthy"; exit 1; }
+            docker ps --filter "health=healthy" --format "{{.Names}}" | grep -q "hexa-frontend" || { echo "Frontend unhealthy"; exit 1; }
+            docker ps --filter "health=healthy" --format "{{.Names}}" | grep -q "hexa-cms" || { echo "CMS unhealthy"; exit 1; }
+            echo "All core containers healthy."
+            echo "Verifying API endpoint..."
+            curl -sf http://localhost:4000/api/health || { echo "API health endpoint unreachable"; exit 1; }
+            echo "Deployment verified successfully."

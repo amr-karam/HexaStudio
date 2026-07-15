@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/inputs/Input';
 import { TextReveal } from '@/components/ui/TextReveal';
@@ -186,10 +187,10 @@ export default function ContactPage() {
           )}
         </AnimatePresence>
 
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 pointer-events-none">
-          <span className="text-xs uppercase tracking-widest text-neutral-600 font-mono">Back to top</span>
-          <div className="h-12 w-[1px] bg-gradient-to-b from-neutral-600 to-transparent" />
-        </div>
+        <Link href="/" className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 group">
+          <span className="text-xs uppercase tracking-widest text-neutral-600 font-mono group-hover:text-accent transition-colors duration-500">Back to Home</span>
+          <div className="h-12 w-[1px] bg-gradient-to-b from-neutral-600 to-transparent group-hover:from-accent transition-colors duration-500" />
+        </Link>
       </section>
     </div>
   );

@@ -7,19 +7,19 @@ import { ProjectsService } from '../../src/modules/projects/projects.service';
 
 describe('RecommendationService', () => {
   let service: RecommendationService;
-  let vectorService: jest.Mocked<VectorService>;
-  let embeddingService: jest.Mocked<EmbeddingService>;
-  let projectsService: jest.Mocked<ProjectsService>;
+  let vectorService: VectorService;
+  let embeddingService: EmbeddingService;
+  let projectsService: ProjectsService;
 
   beforeEach(async () => {
     const mockVectorService = {
-      searchByVector: jest.fn(),
+      searchByVector: vi.fn(),
     };
     const mockEmbeddingService = {
-      generateEmbedding: jest.fn(),
+      generateEmbedding: vi.fn(),
     };
     const mockProjectsService = {
-      getProjectBySlug: jest.fn(),
+      getProjectBySlug: vi.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -42,10 +42,10 @@ describe('RecommendationService', () => {
   });
 
   it('should return empty array if project is not found', async () => {
-    projectsService.getProjectBySlug.mockResolvedValue(null as any);
+    (projectsService.getProjectBySlug as any).mockResolvedValue(null as any);
     const result = await service.getSimilarProjects('non-existent');
     expect(result).toEqual([]);
-    expect(embeddingService.generateEmbedding).not.toHaveBeenCalled();
+    expect((embeddingService as any).generateEmbedding).not.toHaveBeenCalled();
   });
 
   it('should return similar projects excluding the source project', async () => {
@@ -55,10 +55,10 @@ describe('RecommendationService', () => {
       description: 'Desc',
       services: ['web'],
     };
-    projectsService.getProjectBySlug.mockResolvedValue(mockProject as any);
-    embeddingService.generateEmbedding.mockResolvedValue([0.1, 0.2, 0.3] as any);
+    (projectsService.getProjectBySlug as any).mockResolvedValue(mockProject as any);
+    (embeddingService as any).generateEmbedding.mockResolvedValue([0.1, 0.2, 0.3] as any);
 
-    vectorService.searchByVector.mockResolvedValue({
+    (vectorService as any).searchByVector.mockResolvedValue({
       results: [
         { payload: { slug: 'test-project', title: 'Test', category: 'cat' }, score: 1.0 },
         { payload: { slug: 'other-project', title: 'Other', category: 'cat' }, score: 0.9 },
@@ -69,11 +69,11 @@ describe('RecommendationService', () => {
     expect(result).toEqual([
       { slug: 'other-project', title: 'Other', category: 'cat', score: 0.9 },
     ]);
-    expect(vectorService.searchByVector).toHaveBeenCalledWith('projects', [0.1, 0.2, 0.3], 6);
+    expect((vectorService as any).searchByVector).toHaveBeenCalledWith('projects', [0.1, 0.2, 0.3], 6);
   });
 
   it('should handle errors gracefully and return empty array', async () => {
-    projectsService.getProjectBySlug.mockRejectedValue(new Error('DB Error'));
+    (projectsService.getProjectBySlug as any).mockRejectedValue(new Error('DB Error'));
     const result = await service.getSimilarProjects('test-project');
     expect(result).toEqual([]);
   });

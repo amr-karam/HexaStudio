@@ -10,13 +10,13 @@ export default async function HomePage() {
   const projectsData = await fetchProjects();
 
   return (
-    <>
+    <div className="bg-background">
       <HomeHero />
       <AchievementsSection />
       <ProjectGrid projects={projectsData.projects ?? []} />
       <TestimonialsSection />
       <StudioSection />
       <CTASection />
-    </>
+    </div>
   );
 }

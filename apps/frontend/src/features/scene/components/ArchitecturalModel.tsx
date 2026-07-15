@@ -12,13 +12,14 @@ interface ModelProps {
   url: string;
   position?: [number, number, number];
   scale?: number;
+  paused?: boolean;
 }
 
 /**
  * ArchitecturalModel loads and displays a 3D project model with Draco compression.
  * It implements dynamic quality scaling and a cinematic entrance animation.
  */
-export const ArchitecturalModel = ({ url, position = [0, 0, 0], scale = 1 }: ModelProps) => {
+export const ArchitecturalModel = ({ url, position = [0, 0, 0], scale = 1, paused = false }: ModelProps) => {
   const { model } = useAssetLoader(url);
   const groupRef = useRef<THREE.Group>(null);
   const { isTransitioning } = useCameraStore();
@@ -92,7 +93,7 @@ export const ArchitecturalModel = ({ url, position = [0, 0, 0], scale = 1 }: Mod
   }, [model, level, scale]);
 
   useFrame(() => {
-    if (!groupRef.current || isTransitioning || !model) return;
+    if (!groupRef.current || isTransitioning || !model || paused) return;
     groupRef.current.rotation.y += 0.0005;
 
     // Distance-based LOD: adjust material complexity based on camera distance

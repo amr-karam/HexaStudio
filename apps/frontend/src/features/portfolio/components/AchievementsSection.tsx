@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { motion, animate } from 'framer-motion';
+import React, { useEffect, useState, useRef } from 'react';
+import { motion, useInView, animate } from 'framer-motion';
 
 const stats = [
   { value: 12, label: 'Countries Served', suffix: '+' },
@@ -12,18 +12,24 @@ const stats = [
 
 const StatItem = ({ stat, index }: { stat: typeof stats[0], index: number }) => {
   const [displayValue, setDisplayValue] = useState('0');
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const hasAnimated = useRef(false);
   
   useEffect(() => {
+    if (!isInView || hasAnimated.current) return;
+    hasAnimated.current = true;
     const controls = animate(0, stat.value, {
       duration: 2,
       ease: [0.16, 1, 0.3, 1],
       onUpdate: (value) => setDisplayValue(Math.round(value).toString()),
     });
     return () => controls.stop();
-  }, [stat.value]);
+  }, [isInView, stat.value]);
 
   return (
     <motion.div
+      ref={ref}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -44,7 +50,7 @@ const StatItem = ({ stat, index }: { stat: typeof stats[0], index: number }) => 
 export const AchievementsSection = () => {
   return (
     <section className="px-8 md:px-16 py-32 bg-background relative overflow-hidden">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-24 bg-gradient-to-b from-transparent via-accent/50 to-transparent" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-24 bg-gradient-to-b from-accent/30 via-accent/50 to-transparent" />
       <div className="w-full relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-16 md:gap-24">
           {stats.map((stat, idx) => (

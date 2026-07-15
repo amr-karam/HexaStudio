@@ -6,7 +6,7 @@ import Image from 'next/image';
 
 export const StudioSection = () => {
   return (
-    <section className="px-8 md:px-16 py-32 bg-surface border-y border-border/50 overflow-hidden">
+    <section className="px-8 md:px-16 py-32 bg-background relative overflow-hidden">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
         <motion.div
           initial={{ opacity: 0, x: -30 }}

@@ -157,7 +157,7 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
 
   return (
     <>
-      <section ref={sectionRef} className="px-8 md:px-16 py-32">
+      <section ref={sectionRef} className="px-8 md:px-16 py-32 bg-background">
         <div className="flex flex-col lg:flex-row justify-between items-end mb-24 gap-12">
           <div className="w-full">
               <motion.span

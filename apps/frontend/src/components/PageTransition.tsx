@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import { EASE } from '@/lib/motion';
@@ -9,6 +9,11 @@ import { useHEXAMotion } from '@/hooks/useHEXAMotion';
 export function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { reduced } = useHEXAMotion();
+
+  // Scroll to top on every route change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+  }, [pathname, reduced]);
 
   // GPU-only animation (opacity + transform). Blur filters are intentionally
   // avoided per MOTION_SYSTEM.md performance guidance. Reduced motion collapses

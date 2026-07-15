@@ -70,7 +70,7 @@ export default function ServicesPage() {
 
   return (
     <div className="bg-background text-foreground min-h-screen">
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-8 py-32 overflow-hidden">
+      <section className="relative min-h-screen flex flex-col items-center justify-center px-8 pt-20 pb-32 overflow-hidden">
         {/* Background Texture */}
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(ellipse_at_center,white,transparent)] opacity-20 pointer-events-none" />
         
@@ -140,6 +140,52 @@ export default function ServicesPage() {
               </motion.div>
             );
           })}
+        </div>
+      </section>
+
+      {/* Bottom CTA */}
+      <section className="px-8 md:px-16 py-32 border-t border-border/30">
+        <div className="w-full text-center">
+          <motion.span
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
+          >
+            Start a Project
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="text-4xl md:text-6xl font-serif font-light tracking-tight text-foreground mb-8 leading-tight"
+          >
+            Have a Vision? <span className="italic text-accent">Let&apos;s Build It.</span>
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="text-neutral-400 font-light leading-relaxed mb-12 max-w-2xl mx-auto"
+          >
+            Every great project starts with a conversation. Tell us about your vision and we&apos;ll show you how to bring it to life.
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <Link href="/contact">
+              <Button variant="primary" size="lg" className="group">
+                Get in Touch
+                <span className="ml-3 transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
+              </Button>
+            </Link>
+          </motion.div>
         </div>
       </section>
     </div>

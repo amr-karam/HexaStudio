@@ -16,6 +16,7 @@ export class VectorController {
     private readonly recommendationService: RecommendationService,
     private readonly autoTagService: AutoTagService,
     private readonly projectsService: ProjectsService,
+    private readonly lightingService: LightingService,
   ) {}
 
   @Post('search')

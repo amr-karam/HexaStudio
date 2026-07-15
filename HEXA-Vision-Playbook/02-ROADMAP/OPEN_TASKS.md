@@ -62,7 +62,7 @@ Elevating `apps/frontend` to HEXA Creative Excellence standard. All gates green
 | **FE-005** | Propagate motion system to `FadeIn` / `TextReveal` (reduced-motion safe) | ✅ Done |
 | **FE-006** | `matchMedia` polyfill in test setup (`test/setup.ts`) for jsdom | ✅ Done |
 | **FE-007** | Frontend Excellence Handbook (`07-DESIGN/FRONTEND_EXCELLENCE.md`) | ✅ Done |
-| **FE-008** | Remove dead `src/components/three/Scene.tsx` (superseded by `features/scene`) | ⏳ Pending arch decision (do NOT delete without approval) |
+| **FE-008** | Remove dead `src/components/three/Scene.tsx` (superseded by `features/scene`) | ✅ Done (TIER 1) |
 | **FE-009** | `PageTransition` — drop GPU-costly `blur()` filter, source easing from `EASE.entrance`, reduced-motion crossfade | ✅ Done |
 | **FE-010** | `CustomCursor` — disable on touch (coarse pointer) + reduced motion; `aria-hidden` | ✅ Done |
 | **FE-011** | `Magnetic` — disable pull on reduced motion / coarse pointer (static wrapper fallback) | ✅ Done |

@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ContactMessage } from '@hexastudio/types';
-import { EmailService } from '../email/email.service';
 import { OdooService } from '../odoo/odoo.service';
 
 @Injectable()
@@ -8,7 +7,6 @@ export class ContactService {
   private readonly logger = new Logger(ContactService.name);
 
   constructor(
-    private readonly emailService: EmailService,
     private readonly odooService: OdooService,
   ) {}
 
@@ -25,16 +23,6 @@ export class ContactService {
       });
       this.logger.log(`Created Odoo CRM lead #${leadId} for ${message.email}`);
 
-      // Try to send email notification (non-blocking)
-      try {
-        await this.emailService.sendEmail(
-          'info@hexastudio.net',
-          `New Contact Request from ${message.name}`,
-          `From: ${message.email}\nCompany: ${message.company}\nMessage: ${message.message}`
-        );
-      } catch (emailError) {
-        this.logger.warn(`Email notification failed (non-critical): ${emailError}`);
-      }
       
       return {
         success: true,
