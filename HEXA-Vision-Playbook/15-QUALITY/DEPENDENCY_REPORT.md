@@ -106,6 +106,31 @@
 
 ---
 
-## 8. Summary
+## 8. Security Vulnerabilities (npm audit — 2026-07-15)
 
-Cutting-edge, modern stack with **no legacy dependencies**. Primary risks are version instability, missing declared dependencies, and Docker workspace resolution. No outdated security-critical packages detected.
+`npm audit --omit=dev` against the current lockfile reports **35 vulnerabilities (11 high, 18 moderate, 6 low)**, all surfaced by GitHub Dependabot on `main`.
+
+### Root Causes (all transitive / indirect)
+
+| Advisory Chain | Issue | Severity | Fix Path |
+|----------------|-------|----------|----------|
+| `@ai-sdk/provider-utils` ≤3.0.97 (Uncontrolled Resource Consumption) → `ai`, `@ai-sdk/react`, `@ai-sdk/gateway` → **Strapi 5** (`@strapi/strapi`) | Resource exhaustion | High | `npm audit fix --force` → downgrades `@strapi/strapi` to `4.26.2` (**major breaking**) |
+| `@nestjs/core` ≤11.1.17 (Injection) → `@nestjs/platform-express` | Injection | Moderate | `npm audit fix --force` → `@nestjs/core@11.1.28` (flagged breaking) |
+| `express` / `body-parser` / `multer` / `vite` transitives (via Strapi & tooling) | Various | Moderate | Requires `--force` bump |
+
+### Decision & Remediation Plan
+
+- **Do NOT apply `npm audit fix --force` to the live production system.** Every available fix is a breaking change (notably a Strapi 5 → 4 downgrade and NestJS major bump) that would require a full rebuild + regression test of backend and CMS before any deploy. The production stack on `19.16.1.100` is currently healthy and must not be destabilized.
+- **Accept as known risk** for the current release; track via Dependabot on GitHub (`amr-karam/HexaStudio`).
+- **Schedule a Dependency Upgrade Sprint** (Phase: Maintenance) to:
+  1. Upgrade Strapi 5 to the latest patched 5.x (avoid the 4.x downgrade) — addresses the `@ai-sdk/*` chain via Strapi's own bump.
+  2. Bump `@nestjs/*` to the patched 11.1.x line with a backend test pass.
+  3. Refresh `vite` / `express` transitives via a clean `npm install --legacy-peer-deps` + lockfile reconcile.
+  4. Re-run `npm audit` and confirm 0 high/critical before promoting to production.
+- Add `npm audit` as a CI gate (ref. Risk Analysis row "No Dependabot / audit CI").
+
+---
+
+## 9. Summary
+
+Cutting-edge, modern stack with **no legacy dependencies**. Primary risks are version instability, missing declared dependencies, and Docker workspace resolution. **35 known npm audit vulnerabilities exist (11 high / 18 moderate / 6 low)** — all transitive and requiring breaking upgrades; accepted as known risk pending a scheduled Dependency Upgrade Sprint (see §8).
