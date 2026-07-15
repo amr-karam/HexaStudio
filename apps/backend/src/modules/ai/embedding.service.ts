@@ -1,23 +1,52 @@
-import { Injectable, Logger, Inject, forwardRef } from '@nestjs/common';
+import { Injectable, Logger, Inject, forwardRef, OnModuleInit } from '@nestjs/common';
+import OpenAI from 'openai';
 import { VectorService } from '../vector/vector.service';
 import { Project } from '@hexastudio/types';
-
+import { getEnv, Env } from '../../config/env';
 
 @Injectable()
-export class EmbeddingService {
+export class EmbeddingService implements OnModuleInit {
   private readonly logger = new Logger(EmbeddingService.name);
+  private openai: OpenAI | null = null;
+  private env: Env;
+  private readonly EMBEDDING_DIMENSIONS = 1536;
 
   constructor(
     @Inject(forwardRef(() => VectorService))
-    private readonly vectorService: VectorService
-  ) {}
+    private readonly vectorService: VectorService,
+  ) {
+    this.env = getEnv();
+  }
+
+  onModuleInit() {
+    if (this.env.OPENAI_API_KEY) {
+      this.openai = new OpenAI({ apiKey: this.env.OPENAI_API_KEY });
+      this.logger.log('OpenAI client initialized — real embeddings enabled');
+    } else {
+      this.logger.warn('OPENAI_API_KEY not set — using placeholder embeddings (dev mode)');
+    }
+  }
+
+  async generateEmbedding(text: string): Promise<number[]> {
+    if (this.openai) {
+      try {
+        const response = await this.openai.embeddings.create({
+          model: this.env.OPENAI_EMBEDDING_MODEL,
+          input: text,
+        });
+        return response.data[0].embedding;
+      } catch (error) {
+        this.logger.error(`OpenAI embedding failed, falling back to placeholder: ${error}`);
+        return this.generatePlaceholderVector(text);
+      }
+    }
+    return this.generatePlaceholderVector(text);
+  }
 
   async embedProject(project: Project): Promise<void> {
     try {
       const text = `${project.title}\n${project.description}\n${(project.services || []).join(', ')}`;
-      // In real implementation, call embedding API (OpenAI/Azure)
-      // For MVP, we store the raw payload and a placeholder vector
-      const vector = this.generatePlaceholderVector(text);
+      const vector = await this.generateEmbedding(text);
       await this.vectorService.upsert('projects', [
         {
           id: project.id,
@@ -37,10 +66,15 @@ export class EmbeddingService {
   }
 
   private generatePlaceholderVector(text: string): number[] {
-    // Deterministic pseudo-embedding for MVP (real impl uses model)
-    const vector = new Array(1536).fill(0);
+    const vector = new Array(this.EMBEDDING_DIMENSIONS).fill(0);
     for (let i = 0; i < text.length; i++) {
-      vector[i % 1536] += text.charCodeAt(i);
+      vector[i % this.EMBEDDING_DIMENSIONS] += text.charCodeAt(i);
+    }
+    const magnitude = Math.sqrt(vector.reduce((sum, v) => sum + v * v, 0));
+    if (magnitude > 0) {
+      for (let i = 0; i < vector.length; i++) {
+        vector[i] /= magnitude;
+      }
     }
     return vector;
   }

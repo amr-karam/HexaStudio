@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type ElementType } from 'react';
 import Image from 'next/image';
 
 interface StrapiTextNode {
@@ -65,8 +65,8 @@ function renderBlock(block: StrapiBlock, key: string): React.ReactNode {
 
     case 'heading': {
       const level = block.level ?? 2;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const Tag = `h${level}` as any;
+      const headingTags: Record<number, ElementType> = { 1: 'h1', 2: 'h2', 3: 'h3', 4: 'h4' };
+      const Tag: ElementType = headingTags[level] ?? 'h2';
       const sizeClass =
         level === 1
           ? 'text-4xl md:text-5xl'
@@ -87,8 +87,7 @@ function renderBlock(block: StrapiBlock, key: string): React.ReactNode {
     }
 
     case 'list': {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const Tag = (block.format === 'ordered' ? 'ol' : 'ul') as any;
+      const Tag: ElementType = block.format === 'ordered' ? 'ol' : 'ul';
       const listClass =
         block.format === 'ordered'
           ? 'list-decimal list-inside'
