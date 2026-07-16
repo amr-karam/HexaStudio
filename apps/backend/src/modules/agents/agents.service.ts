@@ -1,12 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
 import OpenAI from 'openai';
-import { ToolRegistry, ToolDefinition } from './tools';
+import { ChatCompletionMessageParam, ChatCompletionTool } from 'openai/resources/chat/completions';
+import { ToolRegistry } from './tools';
 import { getEnv, Env } from '../../config/env';
 
 interface ChatMessage {
   role: 'system' | 'user' | 'assistant' | 'tool';
   content: string | null;
-  tool_calls?: any[];
+  tool_calls?: OpenAI.Chat.Completions.ChatCompletionMessageToolCall[];
   tool_call_id?: string;
 }
 
@@ -56,11 +57,11 @@ Answer concisely and professionally. When citing projects, include their titles 
           description: t.description,
           parameters: t.parameters,
         },
-      }));
+      })) as ChatCompletionTool[];
 
       const response = await this.openai!.chat.completions.create({
         model: this.env.OPENAI_MODEL,
-        messages: messages as any,
+        messages: messages as ChatCompletionMessageParam[],
         tools: openaiTools,
         tool_choice: 'auto',
         temperature: 0.3,
@@ -85,7 +86,7 @@ Answer concisely and professionally. When citing projects, include their titles 
         if (call.type !== 'function') continue;
         toolCalls++;
 
-        let params: Record<string, any> = {};
+        let params: Record<string, unknown> = {};
         try {
           params = JSON.parse(call.function.arguments);
         } catch {

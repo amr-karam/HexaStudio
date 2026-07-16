@@ -81,14 +81,23 @@ export class ToolRegistry {
     ];
   }
 
-  async execute(name: string, params: Record<string, any>): Promise<string> {
+  async execute(name: string, params: Record<string, unknown>): Promise<string> {
     this.logger.log(`Executing tool: ${name}(${JSON.stringify(params)})`);
+
+    const getString = (key: string): string => {
+      const val = params[key];
+      return typeof val === 'string' ? val : '';
+    };
+    const getNumber = (key: string, defaultVal: number): number => {
+      const val = params[key];
+      return typeof val === 'number' ? val : defaultVal;
+    };
 
     switch (name) {
       case 'search_projects': {
         const result = await this.vectorService.search('projects', {
-          query: params.query,
-          limit: params.limit ?? 5,
+          query: getString('query'),
+          limit: getNumber('limit', 5),
         });
         return JSON.stringify(result.results.map(r => ({
           slug: r.payload?.slug,
@@ -98,7 +107,8 @@ export class ToolRegistry {
       }
 
       case 'get_project': {
-        const project = await this.projectsService.getProjectBySlug(params.slug);
+        const slug = getString('slug');
+        const project = await this.projectsService.getProjectBySlug(slug);
         if (!project) return JSON.stringify({ error: 'Project not found' });
         return JSON.stringify({
           title: project.title,
@@ -111,12 +121,14 @@ export class ToolRegistry {
       }
 
       case 'get_similar_projects': {
-        const results = await this.recommendationService.getSimilarProjects(params.slug, params.limit ?? 3);
+        const slug = getString('slug');
+        const results = await this.recommendationService.getSimilarProjects(slug, getNumber('limit', 3));
         return JSON.stringify(results);
       }
 
       case 'generate_summary': {
-        const project = await this.projectsService.getProjectBySlug(params.slug);
+        const slug = getString('slug');
+        const project = await this.projectsService.getProjectBySlug(slug);
         if (!project) return JSON.stringify({ error: 'Project not found' });
         const summary = await this.summaryService.generateSummary(project);
         return JSON.stringify({ summary });
