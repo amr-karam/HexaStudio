@@ -236,7 +236,9 @@ export type WebhookEvent =
   | 'project:create'
   | 'phase:submit'
   | 'phase:approve'
-  | 'phase:reject';
+  | 'phase:reject'
+  | 'figma:update'
+  | 'figma:comment';
 
 export interface WebhookConfig {
   id: string;
