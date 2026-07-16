@@ -111,8 +111,8 @@ Complete the remaining 40% of Sprint 11 deliverables: connect HEXA to the tools 
 - [x] **Webhook CRUD API** — Centralized webhook URL management with full CRUD + toggle
 - [x] **Webhook Dispatcher** — Generic event-to-webhook dispatcher (`WebhookDispatcher`) routing via `WebhookConfigService.findByEvent()`
 - [x] **Integration Hub Dashboard** — Frontend admin page at `/dashboard/integrations/` with webhook list, create/edit form, toggle, delete, empty state
-- [ ] **Notion/Jira/Linear Integration** — Additional integration services
-- [ ] **Figma Webhook** — Design file change notifications
+- [x] **Notion/Jira/Linear Integration** — Notion + Jira modules (controllers/services), frontend NotionPanel/JiraPanel in Integration Hub, env vars wired
+- [x] **Figma Webhook** — `figma:update`/`figma:comment` event options in Integration Hub (delivered via generic WebhookDispatcher)
 
 ### 📊 Analytics & Observability
 - [x] **Analytics Provider** — Universal abstraction with PostHog and GA4 support (`lib/analytics/`)
@@ -219,6 +219,12 @@ Complete the remaining 40% of Sprint 11 deliverables: connect HEXA to the tools 
 | `apps/frontend/src/features/services/hooks/useServices.ts` | MODIFIED — Passes locale query param |
 | `apps/frontend/src/features/integrations/api-translations.ts` | NEW — Translation API client |
 | `apps/frontend/src/app/dashboard/translations/page.tsx` | NEW — Translation Workflow dashboard |
+| `apps/backend/src/modules/integrations/notion/notion.controller.ts` | NEW — Notion status/databases/sync endpoints (`/integrations/notion`) |
+| `apps/backend/src/modules/integrations/notion/notion.service.ts` | NEW — Notion API client |
+| `apps/backend/src/modules/integrations/jira/jira.controller.ts` | NEW — Jira status/projects/issues endpoints (`/integrations/jira`) |
+| `apps/backend/src/modules/integrations/jira/jira.service.ts` | NEW — Jira API client |
+| `apps/frontend/src/features/integrations/api-integrations.ts` | NEW — Notion/Jira frontend API client |
+| `apps/frontend/src/app/dashboard/integrations/page.tsx` | MODIFIED — Added NotionPanel + JiraPanel (External Tools section) |
 
 ---
 

@@ -212,20 +212,12 @@ Elevating `apps/frontend` to HEXA Creative Excellence standard. All gates green
 
 | Task ID | Description | Story Points | Dependencies |
 |---------|-------------|-------------|--------------|
-| **S12-P1-001** | Notion Integration — Sync project milestones, task status | M | Webhooks |
-| **S12-P1-002** | Jira/Linear Integration — Bidirectional issue sync | M | Webhooks |
-| **S12-P1-003** | Figma Webhook — Design file change notifications | M | Webhooks |
+| **S12-P1-001** | Notion Integration — Sync project milestones, task status | M | Webhooks | ✅ Done |
+| **S12-P1-002** | Jira/Linear Integration — Bidirectional issue sync | M | Webhooks | ✅ Done |
+| **S12-P1-003** | Figma Webhook — Design file change notifications | M | Webhooks | ✅ Done (generic dispatcher + `figma:update`/`figma:comment` event options) |
 | **S12-P1-005** | VR Collaboration — Multi-user design reviews (basic sync) | XL | WebSocket, WebXR |
 | **S12-P1-006** | Currency/Localization — Dynamic pricing per region, tax compliance | M | i18n infra |
 | **S12-P1-007** | Next.js 16 Upgrade Assessment — **DONE: Defer to v16.3+** (see report below) | M | — |
-
-### 🔵 P2: MEDIUM
-
-| Task ID | Description | Story Points | Dependencies |
-|---------|-------------|-------------|--------------|
-| **S12-P2-003** | Advanced Analytics — Custom dashboard builder, CSV export | L | PostHog/GA4 |
-| **S12-P2-005** | Backend Test Recovery — Resolve NTFS corruption blocking vitest | M | — |
-| **S12-P2-006** | Sentry Release Health — Release tracking, error rate alerts, session replay | M | Sentry v10 |
 | **S12-P2-007** | Playbook Sync — Document Sprint 12 learnings | S | — |
 
 ---

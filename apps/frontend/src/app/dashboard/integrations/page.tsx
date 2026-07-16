@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { webhookApi, type WebhookConfig, type CreateWebhookDto } from '@/features/integrations/api';
+import { notionApi, jiraApi } from '@/features/integrations/api-integrations';
 import { toast } from 'sonner';
 
 const EVENT_OPTIONS = [
@@ -12,6 +13,8 @@ const EVENT_OPTIONS = [
   { value: 'phase:submit', label: 'Phase Submitted' },
   { value: 'phase:approve', label: 'Phase Approved' },
   { value: 'phase:reject', label: 'Phase Rejected' },
+  { value: 'figma:update', label: 'Figma File Updated' },
+  { value: 'figma:comment', label: 'Figma Comment Added' },
 ];
 
 function EmptyState({ onAdd }: { onAdd: () => void }) {
@@ -169,6 +172,80 @@ function WebhookForm({
         </button>
       </div>
     </form>
+  );
+}
+
+function NotionPanel() {
+  const [status, setStatus] = useState<{ configured: boolean } | null>(null);
+  const [databases, setDatabases] = useState<Array<{ id: string; title: string }>>([]);
+
+  useEffect(() => {
+    notionApi.status().then(setStatus).catch(() => {});
+    notionApi.databases().then(setDatabases).catch(() => {});
+  }, []);
+
+  return (
+    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5 transition-colors hover:border-white/20">
+      <div className="mb-3 flex items-center gap-3">
+        <span className="text-xl">📋</span>
+        <div>
+          <h3 className="font-medium text-white">Notion</h3>
+          <p className="text-xs text-white/40">Sync project milestones & task status</p>
+        </div>
+        <span className={`ml-auto rounded-full px-2 py-0.5 text-[10px] ${status?.configured ? 'bg-green-500/20 text-green-400' : 'bg-white/10 text-white/40'}`}>
+          {status?.configured ? 'Connected' : 'Not configured'}
+        </span>
+      </div>
+      {status?.configured && databases.length > 0 && (
+        <div className="space-y-1">
+          {databases.slice(0, 3).map((db) => (
+            <div key={db.id} className="rounded-md bg-white/5 px-3 py-1.5 text-xs text-white/60">
+              {db.title}
+            </div>
+          ))}
+        </div>
+      )}
+      {!status?.configured && (
+        <p className="text-xs text-white/30">Set NOTION_API_KEY in environment variables</p>
+      )}
+    </div>
+  );
+}
+
+function JiraPanel() {
+  const [status, setStatus] = useState<{ configured: boolean } | null>(null);
+  const [projects, setProjects] = useState<Array<{ key: string; name: string }>>([]);
+
+  useEffect(() => {
+    jiraApi.status().then(setStatus).catch(() => {});
+    jiraApi.projects().then(setProjects).catch(() => {});
+  }, []);
+
+  return (
+    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5 transition-colors hover:border-white/20">
+      <div className="mb-3 flex items-center gap-3">
+        <span className="text-xl">🔧</span>
+        <div>
+          <h3 className="font-medium text-white">Jira / Linear</h3>
+          <p className="text-xs text-white/40">Bidirectional issue sync</p>
+        </div>
+        <span className={`ml-auto rounded-full px-2 py-0.5 text-[10px] ${status?.configured ? 'bg-green-500/20 text-green-400' : 'bg-white/10 text-white/40'}`}>
+          {status?.configured ? 'Connected' : 'Not configured'}
+        </span>
+      </div>
+      {status?.configured && projects.length > 0 && (
+        <div className="space-y-1">
+          {projects.slice(0, 3).map((p) => (
+            <div key={p.key} className="rounded-md bg-white/5 px-3 py-1.5 text-xs text-white/60">
+              {p.name} <span className="text-white/30">({p.key})</span>
+            </div>
+          ))}
+        </div>
+      )}
+      {!status?.configured && (
+        <p className="text-xs text-white/30">Set JIRA_* environment variables</p>
+      )}
+    </div>
   );
 }
 
