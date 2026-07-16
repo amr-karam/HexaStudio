@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { AccountingService } from './accounting.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -6,7 +6,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 @ApiTags('Accounting')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('accounting')
+@Controller({ path: 'accounting', version: VERSION_NEUTRAL })
 export class AccountingController {
   constructor(private readonly accountingService: AccountingService) {}
 

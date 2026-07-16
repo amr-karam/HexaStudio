@@ -1,18 +1,18 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import { Project } from '@hexastudio/types';
-import { getEnv, Env } from '../../config/env';
+import { Env } from '../../config/env';
 
 @Injectable()
 export class AutoTagService {
   private readonly logger = new Logger(AutoTagService.name);
   private openai: OpenAI | null = null;
-  private env: Env;
 
-  constructor() {
-    this.env = getEnv();
-    if (this.env.OPENAI_API_KEY) {
-      this.openai = new OpenAI({ apiKey: this.env.OPENAI_API_KEY });
+  constructor(private configService: ConfigService<Env>) {
+    const apiKey = this.configService.get('OPENAI_API_KEY');
+    if (apiKey) {
+      this.openai = new OpenAI({ apiKey });
     }
   }
 
@@ -33,7 +33,7 @@ Return ONLY a JSON array of strings, e.g. ["tag1", "tag2"].
 Focus on: architecture style, materials, project type, location context, design features.`;
 
       const response = await this.openai!.chat.completions.create({
-        model: this.env.OPENAI_MODEL,
+        model: this.configService.get<string>('OPENAI_MODEL')!,
         messages: [
           { role: 'system', content: 'You are a tag generator for an architecture portfolio. Return only valid JSON arrays of strings.' },
           { role: 'user', content: prompt },

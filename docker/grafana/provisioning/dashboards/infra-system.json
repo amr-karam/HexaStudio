@@ -1,0 +1,121 @@
+{
+  "dashboard": {
+    "title": "Infrastructure - System Resources",
+    "uid": "hexa-infra-system",
+    "tags": ["hexa", "infrastructure", "system"],
+    "timezone": "utc",
+    "schemaVersion": 16,
+    "version": 1,
+    "refresh": "10s",
+    "time": {"from": "now-1h", "to": "now"},
+    "panels": [
+      {
+        "title": "CPU Usage by Container",
+        "type": "graph",
+        "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "sum(rate(container_cpu_usage_seconds_total{container!=\"\"}[1m])) by (container)",
+            "legendFormat": "{{container}}",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [{"format": "percentunit", "label": "CPU %", "max": 100}, {"format": "short"}],
+        "thresholds": [{"value": 70, "colorMode": "warning", "op": "gt"}, {"value": 90, "colorMode": "critical", "op": "gt"}]
+      },
+      {
+        "title": "Memory Usage by Container",
+        "type": "graph",
+        "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "sum(container_memory_usage_bytes{container!=\"\"}) by (container) / sum(container_spec_memory_limit_bytes{container!=\"\"}) by (container) * 100",
+            "legendFormat": "{{container}}",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [{"format": "percentunit", "label": "Memory %", "max": 100}, {"format": "short"}],
+        "thresholds": [{"value": 75, "colorMode": "warning", "op": "gt"}, {"value": 90, "colorMode": "critical", "op": "gt"}]
+      },
+      {
+        "title": "Disk Usage",
+        "type": "graph",
+        "gridPos": {"x": 0, "y": 8, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "(node_filesystem_size_bytes - node_filesystem_free_bytes) / node_filesystem_size_bytes * 100",
+            "legendFormat": "{{mountpoint}}",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [{"format": "percentunit", "label": "Disk %", "max": 100}, {"format": "short"}],
+        "thresholds": [{"value": 75, "colorMode": "warning", "op": "gt"}, {"value": 90, "colorMode": "critical", "op": "gt"}]
+      },
+      {
+        "title": "Network I/O",
+        "type": "graph",
+        "gridPos": {"x": 12, "y": 8, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "rate(node_network_receive_bytes_total[5m])",
+            "legendFormat": "RX {{device}}",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(node_network_transmit_bytes_total[5m])",
+            "legendFormat": "TX {{device}}",
+            "refId": "B"
+          }
+        ],
+        "yAxes": [{"format": "Bps", "label": "Bytes/sec"}, {"format": "short"}]
+      },
+      {
+        "title": "Container Restarts (last 1h)",
+        "type": "stat",
+        "gridPos": {"x": 0, "y": 16, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "increase(container_restart_count[1h])",
+            "legendFormat": "{{container}}",
+            "refId": "A"
+          }
+        ],
+        "thresholds": [{"value": 0, "colorMode": "ok"}, {"value": 1, "colorMode": "warning"}, {"value": 5, "colorMode": "critical"}]
+      },
+      {
+        "title": "Load Average (1m / 5m / 15m)",
+        "type": "graph",
+        "gridPos": {"x": 6, "y": 16, "w": 12, "h": 8},
+        "targets": [
+          {"expr": "node_load1", "legendFormat": "1m", "refId": "A"},
+          {"expr": "node_load5", "legendFormat": "5m", "refId": "B"},
+          {"expr": "node_load15", "legendFormat": "15m", "refId": "C"}
+        ],
+        "yAxes": [{"format": "short", "label": "Load"}, {"format": "short"}]
+      },
+      {
+        "title": "PostgreSQL Connections",
+        "type": "graph",
+        "gridPos": {"x": 0, "y": 24, "w": 12, "h": 8},
+        "targets": [
+          {"expr": "pg_stat_database_numbackends{datname=\"hexastudio_api\"}", "legendFormat": "API DB", "refId": "A"},
+          {"expr": "pg_stat_database_numbackends{datname=\"hexastudio_cms\"}", "legendFormat": "CMS DB", "refId": "B"},
+          {"expr": "pg_settings_max_connections", "legendFormat": "Max", "refId": "C"}
+        ],
+        "yAxes": [{"format": "short", "label": "Connections"}, {"format": "short"}],
+        "thresholds": [{"value": 80, "colorMode": "warning", "op": "gt"}, {"value": 95, "colorMode": "critical", "op": "gt"}]
+      },
+      {
+        "title": "Redis Memory & Keys",
+        "type": "graph",
+        "gridPos": {"x": 12, "y": 24, "w": 12, "h": 8},
+        "targets": [
+          {"expr": "redis_memory_used_bytes / redis_memory_max_bytes * 100", "legendFormat": "Memory %", "refId": "A"},
+          {"expr": "redis_keyspace_keys_total", "legendFormat": "Keys", "refId": "B"}
+        ],
+        "yAxes": [{"format": "percentunit", "label": "Memory %", "max": 100}, {"format": "short", "label": "Keys"}]
+      }
+    ]
+  },
+  "overwrite": true
+}

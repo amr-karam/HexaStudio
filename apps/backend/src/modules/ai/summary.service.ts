@@ -1,18 +1,18 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import { Project } from '@hexastudio/types';
-import { getEnv, Env } from '../../config/env';
+import { Env } from '../../config/env';
 
 @Injectable()
 export class SummaryService {
   private readonly logger = new Logger(SummaryService.name);
   private openai: OpenAI | null = null;
-  private env: Env;
 
-  constructor() {
-    this.env = getEnv();
-    if (this.env.OPENAI_API_KEY) {
-      this.openai = new OpenAI({ apiKey: this.env.OPENAI_API_KEY });
+  constructor(private configService: ConfigService<Env>) {
+    const apiKey = this.configService.get('OPENAI_API_KEY');
+    if (apiKey) {
+      this.openai = new OpenAI({ apiKey });
     }
   }
 
@@ -34,7 +34,7 @@ Area: ${project.area ?? 'N/A'}
 Write in a professional, evocative tone suitable for a high-end architecture portfolio. Highlight the design philosophy, material choices, and spatial experience.`;
 
       const response = await this.openai!.chat.completions.create({
-        model: this.env.OPENAI_MODEL,
+        model: this.configService.get<string>('OPENAI_MODEL')!,
         messages: [
           { role: 'system', content: 'You are an architectural copywriter. Generate concise, evocative project summaries in plain text.' },
           { role: 'user', content: prompt },
@@ -52,6 +52,9 @@ Write in a professional, evocative tone suitable for a high-end architecture por
   }
 
   private fallbackSummary(project: Project): string {
-    return project.description || `${project.title} — ${project.category?.name ?? 'Architecture'} project.`;
+    if (project.description) {
+      return `${project.title}: ${project.description}`;
+    }
+    return `${project.title} — ${project.category?.name ?? 'Architecture'} project.`;
   }
 }

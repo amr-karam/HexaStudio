@@ -43,6 +43,10 @@ export interface Category {
 export interface ProjectResponse {
   projects: Project[];
   total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  _enrichmentError?: string;
 }
 
 export interface User {
@@ -85,6 +89,9 @@ export interface Article {
 export interface ArticleResponse {
   articles: Article[];
   total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 export interface Service {
@@ -103,6 +110,9 @@ export interface Service {
 export interface ServiceResponse {
   services: Service[];
   total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 export interface ContactMessage {
@@ -115,6 +125,8 @@ export interface ContactMessage {
 export interface AuthResponse {
   user: User;
   jwt: string;
+  accessToken?: string;
+  refreshToken?: string;
 }
 
 export interface ApiResponse<T> {

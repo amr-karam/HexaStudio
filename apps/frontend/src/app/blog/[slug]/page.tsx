@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import React from 'react';
 import { fetchArticle, fetchArticles } from '@/features/blog/lib/fetchArticles';
 import { ArticleDetailClient } from '@/features/blog/components/ArticleDetailClient';
 

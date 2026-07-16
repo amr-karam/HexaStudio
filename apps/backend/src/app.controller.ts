@@ -1,8 +1,8 @@
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Get, VERSION_NEUTRAL } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 
 @ApiTags("root")
-@Controller()
+@Controller({ version: VERSION_NEUTRAL })
 export class AppController {
   @Get()
   @ApiOperation({ summary: "API root" })

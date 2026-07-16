@@ -8,12 +8,12 @@ export async function fetchArticles(): Promise<ArticleResponse> {
     });
 
     if (!response.ok) {
-      return { articles: [], total: 0 };
+      return { articles: [], total: 0, page: 1, limit: 20, totalPages: 0 };
     }
 
     return response.json();
   } catch {
-    return { articles: [], total: 0 };
+    return { articles: [], total: 0, page: 1, limit: 20, totalPages: 0 };
   }
 }
 

@@ -1,0 +1,113 @@
+groups:
+  - name: loki-logs
+    interval: 30s
+    rules:
+      # Error rate alerts
+      - alert: HighErrorRateLogs
+        expr: |
+          sum(rate({job=~"backend|frontend"} |= "error" |~ "(?i)error|exception|fail" [5m])) 
+          / sum(rate({job=~"backend|frontend"} |~ ".*" [5m])) * 100 > 5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate in logs"
+          description: "Error log rate is {{ $value | printf \"%.2f\" }}% (threshold: 5%)"
+
+      - alert: CriticalErrorRateLogs
+        expr: |
+          sum(rate({job=~"backend|frontend"} |= "error" |~ "(?i)critical|fatal|panic" [5m])) > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical errors detected in logs"
+          description: "Critical/fatal errors detected in {{ $labels.job }}"
+
+      # Exception spikes
+      - alert: ExceptionSpike
+        expr: |
+          sum(rate({job="backend"} |~ "(?i)exception|traceback|stack trace" [5m])) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Exception spike detected"
+          description: "Exception rate is {{ $value | printf \"%.2f\" }}/sec"
+
+      # Slow query logs
+      - alert: SlowQueryLogSpike
+        expr: |
+          sum(rate({job="backend"} |~ "(?i)slow query|query took|duration.*[0-9]+ms" [5m])) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Slow query log spike"
+          description: "Slow query log rate is {{ $value | printf \"%.2f\" }}/sec"
+
+      # Authentication failures
+      - alert: AuthFailureSpike
+        expr: |
+          sum(rate({job=~"backend|frontend"} |~ "(?i)unauthorized|authentication failed|invalid token|jwt.*expired" [5m])) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Authentication failure spike"
+          description: "Auth failure rate is {{ $value | printf \"%.2f\" }}/sec"
+
+      # Database connection issues
+      - alert: DatabaseConnectionErrors
+        expr: |
+          sum(rate({job="backend"} |~ "(?i)connection.*refused|connection.*timeout|pool.*exhausted|econnrefused|etimedout" [5m])) > 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Database connection errors"
+          description: "Database connection errors detected"
+
+      # Memory/GC pressure in logs
+      - alert: GCPressureLogs
+        expr: |
+          sum(rate({job="backend"} |~ "(?i)gc.*pause|memory.*pressure|heap.*exhausted|out of memory" [5m])) > 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "GC/Memory pressure in logs"
+          description: "GC or memory pressure messages detected"
+
+      # Security events
+      - alert: SecurityEventDetected
+        expr: |
+          sum(rate({job=~"backend|frontend|nginx"} |~ "(?i)sql injection|xss|csrf|path traversal|brute force|rate limit exceeded" [5m])) > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Security event detected in logs"
+          description: "Security event: {{ $labels.job }} - {{ $labels.level }}"
+
+      # Deployment failures
+      - alert: DeploymentFailure
+        expr: |
+          sum(rate({job=~"backend|frontend"} |~ "(?i)deployment failed|build failed|rollback" [5m])) > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Deployment failure detected"
+          description: "Deployment failure mentioned in logs"
+
+      # Health check failures
+      - alert: HealthCheckFailures
+        expr: |
+          sum(rate({job=~"backend|frontend"} |~ "(?i)health check failed|readiness probe failed|liveness probe failed" [5m])) > 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Health check failures in logs"
+          description: "Health check failures detected"

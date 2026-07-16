@@ -25,21 +25,30 @@ export class ServicesService {
     return getEnv().CMS_URL;
   }
 
-  async getAllServices(): Promise<ServiceResponse> {
+  async getAllServices(page = 1, limit = 20): Promise<ServiceResponse> {
+    const safePage = Math.max(1, page);
+    const safeLimit = Math.min(100, Math.max(1, limit));
+
     const response = await firstValueFrom(
       this.httpService.get(`${this.cmsUrl}/api/services`, {
         params: {
           'populate': '*',
           'filters[isPublished][$eq]': true,
           'sort': 'order:asc',
+          'pagination[page]': safePage,
+          'pagination[pageSize]': safeLimit,
         },
       }),
     );
 
     const data = response.data;
+    const total = data.meta?.pagination?.total ?? data.data.length;
     return {
-      total: data.meta?.pagination?.total ?? data.data.length,
+      total,
       services: data.data.map((item: Record<string, unknown>) => this.mapService(item)),
+      page: safePage,
+      limit: safeLimit,
+      totalPages: Math.ceil(total / safeLimit) || 1,
     };
   }
 

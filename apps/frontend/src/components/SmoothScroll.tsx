@@ -21,6 +21,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       infinite: false,
     });
     lenisRef.current = lenis;
+    window.__lenis = lenis;
     function onFrame(time: number) {
       lenis.raf(time);
       requestAnimationFrame(onFrame);
@@ -34,6 +35,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     };
     mediaQuery.addEventListener("change", handleChange);
     return () => {
+      window.__lenis = undefined;
       lenis.destroy();
       mediaQuery.removeEventListener("change", handleChange);
     };

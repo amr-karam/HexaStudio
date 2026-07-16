@@ -1,0 +1,101 @@
+{
+  "dashboard": {
+    "title": "Backend API - RED Method",
+    "uid": "hexa-backend-red",
+    "tags": ["hexa", "backend", "red", "api"],
+    "timezone": "utc",
+    "schemaVersion": 38,
+    "version": 1,
+    "refresh": "10s",
+    "time": { "from": "now-1h", "to": "now" },
+    "panels": [
+      {
+        "title": "Request Rate (req/s)",
+        "type": "timeseries",
+        "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+        "targets": [
+          { "expr": "sum(rate(http_requests_total{job=\"backend\"}[1m]))", "legendFormat": "Total" },
+          { "expr": "sum(rate(http_requests_total{job=\"backend\",status=~\"2..\"}[1m]))", "legendFormat": "2xx" },
+          { "expr": "sum(rate(http_requests_total{job=\"backend\",status=~\"4..\"}[1m]))", "legendFormat": "4xx" },
+          { "expr": "sum(rate(http_requests_total{job=\"backend\",status=~\"5..\"}[1m]))", "legendFormat": "5xx" }
+        ],
+        "fieldConfig": { "defaults": { "unit": "reqps", "color": { "mode": "palette-classic" } } }
+      },
+      {
+        "title": "Error Rate (%)",
+        "type": "timeseries",
+        "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+        "targets": [
+          { "expr": "sum(rate(http_requests_total{job=\"backend\",status=~\"5..\"}[5m])) / sum(rate(http_requests_total{job=\"backend\"}[5m])) * 100", "legendFormat": "5xx Rate %" },
+          { "expr": "sum(rate(http_requests_total{job=\"backend\",status=~\"4..\"}[5m])) / sum(rate(http_requests_total{job=\"backend\"}[5m])) * 100", "legendFormat": "4xx Rate %" }
+        ],
+        "fieldConfig": { "defaults": { "unit": "percent", "min": 0, "max": 100, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 1 }, { "color": "red", "value": 5 }] } } }
+      },
+      {
+        "title": "Request Duration (p50, p95, p99)",
+        "type": "timeseries",
+        "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+        "targets": [
+          { "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket{job=\"backend\"}[5m])) by (le))", "legendFormat": "p50" },
+          { "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"backend\"}[5m])) by (le))", "legendFormat": "p95" },
+          { "expr": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{job=\"backend\"}[5m])) by (le))", "legendFormat": "p99" }
+        ],
+        "fieldConfig": { "defaults": { "unit": "s", "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 1 }, { "color": "red", "value": 2 }] } } }
+      },
+      {
+        "title": "Request Duration Heatmap",
+        "type": "heatmap",
+        "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+        "targets": [
+          { "expr": "sum(rate(http_request_duration_seconds_bucket{job=\"backend\"}[5m])) by (le)" }
+        ],
+        "fieldConfig": { "defaults": { "unit": "s" } }
+      },
+      {
+        "title": "Top Endpoints by Latency (p95)",
+        "type": "table",
+        "gridPos": { "x": 0, "y": 16, "w": 12, "h": 8 },
+        "targets": [
+          { "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"backend\"}[5m])) by (le, route))", "format": "table", "legendFormat": "{{route}}" }
+        ],
+        "fieldConfig": {
+          "defaults": { "unit": "s" },
+          "overrides": [{ "matcher": { "type": "byName", "options": "p95" }, "properties": [{ "type": "thresholds", "value": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 1 }, { "color": "red", "value": 2 }] }] }]
+        }
+      },
+      {
+        "title": "Top Endpoints by Error Rate",
+        "type": "table",
+        "gridPos": { "x": 12, "y": 16, "w": 12, "h": 8 },
+        "targets": [
+          { "expr": "sum(rate(http_requests_total{job=\"backend\",status=~\"5..\"}[5m])) by (route) / sum(rate(http_requests_total{job=\"backend\"}[5m])) by (route) * 100", "format": "table", "legendFormat": "{{route}}" }
+        ],
+        "fieldConfig": {
+          "defaults": { "unit": "percent" },
+          "overrides": [{ "matcher": { "type": "byName", "options": "Value" }, "properties": [{ "type": "thresholds", "value": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 1 }, { "color": "red", "value": 5 }] }] }]
+        }
+      },
+      {
+        "title": "Active Connections",
+        "type": "stat",
+        "gridPos": { "x": 0, "y": 24, "w": 6, "h": 4 },
+        "targets": [{ "expr": "http_requests_in_flight{job=\"backend\"}" }],
+        "fieldConfig": { "defaults": { "color": { "mode": "value" }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 50 }, { "color": "red", "value": 100 }] } } }
+      },
+      {
+        "title": "Cache Hit Rate",
+        "type": "stat",
+        "gridPos": { "x": 6, "y": 24, "w": 6, "h": 4 },
+        "targets": [{ "expr": "redis_keyspace_hits_total / (redis_keyspace_hits_total + redis_keyspace_misses_total) * 100" }],
+        "fieldConfig": { "defaults": { "unit": "percent", "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "yellow", "value": 80 }, { "color": "green", "value": 95 }] } } }
+      },
+      {
+        "title": "DB Connections",
+        "type": "stat",
+        "gridPos": { "x": 12, "y": 24, "w": 6, "h": 4 },
+        "targets": [{ "expr": "pg_stat_database_numbackends{datname=\"hexastudio_api\"}" }],
+        "fieldConfig": { "defaults": { "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 50 }, { "color": "red", "value": 80 }] } } }
+      }
+    ]
+  }
+}

@@ -146,6 +146,9 @@ export class OdooService implements OnModuleInit {
       this.objectClient.methodCall('execute_kw', [db, this.uid!, password, model, method, args], (error, value) => {
         if (error) {
           this.recordFailure();
+          if (this.isAuthError(error)) {
+            this.uid = null;
+          }
           reject(new InternalServerErrorException(`Odoo error: ${error}`));
         } else {
           this.recordSuccess();
@@ -194,6 +197,16 @@ export class OdooService implements OnModuleInit {
 
   async write(model: string, ids: number[], values: Record<string, unknown>): Promise<boolean> {
     return this.execute<boolean>(model, 'write', [ids, values]);
+  }
+
+  private isAuthError(error: unknown): boolean {
+    const message = (error as Error)?.message?.toLowerCase() ?? '';
+    return (
+      message.includes('access denied') ||
+      message.includes('access error') ||
+      message.includes('authentication') ||
+      message.includes('session expired')
+    );
   }
 
   getCircuitState(): string {

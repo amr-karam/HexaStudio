@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, UseGuards, Request, Res } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Request, Res, Headers, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { IsEmail, IsString, MinLength, MaxLength } from 'class-validator';
 import { Response } from 'express';
@@ -32,16 +32,41 @@ class LoginDto {
   password!: string;
 }
 
+class RefreshTokenDto {
+  @IsString()
+  refreshToken!: string;
+}
+
+class ForgotPasswordDto {
+  @IsEmail()
+  email!: string;
+}
+
+class ResetPasswordDto {
+  @IsString()
+  code!: string;
+
+  @IsString()
+  @MinLength(8)
+  @MaxLength(100)
+  password!: string;
+
+  @IsString()
+  @MinLength(8)
+  @MaxLength(100)
+  passwordConfirmation!: string;
+}
+
 const COOKIE_OPTIONS = {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
   sameSite: 'lax' as const,
   path: '/',
-  maxAge: 15 * 60 * 1000, // 15 minutes (matches access token TTL)
+  maxAge: 15 * 60 * 1000,
 };
 
 @ApiTags('Auth')
-@Controller('auth')
+@Controller({ path: 'auth', version: VERSION_NEUTRAL })
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -53,12 +78,12 @@ export class AuthController {
   async register(
     @Body() body: RegisterDto,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<{ user: User }> {
+  ) {
     const result = await this.authService.register(body.email, body.username, body.password);
-    res.cookie('auth_token', result.jwt, COOKIE_OPTIONS);
+    res.cookie('auth_token', result.accessToken, COOKIE_OPTIONS);
     const csrfToken = generateCsrfToken();
     res.cookie(CSRF_COOKIE_NAME, csrfToken, { ...COOKIE_OPTIONS, httpOnly: false });
-    return { user: result.user };
+    return { user: result.user, accessToken: result.accessToken, refreshToken: result.refreshToken };
   }
 
   @Post('login')
@@ -69,12 +94,12 @@ export class AuthController {
   async login(
     @Body() body: LoginDto,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<{ user: User }> {
+  ) {
     const result = await this.authService.login(body.identifier, body.password);
-    res.cookie('auth_token', result.jwt, COOKIE_OPTIONS);
+    res.cookie('auth_token', result.accessToken, COOKIE_OPTIONS);
     const csrfToken = generateCsrfToken();
     res.cookie(CSRF_COOKIE_NAME, csrfToken, { ...COOKIE_OPTIONS, httpOnly: false });
-    return { user: result.user };
+    return { user: result.user, accessToken: result.accessToken, refreshToken: result.refreshToken };
   }
 
   @Get('me')
@@ -90,26 +115,64 @@ export class AuthController {
   @Post('refresh')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Refresh JWT token' })
+  @ApiOperation({ summary: 'Refresh JWT token (cookie-based, legacy)' })
   @ApiResponse({ status: 200, description: 'Token refreshed' })
   @ApiResponse({ status: 401, description: 'Invalid token' })
   async refresh(
-    @Request() req: { user: User },
+    @Request() req: { user: User; accessToken?: string },
     @Res({ passthrough: true }) res: Response,
-  ): Promise<{ user: User }> {
-    const result = await this.authService.refreshToken(req.user.id);
-    res.cookie('auth_token', result.jwt, COOKIE_OPTIONS);
+  ) {
+    const result = await this.authService.refreshTokens(req.accessToken ?? '');
+    res.cookie('auth_token', result.accessToken, COOKIE_OPTIONS);
     return { user: result.user };
+  }
+
+  @Post('refresh-token')
+  @ApiOperation({ summary: 'Refresh JWT using refresh token (mobile-friendly)' })
+  @ApiBody({ type: RefreshTokenDto })
+  @ApiResponse({ status: 200, description: 'Tokens refreshed' })
+  @ApiResponse({ status: 401, description: 'Invalid refresh token' })
+  async refreshToken(
+    @Body() body: RefreshTokenDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const result = await this.authService.refreshTokens(body.refreshToken);
+    res.cookie('auth_token', result.accessToken, COOKIE_OPTIONS);
+    return { user: result.user, accessToken: result.accessToken, refreshToken: result.refreshToken };
   }
 
   @Post('logout')
   @UseGuards(CsrfGuard)
-  @ApiOperation({ summary: 'Logout (clear cookie)' })
+  @ApiOperation({ summary: 'Logout' })
   @ApiResponse({ status: 200, description: 'Logged out' })
   @ApiResponse({ status: 403, description: 'CSRF token mismatch' })
-  async logout(@Res({ passthrough: true }) res: Response): Promise<{ success: boolean }> {
+  async logout(
+    @Res({ passthrough: true }) res: Response,
+    @Headers('authorization') authHeader?: string,
+    @Body() body?: { refreshToken?: string },
+  ) {
+    const accessToken = authHeader?.replace('Bearer ', '') ?? '';
+    await this.authService.logout(accessToken, body?.refreshToken);
     res.clearCookie('auth_token', { path: '/' });
     res.clearCookie(CSRF_COOKIE_NAME, { path: '/' });
     return { success: true };
+  }
+
+  @Post('forgot-password')
+  @ApiOperation({ summary: 'Request password reset email' })
+  @ApiBody({ type: ForgotPasswordDto })
+  @ApiResponse({ status: 200, description: 'Reset email sent' })
+  @ApiResponse({ status: 400, description: 'Failed to send email' })
+  async forgotPassword(@Body() body: ForgotPasswordDto) {
+    return this.authService.forgotPassword(body.email);
+  }
+
+  @Post('reset-password')
+  @ApiOperation({ summary: 'Reset password with code' })
+  @ApiBody({ type: ResetPasswordDto })
+  @ApiResponse({ status: 200, description: 'Password reset successfully' })
+  @ApiResponse({ status: 400, description: 'Failed to reset password' })
+  async resetPassword(@Body() body: ResetPasswordDto) {
+    return this.authService.resetPassword(body.code, body.password, body.passwordConfirmation);
   }
 }

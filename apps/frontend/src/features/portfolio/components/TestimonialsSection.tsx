@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ScrollFadeIn } from '@/components/ScrollFadeIn';
+import { RadialGlow } from '@/components/animation';
 import { cn } from '@/lib/utils';
 
 const testimonials = [
@@ -38,6 +39,8 @@ export const TestimonialsSection = () => {
 
   return (
     <section className="px-8 md:px-16 py-32 bg-surface border-y border-border/50 overflow-hidden">
+      <RadialGlow color="#D4AF37" size={500} top="-150px" left="-80px" blur={50} opacity={0.1} />
+      <RadialGlow color="#D4AF37" size={350} bottom="-100px" right="-60px" blur={40} opacity={0.07} />
       <div className="w-full">
         <ScrollFadeIn className="mb-24 text-center">
           <span className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block">

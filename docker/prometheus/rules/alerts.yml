@@ -1,0 +1,164 @@
+groups:
+  - name: hexa-infrastructure
+    interval: 30s
+    rules:
+      # Host alerts
+      - alert: HostDown
+        expr: up{job="node-exporter"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Host {{ $labels.instance }} down"
+          description: "Node exporter on {{ $labels.instance }} has been down for 1 minute"
+
+      - alert: HighCPUUsage
+        expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is {{ $value | printf \"%.1f\" }}% (threshold: 85%)"
+
+      - alert: HighMemoryUsage
+        expr: (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100 > 90
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is {{ $value | printf \"%.1f\" }}% (threshold: 90%)"
+
+      - alert: DiskSpaceCritical
+        expr: (node_filesystem_size_bytes{fstype!~"tmpfs|overlay"} - node_filesystem_free_bytes{fstype!~"tmpfs|overlay"}) / node_filesystem_size_bytes{fstype!~"tmpfs|overlay"} * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Disk space critical on {{ $labels.instance }}"
+          description: "{{ $labels.mountpoint }} is {{ $value | printf \"%.1f\" }}% full"
+
+      - alert: DiskSpaceWarning
+        expr: (node_filesystem_size_bytes{fstype!~"tmpfs|overlay"} - node_filesystem_free_bytes{fstype!~"tmpfs|overlay"}) / node_filesystem_size_bytes{fstype!~"tmpfs|overlay"} * 100 > 75
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Disk space warning on {{ $labels.instance }}"
+          description: "{{ $labels.mountpoint }} is {{ $value | printf \"%.1f\" }}% full"
+
+      # Container alerts
+      - alert: ContainerHighCPU
+        expr: sum(rate(container_cpu_usage_seconds_total{container!="",container!="POD"}[5m])) by (container) > 0.9
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Container {{ $labels.container }} high CPU"
+          description: "CPU usage is {{ $value | printf \"%.1f\" }} cores (limit: 1)"
+
+      - alert: ContainerHighMemory
+        expr: sum(container_memory_working_set_bytes{container!="",container!="POD"}) by (container) / sum(container_spec_memory_limit_bytes{container!="",container!="POD"}) by (container) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Container {{ $labels.container }} high memory"
+          description: "Memory usage is {{ $value | printf \"%.1f\" }}% of limit"
+
+      - alert: ContainerRestartLoop
+        expr: increase(container_restart_count[1h]) > 5
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Container {{ $labels.container }} restart loop"
+          description: "Restarted {{ $value }} times in the last hour"
+
+      # PostgreSQL
+      - alert: PostgresDown
+        expr: up{job="postgres"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PostgreSQL down"
+          description: "PostgreSQL has been down for 1 minute"
+
+      - alert: PostgresConnectionsHigh
+        expr: pg_stat_database_numbackends / pg_settings_max_connections * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PostgreSQL connections high"
+          description: "Connections at {{ $value | printf \"%.1f\" }}% of max"
+
+      - alert: PostgresConnectionsCritical
+        expr: pg_stat_database_numbackends / pg_settings_max_connections * 100 > 95
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PostgreSQL connections critical"
+          description: "Connections at {{ $value | printf \"%.1f\" }}% of max"
+
+      # Redis
+      - alert: RedisDown
+        expr: up{job="redis"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Redis down"
+          description: "Redis has been down for 1 minute"
+
+      - alert: RedisMemoryHigh
+        expr: redis_memory_used_bytes / redis_memory_max_bytes * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Redis memory high"
+          description: "Memory usage at {{ $value | printf \"%.1f\" }}%"
+
+      # MinIO
+      - alert: MinIODown
+        expr: up{job="minio"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "MinIO down"
+          description: "MinIO has been down for 1 minute"
+
+      # Qdrant
+      - alert: QdrantDown
+        expr: up{job="qdrant"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Qdrant vector DB down"
+          description: "Qdrant has been down for 1 minute"
+
+      # Backup
+      - alert: BackupFailed
+        expr: increase(backup_job_success_total[24h]) == 0
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Backup job has not run successfully in 24h"
+          description: "No successful backup in the last 24 hours"
+
+      # Certificate expiry
+      - alert: CertificateExpiringSoon
+        expr: ssl_certificate_expiry_timestamp_seconds - time() < 2592000
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "SSL certificate expiring soon"
+          description: "Certificate for {{ $labels.domain }} expires in {{ $value | printf \"%.0f\" }} days"

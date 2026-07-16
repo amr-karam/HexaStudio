@@ -1,5 +1,6 @@
 import '../setup';
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
 import { EmbeddingService } from '../../src/modules/ai/embedding.service';
 import { VectorService } from '../../src/modules/vector/vector.service';
 
@@ -32,6 +33,22 @@ describe('EmbeddingService', () => {
       providers: [
         EmbeddingService,
         { provide: VectorService, useValue: mockVectorService },
+        {
+          provide: ConfigService,
+          useValue: {
+            get: vi.fn((key: string) => {
+              const config: Record<string, any> = {
+                OPENAI_API_KEY: 'sk-test',
+                OPENAI_MODEL: 'gpt-4o-mini',
+                OPENAI_EMBEDDING_MODEL: 'text-embedding-3-small',
+                VECTOR_HOST: 'localhost',
+                VECTOR_PORT: 6333,
+                VECTOR_API_KEY: undefined,
+              };
+              return config[key];
+            }),
+          },
+        },
       ],
     }).compile();
 

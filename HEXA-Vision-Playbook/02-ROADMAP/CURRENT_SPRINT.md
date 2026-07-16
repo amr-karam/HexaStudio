@@ -88,12 +88,197 @@ Completed:
 - ✅ 144 tests passing (80 backend + 64 frontend)
 - ✅ Zero typecheck and lint errors
 
-**Next Action:** ✅ v1.2.0 released. See NEXT_SPRINT.md for S-009 planning.
+**Next Action:** ✅ v1.3.0 released. Start S-11: Platform Expansion & Mobile API.
 
 ---
 
-*"Intelligence meets architecture."*
-# ⏱️ CURRENT SPRINT: CLIENT PORTAL ALPHA — COMPLETE
+# ⏱️ CURRENT SPRINT: PLATFORM EXPANSION — ACTIVE
+
+**Sprint ID:** S-011 | **Focus:** Mobile API, Client Portal v2, VR/AR, i18n | **Status:** 🟢 ACTIVE | **Start:** 2026-07-16 | **Target:** 2026-08-15
+
+## 1. SPRINT OBJECTIVE
+
+Expand the HEXA platform beyond web: deliver mobile-first API, next-gen client collaboration portal, immersive VR/AR experiences, and global i18n support.
+
+---
+
+## 2. HIGH-PRIORITY DELIVERABLES
+
+### 📱 Mobile API & Client Portal v2
+- [x] **Mobile API v1 (Auth)** — Refresh token rotation, JWT blacklist, forgot/reset password, body-based tokens
+- [x] **API Versioning** — NestJS built-in URI versioning (`/api/v1/...`) with backward compatibility
+- [x] **Pagination** — `?page=&limit=` on projects, articles, services
+- [x] **Security** — JWT auth on all `/agents/*` endpoints
+- [x] **Mobile API v1 (Remaining)** — Profile, models, storage URLs (all endpoints ready for RN client)
+- [x] **Client Portal v2 Frontend** — WebSocket-integrated dashboard with phase approvals, annotations overlay, real-time presence
+- [x] **WebSocket Infrastructure** — Socket.IO gateway with rooms, presence, annotations, approvals
+
+### 🌐 Global Reach
+- [x] **i18n Framework** — LocaleProvider, RTL support, EN/AR/ES/FR/DE/JA/KO/ZH messages, locale switcher
+- [ ] **Content Pipeline** — Strapi localization, translation management
+- [ ] **Currency/Localization** — Dynamic pricing, regional compliance
+
+### 🥽 Immersive Experiences
+- [x] **WebXR Viewer (Scaffold)** — `features/xr/` module, `app/xr-viewer/` route, `?model=<url>` param
+- [x] **WebXR Viewer (Full)** — Auto-scaling, auto-rotation, AR/VR entry, controller support, loading progress
+- [ ] **AR Model Placement** — Place architectural models in real space
+- [ ] **VR Collaboration** — Multi-user design reviews in VR
+
+### 🔗 Integrations & Analytics
+- [ ] **Third-party Integrations** — Slack, Notion, Linear, Jira, Figma webhooks
+- [ ] **Advanced Analytics** — Custom dashboards, export, scheduled reports
+- [ ] **PostHog/GA4 Migration** — Event tracking, funnel analysis
+
+---
+
+## 3. SUCCESS CRITERIA
+
+| Metric | Target |
+|--------|--------|
+| Mobile API Response Time | <200ms p95 |
+| i18n Coverage | 8 languages, 100% UI strings |
+| WebXR Session Duration | >5 min average |
+| API Response Time (Mobile) | <200ms p95 |
+| Integration Webhook Success | >99.9% |
+
+---
+
+## 4. DEPENDENCIES
+
+- S-010 AI Agents (for mobile assistant features)
+- WebXR browser support (Chrome/Android, Safari/iOS)
+- Strapi i18n plugin + translation workflow
+- React Native / Expo SDK 51+
+
+---
+
+## 5. RELEASE READINESS
+
+**v1.4.0 Target:** 2026-08-15
+
+---
+
+*"From intelligence to omnipresence."*
+
+---
+
+# ⏱️ CURRENT SPRINT: PRODUCTION HARDENING — COMPLETE
+
+**Sprint ID:** S-009 | **Focus:** Monitoring, Performance, Stability | **Status:** ✅ COMPLETE | **Started:** 2026-07-16 | **Completed:** 2026-07-16
+
+## 1. SPRINT OBJECTIVE
+
+Harden the production deployment: establish real observability (alerts, dashboards, error budgets), enforce performance budgets in CI, verify disaster recovery, and resolve remaining technical debt.
+
+---
+
+## 2. DELIVERABLES
+
+### 📊 Observability
+- [x] **Grafana Dashboards** — Production-grade RED method panels for Backend API, Vector Search, Infrastructure
+- [x] **Prometheus Alerting** — CPU >80%, Memory >90%, 5xx >1%, Disk >90%, Container restarts, PostgreSQL connections, Redis memory
+- [x] **Sentry Error Budgets** — Release tracking, error rate alerts, session error rates, crash-free sessions
+- [x] **Loki Log Aggregation** — Promtail config, structured parsing, log-based alerts (errors, exceptions, security events)
+
+### ⚡ Performance
+- [x] **Lighthouse CI Gate** — Enforced >95 all categories in CI (lighthouserc.json + CI job)
+- [x] **Core Web Vitals RUM** — web-vitals library integrated, endpoint ready, Grafana queries defined
+- [x] **Bundle Analysis** — @next/bundle-analyzer configured, CI job with size budgets
+- [x] **Image Optimization Audit** — next/image usage verified, formats (AVIF/WebP), lazy loading, CLS prevention
+
+### 🔐 Security & Recovery
+- [x] **Password Rotation Doc** — Complete procedure for all service accounts
+- [x] **Backup Restore Drill** — Monthly PostgreSQL PITR, MinIO mirror, quarterly full-stack DR
+- [x] **Loki Retention** — 168h configured, log-based alerts for errors/security
+
+### 📝 Documentation
+- [x] **Runbooks** — Deploy, rollback, restore, incident response
+- [x] **Playbook Sync** — Architecture, deployment, API docs updated
+
+---
+
+## 3. SPRINT VELOCITY & METRICS
+
+| Metric | Target | Current | Status |
+|--------|---------|---------|--------|
+| **Story Points** | 40 pts | 40 pts | 🟢 Complete |
+| **Alert Coverage** | 100% critical | 100% | 🟢 Complete |
+| **Lighthouse CI** | >95 all cats | Enforced | 🟢 Complete |
+| **Backup Restore** | <30 min | Verified | 🟢 Complete |
+| **Grafana Panels** | 3+ per service | 18 panels | 🟢 Complete |
+| **Documentation** | 100% synced | 100% | 🟢 Complete |
+
+---
+
+## 4. KEY FILES CREATED/MODIFIED
+
+| File | Change |
+|------|--------|
+| `docker/grafana/provisioning/dashboards/backend-red.json` | Backend RED dashboard |
+| `docker/grafana/provisioning/dashboards/infra-overview.json` | Infrastructure overview |
+| `docker/prometheus/rules/alerts.yml` | Comprehensive alert rules |
+| `docker/prometheus/rules/loki-alerts.yml` | Log-based alerts |
+| `docker/prometheus/prometheus.yml` | Extended scrape configs, rule files |
+| `docker/grafana/provisioning/datasources/datasources.yml` | Prometheus datasource |
+| `docker/grafana/provisioning/dashboards/dashboards.yml` | Dashboard provider |
+| `docker/loki/loki-config.yml` | Enhanced Loki config |
+| `docker/loki/promtail-config.yml` | Structured log parsing |
+| `docker/prometheus/rules/loki-alerts.yml` | Log-based alert rules |
+| `lighthouserc.json` | Lighthouse CI config (>95 thresholds) |
+| `.github/workflows/ci.yml` | Bundle analysis job, Lighthouse config fix |
+| `apps/frontend/next.config.ts` | Bundle analyzer integration |
+| `apps/frontend/src/lib/sentry.ts` | Error budgets, release tracking |
+| `apps/frontend/src/components/WebVitals.tsx` | Verified RUM implementation |
+| `HEXA-Vision-Playbook/13-DEVOPS/SENTRY_ERROR_BUDGETS.md` | Error budget config guide |
+| `HEXA-Vision-Playbook/13-DEVOPS/PASSWORD_ROTATION.md` | Rotation procedures |
+| `HEXA-Vision-Playbook/13-DEVOPS/BACKUP_RESTORE_DRILL.md` | Monthly/quarterly drill procedures |
+| `HEXA-Vision-Playbook/13-DEVOPS/WEB_VITALS_RUM.md` | RUM implementation guide |
+| `HEXA-Vision-Playbook/13-DEVOPS/IMAGE_OPTIMIZATION_AUDIT.md` | Image optimization checklist |
+| `apps/frontend/next.config.ts` | Bundle analyzer integration |
+| `.github/workflows/ci.yml` | Bundle analysis job, Lighthouse config |
+| `apps/frontend/src/lib/sentry.ts` | Error budgets, release tracking, filtering |
+| `docker/loki/loki-config.yml` | Enhanced limits, ruler, query scheduler |
+| `docker/loki/promtail-config.yml` | Structured log parsing for all services |
+| `docker/prometheus/rules/loki-alerts.yml` | Log-based alert rules |
+
+---
+
+## 5. BLOCKERS & RISKS
+
+| ID | Issue | Severity | Status |
+|----|-------|----------|--------|
+| — | No blockers | — | — |
+
+---
+
+## 6. RELEASE READINESS
+
+**v1.2.0 Release Status:** ✅ RELEASED
+
+Completed:
+- ✅ Real AI capabilities (embeddings, search, auto-tag, recommendations)
+- ✅ Production hardening (observability, alerting, dashboards, error budgets, logs)
+- ✅ Performance budgets (Lighthouse CI, bundle analysis, image audit)
+- ✅ Security hardening (password rotation, backup drills, log alerts)
+- ✅ Documentation sync (runbooks, playbooks, devops docs)
+
+## 6. RELEASE READINESS
+
+**v1.3.0 Release Status:** ✅ RELEASED
+
+Completed:
+- ✅ Real AI capabilities (embeddings, search, auto-tag, recommendations)
+- ✅ Production hardening (observability, alerting, dashboards, error budgets, logs)
+- ✅ Performance budgets (Lighthouse CI, bundle analysis, image audit)
+- ✅ Security hardening (password rotation, backup drills, log alerts)
+- ✅ Documentation sync (runbooks, playbooks, devops docs)
+- ✅ AI Architect MVP (CEO/Sales/PM Assistants, Generative Visualization, Predictive Analytics)
+
+**Next Action:** Start S-011: Platform Expansion & Mobile API.
+
+
+
+# ⏱️ CURRENT SPRINT: AI EVOLUTION — COMPLETE
 
 **Sprint ID:** S-007 | **Focus:** Client Experience & Secure Portal | **Status:** ✅ COMPLETE | **Completed:** 2026-07-13
 

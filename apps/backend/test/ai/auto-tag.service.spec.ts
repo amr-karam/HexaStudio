@@ -1,5 +1,6 @@
 import '../setup';
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
 import { AutoTagService } from '../../src/modules/ai/auto-tag.service';
 
 vi.mock('openai', () => {
@@ -24,7 +25,22 @@ describe('AutoTagService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AutoTagService],
+      providers: [
+        AutoTagService,
+        {
+          provide: ConfigService,
+          useValue: {
+            get: vi.fn((key: string) => {
+              const config: Record<string, any> = {
+                OPENAI_API_KEY: 'sk-test',
+                OPENAI_MODEL: 'gpt-4o-mini',
+                OPENAI_EMBEDDING_MODEL: 'text-embedding-3-small',
+              };
+              return config[key];
+            }),
+          },
+        },
+      ],
     }).compile();
 
     service = module.get<AutoTagService>(AutoTagService);

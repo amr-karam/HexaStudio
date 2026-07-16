@@ -1,10 +1,10 @@
-import { Controller, Get, Query, UseGuards, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards, BadRequestException, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { MinioService } from './minio.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Storage')
-@Controller('storage')
+@Controller({ path: 'storage', version: VERSION_NEUTRAL })
 export class StorageController {
   constructor(private readonly minioService: MinioService) {}
 

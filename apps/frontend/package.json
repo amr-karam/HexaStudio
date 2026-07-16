@@ -11,7 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:cov": "vitest run --coverage",
-    "test:e2e": "playwright test --config ../../e2e/playwright.config.ts"
+    "test:e2e": "playwright test --config ../../e2e/playwright.config.ts",
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "@eslint/js": "^9.39.4",
@@ -21,7 +22,8 @@
     "@react-three/drei": "^10.0.0",
     "@react-three/fiber": "^9.0.0",
     "@react-three/postprocessing": "^3.0.4",
-    "@sentry/nextjs": "^9.47.1",
+    "@react-three/xr": "^6.6.30",
+    "@sentry/nextjs": "^10.65.0",
     "@tanstack/react-query": "^5.62.0",
     "ajv": "^8.20.0",
     "clsx": "^2.1.1",
@@ -33,9 +35,12 @@
     "picomatch": "^4.0.5",
     "react": "^19.0.0",
     "react-dom": "^19.2.7",
+    "socket.io-client": "^4.8.3",
+    "next-intl": "^4.0.0",
     "sonner": "^2.0.7",
     "tailwind-merge": "^2.6.0",
     "three": "^0.171.0",
+    "three-mesh-bvh": "^0.8.3",
     "typescript-eslint": "^8.62.1",
     "web-vitals": "^5.3.0",
     "webpack": "^5.108.4",

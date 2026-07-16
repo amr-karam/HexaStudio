@@ -1,5 +1,5 @@
 import { NestFactory } from "@nestjs/core";
-import { Logger, ValidationPipe } from "@nestjs/common";
+import { Logger, ValidationPipe, VersioningType } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import helmet from "helmet";
 import * as Sentry from "@sentry/node";
@@ -22,6 +22,10 @@ async function bootstrap() {
 
   app.use(helmet());
   app.setGlobalPrefix("api");
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1',
+  });
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

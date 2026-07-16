@@ -1,5 +1,6 @@
 import './setup';
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
 import { RedisService } from '../src/modules/storage/redis.service';
 
 const mockRedisInstance = vi.hoisted(() => ({
@@ -23,7 +24,18 @@ describe('RedisService', () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
-      providers: [RedisService],
+      providers: [
+        RedisService,
+        {
+          provide: ConfigService,
+          useValue: {
+            get: vi.fn((key: string) => {
+              const config: Record<string, any> = { REDIS_HOST: 'localhost', REDIS_PORT: 6379, REDIS_PASSWORD: 'test' };
+              return config[key];
+            }),
+          },
+        },
+      ],
     }).compile();
 
     service = module.get<RedisService>(RedisService);

@@ -1,6 +1,7 @@
 import { Injectable, Logger, OnModuleInit, Inject, forwardRef } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { QdrantClient } from '@qdrant/js-client-rest';
-import { getEnv } from '../../config/env';
+import { Env } from '../../config/env';
 import { VectorEmbedding, SemanticSearchRequest, SemanticSearchResponse } from '@hexastudio/types';
 import { EmbeddingService } from '../ai/embedding.service';
 
@@ -12,12 +13,12 @@ export class VectorService implements OnModuleInit {
   constructor(
     @Inject(forwardRef(() => EmbeddingService))
     private readonly embeddingService: EmbeddingService,
+    private configService: ConfigService<Env>,
   ) {
-    const env = getEnv();
     this.client = new QdrantClient({
-      host: env.VECTOR_HOST,
-      port: env.VECTOR_PORT,
-      apiKey: env.VECTOR_API_KEY,
+      host: this.configService.get('VECTOR_HOST'),
+      port: this.configService.get('VECTOR_PORT'),
+      apiKey: this.configService.get('VECTOR_API_KEY'),
     });
   }
 

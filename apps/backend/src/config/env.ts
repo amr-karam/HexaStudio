@@ -38,6 +38,11 @@ const envSchema = z.object({
   OPENAI_MODEL: z.string().default('gpt-4o-mini'),
   OPENAI_EMBEDDING_MODEL: z.string().default('text-embedding-3-small'),
 
+  // AI / Gemini
+  GEMINI_API_KEY: z.string().min(1).optional(),
+  GEMINI_MODEL: z.string().default('gemini-3.5-flash'),
+  AI_PROVIDER: z.enum(['openai', 'gemini']).default('openai'),
+
   // Optional
   PORT: z.coerce.number().default(4000),
 

@@ -37,13 +37,18 @@ export class ProjectsService {
     return getEnv().CMS_URL;
   }
 
-  async getAllProjects(): Promise<ProjectResponse> {
+  async getAllProjects(page = 1, limit = 20): Promise<ProjectResponse> {
+    const safePage = Math.max(1, page);
+    const safeLimit = Math.min(100, Math.max(1, limit));
+
     const response = await firstValueFrom(
       this.httpService.get(`${this.cmsUrl}/api/portfolios`, {
         params: {
           'populate': '*',
           'filters[isPublished][$eq]': true,
           'sort': 'order:asc',
+          'pagination[page]': safePage,
+          'pagination[pageSize]': safeLimit,
         },
       }),
     );
@@ -53,6 +58,7 @@ export class ProjectsService {
 
     // Batch Odoo status lookup in a single query instead of N+1
     const slugs = projects.map((p: Project) => p.slug);
+    let enrichmentError: string | undefined;
     try {
       const odooData = await this.odooService.searchRead(
         'project.project',
@@ -73,13 +79,20 @@ export class ProjectsService {
         if (status) project.status = status;
       }
     } catch (error) {
-      this.logger.error('Failed to batch-enrich projects with Odoo data:', error);
+      const msg = 'Failed to batch-enrich projects with Odoo data';
+      this.logger.warn({ msg, error: (error as Error).message });
+      enrichmentError = msg;
     }
 
+    const total = data.meta?.pagination?.total ?? data.data.length;
     return {
-      total: data.meta?.pagination?.total ?? data.data.length,
+      total,
       projects,
-    };
+      page: safePage,
+      limit: safeLimit,
+      totalPages: Math.ceil(total / safeLimit) || 1,
+      ...(enrichmentError ? { _enrichmentError: enrichmentError } : {}),
+    } as ProjectResponse & { _enrichmentError?: string };
   }
 
   async getProjectBySlug(slug: string): Promise<Project> {
@@ -113,7 +126,9 @@ export class ProjectsService {
         project.status = Array.isArray(stage) ? String(stage[1]) : String((stage as Record<string, unknown>)?.name ?? '');
       }
     } catch (error) {
-      this.logger.error(`Failed to enrich project ${slug} with Odoo data:`, error);
+      const msg = `Failed to enrich project ${slug} with Odoo data`;
+      this.logger.warn({ msg, slug, error: (error as Error).message });
+      (project as Project & { _enrichmentError?: string })._enrichmentError = msg;
     }
 
     return project;

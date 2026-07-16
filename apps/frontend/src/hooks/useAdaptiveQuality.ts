@@ -49,7 +49,7 @@ export function useAdaptiveQuality() {
     // Simple heuristic for high-end GPUs (NVIDIA RTX, Apple M-series Max, etc.)
     if (renderer.includes('RTX') || renderer.includes('Radeon RX') || renderer.includes('Apple M2 Max') || renderer.includes('Apple M3 Max')) {
       setQuality('high');
-    } else if (renderer.includes('Intel') || renderer.includes('Mobile')) {
+    } else if (renderer.includes('Intel') || renderer.includes('AMD') || renderer.includes('Mobile')) {
       setQuality('low');
     } else {
       setQuality('medium');

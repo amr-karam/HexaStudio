@@ -1,14 +1,20 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query, VERSION_NEUTRAL } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { Article, ArticleResponse } from '@hexastudio/types';
 
-@Controller('articles')
+@Controller({ path: 'articles', version: VERSION_NEUTRAL })
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
   @Get()
-  async findAll(): Promise<ArticleResponse> {
-    return this.articlesService.getAllArticles();
+  async findAll(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ): Promise<ArticleResponse> {
+    return this.articlesService.getAllArticles(
+      page ? parseInt(page, 10) : 1,
+      limit ? parseInt(limit, 10) : 20,
+    );
   }
 
   @Get(':slug')

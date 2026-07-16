@@ -1,0 +1,301 @@
+groups:
+  - name: hexa-backend-alerts
+    interval: 30s
+    rules:
+      # Service Down
+      - alert: BackendDown
+        expr: up{job="backend"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Backend service down"
+          description: "Backend has been down for more than 1 minute"
+
+      - alert: FrontendDown
+        expr: up{job="frontend"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Frontend service down"
+          description: "Frontend has been down for more than 1 minute"
+
+      - alert: PostgresDown
+        expr: up{job="postgres"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PostgreSQL down"
+          description: "PostgreSQL has been down for more than 1 minute"
+
+      # High Error Rate
+      - alert: HighErrorRate
+        expr: |
+          sum(rate(http_requests_total{job="backend",status=~"5.."}[5m]))
+          /
+          sum(rate(http_requests_total{job="backend"}[5m])) * 100
+          > 5
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High 5xx error rate on backend"
+          description: "5xx error rate is {{ $value | printf \"%.2f\" }}% (threshold: 5%)"
+
+      - alert: FrontendHighErrorRate
+        expr: |
+          sum(rate(http_requests_total{job="frontend",status=~"5.."}[5m]))
+          /
+          sum(rate(http_requests_total{job="frontend"}[5m])) * 100
+          > 5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High 5xx error rate on frontend"
+          description: "5xx error rate is {{ $value | printf \"%.2f\" }}%"
+
+      # High Latency
+      - alert: HighLatencyP99
+        expr: |
+          histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{job="backend"}[5m])) by (le)) > 3
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High p99 latency on backend"
+          description: "p99 latency is {{ $value | printf \"%.2f\" }}s (threshold: 3s)"
+
+      - alert: FrontendHighLatency
+        expr: |
+          histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{job="frontend"}[5m])) by (le)) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High p99 latency on frontend"
+          description: "p99 latency is {{ $value | printf \"%.2f\" }}s"
+
+      # Resource Exhaustion
+      - alert: ContainerHighCPU
+        expr: |
+          sum(rate(container_cpu_usage_seconds_total{container!="",container!="POD"}[5m])) by (container) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Container high CPU usage"
+          description: "{{ $labels.container }} CPU usage is {{ $value | printf \"%.1f\" }}%"
+
+      - alert: ContainerHighMemory
+        expr: |
+          sum(container_memory_usage_bytes{container!="",container!="POD"}) by (container)
+          /
+          sum(container_spec_memory_limit_bytes{container!="",container!="POD"}) by (container)
+          * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Container high memory usage"
+          description: "{{ $labels.container }} memory usage is {{ $value | printf \"%.1f\" }}%"
+
+      - alert: DiskSpaceCritical
+        expr: |
+          (node_filesystem_size_bytes - node_filesystem_free_bytes) / node_filesystem_size_bytes * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Disk space critical"
+          description: "{{ $labels.mountpoint }} on {{ $labels.instance }} is {{ $value | printf \"%.1f\" }}% full"
+
+      - alert: DiskSpaceWarning
+        expr: |
+          (node_filesystem_size_bytes - node_filesystem_free_bytes) / node_filesystem_size_bytes * 100 > 75
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Disk space warning"
+          description: "{{ $labels.mountpoint }} on {{ $labels.instance }} is {{ $value | printf \"%.1f\" }}% full"
+
+      # Database
+      - alert: PostgresConnectionsHigh
+        expr: |
+          pg_stat_database_numbackends{datname=~"hexa_.*"} / pg_settings_max_connections * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PostgreSQL connections high"
+          description: "Database {{ $labels.datname }} at {{ $value | printf \"%.1f\" }}% of max connections"
+
+      - alert: PostgresConnectionsCritical
+        expr: |
+          pg_stat_database_numbackends{datname=~"hexa_.*"} / pg_settings_max_connections * 100 > 95
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PostgreSQL connections critical"
+          description: "Database {{ $labels.datname }} at {{ $value | printf \"%.1f\" }}% of max connections"
+
+      - alert: RedisMemoryHigh
+        expr: |
+          redis_memory_used_bytes / redis_memory_max_bytes * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Redis memory high"
+          description: "Redis memory usage at {{ $value | printf \"%.1f\" }}%"
+
+      # Vector Search
+      - alert: VectorSearchLatencyHigh
+        expr: |
+          histogram_quantile(0.95, sum(rate(vector_search_duration_seconds_bucket[5m])) by (le, operation)) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Vector search latency high"
+          description: "{{ $labels.operation }} p95 latency is {{ $value | printf \"%.2f\" }}s"
+
+      # Embeddings
+      - alert: EmbeddingGenerationFailures
+        expr: |
+          rate(embedding_generation_total{status="error"}[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Embedding generation failures"
+          description: "Embedding generation error rate is {{ $value | printf \"%.2f\" }}/sec"
+
+  - name: hexa-infra-alerts
+    interval: 30s
+    rules:
+      # System
+      - alert: HostDown
+        expr: up{job="node-exporter"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Host down"
+          description: "{{ $labels.instance }} has been down for 2 minutes"
+
+      - alert: HighLoadAverage
+        expr: node_load1 > 8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High load average"
+          description: "1m load average is {{ $value | printf \"%.2f\" }} on {{ $labels.instance }}"
+
+      - alert: HighMemoryUsage
+        expr: |
+          (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is {{ $value | printf \"%.1f\" }}% on {{ $labels.instance }}"
+
+      - alert: HighCPUUsage
+        expr: |
+          100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 85
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage is {{ $value | printf \"%.1f\" }}% on {{ $labels.instance }}"
+
+      - alert: ContainerRestartLoop
+        expr: increase(container_restart_count[15m]) > 3
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Container restart loop detected"
+          description: "{{ $labels.container }} restarted {{ $value }} times in 15 minutes"
+
+      # Backup
+      - alert: BackupFailed
+        expr: increase(backup_job_failed_total[1h]) > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Backup job failed"
+          description: "Backup job {{ $labels.job }} failed at {{ $value }}"
+
+      - alert: BackupOld
+        expr: |
+          time() - backup_last_success_timestamp_seconds > 86400
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Backup stale"
+          description: "Last successful backup was {{ $value | printf \"%.0f\" }} seconds ago"
+
+      # SSL Certificates
+      - alert: SSLCertExpiringSoon
+        expr: |
+          ssl_certificate_expiration_timestamp_seconds - time() < 864000
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "SSL certificate expiring soon"
+          description: "Certificate for {{ $labels.domain }} expires in {{ ($value - time()) / 86400 | printf \"%.0f\" }} days"
+
+      - alert: SSLCertExpired
+        expr: |
+          ssl_certificate_expiration_timestamp_seconds - time() < 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "SSL certificate expired"
+          description: "Certificate for {{ $labels.domain }} has expired"
+
+  - name: hexa-business-alerts
+    interval: 5m
+    rules:
+      - alert: NoNewProjectsIndexed
+        expr: |
+          increase(vector_sync_total[1h]) == 0
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "No new projects indexed in 1 hour"
+          description: "Vector sync hasn't run in the last hour"
+
+      - alert: SearchTrafficAnomaly
+        expr: |
+          sum(rate(vector_search_total[5m])) < 0.01
+        for: 30m
+        labels:
+          severity: info
+        annotations:
+          summary: "Unusually low search traffic"
+          description: "Vector search rate is {{ $value | printf \"%.4f\" }}/sec (normal > 0.01)"
+
+      - alert: EmbeddingCostSpike
+        expr: |
+          sum(rate(embedding_tokens_total[5m])) > 100000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High embedding token usage"
+          description: "Embedding token rate is {{ $value | printf \"%.0f\" }} tokens/sec"
