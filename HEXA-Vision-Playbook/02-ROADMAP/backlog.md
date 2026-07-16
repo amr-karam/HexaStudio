@@ -1,6 +1,6 @@
 # Product Backlog
 
-**Last Updated:** 2026-07-13
+**Last Updated:** 2026-07-16
 
 ---
 
@@ -37,10 +37,10 @@ All Phase 1–3 items delivered:
 | P0 | Vector database setup (Qdrant) | ✅ Done |
 | P0 | Embedding pipeline | ✅ Done |
 | P1 | Semantic search API | ✅ Done |
-| P1 | AI agent scaffold | 🔄 In progress |
+| P1 | AI agent scaffold | ✅ Done |
 | P1 | Auto-tagging | ✅ Done |
 | P2 | Project recommendation engine | ✅ Done |
-| P2 | Smart summaries generation | 🔄 In progress |
+| P2 | Smart summaries generation | ✅ Done |
 | P3 | VR/AR mode | ⏳ Icebox |
 | P3 | Mobile app | ⏳ Icebox |
 

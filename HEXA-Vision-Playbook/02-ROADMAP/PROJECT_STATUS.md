@@ -1,6 +1,6 @@
 # PROJECT STATUS: THE REAL-TIME PULSE
 
-**Version:** 1.0.0 | **Last Updated:** 2026-07-12 | **Status:** PRODUCTION — v1.0.0 READY
+**Version:** 1.2.0 | **Last Updated:** 2026-07-16 | **Status:** PRODUCTION — v1.2.0 READY
 
 ## 1. EXECUTIVE SUMMARY
 HEXA Studio is fully deployed and operational on production infrastructure. All core features from Phase 1-5 are complete. Sprint 6 (Enterprise Hardening) is complete. **v1.0.0 release is ready.**
@@ -67,24 +67,23 @@ HEXA Studio is fully deployed and operational on production infrastructure. All 
 - [x] Playwright E2E test suite in CI
 - [x] Final performance audit (Lighthouse >95)
 - [x] v1.0.0 release tag
+- [x] v1.2.0 release tag (Sprint 8 — AI Evolution)
 
 ---
 
-## 7. v1.0.0 RELEASE STATUS
+## 7. v1.2.0 RELEASE STATUS
 
-**Status:** ✅ READY FOR RELEASE
+**Status:** ✅ RELEASED v1.2.0
 
-All v1.0.0 requirements met:
-- ✅ All package versions aligned to 1.0.0 (frontend, backend, cms)
-- ✅ CHANGELOG.md complete with v1.0.0 entry
-- ✅ Sprint 6 (Enterprise Hardening) complete
-- ✅ All P0 critical tasks done
-- ✅ All P1 high-priority tasks done
-- ✅ Security hardening complete (JWT, Redis, Traefik, CMS IP allowlist)
-- ✅ Performance optimization complete (lazy loading, bundle budgets, Lighthouse CI)
-- ✅ Quality gates complete (120 tests: 67 backend + 53 frontend)
-- ✅ CI/CD pipeline complete (lint, typecheck, test, build, deploy)
-- ✅ Database backup verification complete
-- ✅ E2E testing scaffold complete
+All v1.2.0 requirements met:
+- ✅ Sprint 7 (Client Portal Alpha) complete
+- ✅ Sprint 8 (AI Evolution) complete
+- ✅ Frontend Excellence Initiative complete (17 FE tasks)
+- ✅ AI capabilities: vector search, auto-tagging, recommendations, agents scaffold, smart summaries
+- ✅ 156 tests passing (87 backend + 69 frontend)
+- ✅ Sentry v9 upgrade (23 remaining moderate vulns)
+- ✅ CI/CD pipeline: lint, typecheck, test, build, deploy
+- ✅ Live at hexastudio.net (Cloudflare + Traefik)
+- ✅ Security hardening: password removal from git, env-based deploy secrets
 
-**Next Step:** `git tag v1.0.0` after final QA sign-off
+**Next Step:** Sprint 9 planning — see NEXT_SPRINT.md

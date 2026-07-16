@@ -1,55 +1,51 @@
-# Next Sprint: AI Evolution Foundation
+# Next Sprint: Production Hardening & Observability
 
-**Sprint ID:** S-007 | **Focus:** Phase 4 — Intelligence | **Status:** PLANNING
+**Sprint ID:** S-009 | **Focus:** Monitoring, Performance, Stability | **Status:** PLANNING
 
 ## 1. SPRINT OBJECTIVE
 
-Begin Phase 4 (Intelligence) by laying the groundwork for AI-powered features: vector search infrastructure, AI agent scaffolding, and smart content generation pipeline.
-
----
+Harden the production deployment: establish real observability (alerts, dashboards, error budgets), enforce performance budgets in CI, verify disaster recovery, and resolve remaining technical debt.
 
 ## 2. HIGH-PRIORITY DELIVERABLES
 
-### 🧠 AI Infrastructure
-- [ ] **Vector Database Setup** — Deploy vector search engine (Qdrant/Weaviate) for architectural project embeddings
-- [ ] **Embedding Pipeline** — Auto-vectorize project descriptions, tags, and metadata on Strapi content changes
-- [ ] **AI Agent Scaffold** — NestJS-based agent service with tool-calling capability
+### 📊 Observability
+- [ ] **Grafana dashboards** — Production-grade panels: request latency, error rate, saturation, traffic (RED method)
+- [ ] **Prometheus alerting rules** — CPU >80%, memory >90%, 5xx rate >1%, disk space
+- [ ] **Sentry error budgets** — Configure release tracking, weekly error budget alerts
+- [ ] **Loki log aggregation** — Ship Docker logs, structured querying, log-based alerts
 
-### 🔍 Smart Search
-- [ ] **Semantic Search API** — `/api/search` endpoint combining fulltext + vector similarity
-- [ ] **Project Recommendation Engine** — "Similar projects" based on style, material, scale embeddings
+### ⚡ Performance
+- [ ] **Lighthouse CI gate** — Enforce >95 all categories in CI (currently scaffolded, not enforced)
+- [ ] **Core Web Vitals monitoring** — RUM data via `web-vitals` library + analytics
+- [ ] **Bundle analysis** — `@next/bundle-analyzer` CI job, set size budgets
+- [ ] **Image optimization audit** — Verify all images use next/image, proper formats, lazy loading
 
-### 📊 Content Intelligence
-- [ ] **Auto-Tagging** — AI-generated tags for new portfolio projects (architecture style, materials, location)
-- [ ] **Smart Summaries** — Auto-generate project descriptions from structured data
+### 🔐 Security & Recovery
+- [ ] **Server password rotation** — Change root password on 19.16.1.100 (old password burned)
+- [ ] **Hostinger API key rotation** — Revoke old key, update env
+- [ ] **Backup restore drill** — Verify pg_restore works from latest backup
+- [ ] **Dependabot remediation** — Address 23 moderate vulns (Sentry v10 evaluation)
 
-### 🔧 Technical Debt
-- [ ] **TypeScript strict mode** — Enable `strict: true` across all workspaces
-- [ ] **Test coverage** — Push from ~75% to 85% (focus on backend services)
-- [ ] **Performance audit** — Lighthouse >95 on all 18 pages
-
----
+### 📝 Documentation
+- [ ] **Sync all playbook docs** — Verify architecture, deployment, API docs match reality
+- [ ] **Runbook creation** — Deploy, rollback, restore, incident response procedures
 
 ## 3. SUCCESS CRITERIA
 
 | Metric | Target |
 |--------|--------|
-| Vector search latency | <200ms p95 |
-| Embedding pipeline | <5s per project |
-| Test coverage | ≥85% |
+| Alert response time | <15 min for P1 |
 | Lighthouse scores | >95 all categories |
-
----
+| Backup restore | Fully automated <30 min |
+| Grafana dashboards | 3 panels minimum |
+| Documentation | 100% synced with deployment |
 
 ## 4. DEPENDENCIES
 
-- Production server resources for vector DB
-- OpenAI/Azure API keys for embeddings
-- Strapi webhook configuration for content sync
+- SSH access to 19.16.1.100 with GitHub SSH key
+- Hostinger dashboard access for API key rotation
+- Cloudflare API token for DNS verification
 
 ---
 
-*"From visualization to intelligence."*
-# Next Sprint
-
-Planning for the upcoming sprint.
+*"Visibility is the foundation of reliability."*
