@@ -3,6 +3,19 @@ import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { getEnv } from '../../../config/env';
 
+interface NotionProperty {
+  title?: Array<{ plain_text?: string }>;
+  status?: { name?: string };
+  select?: { name?: string };
+}
+
+interface NotionPageResult {
+  id: string;
+  properties: Record<string, NotionProperty>;
+  last_edited_time: string;
+  url: string;
+}
+
 export interface NotionPage {
   id: string;
   title: string;
@@ -75,14 +88,16 @@ export class NotionService {
         this.http.post(`https://api.notion.com/v1/databases/${databaseId}/query`, body, { headers: this.headers }),
       );
 
-      return response.data.results.map((page: any) => {
-        const titleProp = Object.values(page.properties).find((p: any) => p.title);
+      const result = response.data as { results: NotionPageResult[] };
+
+      return result.results.map((page) => {
+        const titleProp = Object.values(page.properties).find((p) => p.title);
         const statusProp = page.properties.Status || page.properties.status;
 
         return {
-          id: page.id as string,
-          title: titleProp?.title?.[0]?.plain_text || 'Untitled',
-          status: statusProp?.status?.name || statusProp?.select?.select?.name || 'Unknown',
+          id: page.id,
+          title: (titleProp?.title?.[0]?.plain_text) || 'Untitled',
+          status: statusProp?.status?.name || statusProp?.select?.name || 'Unknown',
           lastEditedTime: page.last_edited_time as string,
           url: page.url as string,
         };

@@ -70,7 +70,7 @@ export function AnnotationOverlay({
 
       <div ref={containerRef} className="relative overflow-hidden rounded-lg">
         {imageUrl && (
-          <img
+          <Image
             src={imageUrl}
             alt="Project render"
             className="w-full"
