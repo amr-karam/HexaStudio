@@ -9,6 +9,7 @@ import { SmoothScrollWrapper } from "@/components/SmoothScrollWrapper";
 import { CustomCursor } from "@/components/CustomCursor";
 import { BackToTop } from "@/components/BackToTop";
 import { CinematicPreloader } from "@/components/ui/overlays/CinematicPreloader";
+import { WebVitals } from "@/components/WebVitals";
 import "./globals.css";
 
 const inter = Inter({
@@ -110,6 +111,7 @@ export default function RootLayout({
             <Footer />
           </SmoothScrollWrapper>
           <BackToTop />
+          <WebVitals />
         </AppProviders>
       </body>
     </html>
