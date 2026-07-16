@@ -107,7 +107,7 @@ function renderBlock(block: StrapiBlock, key: string): React.ReactNode {
       return (
         <blockquote
           key={key}
-          className="border-l-2 border-accent pl-6 my-8 text-neutral-300 italic text-xl font-light"
+          className="border-s-2 border-accent ps-6 my-8 text-neutral-300 italic text-xl font-light"
         >
           {children}
         </blockquote>

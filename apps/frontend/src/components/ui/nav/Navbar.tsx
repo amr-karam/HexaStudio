@@ -29,7 +29,7 @@ const NavItem = ({ label, href, active, onClick }: NavItemProps) => (
     {active && (
       <motion.span
         layoutId="nav-indicator"
-        className="absolute -bottom-1 left-0 h-[1px] w-full bg-accent"
+        className="absolute -bottom-1 inset-x-0 h-[1px] w-full bg-accent"
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
       />
     )}
@@ -110,7 +110,7 @@ export const Navbar = () => {
         role="navigation"
         aria-label="Main navigation"
         className={cn(
-          'fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 md:px-16 transition-all duration-700 ease-out-expo',
+          'fixed top-0 inset-x-0 z-50 flex items-center justify-between px-8 md:px-16 transition-all duration-700 ease-out-expo',
           isScrolled
             ? 'py-4 bg-background/60 backdrop-blur-2xl border-b border-border/50'
             : 'py-8 bg-transparent',

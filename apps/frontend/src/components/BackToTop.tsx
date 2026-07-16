@@ -17,7 +17,7 @@ export function BackToTop() {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-8 right-8 z-50 h-12 w-12 flex items-center justify-center border border-accent/30 text-accent hover:bg-accent hover:text-background transition-all duration-300"
+          className="fixed bottom-8 end-8 z-50 h-12 w-12 flex items-center justify-center border border-accent/30 text-accent hover:bg-accent hover:text-background transition-all duration-300"
         >
           {" "}
           <svg

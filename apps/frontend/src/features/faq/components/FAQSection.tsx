@@ -7,6 +7,7 @@ import { RadialGlow } from '@/components/animation';
 import { cn } from '@/lib/utils';
 import { useFAQs } from '@/features/faq/hooks/useFAQs';
 import { useLocale } from '@/i18n/LocaleProvider';
+import { FAQResponse } from '@hexastudio/types';
 
 const fallbackFAQs = [
   { question: 'What types of projects do you specialize in?', answer: 'We specialize in high-end architectural visualization including residential, commercial, hospitality, and cultural projects. Our expertise spans from concept visualization to photorealistic renders and interactive 3D experiences.' },
@@ -19,9 +20,9 @@ const fallbackFAQs = [
 export const FAQSection = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const { t } = useLocale();
-  const { data } = useFAQs();
+  const { data } = useFAQs() as { data: FAQResponse | undefined };
 
-  const faqs = (data?.faqs && data.faqs.length > 0 ? data.faqs : fallbackFAQs).map((item) => ({
+  const faqs = (data?.faqs && data.faqs.length > 0 ? data.faqs : fallbackFAQs).map((item: { question: string; answer: string | Array<{ text?: string }> }) => ({
     question: item.question,
     answer: typeof item.answer === 'string' ? item.answer : (item.answer as Array<{ text?: string }>).map(b => b.text || '').join(''),
   }));
@@ -45,9 +46,9 @@ export const FAQSection = () => {
               <div className="border border-border/50 rounded-xl overflow-hidden hover:border-accent/20 transition-colors duration-300">
                 <button
                   onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
-                  className="w-full flex items-center justify-between px-6 py-5 text-left"
+                  className="w-full flex items-center justify-between px-6 py-5 text-start"
                 >
-                  <span className="text-base font-medium text-foreground pr-4">{faq.question}</span>
+                  <span className="text-base font-medium text-foreground pe-4">{faq.question}</span>
                   <motion.span
                     animate={{ rotate: openIndex === idx ? 45 : 0 }}
                     transition={{ duration: 0.3 }}

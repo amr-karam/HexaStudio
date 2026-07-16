@@ -35,7 +35,7 @@ export const StudioSection = () => {
           <motion.div 
             initial={{ opacity: 0 }}
             whileHover={{ opacity: 1 }}
-            className="absolute bottom-8 left-8 right-8 p-6 bg-black/40 backdrop-blur-xl border border-white/10 text-white transition-opacity duration-500 pointer-events-none"
+            className="absolute bottom-8 start-8 end-8 p-6 bg-black/40 backdrop-blur-xl border border-white/10 text-white transition-opacity duration-500 pointer-events-none"
           >
             <p className="text-[10px] uppercase tracking-[0.3em] text-gold mb-2 font-mono">Technical Spec</p>
             <p className="text-xs font-light leading-relaxed opacity-80">
@@ -43,7 +43,7 @@ export const StudioSection = () => {
             </p>
           </motion.div>
           
-          <div className="absolute top-0 right-0 w-32 h-32 border-t-2 border-r-2 border-accent/30 group-hover:border-accent transition-colors duration-700" />
+          <div className="absolute top-0 end-0 w-32 h-32 border-t-2 border-e-2 border-accent/30 group-hover:border-accent transition-colors duration-700" />
         </motion.div>
 
         <motion.div

@@ -1,7 +1,10 @@
+'use client';
+
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { EASE } from '@/lib/motion';
+import { useLocale } from '@/i18n/LocaleProvider';
 
 type Message = {
   id: string;
@@ -13,11 +16,12 @@ type Message = {
 type Provider = 'openai' | 'gemini';
 
 export default function AIPage() {
+  const { t } = useLocale();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'welcome',
       role: 'assistant',
-      content: "Hello! I'm HEXA, your AI assistant. Ask me about our architectural projects, services, or anything about HexaStudio.",
+      content: t('ai.welcome'),
       timestamp: Date.now(),
     },
   ]);
@@ -61,7 +65,7 @@ export default function AIPage() {
       const assistantMessage: Message = {
         id: crypto.randomUUID(),
         role: 'assistant',
-        content: data.response || 'No response generated.',
+        content: data.response || t('ai.noResponse'),
         timestamp: Date.now(),
       };
 
@@ -70,7 +74,7 @@ export default function AIPage() {
       const errorMessage: Message = {
         id: crypto.randomUUID(),
         role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again later.',
+        content: t('ai.errorMessage'),
         timestamp: Date.now(),
       };
       setMessages(prev => [...prev, errorMessage]);
@@ -89,10 +93,10 @@ export default function AIPage() {
         >
           <div className="text-center mb-8">
             <h1 className="text-4xl md:text-5xl font-display tracking-tight text-foreground mb-3">
-              <TextReveal>HEXA AI</TextReveal>
+              <TextReveal>{t('ai.heading')}</TextReveal>
             </h1>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Your intelligent assistant for exploring projects, services, and architectural insights.
+              {t('ai.subtitle')}
             </p>
           </div>
         </motion.div>
@@ -106,15 +110,15 @@ export default function AIPage() {
           <div className="flex items-center justify-between px-6 py-3 border-b border-border bg-muted/30">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-sm font-medium text-foreground">HEXA</span>
+              <span className="text-sm font-medium text-foreground">{t('ai.brand')}</span>
             </div>
             <select
               value={provider}
               onChange={e => setProvider(e.target.value as Provider)}
               className="text-xs bg-background border border-border rounded-lg px-2 py-1 text-muted-foreground focus:outline-none focus:ring-1 focus:ring-accent"
             >
-              <option value="openai">OpenAI</option>
-              <option value="gemini">Gemini</option>
+              <option value="openai">{t('ai.providerOpenAI')}</option>
+              <option value="gemini">{t('ai.providerGemini')}</option>
             </select>
           </div>
 
@@ -167,7 +171,7 @@ export default function AIPage() {
                 type="text"
                 value={input}
                 onChange={e => setInput(e.target.value)}
-                placeholder="Ask HEXA anything..."
+                placeholder={t('ai.placeholder')}
                 disabled={isLoading}
                 className="flex-1 bg-background border border-border rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-accent disabled:opacity-50"
               />
@@ -176,7 +180,7 @@ export default function AIPage() {
                 disabled={isLoading || !input.trim()}
                 className="px-5 py-2.5 bg-accent text-accent-foreground rounded-xl text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
               >
-                Send
+                {t('ai.send')}
               </button>
             </div>
           </form>
