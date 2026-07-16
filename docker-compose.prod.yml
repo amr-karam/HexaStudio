@@ -180,8 +180,12 @@ services:
       ODOO_HOST: ${ODOO_HOST:-odoo}
       ODOO_PORT: ${ODOO_PORT:-8069}
       ODOO_DB: ${ODOO_DB:-hexastudio_odoo}
+      ODOO_DB_USER: ${ODOO_DB_USER:-admin}
+      ODOO_DB_PASSWORD: ${ODOO_DB_PASSWORD:-admin}
       ODOO_USER: ${ODOO_USER:-admin}
       ODOO_PASSWORD: ${ODOO_PASSWORD:?ODOO_PASSWORD is required}
+      ODOO_MASTER_PASSWORD: ${ODOO_MASTER_PASSWORD:?ODOO_MASTER_PASSWORD is required}
+      ODOO_WEBHOOK_SECRET: ${ODOO_WEBHOOK_SECRET:?ODOO_WEBHOOK_SECRET is required}
     depends_on:
       postgres:
         condition: service_healthy
@@ -242,6 +246,8 @@ services:
       DATABASE_SSL: "false"
       CMS_URL: ${CMS_URL:-http://cms:1337}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-hexastudio}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
       DATABASE_URL: postgresql://${POSTGRES_USER:-hexastudio}:${POSTGRES_PASSWORD}@postgres:5432/hexastudio_cms
