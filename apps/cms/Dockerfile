@@ -1,12 +1,13 @@
-# --- Single Stage Build ---
-FROM node:22
-RUN apt-get update && apt-get install -y build-essential gcc g++ make python3 curl
-WORKDIR /app
-COPY . .
-RUN npm install --no-audit --no-fund
-RUN npm install esbuild react-redux --legacy-peer-deps --no-audit --no-fund
-RUN npm run build --workspace=apps/cms
+# CMS (Strapi 5) standalone build
+FROM node:20 AS base
+WORKDIR /opt/app
+COPY apps/cms/package.json ./package.json
+COPY apps/cms/package-lock.json* ./
+RUN npm install --legacy-peer-deps --no-audit --no-fund
+COPY apps/cms/ ./
+ENV NODE_ENV=development
+RUN npm run build
 ENV NODE_ENV=production
-WORKDIR /app/apps/cms
+ENV NODE_OPTIONS=--max-old-space-size=2048
 EXPOSE 1337
 CMD ["npm", "run", "start"]
