@@ -13,7 +13,7 @@
 
 ---
 
-## 2. SPRINT 6 — ENTERPRISE HARDENING (ACTIVE)
+## 2. SPRINT 6 — ENTERPRISE HARDENING (COMPLETED)
 
 ### 🔴 P0: CRITICAL
 
@@ -26,7 +26,7 @@
 | **S6-P0-005** | B9 — First-load JS budget (lazy-load Three.js/R3F/GSAP on non-home routes) | ✅ Done |
 | **S6-P0-006** | Docker build fix — monorepo build args + workspace build in Dockerfile | ✅ Done |
 | **S6-P0-007** | v1.0.0 version alignment (`package.json` ↔ CHANGELOG) | ✅ Done |
-| **S6-P0-008** | v1.0.0 release git tag | ✅ Done (all versions aligned to 1.0.0; tag pending final QA sign-off) |
+| **S6-P0-008** | v1.0.0 release git tag | ✅ Done (v1.0.0 tagged) |
 
 ### 🟡 P1: HIGH
 
@@ -48,10 +48,10 @@
 
 ---
 
-## 3. FRONTEND EXCELLENCE INITIATIVE (ACTIVE)
+## 3. FRONTEND EXCELLENCE INITIATIVE (COMPLETED)
 
 Elevating `apps/frontend` to HEXA Creative Excellence standard. All gates green
-(lint / typecheck / 64 tests / production build).
+(lint / typecheck / 69 tests / production build).
 
 | Task ID | Description | Status |
 |---------|-------------|--------|

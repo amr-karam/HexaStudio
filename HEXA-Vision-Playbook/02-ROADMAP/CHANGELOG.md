@@ -1,5 +1,25 @@
 # Changelog: HEXA Vision
 
+## [1.2.0] - 2026-07-16
+
+### Sprint 8 — AI Evolution
+
+#### Added
+- **AI Agent Scaffold:** NestJS-based agents module with ReAct loop, tool-calling (`agents.controller.ts`, `agents.service.ts`, `tools.ts`).
+- **Smart Summaries:** AI-powered summary generation service at `ai/summary.service.ts`.
+- **Sentry v9 Upgrade:** Dropped 2 high-severity vulns (rollup path traversal, picomatch). @sentry/nextjs 8.x → 9.47.1.
+- **Router Certificate:** mkcert-generated SSL cert for gateway 19.16.1.1.
+
+#### Changed
+- **Email Module Removed:** Replaced by Contact module. Tests migrated from jest to vitest patterns.
+- **Frontend UX Polish:** CTASection staggered animations, PageTransition scroll-to-top, AchievementsSection scroll-triggered counter, Skeleton component.
+- **SEO/Meta:** Canonical URLs, language alternates, themeColor, manifest.json, Apple/favicon icons.
+- **cd.yml Healthcheck:** 15s settle + container health verification before deploy success.
+- **Test Import Fixes:** `screen`/`fireEvent` imported from `@testing-library/dom` (compat with RTL v16).
+
+#### Fixed
+- **Vulnerability Remediation:** ajv, esbuild, picomatch, webpack updated to safe versions. 30 → 23 vulns (all moderate).
+
 ## [1.0.0] - 2026-07-12
 
 ### Sprint 6 — Enterprise Hardening
