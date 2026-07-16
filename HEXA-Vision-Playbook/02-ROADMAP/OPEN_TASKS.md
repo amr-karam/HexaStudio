@@ -200,6 +200,7 @@ Elevating `apps/frontend` to HEXA Creative Excellence standard. All gates green
 | **S12-FE-001** | TeamSection + FAQSection + TestimonialsSection (API-driven) | ✅ |
 | **S12-P2-001** | Integration Hub — Centralized webhook management dashboard | ✅ |
 | **S12-P1-004** | Translation Workflow — Export/import, reviewer flow for Strapi | ✅ |
+| **S12-P2-002** | RTL Content Audit — Verify all CMS content in RTL | ✅ |
 
 ### 🔴 P0: CRITICAL
 
@@ -222,7 +223,6 @@ Elevating `apps/frontend` to HEXA Creative Excellence standard. All gates green
 
 | Task ID | Description | Story Points | Dependencies |
 |---------|-------------|-------------|--------------|
-| **S12-P2-002** | RTL Content Audit — Verify all CMS content in RTL | M | Strapi i18n |
 | **S12-P2-003** | Advanced Analytics — Custom dashboard builder, CSV export | L | PostHog/GA4 |
 | **S12-P2-005** | Backend Test Recovery — Resolve NTFS corruption blocking vitest | M | — |
 | **S12-P2-006** | Sentry Release Health — Release tracking, error rate alerts, session replay | M | Sentry v10 |

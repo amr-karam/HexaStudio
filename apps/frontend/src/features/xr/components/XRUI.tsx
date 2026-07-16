@@ -102,13 +102,13 @@ export function XRUI({ onExit, modelName }: XRUIProps) {
       <>
         <button
           onClick={onExit}
-          className="pointer-events-auto absolute right-4 top-4 rounded-full bg-black/50 px-4 py-2 text-sm text-white/80 backdrop-blur-sm transition-colors hover:bg-black/70"
+          className="pointer-events-auto absolute end-4 top-4 rounded-full bg-black/50 px-4 py-2 text-sm text-white/80 backdrop-blur-sm transition-colors hover:bg-black/70"
         >
           Exit
         </button>
 
         {modelName && !isSessionActive && (
-          <div className="pointer-events-auto absolute left-4 top-4 max-w-[60%]">
+          <div className="pointer-events-auto absolute start-4 top-4 max-w-[60%]">
             <p className="truncate text-sm text-white/60">
               {modelName}
             </p>

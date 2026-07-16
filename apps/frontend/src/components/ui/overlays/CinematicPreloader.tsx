@@ -55,7 +55,7 @@ export function CinematicPreloader() {
 
             <div className="h-[1px] w-full bg-neutral-800 relative overflow-hidden">
               <motion.div
-                className="absolute inset-y-0 left-0 bg-accent"
+                className="absolute inset-y-0 start-0 bg-accent"
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ ease: 'linear' }}

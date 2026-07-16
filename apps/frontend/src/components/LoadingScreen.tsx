@@ -51,7 +51,7 @@ export const LoadingScreen = ({ children }: LoadingScreenProps) => {
               className="w-48 h-[1px] bg-border relative overflow-hidden"
             >
               <motion.div
-                className="absolute inset-y-0 left-0 bg-accent"
+                className="absolute inset-y-0 start-0 bg-accent"
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.4, ease: EASE.entrance }}
               />

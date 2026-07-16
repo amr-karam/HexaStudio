@@ -75,10 +75,9 @@ export class NotionService {
         this.http.post(`https://api.notion.com/v1/databases/${databaseId}/query`, body, { headers: this.headers }),
       );
 
-      return response.data.results.map((page: Record<string, unknown>) => {
-        const props = page.properties as Record<string, { title?: Array<{ plain_text?: string }>; status?: { status?: { name?: string } }; select?: { select?: { name?: string } } };
-        const titleProp = Object.values(props).find(p => p.title);
-        const statusProp = props.Status || props.status;
+      return response.data.results.map((page: any) => {
+        const titleProp = Object.values(page.properties).find((p: any) => p.title);
+        const statusProp = page.properties.Status || page.properties.status;
 
         return {
           id: page.id as string,
