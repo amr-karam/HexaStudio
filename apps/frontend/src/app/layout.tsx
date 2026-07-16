@@ -1,13 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display, JetBrains_Mono } from "next/font/google";
 import { AppProviders } from "@/providers/app-providers";
-import { Navbar } from "@/components/ui/nav/Navbar";
-import { Footer } from "@/components/ui/Footer";
+import { LayoutShell } from "@/components/LayoutShell";
 import { StructuredData } from "@/components/StructuredData";
-import { PageTransition } from "@/components/PageTransition";
-import { SmoothScrollWrapper } from "@/components/SmoothScrollWrapper";
-import { CustomCursor } from "@/components/CustomCursor";
-import { BackToTop } from "@/components/BackToTop";
 import { CinematicPreloader } from "@/components/ui/overlays/CinematicPreloader";
 import { WebVitals } from "@/components/WebVitals";
 import "./globals.css";
@@ -96,21 +91,13 @@ export default function RootLayout({
         <AppProviders>
           <CinematicPreloader />
           <StructuredData />
-          <CustomCursor />
           <a
             href="#main-content"
             className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[var(--foreground)] focus:text-[var(--background)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
           >
             Skip to content
           </a>
-          <SmoothScrollWrapper>
-            <Navbar />
-            <PageTransition>
-              <main id="main-content" tabIndex={-1}>{children}</main>
-            </PageTransition>
-            <Footer />
-          </SmoothScrollWrapper>
-          <BackToTop />
+          <LayoutShell>{children}</LayoutShell>
           <WebVitals />
         </AppProviders>
       </body>

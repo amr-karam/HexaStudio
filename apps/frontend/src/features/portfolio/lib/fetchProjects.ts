@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/nextjs';
 import { Project, ProjectResponse } from '@hexastudio/types';
 import { API_BASE_URL } from '@/config/constants';
 
@@ -15,8 +16,8 @@ async function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutM
 export async function fetchProjects(): Promise<ProjectResponse> {
   try {
     // Use internal Docker DNS for server-side calls to avoid loopback issues
-    const baseUrl = typeof window === 'undefined' 
-      ? 'http://backend:4000' 
+    const baseUrl = typeof window === 'undefined'
+      ? (process.env.API_URL || 'http://backend:4000')
       : API_BASE_URL;
 
     const response = await fetchWithTimeout(`${baseUrl}/api/projects`, {
@@ -24,21 +25,21 @@ export async function fetchProjects(): Promise<ProjectResponse> {
     });
 
     if (!response.ok) {
-      console.error(`API Error: ${response.status} ${response.statusText}`);
-      return { projects: [], total: 0 };
+      Sentry.captureException(new Error(`API Error: ${response.status} ${response.statusText}`));
+      return { projects: [], total: 0, page: 1, limit: 20, totalPages: 0 };
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Fetch Projects Error:', error);
-    return { projects: [], total: 0 };
+    Sentry.captureException(error);
+    return { projects: [], total: 0, page: 1, limit: 20, totalPages: 0 };
   }
 }
 
 export async function fetchProject(slug: string): Promise<Project | null> {
   try {
-    const baseUrl = typeof window === 'undefined' 
-      ? 'http://backend:4000' 
+    const baseUrl = typeof window === 'undefined'
+      ? (process.env.API_URL || 'http://backend:4000')
       : API_BASE_URL;
 
     const response = await fetchWithTimeout(`${baseUrl}/api/projects/${slug}`, {
@@ -51,7 +52,7 @@ export async function fetchProject(slug: string): Promise<Project | null> {
 
     return await response.json();
   } catch (error) {
-    console.error(`Fetch Project (${slug}) Error:`, error);
+    Sentry.captureException(error);
     return null;
   }
 }

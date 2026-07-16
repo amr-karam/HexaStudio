@@ -18,11 +18,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    // Check if user is logged in by calling /me (cookie is sent automatically)
-    fetchUser();
-  }, []);
-
     const fetchUser = async () => {
       try {
         const response = await fetch(`${API_BASE_URL}/api/users/me`, {
@@ -40,6 +35,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setIsLoading(false);
       }
     };
+
+  useEffect(() => {
+    // Check if user is logged in by calling /me (cookie is sent automatically)
+    fetchUser();
+  }, []);
 
 
   const login = async (identifier: string, password: string) => {

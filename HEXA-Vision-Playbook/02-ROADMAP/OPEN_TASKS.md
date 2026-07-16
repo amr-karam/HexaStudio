@@ -89,7 +89,118 @@ Elevating `apps/frontend` to HEXA Creative Excellence standard. All gates green
 
 ---
 
-## 5. COMPLETED (PRIOR SPRINTS)
+## 5. SPRINT 9 — PRODUCTION HARDENING (COMPLETED)
+
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S9-P0-001** | Grafana dashboards — RED method panels (Backend, Vector, Infra) | ✅ Done |
+| **S9-P0-002** | Prometheus alerting — CPU>80%, Mem>90%, 5xx>1%, Disk>90% | ✅ Done |
+| **S9-P0-003** | Sentry error budgets — Release tracking, weekly alerts | ✅ Done |
+| **S9-P0-004** | Loki log aggregation — Docker logs, structured queries, log alerts | ✅ Done |
+| **S9-P0-005** | Lighthouse CI enforcement (>95 all categories) | ✅ Done |
+
+### 🟡 P1: HIGH
+
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S9-P1-001** | Core Web Vitals RUM — web-vitals lib + analytics | ✅ Verified |
+| **S9-P1-002** | Bundle analysis — @next/bundle-analyzer CI job, size budgets | ✅ Done |
+| **S9-P1-003** | Image optimization audit — next/image, formats, lazy loading | ✅ Doc complete |
+| **S9-P1-004** | Server password rotation doc | ✅ Done |
+| **S9-P1-005** | Backup restore drill doc | ✅ Done |
+
+### 🔵 P2: MEDIUM
+
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S9-P2-001** | Hostinger API key rotation | ⏳ Pending |
+| **S9-P2-002** | Dependabot remediation (23 moderate vulns) | ⏳ Pending |
+| **S9-P2-003** | Sync playbook docs (arch, deploy, API) | ⏳ Ongoing |
+| **S9-P2-004** | Runbook creation (deploy, rollback, restore, incident) | ✅ Doc complete |
+
+---
+
+## 6. SPRINT 10 — AI ARCHITECT (COMPLETED)
+
+### 🔴 P0: CRITICAL
+
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S10-P0-001** | CEO Assistant — Strategic dashboard, KPI summaries, risk alerts | ✅ Done |
+| **S10-P0-002** | Sales Assistant — Lead qualification, proposal generation | ✅ Done |
+| **S10-P0-003** | PM Assistant — Sprint planning, resource allocation, risk prediction | ✅ Done |
+
+### 🟡 P1: HIGH
+
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S10-P1-001** | AI Lighting Designer — Context-aware lighting presets from brief | ✅ Done |
+| **S10-P1-002** | Material Recommender — PBR material suggestions from style/images | ✅ Done |
+| **S10-P1-003** | Layout Generator — Spatial arrangement from program | ✅ Done |
+
+### 🔵 P2: MEDIUM
+
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S10-P2-001** | Timeline Forecasting — ML project duration estimates | ✅ Done |
+| **S10-P2-002** | Resource Optimization — Team allocation, bottleneck prediction | ✅ Done |
+| **S10-P2-003** | Cost Estimation — Material/labor forecasting from embeddings | ✅ Done |
+
+---
+
+## 7. SPRINT 11 — PLATFORM EXPANSION & MOBILE API (ACTIVE)
+
+**Started:** 2026-07-16 | **Target:** 2026-08-15
+
+### ✅ Completed This Sprint
+
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S11-P0-001a** | Mobile Auth — refresh token rotation, JWT blacklist, password reset | ✅ |
+| **S11-P0-001b** | API Versioning — NestJS URI versioning with VERSION_NEUTRAL backward compat | ✅ |
+| **S11-P0-001c** | Pagination — `?page=&limit=` on projects, articles, services | ✅ |
+| **S11-P0-001d** | Security — JWT auth on `/agents/*` endpoints | ✅ |
+| **S11-P0-002** | Client Portal v2 — WebSocket gateway, phase approvals, annotations | ✅ |
+| **S11-P0-003a** | WebSocket Infrastructure — Socket.IO gateway with rooms, presence, events | ✅ |
+| **S11-P1-001a** | WebXR Viewer scaffold — `features/xr/` module + `app/xr-viewer/` route | ✅ |
+| **S11-P1-001b** | WebXR Viewer full — auto-scaling, controllers, loading UX, AR/VR entry | ✅ |
+| **S11-P1-002** | Mobile API profile/models endpoints (storage URLs, profile listing) | ✅ |
+| **S11-P1-003** | i18n Framework — LocaleProvider, RTL, EN/AR messages, locale switcher | ✅ |
+| **S11-INFRA** | @sentry/nextjs 9→10 upgrade, @sentry/node 8→10 upgrade | ✅ |
+| **S11-INFRA** | npm vuln remediation (29→24, @opentelemetry/core fixed) | ✅ |
+| **S11-INFRA** | Backend API audit & mobile gap analysis | ✅ |
+| **S11-INFRA** | npm overrides for cookie, tmp, uuid | ✅ |
+| **S11-INFRA** | Frontend LayoutShell for fullscreen routes (XR viewer) | ✅ |
+
+### 🔴 P0: CRITICAL
+
+| Task ID | Description | Story Points | Dependencies |
+|---------|-------------|-------------|--------------|
+| **S11-P0-004** | Client Portal v2 Frontend — Integrate WebSocket into dashboard pages | M | WebSocket |
+| **S11-P0-005** | Multi-language i18n — ES/FR/DE/JA/KO/ZH message files | L | i18n infra |
+
+### 🟡 P1: HIGH
+
+| Task ID | Description | Story Points | Dependencies |
+|---------|-------------|-------------|--------------|
+| **S11-P1-001** | WebXR Viewer — Production polish (progressive loading, fallbacks, analytics) | M | WebXR |
+| **S11-P1-002** | AR Model Placement — Place models in real space via hit-test | XL | WebXR |
+| **S11-P1-003** | Third-party Integrations — Slack, Notion, Linear, Jira | M | Webhooks |
+
+### 🔵 P2: MEDIUM
+
+| Task ID | Description | Story Points | Dependencies |
+|---------|-------------|-------------|--------------|
+| **S11-P2-001** | VR Collaboration — Multi-user design reviews | XL | WebSocket, WebXR |
+| **S11-P2-002** | Assistants module fix — Pre-existing type errors in ceo-assistant.service.ts | M | — |
+| **S11-P2-003** | Content Pipeline — Strapi localization, translation management | L | i18n infra |
+| **S11-P2-004** | Currency/Localization — Dynamic pricing, regional compliance | M | i18n infra |
+| **S11-P2-005** | Advanced Analytics — Custom dashboards, export | L | PostHog/GA4 |
+| **S11-P2-006** | PostHog/GA4 Migration — Event tracking, funnel analysis | L | Analytics |
+
+---
+
+## 8. COMPLETED (PRIOR SPRINTS)
 
 - [x] **Task ID-001:** High-Fidelity 3D Model Pipeline (Draco + GLB optimization)
 - [x] **Task ID-002:** Luxury Gap Visual Audit

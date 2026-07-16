@@ -1,0 +1,52 @@
+{
+  "apiVersion": 1,
+  "groups": [
+    {
+      "name": "hexa-backend-red",
+      "interval": 15s,
+      "rules": [
+        {
+          "alert": "BackendHighErrorRate",
+          "expr": "sum(rate(http_requests_total{job=\"backend\",status=~\"5..\"}[5m])) / sum(rate(http_requests_total{job=\"backend\"}[5m])) > 0.05",
+          "for": "2m",
+          "labels": { "severity": "critical" },
+          "annotations": { "summary": "Backend 5xx error rate > 5%", "description": "Error rate is {{ $value | printf \"%.2%\" }}" }
+        },
+        {
+          "alert": "BackendHighLatency",
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"backend\"}[5m])) by (le)) > 2",
+          "for": "5m",
+          "labels": { "severity": "warning" },
+          "annotations": { "summary": "Backend p95 latency > 2s", "description": "p95 latency is {{ $value | printf \"%.2f\" }}s" }
+        },
+        {
+          "alert": "BackendLowThroughput",
+          "expr": "sum(rate(http_requests_total{job=\"backend\"}[5m])) < 0.1",
+          "for": "10m",
+          "labels": { "severity": "info" },
+          "annotations": { "summary": "Unusually low backend throughput", "description": "Request rate is {{ $value | printf \"%.2f\" }} req/s" }
+        }
+      ]
+    },
+    {
+      "name": "hexa-vector-red",
+      "interval": 15s,
+      "rules": [
+        {
+          "alert": "VectorSearchHighLatency",
+          "expr": "histogram_quantile(0.95, sum(rate(vector_search_duration_seconds_bucket[5m])) by (le)) > 1",
+          "for": "5m",
+          "labels": { "severity": "warning" },
+          "annotations": { "summary": "Vector search p95 > 1s", "description": "p95 latency is {{ $value | printf \"%.2f\" }}s" }
+        },
+        {
+          "alert": "VectorSearchErrors",
+          "expr": "sum(rate(vector_search_total{status=\"error\"}[5m])) > 0.01",
+          "for": "2m",
+          "labels": { "severity": "critical" },
+          "annotations": { "summary": "Vector search error rate high", "description": "Error rate is {{ $value | printf \"%.2f\" }}/sec" }
+        }
+      ]
+    }
+  ]
+}

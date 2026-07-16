@@ -1,9 +1,9 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, VERSION_NEUTRAL } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { RecommendationService, SimilarProjectResult } from '../vector/recommendation.service';
 import { Project, ProjectResponse } from '@hexastudio/types';
 
-@Controller('projects')
+@Controller({ path: 'projects', version: VERSION_NEUTRAL })
 export class ProjectsController {
   constructor(
     private readonly projectsService: ProjectsService,
@@ -11,8 +11,14 @@ export class ProjectsController {
   ) {}
 
   @Get()
-  async findAll(): Promise<ProjectResponse> {
-    return this.projectsService.getAllProjects();
+  async findAll(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ): Promise<ProjectResponse> {
+    return this.projectsService.getAllProjects(
+      page ? parseInt(page, 10) : 1,
+      limit ? parseInt(limit, 10) : 20,
+    );
   }
 
   @Get(':slug/similar')

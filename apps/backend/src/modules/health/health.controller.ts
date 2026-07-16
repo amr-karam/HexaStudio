@@ -1,9 +1,9 @@
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Get, VERSION_NEUTRAL } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { OdooService } from "../odoo/odoo.service";
 
 @ApiTags("health")
-@Controller("health")
+@Controller({ path: "health", version: VERSION_NEUTRAL })
 export class HealthController {
   constructor(private readonly odooService: OdooService) {}
 

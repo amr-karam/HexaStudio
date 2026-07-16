@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/inputs/Input';
@@ -11,18 +11,58 @@ import { portalService, type PortalData, type ProjectRequest } from '@/services/
 import { useAuth } from '@/features/auth';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { PhaseApprovalCard, RealtimePresence, AnnotationOverlay } from '@/features/portal';
+import { useRealtime } from '@/features/realtime/useRealtime';
+
+type PhaseStatus = 'pending' | 'submitted' | 'approved' | 'rejected' | 'revision';
+
+const DEMO_PHASES: Array<{ id: string; name: string; status: PhaseStatus; description: string }> = [
+  { id: 'phase-1', name: 'Concept Design', status: 'approved' as const, description: 'Initial concept and mood boards' },
+  { id: 'phase-2', name: '3D Modeling', status: 'submitted' as const, description: 'High-fidelity 3D model creation' },
+  { id: 'phase-3', name: 'Texturing & Lighting', status: 'pending' as const, description: 'Material application and lighting setup' },
+  { id: 'phase-4', name: 'Final Rendering', status: 'pending' as const, description: 'Final production renders' },
+];
 
 export default function PortalPage() {
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
+  const queryClient = useQueryClient();
   const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
+  const [phases, setPhases] = useState(DEMO_PHASES);
+  const [annotations, setAnnotations] = useState<Array<{ id: string; type: 'text' | 'pin'; position: { x: number; y: number }; content: string; author: string; createdAt: string; resolved: boolean }>>([]);
+  const [presenceUsers, setPresenceUsers] = useState<string[]>([]);
   const [requestForm, setRequestForm] = useState({
     title: '',
     description: '',
     priority: 'medium' as ProjectRequest['priority'],
   });
 
-  const { data, isLoading, isError } = useQuery<PortalData>({
+  const { sendApproval, sendAnnotation, resolveAnnotation, announcePresence, isConnected } = useRealtime('demo-project', {
+    onApprovalUpdate: (data) => {
+      const statusMap = { approve: 'approved' as const, reject: 'rejected' as const, revision: 'revision' as const, submit: 'submitted' as const };
+      setPhases((prev) => prev.map((p) =>
+        p.id === data.phaseId ? { ...p, status: statusMap[data.action] || p.status } : p
+      ));
+      toast.success(`Phase ${data.action === 'approve' ? 'approved' : data.action === 'reject' ? 'rejected' : 'updated'}`);
+    },
+    onAnnotationAdded: (annotation) => {
+      setAnnotations((prev) => [...prev, { id: annotation.id, type: annotation.type as 'text' | 'pin', position: { x: annotation.position.x, y: annotation.position.y }, content: annotation.content, author: annotation.author, createdAt: annotation.createdAt, resolved: false }]);
+    },
+    onAnnotationResolved: (data) => {
+      setAnnotations((prev) => prev.map((a) => a.id === data.annotationId ? { ...a, resolved: true } : a));
+    },
+    onPresenceJoined: (data) => {
+      setPresenceUsers((prev) => [...new Set([...prev, data.user])]);
+    },
+    onPresenceLeft: (data) => {
+      setPresenceUsers((prev) => prev.filter((u) => u !== data.id));
+    },
+    onConnected: () => {
+      if (user?.email) announcePresence(user.email);
+    },
+  });
+
+  const { data, isLoading } = useQuery<PortalData>({
     queryKey: ['portal-data'],
     queryFn: portalService.getDemoData,
     enabled: !!user,
@@ -38,6 +78,7 @@ export default function PortalPage() {
     mutationFn: (data: Partial<ProjectRequest>) => portalService.sendRequest(data),
     onSuccess: () => {
       toast.success('Request sent successfully. Our team will review it shortly.');
+      queryClient.invalidateQueries({ queryKey: ['portal-requests'] });
       setIsRequestModalOpen(false);
       setRequestForm({ title: '', description: '', priority: 'medium' });
     },
@@ -55,27 +96,40 @@ export default function PortalPage() {
     });
   };
 
+  const handlePhaseSubmit = useCallback((phaseId: string) => {
+    setPhases((prev) => prev.map((p) => p.id === phaseId ? { ...p, status: 'submitted' } : p));
+    sendApproval({ phaseId, action: 'submit', userId: user?.id || 'unknown' });
+    toast.success('Phase submitted for approval');
+  }, [sendApproval, user?.id]);
+
+  const handlePhaseReview = useCallback((phaseId: string, action: 'approve' | 'reject' | 'revision', comment?: string) => {
+    sendApproval({ phaseId, action, userId: user?.id || 'unknown', comment });
+  }, [sendApproval, user?.id]);
+
+  const handleAddAnnotation = useCallback((ann: { x: number; y: number; content: string }) => {
+    const annotation = {
+      id: `ann-${Date.now()}`,
+      type: 'pin' as const,
+      position: { x: ann.x, y: ann.y },
+      content: ann.content,
+      author: user?.email || 'Anonymous',
+      createdAt: new Date().toISOString(),
+      resolved: false,
+    };
+    setAnnotations((prev) => [...prev, annotation]);
+    sendAnnotation(annotation);
+  }, [sendAnnotation, user?.email]);
+
   if (authLoading || isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <motion.div 
-          animate={{ opacity: [0.5, 1, 0.5] }} 
-          transition={{ repeat: Infinity, duration: 1.5 }} 
+        <motion.div
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ repeat: Infinity, duration: 1.5 }}
           className="text-xs uppercase tracking-[0.5em] text-neutral-500 font-mono"
         >
           Loading Gateway...
         </motion.div>
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-neutral-500 mb-4">Unable to connect to the secure gateway.</p>
-          <Button variant="outline" onClick={() => window.location.reload()}>Retry Connection</Button>
-        </div>
       </div>
     );
   }
@@ -99,7 +153,7 @@ export default function PortalPage() {
     <main className="min-h-screen bg-background pt-32 pb-24 px-8 md:px-16">
       <div className="w-full">
         <header className="mb-24">
-          <motion.span 
+          <motion.span
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -107,11 +161,14 @@ export default function PortalPage() {
           >
             Client Gateway
           </motion.span>
-          <div className="text-5xl md:text-8xl font-serif font-light tracking-tighter text-foreground leading-tight">
-            <TextReveal delay={0.1}>
-              Welcome, <br />
-              <span className="italic text-accent">Valued Client.</span>
-            </TextReveal>
+          <div className="flex items-start justify-between">
+            <div className="text-5xl md:text-8xl font-serif font-light tracking-tighter text-foreground leading-tight">
+              <TextReveal delay={0.1}>
+                Welcome, <br />
+                <span className="italic text-accent">Valued Client.</span>
+              </TextReveal>
+            </div>
+            <RealtimePresence users={presenceUsers} isConnected={isConnected} />
           </div>
         </header>
 
@@ -124,26 +181,29 @@ export default function PortalPage() {
                   {data.project.status}
                 </span>
               </div>
-              <div className="space-y-8">
-                {data.timeline.map((item, i) => (
-                  <div key={i} className="relative pl-8 border-l border-border/30">
-                    <div className={`absolute left-[-5px] top-0 w-2 h-2 rounded-full transition-all duration-500 ${
-                      item.status === 'completed' ? 'bg-neutral-500' : 
-                      item.status === 'in-progress' ? 'bg-accent shadow-[0_0_10px_#D4AF37]' : 'bg-neutral-700'
-                    }`} />
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-medium text-foreground">{item.phase}</span>
-                      <span className={`text-[10px] uppercase tracking-widest font-mono ${
-                        item.status === 'completed' ? 'text-neutral-500' : 
-                        item.status === 'in-progress' ? 'text-accent' : 'text-neutral-600'
-                      }`}>
-                        {item.status.replace('-', ' ')}
-                      </span>
-                    </div>
-                    <p className="text-neutral-500 text-sm font-light">{item.description}</p>
-                  </div>
+              <div className="space-y-4">
+                {phases.map((phase) => (
+                  <PhaseApprovalCard
+                    key={phase.id}
+                    phase={phase}
+                    onSubmit={handlePhaseSubmit}
+                    onReview={handlePhaseReview}
+                    isAdmin={user?.role === 'admin'}
+                  />
                 ))}
               </div>
+            </section>
+
+            <section className="bg-surface border border-border/50 p-8 md:p-12 rounded-sm">
+              <AnnotationOverlay
+                annotations={annotations}
+                onAddAnnotation={handleAddAnnotation}
+                onResolveAnnotation={(id) => {
+                  setAnnotations((prev) => prev.map((a) => a.id === id ? { ...a, resolved: true } : a));
+                  resolveAnnotation(id);
+                }}
+                currentUser={user?.email || 'Anonymous'}
+              />
             </section>
 
             <section className="bg-surface border border-border/50 p-8 md:p-12 rounded-sm">
@@ -176,7 +236,7 @@ export default function PortalPage() {
                         <span className="text-[10px] text-neutral-500 font-mono">{req.createdAt}</span>
                       </div>
                       <span className={`text-[10px] uppercase tracking-widest px-2 py-1 border rounded-full font-mono ${
-                        req.status === 'completed' ? 'border-neutral-500 text-neutral-500' : 
+                        req.status === 'completed' ? 'border-neutral-500 text-neutral-500' :
                         req.status === 'reviewed' ? 'border-accent text-accent' : 'border-neutral-700 text-neutral-600'
                       }`}>
                         {req.status}
@@ -225,14 +285,14 @@ export default function PortalPage() {
       <AnimatePresence>
         {isRequestModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsRequestModalOpen(false)}
               className="absolute inset-0 bg-black/80 backdrop-blur-xl"
             />
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -240,17 +300,17 @@ export default function PortalPage() {
             >
               <h2 className="text-3xl font-serif font-light text-foreground mb-8">Submit Request</h2>
               <form onSubmit={handleSendRequest} className="space-y-6">
-                <Input 
-                  label="Request Title" 
-                  placeholder="e.g., Change living room lighting" 
-                  required 
+                <Input
+                  label="Request Title"
+                  placeholder="e.g., Change living room lighting"
+                  required
                   value={requestForm.title}
                   onChange={(e) => setRequestForm({...requestForm, title: e.target.value})}
                 />
                 <div className="flex flex-col gap-2 w-full group">
                   <label className="text-xs uppercase tracking-[0.3em] text-neutral-500 font-medium">Priority</label>
-                  <select 
-                    className="w-full bg-transparent border-b border-border py-3 px-0 text-sm transition-all duration-500 outline-none focus:border-accent text-foreground placeholder:text-neutral-600 placeholder:text-xs placeholder:uppercase placeholder:tracking-widest"
+                  <select
+                    className="w-full bg-transparent border-b border-border py-3 px-0 text-sm transition-all duration-500 outline-none focus:border-accent text-foreground placeholder:text-neutral-600"
                     value={requestForm.priority}
                     onChange={(e) => setRequestForm({...requestForm, priority: e.target.value as 'low' | 'medium' | 'high'})}
                   >
@@ -261,8 +321,8 @@ export default function PortalPage() {
                 </div>
                 <div className="flex flex-col gap-2 w-full group">
                   <label className="text-xs uppercase tracking-[0.3em] text-neutral-500 font-medium">Description</label>
-                  <textarea 
-                    className="w-full bg-transparent border-b border-border py-3 px-0 text-sm transition-all duration-500 outline-none focus:border-accent text-foreground placeholder:text-neutral-600 placeholder:text-xs placeholder:uppercase placeholder:tracking-widest resize-none h-32"
+                  <textarea
+                    className="w-full bg-transparent border-b border-border py-3 px-0 text-sm transition-all duration-500 outline-none focus:border-accent text-foreground placeholder:text-neutral-600 resize-none h-32"
                     placeholder="Detail your request..."
                     required
                     value={requestForm.description}

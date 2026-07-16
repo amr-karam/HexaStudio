@@ -1,26 +1,26 @@
 import { Injectable, Logger, Inject, forwardRef, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import { VectorService } from '../vector/vector.service';
 import { Project } from '@hexastudio/types';
-import { getEnv, Env } from '../../config/env';
+import { Env } from '../../config/env';
 
 @Injectable()
 export class EmbeddingService implements OnModuleInit {
   private readonly logger = new Logger(EmbeddingService.name);
   private openai: OpenAI | null = null;
-  private env: Env;
   private readonly EMBEDDING_DIMENSIONS = 1536;
 
   constructor(
     @Inject(forwardRef(() => VectorService))
     private readonly vectorService: VectorService,
-  ) {
-    this.env = getEnv();
-  }
+    private configService: ConfigService<Env>,
+  ) {}
 
   onModuleInit() {
-    if (this.env.OPENAI_API_KEY) {
-      this.openai = new OpenAI({ apiKey: this.env.OPENAI_API_KEY });
+    const apiKey = this.configService.get('OPENAI_API_KEY');
+    if (apiKey) {
+      this.openai = new OpenAI({ apiKey });
       this.logger.log('OpenAI client initialized — real embeddings enabled');
     } else {
       this.logger.warn('OPENAI_API_KEY not set — using placeholder embeddings (dev mode)');
@@ -31,7 +31,7 @@ export class EmbeddingService implements OnModuleInit {
     if (this.openai) {
       try {
         const response = await this.openai.embeddings.create({
-          model: this.env.OPENAI_EMBEDDING_MODEL,
+          model: this.configService.get<string>('OPENAI_EMBEDDING_MODEL')!,
           input: text,
         });
         return response.data[0].embedding;

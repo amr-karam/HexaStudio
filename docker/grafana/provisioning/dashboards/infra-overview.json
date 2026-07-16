@@ -1,0 +1,93 @@
+{
+  "dashboard": {
+    "title": "Infrastructure - System Overview",
+    "uid": "hexa-infra-overview",
+    "tags": ["hexa", "infrastructure", "system"],
+    "timezone": "utc",
+    "schemaVersion": 38,
+    "version": 1,
+    "refresh": "10s",
+    "time": { "from": "now-1h", "to": "now" },
+    "panels": [
+      {
+        "title": "CPU Usage (%)",
+        "type": "timeseries",
+        "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+        "targets": [
+          { "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)", "legendFormat": "{{instance}}" }
+        ],
+        "fieldConfig": { "defaults": { "unit": "percent", "min": 0, "max": 100, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "red", "value": 85 }] } } }
+      },
+      {
+        "title": "Memory Usage (%)",
+        "type": "timeseries",
+        "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+        "targets": [
+          { "expr": "(1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100", "legendFormat": "{{instance}}" }
+        ],
+        "fieldConfig": { "defaults": { "unit": "percent", "min": 0, "max": 100, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 75 }, { "color": "red", "value": 90 }] } } }
+      },
+      {
+        "title": "Disk Usage (%)",
+        "type": "timeseries",
+        "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+        "targets": [
+          { "expr": "(node_filesystem_size_bytes{fstype!~\"tmpfs|overlay\"} - node_filesystem_free_bytes{fstype!~\"tmpfs|overlay\"}) / node_filesystem_size_bytes{fstype!~\"tmpfs|overlay\"} * 100", "legendFormat": "{{instance}} - {{mountpoint}}" }
+        ],
+        "fieldConfig": { "defaults": { "unit": "percent", "min": 0, "max": 100, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "red", "value": 85 }] } } }
+      },
+      {
+        "title": "Network I/O (MB/s)",
+        "type": "timeseries",
+        "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+        "targets": [
+          { "expr": "rate(node_network_receive_bytes_total[5m]) / 1024 / 1024", "legendFormat": "{{instance}} - RX {{device}}" },
+          { "expr": "rate(node_network_transmit_bytes_total[5m]) / 1024 / 1024", "legendFormat": "{{instance}} - TX {{device}}" }
+        ],
+        "fieldConfig": { "defaults": { "unit": "MBps" } }
+      },
+      {
+        "title": "Container CPU Usage",
+        "type": "timeseries",
+        "gridPos": { "x": 0, "y": 16, "w": 12, "h": 8 },
+        "targets": [
+          { "expr": "sum(rate(container_cpu_usage_seconds_total{container!=\"\"}[5m])) by (container)", "legendFormat": "{{container}}" }
+        ],
+        "fieldConfig": { "defaults": { "unit": "cores" } }
+      },
+      {
+        "title": "Container Memory Usage",
+        "type": "timeseries",
+        "gridPos": { "x": 12, "y": 16, "w": 12, "h": 8 },
+        "targets": [
+          { "expr": "container_memory_working_set_bytes{container!=\"\"}", "legendFormat": "{{container}}" }
+        ],
+        "fieldConfig": { "defaults": { "unit": "bytes" } }
+      },
+      {
+        "title": "Container Restart Count",
+        "type": "stat",
+        "gridPos": { "x": 0, "y": 24, "w": 6, "h": 4 },
+        "targets": [{ "expr": "sum(container_restart_count)" }],
+        "fieldConfig": { "defaults": { "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 5 }, { "color": "red", "value": 10 }] } } }
+      },
+      {
+        "title": "Uptime",
+        "type": "stat",
+        "gridPos": { "x": 6, "y": 24, "w": 6, "h": 4 },
+        "targets": [{ "expr": "time() - node_boot_time_seconds" }],
+        "fieldConfig": { "defaults": { "unit": "s" } }
+      },
+      {
+        "title": "Load Average (1m, 5m, 15m)",
+        "type": "timeseries",
+        "gridPos": { "x": 12, "y": 24, "w": 12, "h": 8 },
+        "targets": [
+          { "expr": "node_load1", "legendFormat": "1m" },
+          { "expr": "node_load5", "legendFormat": "5m" },
+          { "expr": "node_load15", "legendFormat": "15m" }
+        ]
+      }
+    ]
+  }
+}

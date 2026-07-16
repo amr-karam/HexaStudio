@@ -35,6 +35,12 @@ describe('HealthModule', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
+    process.env.OPENAI_API_KEY = 'sk-test';
+    process.env.OPENAI_MODEL = 'gpt-4o-mini';
+    process.env.OPENAI_EMBEDDING_MODEL = 'text-embedding-3-small';
+    process.env.VECTOR_HOST = 'localhost';
+    process.env.VECTOR_PORT = '6333';
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [ConfigModule.forRoot({ isGlobal: true }), HealthModule, VectorModule],
     })

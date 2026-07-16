@@ -1,18 +1,18 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';
-import { getEnv } from '../../config/env';
+import { Env } from '../../config/env';
 
 @Injectable()
 export class RedisService {
   private readonly logger = new Logger(RedisService.name);
   private client: Redis;
 
-  constructor() {
-    const env = getEnv();
+  constructor(private configService: ConfigService<Env>) {
     this.client = new Redis({
-      host: env.REDIS_HOST || 'redis',
-      port: env.REDIS_PORT || 6379,
-      password: env.REDIS_PASSWORD,
+      host: this.configService.get('REDIS_HOST'),
+      port: this.configService.get('REDIS_PORT'),
+      password: this.configService.get('REDIS_PASSWORD'),
     });
 
     this.client.on('error', (err) => {

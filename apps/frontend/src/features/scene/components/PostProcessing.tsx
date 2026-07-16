@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { EffectComposer, Bloom, DepthOfField, Noise, Vignette, ChromaticAberration } from '@react-three/postprocessing';
 import { QualityLevel } from '@/hooks/useAdaptiveQuality';
 

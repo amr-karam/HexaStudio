@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import { ChatCompletionMessageParam, ChatCompletionTool } from 'openai/resources/chat/completions';
 import { ToolRegistry } from './tools';
-import { getEnv, Env } from '../../config/env';
+import { Env } from '../../config/env';
 
 interface ChatMessage {
   role: 'system' | 'user' | 'assistant' | 'tool';
@@ -15,13 +16,15 @@ interface ChatMessage {
 export class AgentsService {
   private readonly logger = new Logger(AgentsService.name);
   private openai: OpenAI | null = null;
-  private env: Env;
   private readonly maxIterations = 8;
 
-  constructor(private readonly toolRegistry: ToolRegistry) {
-    this.env = getEnv();
-    if (this.env.OPENAI_API_KEY) {
-      this.openai = new OpenAI({ apiKey: this.env.OPENAI_API_KEY });
+  constructor(
+    private readonly toolRegistry: ToolRegistry,
+    private configService: ConfigService<Env>,
+  ) {
+    const apiKey = this.configService.get('OPENAI_API_KEY');
+    if (apiKey) {
+      this.openai = new OpenAI({ apiKey });
     }
   }
 
@@ -60,7 +63,7 @@ Answer concisely and professionally. When citing projects, include their titles 
       })) as ChatCompletionTool[];
 
       const response = await this.openai!.chat.completions.create({
-        model: this.env.OPENAI_MODEL,
+        model: this.configService.get<string>('OPENAI_MODEL')!,
         messages: messages as ChatCompletionMessageParam[],
         tools: openaiTools,
         tool_choice: 'auto',

@@ -1,12 +1,8 @@
 import { Module } from '@nestjs/common';
-import { PortalController } from './portal.controller';
-import { PortalService } from './portal.service';
-import { ProjectsModule } from '../projects/projects.module';
-import { OdooModule } from '../odoo/odoo.module';
+import { ClientPortalGateway } from './client-portal.gateway';
 
 @Module({
-  imports: [ProjectsModule, OdooModule],
-  controllers: [PortalController],
-  providers: [PortalService],
+  controllers: [],
+  providers: [ClientPortalGateway],
 })
 export class PortalModule {}

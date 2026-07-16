@@ -1,8 +1,8 @@
-import { Controller, Post, Get, Body, Patch, Param, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Body, Patch, Param, UseGuards, VERSION_NEUTRAL } from '@nestjs/common';
 import { RequestsService, ProjectRequest } from './requests.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
-@Controller('requests')
+@Controller({ path: 'requests', version: VERSION_NEUTRAL })
 export class RequestsController {
   constructor(private readonly requestsService: RequestsService) {}
 

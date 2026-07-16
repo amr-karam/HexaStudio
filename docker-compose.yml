@@ -34,6 +34,25 @@ services:
       timeout: 5s
       retries: 5
 
+  # --- Search ---
+  meilisearch:
+    image: getmeili/meilisearch:v1.12
+    container_name: hexa-meilisearch
+    environment:
+      MEILI_MASTER_KEY: ${MEILISEARCH_MASTER_KEY:-masterKey}
+      MEILI_ENV: development
+    volumes:
+      - meilisearch_data:/meili_data
+    ports:
+      - "7700:7700"
+    networks:
+      - hexa_data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7700/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
   # --- Vector Store ---
   qdrant:
     image: qdrant/qdrant:latest
@@ -213,6 +232,7 @@ volumes:
   postgres_data:
   minio_data:
   redis_data:
+  meilisearch_data:
   qdrant_data:
   prometheus_data:
   grafana_data:

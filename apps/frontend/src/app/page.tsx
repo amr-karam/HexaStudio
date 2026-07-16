@@ -1,4 +1,4 @@
-import { HomeHero } from "@/features/portfolio";
+import { FloatingCardsHero } from "@/components/animation";
 import { ProjectGrid } from "@/features/portfolio/components/ProjectGrid";
 import { StudioSection } from "@/features/portfolio/components/StudioSection";
 import { TestimonialsSection } from "@/features/portfolio/components/TestimonialsSection";
@@ -12,7 +12,13 @@ export default async function HomePage() {
 
   return (
     <div className="bg-background">
-      <HomeHero />
+      <FloatingCardsHero
+        headline="Living"
+        highlight="Spaces."
+        subline="Visualized. Immersive 3D architectural experiences for the world's most ambitious projects."
+        ctaLabel="Explore Works"
+        ctaHref="/portfolio"
+      />
       <AchievementsSection />
       <ProjectGrid projects={projectsData.projects ?? []} />
       <TestimonialsSection />
