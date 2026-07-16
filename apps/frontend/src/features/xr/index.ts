@@ -2,6 +2,7 @@ export { XRCanvas, xrStore } from './components/XRCanvas';
 export { XRView } from './components/XRView';
 export { XRSceneContent } from './components/XRSceneContent';
 export { XRUI } from './components/XRUI';
+export { ARPlacementReticle } from './components/ARPlacementReticle';
 export { XRLoadingScreen } from './components/XRLoadingScreen';
 export { XRErrorFallback } from './components/XRErrorFallback';
 export { useXRStore } from './store/xr-store';

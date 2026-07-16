@@ -1,6 +1,5 @@
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { Env } from '../../config/env';
+import { getEnv } from '../../config/env';
 import { extname } from 'path';
 
 export interface FileInfo {
@@ -41,16 +40,16 @@ export class MinioService {
   private client: MinioClient;
   private readonly logger = new Logger(MinioService.name);
 
-  constructor(private configService: ConfigService<Env>) {
-    // Dynamic import to avoid ESM/CJS issues in NestJS build
+  constructor() {
+    const env = getEnv();
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const Minio = require('minio');
     this.client = new Minio.Client({
-      endPoint: this.configService.get('MINIO_HOST'),
-      port: this.configService.get('MINIO_PORT'),
-      useSSL: this.configService.get('MINIO_USE_SSL'),
-      accessKey: this.configService.get('MINIO_ROOT_USER'),
-      secretKey: this.configService.get('MINIO_ROOT_PASSWORD'),
+      endPoint: env.MINIO_HOST,
+      port: env.MINIO_PORT,
+      useSSL: env.MINIO_USE_SSL,
+      accessKey: env.MINIO_ROOT_USER,
+      secretKey: env.MINIO_ROOT_PASSWORD,
     });
   }
 

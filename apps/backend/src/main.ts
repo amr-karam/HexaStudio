@@ -14,6 +14,8 @@ async function bootstrap() {
     Sentry.init({
       dsn: env.SENTRY_DSN,
       environment: env.NODE_ENV,
+      release: process.env.SENTRY_RELEASE || undefined,
+      tracesSampleRate: 0.1,
     });
   }
 

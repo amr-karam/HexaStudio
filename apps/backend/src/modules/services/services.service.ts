@@ -25,7 +25,7 @@ export class ServicesService {
     return getEnv().CMS_URL;
   }
 
-  async getAllServices(page = 1, limit = 20): Promise<ServiceResponse> {
+  async getAllServices(page = 1, limit = 20, locale?: string): Promise<ServiceResponse> {
     const safePage = Math.max(1, page);
     const safeLimit = Math.min(100, Math.max(1, limit));
 
@@ -37,6 +37,7 @@ export class ServicesService {
           'sort': 'order:asc',
           'pagination[page]': safePage,
           'pagination[pageSize]': safeLimit,
+          ...(locale ? { locale } : {}),
         },
       }),
     );
@@ -52,12 +53,13 @@ export class ServicesService {
     };
   }
 
-  async getServiceBySlug(slug: string): Promise<Service> {
+  async getServiceBySlug(slug: string, locale?: string): Promise<Service> {
     const response = await firstValueFrom(
       this.httpService.get(`${this.cmsUrl}/api/services`, {
         params: {
           'populate': '*',
           'filters[slug][$eq]': slug,
+          ...(locale ? { locale } : {}),
         },
       }),
     );

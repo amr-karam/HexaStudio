@@ -2,20 +2,45 @@
 
 import { useRef, useEffect, useMemo } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
+import { useXRHitTest } from '@react-three/xr';
 import { useGLTF } from '@react-three/drei';
 import { useXRStore } from '../store/xr-store';
-import { DEFAULT_MODEL_SCALE } from '../config/xr-config';
+import { ARPlacementReticle } from './ARPlacementReticle';
 import * as THREE from 'three';
+
+const _matrix = new THREE.Matrix4();
+const _pos = new THREE.Vector3();
+const _quat = new THREE.Quaternion();
+const _scl = new THREE.Vector3();
 
 export function XRSceneContent({ modelUrl }: { modelUrl: string }) {
   const { scene } = useGLTF(modelUrl);
   const { camera } = useThree();
   const groupRef = useRef<THREE.Group>(null);
-  const targetRotation = useRef({ y: 0 });
   const setModelLoaded = useXRStore((s) => s.setModelLoaded);
   const mode = useXRStore((s) => s.mode);
+  const placementPhase = useXRStore((s) => s.placementPhase);
+  const placementPosition = useXRStore((s) => s.placementPosition);
+  const setPlacementPosition = useXRStore((s) => s.setPlacementPosition);
+  const setPlacementRotation = useXRStore((s) => s.setPlacementRotation);
+  const setPlacementPhase = useXRStore((s) => s.setPlacementPhase);
 
   const clonedScene = useMemo(() => scene.clone(true), [scene]);
+
+  const isPlacing = mode === 'ar' && placementPhase === 'placing';
+  const isPlaced = placementPhase === 'placed' || placementPhase === 'adjusting';
+
+  useXRHitTest(
+    (results, getWorldMatrix) => {
+      if (!isPlacing || results.length === 0) return;
+      getWorldMatrix(_matrix, results[0]);
+      _matrix.decompose(_pos, _quat, _scl);
+      setPlacementPosition({ x: _pos.x, y: _pos.y, z: _pos.z });
+      setPlacementRotation({ x: _quat.x, y: _quat.y, z: _quat.z, w: _quat.w });
+    },
+    'viewer',
+    ['plane', 'mesh'],
+  );
 
   useEffect(() => {
     if (!clonedScene) return;
@@ -39,8 +64,18 @@ export function XRSceneContent({ modelUrl }: { modelUrl: string }) {
       camera.lookAt(0, 0, 0);
     }
 
+    if (mode === 'ar' && placementPhase === 'idle') {
+      setPlacementPhase('placing');
+    }
+
     setModelLoaded(true);
   }, [clonedScene, camera, setModelLoaded, mode]);
+
+  useEffect(() => {
+    if (mode === 'ar' && placementPhase === 'placed' && groupRef.current && placementPosition) {
+      groupRef.current.position.set(placementPosition.x, placementPosition.y, placementPosition.z);
+    }
+  }, [mode, placementPhase, placementPosition]);
 
   useFrame((_, delta) => {
     if (groupRef.current && !mode) {
@@ -48,5 +83,13 @@ export function XRSceneContent({ modelUrl }: { modelUrl: string }) {
     }
   });
 
-  return <group ref={groupRef} />;
+  const targetPosition = isPlaced && placementPosition
+    ? [placementPosition.x, placementPosition.y, placementPosition.z] as const
+    : [0, 0, 0] as const;
+
+  return (
+    <group ref={groupRef} position={targetPosition}>
+      {isPlacing && <ARPlacementReticle />}
+    </group>
+  );
 }

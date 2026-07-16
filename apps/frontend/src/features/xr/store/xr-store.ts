@@ -1,7 +1,7 @@
 'use client';
 
 import { create } from 'zustand';
-import { XRSessionMode, XRSessionStatus, XRStoreState } from '../utils/xr-constants';
+import { XRSessionMode, XRSessionStatus, ARPlacementPhase, XRStoreState } from '../utils/xr-constants';
 
 interface XRActions {
   setMode: (mode: XRSessionMode | null) => void;
@@ -12,6 +12,9 @@ interface XRActions {
   setModelProgress: (progress: number) => void;
   setControllerConnected: (connected: boolean) => void;
   setHandTracking: (enabled: boolean) => void;
+  setPlacementPhase: (phase: ARPlacementPhase) => void;
+  setPlacementPosition: (pos: { x: number; y: number; z: number } | null) => void;
+  setPlacementRotation: (rot: { x: number; y: number; z: number; w: number } | null) => void;
   reset: () => void;
 }
 
@@ -26,6 +29,9 @@ const initialState: XRStoreState = {
   modelProgress: 0,
   controllerConnected: false,
   handTracking: false,
+  placementPhase: 'idle',
+  placementPosition: null,
+  placementRotation: null,
 };
 
 export const useXRStore = create<XRStore>((set) => ({
@@ -38,5 +44,8 @@ export const useXRStore = create<XRStore>((set) => ({
   setModelProgress: (modelProgress) => set({ modelProgress }),
   setControllerConnected: (controllerConnected) => set({ controllerConnected }),
   setHandTracking: (handTracking) => set({ handTracking }),
+  setPlacementPhase: (placementPhase) => set({ placementPhase }),
+  setPlacementPosition: (placementPosition) => set({ placementPosition }),
+  setPlacementRotation: (placementRotation) => set({ placementRotation }),
   reset: () => set(initialState),
 }));

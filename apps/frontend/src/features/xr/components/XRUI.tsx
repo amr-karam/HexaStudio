@@ -5,6 +5,7 @@ import { useXRStore } from '../store/xr-store';
 import { useXRStoreInit } from '../hooks/useXRStore';
 import { checkXRSupport } from '../utils/xr-guard';
 import { xrStore } from './XRCanvas';
+import { useAnalytics } from '@/lib/analytics';
 
 interface XRUIProps {
   onExit: () => void;
@@ -14,9 +15,10 @@ interface XRUIProps {
 export function XRUI({ onExit, modelName }: XRUIProps) {
   useXRStoreInit();
 
-  const { status, modelLoaded, setMode, setStatus } = useXRStore();
+  const { status, modelLoaded, placementPhase, setMode, setStatus, setPlacementPhase, setPlacementPosition, setPlacementRotation } = useXRStore();
   const [support, setSupport] = useState<{ ar: boolean; vr: boolean }>({ ar: false, vr: false });
   const [entering, setEntering] = useState<'ar' | 'vr' | null>(null);
+  const { track } = useAnalytics();
 
   useEffect(() => {
     checkXRSupport().then(setSupport);
@@ -26,6 +28,7 @@ export function XRUI({ onExit, modelName }: XRUIProps) {
     setEntering('ar');
     setMode('ar');
     setStatus('requesting');
+    track('xr_session_enter', { mode: 'ar', modelName: modelName || 'unnamed' });
     try {
       await xrStore.enterAR();
       setStatus('active');
@@ -41,6 +44,7 @@ export function XRUI({ onExit, modelName }: XRUIProps) {
     setEntering('vr');
     setMode('vr');
     setStatus('requesting');
+    track('xr_session_enter', { mode: 'vr', modelName: modelName || 'unnamed' });
     try {
       await xrStore.enterVR();
       setStatus('active');
@@ -57,11 +61,41 @@ export function XRUI({ onExit, modelName }: XRUIProps) {
     if (session) {
       await session.end();
     }
+    track('xr_session_end', { mode: status, modelName: modelName || 'unnamed' });
     setStatus('ended');
     setMode(null);
+    setPlacementPhase('idle');
+    setPlacementPosition(null);
+    setPlacementRotation(null);
+  };
+
+  const handleConfirmPlacement = () => {
+    setPlacementPhase('placed');
+    track('ar_placement_confirm', { modelName: modelName || 'unnamed' });
+  };
+
+  const handleReposition = () => {
+    setPlacementPhase('placing');
+    setPlacementPosition(null);
+    track('ar_placement_reposition', { modelName: modelName || 'unnamed' });
+  };
+
+  const handleCancelPlacement = async () => {
+    const session = xrStore.getState().session;
+    if (session) {
+      await session.end();
+    }
+    setPlacementPhase('idle');
+    setPlacementPosition(null);
+    setPlacementRotation(null);
+    setMode(null);
+    setStatus('ended');
+    track('ar_placement_cancel', { modelName: modelName || 'unnamed' });
   };
 
   const isSessionActive = status === 'active';
+  const isPlacing = isSessionActive && placementPhase === 'placing';
+  const isPlaced = isSessionActive && placementPhase === 'placed';
 
   return (
     <div className="pointer-events-none fixed inset-0 z-50">
@@ -109,13 +143,48 @@ export function XRUI({ onExit, modelName }: XRUIProps) {
           </div>
         )}
 
-        {isSessionActive && (
+        {isPlacing && (
+          <>
+            <div className="pointer-events-auto absolute left-1/2 top-8 -translate-x-1/2">
+              <p className="rounded-full bg-black/50 px-4 py-2 text-sm text-white/80 backdrop-blur-sm">
+                Tap a surface to place the model
+              </p>
+            </div>
+            <div className="pointer-events-auto absolute bottom-8 left-1/2 -translate-x-1/2">
+              <button
+                onClick={handleCancelPlacement}
+                className="rounded-lg bg-white/10 px-6 py-3 text-sm font-medium text-white shadow-lg backdrop-blur-md transition-all hover:bg-white/20 active:scale-95"
+              >
+                Cancel AR
+              </button>
+            </div>
+          </>
+        )}
+
+        {isPlaced && (
+          <div className="pointer-events-auto absolute bottom-8 left-1/2 flex -translate-x-1/2 gap-4">
+            <button
+              onClick={handleReposition}
+              className="rounded-lg bg-white/10 px-6 py-3 text-sm font-medium text-white shadow-lg backdrop-blur-md transition-all hover:bg-white/20 active:scale-95"
+            >
+              Reposition
+            </button>
+            <button
+              onClick={handleConfirmPlacement}
+              className="rounded-lg bg-[#D4AF37] px-6 py-3 text-sm font-medium text-black shadow-lg transition-all hover:bg-[#C49A2F] active:scale-95"
+            >
+              Confirm Placement
+            </button>
+          </div>
+        )}
+
+        {isSessionActive && placementPhase === 'idle' && (
           <div className="pointer-events-auto absolute bottom-8 left-1/2 -translate-x-1/2">
             <button
               onClick={handleEndSession}
               className="rounded-lg bg-red-500/80 px-6 py-3 text-sm font-medium text-white shadow-lg backdrop-blur-md transition-all hover:bg-red-500 active:scale-95"
             >
-              End {status.toUpperCase()} Session
+              End AR Session
             </button>
           </div>
         )}

@@ -1,7 +1,10 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { ScrollFadeIn } from '@/components/ScrollFadeIn';
 import { Magnetic } from '@/components/ui/Magnetic';
+import { useLocale } from '@/i18n/LocaleProvider';
 
 const socialLinks = [
   { name: 'Instagram', href: 'https://instagram.com/hexastudio' },
@@ -10,31 +13,31 @@ const socialLinks = [
   { name: 'Vimeo', href: 'https://vimeo.com/hexastudio' },
 ];
 
-const navLinks = [
-  { name: 'Portfolio', href: '/portfolio' },
-  { name: 'Services', href: '/services' },
-  { name: 'Studio', href: '/about' },
-  { name: 'Blog', href: '/blog' },
-  { name: 'Contact', href: '/contact' },
-];
-
 export const Footer = () => {
+  const { t } = useLocale();
   const currentYear = new Date().getFullYear();
+
+  const navLinks = [
+    { name: t('navbar.portfolio'), href: '/portfolio' },
+    { name: t('navbar.services'), href: '/services' },
+    { name: t('navbar.studio'), href: '/about' },
+    { name: t('navbar.blog'), href: '/blog' },
+    { name: t('navbar.contact'), href: '/contact' },
+  ];
 
   return (
     <footer className="bg-surface border-t border-border/50">
-      {/* Mini CTA Banner */}
       <div className="px-4 sm:px-8 md:px-16 py-12 border-b border-border/30">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <p className="text-sm text-neutral-400 font-light">
-            Have a project in mind? Let&apos;s create something extraordinary.
+            {t('footer.cta')}
           </p>
           <Magnetic>
             <Link
               href="/contact"
               className="text-xs uppercase tracking-[0.3em] text-accent hover:text-accent-light transition-colors duration-500 whitespace-nowrap"
             >
-              Start a Project &rarr;
+              {t('footer.startProject')} &rarr;
             </Link>
           </Magnetic>
         </div>
@@ -56,14 +59,13 @@ export const Footer = () => {
               </span>
             </Link>
             <p className="text-sm text-neutral-400 leading-relaxed font-light">
-              Living Spaces. Visualized. <br className="hidden md:block" />
-              Immersive 3D architectural experiences.
+              {t('footer.tagline')}
             </p>
           </div>
 
           <div className="lg:col-span-3 flex flex-col gap-6">
             <span className="text-xs uppercase tracking-[0.3em] text-neutral-500">
-              Navigation
+              {t('footer.navigation')}
             </span>
             <div className="flex flex-col gap-3">
               {navLinks.map((item) => (
@@ -80,17 +82,17 @@ export const Footer = () => {
 
           <div className="lg:col-span-2 flex flex-col gap-6">
             <span className="text-xs uppercase tracking-[0.3em] text-neutral-500">
-              Legal
+              {t('footer.legal')}
             </span>
             <div className="flex flex-col gap-3">
-              <Link href="/privacy" className="text-sm text-neutral-500 hover:text-accent transition-colors duration-500 w-fit py-1">Privacy Policy</Link>
-              <Link href="/terms" className="text-sm text-neutral-500 hover:text-accent transition-colors duration-500 w-fit py-1">Terms of Service</Link>
+              <Link href="/privacy" className="text-sm text-neutral-500 hover:text-accent transition-colors duration-500 w-fit py-1">{t('footer.privacy')}</Link>
+              <Link href="/terms" className="text-sm text-neutral-500 hover:text-accent transition-colors duration-500 w-fit py-1">{t('footer.terms')}</Link>
             </div>
           </div>
 
           <div className="lg:col-span-2 flex flex-col gap-6">
             <span className="text-xs uppercase tracking-[0.3em] text-neutral-500">
-              Connect
+              {t('footer.connect')}
             </span>
             <div className="flex flex-col gap-3">
               {socialLinks.map((link) => (
@@ -110,7 +112,7 @@ export const Footer = () => {
 
         <div className="mt-16 md:mt-24 pt-8 border-t border-border/50 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6">
           <p className="text-xs uppercase tracking-widest text-neutral-600">
-            &copy; {currentYear} HexaStudio. All rights reserved.
+            &copy; {currentYear} HexaStudio. {t('footer.rights')}
           </p>
           <p className="text-[11px] uppercase tracking-widest text-neutral-600 font-medium">
             Precision &mdash; Purpose &mdash; Vision

@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { useLocale } from '@/i18n/LocaleProvider';
 
 interface NavItemProps {
   label: string;
@@ -93,12 +94,14 @@ export const Navbar = () => {
     setIsMenuOpen(false);
   }, [pathname]);
 
+  const { t } = useLocale();
+
   const navItems = [
-    { label: 'Portfolio', href: '/portfolio' },
-    { label: 'Services', href: '/services' },
-    { label: 'Blog', href: '/blog' },
-    { label: 'Studio', href: '/about' },
-    { label: 'Contact', href: '/contact' },
+    { label: t('navbar.portfolio'), href: '/portfolio' },
+    { label: t('navbar.services'), href: '/services' },
+    { label: t('navbar.blog'), href: '/blog' },
+    { label: t('navbar.studio'), href: '/about' },
+    { label: t('navbar.contact'), href: '/contact' },
   ];
 
   return (

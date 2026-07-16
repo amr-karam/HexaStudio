@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useLocale } from '@/i18n/LocaleProvider';
 
 interface PhaseApprovalCardProps {
   phase: {
@@ -25,6 +26,7 @@ const STATUS_STYLES: Record<string, string> = {
 export function PhaseApprovalCard({ phase, onSubmit, onReview, isAdmin }: PhaseApprovalCardProps) {
   const [comment, setComment] = useState('');
   const [showReview, setShowReview] = useState(false);
+  const { t } = useLocale();
 
   return (
     <div className="rounded-lg border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
@@ -46,7 +48,7 @@ export function PhaseApprovalCard({ phase, onSubmit, onReview, isAdmin }: PhaseA
             onClick={() => onSubmit(phase.id)}
             className="rounded-md bg-[#D4AF37] px-3 py-1.5 text-xs font-medium text-black transition-colors hover:bg-[#C49A2F]"
           >
-            Submit for Approval
+            {t('portal.approval.submitForApproval')}
           </button>
         )}
 
@@ -59,13 +61,13 @@ export function PhaseApprovalCard({ phase, onSubmit, onReview, isAdmin }: PhaseA
               }}
               className="rounded-md bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-emerald-500"
             >
-              Approve
+              {t('portal.approval.approve')}
             </button>
             <button
               onClick={() => setShowReview(!showReview)}
               className="rounded-md bg-white/10 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-white/20"
             >
-              Request Revision
+              {t('portal.approval.requestRevision')}
             </button>
             <button
               onClick={() => {
@@ -74,7 +76,7 @@ export function PhaseApprovalCard({ phase, onSubmit, onReview, isAdmin }: PhaseA
               }}
               className="rounded-md bg-red-600/80 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-red-600"
             >
-              Reject
+              {t('portal.approval.reject')}
             </button>
           </>
         )}
@@ -84,7 +86,7 @@ export function PhaseApprovalCard({ phase, onSubmit, onReview, isAdmin }: PhaseA
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              placeholder="Add revision notes..."
+              placeholder={t('portal.approval.revisionNotes')}
               className="mt-2 w-full rounded-md border border-white/10 bg-black/50 p-2 text-xs text-white placeholder-white/30"
               rows={2}
             />
@@ -96,7 +98,7 @@ export function PhaseApprovalCard({ phase, onSubmit, onReview, isAdmin }: PhaseA
               }}
               className="mt-1 rounded-md bg-orange-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-orange-500"
             >
-              Send Revision Request
+              {t('portal.approval.sendRevision')}
             </button>
           </div>
         )}

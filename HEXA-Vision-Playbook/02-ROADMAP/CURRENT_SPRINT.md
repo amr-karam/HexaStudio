@@ -45,7 +45,7 @@ Implement real AI capabilities (semantic search, auto-tagging, recommendations) 
 |--------|---------|---------|--------|
 | **Story Points** | 30 pts | 30 pts | 🟢 Complete |
 | **Code Coverage** | 85% | ~82% | 🟡 On track |
-| **Total Tests** | 150+ | 144 | 🟡 Near target |
+| **Total Tests** | 150+ | 162 (93 backend + 69 frontend) | 🟢 On target |
 | **TypeCheck** | 0 errors | 0 errors | 🟢 Complete |
 | **Lint** | 0 errors | 0 errors | 🟢 Complete |
 
@@ -92,73 +92,148 @@ Completed:
 
 ---
 
-# ⏱️ CURRENT SPRINT: PLATFORM EXPANSION — ACTIVE
+# ⏱️ CURRENT SPRINT: INTEGRATIONS & CONTENT PIPELINE — ACTIVE
 
-**Sprint ID:** S-011 | **Focus:** Mobile API, Client Portal v2, VR/AR, i18n | **Status:** 🟢 ACTIVE | **Start:** 2026-07-16 | **Target:** 2026-08-15
+**Sprint ID:** S-012 | **Focus:** Third-party Integrations, Content Pipeline, AR/VR Advanced | **Status:** 🟢 ACTIVE | **Start:** 2026-07-16 | **Target:** 2026-09-01
 
 ## 1. SPRINT OBJECTIVE
 
-Expand the HEXA platform beyond web: deliver mobile-first API, next-gen client collaboration portal, immersive VR/AR experiences, and global i18n support.
+Complete the remaining 40% of Sprint 11 deliverables: connect HEXA to the tools clients already use (Slack), build the content localization pipeline in Strapi, advance immersive experiences with real-space AR placement and multi-user VR collaboration, and deploy product analytics.
 
 ---
 
 ## 2. HIGH-PRIORITY DELIVERABLES
 
-### 📱 Mobile API & Client Portal v2
-- [x] **Mobile API v1 (Auth)** — Refresh token rotation, JWT blacklist, forgot/reset password, body-based tokens
-- [x] **API Versioning** — NestJS built-in URI versioning (`/api/v1/...`) with backward compatibility
-- [x] **Pagination** — `?page=&limit=` on projects, articles, services
-- [x] **Security** — JWT auth on all `/agents/*` endpoints
-- [x] **Mobile API v1 (Remaining)** — Profile, models, storage URLs (all endpoints ready for RN client)
-- [x] **Client Portal v2 Frontend** — WebSocket-integrated dashboard with phase approvals, annotations overlay, real-time presence
-- [x] **WebSocket Infrastructure** — Socket.IO gateway with rooms, presence, annotations, approvals
+### 🔗 Third-party Integrations
+- [x] **Slack Webhook Module** — `webhooks/` module with `SlackService`, `WebhookListener`, `EventBus` integration
+- [x] **Slack Notifications** — Approval actions, annotation adds dispatched to Slack via Incoming Webhooks
+- [x] **Event Bus** — `EventBus` service in realtime module for decoupled event dispatch between modules
+- [x] **Webhook CRUD API** — Centralized webhook URL management with full CRUD + toggle
+- [x] **Webhook Dispatcher** — Generic event-to-webhook dispatcher (`WebhookDispatcher`) routing via `WebhookConfigService.findByEvent()`
+- [x] **Integration Hub Dashboard** — Frontend admin page at `/dashboard/integrations/` with webhook list, create/edit form, toggle, delete, empty state
+- [ ] **Notion/Jira/Linear Integration** — Additional integration services
+- [ ] **Figma Webhook** — Design file change notifications
 
-### 🌐 Global Reach
-- [x] **i18n Framework** — LocaleProvider, RTL support, EN/AR/ES/FR/DE/JA/KO/ZH messages, locale switcher
-- [ ] **Content Pipeline** — Strapi localization, translation management
-- [ ] **Currency/Localization** — Dynamic pricing, regional compliance
+### 📊 Analytics & Observability
+- [x] **Analytics Provider** — Universal abstraction with PostHog and GA4 support (`lib/analytics/`)
+- [x] **Page View Tracking** — `AnalyticsInit` component in root layout, tracks every route change
+- [x] **Portal Events** — Phase submit/review, annotation add, login success/error tracked
+- [x] **XR Events** — Session enter/exit, viewer load, viewer error tracked
+- [x] **Sentry Release Health** — Release tracking via `SENTRY_RELEASE` env var, tracesSampleRate set on all SDK inits (client/server/edge/backend), session replay for error sessions
 
-### 🥽 Immersive Experiences
-- [x] **WebXR Viewer (Scaffold)** — `features/xr/` module, `app/xr-viewer/` route, `?model=<url>` param
-- [x] **WebXR Viewer (Full)** — Auto-scaling, auto-rotation, AR/VR entry, controller support, loading progress
-- [ ] **AR Model Placement** — Place architectural models in real space
-- [ ] **VR Collaboration** — Multi-user design reviews in VR
+### 🌐 Content Pipeline (Strapi)
+- [x] **Strapi i18n Plugin** — Enabled in plugins.ts with 8 locales (EN/AR/ES/FR/DE/JA/KO/ZH)
+- [x] **Content Localization** — 6 content types marked localized (Project, Article, Service, Category, FAQ, Portfolio)
+- [x] **Translation Workflow** — Export/import API (`GET /api/translations/export/:locale`, `POST /api/translations/import/:locale`, `GET /api/translations/status`), TranslationService with locale-aware Strapi fetch, locale param piped through all content services (articles/projects/services/faqs/controllers), frontend fetch functions pass locale, Translation Workflow dashboard at `/dashboard/translations/` with coverage bars + export/import/download UI
 
-### 🔗 Integrations & Analytics
-- [ ] **Third-party Integrations** — Slack, Notion, Linear, Jira, Figma webhooks
-- [ ] **Advanced Analytics** — Custom dashboards, export, scheduled reports
-- [ ] **PostHog/GA4 Migration** — Event tracking, funnel analysis
+### 🥽 Immersive Experiences (Advanced)
+- [x] **AR Model Placement** — Architectural model placement via hit-test API (WebXR)
+- [ ] **VR Collaboration** — Multi-user design reviews in VR (basic sync)
 
----
-
-## 3. SUCCESS CRITERIA
-
-| Metric | Target |
-|--------|--------|
-| Mobile API Response Time | <200ms p95 |
-| i18n Coverage | 8 languages, 100% UI strings |
-| WebXR Session Duration | >5 min average |
-| API Response Time (Mobile) | <200ms p95 |
-| Integration Webhook Success | >99.9% |
+### 🧹 Technical Debt
+- [x] **Backend Lint** — 21 `no-explicit-any` eliminated (first time 0 lint errors)
+- [x] **Backend Typecheck** — Gemini SDK Step types, assistant controller body types fixed
 
 ---
 
-## 4. DEPENDENCIES
+## 3. SPRINT VELOCITY & METRICS
 
-- S-010 AI Agents (for mobile assistant features)
-- WebXR browser support (Chrome/Android, Safari/iOS)
-- Strapi i18n plugin + translation workflow
-- React Native / Expo SDK 51+
-
----
-
-## 5. RELEASE READINESS
-
-**v1.4.0 Target:** 2026-08-15
+| Metric | Target | Current | Status |
+|--------|---------|---------|--------|
+| **Story Points** | 34 pts | 34 pts | 🟢 Complete |
+| **TypeCheck** | 0 errors | 0 errors | 🟢 Complete |
+| **Lint** | 0 errors | 0 errors | 🟢 Complete |
+| **Webhook Delivery** | >99.9% | — | ⏳ Not measured |
 
 ---
 
-*"From intelligence to omnipresence."*
+## 4. KEY FILES CREATED/MODIFIED
+
+| File | Change |
+|------|--------|
+| `apps/backend/src/modules/webhooks/webhooks.module.ts` | NEW — Webhooks module |
+| `apps/backend/src/modules/webhooks/slack.service.ts` | NEW — Slack Incoming Webhook dispatcher |
+| `apps/backend/src/modules/webhooks/webhook.listener.ts` | NEW — Subscribes to EventBus for realtime events |
+| `apps/backend/src/modules/realtime/event-bus.service.ts` | NEW — Decoupled event emitter for inter-module communication |
+| `apps/backend/src/modules/realtime/realtime.gateway.ts` | MODIFIED — Emits events via EventBus (approval, annotation, presence, project update) |
+| `apps/backend/src/modules/realtime/realtime.module.ts` | MODIFIED — Registers EventBus as provider |
+| `apps/backend/src/config/env.ts` | MODIFIED — Added SLACK_WEBHOOK_URL to Zod schema |
+| `apps/backend/src/modules/index.ts` | MODIFIED — Exports WebhooksModule |
+| `apps/backend/src/app.module.ts` | MODIFIED — Imports WebhooksModule |
+| `apps/frontend/src/lib/analytics/provider.ts` | NEW — PostHog + GA4 + Noop provider abstraction |
+| `apps/frontend/src/lib/analytics/index.ts` | NEW — useAnalytics hook + AnalyticsInit component |
+| `apps/frontend/src/lib/env.ts` | MODIFIED — Added posthogKey, gaMeasurementId |
+| `apps/frontend/src/app/layout.tsx` | MODIFIED — Added AnalyticsInit with Suspense |
+| `apps/frontend/src/app/portal/page.tsx` | MODIFIED — Track phase submit/review, annotation add |
+| `apps/frontend/src/app/portal/login/page.tsx` | MODIFIED — Track login success/error |
+| `apps/frontend/src/app/xr-viewer/XRViewerClient.tsx` | MODIFIED — Track viewer load, exit, error |
+| `apps/frontend/src/features/xr/components/XRUI.tsx` | MODIFIED — Track AR/VR session enter/end |
+| `apps/backend/src/modules/assistants/assistants.controller.ts` | MODIFIED — Replaced all `any` body types with typed interfaces |
+| `apps/backend/src/modules/ai/gemini.service.ts` | MODIFIED — Replaced `any` casts with proper types and Step type guard |
+| `apps/backend/src/modules/portal/client-portal.gateway.ts` | MODIFIED — Removed unused `OnGatewayInit` interface |
+| `apps/cms/config/plugins.ts` | MODIFIED — Added i18n plugin with 8 locales |
+| `apps/cms/src/api/project/content-types/project/schema.json` | MODIFIED — i18n localization enabled |
+| `apps/cms/src/api/article/content-types/article/schema.json` | MODIFIED — i18n localization enabled |
+| `apps/cms/src/api/service/content-types/service/schema.json` | MODIFIED — i18n localization enabled |
+| `apps/cms/src/api/category/content-types/category/schema.json` | MODIFIED — i18n localization enabled |
+| `apps/cms/src/api/faq/content-types/faq/schema.json` | MODIFIED — i18n localization enabled |
+| `apps/cms/src/api/portfolio/content-types/portfolio/schema.json` | MODIFIED — i18n localization enabled |
+| `apps/frontend/src/features/xr/utils/xr-constants.ts` | MODIFIED — Added ARPlacementPhase type, placement fields to XRStoreState |
+| `apps/frontend/src/features/xr/store/xr-store.ts` | MODIFIED — Added placement state and actions |
+| `apps/frontend/src/features/xr/config/xr-config.ts` | MODIFIED — Removed unused XRSessionInit config |
+| `apps/frontend/src/features/xr/components/ARPlacementReticle.tsx` | NEW — Hit-test reticle (golden ring) for AR surface targeting |
+| `apps/frontend/src/features/xr/components/XRSceneContent.tsx` | MODIFIED — Integrated useXRHitTest, placement position, ARPlacementReticle |
+| `apps/frontend/src/features/xr/components/XRUI.tsx` | MODIFIED — Placement flow: "tap surface" → confirm/reposition/cancel UI |
+| `apps/frontend/src/features/xr/hooks/useXRInteraction.ts` | MODIFIED — `select` event now commits placement phase |
+| `apps/frontend/src/features/xr/index.ts` | MODIFIED — Exports ARPlacementReticle |
+| `apps/backend/vitest.config.ts` | MODIFIED — Removed vite-tsconfig-paths, use native resolve.tsconfigPaths, add root + exclusions to work around corrupted NTFS reparse point |
+| `apps/frontend/vitest.config.ts` | MODIFIED — Added _corrupted_node_modules_stubs exclusion |
+| `apps/frontend/sentry.client.config.ts` | MODIFIED — Added `release`, `environment` for Release Health |
+| `apps/frontend/sentry.server.config.ts` | MODIFIED — Added `release`, `environment`, `tracesSampleRate` |
+| `apps/frontend/sentry.edge.config.ts` | MODIFIED — Added `release`, `environment` |
+| `apps/frontend/src/lib/env.ts` | MODIFIED — Added `sentryRelease` export |
+| `apps/backend/src/main.ts` | MODIFIED — Added `release`, `tracesSampleRate` to Sentry.init |
+| `apps/backend/src/config/env.ts` | MODIFIED — Added `SENTRY_RELEASE` env var |
+| `apps/backend/src/modules/webhooks/webhook-dispatcher.service.ts` | NEW — Generic event-to-webhook dispatcher |
+| `apps/backend/src/modules/webhooks/webhooks.module.ts` | MODIFIED — Registers WebhookDispatcher |
+| `apps/backend/src/modules/webhooks/webhook.listener.ts` | MODIFIED — Routes through WebhookDispatcher |
+| `apps/frontend/src/features/integrations/api.ts` | NEW — Webhook CRUD API client |
+| `apps/frontend/src/app/dashboard/integrations/page.tsx` | NEW — Integration Hub dashboard |
+| `apps/backend/src/config/env.ts` | MODIFIED — Added `CMS_API_TOKEN` env var |
+| `apps/backend/src/modules/translations/translation.service.ts` | NEW — Translation export/import/status service |
+| `apps/backend/src/modules/translations/translation.controller.ts` | NEW — REST endpoints for translation workflow |
+| `apps/backend/src/modules/translations/translations.module.ts` | NEW — Translations module |
+| `apps/backend/src/modules/index.ts` | MODIFIED — Exports TranslationsModule |
+| `apps/backend/src/app.module.ts` | MODIFIED — Imports TranslationsModule |
+| `apps/backend/src/modules/articles/articles.service.ts` | MODIFIED — Added optional locale param to Strapi calls |
+| `apps/backend/src/modules/articles/articles.controller.ts` | MODIFIED — Added `@Query('locale') locale` |
+| `apps/backend/src/modules/projects/projects.service.ts` | MODIFIED — Added optional locale param |
+| `apps/backend/src/modules/projects/projects.controller.ts` | MODIFIED — Added `@Query('locale') locale` |
+| `apps/backend/src/modules/services/services.service.ts` | MODIFIED — Added optional locale param |
+| `apps/backend/src/modules/services/services.controller.ts` | MODIFIED — Added `@Query('locale') locale` |
+| `apps/backend/src/modules/faqs/faqs.service.ts` | MODIFIED — Added optional locale param |
+| `apps/backend/src/modules/faqs/faqs.controller.ts` | MODIFIED — Added `@Query('locale') locale` |
+| `apps/frontend/src/features/portfolio/lib/fetchProjects.ts` | MODIFIED — Passes locale query param |
+| `apps/frontend/src/features/blog/lib/fetchArticles.ts` | MODIFIED — Passes locale query param |
+| `apps/frontend/src/features/faq/lib/fetchFAQs.ts` | MODIFIED — Passes locale query param |
+| `apps/frontend/src/features/services/hooks/useServices.ts` | MODIFIED — Passes locale query param |
+| `apps/frontend/src/features/integrations/api-translations.ts` | NEW — Translation API client |
+| `apps/frontend/src/app/dashboard/translations/page.tsx` | NEW — Translation Workflow dashboard |
+
+---
+
+## 5. BLOCKERS & RISKS
+
+| ID | Issue | Severity | Status |
+|----|-------|----------|--------|
+| B1 | `_corrupted_node_modules_stubs/` blocks backend vitest | LOW | ✅ Workaround: removed vite-tsconfig-paths plugin, use native resolve.tsconfigPaths, set root + exclusions |
+| B2 | 24 npm vulns (postcss XSS via Next.js bundled dep) | LOW | ⚠️ v16 upgrade won't fix (postcss <8.5.10 range includes v16 canary); wait for Next.js 16.3+ GA |
+
+---
+
+## 6. RELEASE READINESS
+
+**v1.5.0 Target:** 2026-09-01
 
 ---
 

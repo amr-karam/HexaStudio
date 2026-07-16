@@ -42,7 +42,7 @@ export class ArticlesService {
     return getEnv().CMS_URL;
   }
 
-  async getAllArticles(page = 1, limit = 20): Promise<ArticleResponse> {
+  async getAllArticles(page = 1, limit = 20, locale?: string): Promise<ArticleResponse> {
     const safePage = Math.max(1, page);
     const safeLimit = Math.min(100, Math.max(1, limit));
 
@@ -54,6 +54,7 @@ export class ArticlesService {
           'sort': 'createdAt:desc',
           'pagination[page]': safePage,
           'pagination[pageSize]': safeLimit,
+          ...(locale ? { locale } : {}),
         },
       }),
     );
@@ -69,12 +70,13 @@ export class ArticlesService {
     };
   }
 
-  async getArticleBySlug(slug: string): Promise<Article> {
+  async getArticleBySlug(slug: string, locale?: string): Promise<Article> {
     const response = await firstValueFrom(
       this.httpService.get(`${this.cmsUrl}/api/articles`, {
         params: {
           'populate': '*',
           'filters[slug][$eq]': slug,
+          ...(locale ? { locale } : {}),
         },
       }),
     );

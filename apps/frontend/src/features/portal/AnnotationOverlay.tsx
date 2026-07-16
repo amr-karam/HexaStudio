@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef } from 'react';
+import { useLocale } from '@/i18n/LocaleProvider';
 
 interface Annotation {
   id: string;
@@ -24,7 +25,6 @@ export function AnnotationOverlay({
   annotations,
   onAddAnnotation,
   onResolveAnnotation,
-  currentUser,
   imageUrl,
 }: AnnotationOverlayProps) {
   const [placing, setPlacing] = useState(false);
@@ -32,6 +32,7 @@ export function AnnotationOverlay({
   const [newContent, setNewContent] = useState('');
   const [selected, setSelected] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { t } = useLocale();
 
   const handleImageClick = useCallback((e: React.MouseEvent) => {
     if (!placing) return;
@@ -54,7 +55,7 @@ export function AnnotationOverlay({
   return (
     <div className="relative">
       <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-sm font-medium text-white/80">Annotations</h3>
+        <h3 className="text-sm font-medium text-white/80">{t('portal.annotations.title')}</h3>
         <button
           onClick={() => setPlacing(!placing)}
           className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
@@ -63,7 +64,7 @@ export function AnnotationOverlay({
               : 'bg-white/10 text-white/70 hover:bg-white/20'
           }`}
         >
-          {placing ? 'Cancel' : 'Add Annotation'}
+          {placing ? t('common.cancel') : t('portal.annotations.addAnnotation')}
         </button>
       </div>
 
@@ -105,7 +106,7 @@ export function AnnotationOverlay({
                         onClick={() => onResolveAnnotation(ann.id)}
                         className="text-[10px] text-emerald-400 hover:text-emerald-300"
                       >
-                        Resolve
+                        {t('portal.annotations.resolve')}
                       </button>
                     )}
                   </div>
@@ -123,7 +124,7 @@ export function AnnotationOverlay({
                 <textarea
                   value={newContent}
                   onChange={(e) => setNewContent(e.target.value)}
-                  placeholder="Add note..."
+                  placeholder={t('portal.annotations.addNote')}
                   className="w-full rounded border border-white/10 bg-black/50 p-1.5 text-xs text-white placeholder-white/30"
                   rows={2}
                   autoFocus
@@ -133,13 +134,13 @@ export function AnnotationOverlay({
                     onClick={handleSubmitAnnotation}
                     className="rounded bg-[#D4AF37] px-2 py-1 text-[10px] font-medium text-black"
                   >
-                    Save
+                    {t('common.save')}
                   </button>
                   <button
                     onClick={() => { setNewPos(null); setNewContent(''); }}
                     className="rounded bg-white/10 px-2 py-1 text-[10px] text-white/60"
                   >
-                    Cancel
+                    {t('common.cancel')}
                   </button>
                 </div>
               </div>

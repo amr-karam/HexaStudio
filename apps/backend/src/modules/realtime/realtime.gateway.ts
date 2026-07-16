@@ -4,10 +4,10 @@ import {
   SubscribeMessage,
   OnGatewayConnection,
   OnGatewayDisconnect,
-  WsException,
 } from '@nestjs/websockets';
-import { Injectable, Logger, UseGuards } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
+import { EventBus } from './event-bus.service';
 
 interface AnnotationEvent {
   projectId: string;
@@ -39,8 +39,14 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
   private readonly logger = new Logger(RealtimeGateway.name);
   private clientRooms = new Map<string, Set<string>>();
 
+  constructor(private readonly eventBus: EventBus) {}
+
   @WebSocketServer()
   server!: Server;
+
+  afterInit() {
+    this.logger.log('RealtimeGateway initialized — event bus ready');
+  }
 
   handleConnection(client: Socket) {
     this.clientRooms.set(client.id, new Set());
@@ -75,6 +81,7 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
   handleAddAnnotation(client: Socket, payload: AnnotationEvent) {
     const room = `project:${payload.projectId}`;
     client.to(room).emit('annotation:added', payload.annotation);
+    this.eventBus.emit('annotation:add', payload);
     return { event: 'annotation:added', data: payload.annotation };
   }
 
@@ -82,6 +89,7 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
   handleResolveAnnotation(client: Socket, payload: { projectId: string; annotationId: string }) {
     const room = `project:${payload.projectId}`;
     client.to(room).emit('annotation:resolved', payload);
+    this.eventBus.emit('annotation:resolve', payload);
     return { event: 'annotation:resolved', data: payload };
   }
 
@@ -89,6 +97,7 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
   handleApprovalAction(client: Socket, payload: ApprovalEvent) {
     const room = `project:${payload.projectId}`;
     client.to(room).emit('approval:update', payload);
+    this.eventBus.emit('approval:action', payload);
     return { event: 'approval:update', data: payload };
   }
 
@@ -96,6 +105,7 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
   handlePresenceJoin(client: Socket, payload: { projectId: string; user: string }) {
     const room = `project:${payload.projectId}`;
     client.to(room).emit('presence:joined', { user: payload.user, id: client.id });
+    this.eventBus.emit('presence:join', { projectId: payload.projectId, user: payload.user });
     return { event: 'presence:joined', data: { user: payload.user, id: client.id } };
   }
 
@@ -103,12 +113,14 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
   handlePresenceLeave(client: Socket, payload: { projectId: string }) {
     const room = `project:${payload.projectId}`;
     client.to(room).emit('presence:left', { id: client.id });
+    this.eventBus.emit('presence:leave', { projectId: payload.projectId, id: client.id });
   }
 
   @SubscribeMessage('project:update')
   handleProjectUpdate(client: Socket, payload: { projectId: string; data: unknown }) {
     const room = `project:${payload.projectId}`;
     client.to(room).emit('project:updated', payload.data);
+    this.eventBus.emit('project:update', payload);
     return { event: 'project:updated', data: payload.data };
   }
 }

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 import Image from 'next/image';
 import { TextReveal } from '@/components/ui/TextReveal';
+import { TeamSection } from '@/features/team/components/TeamSection';
 
 const milestones = [
   { year: '2020', label: 'Founded', description: 'HexaStudio was established with a vision to redefine architectural visualization.' },
@@ -139,6 +140,8 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      <TeamSection />
 
       {/* CTA */}
       <section className="px-8 md:px-16 py-32 border-t border-border/30">

@@ -37,7 +37,7 @@ export class ProjectsService {
     return getEnv().CMS_URL;
   }
 
-  async getAllProjects(page = 1, limit = 20): Promise<ProjectResponse> {
+  async getAllProjects(page = 1, limit = 20, locale?: string): Promise<ProjectResponse> {
     const safePage = Math.max(1, page);
     const safeLimit = Math.min(100, Math.max(1, limit));
 
@@ -49,6 +49,7 @@ export class ProjectsService {
           'sort': 'order:asc',
           'pagination[page]': safePage,
           'pagination[pageSize]': safeLimit,
+          ...(locale ? { locale } : {}),
         },
       }),
     );
@@ -95,12 +96,13 @@ export class ProjectsService {
     } as ProjectResponse & { _enrichmentError?: string };
   }
 
-  async getProjectBySlug(slug: string): Promise<Project> {
+  async getProjectBySlug(slug: string, locale?: string): Promise<Project> {
     const response = await firstValueFrom(
       this.httpService.get(`${this.cmsUrl}/api/portfolios`, {
         params: {
           'populate': '*',
           'filters[slug][$eq]': slug,
+          ...(locale ? { locale } : {}),
         },
       }),
     );

@@ -1,6 +1,5 @@
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
-import { User } from '@hexastudio/types';
 import { JwtService } from '@nestjs/jwt';
 
 @Controller('api/mobile')

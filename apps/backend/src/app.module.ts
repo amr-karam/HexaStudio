@@ -11,6 +11,7 @@ import {
   AssistantsModule,
   AuthModule,
   ContactModule,
+  FAQsModule,
   HealthModule,
   MetricsModule,
   OdooModule,
@@ -21,8 +22,12 @@ import {
   RequestsModule,
   ServicesModule,
   StorageModule,
+  TeamMembersModule,
+  TestimonialsModule,
   UsersModule,
   VectorModule,
+  WebhooksModule,
+  TranslationsModule,
 } from "./modules/index";
 
 @Module({
@@ -38,6 +43,9 @@ import {
     ProjectsModule,
     ArticlesModule,
     ServicesModule,
+    TestimonialsModule,
+    TeamMembersModule,
+    FAQsModule,
     ContactModule,
     AuthModule,
     StorageModule,
@@ -53,6 +61,7 @@ import {
     MetricsModule,
     AgentsModule,
     AssistantsModule,
+    WebhooksModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

@@ -8,10 +8,12 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/inputs/Input';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { toast } from 'sonner';
+import { useAnalytics } from '@/lib/analytics';
 
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
+  const { track } = useAnalytics();
   const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({ identifier: '', password: '' });
 
@@ -21,8 +23,10 @@ export default function LoginPage() {
     try {
       await login(form.identifier, form.password);
       toast.success('Welcome back to HexaStudio.');
+      track('portal_login_success');
       router.push('/portal');
     } catch (error) {
+      track('portal_login_error', { error: error instanceof Error ? error.message : 'unknown' });
       toast.error(error instanceof Error ? error.message : 'Invalid credentials. Please try again.');
     } finally {
       setIsLoading(false);

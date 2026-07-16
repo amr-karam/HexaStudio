@@ -10,15 +10,20 @@ export class ArticlesController {
   async findAll(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
+    @Query('locale') locale?: string,
   ): Promise<ArticleResponse> {
     return this.articlesService.getAllArticles(
       page ? parseInt(page, 10) : 1,
       limit ? parseInt(limit, 10) : 20,
+      locale,
     );
   }
 
   @Get(':slug')
-  async findOne(@Param('slug') slug: string): Promise<Article> {
-    return this.articlesService.getArticleBySlug(slug);
+  async findOne(
+    @Param('slug') slug: string,
+    @Query('locale') locale?: string,
+  ): Promise<Article> {
+    return this.articlesService.getArticleBySlug(slug, locale);
   }
 }

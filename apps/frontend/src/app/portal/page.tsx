@@ -13,6 +13,8 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { PhaseApprovalCard, RealtimePresence, AnnotationOverlay } from '@/features/portal';
 import { useRealtime } from '@/features/realtime/useRealtime';
+import { useAnalytics } from '@/lib/analytics';
+import { useLocale } from '@/i18n/LocaleProvider';
 
 type PhaseStatus = 'pending' | 'submitted' | 'approved' | 'rejected' | 'revision';
 
@@ -26,6 +28,8 @@ const DEMO_PHASES: Array<{ id: string; name: string; status: PhaseStatus; descri
 export default function PortalPage() {
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
+  const { track } = useAnalytics();
+  const { t } = useLocale();
   const queryClient = useQueryClient();
   const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
   const [phases, setPhases] = useState(DEMO_PHASES);
@@ -43,7 +47,7 @@ export default function PortalPage() {
       setPhases((prev) => prev.map((p) =>
         p.id === data.phaseId ? { ...p, status: statusMap[data.action] || p.status } : p
       ));
-      toast.success(`Phase ${data.action === 'approve' ? 'approved' : data.action === 'reject' ? 'rejected' : 'updated'}`);
+      toast.success(t('portal.phaseApproved'));
     },
     onAnnotationAdded: (annotation) => {
       setAnnotations((prev) => [...prev, { id: annotation.id, type: annotation.type as 'text' | 'pin', position: { x: annotation.position.x, y: annotation.position.y }, content: annotation.content, author: annotation.author, createdAt: annotation.createdAt, resolved: false }]);
@@ -77,13 +81,13 @@ export default function PortalPage() {
   const mutation = useMutation({
     mutationFn: (data: Partial<ProjectRequest>) => portalService.sendRequest(data),
     onSuccess: () => {
-      toast.success('Request sent successfully. Our team will review it shortly.');
+      toast.success(t('portal.requestSent'));
       queryClient.invalidateQueries({ queryKey: ['portal-requests'] });
       setIsRequestModalOpen(false);
       setRequestForm({ title: '', description: '', priority: 'medium' });
     },
     onError: () => {
-      toast.error('Failed to send request. Please try again.');
+      toast.error(t('portal.requestFailed'));
     },
   });
 
@@ -99,12 +103,14 @@ export default function PortalPage() {
   const handlePhaseSubmit = useCallback((phaseId: string) => {
     setPhases((prev) => prev.map((p) => p.id === phaseId ? { ...p, status: 'submitted' } : p));
     sendApproval({ phaseId, action: 'submit', userId: user?.id || 'unknown' });
-    toast.success('Phase submitted for approval');
-  }, [sendApproval, user?.id]);
+    toast.success(t('portal.phaseSubmitted'));
+    track('portal_phase_submit', { phaseId });
+  }, [sendApproval, user?.id, track]);
 
   const handlePhaseReview = useCallback((phaseId: string, action: 'approve' | 'reject' | 'revision', comment?: string) => {
     sendApproval({ phaseId, action, userId: user?.id || 'unknown', comment });
-  }, [sendApproval, user?.id]);
+    track('portal_phase_review', { phaseId, action });
+  }, [sendApproval, user?.id, track]);
 
   const handleAddAnnotation = useCallback((ann: { x: number; y: number; content: string }) => {
     const annotation = {
@@ -118,7 +124,8 @@ export default function PortalPage() {
     };
     setAnnotations((prev) => [...prev, annotation]);
     sendAnnotation(annotation);
-  }, [sendAnnotation, user?.email]);
+    track('portal_annotation_add', { contentLength: ann.content.length });
+  }, [sendAnnotation, user?.email, track]);
 
   if (authLoading || isLoading) {
     return (
@@ -128,7 +135,7 @@ export default function PortalPage() {
           transition={{ repeat: Infinity, duration: 1.5 }}
           className="text-xs uppercase tracking-[0.5em] text-neutral-500 font-mono"
         >
-          Loading Gateway...
+          {t('portal.loading')}
         </motion.div>
       </div>
     );
@@ -138,9 +145,9 @@ export default function PortalPage() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <p className="text-neutral-500 mb-8 uppercase tracking-widest font-mono text-xs">Authentication Required</p>
+          <p className="text-neutral-500 mb-8 uppercase tracking-widest font-mono text-xs">{t('portal.authRequired')}</p>
           <Button variant="primary" onClick={() => router.push('/portal/login')}>
-            Access Gateway
+            {t('portal.accessGateway')}
           </Button>
         </div>
       </div>
@@ -159,13 +166,13 @@ export default function PortalPage() {
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
           >
-            Client Gateway
+            {t('portal.clientGateway')}
           </motion.span>
           <div className="flex items-start justify-between">
             <div className="text-5xl md:text-8xl font-serif font-light tracking-tighter text-foreground leading-tight">
               <TextReveal delay={0.1}>
-                Welcome, <br />
-                <span className="italic text-accent">Valued Client.</span>
+                {t('portal.welcome')} <br />
+                <span className="italic text-accent">{t('portal.valuedClient')}</span>
               </TextReveal>
             </div>
             <RealtimePresence users={presenceUsers} isConnected={isConnected} />
@@ -176,7 +183,7 @@ export default function PortalPage() {
           <div className="lg:col-span-2 space-y-12">
             <section className="bg-surface border border-border/50 p-8 md:p-12 rounded-sm">
               <div className="flex justify-between items-end mb-8">
-                <h2 className="text-2xl font-serif font-light text-foreground">Project Status</h2>
+                <h2 className="text-2xl font-serif font-light text-foreground">{t('portal.projectStatus')}</h2>
                 <span className="text-[10px] uppercase tracking-widest text-accent font-mono px-2 py-1 border border-accent/30 rounded-full bg-accent/10">
                   {data.project.status}
                 </span>
@@ -207,7 +214,7 @@ export default function PortalPage() {
             </section>
 
             <section className="bg-surface border border-border/50 p-8 md:p-12 rounded-sm">
-              <h2 className="text-2xl font-serif font-light text-foreground mb-8">Document Vault</h2>
+              <h2 className="text-2xl font-serif font-light text-foreground mb-8">{t('portal.documentVault')}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {data.documents.map((doc, i) => (
                   <div key={i} className="flex items-center justify-between p-4 bg-background border border-border/30 hover:border-accent/50 transition-colors duration-300 group cursor-pointer">
@@ -215,17 +222,17 @@ export default function PortalPage() {
                       <span className="text-sm text-neutral-400 group-hover:text-foreground transition-colors duration-300">{doc.name}</span>
                       <span className="text-[10px] text-neutral-600 uppercase font-mono">{doc.size} • {doc.type}</span>
                     </div>
-                    <Button variant="outline" size="sm" className="text-[10px] uppercase tracking-widest">Download</Button>
+                    <Button variant="outline" size="sm" className="text-[10px] uppercase tracking-widest">{t('common.download')}</Button>
                   </div>
                 ))}
               </div>
             </section>
 
             <section className="bg-surface border border-border/50 p-8 md:p-12 rounded-sm">
-              <h2 className="text-2xl font-serif font-light text-foreground mb-8">Request History</h2>
+              <h2 className="text-2xl font-serif font-light text-foreground mb-8">{t('portal.requestHistory')}</h2>
               {requestsLoading ? (
                 <div className="text-center py-12">
-                  <span className="text-xs uppercase tracking-widest text-neutral-500 font-mono">Syncing requests...</span>
+                  <span className="text-xs uppercase tracking-widest text-neutral-500 font-mono">{t('portal.syncingRequests')}</span>
                 </div>
               ) : requests && requests.length > 0 ? (
                 <div className="space-y-4">
@@ -246,7 +253,7 @@ export default function PortalPage() {
                 </div>
               ) : (
                 <div className="text-center py-12">
-                  <p className="text-neutral-500 text-sm font-light">No active requests found.</p>
+                  <p className="text-neutral-500 text-sm font-light">{t('portal.noRequests')}</p>
                 </div>
               )}
             </section>
@@ -254,7 +261,7 @@ export default function PortalPage() {
 
           <div className="space-y-12">
             <section className="bg-surface border border-border/50 p-8 md:p-12 rounded-sm">
-              <h2 className="text-xl font-serif font-light text-foreground mb-6">Project Lead</h2>
+              <h2 className="text-xl font-serif font-light text-foreground mb-6">{t('portal.projectLead')}</h2>
               <div className="flex items-center gap-4 mb-8">
                 <div className="w-12 h-12 rounded-full bg-neutral-800 border border-border/50 overflow-hidden">
                   <Image src={data.lead.avatar} alt={data.lead.name} width={48} height={48} className="w-full h-full object-cover opacity-60" onError={(e) => {
@@ -266,16 +273,16 @@ export default function PortalPage() {
                   <p className="text-xs text-neutral-500">{data.lead.role}</p>
                 </div>
               </div>
-              <Button variant="outline" size="lg" className="w-full">Schedule Call</Button>
+              <Button variant="outline" size="lg" className="w-full">{t('portal.scheduleCall')}</Button>
             </section>
 
             <section className="bg-accent/10 border border-accent/20 p-8 md:p-12 rounded-sm">
-              <h2 className="text-xl font-serif font-light text-accent mb-6">Direct Request</h2>
+              <h2 className="text-xl font-serif font-light text-accent mb-6">{t('portal.directRequest')}</h2>
               <p className="text-neutral-400 text-sm font-light mb-8 leading-relaxed">
-                Need a specific change or have a question about the current phase?
+                {t('portal.requestDescription')}
               </p>
               <Button variant="primary" size="lg" className="w-full" onClick={() => setIsRequestModalOpen(true)}>
-                Send Request
+                {t('portal.sendRequest')}
               </Button>
             </section>
           </div>
@@ -298,41 +305,41 @@ export default function PortalPage() {
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               className="relative w-full max-w-lg bg-surface border border-border/50 p-8 md:p-12 rounded-sm shadow-2xl"
             >
-              <h2 className="text-3xl font-serif font-light text-foreground mb-8">Submit Request</h2>
+              <h2 className="text-3xl font-serif font-light text-foreground mb-8">{t('portal.submitRequest')}</h2>
               <form onSubmit={handleSendRequest} className="space-y-6">
                 <Input
-                  label="Request Title"
-                  placeholder="e.g., Change living room lighting"
+                  label={t('portal.requestTitle')}
+                  placeholder={t('portal.requestPlaceholder')}
                   required
                   value={requestForm.title}
                   onChange={(e) => setRequestForm({...requestForm, title: e.target.value})}
                 />
                 <div className="flex flex-col gap-2 w-full group">
-                  <label className="text-xs uppercase tracking-[0.3em] text-neutral-500 font-medium">Priority</label>
+                  <label className="text-xs uppercase tracking-[0.3em] text-neutral-500 font-medium">{t('portal.priority')}</label>
                   <select
                     className="w-full bg-transparent border-b border-border py-3 px-0 text-sm transition-all duration-500 outline-none focus:border-accent text-foreground placeholder:text-neutral-600"
                     value={requestForm.priority}
                     onChange={(e) => setRequestForm({...requestForm, priority: e.target.value as 'low' | 'medium' | 'high'})}
                   >
-                    <option value="low" className="bg-surface">Low</option>
-                    <option value="medium" className="bg-surface">Medium</option>
-                    <option value="high" className="bg-surface">High</option>
+                    <option value="low" className="bg-surface">{t('portal.low')}</option>
+                    <option value="medium" className="bg-surface">{t('portal.medium')}</option>
+                    <option value="high" className="bg-surface">{t('portal.high')}</option>
                   </select>
                 </div>
                 <div className="flex flex-col gap-2 w-full group">
-                  <label className="text-xs uppercase tracking-[0.3em] text-neutral-500 font-medium">Description</label>
+                  <label className="text-xs uppercase tracking-[0.3em] text-neutral-500 font-medium">{t('portal.description')}</label>
                   <textarea
                     className="w-full bg-transparent border-b border-border py-3 px-0 text-sm transition-all duration-500 outline-none focus:border-accent text-foreground placeholder:text-neutral-600 resize-none h-32"
-                    placeholder="Detail your request..."
+                    placeholder={t('portal.detailPlaceholder')}
                     required
                     value={requestForm.description}
                     onChange={(e) => setRequestForm({...requestForm, description: e.target.value})}
                   />
                 </div>
                 <div className="flex gap-4 pt-4">
-                  <Button variant="outline" size="lg" className="flex-1" onClick={() => setIsRequestModalOpen(false)}>Cancel</Button>
+                  <Button variant="outline" size="lg" className="flex-1" onClick={() => setIsRequestModalOpen(false)}>{t('common.cancel')}</Button>
                   <Button variant="primary" size="lg" className="flex-1" disabled={mutation.isPending}>
-                    {mutation.isPending ? 'Sending...' : 'Submit Request'}
+                    {mutation.isPending ? t('portal.sending') : t('portal.submitRequest')}
                   </Button>
                 </div>
               </form>

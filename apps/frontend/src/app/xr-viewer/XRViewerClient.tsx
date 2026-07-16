@@ -1,12 +1,16 @@
 'use client';
 
-import { Component, ReactNode } from 'react';
+import { Component, ReactNode, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { XRCanvas, XRView, XRUI, XRErrorFallback } from '@/features/xr';
+import { useAnalytics } from '@/lib/analytics';
 
-class ErrorBoundary extends Component<{ children: ReactNode; fallback: (error: Error) => ReactNode }> {
+class ErrorBoundary extends Component<{ children: ReactNode; onError?: (error: Error) => void; fallback: (error: Error) => ReactNode }> {
   state = { error: null as Error | null };
   static getDerivedStateFromError(error: Error) { return { error }; }
+  componentDidCatch(error: Error) {
+    this.props.onError?.(error);
+  }
   render() {
     if (this.state.error) return this.props.fallback(this.state.error);
     return this.props.children;
@@ -18,20 +22,33 @@ function XRViewerInner() {
   const router = useRouter();
   const modelUrl = searchParams.get('model');
   const modelName = searchParams.get('name') || undefined;
+  const { track } = useAnalytics();
+
+  useEffect(() => {
+    if (modelUrl) {
+      track('xr_viewer_load', { modelName: modelName || 'unnamed', modelUrl: modelUrl.slice(0, 100) });
+    }
+  }, [modelUrl, modelName, track]);
 
   return (
     <div className="fixed inset-0 bg-black">
       <XRCanvas>
         <XRView modelUrl={modelUrl ?? undefined} modelName={modelName} />
       </XRCanvas>
-      <XRUI onExit={() => router.back()} modelName={modelName} />
+      <XRUI onExit={() => { track('xr_viewer_exit'); router.back(); }} modelName={modelName} />
     </div>
   );
 }
 
+function XRViewerFallback({ error }: { error: Error }) {
+  const { track } = useAnalytics();
+  useEffect(() => { track('xr_viewer_error', { error: error.message }); }, []);
+  return <XRErrorFallback error={error} />;
+}
+
 export function XRViewerClient() {
   return (
-    <ErrorBoundary fallback={(error) => <XRErrorFallback error={error} />}>
+    <ErrorBoundary fallback={(error: Error) => <XRViewerFallback error={error} />}>
       <XRViewerInner />
     </ErrorBoundary>
   );

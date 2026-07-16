@@ -64,23 +64,23 @@ Answer concisely and professionally. When citing projects, include their titles 
     const model = this.configService.get<string>('GEMINI_MODEL')!;
     const systemInstruction = this.getSystemInstruction(toolsList);
 
-    const genConfig = {
+    const genConfig: Record<string, unknown> = {
       temperature: 0.3,
       max_output_tokens: 800,
-    } as any;
+    };
 
     let interactionId: string | undefined = previousInteractionId;
     let toolCalls = 0;
 
-    const call = async (input: any) => {
+    const call = async (input: string | unknown[]) => {
       const interaction = await this.client!.interactions.create({
         model,
         system_instruction: systemInstruction,
-        tools: geminiTools as any,
+        tools: geminiTools as never,
         input,
         previous_interaction_id: interactionId,
         generation_config: genConfig,
-      });
+      } as never);
       interactionId = interaction.id;
       return interaction;
     };
@@ -89,8 +89,8 @@ Answer concisely and professionally. When citing projects, include their titles 
 
     for (let i = 0; i < this.maxIterations; i++) {
       const functionCallStep = interaction.steps?.find(
-        (s: any) => s.type === 'function_call',
-      ) as any;
+        (s: { type?: string }) => s.type === 'function_call',
+      ) as { name: string; arguments: Record<string, unknown>; id: string; type: string } | undefined;
 
       if (!functionCallStep) {
         const output = interaction.output_text || 'No response generated.';
@@ -98,9 +98,9 @@ Answer concisely and professionally. When citing projects, include their titles 
       }
 
       toolCalls++;
-      const fnName = functionCallStep.name as string;
-      const fnArgs = functionCallStep.arguments as Record<string, unknown>;
-      const callId = functionCallStep.id as string;
+      const fnName = functionCallStep.name;
+      const fnArgs = functionCallStep.arguments;
+      const callId = functionCallStep.id;
 
       const result = await this.toolRegistry.execute(fnName, fnArgs);
 
@@ -111,7 +111,7 @@ Answer concisely and professionally. When citing projects, include their titles 
           name: fnName,
           result,
         },
-      ] as any);
+      ]);
     }
 
     return {

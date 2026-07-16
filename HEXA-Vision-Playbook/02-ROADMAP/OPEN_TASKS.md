@@ -148,11 +148,11 @@ Elevating `apps/frontend` to HEXA Creative Excellence standard. All gates green
 
 ---
 
-## 7. SPRINT 11 — PLATFORM EXPANSION & MOBILE API (ACTIVE)
+## 7. SPRINT 11 — PLATFORM EXPANSION & MOBILE API (COMPLETED)
 
-**Started:** 2026-07-16 | **Target:** 2026-08-15
+**Started:** 2026-07-16 | **Completed:** 2026-07-16
 
-### ✅ Completed This Sprint
+### ✅ Completed
 
 | Task ID | Description | Status |
 |---------|-------------|--------|
@@ -162,41 +162,109 @@ Elevating `apps/frontend` to HEXA Creative Excellence standard. All gates green
 | **S11-P0-001d** | Security — JWT auth on `/agents/*` endpoints | ✅ |
 | **S11-P0-002** | Client Portal v2 — WebSocket gateway, phase approvals, annotations | ✅ |
 | **S11-P0-003a** | WebSocket Infrastructure — Socket.IO gateway with rooms, presence, events | ✅ |
+| **S11-P0-004** | Client Portal v2 Frontend — WebSocket-integrated dashboard | ✅ |
+| **S11-P0-005** | Multi-language i18n — ES/FR/DE/JA/KO/ZH message files (8 total) | ✅ |
 | **S11-P1-001a** | WebXR Viewer scaffold — `features/xr/` module + `app/xr-viewer/` route | ✅ |
 | **S11-P1-001b** | WebXR Viewer full — auto-scaling, controllers, loading UX, AR/VR entry | ✅ |
 | **S11-P1-002** | Mobile API profile/models endpoints (storage URLs, profile listing) | ✅ |
-| **S11-P1-003** | i18n Framework — LocaleProvider, RTL, EN/AR messages, locale switcher | ✅ |
-| **S11-INFRA** | @sentry/nextjs 9→10 upgrade, @sentry/node 8→10 upgrade | ✅ |
-| **S11-INFRA** | npm vuln remediation (29→24, @opentelemetry/core fixed) | ✅ |
-| **S11-INFRA** | Backend API audit & mobile gap analysis | ✅ |
-| **S11-INFRA** | npm overrides for cookie, tmp, uuid | ✅ |
-| **S11-INFRA** | Frontend LayoutShell for fullscreen routes (XR viewer) | ✅ |
+| **S11-P1-003** | i18n Framework — LocaleProvider, RTL, 8 languages, locale switcher | ✅ |
+| **S11-INFRA-01** | @sentry/nextjs 9→10, @sentry/node 8→10 (@opentelemetry/core vuln fixed) | ✅ |
+| **S11-INFRA-02** | npm overrides for cookie, tmp, uuid; RxJS conflict resolved | ✅ |
+| **S11-INFRA-03** | Backend typecheck 0 errors (first time) | ✅ |
+| **S11-INFRA-04** | Backend lint fixes (our files) — unused imports removed | ✅ |
+| **S11-INFRA-05** | Frontend LayoutShell for fullscreen routes (XR viewer) | ✅ |
+
+---
+
+## 8. SPRINT 12 — INTEGRATIONS & CONTENT PIPELINE (ACTIVE)
+
+**Planned:** 2026-07-16 | **Target:** 2026-09-01
+
+### ✅ Completed
+
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S12-P0-001** | Slack Webhook — Approval/annotation notifications via Incoming Webhooks | ✅ |
+| **S12-P0-002** | Strapi i18n Plugin — Enable content localization in CMS | ✅ |
+| **S12-P0-003** | PostHog/GA4 Analytics — Universal provider, page view + event tracking on portal, XR, auth | ✅ |
+| **S12-P0-004** | AR Model Placement — Place models in real space via hit-test | ✅ |
+| **S12-INFRA-01** | EventBus — Decoupled event emitter in realtime module for inter-module dispatch | ✅ |
+| **S12-INFRA-02** | Analytics env vars — NEXT_PUBLIC_POSTHOG_KEY, NEXT_PUBLIC_GA_MEASUREMENT_ID | ✅ |
+| **S12-P2-004** | Backend Lint — Eliminate 21 no-explicit-any (0 lint errors first time) | ✅ |
+| **S12-P2-004b** | Backend Typecheck — Gemini SDK types, assistant controller body types (0 errors first time) | ✅ |
+| **S12-P2-005** | Backend Test Recovery — Work around corrupted NTFS reparse point blocking vitest | ✅ |
+| **S12-P2-006** | Sentry Release Health — Release tracking via SENTRY_RELEASE, env on all SDK inits | ✅ |
+| **S12-WEB-001** | Webhook CRUD API — centralized webhook management (`/api/webhooks`) | ✅ |
+| **S12-WEB-002** | Webhook Dispatcher — Generic event-to-webhook dispatcher | ✅ |
+| **S12-BE-001** | Testimonials + Team Members + FAQs API endpoints | ✅ |
+| **S12-FE-001** | TeamSection + FAQSection + TestimonialsSection (API-driven) | ✅ |
+| **S12-P2-001** | Integration Hub — Centralized webhook management dashboard | ✅ |
+| **S12-P1-004** | Translation Workflow — Export/import, reviewer flow for Strapi | ✅ |
 
 ### 🔴 P0: CRITICAL
 
 | Task ID | Description | Story Points | Dependencies |
 |---------|-------------|-------------|--------------|
-| **S11-P0-004** | Client Portal v2 Frontend — Integrate WebSocket into dashboard pages | M | WebSocket |
-| **S11-P0-005** | Multi-language i18n — ES/FR/DE/JA/KO/ZH message files | L | i18n infra |
+| *(All P0 deliverables completed)* | | | |
 
 ### 🟡 P1: HIGH
 
 | Task ID | Description | Story Points | Dependencies |
 |---------|-------------|-------------|--------------|
-| **S11-P1-001** | WebXR Viewer — Production polish (progressive loading, fallbacks, analytics) | M | WebXR |
-| **S11-P1-002** | AR Model Placement — Place models in real space via hit-test | XL | WebXR |
-| **S11-P1-003** | Third-party Integrations — Slack, Notion, Linear, Jira | M | Webhooks |
+| **S12-P1-001** | Notion Integration — Sync project milestones, task status | M | Webhooks |
+| **S12-P1-002** | Jira/Linear Integration — Bidirectional issue sync | M | Webhooks |
+| **S12-P1-003** | Figma Webhook — Design file change notifications | M | Webhooks |
+| **S12-P1-004** | Translation Workflow — Export/import, reviewer flow for Strapi | L | Strapi i18n |
+| **S12-P1-005** | VR Collaboration — Multi-user design reviews (basic sync) | XL | WebSocket, WebXR |
+| **S12-P1-006** | Currency/Localization — Dynamic pricing per region, tax compliance | M | i18n infra |
+| **S12-P1-007** | Next.js 16 Upgrade Assessment — **DONE: Defer to v16.3+** (see report below) | M | — |
 
 ### 🔵 P2: MEDIUM
 
 | Task ID | Description | Story Points | Dependencies |
 |---------|-------------|-------------|--------------|
-| **S11-P2-001** | VR Collaboration — Multi-user design reviews | XL | WebSocket, WebXR |
-| **S11-P2-002** | Assistants module fix — Pre-existing type errors in ceo-assistant.service.ts | M | — |
-| **S11-P2-003** | Content Pipeline — Strapi localization, translation management | L | i18n infra |
-| **S11-P2-004** | Currency/Localization — Dynamic pricing, regional compliance | M | i18n infra |
-| **S11-P2-005** | Advanced Analytics — Custom dashboards, export | L | PostHog/GA4 |
-| **S11-P2-006** | PostHog/GA4 Migration — Event tracking, funnel analysis | L | Analytics |
+| **S12-P2-002** | RTL Content Audit — Verify all CMS content in RTL | M | Strapi i18n |
+| **S12-P2-003** | Advanced Analytics — Custom dashboard builder, CSV export | L | PostHog/GA4 |
+| **S12-P2-005** | Backend Test Recovery — Resolve NTFS corruption blocking vitest | M | — |
+| **S12-P2-006** | Sentry Release Health — Release tracking, error rate alerts, session replay | M | Sentry v10 |
+| **S12-P2-007** | Playbook Sync — Document Sprint 12 learnings | S | — |
+
+---
+
+## 9. NEXT.JS 16 UPGRADE ASSESSMENT REPORT
+
+**Status:** 🔴 DEFERRED to v16.3+ | **Assessed:** 2026-07-16
+
+### Summary
+
+Upgrade from Next.js 15 → 16 is **moderate effort** for this codebase, but **will NOT fix** the postcss XSS vulnerability (v16 still ships postcss <8.5.10). Defer until Next.js ≥16.3 GA.
+
+### Breaking Changes Impact
+
+| Concern | Impact | Notes |
+|---------|--------|-------|
+| Sync request APIs removed | ✅ **None** — codebase already awaits params/cookies/headers |
+| middleware → proxy rename | ✅ **None** — no middleware.ts exists |
+| Turbopack as default bundler | ✅ **Low** — no custom webpack config |
+| revalidateTag(tag, profile) | ✅ **None** — no revalidateTag usage |
+| Parallel routes need default.js | ✅ **None** — no @slots |
+| next lint removed | 🟡 **Minor** — migrate `next lint` to ESLint CLI |
+| experimental.optimizePackageImports | 🟡 **Minor** — promote to top-level |
+| next/image defaults changed | 🟡 **Verify** — 13 image files need spot-check |
+| React 19.2 minimum | 🟡 **Minor** — bump react/react-dom |
+| Node.js 20.9+ minimum | ✅ **Compatible** — CI uses Node 20 |
+| Sentry compatibility | 🟡 **Verify** — @sentry/nextjs@10 may need update |
+
+### Pre-Migration Fixes Needed
+
+1. `apps/frontend/src/app/ai/page.tsx` — Add missing `'use client'` directive (uses hooks without it)
+2. Align `@next/bundle-analyzer` (currently ^16.2.10) to same major as next
+3. Remove `ignoreBuildErrors: true` and `ignoreDuringBuilds: true` from next.config.ts
+4. Fix any masked TS/ESLint errors before removing ignore flags
+
+### Recommendation
+
+**DEFER upgrade until Next.js ≥16.3 GA** — the postcss vulnerability (GHSA-qx2v-qp2m-jg93, moderate) affects all next versions from 9.x through 16.3.0-canary.5. Upgrading to 16.2.x provides no security benefit. The vuln is moderate severity and only exploitable via malicious CSS input (not applicable to this app). Re-assess when 16.3 ships with a postcss ≥8.5.10 bump.
 
 ---
 

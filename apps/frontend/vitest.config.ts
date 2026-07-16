@@ -14,6 +14,12 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./test/setup.ts'],
     include: ['test/**/*.{test,spec}.{ts,tsx}'],
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/.next/**',
+      '**/_corrupted_node_modules_stubs/**',
+    ],
     css: false,
     coverage: {
       provider: 'v8',

@@ -1,6 +1,6 @@
-import { SubscribeMessage, WebSocketGateway, OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
+import { SubscribeMessage, WebSocketGateway, OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
-import { Server, Socket } from 'socket.io';
+import { Socket } from 'socket.io';
 
 @WebSocketGateway({
   namespace: '/ws',
@@ -9,12 +9,8 @@ import { Server, Socket } from 'socket.io';
     credentials: true,
   },
 })
-export class ClientPortalGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+export class ClientPortalGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger(ClientPortalGateway.name);
-
-  afterInit(server: Server) {
-    this.logger.log('Client Portal WebSocket Gateway initialized');
-  }
 
   handleConnection(client: Socket) {
     this.logger.log(`Client connected: ${client.id}`);

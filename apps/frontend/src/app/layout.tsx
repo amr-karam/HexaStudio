@@ -5,6 +5,8 @@ import { LayoutShell } from "@/components/LayoutShell";
 import { StructuredData } from "@/components/StructuredData";
 import { CinematicPreloader } from "@/components/ui/overlays/CinematicPreloader";
 import { WebVitals } from "@/components/WebVitals";
+import { AnalyticsInit } from "@/lib/analytics";
+import { Suspense } from "react";
 import "./globals.css";
 
 const inter = Inter({
@@ -86,7 +88,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" dir="ltr" className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable}`}>
       <body className="min-h-screen bg-background text-foreground antialiased">
         <AppProviders>
           <CinematicPreloader />
@@ -98,6 +100,9 @@ export default function RootLayout({
             Skip to content
           </a>
           <LayoutShell>{children}</LayoutShell>
+          <Suspense fallback={null}>
+            <AnalyticsInit />
+          </Suspense>
           <WebVitals />
         </AppProviders>
       </body>
