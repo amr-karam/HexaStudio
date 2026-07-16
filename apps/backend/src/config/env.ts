@@ -26,6 +26,14 @@ const envSchema = z.object({
   // Slack
   SLACK_WEBHOOK_URL: z.string().url().optional(),
 
+  // Notion
+  NOTION_API_KEY: z.string().optional(),
+
+  // Jira
+  JIRA_BASE_URL: z.string().url().optional(),
+  JIRA_EMAIL: z.string().optional(),
+  JIRA_API_TOKEN: z.string().optional(),
+
   // CMS (Strapi)
   CMS_API_TOKEN: z.string().optional(),
 

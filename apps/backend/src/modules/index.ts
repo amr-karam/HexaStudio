@@ -8,6 +8,7 @@ export * from './auth/auth.module';
 export * from './contact/contact.module';
 export * from './faqs/faqs.module';
 export * from './health/health.module';
+export * from './integrations/index';
 export * from './metrics/metrics.module';
 export * from './odoo/odoo.module';
 export * from './portal/portal.module';

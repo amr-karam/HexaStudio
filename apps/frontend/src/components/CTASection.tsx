@@ -55,8 +55,8 @@ export function CTASection() {
           </Link>
         </motion.div>
       </ScrollFadeIn>
-      <div className="absolute bottom-0 left-0 w-px h-32 bg-gradient-to-t from-accent to-transparent opacity-20" />
-      <div className="absolute bottom-0 right-0 w-px h-32 bg-gradient-to-t from-accent to-transparent opacity-20" />
+      <div className="absolute bottom-0 start-0 w-px h-32 bg-gradient-to-t from-accent to-transparent opacity-20" />
+      <div className="absolute bottom-0 end-0 w-px h-32 bg-gradient-to-t from-accent to-transparent opacity-20" />
     </section>
   );
 }
