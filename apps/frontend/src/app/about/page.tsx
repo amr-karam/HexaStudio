@@ -97,7 +97,7 @@ export default function AboutPage() {
             <span className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono">Our Journey</span>
             <h2 className="text-5xl md:text-7xl font-serif font-light text-foreground">Evolution of Vision</h2>
           </div>
-          <div className="relative border-l border-border/30 ml-4 md:ml-0 pl-8 space-y-24">
+          <div className="relative border-s border-border/30 ms-4 md:ms-0 ps-8 space-y-24">
             {milestones.map((m, i) => (
               <motion.div
                 key={m.year}
@@ -107,7 +107,7 @@ export default function AboutPage() {
                 transition={{ duration: 0.8, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
                 className="relative"
               >
-                <div className="absolute -left-[41px] top-0 w-4 h-4 bg-background border-2 border-accent rounded-full z-10" />
+                <div className="absolute -start-[41px] top-0 w-4 h-4 bg-background border-2 border-accent rounded-full z-10" />
                 <span className="text-3xl font-serif italic text-accent block mb-2">{m.year}</span>
                 <h3 className="text-xl font-medium text-foreground mb-3">{m.label}</h3>
                 <p className="text-neutral-500 font-light text-sm leading-relaxed w-full max-w-3xl">

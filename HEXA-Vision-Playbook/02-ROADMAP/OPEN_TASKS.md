@@ -214,7 +214,6 @@ Elevating `apps/frontend` to HEXA Creative Excellence standard. All gates green
 | **S12-P1-001** | Notion Integration — Sync project milestones, task status | M | Webhooks |
 | **S12-P1-002** | Jira/Linear Integration — Bidirectional issue sync | M | Webhooks |
 | **S12-P1-003** | Figma Webhook — Design file change notifications | M | Webhooks |
-| **S12-P1-004** | Translation Workflow — Export/import, reviewer flow for Strapi | L | Strapi i18n |
 | **S12-P1-005** | VR Collaboration — Multi-user design reviews (basic sync) | XL | WebSocket, WebXR |
 | **S12-P1-006** | Currency/Localization — Dynamic pricing per region, tax compliance | M | i18n infra |
 | **S12-P1-007** | Next.js 16 Upgrade Assessment — **DONE: Defer to v16.3+** (see report below) | M | — |

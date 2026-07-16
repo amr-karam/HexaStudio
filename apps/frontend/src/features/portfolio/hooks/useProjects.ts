@@ -5,7 +5,7 @@ import { fetchProjects, fetchProject } from '../lib/fetchProjects';
 export function useProjects() {
   return useQuery({
     queryKey: ['projects'],
-    queryFn: fetchProjects,
+    queryFn: () => fetchProjects(),
   });
 }
 

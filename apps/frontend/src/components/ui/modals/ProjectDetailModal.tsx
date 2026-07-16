@@ -77,7 +77,7 @@ export const ProjectDetailModal = ({ isOpen, onClose, project }: ProjectDetailMo
           >
             <button
               onClick={onClose}
-              className="absolute top-6 right-6 z-20 w-12 h-12 flex items-center justify-center bg-background/50 backdrop-blur-md border border-border/50 text-neutral-400 hover:text-foreground transition-colors duration-300 rounded-full"
+              className="absolute top-6 end-6 z-20 w-12 h-12 flex items-center justify-center bg-background/50 backdrop-blur-md border border-border/50 text-neutral-400 hover:text-foreground transition-colors duration-300 rounded-full"
               aria-label="Close modal"
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">

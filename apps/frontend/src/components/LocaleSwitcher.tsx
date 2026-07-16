@@ -32,12 +32,12 @@ export function LocaleSwitcher() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-1 w-36 rounded-lg border border-white/10 bg-[#1A1A1A] py-1 shadow-xl">
+        <div className="absolute end-0 top-full mt-1 w-36 rounded-lg border border-white/10 bg-[#1A1A1A] py-1 shadow-xl">
           {LOCALE_PATHS.map((l) => (
             <button
               key={l}
               onClick={() => { setLocale(l as Locale); setOpen(false); }}
-              className={`flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs transition-colors ${
+              className={`flex w-full items-center gap-2 px-3 py-1.5 text-start text-xs transition-colors ${
                 locale === l ? 'text-[#D4AF37]' : 'text-white/60 hover:text-white/90'
               }`}
             >

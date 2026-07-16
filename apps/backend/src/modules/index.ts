@@ -1,4 +1,5 @@
 export * from './accounting/accounting.module';
+export * from './mobile/mobile.module';
 export * from './agents/agents.module';
 export * from './assistants/assistants.module';
 export * from './ai/ai.module';

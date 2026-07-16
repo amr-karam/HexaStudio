@@ -85,7 +85,7 @@ export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="prose prose-invert prose-neutral max-w-none"
           >
-            <p className="text-xl md:text-2xl font-light text-neutral-300 leading-relaxed mb-12 italic border-l-2 border-accent pl-6">
+            <p className="text-xl md:text-2xl font-light text-neutral-300 leading-relaxed mb-12 italic border-s-2 border-accent ps-6">
               {article.excerpt}
             </p>
 

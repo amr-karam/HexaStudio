@@ -6,7 +6,7 @@ import { fetchFAQs } from '../lib/fetchFAQs';
 export function useFAQs() {
   return useQuery({
     queryKey: ['faqs'],
-    queryFn: fetchFAQs,
+    queryFn: () => fetchFAQs(),
     staleTime: 60 * 60 * 1000,
   });
 }
