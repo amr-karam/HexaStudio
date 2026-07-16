@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { webhookApi, type WebhookConfig, type CreateWebhookDto, type UpdateWebhookDto } from '@/features/integrations/api';
+import { webhookApi, type WebhookConfig, type CreateWebhookDto } from '@/features/integrations/api';
 import { toast } from 'sonner';
 
 const EVENT_OPTIONS = [
@@ -292,6 +292,12 @@ export default function IntegrationsPage() {
             onDelete={() => handleDelete(w.id)}
           />
         ))}
+      </div>
+
+      <h2 className="mt-12 mb-4 text-lg font-medium text-white">External Tools</h2>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <NotionPanel />
+        <JiraPanel />
       </div>
     </div>
   );

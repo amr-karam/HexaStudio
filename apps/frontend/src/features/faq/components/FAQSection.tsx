@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ScrollFadeIn } from '@/components/ScrollFadeIn';
 import { RadialGlow } from '@/components/animation';
-import { cn } from '@/lib/utils';
 import { useFAQs } from '@/features/faq/hooks/useFAQs';
 import { useLocale } from '@/i18n/LocaleProvider';
 import { FAQResponse } from '@hexastudio/types';
