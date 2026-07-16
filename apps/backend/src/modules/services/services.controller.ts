@@ -10,15 +10,20 @@ export class ServicesController {
   async findAll(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
+    @Query('locale') locale?: string,
   ): Promise<ServiceResponse> {
     return this.servicesService.getAllServices(
       page ? parseInt(page, 10) : 1,
       limit ? parseInt(limit, 10) : 20,
+      locale,
     );
   }
 
   @Get(':slug')
-  async findOne(@Param('slug') slug: string): Promise<Service> {
-    return this.servicesService.getServiceBySlug(slug);
+  async findOne(
+    @Param('slug') slug: string,
+    @Query('locale') locale?: string,
+  ): Promise<Service> {
+    return this.servicesService.getServiceBySlug(slug, locale);
   }
 }

@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/inputs/Input';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { isValidEmail } from '@hexastudio/utils';
 import { cn } from '@/lib/utils';
+import { FAQSection } from '@/features/faq/components/FAQSection';
 
 interface FormErrors {
   name?: string;
@@ -192,6 +193,8 @@ export default function ContactPage() {
           <div className="h-12 w-[1px] bg-gradient-to-b from-neutral-600 to-transparent group-hover:from-accent transition-colors duration-500" />
         </Link>
       </section>
+
+      <FAQSection />
     </div>
   );
 }

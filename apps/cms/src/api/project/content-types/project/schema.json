@@ -1,0 +1,106 @@
+{
+  "collectionName": "projects",
+  "info": {
+    "singularName": "project",
+    "pluralName": "projects",
+    "displayName": "Project",
+    "description": "Active client projects with milestones and phases"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "required": true
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["planning", "in-progress", "review", "completed", "on-hold"],
+      "default": "planning",
+      "required": true
+    },
+    "priority": {
+      "type": "enumeration",
+      "enum": ["low", "medium", "high", "critical"],
+      "default": "medium"
+    },
+    "client": {
+      "type": "string"
+    },
+    "clientEmail": {
+      "type": "email"
+    },
+    "coverImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "gallery": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": ["images"]
+    },
+    "modelUrl": {
+      "type": "string"
+    },
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::category.category"
+    },
+    "services": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::service.service"
+    },
+    "startDate": {
+      "type": "date"
+    },
+    "endDate": {
+      "type": "date"
+    },
+    "budget": {
+      "type": "decimal"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "location": {
+      "type": "string"
+    },
+    "area": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "json"
+    },
+    "order": {
+      "type": "integer",
+      "default": 0
+    },
+    "seoTitle": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "seoDescription": {
+      "type": "text",
+      "maxLength": 160
+    }
+  }
+}

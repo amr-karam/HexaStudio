@@ -9,6 +9,11 @@
   "options": {
     "draftAndPublish": true
   },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
   "attributes": {
     "title": {
       "type": "string",
@@ -67,6 +72,14 @@
     "order": {
       "type": "integer",
       "default": 0
+    },
+    "seoTitle": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "seoDescription": {
+      "type": "text",
+      "maxLength": 160
     }
   }
 }

@@ -13,14 +13,18 @@ async function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutM
   }
 }
 
-export async function fetchProjects(): Promise<ProjectResponse> {
+export async function fetchProjects(locale?: string): Promise<ProjectResponse> {
   try {
     // Use internal Docker DNS for server-side calls to avoid loopback issues
     const baseUrl = typeof window === 'undefined'
       ? (process.env.API_URL || 'http://backend:4000')
       : API_BASE_URL;
 
-    const response = await fetchWithTimeout(`${baseUrl}/api/projects`, {
+    const params = new URLSearchParams();
+    if (locale) params.set('locale', locale);
+    const query = params.toString();
+
+    const response = await fetchWithTimeout(`${baseUrl}/api/projects${query ? `?${query}` : ''}`, {
       next: { revalidate: 3600 },
     });
 
@@ -36,13 +40,17 @@ export async function fetchProjects(): Promise<ProjectResponse> {
   }
 }
 
-export async function fetchProject(slug: string): Promise<Project | null> {
+export async function fetchProject(slug: string, locale?: string): Promise<Project | null> {
   try {
     const baseUrl = typeof window === 'undefined'
       ? (process.env.API_URL || 'http://backend:4000')
       : API_BASE_URL;
 
-    const response = await fetchWithTimeout(`${baseUrl}/api/projects/${slug}`, {
+    const params = new URLSearchParams();
+    if (locale) params.set('locale', locale);
+    const query = params.toString();
+
+    const response = await fetchWithTimeout(`${baseUrl}/api/projects/${slug}${query ? `?${query}` : ''}`, {
       next: { revalidate: 3600 },
     });
 

@@ -5,37 +5,44 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ScrollFadeIn } from '@/components/ScrollFadeIn';
 import { RadialGlow } from '@/components/animation';
 import { cn } from '@/lib/utils';
+import { useFeaturedTestimonials } from '@/features/testimonials/hooks/useTestimonials';
+import { useLocale } from '@/i18n/LocaleProvider';
 
-const testimonials = [
+const fallbackTestimonials = [
   {
-    quote:
-      'HexaStudio transformed our architectural presentation. The interactive 3D walkthrough allowed our clients to experience the space before construction began — it was a game-changer for approvals.',
-    author: 'James Crawford',
-    role: 'Principal Architect, Crawford Associates',
+    content: 'HexaStudio transformed our architectural presentation. The interactive 3D walkthrough allowed our clients to experience the space before construction began — it was a game-changer for approvals.',
+    clientName: 'James Crawford',
+    clientRole: 'Principal Architect, Crawford Associates',
   },
   {
-    quote:
-      'The level of detail and cinematic quality exceeded our expectations. Every material, every shadow was meticulously crafted. This is visualization at its finest.',
-    author: 'Elena Voss',
-    role: 'Design Director, Voss Architecture',
+    content: 'The level of detail and cinematic quality exceeded our expectations. Every material, every shadow was meticulously crafted. This is visualization at its finest.',
+    clientName: 'Elena Voss',
+    clientRole: 'Design Director, Voss Architecture',
   },
   {
-    quote:
-      'We have worked with many visualization studios, but none matched the technical precision and artistic vision that HexaStudio brings to the table.',
-    author: 'Marcus Chen',
-    role: 'Founder, Chen Development Group',
+    content: 'We have worked with many visualization studios, but none matched the technical precision and artistic vision that HexaStudio brings to the table.',
+    clientName: 'Marcus Chen',
+    clientRole: 'Founder, Chen Development Group',
   },
 ];
 
 export const TestimonialsSection = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const { t } = useLocale();
+  const { data } = useFeaturedTestimonials();
+
+  const testimonials = (data && data.length > 0 ? data : fallbackTestimonials).map((item) => ({
+    quote: item.content,
+    author: item.clientName,
+    role: item.clientRole || '',
+  }));
 
   useEffect(() => {
     const timer = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % testimonials.length);
     }, 6000);
     return () => clearInterval(timer);
-  }, []);
+  }, [testimonials.length]);
 
   return (
     <section className="px-8 md:px-16 py-32 bg-surface border-y border-border/50 overflow-hidden">
@@ -44,7 +51,7 @@ export const TestimonialsSection = () => {
       <div className="w-full">
         <ScrollFadeIn className="mb-24 text-center">
           <span className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block">
-            Client Testimonials
+            {t('home.stats.clients')}
           </span>
           <h2 className="text-5xl md:text-7xl font-serif font-light tracking-tight text-foreground leading-tight">
             What Our Partners <span className="italic text-accent">Say</span>

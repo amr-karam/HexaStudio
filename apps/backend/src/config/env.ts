@@ -23,6 +23,12 @@ const envSchema = z.object({
   ODOO_PASSWORD: z.string().min(1, 'ODOO_PASSWORD is required'),
   ODOO_WEBHOOK_SECRET: z.string().min(32, 'ODOO_WEBHOOK_SECRET must be at least 32 characters').optional(),
 
+  // Slack
+  SLACK_WEBHOOK_URL: z.string().url().optional(),
+
+  // CMS (Strapi)
+  CMS_API_TOKEN: z.string().optional(),
+
   // Redis
   REDIS_HOST: z.string().default('redis'),
   REDIS_PORT: z.coerce.number().default(6379),
@@ -47,6 +53,7 @@ const envSchema = z.object({
   PORT: z.coerce.number().default(4000),
 
   SENTRY_DSN: z.string().url().or(z.literal('')).optional().transform(v => v === '' ? undefined : v),
+  SENTRY_RELEASE: z.string().optional(),
   CORS_ORIGINS: z.string().optional(),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 });

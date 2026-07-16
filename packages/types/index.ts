@@ -161,3 +161,108 @@ export interface SemanticSearchResponse {
   results: VectorEmbedding[];
   total: number;
 }
+
+export interface Testimonial {
+  id: string;
+  clientName: string;
+  clientCompany?: string;
+  clientRole?: string;
+  content: string;
+  rating: number;
+  projectReference?: string;
+  avatar?: string;
+  isFeatured: boolean;
+  isPublished: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TestimonialResponse {
+  testimonials: Testimonial[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export interface TeamMember {
+  id: string;
+  name: string;
+  slug: string;
+  role: string;
+  department?: string;
+  bio?: string;
+  avatar?: string;
+  email?: string;
+  linkedIn?: string;
+  skills: string[];
+  order: number;
+  isPublished: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TeamMemberResponse {
+  teamMembers: TeamMember[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export interface FAQ {
+  id: string;
+  question: string;
+  answer: RichTextBlock[];
+  category?: string;
+  order: number;
+  isPublished: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface FAQResponse {
+  faqs: FAQ[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export type WebhookEvent =
+  | 'approval:action'
+  | 'annotation:add'
+  | 'project:update'
+  | 'project:create'
+  | 'phase:submit'
+  | 'phase:approve'
+  | 'phase:reject';
+
+export interface WebhookConfig {
+  id: string;
+  name: string;
+  url: string;
+  events: WebhookEvent[];
+  secret?: string;
+  active: boolean;
+  headers?: Record<string, string>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateWebhookDto {
+  name: string;
+  url: string;
+  events: WebhookEvent[];
+  secret?: string;
+  headers?: Record<string, string>;
+}
+
+export interface UpdateWebhookDto {
+  name?: string;
+  url?: string;
+  events?: WebhookEvent[];
+  secret?: string;
+  active?: boolean;
+  headers?: Record<string, string>;
+}

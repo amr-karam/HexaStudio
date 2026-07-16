@@ -1,54 +1,59 @@
-# Next Sprint: Platform Expansion & Mobile API
+# Next Sprint: Content Pipeline & Advanced Immersive
 
-**Sprint ID:** S-011 | **Focus:** Mobile API, Client Portal v2, VR/AR, i18n | **Status:** PLANNING
+**Sprint ID:** S-013 | **Focus:** Strapi Localization, AR Placement, VR Collaboration, Integration Hub | **Status:** PLANNING
 
 ## 1. SPRINT OBJECTIVE
 
-Expand the HEXA platform beyond web: deliver mobile-first API, next-gen client collaboration portal, immersive VR/AR experiences, and global i18n support.
+Complete Sprint 12 carry-overs: Strapi content localization pipeline, real-space AR model placement, multi-user VR collaboration, and the centralized webhook management dashboard.
 
 ## 2. HIGH-PRIORITY DELIVERABLES
 
-### 📱 Mobile API & Client Portal v2
-- [ ] **Mobile API v1** — React Native/Expo endpoints for projects, 3D models, auth
-- [ ] **Client Portal v2** — Real-time collaboration, annotations, approval workflows
-- [ ] **WebSocket Infrastructure** — Real-time updates, presence, conflict resolution
+### 🌐 Content Pipeline (Strapi)
+- [ ] **Strapi i18n Plugin** — Enable and configure content localization
+- [ ] **Translation Workflow** — Export/import translation files, reviewer flow
+- [ ] **Currency/Localization** — Dynamic pricing per region, tax compliance
+- [ ] **RTL Content Audit** — Verify all CMS content renders correctly in RTL
 
-### 🌐 Global Reach
-- [ ] **i18n Framework** — EN/ES/FR/DE/AR/JA/KO/ZH (RTL support for AR)
-- [ ] **Content Pipeline** — Strapi localization, translation management
-- [ ] **Currency/Localization** — Dynamic pricing, regional compliance
+### 🥽 Immersive Experiences (Advanced)
+- [ ] **AR Model Placement** — Place architectural models in real space via phone camera (hit-test API)
+- [ ] **VR Collaboration** — Multi-user design reviews in VR (basic sync)
+- [ ] **Mobile AR SDK** — Expo AR module for native AR placement
 
-### 🥽 Immersive Experiences
-- [ ] **WebXR Viewer** — WebXR project walkthroughs (AR on mobile, VR on headset)
-- [ ] **AR Model Placement** — Place architectural models in real space
-- [ ] **VR Collaboration** — Multi-user design reviews in VR
+### 🔗 Integration Hub
+- [ ] **Webhook CRUD API** — Centralized webhook URL management dashboard
+- [ ] **Notion Integration** — Sync project milestones, task status
+- [ ] **Jira/Linear Integration** — Bidirectional issue sync
+- [ ] **Figma Webhook** — Design file change notifications
 
-### 🔗 Integrations & Analytics
-- [ ] **Third-party Integrations** — Slack, Notion, Linear, Jira, Figma webhooks
-- [ ] **Advanced Analytics** — Custom dashboards, export, scheduled reports
-- [ ] **PostHog/GA4 Migration** — Event tracking, funnel analysis
+### 📊 Analytics Advanced
+- [ ] **Advanced Analytics** — Custom dashboard builder, CSV export, scheduled reports
+- [ ] **Sentry Release Health** — Release tracking, error rate alerts, session replay
+
+### 🧹 Technical Debt
+- [ ] **Next.js 16 Upgrade Assessment** — Required for postcss vuln fix (24 remaining vulns)
+- [ ] **Backend Lint** — Fix remaining 21 `no-explicit-any` in gemini.service.ts and assistants.controller.ts
+- [ ] **Backend Test Recovery** — Resolve `_corrupted_node_modules_stubs/` NTFS issue blocking vitest
 
 ## 3. SUCCESS CRITERIA
 
 | Metric | Target |
 |--------|--------|
-| Mobile API Response Time | <200ms p95 |
-| i18n Coverage | 8 languages, 100% UI strings |
-| WebXR Session Duration | >5 min average |
-| API Response Time (Mobile) | <200ms p95 |
-| Integration Webhook Success | >99.9% |
+| i18n Coverage | 8 languages, 100% UI + CMS strings |
+| AR Placement Accuracy | <5cm error in good lighting |
+| Backend Lint | 0 errors |
+| npm Audit Vulns | 0 (or documented exceptions) |
 
 ## 4. DEPENDENCIES
 
-- S-010 AI Agents (for mobile assistant features)
-- WebXR browser support (Chrome/Android, Safari/iOS)
-- Strapi i18n plugin + translation workflow
-- React Native / Expo SDK 51+
+- Strapi i18n plugin + translation workflow configuration
+- WebXR browser support (Chrome/Android, Safari/iOS 17+)
+- React Native / Expo SDK 51+ for mobile AR
+- PostHog or GA4 project credentials
 
 ## 5. RELEASE READINESS
 
-**v1.4.0 Target:** 2026-08-15
+**v1.6.0 Target:** 2026-09-15
 
 ---
 
-*"From intelligence to omnipresence."*
+*"From ecosystem to infrastructure."*

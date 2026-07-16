@@ -4,7 +4,7 @@ import { useXRInputSourceStates, useXREvent } from '@react-three/xr';
 import { useXRStore } from '../store/xr-store';
 
 export function useXRInteraction() {
-  const { status, setControllerConnected } = useXRStore();
+  const { status, setControllerConnected, setPlacementPhase } = useXRStore();
   const inputStates = useXRInputSourceStates();
 
   const isInSession = status === 'active';
@@ -14,7 +14,12 @@ export function useXRInteraction() {
     setControllerConnected(true);
   }
 
-  useXREvent('select', () => {});
+  useXREvent('select', () => {
+    const phase = useXRStore.getState().placementPhase;
+    if (phase === 'placing') {
+      setPlacementPhase('placed');
+    }
+  });
 
   useXREvent('squeeze', () => {});
 

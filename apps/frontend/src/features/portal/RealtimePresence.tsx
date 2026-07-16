@@ -1,7 +1,5 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-
 interface RealtimePresenceProps {
   users: string[];
   isConnected: boolean;

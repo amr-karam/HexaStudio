@@ -7,6 +7,104 @@ import { LightingDesignerService } from './services/lighting-designer.service';
 import { MaterialRecommenderService } from './services/material-recommender.service';
 import { PredictiveAnalyticsService } from './services/predictive-analytics.service';
 
+interface DashboardData {
+  projects: { total: number; active: number; completed: number; atRisk: number };
+  revenue: { current: number; target: number; growth: number };
+  pipeline: { leads: number; qualified: number; proposals: number; conversion: number };
+  team: { utilization: number; capacity: number };
+}
+
+interface ExecutiveSummaryBody {
+  dashboardData: DashboardData;
+  period: string;
+}
+
+interface StrategicRiskBody {
+  revenueTrend: number[];
+  projectDelays: number;
+  clientChurn: number;
+  teamTurnover: number;
+  marketSignals: string[];
+}
+
+interface BoardReportBody {
+  quarter: string;
+  kpis: Record<string, number>;
+  initiatives: { name: string; status: string; progress: number }[];
+}
+
+interface AskQuestionBody {
+  question: string;
+  context: { dashboardData: Record<string, unknown>; recentDecisions: string[] };
+}
+
+interface QualifyLeadBody {
+  company: string;
+  contact: string;
+  budget: string;
+  timeline: string;
+  requirements: string;
+}
+
+interface GenerateProposalBody {
+  clientName: string;
+  projectType: string;
+  scope: string[];
+  timeline: string;
+  budget: string;
+}
+
+interface PlanSprintBody {
+  teamCapacity: number;
+  backlog: string[];
+  dependencies: Record<string, string[]>;
+  velocity: number;
+}
+
+interface PredictRiskBody {
+  projectData: { timeline: string; team: number; complexity: number; budget: number };
+}
+
+interface DesignLightingBody {
+  projectType: string;
+  style: string;
+  space: string;
+  mood: string;
+  timeOfDay: string;
+  constraints?: string[];
+}
+
+interface RecommendMaterialsBody {
+  projectType: string;
+  style: string;
+  referenceImages?: string[];
+  sustainability?: boolean;
+}
+
+interface ForecastTimelineBody {
+  projectType: string;
+  complexity: number;
+  teamSize: number;
+  scopeItems: number;
+  historicalVelocity: number;
+}
+
+interface AssessRisksBody {
+  projectData: { timeline: string; team: number; complexity: number; budget: number; scopeChanges: number; dependencies: string[] };
+}
+
+interface OptimizeResourcesBody {
+  projects: Array<{ id: string; team: number; deadline: string; priority: number }>;
+  availableTeam: number;
+}
+
+interface ForecastBudgetBody {
+  projectType: string;
+  scopeItems: string[];
+  timeline: string;
+  teamRate: number;
+}
+
 @Controller({ path: 'assistants', version: VERSION_NEUTRAL })
 export class AssistantsController {
   constructor(
@@ -41,51 +139,51 @@ export class AssistantsController {
 
   @Post('ceo/executive-summary')
   async getExecutiveSummary(
-    @Body() body: { dashboardData: any; period: string },
+    @Body() body: ExecutiveSummaryBody,
   ) {
     return this.ceoAssistant.generateExecutiveSummary(body.dashboardData, body.period);
   }
 
   @Post('ceo/strategic-risks')
-  async getStrategicRisks(@Body() body: any) {
+  async getStrategicRisks(@Body() body: StrategicRiskBody) {
     return this.ceoAssistant.identifyStrategicRisks(body);
   }
 
   @Post('ceo/board-report')
-  async getBoardReport(@Body() body: { quarter: string; kpis: any; initiatives: any[] }) {
+  async getBoardReport(@Body() body: BoardReportBody) {
     return this.ceoAssistant.generateBoardReport(body.quarter, body.kpis, body.initiatives);
   }
 
   @Post('ceo/question')
-  async askQuestion(@Body() body: { question: string; context: any }) {
+  async askQuestion(@Body() body: AskQuestionBody) {
     return this.ceoAssistant.answerStrategicQuestion(body.question, body.context);
   }
 
   // Sales Assistant endpoints
   @Post('sales/qualify-lead')
-  async qualifyLead(@Body() body: any) {
+  async qualifyLead(@Body() body: QualifyLeadBody) {
     return this.salesAssistant.qualifyLead(body.company, body.contact, body.budget, body.timeline, body.requirements);
   }
 
   @Post('sales/generate-proposal')
-  async generateProposal(@Body() body: any) {
+  async generateProposal(@Body() body: GenerateProposalBody) {
     return this.salesAssistant.generateProposal(body.clientName, body.projectType, body.scope, body.timeline, body.budget);
   }
 
   // PM Assistant endpoints
   @Post('pm/plan-sprint')
-  async planSprint(@Body() body: any) {
+  async planSprint(@Body() body: PlanSprintBody) {
     return this.pmAssistant.planSprint(body.teamCapacity, body.backlog, body.dependencies, body.velocity);
   }
 
   @Post('pm/predict-risk')
-  async predictRisk(@Body() body: any) {
+  async predictRisk(@Body() body: PredictRiskBody) {
     return this.pmAssistant.predictRisk(body.projectData);
   }
 
   // Generative Visualization endpoints
   @Post('visualization/lighting-design')
-  async designLighting(@Body() body: any) {
+  async designLighting(@Body() body: DesignLightingBody) {
     return this.lightingDesigner.designLighting(
       body.projectType,
       body.style,
@@ -102,7 +200,7 @@ export class AssistantsController {
   }
 
   @Post('visualization/material-recommendations')
-  async recommendMaterials(@Body() body: any) {
+  async recommendMaterials(@Body() body: RecommendMaterialsBody) {
     return this.materialRecommender.recommendMaterials(
       body.projectType,
       body.style,
@@ -118,7 +216,7 @@ export class AssistantsController {
 
   // Predictive Analytics endpoints
   @Post('analytics/forecast-timeline')
-  async forecastTimeline(@Body() body: any) {
+  async forecastTimeline(@Body() body: ForecastTimelineBody) {
     return this.predictiveAnalytics.forecastTimeline(
       body.projectType,
       body.complexity,
@@ -129,17 +227,17 @@ export class AssistantsController {
   }
 
   @Post('analytics/assess-risks')
-  async assessRisks(@Body() body: any) {
+  async assessRisks(@Body() body: AssessRisksBody) {
     return this.predictiveAnalytics.assessRisks(body.projectData);
   }
 
   @Post('analytics/optimize-resources')
-  async optimizeResources(@Body() body: any) {
+  async optimizeResources(@Body() body: OptimizeResourcesBody) {
     return this.predictiveAnalytics.optimizeResources(body.projects, body.availableTeam);
   }
 
   @Post('analytics/forecast-budget')
-  async forecastBudget(@Body() body: any) {
+  async forecastBudget(@Body() body: ForecastBudgetBody) {
     return this.predictiveAnalytics.forecastBudget(
       body.projectType,
       body.scopeItems,

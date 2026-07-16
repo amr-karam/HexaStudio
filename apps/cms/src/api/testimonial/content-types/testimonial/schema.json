@@ -1,0 +1,51 @@
+{
+  "collectionName": "testimonials",
+  "info": {
+    "singularName": "testimonial",
+    "pluralName": "testimonials",
+    "displayName": "Testimonial",
+    "description": "Client testimonials and reviews"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "clientName": {
+      "type": "string",
+      "required": true
+    },
+    "clientTitle": {
+      "type": "string"
+    },
+    "clientCompany": {
+      "type": "string"
+    },
+    "clientAvatar": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "content": {
+      "type": "text",
+      "required": true
+    },
+    "rating": {
+      "type": "integer",
+      "min": 1,
+      "max": 5
+    },
+    "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::portfolio.portfolio"
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
+    },
+    "order": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

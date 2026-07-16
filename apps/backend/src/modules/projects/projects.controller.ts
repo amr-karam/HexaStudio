@@ -14,10 +14,12 @@ export class ProjectsController {
   async findAll(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
+    @Query('locale') locale?: string,
   ): Promise<ProjectResponse> {
     return this.projectsService.getAllProjects(
       page ? parseInt(page, 10) : 1,
       limit ? parseInt(limit, 10) : 20,
+      locale,
     );
   }
 
@@ -30,7 +32,10 @@ export class ProjectsController {
   }
 
   @Get(':slug')
-  async findOne(@Param('slug') slug: string): Promise<Project> {
-    return this.projectsService.getProjectBySlug(slug);
+  async findOne(
+    @Param('slug') slug: string,
+    @Query('locale') locale?: string,
+  ): Promise<Project> {
+    return this.projectsService.getProjectBySlug(slug, locale);
   }
 }

@@ -1,5 +1,9 @@
+import { en } from './en';
+
 export const ar = {
+  ...en,
   common: {
+    ...en.common,
     loading: 'جاري التحميل...',
     error: 'حدث خطأ',
     retry: 'إعادة المحاولة',
@@ -20,6 +24,7 @@ export const ar = {
     explore: 'استكشف',
   },
   nav: {
+    ...en.nav,
     home: 'الرئيسية',
     about: 'عن الشركة',
     services: 'الخدمات',
@@ -30,12 +35,15 @@ export const ar = {
     admin: 'الإدارة',
   },
   home: {
+    ...en.home,
     hero: {
+      ...en.home.hero,
       title: 'حيث تلتقي الرؤية بالواقع',
       subtitle: 'تصور معماري ثلاثي الأبعاد مدعوم بالذكاء الاصطناعي',
       cta: 'استكشف أعمالنا',
     },
     stats: {
+      ...en.home.stats,
       projects: 'مشروع منجز',
       clients: 'عميل سعيد',
       years: 'سنوات خبرة',
@@ -43,10 +51,12 @@ export const ar = {
     },
   },
   services: {
+    ...en.services,
     title: 'خدماتنا',
     subtitle: 'حلول متكاملة للتصور المعماري',
   },
   portal: {
+    ...en.portal,
     title: 'بوابة العميل',
     login: 'تسجيل الدخول',
     dashboard: 'لوحة المشاريع',
@@ -56,8 +66,22 @@ export const ar = {
     approvals: 'الموافقات',
   },
   footer: {
+    ...en.footer,
     rights: 'جميع الحقوق محفوظة.',
     privacy: 'سياسة الخصوصية',
     terms: 'شروط الخدمة',
+    cta: 'لديك مشروع في ذهنك؟ دعنا نبدع شيئاً استثنائياً.',
+    startProject: 'ابدأ مشروعك',
+    navigation: 'التنقل',
+    legal: 'قانوني',
+    connect: 'تواصل',
+    tagline: 'مساحات حية. مُتصوَّرة. تجارب معمارية ثلاثية الأبعاد غامرة.',
+  },
+  navbar: {
+    portfolio: 'أعمالنا',
+    services: 'الخدمات',
+    blog: 'المدونة',
+    studio: 'الاستوديو',
+    contact: 'اتصل بنا',
   },
 };

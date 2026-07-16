@@ -1,4 +1,11 @@
 export default ({ env }) => ({
+  i18n: {
+    enabled: true,
+    config: {
+      defaultLocale: "en",
+      locales: ["en", "ar", "es", "fr", "de", "ja", "ko", "zh"],
+    },
+  },
   meilisearch: {
     config: {
       host: env("MEILISEARCH_HOST", "http://localhost:7700"),
