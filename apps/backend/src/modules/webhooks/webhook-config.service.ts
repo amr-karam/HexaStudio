@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-import { WebhookConfig, CreateWebhookDto, UpdateWebhookDto, WebhookEvent } from '@hexastudio/types';
+import type { WebhookConfig, CreateWebhookDto, UpdateWebhookDto, WebhookEvent } from '@hexastudio/types';
 
 @Injectable()
 export class WebhookConfigService {

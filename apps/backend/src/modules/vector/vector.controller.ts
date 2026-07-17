@@ -5,7 +5,7 @@ import { RecommendationService, SimilarProjectResult } from './recommendation.se
 import { AutoTagService } from '../ai/auto-tag.service';
 import { LightingService } from '../ai/lighting.service';
 import { ProjectsService } from '../projects/projects.service';
-import { SemanticSearchRequest, SemanticSearchResponse } from '@hexastudio/types';
+import type { SemanticSearchRequest, SemanticSearchResponse } from '@hexastudio/types';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller({ path: 'vector', version: VERSION_NEUTRAL })

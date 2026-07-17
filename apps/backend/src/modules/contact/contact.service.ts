@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ContactMessage } from '@hexastudio/types';
+import type { ContactMessage } from '@hexastudio/types';
 import { OdooService } from '../odoo/odoo.service';
 import { RedisService } from '../storage/redis.service';
 

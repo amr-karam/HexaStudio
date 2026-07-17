@@ -1,7 +1,7 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { EventBus } from '../realtime/event-bus.service';
 import { RedisService } from '../storage/redis.service';
-import { OdooWebhookPayload } from '@hexastudio/types';
+import type { OdooWebhookPayload } from '@hexastudio/types';
 
 /**
  * Consumes Odoo domain events from the EventBus and keeps derived caches fresh.

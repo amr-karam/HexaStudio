@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Query, VERSION_NEUTRAL } from '@nestjs/common';
 import { TeamMembersService } from './team-members.service';
-import { TeamMember, TeamMemberResponse } from '@hexastudio/types';
+import type { TeamMember, TeamMemberResponse } from '@hexastudio/types';
 
 @Controller({ path: 'team-members', version: VERSION_NEUTRAL })
 export class TeamMembersController {

@@ -36,22 +36,28 @@ class HexaWebhook(models.Model):
         }
         body = json.dumps(payload, default=str).encode("utf-8")
         for config in configs:
+            signature = hmac.new(
+                config.secret.encode("utf-8"), body, hashlib.sha256
+            ).hexdigest()
+            log = self.env["hexa.webhook.log"].create(
+                {
+                    "config_id": config.id,
+                    "model": model,
+                    "record_id": record.id,
+                    "action": action,
+                    "state": "pending",
+                }
+            )
             try:
-                signature = hmac.new(
-                    config.secret.encode("utf-8"), body, hashlib.sha256
-                ).hexdigest()
-                self.env["hexa.webhook.log"].create(
+                status, response_body = self._post(config.url, body, signature)
+                log.write(
                     {
-                        "config_id": config.id,
-                        "model": model,
-                        "record_id": record.id,
-                        "action": action,
-                        "state": "pending",
+                        "state": "success",
+                        "response": f"HTTP {status}: {response_body}",
                     }
                 )
-                # Fire-and-forget: rely on Odoo's out-of-band HTTP via urllib.
-                self._post(config.url, body, signature)
             except Exception as exc:  # noqa: BLE001
+                log.write({"state": "failed", "response": str(exc)})
                 _logger.error("HEXA webhook dispatch failed: %s", exc)
 
     @api.model
@@ -63,7 +69,11 @@ class HexaWebhook(models.Model):
             signature = hmac.new(
                 config.secret.encode("utf-8"), body, hashlib.sha256
             ).hexdigest()
-            self._post(config.url, body, signature)
+            try:
+                status, response_body = self._post(config.url, body, signature)
+                _logger.info("HEXA sync ping to %s: HTTP %s", config.name, status)
+            except Exception as exc:
+                _logger.error("HEXA sync ping failed: %s", exc)
 
     def _post(self, url, body, signature):
         import urllib.request
@@ -76,7 +86,8 @@ class HexaWebhook(models.Model):
                 "X-Odoo-Signature": signature,
             },
         )
-        urllib.request.urlopen(req, timeout=10)
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            return resp.status, resp.read().decode("utf-8", errors="replace")
 
     def _serialize(self, record):
         try:

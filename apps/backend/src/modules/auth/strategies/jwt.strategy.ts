@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
 import { AuthService } from '../auth.service';
-import { User } from '@hexastudio/types';
+import type { User } from '@hexastudio/types';
 import { getEnv } from '../../../config/env';
 
 @Injectable()

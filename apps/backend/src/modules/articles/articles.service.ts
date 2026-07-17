@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { Article, ArticleResponse, Category, RichTextBlock } from '@hexastudio/types';
+import type { Article, ArticleResponse, Category, RichTextBlock } from '@hexastudio/types';
 import { getEnv } from '../../config/env';
 
 interface StrapiRelation {

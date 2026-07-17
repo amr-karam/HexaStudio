@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Query, VERSION_NEUTRAL } from '@nestjs/common';
 import { TestimonialsService } from './testimonials.service';
-import { Testimonial, TestimonialResponse } from '@hexastudio/types';
+import type { Testimonial, TestimonialResponse } from '@hexastudio/types';
 
 @Controller({ path: 'testimonials', version: VERSION_NEUTRAL })
 export class TestimonialsController {

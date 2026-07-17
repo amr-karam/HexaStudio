@@ -2,7 +2,7 @@ import { Injectable, Logger, OnModuleInit, Inject, forwardRef } from '@nestjs/co
 import { ConfigService } from '@nestjs/config';
 import { QdrantClient } from '@qdrant/js-client-rest';
 import { Env } from '../../config/env';
-import { VectorEmbedding, SemanticSearchRequest, SemanticSearchResponse } from '@hexastudio/types';
+import type { VectorEmbedding, SemanticSearchRequest, SemanticSearchResponse } from '@hexastudio/types';
 import { EmbeddingService } from '../ai/embedding.service';
 
 @Injectable()

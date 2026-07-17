@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { Project, ProjectResponse, Category } from '@hexastudio/types';
+import type { Project, ProjectResponse, Category } from '@hexastudio/types';
 import { getEnv } from '../../config/env';
 import { OdooService } from '../odoo/odoo.service';
 
@@ -79,6 +79,34 @@ export class ProjectsService {
         const status = stageMap.get(project.slug);
         if (status) project.status = status;
       }
+
+      // Batch milestone progress in a single query (total + completed per project).
+      const milestones = await this.odooService.searchRead(
+        'project.milestone',
+        [['x_hexa_client_viewable', '=', true]],
+        ['id', 'project_id', 'completed']
+      );
+      const msByProject = new Map<number, { total: number; completed: number }>();
+      for (const ms of milestones) {
+        const pid = (ms.project_id as [number, string])?.[0];
+        if (!pid) continue;
+        const entry = msByProject.get(pid) ?? { total: 0, completed: 0 };
+        entry.total += 1;
+        if (ms.completed) entry.completed += 1;
+        msByProject.set(pid, entry);
+      }
+      const slugToPid = new Map<string, number>();
+      for (const row of odooData) {
+        const pid = (row.id as number) ?? 0;
+        const slug = row.x_slug as string;
+        if (slug && pid) slugToPid.set(slug, pid);
+      }
+      for (const project of projects) {
+        const pid = slugToPid.get(project.slug);
+        if (pid && msByProject.has(pid)) {
+          project.milestones = msByProject.get(pid)!;
+        }
+      }
     } catch (error) {
       const msg = 'Failed to batch-enrich projects with Odoo data';
       this.logger.warn({ msg, error: (error as Error).message });
@@ -119,13 +147,22 @@ export class ProjectsService {
       const odooData = await this.odooService.searchRead(
         'project.project',
         [['x_slug', '=', slug]],
-        ['stage_id']
+        ['id', 'stage_id']
       );
 
       if (odooData && odooData.length > 0) {
         // In Odoo, stage_id is often [id, name]
         const stage = odooData[0].stage_id;
         project.status = Array.isArray(stage) ? String(stage[1]) : String((stage as Record<string, unknown>)?.name ?? '');
+
+        const pid = odooData[0].id as number;
+        const milestones = await this.odooService.searchRead(
+          'project.milestone',
+          [['project_id', '=', pid], ['x_hexa_client_viewable', '=', true]],
+          ['id', 'completed']
+        );
+        const completed = milestones.filter((m) => m.completed).length;
+        project.milestones = { total: milestones.length, completed };
       }
     } catch (error) {
       const msg = `Failed to enrich project ${slug} with Odoo data`;
