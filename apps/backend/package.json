@@ -18,7 +18,7 @@
     "@hexastudio/types": "*",
     "@hexastudio/utils": "*",
     "@nestjs/axios": "^4.0.1",
-    "@nestjs/common": "^10.4.15",
+    "@nestjs/common": "^11.1.28",
     "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.1.28",
     "@nestjs/jwt": "^10.2.0",
@@ -51,7 +51,7 @@
   "devDependencies": {
     "@nestjs/cli": "^11.0.24",
     "@nestjs/schematics": "^11.1.0",
-    "@nestjs/testing": "^10.4.15",
+    "@nestjs/testing": "^11.1.28",
     "@types/express": "^5.0.0",
     "@types/node": "^22.20.0",
     "@types/passport-jwt": "^4.0.1",
