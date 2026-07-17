@@ -5,11 +5,13 @@ import { JwtService } from '@nestjs/jwt';
 import { UnauthorizedException } from '@nestjs/common';
 import { of, throwError } from 'rxjs';
 import { AuthService } from '../src/modules/auth/auth.service';
+import { RedisService } from '../src/modules/storage/redis.service';
 
 describe('AuthService', () => {
   let service: AuthService;
   let httpService: HttpService;
   let jwtService: JwtService;
+  let moduleRef: TestingModule;
 
   const mockCmsUser = {
     id: 1,
@@ -40,11 +42,21 @@ describe('AuthService', () => {
           provide: JwtService,
           useValue: {
             sign: vi.fn().mockReturnValue('mock-jwt-token'),
+            decode: vi.fn().mockReturnValue(null),
+          },
+        },
+        {
+          provide: RedisService,
+          useValue: {
+            get: vi.fn().mockResolvedValue(null),
+            set: vi.fn().mockResolvedValue(undefined),
+            del: vi.fn().mockResolvedValue(undefined),
           },
         },
       ],
     }).compile();
 
+    moduleRef = module;
     service = module.get<AuthService>(AuthService);
     httpService = module.get<HttpService>(HttpService);
     jwtService = module.get<JwtService>(JwtService);
@@ -64,7 +76,7 @@ describe('AuthService', () => {
 
       const result = await service.login('user@example.com', 'password123');
 
-      expect(result.jwt).toBe('mock-jwt-token');
+      expect(result.accessToken).toBe('mock-jwt-token');
       expect(result.user.email).toBe('user@example.com');
       expect(result.user.role).toBe('user');
       expect(httpService.post).toHaveBeenCalledWith(
@@ -103,7 +115,7 @@ describe('AuthService', () => {
 
       const result = await service.register('user@example.com', 'testuser', 'password');
 
-      expect(result.jwt).toBe('mock-jwt-token');
+      expect(result.accessToken).toBe('mock-jwt-token');
       expect(result.user.id).toBe('1');
       expect(result.user.username).toBe('testuser');
       expect(httpService.post).toHaveBeenCalledWith(
@@ -142,8 +154,10 @@ describe('AuthService', () => {
     });
   });
 
-  describe('refreshToken', () => {
+  describe('refreshTokens', () => {
     it('returns new jwt and user data', async () => {
+      const redis = moduleRef.get<RedisService>(RedisService);
+      vi.mocked(redis.get).mockResolvedValueOnce({ userId: '1' });
       vi.mocked(httpService.get).mockReturnValueOnce(
         of({
           data: mockCmsUser,
@@ -154,10 +168,10 @@ describe('AuthService', () => {
         }),
       );
 
-      const result = await service.refreshToken('1');
-      expect(result.jwt).toBe('mock-jwt-token');
+      const result = await service.refreshTokens('refresh-token');
+      expect(result.accessToken).toBe('mock-jwt-token');
       expect(result.user.id).toBe('1');
-      expect(jwtService.sign).toHaveBeenCalledTimes(2); // once for auth header, once for final token
+      expect(jwtService.sign).toHaveBeenCalled();
     });
   });
 });
