@@ -1,7 +1,7 @@
 'use client';
 
 import { create } from 'zustand';
-import { XRSessionMode, XRSessionStatus, ARPlacementPhase, XRStoreState } from '../utils/xr-constants';
+import { XRSessionMode, XRSessionStatus, ARPlacementPhase, XRStoreState, Collaborator } from '../utils/xr-constants';
 
 interface XRActions {
   setMode: (mode: XRSessionMode | null) => void;
@@ -15,6 +15,9 @@ interface XRActions {
   setPlacementPhase: (phase: ARPlacementPhase) => void;
   setPlacementPosition: (pos: { x: number; y: number; z: number } | null) => void;
   setPlacementRotation: (rot: { x: number; y: number; z: number; w: number } | null) => void;
+  setCollabConnected: (connected: boolean) => void;
+  upsertCollaborator: (peer: Collaborator) => void;
+  removeCollaborator: (id: string) => void;
   reset: () => void;
 }
 
@@ -32,6 +35,8 @@ const initialState: XRStoreState = {
   placementPhase: 'idle',
   placementPosition: null,
   placementRotation: null,
+  collaborators: {},
+  collabConnected: false,
 };
 
 export const useXRStore = create<XRStore>((set) => ({
@@ -47,5 +52,12 @@ export const useXRStore = create<XRStore>((set) => ({
   setPlacementPhase: (placementPhase) => set({ placementPhase }),
   setPlacementPosition: (placementPosition) => set({ placementPosition }),
   setPlacementRotation: (placementRotation) => set({ placementRotation }),
+  setCollabConnected: (collabConnected) => set({ collabConnected }),
+  upsertCollaborator: (peer) => set((state) => ({ collaborators: { ...state.collaborators, [peer.id]: peer } })),
+  removeCollaborator: (id) => set((state) => {
+    const next = { ...state.collaborators };
+    delete next[id];
+    return { collaborators: next };
+  }),
   reset: () => set(initialState),
 }));

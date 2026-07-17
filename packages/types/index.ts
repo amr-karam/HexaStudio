@@ -119,6 +119,9 @@ export interface ContactMessage {
   name: string;
   email: string;
   company?: string;
+  phone?: string;
+  service?: 'residential' | 'commercial' | 'interior';
+  budget?: 'under_50k' | '50k_100k' | '100k_500k' | '500k_plus';
   message: string;
 }
 
@@ -268,3 +271,5 @@ export interface UpdateWebhookDto {
   active?: boolean;
   headers?: Record<string, string>;
 }
+
+export * from './odoo';

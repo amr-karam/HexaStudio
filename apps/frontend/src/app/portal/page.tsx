@@ -8,6 +8,7 @@ import { TextReveal } from '@/components/ui/TextReveal';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/inputs/Input';
 import { portalService, type PortalData, type ProjectRequest } from '@/services/portal.service';
+import { portalOdooApi, type PortalProject, type PortalInvoice } from '@/features/odoo/api';
 import { useAuth } from '@/features/auth';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -75,6 +76,19 @@ export default function PortalPage() {
   const { data: requests, isLoading: requestsLoading } = useQuery<ProjectRequest[]>({
     queryKey: ['portal-requests', user?.id],
     queryFn: () => portalService.getClientRequests(user?.id || 'demo-client'),
+    enabled: !!user,
+  });
+
+  // Odoo client-scoped data
+  const { data: odooProjects } = useQuery<PortalProject[]>({
+    queryKey: ['portal-odoo-projects'],
+    queryFn: portalOdooApi.getProjects,
+    enabled: !!user,
+  });
+
+  const { data: odooInvoices } = useQuery<PortalInvoice[]>({
+    queryKey: ['portal-odoo-invoices'],
+    queryFn: portalOdooApi.getInvoices,
     enabled: !!user,
   });
 
@@ -227,6 +241,83 @@ export default function PortalPage() {
                 ))}
               </div>
             </section>
+
+            {/* Odoo Projects Section */}
+            {odooProjects && odooProjects.length > 0 && (
+              <section className="bg-surface border border-border/50 p-8 md:p-12 rounded-sm">
+                <h2 className="text-2xl font-serif font-light text-foreground mb-8">Active Projects</h2>
+                <div className="space-y-6">
+                  {odooProjects.map((project) => {
+                    const totalMilestones = project.milestones.length;
+                    const completedMilestones = project.milestones.filter((m) => m.completed).length;
+                    const progress = totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0;
+                    return (
+                      <div key={project.id} className="p-6 bg-background border border-border/30 rounded-sm">
+                        <div className="flex items-center justify-between mb-4">
+                          <div>
+                            <h3 className="text-lg font-medium text-foreground">{project.name}</h3>
+                            <p className="text-xs text-neutral-500 mt-1">{project.type} &middot; {project.status}</p>
+                          </div>
+                          <span className="text-[10px] uppercase tracking-widest text-accent font-mono px-2 py-1 border border-accent/30 rounded-full bg-accent/10">
+                            {progress}%
+                          </span>
+                        </div>
+                        {/* Milestone progress bar */}
+                        <div className="mb-4">
+                          <div className="h-1.5 w-full rounded-full bg-neutral-800 overflow-hidden">
+                            <div className="h-full rounded-full bg-accent transition-all duration-500" style={{ width: `${progress}%` }} />
+                          </div>
+                          <p className="text-[10px] text-neutral-600 mt-1 font-mono">{completedMilestones}/{totalMilestones} milestones</p>
+                        </div>
+                        {/* Milestone list */}
+                        {project.milestones.length > 0 && (
+                          <div className="space-y-2">
+                            {project.milestones.map((ms) => (
+                              <div key={ms.id} className="flex items-center gap-3">
+                                <div className={`w-2 h-2 rounded-full ${ms.completed ? 'bg-accent' : 'bg-neutral-700'}`} />
+                                <span className={`text-sm ${ms.completed ? 'text-neutral-500 line-through' : 'text-foreground'}`}>{ms.name}</span>
+                                {ms.date && <span className="text-[10px] text-neutral-600 font-mono ml-auto">{ms.date.slice(0, 10)}</span>}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
+
+            {/* Odoo Invoices Section */}
+            {odooInvoices && odooInvoices.length > 0 && (
+              <section className="bg-surface border border-border/50 p-8 md:p-12 rounded-sm">
+                <h2 className="text-2xl font-serif font-light text-foreground mb-8">Invoices</h2>
+                <div className="space-y-3">
+                  {odooInvoices.map((inv) => {
+                    const statusColor = inv.paymentState === 'paid'
+                      ? 'border-green-500/30 text-green-400 bg-green-500/10'
+                      : inv.paymentState === 'partial'
+                        ? 'border-yellow-500/30 text-yellow-400 bg-yellow-500/10'
+                        : 'border-red-500/30 text-red-400 bg-red-500/10';
+                    const statusLabel = inv.paymentState === 'paid' ? 'Paid' : inv.paymentState === 'partial' ? 'Partial' : 'Unpaid';
+                    return (
+                      <div key={inv.id} className="flex items-center justify-between p-4 bg-background border border-border/30 rounded-sm">
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium text-foreground">{inv.name || `Invoice #${inv.id}`}</span>
+                          <span className="text-[10px] text-neutral-600 font-mono">{inv.date?.slice(0, 10) ?? '—'}</span>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <span className="text-sm text-neutral-400">${Math.round(inv.amount).toLocaleString()}</span>
+                          <span className={`text-[10px] uppercase tracking-widest px-2 py-1 border rounded-full font-mono ${statusColor}`}>
+                            {statusLabel}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
 
             <section className="bg-surface border border-border/50 p-8 md:p-12 rounded-sm">
               <h2 className="text-2xl font-serif font-light text-foreground mb-8">{t('portal.requestHistory')}</h2>

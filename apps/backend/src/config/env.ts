@@ -21,7 +21,10 @@ const envSchema = z.object({
   ODOO_DB: z.string().min(1, 'ODOO_DB is required'),
   ODOO_USER: z.string().min(1, 'ODOO_USER is required'),
   ODOO_PASSWORD: z.string().min(1, 'ODOO_PASSWORD is required'),
-  ODOO_WEBHOOK_SECRET: z.string().min(32, 'ODOO_WEBHOOK_SECRET must be at least 32 characters').optional(),
+  ODOO_DB_USER: z.string().default('odoo'),
+  ODOO_DB_PASSWORD: z.string().default('odoo'),
+  ODOO_MASTER_PASSWORD: z.string().optional(),
+  ODOO_WEBHOOK_SECRET: z.string().min(32, 'ODOO_WEBHOOK_SECRET must be at least 32 characters'),
 
   // Slack
   SLACK_WEBHOOK_URL: z.string().url().optional(),

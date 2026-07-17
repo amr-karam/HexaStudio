@@ -37,6 +37,23 @@ export class RedisService {
     await this.client.del(key);
   }
 
+  async lpush(key: string, value: unknown): Promise<void> {
+    await this.client.lpush(key, JSON.stringify(value));
+  }
+
+  async lrange<T>(key: string, start: number, stop: number): Promise<T[]> {
+    const items = await this.client.lrange(key, start, stop);
+    return items.map((item) => JSON.parse(item) as T);
+  }
+
+  async llen(key: string): Promise<number> {
+    return this.client.llen(key);
+  }
+
+  async lrem(key: string, count: number, value: unknown): Promise<void> {
+    await this.client.lrem(key, count, JSON.stringify(value));
+  }
+
   async flush(): Promise<void> {
     await this.client.flushall();
   }

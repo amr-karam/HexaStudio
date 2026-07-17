@@ -3,6 +3,9 @@
 import { Component, ReactNode, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { XRCanvas, XRView, XRUI, XRErrorFallback } from '@/features/xr';
+import { useCollaboration } from '@/features/xr/hooks/useCollaboration';
+import { useXRStore } from '@/features/xr/store/xr-store';
+import { CollabPresence } from '@/features/xr/components/CollabPresence';
 import { useAnalytics } from '@/lib/analytics';
 
 class ErrorBoundary extends Component<{ children: ReactNode; onError?: (error: Error) => void; fallback: (error: Error) => ReactNode }> {
@@ -22,7 +25,12 @@ function XRViewerInner() {
   const router = useRouter();
   const modelUrl = searchParams.get('model');
   const modelName = searchParams.get('name') || undefined;
+  const projectId = searchParams.get('project') || null;
   const { track } = useAnalytics();
+  const mode = useXRStore((s) => s.mode);
+  const userName = searchParams.get('user') || 'Guest';
+
+  const { sendCursor } = useCollaboration(projectId, userName, mode);
 
   useEffect(() => {
     if (modelUrl) {
@@ -33,9 +41,10 @@ function XRViewerInner() {
   return (
     <div className="fixed inset-0 bg-black">
       <XRCanvas>
-        <XRView modelUrl={modelUrl ?? undefined} modelName={modelName} />
+        <XRView modelUrl={modelUrl ?? undefined} modelName={modelName} sendCursor={sendCursor} />
       </XRCanvas>
-      <XRUI onExit={() => { track('xr_viewer_exit'); router.back(); }} modelName={modelName} />
+      <XRUI onExit={() => { track('xr_viewer_exit'); router.back(); }} modelName={modelName} collabProjectId={projectId} />
+      {projectId && <CollabPresence />}
     </div>
   );
 }

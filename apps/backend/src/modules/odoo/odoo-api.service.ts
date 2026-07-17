@@ -1,0 +1,176 @@
+import { Injectable, Logger } from '@nestjs/common';
+import { OdooService } from './odoo.service';
+import {
+  OdooLead,
+  OdooProject,
+  OdooInvoice,
+  OdooPipelineSummary,
+  OdooPartner,
+  OdooMilestone,
+} from '@hexastudio/types';
+
+@Injectable()
+export class OdooApiService {
+  private readonly logger = new Logger(OdooApiService.name);
+
+  constructor(private readonly odooService: OdooService) {}
+
+  async getCrmPipeline(): Promise<OdooPipelineSummary> {
+    const leads = (await this.odooService.searchRead(
+      'crm.lead',
+      [],
+      ['id', 'stage_id', 'expected_revenue'],
+    )) as unknown as OdooLead[];
+
+    const stageMap = new Map<number, { name: string; leadCount: number; expectedRevenue: number }>();
+    let totalLeads = 0;
+    let totalExpectedRevenue = 0;
+
+    for (const lead of leads) {
+      const stage = lead.stage_id;
+      const stageId = Array.isArray(stage) ? stage[0] : 0;
+      const stageName = Array.isArray(stage) ? stage[1] : 'No Stage';
+      const revenue = (lead as unknown as { expected_revenue?: number }).expected_revenue ?? 0;
+
+      const entry = stageMap.get(stageId) ?? { name: stageName, leadCount: 0, expectedRevenue: 0 };
+      entry.leadCount += 1;
+      entry.expectedRevenue += revenue;
+      stageMap.set(stageId, entry);
+
+      totalLeads += 1;
+      totalExpectedRevenue += revenue;
+    }
+
+    return {
+      stages: Array.from(stageMap.entries()).map(([id, v]) => ({ id, ...v })),
+      totalLeads,
+      totalExpectedRevenue,
+      weightedRevenue: totalExpectedRevenue,
+    };
+  }
+
+  async getLeads(limit = 50, offset = 0): Promise<OdooLead[]> {
+    return (await this.odooService.execute<Record<string, unknown>[]>(
+      'crm.lead',
+      'search_read',
+      [[], ['name', 'partner_name', 'email_from', 'stage_id', 'priority', 'expected_revenue', 'create_date'], offset, limit, 'create_date desc'],
+    )) as unknown as OdooLead[];
+  }
+
+  async getLeadDetail(id: number): Promise<OdooLead> {
+    const results = await this.odooService.execute<Record<string, unknown>[]>(
+      'crm.lead',
+      'search_read',
+      [[['id', '=', id]], ['name', 'contact_name', 'partner_name', 'email_from', 'phone', 'description', 'stage_id', 'priority', 'expected_revenue', 'create_date', 'x_hexa_source', 'x_hexa_service', 'x_hexa_budget']],
+    );
+    if (!results.length) throw new Error(`Lead #${id} not found`);
+    return results[0] as unknown as OdooLead;
+  }
+
+  async createLead(data: Record<string, unknown>): Promise<number> {
+    return this.odooService.create('crm.lead', data);
+  }
+
+  async updateLead(id: number, data: Record<string, unknown>): Promise<boolean> {
+    return this.odooService.write('crm.lead', [id], data);
+  }
+
+  async archiveLead(id: number): Promise<boolean> {
+    return this.odooService.write('crm.lead', [id], { active: false });
+  }
+
+  // --- Contacts / Partners ---
+
+  async getContacts(limit = 50, offset = 0, search?: string): Promise<OdooPartner[]> {
+    const domain: unknown[] = search
+      ? [['name', 'ilike', search]]
+      : [];
+    return (await this.odooService.execute<Record<string, unknown>[]>(
+      'res.partner',
+      'search_read',
+      [domain, ['id', 'name', 'email', 'phone', 'x_hexa_client', 'x_hexa_source'], offset, limit, 'name asc'],
+    )) as unknown as OdooPartner[];
+  }
+
+  async getContactDetail(id: number): Promise<OdooPartner> {
+    const results = await this.odooService.execute<Record<string, unknown>[]>(
+      'res.partner',
+      'search_read',
+      [[['id', '=', id]], ['id', 'name', 'email', 'phone', 'x_hexa_client', 'x_hexa_source', 'x_hexa_project_ids']],
+    );
+    if (!results.length) throw new Error(`Partner #${id} not found`);
+    return results[0] as unknown as OdooPartner;
+  }
+
+  async createPartner(data: Record<string, unknown>): Promise<number> {
+    return this.odooService.create('res.partner', data);
+  }
+
+  async updatePartner(id: number, data: Record<string, unknown>): Promise<boolean> {
+    return this.odooService.write('res.partner', [id], data);
+  }
+
+  // --- Projects ---
+
+  async getProjects(limit = 50, offset = 0): Promise<OdooProject[]> {
+    return (await this.odooService.execute<Record<string, unknown>[]>(
+      'project.project',
+      'search_read',
+      [[], ['name', 'partner_id', 'x_slug', 'x_hexa_type', 'x_hexa_status', 'x_hexa_budget_amount', 'stage_id'], offset, limit, 'name asc'],
+    )) as unknown as OdooProject[];
+  }
+
+  async getProjectDetail(id: number): Promise<OdooProject> {
+    const results = await this.odooService.execute<Record<string, unknown>[]>(
+      'project.project',
+      'search_read',
+      [[['id', '=', id]], ['name', 'partner_id', 'x_slug', 'x_hexa_type', 'x_hexa_status', 'x_hexa_budget_amount', 'x_hexa_client_portal_active', 'x_hexa_milestone_ids', 'date_start', 'date', 'stage_id']],
+    );
+    if (!results.length) throw new Error(`Project #${id} not found`);
+    return results[0] as unknown as OdooProject;
+  }
+
+  async updateProject(id: number, data: Record<string, unknown>): Promise<boolean> {
+    return this.odooService.write('project.project', [id], data);
+  }
+
+  async getProjectMilestones(projectId: number): Promise<OdooMilestone[]> {
+    return (await this.odooService.execute<Record<string, unknown>[]>(
+      'project.milestone',
+      'search_read',
+      [[['project_id', '=', projectId]], ['id', 'name', 'date', 'completed', 'x_hexa_client_viewable', 'x_hexa_description', 'x_hexa_order'], 0, 100, 'x_hexa_order asc'],
+    )) as unknown as OdooMilestone[];
+  }
+
+  async createMilestone(projectId: number, data: Record<string, unknown>): Promise<number> {
+    return this.odooService.create('project.milestone', { ...data, project_id: projectId });
+  }
+
+  async updateMilestone(id: number, data: Record<string, unknown>): Promise<boolean> {
+    return this.odooService.write('project.milestone', [id], data);
+  }
+
+  // --- Invoices & Sales ---
+
+  async getInvoices(limit = 50, offset = 0): Promise<OdooInvoice[]> {
+    return (await this.odooService.execute<Record<string, unknown>[]>(
+      'account.move',
+      'search_read',
+      [[['move_type', '=', 'out_invoice']], ['name', 'invoice_date', 'partner_id', 'amount_total', 'amount_residual', 'payment_state', 'state'], offset, limit, 'invoice_date desc'],
+    )) as unknown as OdooInvoice[];
+  }
+
+  async getSalesOrders(limit = 50, offset = 0): Promise<Record<string, unknown>[]> {
+    return this.odooService.execute<Record<string, unknown>[]>(
+      'sale.order',
+      'search_read',
+      [[], ['name', 'partner_id', 'amount_total', 'state', 'date_order'], offset, limit, 'date_order desc'],
+    );
+  }
+
+  /** Manual re-sync trigger for admin use. */
+  async getHealth() {
+    const ok = await this.odooService.ping();
+    return { odoo: ok ? 'ok' : 'error', circuit: this.odooService.getCircuitState() };
+  }
+}

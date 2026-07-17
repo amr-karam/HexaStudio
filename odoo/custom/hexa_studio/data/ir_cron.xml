@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Scheduled pull fallback: notifies the NestJS BFF to reconcile cached data -->
+    <record id="ir_cron_hexa_sync" model="ir.cron">
+        <field name="name">HEXA: Scheduled Odoo Sync</field>
+        <field name="model_id" ref="model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">model.env['hexa.webhook'].ping_bff()</field>
+        <field name="interval_number">15</field>
+        <field name="interval_type">minutes</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="user_id" ref="base.user_root"/>
+    </record>
+</odoo>

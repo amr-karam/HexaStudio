@@ -1,0 +1,21 @@
+# Development overrides — publishes infra ports to the host so a locally-run
+# backend/CMS (outside Docker) can reach the containerized services.
+# Loaded automatically by `docker compose up`.
+
+services:
+  postgres:
+    ports:
+      - "5432:5432"
+
+  redis:
+    ports:
+      - "6379:6379"
+
+  minio:
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+
+  odoo:
+    ports:
+      - "8069:8069"

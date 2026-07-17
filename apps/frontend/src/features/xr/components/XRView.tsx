@@ -5,11 +5,11 @@ import { Environment, ContactShadows } from '@react-three/drei';
 import { XRSceneContent } from './XRSceneContent';
 import { XRLoadingScreen } from './XRLoadingScreen';
 
-export function XRView({ modelUrl, modelName }: { modelUrl?: string; modelName?: string }) {
+export function XRView({ modelUrl, modelName, sendCursor }: { modelUrl?: string; modelName?: string; sendCursor?: (position: { x: number; y: number; z: number }, rotation?: { x: number; y: number; z: number; w: number }) => void }) {
   return (
     <Suspense fallback={<XRLoadingScreen modelName={modelName} />}>
       {modelUrl ? (
-        <XRSceneContent modelUrl={modelUrl} />
+        <XRSceneContent modelUrl={modelUrl} sendCursor={sendCursor} />
       ) : (
         <mesh>
           <boxGeometry args={[0.5, 0.5, 0.5]} />

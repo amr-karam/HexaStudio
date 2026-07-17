@@ -123,4 +123,30 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
     this.eventBus.emit('project:update', payload);
     return { event: 'project:updated', data: payload.data };
   }
+
+  @SubscribeMessage('collab:join')
+  handleCollabJoin(client: Socket, payload: { projectId: string; user: string; mode: 'ar' | 'vr' }) {
+    const room = `project:${payload.projectId}`;
+    client.to(room).emit('collab:peer-joined', { id: client.id, user: payload.user, mode: payload.mode });
+    this.eventBus.emit('collab:join', { projectId: payload.projectId, user: payload.user, id: client.id });
+    return { event: 'collab:joined', data: { id: client.id, user: payload.user, mode: payload.mode } };
+  }
+
+  @SubscribeMessage('collab:cursor')
+  handleCollabCursor(client: Socket, payload: { projectId: string; position: { x: number; y: number; z: number }; rotation?: { x: number; y: number; z: number; w: number } }) {
+    const room = `project:${payload.projectId}`;
+    client.to(room).emit('collab:peer-cursor', {
+      id: client.id,
+      position: payload.position,
+      rotation: payload.rotation,
+    });
+  }
+
+  @SubscribeMessage('collab:leave')
+  handleCollabLeave(client: Socket, payload: { projectId: string }) {
+    const room = `project:${payload.projectId}`;
+    client.to(room).emit('collab:peer-left', { id: client.id });
+    this.eventBus.emit('collab:leave', { projectId: payload.projectId, id: client.id });
+    return { event: 'collab:left', data: { id: client.id } };
+  }
 }

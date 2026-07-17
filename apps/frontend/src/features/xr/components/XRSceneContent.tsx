@@ -6,6 +6,7 @@ import { useXRHitTest } from '@react-three/xr';
 import { useGLTF } from '@react-three/drei';
 import { useXRStore } from '../store/xr-store';
 import { ARPlacementReticle } from './ARPlacementReticle';
+import { CollaboratorAvatar } from './CollaboratorAvatar';
 import * as THREE from 'three';
 
 const _matrix = new THREE.Matrix4();
@@ -13,7 +14,7 @@ const _pos = new THREE.Vector3();
 const _quat = new THREE.Quaternion();
 const _scl = new THREE.Vector3();
 
-export function XRSceneContent({ modelUrl }: { modelUrl: string }) {
+export function XRSceneContent({ modelUrl, sendCursor }: { modelUrl: string; sendCursor?: (position: { x: number; y: number; z: number }, rotation?: { x: number; y: number; z: number; w: number }) => void }) {
   const { scene } = useGLTF(modelUrl);
   const { camera } = useThree();
   const groupRef = useRef<THREE.Group>(null);
@@ -87,9 +88,28 @@ export function XRSceneContent({ modelUrl }: { modelUrl: string }) {
     ? [placementPosition.x, placementPosition.y, placementPosition.z] as const
     : [0, 0, 0] as const;
 
+  const collaborators = useXRStore((s) => s.collaborators);
+
+  useFrame((_, delta) => {
+    if (groupRef.current && !mode) {
+      groupRef.current.rotation.y += delta * 0.15;
+    }
+    if (sendCursor) {
+      const p = camera.position;
+      const q = camera.quaternion;
+      sendCursor(
+        { x: p.x, y: p.y, z: p.z },
+        { x: q.x, y: q.y, z: q.z, w: q.w },
+      );
+    }
+  });
+
   return (
     <group ref={groupRef} position={targetPosition}>
       {isPlacing && <ARPlacementReticle />}
+      {Object.values(collaborators).map((peer) => (
+        <CollaboratorAvatar key={peer.id} peer={peer} />
+      ))}
     </group>
   );
 }
