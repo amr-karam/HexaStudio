@@ -12,7 +12,7 @@ RUN npm install --legacy-peer-deps
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN cd apps/backend && node ../../node_modules/@nestjs/cli/bin/nest.js build
+RUN ./node_modules/.bin/nest build -p apps/backend/tsconfig.json
 
 FROM base AS runner
 ENV NODE_ENV production
