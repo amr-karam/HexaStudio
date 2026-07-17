@@ -1,6 +1,7 @@
 # Dependencies
 node_modules/
 _corrupted_node_modules_stubs/
+_corrupted*/
 .pnp
 .pnp.js
 

@@ -134,6 +134,15 @@ Complete the remaining 40% of Sprint 11 deliverables: connect HEXA to the tools 
 - [x] **Backend Lint** — 21 `no-explicit-any` eliminated (first time 0 lint errors)
 - [x] **Backend Typecheck** — Gemini SDK Step types, assistant controller body types fixed
 
+### 🔗 Full Odoo ERP Integration
+- [x] **Environment Setup** — All Odoo env vars added (.env, .env.example, Docker)
+- [x] **Contact Form → Odoo Lead** — Full write path with HEXA custom fields (service, budget, source) + Redis fallback queue
+- [x] **Admin Dashboard CRUD** — Full create/edit/archive for leads, contacts, projects, milestones at `/dashboard/odoo`
+- [x] **Documents Tab** — MinIO ↔ Odoo document bridge with upload/download via signed URLs
+- [x] **Client Portal Odoo Views** — Partner-scoped projects (with milestone progress bars) and invoices at `/portal`
+- [x] **Backend Tests** — 22 tests across OdooService, OdooApiService, ContactService
+- [x] **Playbook Sync** — CRM.md and MODULES.md updated with full endpoint reference
+
 ---
 
 ## 3. SPRINT VELOCITY & METRICS
