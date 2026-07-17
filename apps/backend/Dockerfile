@@ -12,7 +12,7 @@ RUN npm install --legacy-peer-deps
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN npm run build --workspace=apps/backend 2>&1
+RUN cd apps/backend && /app/node_modules/.bin/nest build
 
 FROM base AS runner
 ENV NODE_ENV production
