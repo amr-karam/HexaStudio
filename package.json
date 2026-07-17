@@ -33,6 +33,7 @@
     "react-error-boundary": "^6.1.2"
   },
   "devDependencies": {
+    "@nestjs/cli": "^11.0.24",
     "@lhci/cli": "^0.14.0",
     "@types/node": "^26.1.1",
     "turbo": "^2.10.4"
