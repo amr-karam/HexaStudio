@@ -22,6 +22,7 @@ export const ProjectSceneWrapper = ({ project }: ProjectSceneWrapperProps) => {
           projectModelUrl={project.modelUrl} 
           hotspots={project.hotspots} 
           projectTitle={project.title}
+          status={project.status}
         />
       </Suspense>
     </SceneErrorBoundary>
