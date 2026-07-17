@@ -1,95 +1,116 @@
 import './setup';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PortalService } from '../src/modules/portal/portal.service';
-import { ProjectsService } from '../src/modules/projects/projects.service';
 import { OdooService } from '../src/modules/odoo/odoo.service';
 
 describe('PortalService', () => {
   let service: PortalService;
-  let projectsService: ProjectsService;
   let odooService: OdooService;
 
-  const mockTasks = [
-    { id: 1, name: 'Concept Design', stage_id: [1, 'Design'], state: '1_done', date_deadline: '2026-05-12' },
-    { id: 2, name: '3D Modeling', stage_id: [2, 'In Progress'], state: '01_in_progress', date_deadline: '2026-06-01' },
-    { id: 3, name: 'Final Rendering', stage_id: [3, 'Pending'], state: '01_normal', date_deadline: '2026-07-15' },
+  const mockPartner = [{ id: 42 }];
+
+  const mockProjects = [
+    {
+      id: 1,
+      name: 'Villa Beirut',
+      x_hexa_status: 'in-progress',
+      x_hexa_type: 'residential',
+      date_start: '2026-05-01',
+      date: '2026-07-30',
+    },
   ];
 
-  const mockOdooInvoices = [
-    { id: 1, name: 'INV-2026-001', amount_total: 5000, invoice_date: '2026-05-01', payment_state: 'paid' },
-    { id: 2, name: 'INV-2026-002', amount_total: 12000, invoice_date: '2026-06-15', payment_state: 'not_paid' },
+  const mockMilestones = [
+    { id: 1, name: 'Concept Design', date: '2026-05-12', completed: true, x_hexa_description: 'Initial concepts' },
+    { id: 2, name: '3D Modeling', date: '2026-06-01', completed: false, x_hexa_description: 'Modeling phase' },
   ];
 
-  const mockProjects = {
-    projects: [{ id: 1, title: 'Villa Beirut', category: 'residential', status: 'in-progress' }],
-    total: 1,
-  };
+  const mockInvoices = [
+    { id: 1, name: 'INV-2026-001', invoice_date: '2026-05-01', amount_total: 5000, amount_residual: 0, payment_state: 'paid', state: 'posted' },
+    { id: 2, name: 'INV-2026-002', invoice_date: '2026-06-15', amount_total: 12000, amount_residual: 12000, payment_state: 'not_paid', state: 'posted' },
+  ];
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PortalService,
-        { provide: ProjectsService, useValue: { getAllProjects: vi.fn() } },
-        { provide: OdooService, useValue: { searchRead: vi.fn() } },
+        {
+          provide: OdooService,
+          useValue: { execute: vi.fn() },
+        },
       ],
     }).compile();
 
     service = module.get<PortalService>(PortalService);
-    projectsService = module.get<ProjectsService>(ProjectsService);
     odooService = module.get<OdooService>(OdooService);
   });
 
-  it('returns project title from CMS', async () => {
-    vi.mocked(odooService.searchRead).mockResolvedValueOnce(mockTasks).mockResolvedValueOnce(mockOdooInvoices);
-    vi.mocked(projectsService.getAllProjects).mockResolvedValueOnce(mockProjects as any);
+  const mockExecuteSequence = (...results: unknown[][]) => {
+    let call = 0;
+    vi.mocked(odooService.execute).mockImplementation(async () => {
+      const res = results[call] ?? [];
+      call += 1;
+      return res;
+    });
+  };
+
+  it('returns project title from Odoo', async () => {
+    mockExecuteSequence(mockPartner, mockProjects, mockMilestones, mockInvoices);
+
     const result = await service.getClientProjectData('client@example.com');
+
     expect(result.project.title).toBe('Villa Beirut');
-    expect(result.timeline).toHaveLength(3);
+    expect(result.timeline).toHaveLength(2);
+    expect(result.invoices).toHaveLength(2);
   });
 
-  it('maps task states correctly', async () => {
-    vi.mocked(odooService.searchRead).mockResolvedValueOnce(mockTasks).mockResolvedValueOnce([]);
-    vi.mocked(projectsService.getAllProjects).mockResolvedValueOnce(mockProjects as any);
-    const result = await service.getClientProjectData();
+  it('maps milestone completion to timeline status', async () => {
+    mockExecuteSequence(mockPartner, mockProjects, mockMilestones, []);
+
+    const result = await service.getClientProjectData('client@example.com');
+
     expect(result.timeline[0].status).toBe('completed');
-    expect(result.timeline[1].status).toBe('in-progress');
-    expect(result.timeline[2].status).toBe('pending');
+    expect(result.timeline[1].status).toBe('pending');
   });
 
   it('maps invoice payment state correctly', async () => {
-    vi.mocked(odooService.searchRead).mockResolvedValueOnce([]).mockResolvedValueOnce(mockOdooInvoices);
-    vi.mocked(projectsService.getAllProjects).mockResolvedValueOnce(mockProjects as any);
-    const result = await service.getClientProjectData();
+    mockExecuteSequence(mockPartner, [], mockInvoices);
+
+    const result = await service.getClientProjectData('client@example.com');
+
     expect(result.invoices[0].status).toBe('paid');
     expect(result.invoices[1].status).toBe('pending');
   });
 
-  it('falls back to mock timeline when no Odoo tasks', async () => {
-    vi.mocked(odooService.searchRead).mockResolvedValueOnce([]).mockResolvedValueOnce([]);
-    vi.mocked(projectsService.getAllProjects).mockResolvedValueOnce(mockProjects as any);
-    const result = await service.getClientProjectData();
-    expect(result.timeline).toHaveLength(3);
-    expect(result.timeline[0].phase).toBe('Concept Design');
+  it('returns empty project when partner not resolved', async () => {
+    mockExecuteSequence([]);
+
+    const result = await service.getClientProjectData('unknown@example.com');
+
+    expect(result.project.title).toBe('No Project');
+    expect(result.timeline).toHaveLength(0);
   });
 
   it('sets lead email from parameter', async () => {
-    vi.mocked(odooService.searchRead).mockResolvedValue([]);
-    vi.mocked(projectsService.getAllProjects).mockResolvedValueOnce(mockProjects as any);
+    mockExecuteSequence([]);
+
     const result = await service.getClientProjectData('specific@client.com');
+
     expect(result.lead.email).toBe('specific@client.com');
   });
 
   it('uses default email when no clientEmail provided', async () => {
-    vi.mocked(odooService.searchRead).mockResolvedValue([]);
-    vi.mocked(projectsService.getAllProjects).mockResolvedValueOnce(mockProjects as any);
     const result = await service.getClientProjectData();
+
     expect(result.lead.email).toBe('client@hexastudio.net');
   });
 
-  it('handles Odoo task failure gracefully', async () => {
-    vi.mocked(odooService.searchRead).mockRejectedValueOnce(new Error('fail')).mockResolvedValueOnce([]);
-    vi.mocked(projectsService.getAllProjects).mockResolvedValueOnce(mockProjects as any);
-    const result = await service.getClientProjectData();
+  it('handles Odoo failure gracefully', async () => {
+    vi.mocked(odooService.execute).mockRejectedValueOnce(new Error('fail'));
+
+    const result = await service.getClientProjectData('client@example.com');
+
+    expect(result.project.title).toBe('No Project');
     expect(result.timeline).toBeDefined();
   });
 });
