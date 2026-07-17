@@ -12,8 +12,7 @@ RUN npm install --legacy-peer-deps
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN mkdir -p apps/backend/dist && cp -r packages apps/backend/dist/ 2>/dev/null; \
-    cd apps/backend && npx nest build
+RUN npm run build --workspace=apps/backend 2>&1
 
 FROM base AS runner
 ENV NODE_ENV production
@@ -23,7 +22,6 @@ COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/apps/backend/package.json ./apps/backend/package.json
 COPY --from=builder /app/packages/types ./packages/types
 COPY --from=builder /app/packages/utils ./packages/utils
-COPY --from=builder /app/apps/backend/tsconfig.build.json ./apps/backend/tsconfig.build.json 2>/dev/null || true
 
 EXPOSE 4000
 CMD ["npm", "run", "start", "--workspace=apps/backend"]
