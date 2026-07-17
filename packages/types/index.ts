@@ -13,6 +13,7 @@ export interface Project {
   year?: number;
   area?: string;
   status?: string;
+  milestones?: { total: number; completed: number };
   services?: string[];
   isPublished: boolean;
   createdAt: string;

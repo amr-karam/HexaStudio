@@ -23,6 +23,7 @@ interface ExperienceCanvasProps {
   hotspots?: ProjectHotspot[];
   projectTitle?: string;
   status?: string;
+  milestones?: { total: number; completed: number };
 }
 
 function SceneFallback() {
@@ -39,6 +40,7 @@ export const ExperienceCanvas = ({
   hotspots,
   projectTitle,
   status,
+  milestones,
 }: ExperienceCanvasProps) => {
   const { level, settings } = useAdaptiveQuality();
   const { isTransitioning } = useCameraStore();
@@ -71,7 +73,7 @@ export const ExperienceCanvas = ({
           )}
 
           <Environment preset="city" />
-          <SceneContent projectModelUrl={projectModelUrl} hotspots={hotspots} status={status} />
+          <SceneContent projectModelUrl={projectModelUrl} hotspots={hotspots} status={status} milestones={milestones} />
           
           <directionalLight
             position={[10, 15, 5]}

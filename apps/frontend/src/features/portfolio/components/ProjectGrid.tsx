@@ -17,6 +17,15 @@ interface ProjectCardProps {
   status?: string;
 }
 
+type ProjectGridCard = {
+  title: string;
+  category: string;
+  image: string;
+  slug: string;
+  description: string;
+  status?: string;
+};
+
 const ProjectCard = ({ title, category, image, index, onClick, isFocused, status }: ProjectCardProps & { isFocused: boolean }) => {
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
 
@@ -92,7 +101,7 @@ const ProjectCard = ({ title, category, image, index, onClick, isFocused, status
   );
 };
 
-const fallbackProjects = [
+const fallbackProjects: ProjectGridCard[] = [
   {
     title: 'The Obsidian Villa',
     category: 'Residential',
@@ -143,7 +152,7 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
   });
   const headingY = useTransform(scrollYProgress, [0, 0.5], [60, 0]);
 
-  const allProjects = useMemo(() => {
+  const allProjects = useMemo((): ProjectGridCard[] => {
     const mapped = projects?.map((p) => ({
       title: p.title,
       category: p.category?.name ?? 'Project',

@@ -11,6 +11,7 @@ interface SceneContentProps {
   projectModelUrl?: string;
   hotspots?: ProjectHotspot[];
   status?: string;
+  milestones?: { total: number; completed: number };
 }
 
 /**
@@ -148,8 +149,12 @@ export const SceneContent = ({
   projectModelUrl,
   hotspots = [],
   status,
+  milestones,
 }: SceneContentProps) => {
   const accent = useMemo(() => statusAccent(status), [status]);
+  const progress = milestones && milestones.total > 0
+    ? Math.round((milestones.completed / milestones.total) * 100)
+    : null;
 
   return (
     <group>
@@ -167,6 +172,15 @@ export const SceneContent = ({
         <Html position={[-3.4, 2.4, 0]} center distanceFactor={10} occlude>
           <div className="pointer-events-none select-none rounded-full border border-white/15 bg-black/50 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.3em] backdrop-blur-md" style={{ color: accent }}>
             {status}
+          </div>
+        </Html>
+      )}
+
+      {progress !== null && (
+        <Html position={[3.4, 2.4, 0]} center distanceFactor={10} occlude>
+          <div className="pointer-events-none flex select-none items-center gap-2 rounded-full border border-white/15 bg-black/50 px-3 py-1 text-[10px] font-mono text-white/70 backdrop-blur-md">
+            <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: accent }} />
+            {progress}% · {milestones!.completed}/{milestones!.total}
           </div>
         </Html>
       )}
