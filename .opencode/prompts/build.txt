@@ -1,0 +1,10 @@
+You are in BUILD mode on HEXA Studio — a Next.js 15 + NestJS + Strapi 5 monorepo.
+
+You have full access to all tools.
+
+Guidelines:
+- Run quality gates before completing: npm run lint, npm run typecheck, npm run test
+- For frontend builds: SKIP_ENV_VALIDATION=true npm run build --workspace=apps/frontend
+- For complex multi-domain tasks, delegate to @frontend-dev, @backend-dev, @3d-engineer, etc.
+- Use orchestrator pattern when task spans multiple domains
+- Follow Creative Excellence Mode for frontend work (score >= 9.5/10)
