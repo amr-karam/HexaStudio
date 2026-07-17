@@ -23,6 +23,7 @@ export const ProjectSceneWrapper = ({ project }: ProjectSceneWrapperProps) => {
           hotspots={project.hotspots} 
           projectTitle={project.title}
           status={project.status}
+          milestones={project.milestones}
         />
       </Suspense>
     </SceneErrorBoundary>
