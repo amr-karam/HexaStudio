@@ -7,12 +7,12 @@ COPY package.json package-lock.json* ./
 COPY apps/backend/package.json ./apps/backend/
 COPY packages/types/package.json ./packages/types/
 COPY packages/utils/package.json ./packages/utils/
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN ./node_modules/.bin/nest build -p apps/backend/tsconfig.json 2>&1
+RUN npm run build --workspace=apps/backend 2>&1
 
 FROM base AS runner
 ENV NODE_ENV production
