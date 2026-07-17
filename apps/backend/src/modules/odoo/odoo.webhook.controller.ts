@@ -1,72 +1,48 @@
-import { Controller, Post, Body, Headers, UnauthorizedException, Logger, HttpCode, HttpStatus } from '@nestjs/common';
-import { OdooService } from './odoo.service';
+import { Body, Controller, Headers, HttpCode, HttpStatus, Logger, Post, RawBodyRequest, Req, UnauthorizedException, VERSION_NEUTRAL } from '@nestjs/common';
+import { createHmac, timingSafeEqual } from 'crypto';
+import { Request } from 'express';
+import { OdooSyncService } from './odoo-sync.service';
 import { getEnv } from '../../config/env';
-import { VectorSyncService } from '../vector/vector-sync.service';
+import { OdooWebhookPayload } from '@hexastudio/types';
 
-interface OdooWebhookPayload {
-  model: string;
-  id: number;
-  action: 'create' | 'update' | 'delete';
-  data?: Record<string, unknown>;
-}
-
-@Controller('odoo/webhook')
+@Controller({ path: 'odoo/webhook', version: VERSION_NEUTRAL })
 export class OdooWebhookController {
   private readonly logger = new Logger(OdooWebhookController.name);
 
-  constructor(
-    private readonly odooService: OdooService,
-    private readonly vectorSyncService: VectorSyncService,
-  ) {}
+  constructor(private readonly odooSyncService: OdooSyncService) {}
 
   @Post()
   @HttpCode(HttpStatus.OK)
   async handleWebhook(
     @Headers('x-odoo-signature') signature: string,
     @Body() payload: OdooWebhookPayload,
+    @Req() request: RawBodyRequest<Request>,
   ) {
     const secret = getEnv().ODOO_WEBHOOK_SECRET;
 
-    if (!signature || signature !== secret) {
+    if (!request.rawBody) {
+      this.logger.error('Rejected Odoo webhook because the raw request body was unavailable');
+      throw new UnauthorizedException('Invalid webhook signature');
+    }
+
+    const expected = createHmac('sha256', secret).update(request.rawBody).digest('hex');
+
+    const provided = Buffer.from(signature ?? '');
+    const expectedBuf = Buffer.from(expected);
+    if (
+      !signature ||
+      provided.length !== expectedBuf.length ||
+      !timingSafeEqual(provided, expectedBuf)
+    ) {
       this.logger.warn(`Unauthorized Odoo webhook attempt from ${payload.model}:${payload.id}`);
       throw new UnauthorizedException('Invalid webhook signature');
     }
 
     this.logger.log(`Odoo webhook received: ${payload.action} on ${payload.model}:${payload.id}`);
 
-    // Trigger the sync logic
-    await this.syncData(payload);
+    // Route through the sync service (cache + event bus + Strapi bridge).
+    await this.odooSyncService.handleWebhook(payload);
 
     return { success: true, message: 'Webhook processed' };
-  }
-
-  private async syncData(payload: OdooWebhookPayload) {
-    try {
-      if (payload.model === 'project.project') {
-        const data = await this.odooService.searchRead(
-          payload.model,
-          [['id', '=', payload.id]],
-          ['name', 'stage_id', 'x_slug']
-        );
-
-        if (data && data.length > 0) {
-          const project = data[0];
-          this.logger.log(`Syncing project ${project.name} (slug: ${project.x_slug}) to Strapi...`);
-          
-          // In a production environment, we would call the Strapi API here
-          // Example: await this.strapiService.updateProject(project.x_slug, { 
-          //   status: project.stage_id,
-          //   updatedAt: new Date()
-          // });
-          
-          // TRIGGER VECTOR SYNC
-          await this.vectorSyncService.syncProject(project.x_slug as string);
-          
-          this.logger.log(`Successfully synced Odoo Project ${payload.id} to Strapi and updated vectors.`);
-        }
-      }
-    } catch (error) {
-      this.logger.error(`Error syncing Odoo data for ${payload.model}:${payload.id}:`, error);
-    }
   }
 }
