@@ -11,18 +11,17 @@
         "sale",
         "project",
         "account",
-        "contacts"
+        "contacts",
+        "base_automation"
     ],
-    "external_dependencies": {
-        "python": []
-    },
     "data": [
         "security/ir.model.access.csv",
         "data/ir_cron.xml",
         "data/automated_actions.xml",
         "data/webhook_config.xml"
     ],
-    "installable": true,
-    "application": false,
-    "auto_install": false
+    "installable": True,
+    "application": False,
+    "auto_install": False,
+    "license": "LGPL-3"
 }
