@@ -2,6 +2,7 @@ import hmac
 import hashlib
 import json
 import logging
+from datetime import date, datetime
 
 from odoo import models, fields, api
 
@@ -33,7 +34,7 @@ class HexaWebhook(models.Model):
             "action": action,
             "data": self._serialize(record),
         }
-        body = json.dumps(payload).encode("utf-8")
+        body = json.dumps(payload, default=str).encode("utf-8")
         for config in configs:
             try:
                 signature = hmac.new(
@@ -78,8 +79,14 @@ class HexaWebhook(models.Model):
         urllib.request.urlopen(req, timeout=10)
 
     def _serialize(self, record):
-        fields = record._fields.keys()
         try:
-            return record.read(list(fields))[0]
-        except Exception:  # noqa: BLE001
+            fields = list(record._fields.keys())
+            data = record.read(fields)[0]
+            for k, v in list(data.items()):
+                if isinstance(v, (datetime, date)):
+                    data[k] = v.isoformat()
+                elif isinstance(v, bytes):
+                    data[k] = v.decode("utf-8", errors="replace")
+            return data
+        except Exception:
             return {}

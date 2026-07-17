@@ -6,6 +6,7 @@ export * from './ai/ai.module';
 export * from './articles/articles.module';
 export * from './auth/auth.module';
 export * from './contact/contact.module';
+export * from './currency/currency.module';
 export * from './faqs/faqs.module';
 export * from './health/health.module';
 export * from './integrations/index';

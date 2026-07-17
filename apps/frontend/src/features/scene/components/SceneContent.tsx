@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo, useEffect } from 'react';
-import { Float } from '@react-three/drei';
+import { Float, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { ArchitecturalModel } from './ArchitecturalModel';
 import { Hotspot } from './Hotspot';
@@ -10,9 +10,27 @@ import { ProjectHotspot } from '@hexastudio/types';
 interface SceneContentProps {
   projectModelUrl?: string;
   hotspots?: ProjectHotspot[];
+  status?: string;
 }
 
-function ProceduralArchitecture() {
+/**
+ * Maps a raw Odoo stage name (e.g. "Proposal Sent", "Active") to a
+ * brand-aligned accent color used to tint the procedural model + badge.
+ */
+function statusAccent(status?: string): string {
+  const s = (status ?? '').toLowerCase();
+  if (s.includes('won') || s.includes('active') || s.includes('deliver') || s.includes('completed'))
+    return '#D4AF37'; // gold — live / delivered
+  if (s.includes('proposal') || s.includes('negotiation') || s.includes('review'))
+    return '#7BA7FF'; // blue — in progress / review
+  if (s.includes('consult') || s.includes('qualif') || s.includes('contact'))
+    return '#9B8CFF'; // violet — early pipeline
+  if (s.includes('lost') || s.includes('archiv'))
+    return '#6B7280'; // gray — closed
+  return '#D4AF37'; // default gold
+}
+
+function ProceduralArchitecture({ accent }: { accent: string }) {
   // Optimization: Use InstancedMesh for repetitive elements to reduce draw calls
   const floatElements = useMemo(() => {
     const positions = [];
@@ -83,10 +101,10 @@ function ProceduralArchitecture() {
         <mesh castShadow receiveShadow position={[1.8, 1.5, 0]}>
           <boxGeometry args={[0.2, 3, 0.2]} />
           <meshPhysicalMaterial
-            color="#D4AF37"
+            color={accent}
             roughness={0.1}
             metalness={1}
-            emissive="#D4AF37"
+            emissive={accent}
             emissiveIntensity={0.2}
             envMapIntensity={2}
           />
@@ -129,31 +147,42 @@ function ProceduralArchitecture() {
 export const SceneContent = ({
   projectModelUrl,
   hotspots = [],
+  status,
 }: SceneContentProps) => {
+  const accent = useMemo(() => statusAccent(status), [status]);
+
   return (
     <group>
       {projectModelUrl ? (
         <ArchitecturalModel url={projectModelUrl} />
       ) : (
-        <ProceduralArchitecture />
+        <ProceduralArchitecture accent={accent} />
       )}
 
       {hotspots.map((hotspot) => (
         <Hotspot key={hotspot.id} hotspot={hotspot} />
       ))}
 
-         <mesh
-           receiveShadow
-           rotation={[-Math.PI / 2, 0, 0]}
-           position={[0, -0.01, 0]}
-         >
-           <planeGeometry args={[100, 100]} />
-           <meshPhysicalMaterial
-             color="#050505"
-             roughness={0.4}
-             metalness={0.1}
-           />
-         </mesh>
+      {status && (
+        <Html position={[-3.4, 2.4, 0]} center distanceFactor={10} occlude>
+          <div className="pointer-events-none select-none rounded-full border border-white/15 bg-black/50 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.3em] backdrop-blur-md" style={{ color: accent }}>
+            {status}
+          </div>
+        </Html>
+      )}
+
+       <mesh
+         receiveShadow
+         rotation={[-Math.PI / 2, 0, 0]}
+         position={[0, -0.01, 0]}
+       >
+         <planeGeometry args={[100, 100]} />
+         <meshPhysicalMaterial
+           color="#050505"
+           roughness={0.4}
+           metalness={0.1}
+         />
+      </mesh>
 
     </group>
   );

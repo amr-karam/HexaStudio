@@ -14,9 +14,10 @@ interface ProjectCardProps {
   image: string;
   index: number;
   onClick: () => void;
+  status?: string;
 }
 
-const ProjectCard = ({ title, category, image, index, onClick, isFocused }: ProjectCardProps & { isFocused: boolean }) => {
+const ProjectCard = ({ title, category, image, index, onClick, isFocused, status }: ProjectCardProps & { isFocused: boolean }) => {
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -68,14 +69,19 @@ const ProjectCard = ({ title, category, image, index, onClick, isFocused }: Proj
 
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-700" />
 
-            <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
-              <div className="transition-all duration-500 ease-out-expo">
-                <p className="text-[10px] md:text-xs uppercase tracking-[0.4em] text-accent/80 group-hover:text-accent transition-colors duration-500 mb-2 font-mono">
-                  {category}
-                </p>
-                <h3 className="text-lg md:text-xl lg:text-2xl font-serif font-light text-foreground/90 group-hover:text-foreground transition-colors duration-500 leading-tight">
-                  {title}
-                </h3>
+              <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
+                <div className="transition-all duration-500 ease-out">
+                  <p className="text-[10px] md:text-xs uppercase tracking-[0.4em] text-accent/80 group-hover:text-accent transition-colors duration-500 mb-2 font-mono">
+                    {category}
+                  </p>
+                  {status && (
+                    <span className="mb-2 inline-block rounded-full border border-white/15 px-2 py-0.5 text-[9px] uppercase tracking-[0.2em] text-white/60">
+                      {status}
+                    </span>
+                  )}
+                  <h3 className="text-lg md:text-xl lg:text-2xl font-serif font-light text-foreground/90 group-hover:text-foreground transition-colors duration-500 leading-tight">
+                    {title}
+                  </h3>
                 <div className="h-[1px] w-0 group-hover:w-full bg-accent transition-all duration-700 mt-4" />
               </div>
             </div>
@@ -92,6 +98,7 @@ const fallbackProjects = [
     category: 'Residential',
     image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
     slug: 'obsidian-villa',
+    status: 'Active',
     description: 'A minimalist residential masterpiece carved into a volcanic hillside, where raw black stone meets floor-to-ceiling glass. The interplay of shadow and light creates an ever-changing atmosphere across every surface.',
   },
   {
@@ -99,20 +106,23 @@ const fallbackProjects = [
     category: 'Commercial',
     image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
     slug: 'lumina-pavilion',
-    description: 'A translucent commercial pavilion that appears to float above its waterfront site. ETFE cushions and precisions steel form a crystalline envelope that refracts sunlight throughout the day.',
+    status: 'Proposal Sent',
+    description: 'A translucent commercial pavilion that appears to float above its waterfront site. ETFE cushions and precision steel form a crystalline envelope that refracts sunlight throughout the day.',
   },
   {
     title: 'Azure Heights',
     category: 'Residential',
     image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80',
     slug: 'azure-heights',
+    status: 'Active',
     description: 'A vertical garden tower in the heart of the city, where every residence opens to sky terraces with cascading greenery. The facade breathes — opening and closing in response to solar exposure.',
   },
   {
     title: 'Zenith Office',
     category: 'Commercial',
-    image: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1497366811353-6870744d4b62?w=800&q=80',
     slug: 'zenith-office',
+    status: 'Consultation',
     description: 'A reimagined workplace where biophilic design meets cutting-edge technology. Triple-height atriums, living walls, and adaptive lighting create an environment that evolves with its occupants.',
   },
 ];
@@ -122,7 +132,7 @@ interface ProjectGridProps {
 }
 
 export const ProjectGrid = ({ projects }: ProjectGridProps) => {
-  const [selectedProject, setSelectedProject] = useState<typeof fallbackProjects[0] | null>(null);
+  const [selectedProject, setSelectedProject] = useState<ProjectGridCard | null>(null);
   const [activeCategory, setActiveCategory] = useState('All');
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -140,6 +150,7 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
       image: p.coverImage ? `${p.coverImage}?w=800&q=80` : '',
       slug: p.slug,
       description: p.shortDescription || p.description,
+      status: p.status,
     })) ?? fallbackProjects;
     return mapped;
   }, [projects]);
@@ -226,6 +237,7 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
                   image={project.image} 
                   index={idx} 
                   isFocused={hoveredIndex === idx}
+                  status={project.status}
                   onClick={() => setSelectedProject(project)} 
                 />
               </div>
