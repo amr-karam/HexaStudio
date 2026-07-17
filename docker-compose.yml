@@ -34,6 +34,53 @@ services:
       timeout: 5s
       retries: 5
 
+  # --- Odoo ERP ---
+  odoo_db:
+    image: postgres:16-alpine
+    container_name: hexa-odoo-db
+    environment:
+      POSTGRES_USER: ${ODOO_DB_USER:?ODOO_DB_USER must be set}
+      POSTGRES_PASSWORD: ${ODOO_DB_PASSWORD:?ODOO_DB_PASSWORD must be set}
+      POSTGRES_DB: ${ODOO_DB:?ODOO_DB must be set}
+    volumes:
+      - odoo_db_data:/var/lib/postgresql/data
+    networks:
+      - hexa_data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${ODOO_DB_USER:?ODOO_DB_USER must be set} -d ${ODOO_DB:?ODOO_DB must be set}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  odoo:
+    image: odoo:18
+    container_name: hexa-odoo
+    depends_on:
+      odoo_db:
+        condition: service_healthy
+    environment:
+      HOST: odoo_db
+      PORT: 5432
+      USER: ${ODOO_DB_USER:?ODOO_DB_USER must be set}
+      PASSWORD: ${ODOO_DB_PASSWORD:?ODOO_DB_PASSWORD must be set}
+      DB_NAME: ${ODOO_DB:?ODOO_DB must be set}
+      ODOO_MASTER_PASSWORD: ${ODOO_MASTER_PASSWORD:?ODOO_MASTER_PASSWORD must be set}
+      ODOO_WEBHOOK_SECRET: ${ODOO_WEBHOOK_SECRET:?ODOO_WEBHOOK_SECRET must be set}
+    volumes:
+      - odoo_data:/var/lib/odoo
+      - ./odoo/custom:/mnt/extra-addons:ro
+      - ./docker/odoo/odoo.conf:/etc/odoo/odoo.conf:ro
+      - ./docker/odoo/entrypoint.sh:/entrypoint.d/hexa-entrypoint.sh:ro
+    entrypoint: ["/bin/bash", "/entrypoint.d/hexa-entrypoint.sh"]
+    command: ["--dev=all"]
+    networks:
+      - hexa_data
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c \"import urllib.request; urllib.request.urlopen('http://localhost:8069/web/health')\""]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
   # --- Search ---
   meilisearch:
     image: getmeili/meilisearch:v1.12
@@ -108,6 +155,8 @@ services:
       redis:
         condition: service_healthy
       cms:
+        condition: service_healthy
+      odoo:
         condition: service_healthy
     networks:
       - hexa_web
@@ -236,3 +285,5 @@ volumes:
   qdrant_data:
   prometheus_data:
   grafana_data:
+  odoo_data:
+  odoo_db_data:

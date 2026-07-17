@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- CRM lead create/update -> BFF webhook -->
+    <record id="automated_action_crm_create" model="base.automation">
+        <field name="name">HEXA: CRM Lead Created</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="trigger">on_create</field>
+        <field name="state">code</field>
+        <field name="code">env['hexa.webhook'].dispatch(record, 'create')</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="automated_action_crm_update" model="base.automation">
+        <field name="name">HEXA: CRM Lead Updated</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="trigger">on_write</field>
+        <field name="state">code</field>
+        <field name="code">env['hexa.webhook'].dispatch(record, 'update')</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- Project create/update -> BFF webhook -->
+    <record id="automated_action_project_create" model="base.automation">
+        <field name="name">HEXA: Project Created</field>
+        <field name="model_id" ref="project.model_project_project"/>
+        <field name="trigger">on_create</field>
+        <field name="state">code</field>
+        <field name="code">env['hexa.webhook'].dispatch(record, 'create')</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="automated_action_project_update" model="base.automation">
+        <field name="name">HEXA: Project Updated</field>
+        <field name="model_id" ref="project.model_project_project"/>
+        <field name="trigger">on_write</field>
+        <field name="state">code</field>
+        <field name="code">env['hexa.webhook'].dispatch(record, 'update')</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- Invoice posted -> BFF webhook -->
+    <record id="automated_action_invoice_post" model="base.automation">
+        <field name="name">HEXA: Invoice Posted</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="trigger">on_write</field>
+        <field name="state">code</field>
+        <field name="code">env['hexa.webhook'].dispatch(record, 'update')</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

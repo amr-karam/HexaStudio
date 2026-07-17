@@ -10,9 +10,10 @@ import { useAnalytics } from '@/lib/analytics';
 interface XRUIProps {
   onExit: () => void;
   modelName?: string;
+  collabProjectId?: string | null;
 }
 
-export function XRUI({ onExit, modelName }: XRUIProps) {
+export function XRUI({ onExit, modelName, collabProjectId: _collabProjectId }: XRUIProps) {
   useXRStoreInit();
 
   const { status, modelLoaded, placementPhase, setMode, setStatus, setPlacementPhase, setPlacementPosition, setPlacementRotation } = useXRStore();

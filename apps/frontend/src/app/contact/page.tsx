@@ -21,6 +21,9 @@ export default function ContactPage() {
     name: '',
     email: '',
     company: '',
+    phone: '',
+    service: '',
+    budget: '',
     message: '',
   });
   const [errors, setErrors] = useState<FormErrors>({});
@@ -122,6 +125,46 @@ export default function ContactPage() {
                     onChange={(e) => setFormState({ ...formState, company: e.target.value })}
                     className="bg-transparent border-b border-border focus:border-accent transition-all duration-500 rounded-none px-0"
                   />
+                </div>
+
+                <div className="flex flex-col gap-2 group">
+                  <label className="text-[10px] uppercase tracking-widest text-neutral-500 group-focus-within:text-accent transition-colors duration-500">Phone (Optional)</label>
+                  <Input
+                    placeholder="+1 (555) 000-0000"
+                    type="tel"
+                    value={formState.phone}
+                    onChange={(e) => setFormState({ ...formState, phone: e.target.value })}
+                    className="bg-transparent border-b border-border focus:border-accent transition-all duration-500 rounded-none px-0"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2 group">
+                  <label className="text-[10px] uppercase tracking-widest text-neutral-500 group-focus-within:text-accent transition-colors duration-500">Service Type (Optional)</label>
+                  <select
+                    value={formState.service}
+                    onChange={(e) => setFormState({ ...formState, service: e.target.value })}
+                    className="w-full bg-transparent border-b border-border text-foreground p-0 focus:outline-none focus:border-accent transition-colors duration-300 appearance-none cursor-pointer"
+                  >
+                    <option value="" className="bg-neutral-900">Select a service...</option>
+                    <option value="residential" className="bg-neutral-900">Residential</option>
+                    <option value="commercial" className="bg-neutral-900">Commercial</option>
+                    <option value="interior" className="bg-neutral-900">Interior Design</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-2 md:col-span-2 group">
+                  <label className="text-[10px] uppercase tracking-widest text-neutral-500 group-focus-within:text-accent transition-colors duration-500">Budget Range (Optional)</label>
+                  <select
+                    value={formState.budget}
+                    onChange={(e) => setFormState({ ...formState, budget: e.target.value })}
+                    className="w-full bg-transparent border-b border-border text-foreground p-0 focus:outline-none focus:border-accent transition-colors duration-300 appearance-none cursor-pointer"
+                  >
+                    <option value="" className="bg-neutral-900">Select a budget range...</option>
+                    <option value="under_50k" className="bg-neutral-900">Under $50K</option>
+                    <option value="50k_100k" className="bg-neutral-900">$50K - $100K</option>
+                    <option value="100k_500k" className="bg-neutral-900">$100K - $500K</option>
+                    <option value="500k_plus" className="bg-neutral-900">$500K+</option>
+                  </select>
                 </div>
 
                 <div className="flex flex-col gap-2 md:col-span-2 group">
