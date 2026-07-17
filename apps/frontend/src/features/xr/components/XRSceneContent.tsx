@@ -89,19 +89,19 @@ export function XRSceneContent({ modelUrl, sendCursor }: { modelUrl: string; sen
     : [0, 0, 0] as const;
 
   const collaborators = useXRStore((s) => s.collaborators);
+  const cursorAccum = useRef(0);
 
   useFrame((_, delta) => {
-    if (groupRef.current && !mode) {
-      groupRef.current.rotation.y += delta * 0.15;
-    }
-    if (sendCursor) {
-      const p = camera.position;
-      const q = camera.quaternion;
-      sendCursor(
-        { x: p.x, y: p.y, z: p.z },
-        { x: q.x, y: q.y, z: q.z, w: q.w },
-      );
-    }
+    if (!sendCursor) return;
+    cursorAccum.current += delta;
+    if (cursorAccum.current < 1 / 15) return;
+    cursorAccum.current = 0;
+    const p = camera.position;
+    const q = camera.quaternion;
+    sendCursor(
+      { x: p.x, y: p.y, z: p.z },
+      { x: q.x, y: q.y, z: q.z, w: q.w },
+    );
   });
 
   return (

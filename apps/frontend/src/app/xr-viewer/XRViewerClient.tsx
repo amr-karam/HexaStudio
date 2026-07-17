@@ -43,7 +43,7 @@ function XRViewerInner() {
       <XRCanvas>
         <XRView modelUrl={modelUrl ?? undefined} modelName={modelName} sendCursor={sendCursor} />
       </XRCanvas>
-      <XRUI onExit={() => { track('xr_viewer_exit'); router.back(); }} modelName={modelName} collabProjectId={projectId} />
+      <XRUI onExit={() => { track('xr_viewer_exit'); router.back(); }} modelName={modelName} />
       {projectId && <CollabPresence />}
     </div>
   );
