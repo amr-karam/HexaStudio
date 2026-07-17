@@ -128,7 +128,7 @@ Complete the remaining 40% of Sprint 11 deliverables: connect HEXA to the tools 
 
 ### 🥽 Immersive Experiences (Advanced)
 - [x] **AR Model Placement** — Architectural model placement via hit-test API (WebXR)
-- [ ] **VR Collaboration** — Multi-user design reviews in VR (basic sync)
+- [x] **VR Collaboration** — Multi-user design reviews: `/realtime` collab room sync (collab:join/cursor/leave), live 3D peer avatars with name labels, per-frame camera pose broadcast, presence HUD
 
 ### 🧹 Technical Debt
 - [x] **Backend Lint** — 21 `no-explicit-any` eliminated (first time 0 lint errors)
@@ -234,6 +234,16 @@ Complete the remaining 40% of Sprint 11 deliverables: connect HEXA to the tools 
 | `apps/backend/src/modules/integrations/jira/jira.service.ts` | NEW — Jira API client |
 | `apps/frontend/src/features/integrations/api-integrations.ts` | NEW — Notion/Jira frontend API client |
 | `apps/frontend/src/app/dashboard/integrations/page.tsx` | MODIFIED — Added NotionPanel + JiraPanel (External Tools section) |
+| `apps/backend/src/modules/realtime/realtime.gateway.ts` | MODIFIED — Added collab:join/cursor/leave handlers for VR co-review |
+| `apps/frontend/src/features/xr/hooks/useCollaboration.ts` | NEW — Socket.IO collab hook (join room, broadcast/receive peer cursors) |
+| `apps/frontend/src/features/xr/store/xr-store.ts` | MODIFIED — Added collaborators map + collabConnected + upsert/remove actions |
+| `apps/frontend/src/features/xr/utils/xr-constants.ts` | MODIFIED — Added Collaborator type + store fields |
+| `apps/frontend/src/features/xr/components/CollaboratorAvatar.tsx` | NEW — In-scene 3D peer avatar with name label |
+| `apps/frontend/src/features/xr/components/CollabPresence.tsx` | NEW — 2D presence HUD (session count + avatars) |
+| `apps/frontend/src/features/xr/components/XRSceneContent.tsx` | MODIFIED — Render peer avatars, broadcast local camera pose per frame |
+| `apps/frontend/src/features/xr/components/XRView.tsx` | MODIFIED — Thread sendCursor prop to scene |
+| `apps/frontend/src/app/xr-viewer/XRViewerClient.tsx` | MODIFIED — Wire useCollaboration + CollabPresence (project/user query params) |
+| `apps/frontend/src/features/xr/index.ts` | MODIFIED — Export collaboration components/hook |
 
 ---
 

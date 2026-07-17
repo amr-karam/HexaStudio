@@ -245,7 +245,7 @@ Elevating `apps/frontend` to HEXA Creative Excellence standard. All gates green
 | **S12-P1-001** | Notion Integration — Sync project milestones, task status | M | Webhooks | ✅ Done |
 | **S12-P1-002** | Jira/Linear Integration — Bidirectional issue sync | M | Webhooks | ✅ Done |
 | **S12-P1-003** | Figma Webhook — Design file change notifications | M | Webhooks | ✅ Done (generic dispatcher + `figma:update`/`figma:comment` event options) |
-| **S12-P1-005** | VR Collaboration — Multi-user design reviews (basic sync) | XL | WebSocket, WebXR | ✅ Done (S11 + S12) |
+| **S12-P1-005** | VR Collaboration — Multi-user design reviews (basic sync) | XL | WebSocket, WebXR | ✅ Done (collab room sync, live avatars, presence HUD) | ✅ Done (S11 + S12) |
 | **S12-P1-006** | Currency/Localization — Dynamic pricing per region, tax compliance | M | i18n infra | ✅ **DONE** |
 | **S12-P1-007** | Next.js 16 Upgrade Assessment — **DONE: Defer to v16.3+** (see report below) | M | — | ✅ Done |
 | **S12-P2-007** | Playbook Sync — Document Sprint 12 learnings | S | — | 🔄 In Progress |
