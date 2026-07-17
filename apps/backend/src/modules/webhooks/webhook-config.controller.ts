@@ -9,7 +9,7 @@ import {
   VERSION_NEUTRAL,
 } from '@nestjs/common';
 import { WebhookConfigService } from './webhook-config.service';
-import { WebhookConfig, CreateWebhookDto, UpdateWebhookDto } from '@hexastudio/types';
+import type { WebhookConfig, CreateWebhookDto, UpdateWebhookDto } from '@hexastudio/types';
 
 @Controller({ path: 'webhooks', version: VERSION_NEUTRAL })
 export class WebhookConfigController {

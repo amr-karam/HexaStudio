@@ -2,7 +2,7 @@ import { Injectable, Logger, Inject, forwardRef, OnModuleInit } from '@nestjs/co
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import { VectorService } from '../vector/vector.service';
-import { Project } from '@hexastudio/types';
+import type { Project } from '@hexastudio/types';
 import { Env } from '../../config/env';
 
 @Injectable()

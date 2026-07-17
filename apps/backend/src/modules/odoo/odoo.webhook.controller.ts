@@ -3,7 +3,7 @@ import { createHmac, timingSafeEqual } from 'crypto';
 import { Request } from 'express';
 import { OdooSyncService } from './odoo-sync.service';
 import { getEnv } from '../../config/env';
-import { OdooWebhookPayload } from '@hexastudio/types';
+import type { OdooWebhookPayload } from '@hexastudio/types';
 
 @Controller({ path: 'odoo/webhook', version: VERSION_NEUTRAL })
 export class OdooWebhookController {

@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { EmbeddingService } from './embedding.service';
 import { VectorService } from '../vector/vector.service';
-import { Project } from '@hexastudio/types';
+import type { Project } from '@hexastudio/types';
 
 /**
  * LightingService generates AI‑driven lighting suggestions for a given project.

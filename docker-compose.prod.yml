@@ -183,6 +183,7 @@ services:
       ODOO_DB: ${ODOO_DB:-hexastudio_odoo}
       ODOO_USER: ${ODOO_USER:-admin}
       ODOO_PASSWORD: ${ODOO_PASSWORD:?ODOO_PASSWORD is required}
+      ODOO_WEBHOOK_SECRET: ${ODOO_WEBHOOK_SECRET:?ODOO_WEBHOOK_SECRET is required}
       VECTOR_HOST: qdrant
       VECTOR_PORT: 6333
     depends_on:

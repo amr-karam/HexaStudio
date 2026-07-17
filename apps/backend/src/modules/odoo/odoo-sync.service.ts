@@ -2,7 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { OdooService } from './odoo.service';
 import { RedisService } from '../storage/redis.service';
 import { EventBus } from '../realtime/event-bus.service';
-import { OdooWebhookPayload } from '@hexastudio/types';
+import type { OdooWebhookPayload } from '@hexastudio/types';
 
 export interface SyncState {
   lastSync: number;

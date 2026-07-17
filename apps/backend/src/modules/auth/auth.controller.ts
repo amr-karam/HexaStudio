@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiBody, ApiResponse, ApiBearerAuth } from '@nes
 import { IsEmail, IsString, MinLength, MaxLength } from 'class-validator';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
-import { User } from '@hexastudio/types';
+import type { User } from '@hexastudio/types';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CsrfGuard, generateCsrfToken, CSRF_COOKIE_NAME } from './guards/csrf.guard';
 

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { Testimonial, TestimonialResponse } from '@hexastudio/types';
+import type { Testimonial, TestimonialResponse } from '@hexastudio/types';
 import { getEnv } from '../../config/env';
 
 interface StrapiMedia {

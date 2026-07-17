@@ -1,5 +1,5 @@
 import { SetMetadata } from '@nestjs/common';
-import { User } from '@hexastudio/types';
+import type { User } from '@hexastudio/types';
 
 export const ROLES_KEY = 'roles';
 

@@ -5,7 +5,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiResponse } from '@hexastudio/types';
+import type { ApiResponse } from '@hexastudio/types';
 
 function resolveMessage(exception: HttpException | unknown): string {
   if (!(exception instanceof HttpException)) {

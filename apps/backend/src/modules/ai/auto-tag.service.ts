@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
-import { Project } from '@hexastudio/types';
+import type { Project } from '@hexastudio/types';
 import { Env } from '../../config/env';
 
 @Injectable()

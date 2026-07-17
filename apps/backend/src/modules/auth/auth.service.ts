@@ -3,7 +3,7 @@ import { HttpService } from '@nestjs/axios';
 import { JwtService } from '@nestjs/jwt';
 import { randomUUID } from 'crypto';
 import { firstValueFrom } from 'rxjs';
-import { User } from '@hexastudio/types';
+import type { User } from '@hexastudio/types';
 import { RedisService } from '../storage/redis.service';
 import { getEnv } from '../../config/env';
 
