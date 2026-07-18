@@ -14,12 +14,6 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["three", "@react-three/fiber", "@react-three/drei", "gsap"],
   },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   images: {
     remotePatterns: [
       {
