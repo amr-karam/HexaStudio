@@ -41,11 +41,15 @@ for service in "backend" "frontend" "cms"; do
 done
 
 # Remove old slot
+# NOTE: never use `docker compose stop/rm` here — compose tracks the CURRENT
+# project containers (the new slot we just started), so it would kill the
+# fresh deployment. Target the old slot's containers explicitly by name.
 if [ -n "$CURRENT_SOT" ]; then
   echo "Removing $CURRENT_SOT slot..."
-  export SOT=$CURRENT_SOT
-  docker compose -f docker-compose.prod.yml stop backend frontend cms
-  docker compose -f docker-compose.prod.yml rm -f backend frontend cms
+  for service in backend frontend cms; do
+    docker stop "hexa-${service}-${CURRENT_SOT}" 2>/dev/null || true
+    docker rm "hexa-${service}-${CURRENT_SOT}" 2>/dev/null || true
+  done
 fi
 
 echo "Zero-downtime deployment complete!"
