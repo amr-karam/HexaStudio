@@ -2,6 +2,8 @@ import './setup';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PortalService } from '../src/modules/portal/portal.service';
 import { OdooService } from '../src/modules/odoo/odoo.service';
+import { MinioService } from '../src/modules/storage/minio.service';
+import { RedisService } from '../src/modules/storage/redis.service';
 
 describe('PortalService', () => {
   let service: PortalService;
@@ -30,6 +32,22 @@ describe('PortalService', () => {
     { id: 2, name: 'INV-2026-002', invoice_date: '2026-06-15', amount_total: 12000, amount_residual: 12000, payment_state: 'not_paid', state: 'posted' },
   ];
 
+  const mockMinioService = {
+    uploadFile: vi.fn().mockResolvedValue(undefined),
+    getPresignedDownloadUrl: vi.fn().mockResolvedValue('/mock-download-url'),
+    deleteFile: vi.fn().mockResolvedValue(undefined),
+  };
+
+  const mockRedisService = {
+    hset: vi.fn().mockResolvedValue(undefined),
+    hgetall: vi.fn().mockResolvedValue({}),
+    hexists: vi.fn().mockResolvedValue(false),
+    hdel: vi.fn().mockResolvedValue(undefined),
+    get: vi.fn().mockResolvedValue(null),
+    set: vi.fn().mockResolvedValue(undefined),
+    del: vi.fn().mockResolvedValue(undefined),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -37,6 +55,14 @@ describe('PortalService', () => {
         {
           provide: OdooService,
           useValue: { execute: vi.fn() },
+        },
+        {
+          provide: MinioService,
+          useValue: mockMinioService,
+        },
+        {
+          provide: RedisService,
+          useValue: mockRedisService,
         },
       ],
     }).compile();
