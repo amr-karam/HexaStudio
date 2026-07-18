@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useLayoutEffect, useRef } from 'react';
 import { Float, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { ArchitecturalModel } from './ArchitecturalModel';
@@ -32,24 +32,44 @@ function statusAccent(status?: string): string {
 }
 
 function ProceduralArchitecture({ accent }: { accent: string }) {
-  // Optimization: Use InstancedMesh for repetitive elements to reduce draw calls
-  const floatElements = useMemo(() => {
-    const positions = [];
-    const rotations = [];
+  // Optimization: Use InstancedMesh for repetitive elements to reduce draw calls.
+  // Each instanced mesh is a single draw call regardless of instance count.
+
+  // Per-instance transforms for the floating bars (position + rotation).
+  const floatMatrices = useMemo(() => {
+    const matrices: THREE.Matrix4[] = [];
+    const dummy = new THREE.Object3D();
     for (let i = 0; i < 6; i++) {
       const angle = (i / 6) * Math.PI * 2;
       const radius = 3;
-      positions.push(Math.cos(angle) * radius, 1.5 + Math.sin(i) * 0.5, Math.sin(angle) * radius);
-      rotations.push(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+      dummy.position.set(
+        Math.cos(angle) * radius,
+        1.5 + Math.sin(i) * 0.5,
+        Math.sin(angle) * radius
+      );
+      dummy.rotation.set(
+        Math.random() * Math.PI,
+        Math.random() * Math.PI,
+        Math.random() * Math.PI
+      );
+      dummy.updateMatrix();
+      matrices.push(dummy.matrix.clone());
     }
-    return { positions, rotations };
+    return matrices;
   }, []);
 
-  const lightPositions = useMemo(() => {
-    return [0, 90, 180, 270].map(deg => {
+  // Per-instance transforms for the light spheres (position only).
+  const lightMatrices = useMemo(() => {
+    const matrices: THREE.Matrix4[] = [];
+    const dummy = new THREE.Object3D();
+    [0, 90, 180, 270].forEach((deg) => {
       const rad = (deg * Math.PI) / 180;
-      return [Math.cos(rad) * 1.5, 0.1, Math.sin(rad) * 1.5];
+      dummy.position.set(Math.cos(rad) * 1.5, 0.1, Math.sin(rad) * 1.5);
+      dummy.rotation.set(0, 0, 0);
+      dummy.updateMatrix();
+      matrices.push(dummy.matrix.clone());
     });
+    return matrices;
   }, []);
 
   const { floatGeom, floatMat, lightGeom, lightMat } = useMemo(() => {
@@ -60,6 +80,23 @@ function ProceduralArchitecture({ accent }: { accent: string }) {
       lightMat: new THREE.MeshPhysicalMaterial({ color: '#D4AF37', emissive: '#D4AF37', emissiveIntensity: 5 }),
     };
   }, []);
+
+  const floatRef = useRef<THREE.InstancedMesh>(null);
+  const lightRef = useRef<THREE.InstancedMesh>(null);
+
+  // Write per-instance matrices once after mount / on data change.
+  useLayoutEffect(() => {
+    if (floatRef.current) {
+      floatMatrices.forEach((m, i) => floatRef.current!.setMatrixAt(i, m));
+      floatRef.current.instanceMatrix.needsUpdate = true;
+      floatRef.current.computeBoundingSphere();
+    }
+    if (lightRef.current) {
+      lightMatrices.forEach((m, i) => lightRef.current!.setMatrixAt(i, m));
+      lightRef.current.instanceMatrix.needsUpdate = true;
+      lightRef.current.computeBoundingSphere();
+    }
+  }, [floatMatrices, lightMatrices]);
 
   useEffect(() => {
     return () => {
@@ -112,34 +149,17 @@ function ProceduralArchitecture({ accent }: { accent: string }) {
         </mesh>
 
         
-        {floatElements.positions.map((_, i) => (
-          <mesh 
-            key={`float-opt-${i}`} 
-            castShadow 
-            position={[
-              floatElements.positions[i * 3],
-              floatElements.positions[i * 3 + 1],
-              floatElements.positions[i * 3 + 2]
-            ]}
-            rotation={[
-              floatElements.rotations[i * 3],
-              floatElements.rotations[i * 3 + 1],
-              floatElements.rotations[i * 3 + 2]
-            ]}
-            geometry={floatGeom}
-            material={floatMat}
-          />
-        ))}
+        <instancedMesh
+          ref={floatRef}
+          args={[floatGeom, floatMat, floatMatrices.length]}
+          castShadow
+        />
 
         
-        {lightPositions.map((pos, i) => (
-          <mesh
-            key={`base-light-opt-${i}`}
-            position={pos as [number, number, number]}
-            geometry={lightGeom}
-            material={lightMat}
-          />
-        ))}
+        <instancedMesh
+          ref={lightRef}
+          args={[lightGeom, lightMat, lightMatrices.length]}
+        />
       </group>
     </Float>
   );
