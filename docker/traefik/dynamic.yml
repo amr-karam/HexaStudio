@@ -22,6 +22,8 @@ http:
     odoo:
       rule: "Host(`odoo.hexastudio.net`)"
       service: odoo
+      middlewares:
+        - forwarded-headers
       
 
     # Storage / Files
@@ -142,3 +144,9 @@ http:
       basicAuth:
         users:
           - "admin:$apr1$iX4YLoGa$KRmTxSK1/9JvWQ9h5FKw90"
+
+    forwarded-headers:
+      headers:
+        customRequestHeaders:
+          X-Forwarded-Proto: "https"
+          X-Forwarded-Ssl: "on"
