@@ -1,8 +1,10 @@
-import { FloatingCardsHero } from "@/components/animation";
-import { ProjectGrid } from "@/features/portfolio/components/ProjectGrid";
-import { StudioSection } from "@/features/portfolio/components/StudioSection";
-import { TestimonialsSection } from "@/features/portfolio/components/TestimonialsSection";
+import { HomeHero } from "@/features/portfolio/components/HomeHero";
+import { MarqueeBar } from "@/features/portfolio/components/MarqueeBar";
+import { FeaturedWork } from "@/features/portfolio/components/FeaturedWork";
+import { ProcessSection } from "@/features/portfolio/components/ProcessSection";
 import { AchievementsSection } from "@/features/portfolio/components/AchievementsSection";
+import { ProjectGrid } from "@/features/portfolio/components/ProjectGrid";
+import { TestimonialsSection } from "@/features/portfolio/components/TestimonialsSection";
 import { CTASection } from "@/components/CTASection";
 import { NewsletterSection } from "@/components/ui/NewsletterSection";
 import { fetchProjects } from "@/features/portfolio/lib/fetchProjects";
@@ -12,17 +14,13 @@ export default async function HomePage() {
 
   return (
     <div className="bg-background">
-      <FloatingCardsHero
-        headline="Living"
-        highlight="Spaces."
-        subline="Visualized. Immersive 3D architectural experiences for the world's most ambitious projects."
-        ctaLabel="Explore Works"
-        ctaHref="/portfolio"
-      />
+      <HomeHero />
+      <MarqueeBar />
+      <FeaturedWork />
+      <ProcessSection />
       <AchievementsSection />
       <ProjectGrid projects={projectsData.projects ?? []} />
       <TestimonialsSection />
-      <StudioSection />
       <CTASection />
       <NewsletterSection />
     </div>

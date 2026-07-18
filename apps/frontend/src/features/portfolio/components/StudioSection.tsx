@@ -2,21 +2,25 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { EASE, DURATION, makeTransition } from '@/lib/motion';
+import { RadialGlow } from '@/components/animation';
 
 export const StudioSection = () => {
   return (
     <section className="px-8 md:px-16 py-32 bg-background relative overflow-hidden">
+      <RadialGlow color="#D4AF37" size={600} top="-200px" right="-120px" blur={70} opacity={0.08} />
+      <RadialGlow color="#D4AF37" size={400} bottom="-150px" left="-80px" blur={50} opacity={0.06} />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          transition={makeTransition('entrance', 'page')}
           className="relative aspect-square bg-surface-light overflow-hidden group"
         >
           <motion.div 
             whileHover={{ scale: 1.05 }}
-            transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: DURATION.camera, ease: EASE.entrance }}
             className="h-full w-full relative"
           >
             <Image
@@ -50,7 +54,7 @@ export const StudioSection = () => {
           initial={{ opacity: 0, x: 30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          transition={makeTransition('entrance', 'page', 0.2)}
           className="flex flex-col gap-12"
         >
           <div className="flex flex-col gap-6">
@@ -86,6 +90,7 @@ export const StudioSection = () => {
           </div>
         </motion.div>
       </div>
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
     </section>
   );
 };

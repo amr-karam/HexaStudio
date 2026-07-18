@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ScrollFadeIn } from '@/components/ScrollFadeIn';
+import React from 'react';
+import { motion } from 'framer-motion';
 import { RadialGlow } from '@/components/animation';
-import { cn } from '@/lib/utils';
+import { EASE, DURATION, makeTransition, STAGGER } from '@/lib/motion';
 import { useFeaturedTestimonials } from '@/features/testimonials/hooks/useTestimonials';
 import { useLocale } from '@/i18n/LocaleProvider';
 
@@ -26,8 +25,63 @@ const fallbackTestimonials = [
   },
 ];
 
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: DURATION.component, ease: EASE.entrance, delay: i * STAGGER.component },
+  }),
+};
+
+const TestimonialCard = ({
+  quote,
+  author,
+  role,
+  index,
+}: {
+  quote: string;
+  author: string;
+  role: string;
+  index: number;
+}) => (
+  <motion.div
+    custom={index}
+    variants={cardVariants}
+    initial="hidden"
+    whileInView="visible"
+    viewport={{ once: true, margin: '-60px' }}
+    className="group relative flex flex-col gap-6 p-8 md:p-10 bg-surface/40 border border-border/10 hover:border-gold/20 transition-all duration-700"
+  >
+    {/* Decorative quote mark */}
+    <span className="text-5xl font-serif italic text-gold/10 leading-none select-none">
+      &ldquo;
+    </span>
+
+    <blockquote className="text-base md:text-lg text-neutral-300 font-light leading-relaxed flex-1">
+      {quote}
+    </blockquote>
+
+    <div className="flex flex-col gap-1 pt-4 border-t border-border/10">
+      <p className="text-sm font-medium text-foreground tracking-widest uppercase">
+        {author}
+      </p>
+      <p className="text-[10px] text-gold/50 font-mono tracking-[0.2em]">
+        {role}
+      </p>
+    </div>
+
+    {/* Gold accent on hover */}
+    <div className="absolute top-0 left-0 w-0 h-0.5 bg-gold/60 group-hover:w-full transition-all duration-700 ease-out" />
+  </motion.div>
+);
+
+/**
+ * TestimonialsSection — A 2-column card grid of client testimonials with
+ * staggered scroll-triggered reveals. Each card has a decorative gold
+ * accent line that animates on hover.
+ */
 export const TestimonialsSection = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
   const { t } = useLocale();
   const { data } = useFeaturedTestimonials();
 
@@ -37,61 +91,44 @@ export const TestimonialsSection = () => {
     role: item.clientRole || '',
   }));
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % testimonials.length);
-    }, 6000);
-    return () => clearInterval(timer);
-  }, [testimonials.length]);
-
   return (
-    <section className="px-8 md:px-16 py-32 bg-surface border-y border-border/50 overflow-hidden">
-      <RadialGlow color="#D4AF37" size={500} top="-150px" left="-80px" blur={50} opacity={0.1} />
-      <RadialGlow color="#D4AF37" size={350} bottom="-100px" right="-60px" blur={40} opacity={0.07} />
-      <div className="w-full">
-        <ScrollFadeIn className="mb-24 text-center">
-          <span className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block">
+    <section className="relative px-8 md:px-16 py-32 bg-surface border-y border-border/30 overflow-hidden">
+      <RadialGlow color="#D4AF37" size={700} top="-200px" left="-100px" blur={60} opacity={0.08} />
+      <RadialGlow color="#D4AF37" size={500} bottom="-150px" right="-80px" blur={50} opacity={0.05} />
+
+      <div className="relative z-10 max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-20">
+          <motion.span
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={makeTransition('entrance', 'component')}
+            className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
+          >
             {t('home.stats.clients')}
-          </span>
-          <h2 className="text-5xl md:text-7xl font-serif font-light tracking-tight text-foreground leading-tight">
-            What Our Partners <span className="italic text-accent">Say</span>
-          </h2>
-        </ScrollFadeIn>
-        
-        <div className="relative h-[300px] md:h-[200px] flex items-center justify-center">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeIndex}
-              initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
-              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, y: -20, filter: 'blur(10px)' }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute inset-0 flex flex-col items-center text-center px-4"
-            >
-              <blockquote className="text-xl md:text-3xl text-neutral-300 font-light italic leading-relaxed max-w-5xl mb-8">
-                &ldquo;{testimonials[activeIndex].quote}&rdquo;
-              </blockquote>
-              <div className="flex flex-col items-center gap-1">
-                <p className="text-sm font-medium text-foreground tracking-widest uppercase">
-                  {testimonials[activeIndex].author}
-                </p>
-                <p className="text-xs text-accent/60 font-mono">
-                  {testimonials[activeIndex].role}
-                </p>
-              </div>
-            </motion.div>
-          </AnimatePresence>
+          </motion.span>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={makeTransition('entrance', 'page')}
+            className="text-5xl md:text-7xl font-serif font-light tracking-tight text-foreground leading-tight"
+          >
+            What Our Partners <span className="italic text-gold">Say</span>
+          </motion.h2>
         </div>
-        
-        <div className="flex justify-center gap-3 mt-12">
-          {testimonials.map((_, idx) => (
-            <button
+
+        {/* Card grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          {testimonials.map((item, idx) => (
+            <TestimonialCard
               key={idx}
-              onClick={() => setActiveIndex(idx)}
-              className={cn(
-                "h-1 transition-all duration-500 rounded-full",
-                activeIndex === idx ? "w-12 bg-accent" : "w-4 bg-neutral-800"
-              )}
+              quote={item.quote}
+              author={item.author}
+              role={item.role}
+              index={idx}
             />
           ))}
         </div>
