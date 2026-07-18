@@ -1,12 +1,14 @@
 # 📝 OPEN TASKS: THE BACKLOG OF EXCELLENCE
 
-**Version:** 3.0 | **Scope:** Sprint 12 — Integrations & Content Pipeline | **Status:** IN PROGRESS (2026-07-16 → 2026-09-01)
+**Version:** 3.1 | **Scope:** Sprint 12 — Integrations & Content Pipeline | **Status:** ✅ COMPLETE (2026-07-16 → 2026-07-18)
+
+> **All 26/26 Sprint 12 deliverables are now complete as of 2026-07-18.** The final deliverable (S12-P2-007: Playbook Sync) was closed alongside the Odoo user permission fix. See Sprint 13 planning in NEXT_SPRINT.md.
 
 ---
 
 ## 🎯 SPRINT 12 EXECUTIVE SUMMARY
 
-### ✅ Completed (25/26 deliverables)
+### ✅ Completed (26/26 deliverables)
 - **Slack Webhook & Integration Hub** — Full webhook CRUD, event-to-webhook dispatcher, Slack notifications
 - **Content Pipeline & i18n** — Strapi i18n plugin, translation workflow (export/import/status), 8 locales
 - **Advanced AR/VR** — AR model placement (hit-test), VR collaboration (multi-user, real-time cursor sync)
@@ -15,11 +17,6 @@
 - **Third-party Integrations** — Notion, Jira/Linear, Figma webhook support (generic dispatcher pattern)
 - **Odoo ERP Full Integration** — Contact form → Lead sync, admin CRUD dashboard, document bridge, client portal views
 - **Currency & Regional Pricing** — 50+ currencies, 30+ regional pricing rules, VAT/GST/Sales tax compliance, dynamic regional markups
-
-### 🔴 Pending (1/26 deliverables)
-| Task | Priority | Effort | Business Value | Status |
-|------|----------|--------|-----------------|--------|
-| **S12-P2-007** | Playbook Sync | S | Medium | 🔄 **IN PROGRESS** (document Sprint 12 learnings) |
 
 ### 📊 Quality Metrics
 | Metric | Target | Current | Status |
@@ -206,9 +203,9 @@ Elevating `apps/frontend` to HEXA Creative Excellence standard. All gates green
 
 ---
 
-## 8. SPRINT 12 — INTEGRATIONS & CONTENT PIPELINE (ACTIVE)
+## 8. SPRINT 12 — INTEGRATIONS & CONTENT PIPELINE (✅ COMPLETE)
 
-**Planned:** 2026-07-16 | **Target:** 2026-09-01
+**Started:** 2026-07-16 | **Completed:** 2026-07-18 | **Story Points:** 34/34 ✅
 
 ### ✅ Completed
 
@@ -256,11 +253,16 @@ Elevating `apps/frontend` to HEXA Creative Excellence standard. All gates green
 
 **Status:** ✅ COMPLETE | **Retro:** 2026-07-18 | **Story Points:** 34/34 delivered
 
-### What shipped
+### What shipped (All 26 deliverables)
 - **Integration Hub** — webhook CRUD + generic dispatcher; Notion/Jira/Figma connected.
-- **Translation Workflow** — Strapi i18n export/import + reviewer dashboard.
+- **Translation Workflow** — Strapi i18n export/import + reviewer dashboard (8 locales).
 - **VR Collaboration** — real-time multi-user XR reviews (presence, avatars, throttled cursor sync).
 - **Currency/Localization** — regional pricing + tax compliance (30+ jurisdictions), locale→currency map, `CurrencyBadge`.
+- **Odoo ERP** — full leads/contacts/projects/milestones/invoices/documents bridge (user permission fix applied 2026-07-18).
+- **Slack Webhook** — approval/annotation notifications via Incoming Webhooks.
+- **Analytics** — PostHog/GA4, Sentry Release Health, event tracking across platform.
+- **Code Quality** — 0 lint, 0 typecheck, 196 tests (first time backend typecheck clean).
+- **Playbook Sync** — CRM.md, MODULES.md updated with full endpoint reference (S12-P2-007).
 
 ### Key learnings
 1. **Dead-code trap:** The `CurrencyModule` was fully built but its value was invisible until verified registered in `app.module.ts`. *Action: add a startup log / module-registry assertion so unregistered modules are caught in CI.*
