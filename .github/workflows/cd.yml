@@ -82,8 +82,9 @@ jobs:
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /opt/hexastudio
-            git pull origin main
+            cd /home/hexa/hexastudio
+            git fetch origin main
+            git reset --hard origin/main
             bash scripts/deploy-zero-downtime.sh
             docker image prune -f
 

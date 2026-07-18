@@ -5,6 +5,7 @@
   "main": "index.ts",
   "types": "index.ts",
   "scripts": {
+    "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit"
   }
 }

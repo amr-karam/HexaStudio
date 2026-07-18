@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "prebuild": "npm run --prefix ../../packages/types build",
     "build": "nest build",
     "dev": "nest start --watch",
-    "start": "node dist/apps/backend/src/main",
-    "start:prod": "node dist/apps/backend/src/main",
+    "start": "node dist/main",
+    "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
