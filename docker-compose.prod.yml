@@ -291,11 +291,6 @@ services:
       - ./docker/odoo/odoo.conf:/etc/odoo/odoo.conf:ro
       - ./docker/odoo/addons:/mnt/extra-addons:ro
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.odoo.rule=Host(`${ODOO_HOST:-odoo.localhost}`)
-      - traefik.http.routers.odoo.entrypoints=web
-      - traefik.http.routers.odoo.service=odoo
-      - traefik.http.services.odoo.loadbalancer.server.port=8069
       - com.centurylinklabs.watchtower.enable=true
     networks:
       - web
