@@ -92,9 +92,9 @@ Completed:
 
 ---
 
-# ⏱️ CURRENT SPRINT: INTEGRATIONS & CONTENT PIPELINE — ACTIVE
+# ⏱️ CURRENT SPRINT: INTEGRATIONS & CONTENT PIPELINE — ✅ COMPLETE
 
-**Sprint ID:** S-012 | **Focus:** Third-party Integrations, Content Pipeline, AR/VR Advanced | **Status:** 🟢 ACTIVE | **Start:** 2026-07-16 | **Target:** 2026-09-01
+**Sprint ID:** S-012 | **Focus:** Third-party Integrations, Content Pipeline, AR/VR Advanced | **Status:** ✅ COMPLETE | **Start:** 2026-07-16 | **Completed:** 2026-07-18
 
 ## 1. SPRINT OBJECTIVE
 
@@ -266,7 +266,19 @@ Complete the remaining 40% of Sprint 11 deliverables: connect HEXA to the tools 
 
 ## 6. RELEASE READINESS
 
-**v1.5.0 Target:** 2026-09-01
+**v1.5.0 Release Status:** ✅ COMPLETE
+
+All 26 Sprint 12 deliverables shipped:
+- ✅ Integration Hub — Slack Webhook, Notion, Jira, Figma (generic dispatcher)
+- ✅ Content Pipeline — Strapi i18n, translation workflow, 8 locales
+- ✅ Advanced AR/VR — AR hit-test model placement, VR multi-user collaboration
+- ✅ Analytics — PostHog/GA4, page view/event tracking, Sentry Release Health
+- ✅ Odoo ERP — Full leads/contacts/projects/milestones/invoices/documents bridge
+- ✅ Currency/Localization — 50+ currencies, 30+ regional pricing rules, tax compliance
+- ✅ Code Quality — 0 lint, 0 typecheck, 196 tests passing
+- ✅ Odoo user permission fix applied 2026-07-18
+
+**Next Action:** Sprint 13: Platform Stability & Mobile — see NEXT_SPRINT.md
 
 ---
 

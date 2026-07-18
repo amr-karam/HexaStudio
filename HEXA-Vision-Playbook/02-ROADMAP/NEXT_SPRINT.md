@@ -1,54 +1,71 @@
-# Next Sprint: Content Pipeline & Advanced Immersive
+# Next Sprint: Platform Stability & Mobile
 
-**Sprint ID:** S-013 | **Focus:** Strapi Localization, AR Placement, VR Collaboration, Integration Hub | **Status:** PLANNING
+**Sprint ID:** S-013 | **Focus:** Platform Stability, Mobile API Hardening, GeoIP & Localization | **Status:** PLANNING | **Start:** 2026-07-18 | **Target:** 2026-09-15 | **v1.6.0 Target**
 
 ## 1. SPRINT OBJECTIVE
 
-Complete Sprint 12 carry-overs: Strapi content localization pipeline, real-space AR model placement, multi-user VR collaboration, and the centralized webhook management dashboard.
+Harden the platform for production scale: complete API hardening (refresh token rotation, versioning audit, pagination audit, JWT coverage), ship GeoIP-driven regional pricing and currency selection, deliver Client Portal v3 with notification preferences and document upload, and resolve remaining technical debt blocking full CI green.
+
+---
 
 ## 2. HIGH-PRIORITY DELIVERABLES
 
-### 🌐 Content Pipeline (Strapi)
-- [ ] **Strapi i18n Plugin** — Enable and configure content localization
-- [ ] **Translation Workflow** — Export/import translation files, reviewer flow
-- [ ] **Currency/Localization** — Dynamic pricing per region, tax compliance
-- [ ] **RTL Content Audit** — Verify all CMS content renders correctly in RTL
+### Mobile & API Hardening (P0)
 
-### 🥽 Immersive Experiences (Advanced)
-- [ ] **AR Model Placement** — Place architectural models in real space via phone camera (hit-test API)
-- [ ] **VR Collaboration** — Multi-user design reviews in VR (basic sync)
-- [ ] **Mobile AR SDK** — Expo AR module for native AR placement
+- [ ] **Refresh Token Rotation** — Code written, needs verification end-to-end
+- [ ] **API Versioning Audit** — Verify all controllers use `@Version('1')` consistently
+- [ ] **Pagination Audit** — Verify `?page=&limit=` works on all list endpoints
+- [ ] **JWT Auth Coverage** — Audit that ALL `/api/*` endpoints are behind auth guard except explicitly public ones
 
-### 🔗 Integration Hub
-- [ ] **Webhook CRUD API** — Centralized webhook URL management dashboard
-- [ ] **Notion Integration** — Sync project milestones, task status
-- [ ] **Jira/Linear Integration** — Bidirectional issue sync
-- [ ] **Figma Webhook** — Design file change notifications
+### GeoIP & Localization (P1)
 
-### 📊 Analytics Advanced
-- [ ] **Advanced Analytics** — Custom dashboard builder, CSV export, scheduled reports
-- [ ] **Sentry Release Health** — Release tracking, error rate alerts, session replay
+- [ ] **GeoIP Region Detection** — MaxMind or IP2Location integration for auto-detecting user's region for pricing
+- [ ] **Currency Selection UI** — Frontend manual override of detected currency
+- [ ] **Exchange Rate Auto-Sync** — Periodic fetch from ECB API or OpenExchangeRates
 
-### 🧹 Technical Debt
-- [ ] **Next.js 16 Upgrade Assessment** — Required for postcss vuln fix (24 remaining vulns)
-- [ ] **Backend Lint** — Fix remaining 21 `no-explicit-any` in gemini.service.ts and assistants.controller.ts
-- [ ] **Backend Test Recovery** — Resolve `_corrupted_node_modules_stubs/` NTFS issue blocking vitest
+### Client Portal v3 (P1)
+
+- [ ] **Portal Notification Preferences** — Allow clients to opt in/out of notification types
+- [ ] **Portal Document Upload** — Allow clients to upload files to their project
+- [ ] **Portal Project Timeline Visualization** — Gantt-like view of milestones
+
+### Technical Debt (P2)
+
+- [ ] **Resolve `_corrupted_node_modules_stubs/` NTFS Issue** — Fix blocking backend vitest (chkdsk /f or re-clone)
+- [ ] **Fix 7 Pre-Existing Backend Test Failures** — Redis/auth related
+- [ ] **Dist Nesting Refactor** — Flatten `dist/apps/backend/src/main.js` to `dist/main.js`
+- [ ] **Hostinger API Key Rotation** — Rotate stale credentials
+- [ ] **Dependabot Remediation** — 24 moderate vulns (postcss XSS), deferred to Next.js 16.3+
+
+### Research (P3)
+
+- [ ] **Expo/React Native Mobile App Scaffold** — Planning for Sprint 14
+- [ ] **Next.js 16 Upgrade Watch** — Reassess when 16.3 ships
+- [ ] **WebGPU Rendering Research** — Evaluate for 3D scenes performance improvement
+
+---
 
 ## 3. SUCCESS CRITERIA
 
 | Metric | Target |
 |--------|--------|
-| i18n Coverage | 8 languages, 100% UI + CMS strings |
-| AR Placement Accuracy | <5cm error in good lighting |
-| Backend Lint | 0 errors |
-| npm Audit Vulns | 0 (or documented exceptions) |
+| Backend tests passing | 90+ (recover 7 failing, no regressions) |
+| Typecheck | 0 errors |
+| Lint | 0 errors |
+| npm vulns | <10 or documented exceptions |
+| GeoIP accuracy | >98% region detection |
+| Portal notification opt-out | Functional |
+
+---
 
 ## 4. DEPENDENCIES
 
-- Strapi i18n plugin + translation workflow configuration
-- WebXR browser support (Chrome/Android, Safari/iOS 17+)
-- React Native / Expo SDK 51+ for mobile AR
-- PostHog or GA4 project credentials
+- MaxMind GeoIP2 or IP2Location database subscription
+- ECB API or OpenExchangeRates API key for exchange rate auto-sync
+- Client Portal WebSocket infrastructure (already in place, extend for notifications)
+- MinIO signed URL mechanism (already in place, extend for client uploads)
+
+---
 
 ## 5. RELEASE READINESS
 
@@ -56,4 +73,4 @@ Complete Sprint 12 carry-overs: Strapi content localization pipeline, real-space
 
 ---
 
-*"From ecosystem to infrastructure."*
+*"Stability before scale. Hardening before growth."*
