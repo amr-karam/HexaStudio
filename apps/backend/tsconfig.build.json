@@ -5,7 +5,12 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "incremental": false,
-    "tsBuildInfoFile": null
+    "tsBuildInfoFile": null,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@hexastudio/types": ["../../packages/types/dist/index.d.ts"],
+      "@hexastudio/*": ["../../packages/*/dist"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "test"]
