@@ -9,6 +9,7 @@ import { LazySceneCanvas } from '@/features/scene';
 import { SceneErrorBoundary } from '@/features/scene/components/SceneErrorBoundary';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { useReducedMotion } from '@/hooks';
+import { EASE } from '@/lib/motion';
 
 export const HomeHero = () => {
   const prefersReducedMotion = useReducedMotion();
@@ -90,9 +91,14 @@ export const HomeHero = () => {
         <div className="overflow-hidden mb-6 md:mb-8">
           <TextReveal delay={0.1}>
             <motion.h1 
-              initial={{ letterSpacing: "-0.05em" }}
+              initial={{ letterSpacing: prefersReducedMotion ? "-0.02em" : "-0.05em" }}
               animate={{ letterSpacing: "-0.02em" }}
-              transition={{ duration: 2, ease: "easeInOut", repeat: Infinity, repeatType: "reverse" }}
+              transition={prefersReducedMotion ? { duration: 0.01 } : { 
+                duration: 2, 
+                ease: EASE.entrance, 
+                repeat: Infinity, 
+                repeatType: "reverse" as const 
+              }}
               className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-light tracking-tighter text-white leading-[1.05]"
             >
               Living <span className="font-serif italic text-gold">Spaces.</span> <br />

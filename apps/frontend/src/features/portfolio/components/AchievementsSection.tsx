@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, useInView, animate } from 'framer-motion';
 import { RadialGlow } from '@/components/animation';
+import { makeTransition } from '@/lib/motion';
 
 const stats = [
   { value: 12, label: 'Countries Served', suffix: '+' },
@@ -34,7 +35,7 @@ const StatItem = ({ stat, index }: { stat: typeof stats[0], index: number }) => 
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.8, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+      transition={makeTransition('entrance', 'page', index * 0.1)}
       className="text-center group relative"
     >
       <div className="absolute -inset-4 bg-accent/5 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-full" />

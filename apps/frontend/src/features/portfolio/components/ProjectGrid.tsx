@@ -7,6 +7,8 @@ import { ProjectDetailModal } from '@/components/ui/modals/ProjectDetailModal';
 import { Project } from '@hexastudio/types';
 import { Magnetic } from '@/components/ui/Magnetic';
 import { cn } from '@/lib/utils';
+import { EASE, DURATION, makeTransition } from '@/lib/motion';
+import { RadialGlow } from '@/components/animation';
 
 interface ProjectCardProps {
   title: string;
@@ -44,11 +46,11 @@ const ProjectCard = ({ title, category, image, index, onClick, isFocused, status
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{
-        duration: 1.2,
-        delay: (index % 4) * 0.1,
-        ease: [0.16, 1, 0.3, 1]
-      }}
+        transition={{
+          duration: DURATION.page,
+          delay: (index % 4) * 0.1,
+          ease: EASE.entrance,
+        }}
       className="group cursor-pointer perspective-1000"
       data-testid="project-card"
       onClick={onClick}
@@ -177,7 +179,9 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
 
   return (
     <>
-      <section ref={sectionRef} className="px-8 md:px-16 py-32 bg-background">
+      <section ref={sectionRef} className="px-8 md:px-16 py-32 bg-background relative overflow-hidden">
+        <RadialGlow color="#D4AF37" size={700} top="-250px" right="-150px" blur={80} opacity={0.08} />
+        <RadialGlow color="#D4AF37" size={500} bottom="-200px" left="-100px" blur={60} opacity={0.05} />
         <div className="flex flex-col lg:flex-row justify-between items-end mb-24 gap-12">
           <div className="w-full">
               <motion.span
@@ -193,7 +197,7 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              transition={makeTransition('entrance', 'page')}
               className="text-5xl md:text-7xl font-serif font-light tracking-tight text-foreground leading-[1.1]"
             >
               Creating <span className="italic text-accent">Visual</span> Truth
@@ -203,7 +207,7 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            transition={makeTransition('entrance', 'page', 0.2)}
             className="text-neutral-500 font-light text-sm leading-relaxed max-w-xs"
           >
             A curation of architectural narratives defined by light, material, and space.

@@ -15,6 +15,10 @@ vi.mock('framer-motion', () => ({
       const { initial: _i, whileInView: _w, viewport: _v, transition: _t, ...rest } = props;
       return <h2 {...rest}>{children as ReactNode}</h2>;
     },
+    p: ({ children, ...props }: Record<string, unknown>) => {
+      const { initial: _i, whileInView: _w, viewport: _v, transition: _t, ...rest } = props;
+      return <p {...rest}>{children as ReactNode}</p>;
+    },
     div: ({ children, ...props }: Record<string, unknown>) => {
       const { initial: _i, whileInView: _w, viewport: _v, transition: _t, ...rest } = props;
       return <div {...rest}>{children as ReactNode}</div>;
@@ -32,6 +36,11 @@ vi.mock('@/components/ui/Button', () => ({
 // Mock the Input re-export
 vi.mock('@/components/ui/inputs/Input', () => ({
   Input: (props: Record<string, unknown>) => <input {...props} />,
+}));
+
+// Mock RadialGlow
+vi.mock('@/components/animation', () => ({
+  RadialGlow: () => null,
 }));
 
 describe('NewsletterSection', () => {
