@@ -2,6 +2,7 @@ import hmac
 import hashlib
 import json
 import logging
+import urllib.request
 from datetime import date, datetime
 
 from odoo import models, fields, api
@@ -76,8 +77,6 @@ class HexaWebhook(models.Model):
                 _logger.error("HEXA sync ping failed: %s", exc)
 
     def _post(self, url, body, signature):
-        import urllib.request
-
         req = urllib.request.Request(
             url,
             data=body,

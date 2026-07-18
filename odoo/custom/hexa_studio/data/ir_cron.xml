@@ -3,7 +3,7 @@
     <!-- Scheduled pull fallback: notifies the NestJS BFF to reconcile cached data -->
     <record id="ir_cron_hexa_sync" model="ir.cron">
         <field name="name">HEXA: Scheduled Odoo Sync</field>
-        <field name="model_id" ref="model_res_partner"/>
+        <field name="model_id" ref="model_hexa_webhook"/>
         <field name="state">code</field>
         <field name="code">model.env['hexa.webhook'].ping_bff()</field>
         <field name="interval_number">15</field>

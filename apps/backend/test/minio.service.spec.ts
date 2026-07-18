@@ -1,36 +1,29 @@
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import './setup';
-import { Test, TestingModule } from '@nestjs/testing';
 import { InternalServerErrorException } from '@nestjs/common';
 import { MinioService } from '../src/modules/storage/minio.service';
 
-// MinioService constructor uses require('minio') which hangs in Node 24 test environment.
-// Run these tests manually: docker compose up -d minio && npx vitest run test/minio.service.spec.ts
-describe.skip('MinioService (requires real MinIO)', () => {
-  let service: MinioService;
-  let mockClient: {
-    presignedGetObject: ReturnType<typeof vi.fn>;
-    presignedPutObject: ReturnType<typeof vi.fn>;
-    putObject: ReturnType<typeof vi.fn>;
-    removeObject: ReturnType<typeof vi.fn>;
-    listObjects: ReturnType<typeof vi.fn>;
+function createMockClient() {
+  return {
+    presignedGetObject: vi.fn(),
+    presignedPutObject: vi.fn(),
+    putObject: vi.fn(),
+    removeObject: vi.fn(),
+    listObjects: vi.fn(),
   };
+}
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [MinioService],
-    }).compile();
+describe('MinioService (injected mock client)', () => {
+  let service: MinioService;
+  let mockClient: ReturnType<typeof createMockClient>;
 
-    service = module.get<MinioService>(MinioService);
+  beforeEach(() => {
+    mockClient = createMockClient();
+    service = new MinioService(mockClient);
+  });
 
-    // Replace the internal client with a fully mocked version
-    mockClient = {
-      presignedGetObject: vi.fn(),
-      presignedPutObject: vi.fn(),
-      putObject: vi.fn(),
-      removeObject: vi.fn(),
-      listObjects: vi.fn(),
-    };
-    (service as any).client = mockClient;
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   describe('validateBucket (via getPresignedDownloadUrl)', () => {
@@ -108,8 +101,9 @@ describe.skip('MinioService (requires real MinIO)', () => {
       mockClient.putObject.mockResolvedValueOnce(undefined);
       const result = await service.uploadFile('uploads', 'test.jpg', Buffer.from('data'));
       expect(result).toBe('test.jpg');
+      // Service auto-detects Content-Type from .jpg extension
       expect(mockClient.putObject).toHaveBeenCalledWith(
-        'uploads', 'test.jpg', expect.any(Buffer), undefined, undefined,
+        'uploads', 'test.jpg', expect.any(Buffer), undefined, { 'Content-Type': 'image/jpeg' },
       );
     });
 
@@ -141,7 +135,9 @@ describe.skip('MinioService (requires real MinIO)', () => {
       mockClient.listObjects.mockReturnValueOnce(asyncIterable);
 
       const files = await service.listFiles('models', 'scenes/');
-      expect(files).toEqual(['file1.glb', 'file2.glb']);
+      expect(files).toHaveLength(2);
+      expect(files[0].name).toBe('file1.glb');
+      expect(files[1].name).toBe('file2.glb');
     });
 
     it('returns empty array when no objects in bucket', async () => {

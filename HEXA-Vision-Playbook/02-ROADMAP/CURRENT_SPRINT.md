@@ -113,6 +113,7 @@ Complete the remaining 40% of Sprint 11 deliverables: connect HEXA to the tools 
 - [x] **Integration Hub Dashboard** — Frontend admin page at `/dashboard/integrations/` with webhook list, create/edit form, toggle, delete, empty state
 - [x] **Notion/Jira/Linear Integration** — Notion + Jira modules (controllers/services), frontend NotionPanel/JiraPanel in Integration Hub, env vars wired
 - [x] **Figma Webhook** — `figma:update`/`figma:comment` event options in Integration Hub (delivered via generic WebhookDispatcher)
+- [x] **Currency/Localization** — Dynamic regional pricing + tax compliance: backend `CurrencyModule` (live `/api/currency/*` + `/api/pricing/*` with 30+ regional tax rules, exchange rates, tax-inclusive/exclusive models), frontend `currencyApi` client, `localeToRegion` map (8 locales→region/currency), `useRegionalPrice` hook (Intl formatting + USD fallback), `CurrencyBadge` UI
 
 ### 📊 Analytics & Observability
 - [x] **Analytics Provider** — Universal abstraction with PostHog and GA4 support (`lib/analytics/`)
@@ -244,6 +245,13 @@ Complete the remaining 40% of Sprint 11 deliverables: connect HEXA to the tools 
 | `apps/frontend/src/features/xr/components/XRView.tsx` | MODIFIED — Thread sendCursor prop to scene |
 | `apps/frontend/src/app/xr-viewer/XRViewerClient.tsx` | MODIFIED — Wire useCollaboration + CollabPresence (project/user query params) |
 | `apps/frontend/src/features/xr/index.ts` | MODIFIED — Export collaboration components/hook |
+| `apps/backend/src/modules/currency/currency.module.ts` | EXISTING — Regional pricing/tax/exchange-rate engine (verified registered in app.module) |
+| `apps/backend/src/modules/currency/currency.controller.ts` | EXISTING — `/api/currency/*` + `/api/pricing/*` endpoints |
+| `apps/frontend/src/features/currency/api.ts` | NEW — `currencyApi` client (list/get/rate/calculate/preview) |
+| `apps/frontend/src/features/currency/locale-region.ts` | NEW — 8-locale → region/currency map |
+| `apps/frontend/src/features/currency/usePricing.ts` | NEW — `useRegionalPrice` hook (Intl format + USD fallback) |
+| `apps/frontend/src/features/currency/CurrencyBadge.tsx` | NEW — Tax-aware price badge (dark/gold luxury styling) |
+| `apps/frontend/src/features/currency/index.ts` | NEW — Barrel export |
 
 ---
 
@@ -353,18 +361,7 @@ Harden the production deployment: establish real observability (alerts, dashboar
 
 ## 6. RELEASE READINESS
 
-**v1.2.0 Release Status:** ✅ RELEASED
-
-Completed:
-- ✅ Real AI capabilities (embeddings, search, auto-tag, recommendations)
-- ✅ Production hardening (observability, alerting, dashboards, error budgets, logs)
-- ✅ Performance budgets (Lighthouse CI, bundle analysis, image audit)
-- ✅ Security hardening (password rotation, backup drills, log alerts)
-- ✅ Documentation sync (runbooks, playbooks, devops docs)
-
-## 6. RELEASE READINESS
-
-**v1.3.0 Release Status:** ✅ RELEASED
+**v1.2.0 / v1.3.0 Release Status:** ✅ RELEASED
 
 Completed:
 - ✅ Real AI capabilities (embeddings, search, auto-tag, recommendations)
@@ -373,8 +370,6 @@ Completed:
 - ✅ Security hardening (password rotation, backup drills, log alerts)
 - ✅ Documentation sync (runbooks, playbooks, devops docs)
 - ✅ AI Architect MVP (CEO/Sales/PM Assistants, Generative Visualization, Predictive Analytics)
-
-**Next Action:** Start S-011: Platform Expansion & Mobile API.
 
 
 
