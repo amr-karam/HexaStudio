@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, Optional } from '@nestjs/common';
 import { getEnv } from '../../config/env';
 import { extname } from 'path';
 
@@ -40,7 +40,11 @@ export class MinioService {
   private client: MinioClient;
   private readonly logger = new Logger(MinioService.name);
 
-  constructor() {
+  constructor(@Optional() client?: MinioClient) {
+    if (client) {
+      this.client = client;
+      return;
+    }
     const env = getEnv();
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const Minio = require('minio');

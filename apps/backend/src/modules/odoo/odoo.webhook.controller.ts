@@ -1,10 +1,12 @@
 import { Body, Controller, Headers, HttpCode, HttpStatus, Logger, Post, RawBodyRequest, Req, UnauthorizedException, VERSION_NEUTRAL } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiHeader, ApiBody } from '@nestjs/swagger';
 import { createHmac, timingSafeEqual } from 'crypto';
 import { Request } from 'express';
 import { OdooSyncService } from './odoo-sync.service';
 import { getEnv } from '../../config/env';
 import type { OdooWebhookPayload } from '@hexastudio/types';
 
+@ApiTags('Odoo Webhook')
 @Controller({ path: 'odoo/webhook', version: VERSION_NEUTRAL })
 export class OdooWebhookController {
   private readonly logger = new Logger(OdooWebhookController.name);
@@ -12,6 +14,9 @@ export class OdooWebhookController {
   constructor(private readonly odooSyncService: OdooSyncService) {}
 
   @Post()
+  @ApiOperation({ summary: 'Receive an Odoo webhook event', description: 'Validates HMAC-SHA256 signature from the x-odoo-signature header and routes the event through the sync service.' })
+  @ApiHeader({ name: 'x-odoo-signature', required: true, description: 'HMAC-SHA256 hex digest of the raw request body' })
+  @ApiBody({ schema: { type: 'object', properties: { model: { type: 'string' }, id: { type: 'integer' }, action: { type: 'string' }, data: { type: 'object' } } } })
   @HttpCode(HttpStatus.OK)
   async handleWebhook(
     @Headers('x-odoo-signature') signature: string,

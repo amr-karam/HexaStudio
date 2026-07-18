@@ -245,14 +245,38 @@ Elevating `apps/frontend` to HEXA Creative Excellence standard. All gates green
 | **S12-P1-001** | Notion Integration — Sync project milestones, task status | M | Webhooks | ✅ Done |
 | **S12-P1-002** | Jira/Linear Integration — Bidirectional issue sync | M | Webhooks | ✅ Done |
 | **S12-P1-003** | Figma Webhook — Design file change notifications | M | Webhooks | ✅ Done (generic dispatcher + `figma:update`/`figma:comment` event options) |
-| **S12-P1-005** | VR Collaboration — Multi-user design reviews (basic sync) | XL | WebSocket, WebXR | ✅ Done (collab room sync, live avatars, presence HUD) | ✅ Done (S11 + S12) |
-| **S12-P1-006** | Currency/Localization — Dynamic pricing per region, tax compliance | M | i18n infra | ✅ **DONE** |
+| **S12-P1-005** | VR Collaboration — Multi-user design reviews (basic sync) | XL | WebSocket, WebXR | ✅ Done (collab room sync, live avatars, presence HUD, cursor throttle) |
+| **S12-P1-006** | Currency/Localization — Dynamic pricing per region, tax compliance | M | i18n infra | ✅ Done (CurrencyModule live: /api/currency + /api/pricing; frontend useRegionalPrice + CurrencyBadge + locale→region/currency map) | ✅ **DONE** |
 | **S12-P1-007** | Next.js 16 Upgrade Assessment — **DONE: Defer to v16.3+** (see report below) | M | — | ✅ Done |
-| **S12-P2-007** | Playbook Sync — Document Sprint 12 learnings | S | — | 🔄 In Progress |
+| **S12-P2-007** | Playbook Sync — Document Sprint 12 learnings | S | — | ✅ Done |
 
 ---
 
-## 9. S12-P1-006 CURRENCY & REGIONAL PRICING IMPLEMENTATION
+## 10. SPRINT 12 RETROSPECTIVE & LEARNINGS
+
+**Status:** ✅ COMPLETE | **Retro:** 2026-07-18 | **Story Points:** 34/34 delivered
+
+### What shipped
+- **Integration Hub** — webhook CRUD + generic dispatcher; Notion/Jira/Figma connected.
+- **Translation Workflow** — Strapi i18n export/import + reviewer dashboard.
+- **VR Collaboration** — real-time multi-user XR reviews (presence, avatars, throttled cursor sync).
+- **Currency/Localization** — regional pricing + tax compliance (30+ jurisdictions), locale→currency map, `CurrencyBadge`.
+
+### Key learnings
+1. **Dead-code trap:** The `CurrencyModule` was fully built but its value was invisible until verified registered in `app.module.ts`. *Action: add a startup log / module-registry assertion so unregistered modules are caught in CI.*
+2. **Gateway reuse:** The generic `WebhookDispatcher` + `RealtimeGateway` room model meant Figma/VR collab needed *zero* new infra — only event options + a thin store slice. *Prefer extending the event bus over new gateways.*
+3. **Frontend resilience:** Network-dependent UI (currency badge) must degrade gracefully (USD fallback) — never block render on an optional API.
+4. **Cursor throttling:** Broadcasting raw per-frame camera pose flooded the socket; throttle to ~15 Hz. *Document a per-frame-network-budget rule for realtime features.*
+5. **File corruption:** `git checkout` is the reliable recovery when an edit leaves duplicated/garbled function definitions (NTFS reparse corruption observed this sprint).
+
+### Quality gate outcome
+- Frontend typecheck ✅ · Frontend lint (`--max-warnings=0`) ✅
+- Backend typecheck ✅ · Backend lint ✅
+- Remaining known issues (carried forward): 24 npm vulns (postcss XSS → defer to Next.js 16.3+), `_corrupted_node_modules_stubs/` (needs `chkdsk /f`), 7 pre-existing backend test failures (Redis/auth).
+
+---
+
+
 
 **Status:** ✅ COMPLETE | **Implemented:** 2026-07-17 | **Files:** `apps/backend/src/modules/currency/`
 

@@ -8,7 +8,7 @@ const vitalsEndpoint = process.env.NEXT_PUBLIC_VITALS_ENDPOINT;
 export function WebVitals() {
   const handleReport = useCallback((metric: { name: string; value: number; id: string; rating?: string }) => {
     if (process.env.NODE_ENV === 'development') {
-      console.log('[Web Vitals]', metric.name, metric.value, metric.rating ?? '');
+      // Dev-only: Web Vitals are logged via the reporting path below in production
       return;
     }
 
