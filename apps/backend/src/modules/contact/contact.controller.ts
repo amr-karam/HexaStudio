@@ -1,10 +1,10 @@
-import { Body, Controller, HttpCode, Post, VERSION_NEUTRAL } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { ContactService } from './contact.service';
 import { CreateContactDto } from './dto/create-contact.dto';
 
 @ApiTags('contact')
-@Controller({ path: 'contact', version: VERSION_NEUTRAL })
+@Controller({ path: 'contact', version: '1' })
 export class ContactController {
   constructor(private readonly contactService: ContactService) {}
 

@@ -42,23 +42,27 @@ export class RequestsService {
     };
   }
 
-  async getRequestsByClient(clientEmail: string): Promise<ProjectRequest[]> {
+  async getRequestsByClient(clientEmail: string, page: number = 1, limit: number = 20): Promise<{ data: ProjectRequest[]; total: number; page: number; limit: number }> {
     const leads = await this.odooService.searchRead(
       'crm.lead',
       [['email_from', '=', clientEmail]],
       ['name', 'partner_name', 'description', 'priority', 'stage_id', 'create_date'],
     );
 
-    return leads.map((lead: Record<string, unknown>) => ({
-      id: `REQ-${lead.id}`,
+    const all: ProjectRequest[] = leads.map((lead: Record<string, unknown>) => ({
+      id: `REQ-${lead.id}` as string,
       projectId: 'odoo',
       clientId: (lead.partner_name as string) || clientEmail,
       title: ((lead.name as string) || '').replace('[Request] ', ''),
       description: (lead.description as string) || '',
-      priority: lead.priority === '3' ? 'high' : lead.priority === '1' ? 'low' : 'medium',
-      status: 'pending',
+      priority: (lead.priority === '3' ? 'high' : lead.priority === '1' ? 'low' : 'medium') as ProjectRequest['priority'],
+      status: 'pending' as ProjectRequest['status'],
       createdAt: (lead.create_date as string) || new Date().toISOString(),
     }));
+
+    const skip = (page - 1) * limit;
+    const data = all.slice(skip, skip + limit);
+    return { data, total: all.length, page, limit };
   }
 
   async updateRequestStatus(id: string, status: ProjectRequest['status']): Promise<ProjectRequest> {
@@ -89,22 +93,26 @@ export class RequestsService {
     };
   }
 
-  async findAll(): Promise<ProjectRequest[]> {
+  async findAll(page: number = 1, limit: number = 20): Promise<{ data: ProjectRequest[]; total: number; page: number; limit: number }> {
     const leads = await this.odooService.searchRead(
       'crm.lead',
       [['name', 'like', '[Request]%']],
       ['name', 'partner_name', 'description', 'priority', 'stage_id', 'create_date'],
     );
 
-    return leads.map((lead: Record<string, unknown>) => ({
-      id: `REQ-${lead.id}`,
+    const all: ProjectRequest[] = leads.map((lead: Record<string, unknown>) => ({
+      id: `REQ-${lead.id}` as string,
       projectId: 'odoo',
       clientId: (lead.partner_name as string) || '',
       title: ((lead.name as string) || '').replace('[Request] ', ''),
       description: (lead.description as string) || '',
-      priority: lead.priority === '3' ? 'high' : lead.priority === '1' ? 'low' : 'medium',
-      status: 'pending',
+      priority: (lead.priority === '3' ? 'high' : lead.priority === '1' ? 'low' : 'medium') as ProjectRequest['priority'],
+      status: 'pending' as ProjectRequest['status'],
       createdAt: (lead.create_date as string) || new Date().toISOString(),
     }));
+
+    const skip = (page - 1) * limit;
+    const data = all.slice(skip, skip + limit);
+    return { data, total: all.length, page, limit };
   }
 }

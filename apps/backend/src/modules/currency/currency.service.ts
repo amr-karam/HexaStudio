@@ -316,4 +316,58 @@ export class CurrencyService implements OnModuleInit {
     // TODO: Integrate with ECB, OpenExchangeRates, or Fixer API
     this.logger.log('Exchange rate sync completed (scheduled daily)');
   }
+
+  // ──────────────────────────────────────────────
+  // New methods backed by Redis hash (auto-synced)
+  // ──────────────────────────────────────────────
+
+  /**
+   * Get all latest exchange rates from the Redis cache (USD-based).
+   * Returns a flat map of currency code → rate (e.g. { EUR: 0.92, GBP: 0.79 }).
+   */
+  async getLatestRates(): Promise<Record<string, number>> {
+    try {
+      const rates = await this.redis.hgetall<number>('exchange_rates:latest');
+      return rates ?? {};
+    } catch (error) {
+      this.logger.warn(
+        `Failed to read latest rates from Redis: ${error instanceof Error ? error.message : String(error)}`,
+      );
+      return {};
+    }
+  }
+
+  /**
+   * Get the exchange rate between two currencies using cached Redis rates.
+   * The API base currency is always USD, so we compute cross-rates when needed.
+   */
+  async getRate(from: string, to: string): Promise<number> {
+    if (from === to) return 1.0;
+
+    const rates = await this.getLatestRates();
+
+    // Direct rate: from → to
+    if (from === 'USD' && rates[to] !== undefined) {
+      return rates[to];
+    }
+
+    if (to === 'USD' && rates[from] !== undefined) {
+      return 1 / rates[from];
+    }
+
+    // Cross-rate via USD
+    if (rates[from] !== undefined && rates[to] !== undefined) {
+      return rates[to] / rates[from];
+    }
+
+    throw new Error(`Exchange rate not available for ${from} → ${to}`);
+  }
+
+  /**
+   * Convert an amount from one currency to another using cached rates.
+   */
+  async convert(amount: number, from: string, to: string): Promise<number> {
+    const rate = await this.getRate(from.toUpperCase(), to.toUpperCase());
+    return amount * rate;
+  }
 }

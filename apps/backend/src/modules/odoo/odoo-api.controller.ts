@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Post, Patch, Delete, Param, Body, UploadedFile, UseInterceptors, VERSION_NEUTRAL, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, Post, Patch, Delete, Param, Body, UploadedFile, UseInterceptors, UseGuards } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiQuery, ApiBearerAuth, ApiParam, ApiConsumes } from '@nestjs/swagger';
 import { OdooApiService } from './odoo-api.service';
@@ -12,7 +12,7 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')
-@Controller({ path: 'odoo', version: VERSION_NEUTRAL })
+@Controller({ path: 'odoo', version: '1' })
 export class OdooApiController {
   constructor(
     private readonly odooApi: OdooApiService,

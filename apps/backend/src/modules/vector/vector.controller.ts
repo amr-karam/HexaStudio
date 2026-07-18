@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Param, UseGuards, Query, VERSION_NEUTRAL } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, UseGuards, Query } from '@nestjs/common';
 import { VectorService } from './vector.service';
 import { VectorSyncService } from './vector-sync.service';
 import { RecommendationService, SimilarProjectResult } from './recommendation.service';
@@ -8,7 +8,7 @@ import { ProjectsService } from '../projects/projects.service';
 import type { SemanticSearchRequest, SemanticSearchResponse } from '@hexastudio/types';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
-@Controller({ path: 'vector', version: VERSION_NEUTRAL })
+@Controller({ path: 'vector', version: '1' })
 export class VectorController {
   constructor(
     private readonly vectorService: VectorService,

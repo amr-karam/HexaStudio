@@ -1,5 +1,12 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
+import { randomUUID } from 'crypto';
 import { OdooService } from '../odoo/odoo.service';
+import { MinioService } from '../storage/minio.service';
+import { RedisService } from '../storage/redis.service';
 
 export interface PortalProjectStatus {
   phase: string;
@@ -9,10 +16,17 @@ export interface PortalProjectStatus {
 }
 
 export interface PortalDocument {
-  name: string;
-  url: string;
-  type: string;
-  size: string;
+  id: string;
+  projectId: string;
+  fileName: string;
+  originalName: string;
+  mimeType: string;
+  size: number;
+  storagePath: string;
+  uploadedBy: string;
+  uploadedAt: string;
+  description?: string;
+  downloadUrl?: string;
 }
 
 export interface PortalInvoice {
@@ -50,12 +64,17 @@ export interface ClientInvoice {
   state: string;
 }
 
+const PORTAL_DOCUMENTS_PREFIX = 'portal:documents';
+const PORTAL_BUCKET = 'portal';
+
 @Injectable()
 export class PortalService {
   private readonly logger = new Logger(PortalService.name);
 
   constructor(
     private readonly odooService: OdooService,
+    private readonly minioService: MinioService,
+    private readonly redisService: RedisService,
   ) {}
 
   async getClientProjectData(clientEmail?: string) {
@@ -87,6 +106,9 @@ export class PortalService {
             : 'overdue',
     }));
 
+    const projectId = primaryProject ? String(primaryProject.id) : undefined;
+    const documents = projectId ? await this.getDocuments(projectId) : [];
+
     return {
       project: {
         title: primaryProject?.name ?? 'No Project',
@@ -94,7 +116,7 @@ export class PortalService {
         status: primaryProject?.status ?? '',
       },
       timeline,
-      documents: [],
+      documents,
       invoices: invoiceData,
       lead: {
         name: 'Client',
@@ -103,6 +125,120 @@ export class PortalService {
         avatar: '/avatars/default.jpg',
       },
     };
+  }
+
+  // --- Document Management (MinIO + Redis) ---
+
+  private documentRedisKey(projectId: string): string {
+    return `${PORTAL_DOCUMENTS_PREFIX}:${projectId}`;
+  }
+
+  /**
+   * Upload a document to MinIO and store metadata in Redis.
+   */
+  async uploadDocument(
+    projectId: string,
+    file: { buffer: Buffer; originalname: string; mimetype: string; size: number },
+    userId: string,
+    description?: string,
+  ): Promise<PortalDocument> {
+    const docId = randomUUID();
+    const safeName = file.originalname.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const storagePath = `${projectId}/${docId}-${safeName}`;
+
+    // Upload to MinIO portal bucket
+    await this.minioService.uploadFile(PORTAL_BUCKET, storagePath, file.buffer, {
+      'Content-Type': file.mimetype,
+    });
+
+    this.logger.log(
+      `Uploaded document ${safeName} (${(file.size / 1024).toFixed(1)} KB) to portal/${storagePath}`,
+    );
+
+    const doc: PortalDocument = {
+      id: docId,
+      projectId,
+      fileName: `${docId}-${safeName}`,
+      originalName: file.originalname,
+      mimeType: file.mimetype,
+      size: file.size,
+      storagePath,
+      uploadedBy: userId,
+      uploadedAt: new Date().toISOString(),
+      description,
+    };
+
+    // Store metadata in Redis hash
+    await this.redisService.hset(this.documentRedisKey(projectId), docId, doc);
+
+    return doc;
+  }
+
+  /**
+   * Get all documents for a project with signed download URLs.
+   */
+  async getDocuments(projectId: string): Promise<PortalDocument[]> {
+    const key = this.documentRedisKey(projectId);
+    const docsMap = await this.redisService.hgetall<PortalDocument>(key);
+
+    const docs = Object.values(docsMap);
+
+    // Attach signed URLs
+    const enriched = await Promise.all(
+      docs.map(async (doc) => {
+        try {
+          const downloadUrl = await this.minioService.getPresignedDownloadUrl(
+            PORTAL_BUCKET,
+            doc.storagePath,
+            3600,
+          );
+          return { ...doc, downloadUrl };
+        } catch {
+          this.logger.warn(`Failed to generate signed URL for ${doc.storagePath}`);
+          return { ...doc, downloadUrl: '' };
+        }
+      }),
+    );
+
+    // Sort by upload date descending (newest first)
+    enriched.sort(
+      (a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime(),
+    );
+
+    return enriched;
+  }
+
+  /**
+   * Delete a document from MinIO and Redis.
+   */
+  async deleteDocument(projectId: string, documentId: string): Promise<void> {
+    const key = this.documentRedisKey(projectId);
+
+    // Check if document exists in Redis
+    const exists = await this.redisService.hexists(key, documentId);
+    if (!exists) {
+      throw new NotFoundException(`Document ${documentId} not found for project ${projectId}`);
+    }
+
+    // Get metadata to find storage path
+    const docsMap = await this.redisService.hgetall<PortalDocument>(key);
+    const doc = docsMap[documentId];
+    if (!doc) {
+      throw new NotFoundException(`Document ${documentId} metadata not found`);
+    }
+
+    // Delete from MinIO
+    try {
+      await this.minioService.deleteFile(PORTAL_BUCKET, doc.storagePath);
+      this.logger.log(`Deleted file portal/${doc.storagePath} from MinIO`);
+    } catch (err) {
+      this.logger.warn(`Failed to delete file from MinIO: ${err}`);
+      // Continue — still remove the metadata entry
+    }
+
+    // Delete metadata from Redis
+    await this.redisService.hdel(key, documentId);
+    this.logger.log(`Deleted document ${documentId} metadata from Redis`);
   }
 
   // --- Client-scoped Odoo methods ---

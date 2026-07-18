@@ -1,8 +1,8 @@
-import { Controller, Post, Get, Body, Patch, Param, UseGuards, VERSION_NEUTRAL } from '@nestjs/common';
+import { Controller, Post, Get, Body, Patch, Param, Query, DefaultValuePipe, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { RequestsService, ProjectRequest } from './requests.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
-@Controller({ path: 'requests', version: VERSION_NEUTRAL })
+@Controller({ path: 'requests', version: '1' })
 export class RequestsController {
   constructor(private readonly requestsService: RequestsService) {}
 
@@ -14,14 +14,39 @@ export class RequestsController {
 
   @Get('client/:clientId')
   @UseGuards(JwtAuthGuard)
-  async findByClient(@Param('clientId') clientId: string): Promise<ProjectRequest[]> {
-    return this.requestsService.getRequestsByClient(clientId);
+  async findByClient(
+    @Param('clientId') clientId: string,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number = 20,
+  ) {
+    const { data, total } = await this.requestsService.getRequestsByClient(clientId, page, limit);
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   @Get('admin')
   @UseGuards(JwtAuthGuard)
-  async findAllAdmin(): Promise<ProjectRequest[]> {
-    return this.requestsService.findAll();
+  async findAllAdmin(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number = 20,
+  ) {
+    const { data, total } = await this.requestsService.findAll(page, limit);
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   @Patch(':id/status')

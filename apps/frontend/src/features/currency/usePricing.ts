@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useLocale } from '@/i18n/LocaleProvider';
 import { currencyApi, PricingResponse } from './api';
 import { localeToRegion } from './locale-region';
+import { useCurrencyStore } from './currency-store';
 
 interface RegionalPriceState {
   formatted: string;
@@ -23,15 +24,28 @@ function formatCurrency(value: number, locale: string, currency: string): string
 
 export function useRegionalPrice(baseAmountUSD: number): RegionalPriceState {
   const { locale } = useLocale();
-  const { region, currency } = localeToRegion(locale);
+  const { region: localeRegion, currency: localeCurrency } =
+    localeToRegion(locale);
+
+  // Read manual currency override from the Zustand store
+  const selectedCurrency = useCurrencyStore((s) => s.selectedCurrency);
+  const availableCurrencies = useCurrencyStore((s) => s.availableCurrencies);
+
+  // Determine effective region + currency
+  const selectedInfo = selectedCurrency
+    ? availableCurrencies.find((c) => c.code === selectedCurrency)
+    : null;
+
+  const effectiveRegion = selectedInfo?.region ?? localeRegion;
+  const effectiveCurrency = selectedCurrency ?? localeCurrency;
 
   const [state, setState] = useState<RegionalPriceState>({
-    formatted: formatCurrency(baseAmountUSD, locale, 'USD'),
+    formatted: formatCurrency(baseAmountUSD, locale, effectiveCurrency),
     loading: true,
-    currency,
+    currency: effectiveCurrency,
     taxRate: 0,
     includesTax: false,
-    region,
+    region: effectiveRegion,
   });
 
   useEffect(() => {
@@ -40,12 +54,16 @@ export function useRegionalPrice(baseAmountUSD: number): RegionalPriceState {
     setState((prev) => ({
       ...prev,
       loading: true,
-      currency,
-      region,
+      currency: effectiveCurrency,
+      region: effectiveRegion,
     }));
 
     currencyApi
-      .previewPrice({ baseAmount: baseAmountUSD, baseCurrency: 'USD', region })
+      .previewPrice({
+        baseAmount: baseAmountUSD,
+        baseCurrency: 'USD',
+        region: effectiveRegion,
+      })
       .then((res: PricingResponse) => {
         if (isCancelled) return;
         setState({
@@ -54,26 +72,26 @@ export function useRegionalPrice(baseAmountUSD: number): RegionalPriceState {
           currency: res.currency,
           taxRate: res.taxRate,
           includesTax: res.includesTax,
-          region,
+          region: effectiveRegion,
         });
       })
       .catch(() => {
         if (isCancelled) return;
-        // Backend not registered yet — fall back to a sensible local USD value.
+        // Backend not available — fall back to a sensible local value
         setState({
-          formatted: formatCurrency(baseAmountUSD, locale, 'USD'),
+          formatted: formatCurrency(baseAmountUSD, locale, effectiveCurrency),
           loading: false,
-          currency: 'USD',
+          currency: effectiveCurrency,
           taxRate: 0,
           includesTax: false,
-          region,
+          region: effectiveRegion,
         });
       });
 
     return () => {
       isCancelled = true;
     };
-  }, [baseAmountUSD, locale, region, currency]);
+  }, [baseAmountUSD, locale, effectiveCurrency, effectiveRegion]);
 
   return state;
 }

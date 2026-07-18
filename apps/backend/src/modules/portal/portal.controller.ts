@@ -1,10 +1,31 @@
-import { Controller, Get, Param, Req, UseGuards, VERSION_NEUTRAL } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Delete,
+  Param,
+  Req,
+  UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  Body,
+  ParseFilePipe,
+  MaxFileSizeValidator,
+  FileTypeValidator,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiBody,
+} from '@nestjs/swagger';
 import { PortalService } from './portal.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Portal')
-@Controller({ path: 'portal', version: VERSION_NEUTRAL })
+@Controller({ path: 'portal', version: '1' })
 export class PortalController {
   constructor(private readonly portalService: PortalService) {}
 
@@ -53,5 +74,75 @@ export class PortalController {
     const partnerId = await this.portalService.resolvePartnerId(req.user.email);
     if (!partnerId) return [];
     return this.portalService.getClientInvoices(partnerId);
+  }
+
+  // --- Document Endpoints ---
+
+  @Post('projects/:projectId/documents')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiBearerAuth()
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({ summary: 'Upload a document to a portal project' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+          description: 'File to upload (PDF, images, Word, Excel, ZIP; max 50MB)',
+        },
+        description: {
+          type: 'string',
+          description: 'Optional description of the document',
+        },
+      },
+    },
+  })
+  async uploadDocument(
+    @Param('projectId') projectId: string,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 50 * 1024 * 1024 }),
+          new FileTypeValidator({
+            fileType:
+              '(pdf|png|jpeg|jpg|gif|webp|svg\\+xml|msword|openxmlformats-officedocument|ms-excel|spreadsheetml|zip)',
+          }),
+        ],
+        fileIsRequired: true,
+      }),
+    )
+    file: Express.Multer.File,
+    @Req() req: { user: { email: string } },
+    @Body('description') description?: string,
+  ) {
+    return this.portalService.uploadDocument(
+      projectId,
+      file,
+      req.user.email,
+      description,
+    );
+  }
+
+  @Get('projects/:projectId/documents')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'List all documents for a portal project' })
+  async getDocuments(@Param('projectId') projectId: string) {
+    return this.portalService.getDocuments(projectId);
+  }
+
+  @Delete('projects/:projectId/documents/:documentId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete a document from a portal project' })
+  async deleteDocument(
+    @Param('projectId') projectId: string,
+    @Param('documentId') documentId: string,
+  ) {
+    await this.portalService.deleteDocument(projectId, documentId);
+    return { message: 'Document deleted successfully' };
   }
 }

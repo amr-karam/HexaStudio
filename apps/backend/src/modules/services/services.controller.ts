@@ -1,8 +1,8 @@
-import { Controller, Get, Param, Query, VERSION_NEUTRAL } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ServicesService } from './services.service';
 import type { Service, ServiceResponse } from '@hexastudio/types';
 
-@Controller({ path: 'services', version: VERSION_NEUTRAL })
+@Controller({ path: 'services', version: '1' })
 export class ServicesController {
   constructor(private readonly servicesService: ServicesService) {}
 

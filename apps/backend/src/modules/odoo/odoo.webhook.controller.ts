@@ -1,4 +1,4 @@
-import { Body, Controller, Headers, HttpCode, HttpStatus, Logger, Post, RawBodyRequest, Req, UnauthorizedException, VERSION_NEUTRAL } from '@nestjs/common';
+import { Body, Controller, Headers, HttpCode, HttpStatus, Logger, Post, RawBodyRequest, Req, UnauthorizedException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiHeader, ApiBody } from '@nestjs/swagger';
 import { createHmac, timingSafeEqual } from 'crypto';
 import { Request } from 'express';
@@ -7,7 +7,7 @@ import { getEnv } from '../../config/env';
 import type { OdooWebhookPayload } from '@hexastudio/types';
 
 @ApiTags('Odoo Webhook')
-@Controller({ path: 'odoo/webhook', version: VERSION_NEUTRAL })
+@Controller({ path: 'odoo/webhook', version: '1' })
 export class OdooWebhookController {
   private readonly logger = new Logger(OdooWebhookController.name);
 

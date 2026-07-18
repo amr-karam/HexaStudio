@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { PortalNav } from '@/features/portal/PortalNav';
 
 export const metadata: Metadata = {
   title: 'Client Portal | HexaStudio',
@@ -10,5 +11,10 @@ export default function PortalLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <>
+      <PortalNav />
+      {children}
+    </>
+  );
 }

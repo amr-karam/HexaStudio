@@ -54,6 +54,48 @@ export class RedisService {
     await this.client.lrem(key, count, JSON.stringify(value));
   }
 
+  async sadd(key: string, value: string): Promise<void> {
+    await this.client.sadd(key, value);
+  }
+
+  async smembers(key: string): Promise<string[]> {
+    return this.client.smembers(key);
+  }
+
+  async srem(key: string, value: string): Promise<void> {
+    await this.client.srem(key, value);
+  }
+
+  async expire(key: string, ttl: number): Promise<void> {
+    await this.client.expire(key, ttl);
+  }
+
+  async hset(key: string, field: string, value: unknown): Promise<void> {
+    await this.client.hset(key, field, JSON.stringify(value));
+  }
+
+  async hgetall<T>(key: string): Promise<Record<string, T>> {
+    const result = await this.client.hgetall(key);
+    const parsed: Record<string, T> = {};
+    for (const [field, value] of Object.entries(result)) {
+      try {
+        parsed[field] = JSON.parse(value) as T;
+      } catch {
+        parsed[field] = value as unknown as T;
+      }
+    }
+    return parsed;
+  }
+
+  async hdel(key: string, field: string): Promise<void> {
+    await this.client.hdel(key, field);
+  }
+
+  async hexists(key: string, field: string): Promise<boolean> {
+    const exists = await this.client.hexists(key, field);
+    return exists === 1;
+  }
+
   async flush(): Promise<void> {
     await this.client.flushall();
   }

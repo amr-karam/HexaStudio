@@ -1,5 +1,8 @@
-import { Controller, Get, Post, Body, VERSION_NEUTRAL } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
 import { AssistantsService } from './assistants.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { CEOAssistantService } from './services/ceo-assistant.service';
 import { SalesAssistantService } from './services/sales-assistant.service';
 import { PMAssistantService } from './services/pm-assistant.service';
@@ -105,7 +108,9 @@ interface ForecastBudgetBody {
   teamRate: number;
 }
 
-@Controller({ path: 'assistants', version: VERSION_NEUTRAL })
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('admin', 'editor')
+@Controller({ path: 'assistants', version: '1' })
 export class AssistantsController {
   constructor(
     private readonly assistantsService: AssistantsService,

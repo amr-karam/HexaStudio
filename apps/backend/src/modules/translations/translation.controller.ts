@@ -1,7 +1,12 @@
-import { Controller, Get, Post, Param, Body, VERSION_NEUTRAL } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, UseGuards } from '@nestjs/common';
 import { TranslationService, TranslationExport, TranslationStatus } from './translation.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
-@Controller({ path: 'translations', version: VERSION_NEUTRAL })
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('admin', 'editor')
+@Controller({ path: 'translations', version: '1' })
 export class TranslationController {
   constructor(private readonly translationService: TranslationService) {}
 

@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, HttpException, HttpStatus, VERSION_NEUTRAL } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, HttpException, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsOptional, IsIn } from 'class-validator';
 import { AgentsService } from './agents.service';
@@ -21,7 +21,7 @@ class ChatDto {
 }
 
 @ApiTags('Agents')
-@Controller({ path: 'agents', version: VERSION_NEUTRAL })
+@Controller({ path: 'agents', version: '1' })
 export class AgentsController {
   constructor(
     private readonly agentsService: AgentsService,

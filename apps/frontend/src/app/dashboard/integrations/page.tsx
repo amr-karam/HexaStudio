@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { webhookApi, type WebhookConfig, type CreateWebhookDto } from '@/features/integrations/api';
-import { notionApi, jiraApi } from '@/features/integrations/api-integrations';
 import { toast } from 'sonner';
 
 const EVENT_OPTIONS = [
@@ -22,10 +21,10 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
     <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-white/10 py-16">
       <div className="mb-4 text-4xl">🔗</div>
       <h3 className="mb-2 text-lg font-medium text-white/80">No webhooks configured</h3>
-      <p className="mb-6 max-w-sm text-center text-sm text-white/40">
-        Connect your tools — Slack, Notion, Jira, or any custom endpoint.
-        Webhooks fire on project approvals, annotations, and more.
-      </p>
+        <p className="mb-6 max-w-sm text-center text-sm text-white/40">
+          Connect your tools — Slack, Odoo, or any custom endpoint.
+          Webhooks fire on project approvals, annotations, and more.
+        </p>
       <button
         onClick={onAdd}
         className="rounded-lg bg-[#D4AF37] px-5 py-2 text-sm font-medium text-black transition-colors hover:bg-[#C49A2F]"
@@ -175,77 +174,24 @@ function WebhookForm({
   );
 }
 
-function NotionPanel() {
-  const [status, setStatus] = useState<{ configured: boolean } | null>(null);
-  const [databases, setDatabases] = useState<Array<{ id: string; title: string }>>([]);
-
-  useEffect(() => {
-    notionApi.status().then(setStatus).catch(() => {});
-    notionApi.databases().then(setDatabases).catch(() => {});
-  }, []);
-
+function OdooPanel() {
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5 transition-colors hover:border-white/20">
+    <a
+      href="/dashboard/odoo"
+      className="block rounded-xl border border-white/10 bg-white/[0.03] p-5 transition-colors hover:border-white/20"
+    >
       <div className="mb-3 flex items-center gap-3">
-        <span className="text-xl">📋</span>
+        <span className="text-xl">📦</span>
         <div>
-          <h3 className="font-medium text-white">Notion</h3>
-          <p className="text-xs text-white/40">Sync project milestones & task status</p>
+          <h3 className="font-medium text-white">Odoo ERP</h3>
+          <p className="text-xs text-white/40">Projects, CRM, Invoices, Documents — all in one place</p>
         </div>
-        <span className={`ml-auto rounded-full px-2 py-0.5 text-[10px] ${status?.configured ? 'bg-green-500/20 text-green-400' : 'bg-white/10 text-white/40'}`}>
-          {status?.configured ? 'Connected' : 'Not configured'}
+        <span className="ml-auto rounded-full bg-green-500/20 px-2 py-0.5 text-[10px] text-green-400">
+          Connected
         </span>
       </div>
-      {status?.configured && databases.length > 0 && (
-        <div className="space-y-1">
-          {databases.slice(0, 3).map((db) => (
-            <div key={db.id} className="rounded-md bg-white/5 px-3 py-1.5 text-xs text-white/60">
-              {db.title}
-            </div>
-          ))}
-        </div>
-      )}
-      {!status?.configured && (
-        <p className="text-xs text-white/30">Set NOTION_API_KEY in environment variables</p>
-      )}
-    </div>
-  );
-}
-
-function JiraPanel() {
-  const [status, setStatus] = useState<{ configured: boolean } | null>(null);
-  const [projects, setProjects] = useState<Array<{ key: string; name: string }>>([]);
-
-  useEffect(() => {
-    jiraApi.status().then(setStatus).catch(() => {});
-    jiraApi.projects().then(setProjects).catch(() => {});
-  }, []);
-
-  return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5 transition-colors hover:border-white/20">
-      <div className="mb-3 flex items-center gap-3">
-        <span className="text-xl">🔧</span>
-        <div>
-          <h3 className="font-medium text-white">Jira / Linear</h3>
-          <p className="text-xs text-white/40">Bidirectional issue sync</p>
-        </div>
-        <span className={`ml-auto rounded-full px-2 py-0.5 text-[10px] ${status?.configured ? 'bg-green-500/20 text-green-400' : 'bg-white/10 text-white/40'}`}>
-          {status?.configured ? 'Connected' : 'Not configured'}
-        </span>
-      </div>
-      {status?.configured && projects.length > 0 && (
-        <div className="space-y-1">
-          {projects.slice(0, 3).map((p) => (
-            <div key={p.key} className="rounded-md bg-white/5 px-3 py-1.5 text-xs text-white/60">
-              {p.name} <span className="text-white/30">({p.key})</span>
-            </div>
-          ))}
-        </div>
-      )}
-      {!status?.configured && (
-        <p className="text-xs text-white/30">Set JIRA_* environment variables</p>
-      )}
-    </div>
+      <p className="text-xs text-white/30">Manage leads, projects, milestones, and documents through Odoo.</p>
+    </a>
   );
 }
 
@@ -371,10 +317,9 @@ export default function IntegrationsPage() {
         ))}
       </div>
 
-      <h2 className="mt-12 mb-4 text-lg font-medium text-white">External Tools</h2>
+      <h2 className="mt-12 mb-4 text-lg font-medium text-white">ERP & Tools</h2>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <NotionPanel />
-        <JiraPanel />
+        <OdooPanel />
       </div>
     </div>
   );

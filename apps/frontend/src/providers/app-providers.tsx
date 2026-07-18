@@ -5,6 +5,7 @@ import { Toaster } from 'sonner';
 import { Providers } from '@/providers/query-provider';
 import { AuthProvider } from '@/features/auth';
 import { LocaleProvider } from '@/i18n/LocaleProvider';
+import { CurrencyProvider } from '@/features/currency';
 import { usePerformanceMonitor } from '@/hooks/usePerformanceMonitor';
 import type { ReactNode } from 'react';
 
@@ -16,7 +17,9 @@ export function AppProviders({ children }: { children: ReactNode }) {
       <MotionConfig reducedMotion="user">
         <Providers>
           <AuthProvider>
-            {children}
+            <CurrencyProvider>
+              {children}
+            </CurrencyProvider>
             <Toaster
               position="bottom-right"
               richColors
