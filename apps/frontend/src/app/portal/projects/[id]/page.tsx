@@ -10,7 +10,6 @@ import { TextReveal } from '@/components/ui/TextReveal';
 import { Button } from '@/components/ui/Button';
 import { TimelineView, type TimelineMilestone } from '@/features/portal/TimelineView';
 import { portalOdooApi, type PortalProject } from '@/features/odoo/api';
-import { toast } from 'sonner';
 
 /* -------------------------------------------------------------------------- */
 /*  Demo fallback data (when Odoo API unavailable)                            */
@@ -298,7 +297,7 @@ export default function ProjectDetailPage() {
               color: 'text-neutral-500',
               border: 'border-neutral-700 bg-neutral-800/30',
             },
-          ].map((stat, i) => (
+          ].map((stat) => (
             <div
               key={stat.label}
               className={`p-5 rounded-sm border ${stat.border} backdrop-blur-sm`}

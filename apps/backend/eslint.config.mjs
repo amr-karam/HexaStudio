@@ -21,6 +21,8 @@ export default [
     },
     rules: {
       ...tsPlugin.configs.recommended.rules,
+      // TypeScript handles undefined variables via tsc --noEmit
+      "no-undef": "off",
     },
   },
 ];
