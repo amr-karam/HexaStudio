@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, UseGuards, Request, Res, Headers, VERSION_NEUTRAL } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Request, Res, Headers } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { IsEmail, IsString, MinLength, MaxLength } from 'class-validator';
 import { Response } from 'express';
@@ -57,6 +57,18 @@ class ResetPasswordDto {
   passwordConfirmation!: string;
 }
 
+class ChangePasswordDto {
+  @IsString()
+  @MinLength(8)
+  @MaxLength(100)
+  currentPassword!: string;
+
+  @IsString()
+  @MinLength(8)
+  @MaxLength(100)
+  newPassword!: string;
+}
+
 const COOKIE_OPTIONS = {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
@@ -66,7 +78,7 @@ const COOKIE_OPTIONS = {
 };
 
 @ApiTags('Auth')
-@Controller({ path: 'auth', version: VERSION_NEUTRAL })
+@Controller({ path: 'auth', version: '1' })
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -174,5 +186,31 @@ export class AuthController {
   @ApiResponse({ status: 400, description: 'Failed to reset password' })
   async resetPassword(@Body() body: ResetPasswordDto) {
     return this.authService.resetPassword(body.code, body.password, body.passwordConfirmation);
+  }
+
+  @Post('change-password')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Change password (authenticated user)' })
+  @ApiBody({ type: ChangePasswordDto })
+  @ApiResponse({ status: 200, description: 'Password changed, new tokens issued' })
+  @ApiResponse({ status: 400, description: 'Failed to change password' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async changePassword(
+    @Request() req: { user: User },
+    @Body() body: ChangePasswordDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const result = await this.authService.changePassword(
+      req.user.id,
+      body.currentPassword,
+      body.newPassword,
+    );
+    res.cookie('auth_token', result.accessToken, COOKIE_OPTIONS);
+    return {
+      user: result.user,
+      accessToken: result.accessToken,
+      refreshToken: result.refreshToken,
+    };
   }
 }

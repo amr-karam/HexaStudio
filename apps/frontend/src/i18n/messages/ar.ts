@@ -62,7 +62,16 @@ export const ar = {
     dashboard: 'لوحة المشاريع',
     documents: 'الملفات',
     requests: 'تقديم طلب',
-    timeline: 'الجدول الزمني',
+    timeline: {
+      title: 'الجدول الزمني للمشروع',
+      completed: 'مكتمل',
+      inProgress: 'قيد التنفيذ',
+      pending: 'معلق',
+      startDate: 'البداية',
+      endDate: 'النهاية',
+      today: 'اليوم',
+      noMilestones: 'لم يتم تحديد مراحل رئيسية بعد.',
+    },
     approvals: 'الموافقات',
   },
   footer: {

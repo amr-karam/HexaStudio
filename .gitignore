@@ -74,6 +74,11 @@ project.zip
 standalone
 apps/frontend/app/
 
+# TypeScript build outputs (packages/* compiled JS/d.ts)
+packages/*/*.d.ts
+packages/*/*.js
+packages/*/*.js.map
+
 # Backend build output (not committed)
 apps/backend/dist/
 

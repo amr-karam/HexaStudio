@@ -6,18 +6,38 @@ import {
   Delete,
   Param,
   Body,
-  VERSION_NEUTRAL,
+  Query,
+  DefaultValuePipe,
+  ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { WebhookConfigService } from './webhook-config.service';
 import type { WebhookConfig, CreateWebhookDto, UpdateWebhookDto } from '@hexastudio/types';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
-@Controller({ path: 'webhooks', version: VERSION_NEUTRAL })
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('admin')
+@Controller({ path: 'webhooks', version: '1' })
 export class WebhookConfigController {
   constructor(private readonly webhookConfigService: WebhookConfigService) {}
 
   @Get()
-  async findAll(): Promise<WebhookConfig[]> {
-    return this.webhookConfigService.findAll();
+  async findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number = 20,
+  ) {
+    const { data, total } = await this.webhookConfigService.findAll(page, limit);
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   @Get(':id')

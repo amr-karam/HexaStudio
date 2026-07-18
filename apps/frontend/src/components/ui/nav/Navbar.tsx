@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useLocale } from '@/i18n/LocaleProvider';
+import { CurrencySelector } from '@/features/currency';
 
 interface NavItemProps {
   label: string;
@@ -147,6 +148,9 @@ export const Navbar = () => {
               }
             />
           ))}
+          <div className="ml-4">
+            <CurrencySelector />
+          </div>
         </div>
 
         <button
@@ -207,6 +211,15 @@ export const Navbar = () => {
                 </Link>
               </motion.div>
             ))}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ delay: navItems.length * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-8"
+            >
+              <CurrencySelector />
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

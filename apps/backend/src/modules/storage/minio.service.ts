@@ -31,7 +31,7 @@ const MIME_MAP: Record<string, string> = {
   '.txt': 'text/plain',
 };
 
-const ALLOWED_BUCKETS = ['uploads', 'models', 'textures', 'videos', 'hdr', 'backups'] as const;
+const ALLOWED_BUCKETS = ['uploads', 'models', 'textures', 'videos', 'hdr', 'backups', 'portal'] as const;
 
 const MULTIPART_THRESHOLD = 5 * 1024 * 1024; // 5 MB
 

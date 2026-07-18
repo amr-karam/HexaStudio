@@ -73,11 +73,14 @@ describe('RequestsService', () => {
       vi.mocked(odooService.searchRead).mockResolvedValueOnce(mockLeads);
 
       const result = await service.getRequestsByClient('client@example.com');
-      expect(result).toHaveLength(2);
-      expect(result[0].id).toBe('REQ-10');
-      expect(result[0].title).toBe('Design Update');
-      expect(result[0].priority).toBe('high');
-      expect(result[1].priority).toBe('low');
+      expect(result.data).toHaveLength(2);
+      expect(result.total).toBe(2);
+      expect(result.page).toBe(1);
+      expect(result.limit).toBe(20);
+      expect(result.data[0].id).toBe('REQ-10');
+      expect(result.data[0].title).toBe('Design Update');
+      expect(result.data[0].priority).toBe('high');
+      expect(result.data[1].priority).toBe('low');
     });
   });
 
@@ -104,9 +107,12 @@ describe('RequestsService', () => {
       vi.mocked(odooService.searchRead).mockResolvedValueOnce(mockLeads);
 
       const result = await service.findAll();
-      expect(result).toHaveLength(1);
-      expect(result[0].title).toBe('Task A');
-      expect(result[0].priority).toBe('medium');
+      expect(result.data).toHaveLength(1);
+      expect(result.total).toBe(1);
+      expect(result.page).toBe(1);
+      expect(result.limit).toBe(20);
+      expect(result.data[0].title).toBe('Task A');
+      expect(result.data[0].priority).toBe('medium');
     });
   });
 });

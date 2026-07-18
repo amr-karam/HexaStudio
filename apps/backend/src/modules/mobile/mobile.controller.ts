@@ -2,7 +2,7 @@ import { Controller, Post, Body, Get } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
 
-@Controller('mobile')
+@Controller({ path: 'mobile', version: '1' })
 export class MobileApiController {
   constructor(
     private authService: AuthService,

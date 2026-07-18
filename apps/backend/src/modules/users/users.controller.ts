@@ -1,8 +1,8 @@
-import { Controller, Get, Param, NotFoundException, UseGuards, VERSION_NEUTRAL } from '@nestjs/common';
+import { Controller, Get, Param, NotFoundException, UseGuards } from '@nestjs/common';
 import { UsersService, User } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
-@Controller({ path: 'users', version: VERSION_NEUTRAL })
+@Controller({ path: 'users', version: '1' })
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 

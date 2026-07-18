@@ -273,4 +273,19 @@ export interface UpdateWebhookDto {
   headers?: Record<string, string>;
 }
 
+// --- Portal Document types ---
+
+export interface PortalDocument {
+  id: string;
+  projectId: string | number;
+  originalName: string;
+  storagePath: string;
+  mimeType: string;
+  size: number;
+  description?: string;
+  uploadedAt: string;
+  uploadedBy?: string;
+  signedUrl?: string;
+}
+
 export * from './odoo';

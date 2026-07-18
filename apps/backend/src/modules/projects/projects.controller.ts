@@ -1,9 +1,9 @@
-import { Controller, Get, Param, Query, VERSION_NEUTRAL } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { RecommendationService, SimilarProjectResult } from '../vector/recommendation.service';
 import type { Project, ProjectResponse } from '@hexastudio/types';
 
-@Controller({ path: 'projects', version: VERSION_NEUTRAL })
+@Controller({ path: 'projects', version: '1' })
 export class ProjectsController {
   constructor(
     private readonly projectsService: ProjectsService,

@@ -14,10 +14,8 @@ import {
   CurrencyModule,
   FAQsModule,
   HealthModule,
-  JiraModule,
   MetricsModule,
   MobileModule,
-  NotionModule,
   OdooModule,
   PortalModule,
   ProjectsModule,
@@ -32,6 +30,7 @@ import {
   VectorModule,
   WebhooksModule,
   TranslationsModule,
+  GeoipModule,
 } from "./modules/index";
 
 @Module({
@@ -67,10 +66,10 @@ import {
     AgentsModule,
     AssistantsModule,
     WebhooksModule,
-    NotionModule,
-    JiraModule,
-    TranslationsModule,
-    MobileModule,
+    // NotionModule and JiraModule removed — Odoo covers all needs
+  TranslationsModule,
+  MobileModule,
+  GeoipModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

@@ -28,8 +28,11 @@ export class WebhookConfigService {
     }
   }
 
-  async findAll(): Promise<WebhookConfig[]> {
-    return Array.from(this.webhooks.values());
+  async findAll(page: number = 1, limit: number = 20): Promise<{ data: WebhookConfig[]; total: number; page: number; limit: number }> {
+    const all = Array.from(this.webhooks.values());
+    const skip = (page - 1) * limit;
+    const data = all.slice(skip, skip + limit);
+    return { data, total: all.length, page, limit };
   }
 
   async findById(id: string): Promise<WebhookConfig> {

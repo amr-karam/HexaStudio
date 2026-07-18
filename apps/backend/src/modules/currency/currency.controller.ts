@@ -1,6 +1,11 @@
-import { Controller, Get, Post, Body, Query, HttpCode, HttpStatus, Logger } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, HttpCode, HttpStatus, Logger, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CurrencyService } from './currency.service';
+import { ExchangeRateSyncService } from './exchange-rate-sync.service';
 import { PricingRequest, PricingResponse, CurrencyConfig } from './currency.types';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 /**
  * CurrencyController: Public API for pricing and currency conversion
@@ -10,11 +15,15 @@ import { PricingRequest, PricingResponse, CurrencyConfig } from './currency.type
  * - POST /api/pricing/calculate — Calculate regional pricing with tax
  * - GET /api/pricing/rates — Get current exchange rates
  */
-@Controller('api/currency')
+@ApiTags('Currency')
+@Controller({ path: 'currency', version: '1' })
 export class CurrencyController {
   private readonly logger = new Logger(CurrencyController.name);
 
-  constructor(private readonly currencyService: CurrencyService) {}
+  constructor(
+    private readonly currencyService: CurrencyService,
+    private readonly exchangeRateSyncService: ExchangeRateSyncService,
+  ) {}
 
   /**
    * GET /api/currency/list
@@ -61,12 +70,31 @@ export class CurrencyController {
       timestamp: rate.lastUpdated,
     };
   }
+
+  /**
+   * POST /api/currency/sync-rates
+   * Manually trigger an exchange rate sync from open.er-api.com
+   * Requires JWT authentication with admin role
+   */
+  @Post('sync-rates')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Manually trigger exchange rate sync (admin only)' })
+  @ApiResponse({ status: 200, description: 'Sync completed successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized — missing or invalid JWT' })
+  @ApiResponse({ status: 403, description: 'Forbidden — requires admin role' })
+  @HttpCode(HttpStatus.OK)
+  async triggerSyncRates(): Promise<{ success: boolean; message: string }> {
+    await this.exchangeRateSyncService.syncRates();
+    return { success: true, message: 'Exchange rate sync triggered successfully' };
+  }
 }
 
 /**
  * PricingController: Calculate regional pricing with tax compliance
  */
-@Controller('api/pricing')
+@Controller({ path: 'pricing', version: '1' })
 export class PricingController {
   private readonly logger = new Logger(PricingController.name);
 
