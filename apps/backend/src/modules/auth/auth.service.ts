@@ -6,6 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import type { User } from '@hexastudio/types';
 import { RedisService } from '../storage/redis.service';
 import { getEnv } from '../../config/env';
+import { UsersService } from '../users/users.service';
 
 const REFRESH_TOKEN_TTL = 30 * 24 * 60 * 60; // 30 days
 const BLACKLIST_TTL = 15 * 60; // 15 minutes (matches access token TTL)
@@ -33,6 +34,7 @@ export class AuthService {
     private readonly httpService: HttpService,
     private readonly jwtService: JwtService,
     private readonly redis: RedisService,
+    private readonly usersService: UsersService,
   ) {}
 
   private get cmsUrl(): string {
@@ -155,7 +157,13 @@ export class AuthService {
         }),
       );
 
-      return this.mapUser(response.data);
+      const cmsUser = this.mapUser(response.data);
+      // Allow local hardcoded users (e.g., admin@hexastudio.net) to override CMS role
+      const localUser = await this.usersService.findByEmail(cmsUser.email);
+      if (localUser) {
+        return { ...cmsUser, role: localUser.role };
+      }
+      return cmsUser;
     } catch {
       throw new UnauthorizedException('Invalid or expired token');
     }
@@ -334,7 +342,12 @@ export class AuthService {
         headers: { Authorization: `Bearer ${this.jwtService.sign({ sub: userId })}` },
       }),
     );
-    return this.mapUser(response.data);
+    const cmsUser = this.mapUser(response.data);
+    const localUser = await this.usersService.findByEmail(cmsUser.email);
+    if (localUser) {
+      return { ...cmsUser, role: localUser.role };
+    }
+    return cmsUser;
   }
 
   private mapUser(data: { id: number; email: string; username: string; role?: { type: string } }): User {
