@@ -190,6 +190,17 @@ export interface PortalInvoice {
   state: string;
 }
 
+export interface PortalDocumentRecord {
+  id: string;
+  name: string;
+  mimeType: string;
+  fileSize: number;
+  filePath: string;
+  projectId: number;
+  createdAt: string;
+  downloadUrl?: string;
+}
+
 export const portalOdooApi = {
   getProjects: () =>
     portalRequest<PortalProject[]>('/odoo/projects'),
@@ -197,4 +208,31 @@ export const portalOdooApi = {
     portalRequest<PortalMilestone[]>(`/odoo/projects/${projectId}/milestones`),
   getInvoices: () =>
     portalRequest<PortalInvoice[]>('/odoo/invoices'),
+
+  // Documents (client-scoped)
+  getDocuments: (projectId: number) =>
+    portalRequest<PortalDocumentRecord[]>(`/projects/${projectId}/documents`),
+
+  uploadDocument: async (projectId: number, file: File, description?: string) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    if (description) formData.append('description', description);
+
+    const res = await fetch(`${PORTAL_BASE}/projects/${projectId}/documents`, {
+      method: 'POST',
+      body: formData,
+      credentials: 'include',
+    });
+    if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
+    return res.json() as Promise<PortalDocumentRecord>;
+  },
+
+  deleteDocument: async (projectId: number, documentId: string) => {
+    const res = await fetch(`${PORTAL_BASE}/projects/${projectId}/documents/${documentId}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    if (!res.ok) throw new Error(`Delete failed: ${res.status}`);
+    return res.json() as Promise<{ success: boolean }>;
+  },
 };

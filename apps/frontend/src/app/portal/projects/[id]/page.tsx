@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useParams, useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
@@ -9,7 +9,8 @@ import { useLocale } from '@/i18n/LocaleProvider';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { Button } from '@/components/ui/Button';
 import { TimelineView, type TimelineMilestone } from '@/features/portal/TimelineView';
-import { portalOdooApi, type PortalProject } from '@/features/odoo/api';
+import { DocumentUpload } from '@/features/portal/DocumentUpload';
+import { portalOdooApi, type PortalProject, type PortalDocumentRecord } from '@/features/odoo/api';
 
 /* -------------------------------------------------------------------------- */
 /*  Demo fallback data (when Odoo API unavailable)                            */
@@ -127,6 +128,21 @@ export default function ProjectDetailPage() {
     retry: false,
   });
 
+  const projectIdNum = parseInt(projectId, 10);
+
+  const { data: odooDocuments, isLoading: docsLoading } = useQuery<PortalDocumentRecord[]>({
+    queryKey: ['portal-documents', projectIdNum],
+    queryFn: () => portalOdooApi.getDocuments(projectIdNum),
+    enabled: !!user && !isNaN(projectIdNum),
+    retry: false,
+  });
+
+  const [documents, setDocuments] = useState<PortalDocumentRecord[]>(odooDocuments ?? []);
+
+  useEffect(() => {
+    if (odooDocuments) setDocuments(odooDocuments);
+  }, [odooDocuments]);
+
   // Convert Odoo milestones to TimelineMilestone format
   const timelineMilestones: TimelineMilestone[] = useMemo(() => {
     if (odooProject?.milestones && odooProject.milestones.length > 0) {
@@ -145,7 +161,7 @@ export default function ProjectDetailPage() {
   const project = odooProject || DEMO_PROJECT;
   const progress = calculateProgress(timelineMilestones);
 
-  if (authLoading || projectLoading) {
+  if (authLoading || projectLoading || docsLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <motion.div
@@ -309,6 +325,22 @@ export default function ProjectDetailPage() {
             </div>
           ))}
         </motion.div>
+
+        {/* Documents */}
+        {!isNaN(projectIdNum) && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.45, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-8"
+          >
+            <DocumentUpload
+              projectId={projectIdNum}
+              documents={documents}
+              onDocumentsChange={setDocuments}
+            />
+          </motion.div>
+        )}
       </div>
     </main>
   );
