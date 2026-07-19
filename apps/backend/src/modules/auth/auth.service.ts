@@ -51,7 +51,7 @@ export class AuthService {
     );
 
     const data = response.data;
-    const user = this.mapUser(data.user);
+    const user = await this.applyRoleOverride(this.mapUser(data.user));
     const accessToken = this.signAccessToken(user);
     const refreshToken = await this.generateRefreshToken(user.id);
 
@@ -67,7 +67,7 @@ export class AuthService {
     );
 
     const data = response.data;
-    const user = this.mapUser(data.user);
+    const user = await this.applyRoleOverride(this.mapUser(data.user));
     const accessToken = this.signAccessToken(user);
     const refreshToken = await this.generateRefreshToken(user.id);
 
@@ -157,13 +157,7 @@ export class AuthService {
         }),
       );
 
-      const cmsUser = this.mapUser(response.data);
-      // Allow local hardcoded users (e.g., admin@hexastudio.net) to override CMS role
-      const localUser = await this.usersService.findByEmail(cmsUser.email);
-      if (localUser) {
-        return { ...cmsUser, role: localUser.role as User['role'] };
-      }
-      return cmsUser;
+      return this.applyRoleOverride(this.mapUser(response.data));
     } catch {
       throw new UnauthorizedException('Invalid or expired token');
     }
@@ -336,18 +330,21 @@ export class AuthService {
     return token;
   }
 
+  private async applyRoleOverride(cmsUser: User): Promise<User> {
+    const localUser = await this.usersService.findByEmail(cmsUser.email);
+    if (localUser) {
+      return { ...cmsUser, role: localUser.role as User['role'] };
+    }
+    return cmsUser;
+  }
+
   private async fetchUser(userId: string): Promise<User> {
     const response = await firstValueFrom(
       this.httpService.get(`${this.cmsUrl}/api/users/${userId}?populate=role`, {
         headers: { Authorization: `Bearer ${this.jwtService.sign({ sub: userId })}` },
       }),
     );
-    const cmsUser = this.mapUser(response.data);
-    const localUser = await this.usersService.findByEmail(cmsUser.email);
-    if (localUser) {
-      return { ...cmsUser, role: localUser.role as User['role'] };
-    }
-    return cmsUser;
+    return this.applyRoleOverride(this.mapUser(response.data));
   }
 
   private mapUser(data: { id: number; email: string; username: string; role?: { type: string } }): User {
