@@ -1,17 +1,11 @@
 import { Injectable } from '@nestjs/common';
-
-export interface User {
-  id: string;
-  email: string;
-  role: 'admin' | 'client';
-  name: string;
-}
+import type { User } from '@hexastudio/types';
 
 @Injectable()
 export class UsersService {
   private users: User[] = [
-    { id: '1', email: 'admin@hexastudio.net', role: 'admin', name: 'Admin User' },
-    { id: '2', email: 'client@example.com', role: 'client', name: 'Client User' },
+    { id: '1', email: 'admin@hexastudio.net', username: 'admin', role: 'admin' },
+    { id: '2', email: 'client@example.com', username: 'client', role: 'user' },
   ];
 
   async findByEmail(email: string): Promise<User | undefined> {
