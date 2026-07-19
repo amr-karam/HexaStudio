@@ -45,7 +45,6 @@ export class ProjectsService {
       this.httpService.get(`${this.cmsUrl}/api/portfolios`, {
         params: {
           'populate': '*',
-          'filters[isPublished][$eq]': true,
           'sort': 'order:asc',
           'pagination[page]': safePage,
           'pagination[pageSize]': safeLimit,

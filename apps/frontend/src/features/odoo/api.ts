@@ -26,7 +26,7 @@ export interface SyncState {
 }
 
 export interface OdooDocumentRecord {
-  id: number;
+  id: string;
   name: string;
   mimeType: string;
   fileSize: number;
@@ -34,6 +34,25 @@ export interface OdooDocumentRecord {
   projectId: number;
   createdAt: string;
   downloadUrl?: string;
+}
+
+export interface OdooCompanySettings {
+  id: number;
+  name: string;
+  street?: string;
+  street2?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  country?: string;
+  phone?: string;
+  mobile?: string;
+  email?: string;
+  website?: string;
+  vat?: string;
+  registry?: string;
+  currency?: string;
+  logo?: string;
 }
 
 const BASE = `${API_BASE_URL}/api/odoo`;
@@ -112,8 +131,12 @@ export const odooApi = {
   // Documents
   getProjectDocuments: (projectId: number) =>
     request<OdooDocumentRecord[]>(`/documents/${projectId}`),
-  getDocumentDownloadUrl: (documentId: number) =>
+  getDocumentDownloadUrl: (documentId: string) =>
     request<{ url: string }>(`/documents/download/${documentId}`),
+
+  // Company Settings
+  getCompanySettings: (companyId?: number) =>
+    request<OdooCompanySettings>(`/company/settings${companyId ? `?companyId=${companyId}` : ''}`),
   uploadDocument: async (projectId: number, file: File) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -128,7 +151,7 @@ export const odooApi = {
 };
 
 // --- Client Portal Odoo API ---
-const PORTAL_BASE = `${API_BASE_URL}/portal`;
+const PORTAL_BASE = `${API_BASE_URL}/api/portal`;
 
 async function portalRequest<T>(path: string): Promise<T> {
   const res = await fetch(`${PORTAL_BASE}${path}`, {

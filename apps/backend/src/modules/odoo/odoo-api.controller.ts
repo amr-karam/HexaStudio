@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Post, Patch, Delete, Param, Body, UploadedFile, UseInterceptors, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, Post, Patch, Delete, Param, Body, UploadedFile, UseInterceptors, UseGuards, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiQuery, ApiBearerAuth, ApiParam, ApiConsumes } from '@nestjs/swagger';
 import { OdooApiService } from './odoo-api.service';
@@ -190,6 +190,15 @@ export class OdooApiController {
     return this.odooApi.getHealth();
   }
 
+  // --- Company Settings ---
+
+  @Get('company/settings')
+  @ApiOperation({ summary: 'Get Odoo company settings' })
+  @ApiQuery({ name: 'companyId', required: false, type: Number })
+  async getCompanySettings(@Query('companyId') companyId?: string) {
+    return this.odooApi.getCompanySettings(companyId ? parseInt(companyId, 10) : undefined);
+  }
+
   // --- Documents (MinIO <-> Odoo bridge) ---
 
   @Post('documents/:projectId')
@@ -199,7 +208,19 @@ export class OdooApiController {
   @ApiParam({ name: 'projectId', type: Number })
   async uploadDocument(
     @Param('projectId') projectId: string,
-    @UploadedFile() file: { buffer: Buffer; originalName: string; mimetype: string; size: number },
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 50 * 1024 * 1024 }),
+          new FileTypeValidator({
+            fileType:
+              '(pdf|png|jpeg|jpg|gif|webp|svg\\+xml|msword|openxmlformats-officedocument|ms-excel|spreadsheetml|zip)',
+          }),
+        ],
+        fileIsRequired: true,
+      }),
+    )
+    file: { buffer: Buffer; originalname: string; mimetype: string; size: number },
   ) {
     return this.odooDocument.uploadAndLink(file, parseInt(projectId, 10));
   }
@@ -213,9 +234,21 @@ export class OdooApiController {
 
   @Get('documents/download/:id')
   @ApiOperation({ summary: 'Get signed download URL for a document' })
-  @ApiParam({ name: 'id', type: Number })
+  @ApiParam({ name: 'id', type: String })
   async getDocumentDownloadUrl(@Param('id') id: string) {
-    const url = await this.odooDocument.getSignedUrl(parseInt(id, 10));
+    const url = await this.odooDocument.getSignedUrl(id);
     return { url };
+  }
+
+  @Delete('documents/:projectId/:id')
+  @ApiOperation({ summary: 'Delete a document linked to an Odoo project' })
+  @ApiParam({ name: 'projectId', type: Number })
+  @ApiParam({ name: 'id', type: String })
+  async deleteDocument(
+    @Param('projectId') projectId: string,
+    @Param('id') id: string,
+  ) {
+    await this.odooDocument.deleteDocument(parseInt(projectId, 10), id);
+    return { success: true };
   }
 }

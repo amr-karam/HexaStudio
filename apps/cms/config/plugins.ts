@@ -94,12 +94,18 @@ export default ({ env }) => ({
     config: {
       provider: "aws-s3",
       providerOptions: {
+        baseUrl: env(
+          "MINIO_PUBLIC_URL",
+          "https://files.hexastudio.net",
+        ) + `/${env("AWS_BUCKET_NAME", "uploads")}`,
         s3Options: {
-          accessKeyId: env("AWS_ACCESS_KEY_ID"),
-          secretAccessKey: env("AWS_ACCESS_SECRET"),
-          region: env("AWS_REGION"),
+          accessKeyId: env("MINIO_ROOT_USER"),
+          secretAccessKey: env("MINIO_ROOT_PASSWORD"),
+          region: env("AWS_REGION", "us-east-1"),
+          endpoint: env("MINIO_ENDPOINT", "http://minio:9000"),
+          forcePathStyle: true,
           params: {
-            Bucket: env("AWS_BUCKET_NAME"),
+            Bucket: env("AWS_BUCKET_NAME", "uploads"),
           },
         },
       },

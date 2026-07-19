@@ -607,7 +607,7 @@ describe('OdooApiController', () => {
 
       expect(res.status).toBe(200);
       expect(res.body).toEqual({ url: signedUrl });
-      expect(mockOdooDocumentService.getSignedUrl).toHaveBeenCalledWith(42);
+      expect(mockOdooDocumentService.getSignedUrl).toHaveBeenCalledWith('42');
     });
 
     it('propagates NotFoundException from service', async () => {

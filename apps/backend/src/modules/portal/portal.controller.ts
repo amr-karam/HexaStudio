@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Put,
   Delete,
   Param,
   Req,
@@ -144,5 +145,27 @@ export class PortalController {
   ) {
     await this.portalService.deleteDocument(projectId, documentId);
     return { message: 'Document deleted successfully' };
+  }
+
+  @Put('notifications/preferences')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update notification preferences for the authenticated user' })
+  async updateNotificationPreferences(
+    @Req() req: { user: { id: string } },
+    @Body('preferences') preferences: Record<string, boolean>,
+    @Body('userId') userId?: string,
+  ) {
+    const targetUserId = userId || req.user.id;
+    await this.portalService.saveNotificationPreferences(targetUserId, preferences);
+    return { message: 'Notification preferences saved' };
+  }
+
+  @Get('notifications/preferences')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get notification preferences for the authenticated user' })
+  async getNotificationPreferences(@Req() req: { user: { id: string } }) {
+    return this.portalService.getNotificationPreferences(req.user.id);
   }
 }
