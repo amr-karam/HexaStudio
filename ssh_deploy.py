@@ -1,10 +1,15 @@
+import os
 import paramiko
 import sys
 
 host = "19.16.1.100"
 user = "root"
-password = "iP@ssw0rd"
+password = os.environ.get("OPENCODE_PASSWORD")
 command = sys.argv[1] if len(sys.argv) > 1 else "echo no command"
+
+if not password:
+    print("ERROR: OPENCODE_PASSWORD environment variable not set", file=sys.stderr)
+    sys.exit(1)
 
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())

@@ -1,5 +1,5 @@
 #!/bin/sh
-NEW='iP@ssw0rd'
+NEW='$OPENCODE_PASSWORD'
 for ENV in /home/hexa/hexastudio/.env /root/.env; do
   [ -f "$ENV" ] || continue
   for var in POSTGRES_PASSWORD REDIS_PASSWORD MINIO_ROOT_PASSWORD GRAFANA_ADMIN_PASSWORD ODOO_PASSWORD; do
