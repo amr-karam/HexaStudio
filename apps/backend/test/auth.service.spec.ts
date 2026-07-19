@@ -6,6 +6,7 @@ import { UnauthorizedException } from '@nestjs/common';
 import { of, throwError } from 'rxjs';
 import { AuthService } from '../src/modules/auth/auth.service';
 import { RedisService } from '../src/modules/storage/redis.service';
+import { UsersService } from '../src/modules/users/users.service';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -55,6 +56,12 @@ describe('AuthService', () => {
             sadd: vi.fn().mockResolvedValue(1),
             smembers: vi.fn().mockResolvedValue([]),
             srem: vi.fn().mockResolvedValue(1),
+          },
+        },
+        {
+          provide: UsersService,
+          useValue: {
+            findByEmail: vi.fn().mockResolvedValue(null),
           },
         },
       ],
