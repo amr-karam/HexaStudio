@@ -2,4 +2,3 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_hexa_webhook_config_all,hexa.webhook.config,model_hexa_webhook_config,,1,1,1,1
 access_hexa_webhook_all,hexa.webhook,model_hexa_webhook,,1,1,1,1
 access_hexa_webhook_log_all,hexa.webhook.log,model_hexa_webhook_log,,1,1,1,1
-access_hexa_documents_document_all,documents.document,model_documents_document,,1,1,1,1
