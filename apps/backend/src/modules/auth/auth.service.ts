@@ -141,13 +141,18 @@ export class AuthService {
     return { accessToken, refreshToken: newRefreshToken, user };
   }
 
-  async validateUser(userId: string, jti?: string): Promise<User> {
+  async validateUser(userId: string, jti?: string, email?: string, role?: User['role']): Promise<User> {
     if (jti) {
       const blacklisted = await this.redis.get(`blacklist:${jti}`);
       if (blacklisted) {
         throw new UnauthorizedException('Token has been revoked');
       }
     }
+    // Use JWT payload data to avoid an extra Strapi call
+    if (email && role) {
+      return this.applyRoleOverride({ id: userId, email, username: '', role });
+    }
+    // Fallback: fetch from Strapi (covers opaque tokens where payload is not available)
     return this.fetchUser(userId);
   }
 
@@ -343,7 +348,7 @@ export class AuthService {
   private async applyRoleOverride(cmsUser: User): Promise<User> {
     const localUser = await this.usersService.findByEmail(cmsUser.email);
     if (localUser) {
-      return { ...cmsUser, role: localUser.role as User['role'] };
+      return { ...cmsUser, ...localUser, id: cmsUser.id };
     }
     return cmsUser;
   }

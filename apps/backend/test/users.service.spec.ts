@@ -18,13 +18,14 @@ describe('UsersService', () => {
       const user = await service.findByEmail('admin@hexastudio.net');
       expect(user).toBeDefined();
       expect(user?.role).toBe('admin');
-      expect(user?.name).toBe('Admin User');
+      expect(user?.username).toBe('admin');
     });
 
     it('returns client user by email', async () => {
       const user = await service.findByEmail('client@example.com');
       expect(user).toBeDefined();
-      expect(user?.role).toBe('client');
+      expect(user?.role).toBe('user');
+      expect(user?.username).toBe('client');
     });
 
     it('returns undefined for unknown email', async () => {
@@ -51,7 +52,7 @@ describe('UsersService', () => {
       const users = await service.findAll();
       expect(users).toHaveLength(2);
       expect(users.map((u) => u.role)).toContain('admin');
-      expect(users.map((u) => u.role)).toContain('client');
+      expect(users.map((u) => u.role)).toContain('user');
     });
   });
 });

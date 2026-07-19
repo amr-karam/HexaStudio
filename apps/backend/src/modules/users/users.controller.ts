@@ -1,5 +1,6 @@
 import { Controller, Get, Param, NotFoundException, UseGuards } from '@nestjs/common';
-import { UsersService, User } from './users.service';
+import { UsersService } from './users.service';
+import type { User } from '@hexastudio/types';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller({ path: 'users', version: '1' })
