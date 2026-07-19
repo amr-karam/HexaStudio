@@ -69,7 +69,7 @@ HEXA Studio is fully deployed and operational on production infrastructure. Spri
 - [ ] GeoIP region detection (MaxMind/IP2Location) for auto-pricing
 - [x] Currency selection UI in frontend (manual override)
 - [x] Exchange rate auto-sync (ECB API / OpenExchangeRates)
-- [x] Client Portal v3 — timeline visualization (notification preferences, document upload remaining)
+- [x] Client Portal v3 — notification preferences, document upload, timeline visualization
 - [x] Resolve `_corrupted_node_modules_stubs/` NTFS issue
 - [x] Fix 7 pre-existing backend test failures
 - [x] Hostinger API key rotation

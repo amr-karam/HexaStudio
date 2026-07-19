@@ -25,9 +25,9 @@ Harden the platform for production scale: complete API hardening (refresh token 
 
 ### Client Portal v3 (P1)
 
-- [ ] **Portal Notification Preferences** — Allow clients to opt in/out of notification types
-- [ ] **Portal Document Upload** — Allow clients to upload files to their project
-- [ ] **Portal Project Timeline Visualization** — Gantt-like view of milestones
+- [x] **Portal Notification Preferences** — Toggle UI on `/portal/settings` with localStorage + backend sync
+- [x] **Portal Document Upload** — Drag-drop upload, document list, download/delete on project detail page
+- [x] **Portal Project Timeline Visualization** — Gantt toggle on main portal page + RTL support
 
 ### Technical Debt (P2)
 
