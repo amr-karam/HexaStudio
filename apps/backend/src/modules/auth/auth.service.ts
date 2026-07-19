@@ -161,7 +161,7 @@ export class AuthService {
       // Allow local hardcoded users (e.g., admin@hexastudio.net) to override CMS role
       const localUser = await this.usersService.findByEmail(cmsUser.email);
       if (localUser) {
-        return { ...cmsUser, role: localUser.role };
+        return { ...cmsUser, role: localUser.role as User['role'] };
       }
       return cmsUser;
     } catch {
@@ -345,7 +345,7 @@ export class AuthService {
     const cmsUser = this.mapUser(response.data);
     const localUser = await this.usersService.findByEmail(cmsUser.email);
     if (localUser) {
-      return { ...cmsUser, role: localUser.role };
+      return { ...cmsUser, role: localUser.role as User['role'] };
     }
     return cmsUser;
   }
