@@ -12,7 +12,8 @@
         "project",
         "account",
         "contacts",
-        "base_automation"
+        "base_automation",
+        "documents"
     ],
     "data": [
         "security/ir.model.access.csv",
