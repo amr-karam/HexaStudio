@@ -18,6 +18,7 @@ describe('RequestsService', () => {
             create: vi.fn(),
             searchRead: vi.fn(),
             write: vi.fn(),
+            execute: vi.fn(),
           },
         },
       ],
@@ -25,6 +26,13 @@ describe('RequestsService', () => {
 
     service = module.get<RequestsService>(RequestsService);
     odooService = module.get<OdooService>(OdooService);
+
+    // Default CRM stage resolution for dynamic stage mapping
+    vi.mocked(odooService.execute).mockResolvedValue([
+      { id: 1, name: 'New' },
+      { id: 2, name: 'Qualified' },
+      { id: 3, name: 'Won' },
+    ]);
   });
 
   describe('createRequest', () => {
@@ -87,6 +95,9 @@ describe('RequestsService', () => {
   describe('updateRequestStatus', () => {
     it('updates lead stage in Odoo and returns updated request', async () => {
       vi.mocked(odooService.write).mockResolvedValueOnce(true as any);
+      vi.mocked(odooService.searchRead).mockResolvedValueOnce([
+        { id: 42, name: '[Request] Design Update', partner_name: 'Client Co', description: 'Update', priority: '2', stage_id: [2, 'Qualified'], create_date: '2026-01-01' },
+      ]);
 
       const result = await service.updateRequestStatus('REQ-42', 'reviewed');
       expect(result.id).toBe('REQ-42');

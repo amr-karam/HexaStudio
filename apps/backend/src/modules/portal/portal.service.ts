@@ -64,8 +64,18 @@ export interface ClientInvoice {
   state: string;
 }
 
+export interface NotificationPreferences {
+  projectUpdates: boolean;
+  phaseApprovals: boolean;
+  newAnnotations: boolean;
+  documentUploads: boolean;
+  milestoneCompletions: boolean;
+}
+
 const PORTAL_DOCUMENTS_PREFIX = 'portal:documents';
 const PORTAL_BUCKET = 'portal';
+const DOCUMENTS_INDEX_KEY = `${PORTAL_DOCUMENTS_PREFIX}:index`;
+const PORTAL_NOTIFICATIONS_PREFIX = 'portal:notifications';
 
 @Injectable()
 export class PortalService {
@@ -168,8 +178,9 @@ export class PortalService {
       description,
     };
 
-    // Store metadata in Redis hash
+    // Store metadata in Redis hash and global index
     await this.redisService.hset(this.documentRedisKey(projectId), docId, doc);
+    await this.redisService.hset(DOCUMENTS_INDEX_KEY, docId, projectId);
 
     return doc;
   }
@@ -238,6 +249,7 @@ export class PortalService {
 
     // Delete metadata from Redis
     await this.redisService.hdel(key, documentId);
+    await this.redisService.hdel(DOCUMENTS_INDEX_KEY, documentId);
     this.logger.log(`Deleted document ${documentId} metadata from Redis`);
   }
 
@@ -356,5 +368,40 @@ export class PortalService {
       this.logger.warn(`Failed to fetch invoices for partner ${partnerId}: ${err}`);
       return [];
     }
+  }
+
+  /**
+   * Persist notification preferences for a portal user.
+   */
+  async saveNotificationPreferences(
+    userId: string,
+    preferences: Partial<NotificationPreferences>,
+  ): Promise<void> {
+    const key = `${PORTAL_NOTIFICATIONS_PREFIX}:${userId}`;
+    const existing = (await this.redisService.get<NotificationPreferences>(key)) || {
+      projectUpdates: true,
+      phaseApprovals: true,
+      newAnnotations: true,
+      documentUploads: true,
+      milestoneCompletions: true,
+    };
+    const merged = { ...existing, ...preferences };
+    await this.redisService.set(key, merged, 0);
+  }
+
+  /**
+   * Retrieve notification preferences for a portal user.
+   */
+  async getNotificationPreferences(userId: string): Promise<NotificationPreferences> {
+    const key = `${PORTAL_NOTIFICATIONS_PREFIX}:${userId}`;
+    return (
+      (await this.redisService.get<NotificationPreferences>(key)) || {
+        projectUpdates: true,
+        phaseApprovals: true,
+        newAnnotations: true,
+        documentUploads: true,
+        milestoneCompletions: true,
+      }
+    );
   }
 }

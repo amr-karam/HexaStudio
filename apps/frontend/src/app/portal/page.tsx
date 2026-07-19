@@ -73,11 +73,13 @@ export default function PortalPage() {
     enabled: !!user,
   });
 
-  const { data: requests, isLoading: requestsLoading } = useQuery<ProjectRequest[]>({
+  const { data: requestsResponse, isLoading: requestsLoading } = useQuery<{ data: ProjectRequest[] }>({
     queryKey: ['portal-requests', user?.id],
     queryFn: () => portalService.getClientRequests(user?.id || 'demo-client'),
     enabled: !!user,
   });
+
+  const requests = requestsResponse?.data;
 
   // Odoo client-scoped data
   const { data: odooProjects } = useQuery<PortalProject[]>({

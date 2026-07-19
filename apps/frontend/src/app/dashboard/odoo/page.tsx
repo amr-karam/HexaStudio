@@ -6,7 +6,7 @@ import { odooApi } from '@/features/odoo/api';
 import type { OdooLead, OdooPipelineSummary } from '@hexastudio/types';
 import { toast } from 'sonner';
 
-type Tab = 'pipeline' | 'leads' | 'contacts' | 'projects' | 'documents' | 'sales' | 'invoices';
+type Tab = 'pipeline' | 'leads' | 'contacts' | 'projects' | 'documents' | 'sales' | 'invoices' | 'company';
 
 function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
@@ -171,6 +171,7 @@ export default function OdooDashboardPage() {
     queryFn: () => odooApi.getProjectDocuments(selectedProjectId!),
     enabled: !!selectedProjectId,
   });
+  const company = useQuery({ queryKey: ['odoo-company'], queryFn: () => odooApi.getCompanySettings() });
 
   const handleSync = async () => {
     setSyncing(true);
@@ -209,6 +210,7 @@ export default function OdooDashboardPage() {
     { key: 'documents', label: 'Documents' },
     { key: 'sales', label: 'Sales' },
     { key: 'invoices', label: 'Invoices' },
+    { key: 'company', label: 'Company' },
   ];
 
   return (
@@ -472,6 +474,46 @@ export default function OdooDashboardPage() {
                   ))}
                 </tbody>
               </table>
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Company Settings Tab */}
+      {tab === 'company' && (
+        <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+          <h2 className="mb-4 text-lg font-medium text-white">Company Settings</h2>
+          {company.isLoading && <p className="text-sm text-white/40">Loading...</p>}
+          {company.data && (
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4">
+                <p className="text-xs uppercase tracking-wide text-white/40">Name</p>
+                <p className="mt-1 text-sm text-white">{company.data.name}</p>
+              </div>
+              <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4">
+                <p className="text-xs uppercase tracking-wide text-white/40">Address</p>
+                <p className="mt-1 text-sm text-white">
+                  {[company.data.street, company.data.street2, company.data.city, company.data.state, company.data.zip, company.data.country]
+                    .filter(Boolean)
+                    .join(', ') || '—'}
+                </p>
+              </div>
+              <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4">
+                <p className="text-xs uppercase tracking-wide text-white/40">Phone</p>
+                <p className="mt-1 text-sm text-white">{company.data.phone || '—'}</p>
+              </div>
+              <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4">
+                <p className="text-xs uppercase tracking-wide text-white/40">Email</p>
+                <p className="mt-1 text-sm text-white">{company.data.email || '—'}</p>
+              </div>
+              <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4">
+                <p className="text-xs uppercase tracking-wide text-white/40">Website</p>
+                <p className="mt-1 text-sm text-white">{company.data.website || '—'}</p>
+              </div>
+              <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4">
+                <p className="text-xs uppercase tracking-wide text-white/40">Currency</p>
+                <p className="mt-1 text-sm text-white">{company.data.currency || '—'}</p>
+              </div>
             </div>
           )}
         </section>

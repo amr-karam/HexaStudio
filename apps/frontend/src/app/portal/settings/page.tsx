@@ -75,7 +75,7 @@ function loadPrefs(): NotificationPreferences {
 
 async function syncToBackend(prefs: NotificationPreferences, userId: string): Promise<boolean> {
   try {
-    const response = await fetch(`${API_BASE_URL}/portal/notifications/preferences`, {
+    const response = await fetch(`${API_BASE_URL}/api/portal/notifications/preferences`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',

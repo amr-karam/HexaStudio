@@ -9,6 +9,7 @@ import { TextReveal } from '@/components/ui/TextReveal';
 import { isValidEmail } from '@hexastudio/utils';
 import { cn } from '@/lib/utils';
 import { FAQSection } from '@/features/faq/components/FAQSection';
+import { API_BASE_URL } from '@/config/constants';
 
 interface FormErrors {
   name?: string;
@@ -44,10 +45,10 @@ export default function ContactPage() {
     if (!validate()) return;
     setStatus('sending');
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? '/api';
-      const res = await fetch(`${apiUrl}/contact`, {
+      const res = await fetch(`${API_BASE_URL}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(formState),
       });
       if (!res.ok) throw new Error('Failed to send');

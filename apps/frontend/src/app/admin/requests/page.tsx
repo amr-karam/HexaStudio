@@ -11,20 +11,25 @@ import { ProjectRequest } from '@/services/portal.service';
 export default function AdminRequestsPage() {
   const queryClient = useQueryClient();
 
-  const { data: requests, isLoading } = useQuery<ProjectRequest[]>({
+  const { data: requestsResponse, isLoading } = useQuery<{ data: ProjectRequest[] }>({
     queryKey: ['admin-requests'],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/requests/admin`);
+      const response = await fetch(`${API_BASE_URL}/api/requests/admin`, {
+        credentials: 'include',
+      });
       if (!response.ok) throw new Error('Failed to fetch requests');
       return response.json();
     },
   });
 
+  const requests = requestsResponse?.data;
+
   const mutation = useMutation({
     mutationFn: async ({ id, status }: { id: string, status: ProjectRequest['status'] }) => {
-      const response = await fetch(`${API_BASE_URL}/requests/${id}/status`, {
+      const response = await fetch(`${API_BASE_URL}/api/requests/${id}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ status }),
       });
       if (!response.ok) throw new Error('Failed to update status');

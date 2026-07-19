@@ -9,6 +9,25 @@ import {
   OdooMilestone,
 } from '@hexastudio/types';
 
+export interface OdooCompanySettings {
+  id: number;
+  name: string;
+  street?: string;
+  street2?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  country?: string;
+  phone?: string;
+  mobile?: string;
+  email?: string;
+  website?: string;
+  vat?: string;
+  registry?: string;
+  currency?: string;
+  logo?: string;
+}
+
 @Injectable()
 export class OdooApiService {
   private readonly logger = new Logger(OdooApiService.name);
@@ -166,6 +185,41 @@ export class OdooApiService {
       'search_read',
       [[], ['name', 'partner_id', 'amount_total', 'state', 'date_order'], offset, limit, 'date_order desc'],
     );
+  }
+
+  async getCompanySettings(companyId?: number): Promise<OdooCompanySettings> {
+    const domain = companyId ? [['id', '=', companyId]] : [];
+    const results = await this.odooService.execute<Record<string, unknown>[]>(
+      'res.company',
+      'search_read',
+      [
+        domain,
+        ['id', 'name', 'street', 'street2', 'city', 'state_id', 'zip', 'country_id', 'phone', 'mobile', 'email', 'website', 'vat', 'company_registry', 'currency_id', 'logo'],
+      ],
+    );
+    if (!results.length) throw new Error('Company not found');
+    const c = results[0];
+    const state = c.state_id as [number, string] | undefined;
+    const country = c.country_id as [number, string] | undefined;
+    const currency = c.currency_id as [number, string] | undefined;
+    return {
+      id: c.id as number,
+      name: (c.name as string) || '',
+      street: (c.street as string) || undefined,
+      street2: (c.street2 as string) || undefined,
+      city: (c.city as string) || undefined,
+      state: state ? state[1] : undefined,
+      zip: (c.zip as string) || undefined,
+      country: country ? country[1] : undefined,
+      phone: (c.phone as string) || undefined,
+      mobile: (c.mobile as string) || undefined,
+      email: (c.email as string) || undefined,
+      website: (c.website as string) || undefined,
+      vat: (c.vat as string) || undefined,
+      registry: (c.company_registry as string) || undefined,
+      currency: currency ? currency[1] : undefined,
+      logo: (c.logo as string) || undefined,
+    };
   }
 
   /** Manual re-sync trigger for admin use. */
