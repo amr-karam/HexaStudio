@@ -1,5 +1,12 @@
 # Changelog: HEXA Vision
 
+## [1.2.1] - 2026-07-19
+
+### Changed
+- **Odoo ERP Upgrade:** Production image upgraded from `odoo:17.0` to `odoo:18` to match local development and custom module (`hexa_studio` v18.0.1.0.0).
+- **Production Compose:** `docker-compose.prod.yml` now uses `odoo:18`.
+- **Project Status:** Updated ERP status to reflect Odoo 18.
+
 ## [1.2.0] - 2026-07-16
 
 ### Sprint 8 — AI Evolution

@@ -274,7 +274,7 @@ services:
   # Odoo ERP
   # ---------------------------------------------------------------------------
   odoo:
-    image: odoo:17.0
+    image: odoo:18
     <<: *default-restart
     logging: *default-logging
     depends_on:

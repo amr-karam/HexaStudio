@@ -14,7 +14,7 @@ HEXA Studio is fully deployed and operational on production infrastructure. Spri
 | **Frontend** | 🟢 | Live | 18 pages deployed at hexastudio.net |
 | **Backend** | 🟢 | Live | NestJS API at api.hexastudio.net |
 | **CMS** | 🟢 | Live | Strapi 5 at cms.hexastudio.net |
-| **ERP** | 🟢 | Live | Odoo 17 at odoo.hexastudio.net |
+| **ERP** | 🟢 | Live | Odoo 18 at odoo.hexastudio.net |
 | **Database** | 🟢 | Healthy | PostgreSQL 16 + Redis 7 |
 | **Monitoring** | 🟢 | Active | Prometheus + Grafana |
 | **SSL** | 🟢 | Valid | Let's Encrypt auto-renewal |
