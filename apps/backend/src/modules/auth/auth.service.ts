@@ -354,12 +354,30 @@ export class AuthService {
   }
 
   private async fetchUser(userId: string): Promise<User> {
+    const cmsApiToken = getEnv().CMS_API_TOKEN;
+    const authHeader = cmsApiToken
+      ? `Bearer ${cmsApiToken}`
+      : `Bearer ${this.jwtService.sign({ sub: userId })}`;
+
     const response = await firstValueFrom(
       this.httpService.get(`${this.cmsUrl}/api/users/${userId}?populate=role`, {
-        headers: { Authorization: `Bearer ${this.jwtService.sign({ sub: userId })}` },
+        headers: { Authorization: authHeader },
       }),
     );
-    return this.applyRoleOverride(this.mapUser(response.data));
+
+    // Strapi 5 returns { data, error } envelope
+    const raw = response.data?.data ?? response.data;
+    if (!raw || response.data?.error) {
+      this.logger.error(`fetchUser failed for userId=${userId}: ${response.data?.error?.message ?? 'No data'}`);
+      throw new UnauthorizedException('Unable to verify user');
+    }
+
+    // Normalize Strapi 5 Content API format ({ id, attributes }) → flat
+    const userData = raw.attributes
+      ? { id: raw.id, ...raw.attributes, role: raw.attributes.role ?? raw.role }
+      : raw;
+
+    return this.applyRoleOverride(this.mapUser(userData));
   }
 
   private mapUser(data: { id: number; email: string; username: string; role?: { type: string } }): User {
