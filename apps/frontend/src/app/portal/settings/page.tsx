@@ -6,6 +6,7 @@ import { useAuth } from '@/features/auth';
 import { useLocale } from '@/i18n/LocaleProvider';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { ToggleSwitch } from '@/features/portal/ToggleSwitch';
+import { CurrencySelector, useCurrencyStore } from '@/features/currency';
 import { toast } from 'sonner';
 import { API_BASE_URL } from '@/config/constants';
 
@@ -85,6 +86,62 @@ async function syncToBackend(prefs: NotificationPreferences, userId: string): Pr
   } catch {
     return false;
   }
+}
+
+/** Small inline component showing the active currency info in settings. */
+function CurrencyInfo() {
+  const selectedCurrency = useCurrencyStore((s) => s.selectedCurrency);
+  const availableCurrencies = useCurrencyStore((s) => s.availableCurrencies);
+  const isLoading = useCurrencyStore((s) => s.isLoading);
+  const { t, locale } = useLocale();
+
+  const current = selectedCurrency
+    ? availableCurrencies.find((c) => c.code === selectedCurrency)
+    : null;
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center gap-2">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+          className="w-3 h-3 rounded-full border-2 border-accent/30 border-t-accent shrink-0"
+        />
+        <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">
+          {t('portal.settings.loadingCurrency') || 'Loading...'}
+        </span>
+      </div>
+    );
+  }
+
+  if (!current) {
+    return (
+      <div className="flex items-center gap-2">
+        <div className="w-2 h-2 rounded-full bg-neutral-600 shrink-0" />
+        <span className="text-[10px] font-mono text-neutral-500">
+          {t('portal.settings.autoDetectActive') || 'Auto-detected from locale'}:{' '}
+          <span className="text-neutral-400">{locale?.toUpperCase()}</span>
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-3 text-[10px] font-mono text-neutral-500">
+      <span className="flex items-center gap-1.5">
+        <span className="w-2 h-2 rounded-full bg-accent shrink-0" />
+        {t('portal.settings.activeCurrency') || 'Active'}:{' '}
+        <span className="text-accent font-medium">
+          {current.symbol} {current.code}
+        </span>
+      </span>
+      <span className="w-px h-3 bg-border/30" />
+      <span>
+        {current.name}
+        {current.region ? ` · ${current.region}` : ''}
+      </span>
+    </div>
+  );
 }
 
 function PageSkeleton() {
@@ -227,11 +284,44 @@ export default function SettingsPage() {
           </div>
         </motion.section>
 
+        {/* Currency & Regional Section */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="bg-surface border border-border/50 rounded-sm overflow-hidden mt-8"
+        >
+          <div className="px-6 py-5 border-b border-border/20">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-accent/60" />
+              <h2 className="text-base font-medium text-foreground tracking-wide">
+                {t('portal.settings.currency') || 'Currency & Regional'}
+              </h2>
+            </div>
+          </div>
+          <div className="px-6 py-6 bg-background border border-border/30 rounded-sm m-4">
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-1">
+                <span className="text-sm font-medium text-foreground">
+                  {t('portal.settings.preferredCurrency') || 'Preferred Currency'}
+                </span>
+                <p className="text-xs text-neutral-500 leading-relaxed max-w-md">
+                  {t('portal.settings.currencyDesc') || 'Choose your preferred currency for pricing and invoice display. Auto-detects from your region.'}
+                </p>
+              </div>
+              <CurrencySelector />
+            </div>
+            <div className="mt-4 pt-4 border-t border-border/10">
+              <CurrencyInfo />
+            </div>
+          </div>
+        </motion.section>
+
         {/* Sync status indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
+          transition={{ delay: 0.8 }}
           className="mt-8 flex items-center justify-end gap-2"
         >
           {syncStatus === 'syncing' && (

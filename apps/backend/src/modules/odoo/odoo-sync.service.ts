@@ -1,7 +1,8 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleInit, forwardRef } from '@nestjs/common';
 import { OdooService } from './odoo.service';
 import { RedisService } from '../storage/redis.service';
 import { EventBus } from '../realtime/event-bus.service';
+import { WebhookRetryService } from './webhook-retry.service';
 import type { OdooWebhookPayload } from '@hexastudio/types';
 
 export interface SyncState {
@@ -26,6 +27,8 @@ export class OdooSyncService implements OnModuleInit {
     private readonly odooService: OdooService,
     private readonly redisService: RedisService,
     private readonly eventBus: EventBus,
+    @Inject(forwardRef(() => WebhookRetryService))
+    private readonly webhookRetryService: WebhookRetryService,
   ) {}
 
   onModuleInit() {
@@ -45,7 +48,18 @@ export class OdooSyncService implements OnModuleInit {
 
     switch (payload.model) {
       case 'project.project':
-        await this.syncProject(payload);
+        try {
+          await this.syncProject(payload);
+        } catch (error) {
+          this.logger.warn(
+            `Webhook sync failed for ${payload.model}:${payload.id} — enqueuing for retry`,
+          );
+          await this.webhookRetryService.enqueue(
+            payload,
+            error instanceof Error ? error.message : String(error),
+          );
+          return; // Event will be emitted on successful retry
+        }
         this.eventBus.emit('odoo:project', payload);
         break;
       case 'crm.lead':
@@ -59,6 +73,35 @@ export class OdooSyncService implements OnModuleInit {
         break;
       default:
         this.logger.debug(`Unmapped Odoo webhook model: ${payload.model}`);
+    }
+  }
+
+  /**
+   * Re-process a webhook payload from the retry queue.
+   * This is intentionally separated from `handleWebhook` to avoid recursive
+   * enqueue loops — it does NOT call `webhookRetryService.enqueue` on failure.
+   * The caller (retry sweeper) owns the failure/escalation logic.
+   */
+  async processRetryWebhook(payload: OdooWebhookPayload): Promise<void> {
+    const key = `odoo:sync:${payload.model}:${payload.id}`;
+    await this.redisService.set(key, payload, 3600);
+
+    switch (payload.model) {
+      case 'project.project':
+        await this.syncProject(payload);
+        this.eventBus.emit('odoo:project', payload);
+        break;
+      case 'crm.lead':
+        this.eventBus.emit('odoo:lead', payload);
+        break;
+      case 'account.move':
+        this.eventBus.emit('odoo:invoice', payload);
+        break;
+      case 'sync':
+        await this.pullAll();
+        break;
+      default:
+        this.logger.debug(`Unmapped Odoo webhook model in retry: ${payload.model}`);
     }
   }
 

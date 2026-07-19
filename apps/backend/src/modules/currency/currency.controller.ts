@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Body, Query, HttpCode, HttpStatus, Logger, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, HttpCode, HttpStatus, Logger, UseGuards, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import type { Request } from 'express';
 import { CurrencyService } from './currency.service';
 import { ExchangeRateSyncService } from './exchange-rate-sync.service';
 import { PricingRequest, PricingResponse, CurrencyConfig } from './currency.types';
@@ -106,21 +107,28 @@ export class PricingController {
    *   baseAmount: 99.99,
    *   baseCurrency: "USD",
    *   targetCurrency: "EUR",
-   *   region: "DE",
+   *   region: "DE",        // optional — auto-detected from IP if omitted
    *   includesTax: true
    * }
    * Response: Full pricing breakdown with tax, regional markup, final amount
    */
   @Post('calculate')
   @HttpCode(HttpStatus.OK)
-  async calculatePrice(@Body() request: PricingRequest): Promise<PricingResponse> {
+  async calculatePrice(
+    @Body() request: PricingRequest,
+    @Req() req: Request,
+  ): Promise<PricingResponse> {
+    if (!request.region) {
+      const ip = this.extractClientIP(req);
+      request.region = await this.currencyService.detectRegionFromIP(ip);
+    }
     return this.currencyService.calculateRegionalPrice(request);
   }
 
   /**
    * GET /api/pricing/preview
    * Query params: ?baseAmount=99.99&baseCurrency=USD&region=FR
-   * Quick preview of pricing in a region
+   * Quick preview of pricing in a region; region is auto-detected from IP if omitted.
    */
   @Get('preview')
   @HttpCode(HttpStatus.OK)
@@ -128,14 +136,46 @@ export class PricingController {
     @Query('baseAmount') baseAmount: string = '99.99',
     @Query('baseCurrency') baseCurrency: string = 'USD',
     @Query('region') region?: string,
+    @Req() req?: Request,
   ): Promise<PricingResponse> {
+    let resolvedRegion = region;
+
+    if (!resolvedRegion && req) {
+      const ip = this.extractClientIP(req);
+      resolvedRegion = await this.currencyService.detectRegionFromIP(ip);
+    }
+
     const request: PricingRequest = {
       baseAmount: parseFloat(baseAmount),
       baseCurrency: baseCurrency.toUpperCase(),
       targetCurrency: baseCurrency.toUpperCase(), // Use same currency for base
-      region,
+      region: resolvedRegion,
     };
 
     return this.currencyService.calculateRegionalPrice(request);
+  }
+
+  /**
+   * Extract the client IP address from the request.
+   * Checks, in order: x-forwarded-for, x-real-ip, req.ip (direct socket).
+   */
+  private extractClientIP(req: Request): string | undefined {
+    // x-forwarded-for can be a comma-separated list; take the first (client) IP
+    const forwarded = req.headers['x-forwarded-for'];
+    if (typeof forwarded === 'string') {
+      const ip = forwarded.split(',')[0].trim();
+      if (ip) return ip;
+    }
+    if (typeof forwarded === 'object' && forwarded.length > 0) {
+      const ip = forwarded[0].split(',')[0].trim();
+      if (ip) return ip;
+    }
+
+    const realIp = req.headers['x-real-ip'];
+    if (typeof realIp === 'string') {
+      return realIp;
+    }
+
+    return req.ip;
   }
 }

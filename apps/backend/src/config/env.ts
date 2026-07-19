@@ -52,6 +52,17 @@ const envSchema = z.object({
   GEMINI_MODEL: z.string().default('gemini-3.5-flash'),
   AI_PROVIDER: z.enum(['openai', 'gemini']).default('openai'),
 
+  // Exchange Rate API
+  EXCHANGE_RATE_API_KEY: z.string().optional(),
+  EXCHANGE_RATE_API_URL: z
+    .string()
+    .url()
+    .default('https://open.er-api.com/v6/latest/USD'),
+
+  // Webhook Retry Queue
+  WEBHOOK_RETRY_MAX_ATTEMPTS: z.coerce.number().default(5),
+  WEBHOOK_RETRY_BACKOFF_MS: z.coerce.number().default(60_000),
+
   // Optional
   PORT: z.coerce.number().default(4000),
 

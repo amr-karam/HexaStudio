@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/features/auth';
 import { useLocale } from '@/i18n/LocaleProvider';
 import { cn } from '@/lib/utils';
+import { CurrencySelector } from '@/features/currency';
 
 const NAV_ITEMS = [
   { labelKey: 'portal.nav.dashboard', href: '/portal' },
@@ -79,7 +80,12 @@ export function PortalNav() {
         </div>
 
         {/* Right section: user info + logout */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          {/* Currency selector */}
+          <div className="hidden md:block">
+            <CurrencySelector />
+          </div>
+
           {user && (
             <div className="hidden md:flex items-center gap-3">
               <div className="flex items-center gap-2">
@@ -151,6 +157,11 @@ export function PortalNav() {
                   </Link>
                 );
               })}
+              {/* Mobile currency selector */}
+              <div className="pt-4 border-t border-border/20">
+                <CurrencySelector />
+              </div>
+
               {user && (
                 <>
                   <div className="pt-4 border-t border-border/20">

@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { Button } from '@/components/ui/Button';
+import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/inputs/Input';
 import { portalService, type PortalData, type ProjectRequest } from '@/services/portal.service';
 import { portalOdooApi, type PortalProject, type PortalInvoice } from '@/features/odoo/api';
@@ -13,9 +14,11 @@ import { useAuth } from '@/features/auth';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { PhaseApprovalCard, RealtimePresence, AnnotationOverlay } from '@/features/portal';
+import { TimelineView, type TimelineMilestone } from '@/features/portal/TimelineView';
 import { useRealtime } from '@/features/realtime/useRealtime';
 import { useAnalytics } from '@/lib/analytics';
 import { useLocale } from '@/i18n/LocaleProvider';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 type PhaseStatus = 'pending' | 'submitted' | 'approved' | 'rejected' | 'revision';
 
@@ -26,13 +29,36 @@ const DEMO_PHASES: Array<{ id: string; name: string; status: PhaseStatus; descri
   { id: 'phase-4', name: 'Final Rendering', status: 'pending' as const, description: 'Final production renders' },
 ];
 
+/* -------------------------------------------------------------------------- */
+/*  Helpers                                                                   */
+/* -------------------------------------------------------------------------- */
+
+function transformMilestone(
+  m: PortalProject['milestones'][number],
+  project: PortalProject,
+): TimelineMilestone {
+  const endDate = m.completed ? m.date : undefined;
+  return {
+    id: String(m.id),
+    name: m.name,
+    description: m.description,
+    startDate: m.date || project.startDate || new Date().toISOString(),
+    endDate,
+    status: (m.completed ? 'completed' : 'pending') as TimelineMilestone['status'],
+  };
+}
+
+type ViewMode = 'gantt' | 'list';
+
 export default function PortalPage() {
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
   const { track } = useAnalytics();
   const { t } = useLocale();
+  const prefersReduced = useReducedMotion();
   const queryClient = useQueryClient();
   const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>('gantt');
   const [phases, setPhases] = useState(DEMO_PHASES);
   const [annotations, setAnnotations] = useState<Array<{ id: string; type: 'text' | 'pin'; position: { x: number; y: number }; content: string; author: string; createdAt: string; resolved: boolean }>>([]);
   const [presenceUsers, setPresenceUsers] = useState<string[]>([]);
@@ -247,46 +273,173 @@ export default function PortalPage() {
             {/* Odoo Projects Section */}
             {odooProjects && odooProjects.length > 0 && (
               <section className="bg-surface border border-border/50 p-8 md:p-12 rounded-sm">
-                <h2 className="text-2xl font-serif font-light text-foreground mb-8">Active Projects</h2>
-                <div className="space-y-6">
-                  {odooProjects.map((project) => {
-                    const totalMilestones = project.milestones.length;
-                    const completedMilestones = project.milestones.filter((m) => m.completed).length;
-                    const progress = totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0;
-                    return (
-                      <div key={project.id} className="p-6 bg-background border border-border/30 rounded-sm">
-                        <div className="flex items-center justify-between mb-4">
-                          <div>
-                            <h3 className="text-lg font-medium text-foreground">{project.name}</h3>
-                            <p className="text-xs text-neutral-500 mt-1">{project.type} &middot; {project.status}</p>
-                          </div>
-                          <span className="text-[10px] uppercase tracking-widest text-accent font-mono px-2 py-1 border border-accent/30 rounded-full bg-accent/10">
-                            {progress}%
-                          </span>
-                        </div>
-                        {/* Milestone progress bar */}
-                        <div className="mb-4">
-                          <div className="h-1.5 w-full rounded-full bg-neutral-800 overflow-hidden">
-                            <div className="h-full rounded-full bg-accent transition-all duration-500" style={{ width: `${progress}%` }} />
-                          </div>
-                          <p className="text-[10px] text-neutral-600 mt-1 font-mono">{completedMilestones}/{totalMilestones} milestones</p>
-                        </div>
-                        {/* Milestone list */}
-                        {project.milestones.length > 0 && (
-                          <div className="space-y-2">
-                            {project.milestones.map((ms) => (
-                              <div key={ms.id} className="flex items-center gap-3">
-                                <div className={`w-2 h-2 rounded-full ${ms.completed ? 'bg-accent' : 'bg-neutral-700'}`} />
-                                <span className={`text-sm ${ms.completed ? 'text-neutral-500 line-through' : 'text-foreground'}`}>{ms.name}</span>
-                                {ms.date && <span className="text-[10px] text-neutral-600 font-mono ml-auto">{ms.date.slice(0, 10)}</span>}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
+                {/* Section header with toggle */}
+                <div className="flex items-center justify-between mb-8">
+                  <h2 className="text-2xl font-serif font-light text-foreground">
+                    {t('portal.activeProjects') || 'Active Projects'}
+                  </h2>
+                  {/* View toggle */}
+                  <div
+                    className="flex items-center gap-1 rounded-full border border-border/30 p-0.5 bg-background/50"
+                    role="radiogroup"
+                    aria-label={t('portal.timeline.viewToggle') || 'View mode'}
+                  >
+                    <button
+                      type="button"
+                      role="radio"
+                      aria-checked={viewMode === 'gantt'}
+                      onClick={() => setViewMode('gantt')}
+                      className={cn(
+                        'relative flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider transition-all duration-500',
+                        viewMode === 'gantt'
+                          ? 'text-accent shadow-sm'
+                          : 'text-neutral-600 hover:text-neutral-400',
+                      )}
+                    >
+                      {viewMode === 'gantt' && (
+                        <motion.span
+                          layoutId="view-toggle-bg"
+                          className="absolute inset-0 rounded-full bg-accent/10 border border-accent/30"
+                          transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                        />
+                      )}
+                      <svg className="relative w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <span className="relative">{t('portal.timeline.gantt') || 'Timeline'}</span>
+                    </button>
+                    <button
+                      type="button"
+                      role="radio"
+                      aria-checked={viewMode === 'list'}
+                      onClick={() => setViewMode('list')}
+                      className={cn(
+                        'relative flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider transition-all duration-500',
+                        viewMode === 'list'
+                          ? 'text-accent shadow-sm'
+                          : 'text-neutral-600 hover:text-neutral-400',
+                      )}
+                    >
+                      {viewMode === 'list' && (
+                        <motion.span
+                          layoutId="view-toggle-bg"
+                          className="absolute inset-0 rounded-full bg-accent/10 border border-accent/30"
+                          transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                        />
+                      )}
+                      <svg className="relative w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                      </svg>
+                      <span className="relative">{t('portal.timeline.list') || 'List'}</span>
+                    </button>
+                  </div>
                 </div>
+
+                <AnimatePresence mode="wait">
+                  {viewMode === 'gantt' ? (
+                    /* ========== GANTT VIEW ========== */
+                    <motion.div
+                      key="gantt-view"
+                      initial={prefersReduced ? { opacity: 1 } : { opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={prefersReduced ? { opacity: 0 } : { opacity: 0, y: -8 }}
+                      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                      className="space-y-8"
+                    >
+                      {odooProjects.map((project) => {
+                        const timelineMilestones = project.milestones.map((m) =>
+                          transformMilestone(m, project),
+                        );
+                        const total = project.milestones.length;
+                        const completed = project.milestones.filter((m) => m.completed).length;
+                        const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
+                        return (
+                          <div key={project.id}>
+                            <div className="flex items-center justify-between mb-4">
+                              <div className="flex items-center gap-3">
+                                <div className="w-2 h-2 rounded-full bg-accent/60" />
+                                <h3 className="text-base font-medium text-foreground tracking-wide">
+                                  {project.name}
+                                </h3>
+                                <span className="text-[10px] text-neutral-600 font-mono">
+                                  {project.type}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                <span className="text-[10px] uppercase tracking-widest text-accent font-mono">
+                                  {progress}%
+                                </span>
+                                <span className={cn(
+                                  'text-[9px] uppercase tracking-widest px-2 py-0.5 border rounded-full font-mono',
+                                  project.status === 'in-progress'
+                                    ? 'border-amber-500/30 text-amber-400 bg-amber-500/10'
+                                    : project.status === 'completed'
+                                      ? 'border-accent/30 text-accent bg-accent/10'
+                                      : 'border-neutral-700 text-neutral-500',
+                                )}>
+                                  {project.status}
+                                </span>
+                              </div>
+                            </div>
+                            <TimelineView
+                              milestones={timelineMilestones}
+                              projectStartDate={project.startDate}
+                              projectEndDate={project.endDate}
+                            />
+                          </div>
+                        );
+                      })}
+                    </motion.div>
+                  ) : (
+                    /* ========== LIST VIEW ========== */
+                    <motion.div
+                      key="list-view"
+                      initial={prefersReduced ? { opacity: 1 } : { opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={prefersReduced ? { opacity: 0 } : { opacity: 0, y: -8 }}
+                      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                      className="space-y-6"
+                    >
+                      {odooProjects.map((project) => {
+                        const totalMilestones = project.milestones.length;
+                        const completedMilestones = project.milestones.filter((m) => m.completed).length;
+                        const progress = totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0;
+                        return (
+                          <div key={project.id} className="p-6 bg-background border border-border/30 rounded-sm">
+                            <div className="flex items-center justify-between mb-4">
+                              <div>
+                                <h3 className="text-lg font-medium text-foreground">{project.name}</h3>
+                                <p className="text-xs text-neutral-500 mt-1">{project.type} &middot; {project.status}</p>
+                              </div>
+                              <span className="text-[10px] uppercase tracking-widest text-accent font-mono px-2 py-1 border border-accent/30 rounded-full bg-accent/10">
+                                {progress}%
+                              </span>
+                            </div>
+                            {/* Milestone progress bar */}
+                            <div className="mb-4">
+                              <div className="h-1.5 w-full rounded-full bg-neutral-800 overflow-hidden">
+                                <div className="h-full rounded-full bg-accent transition-all duration-500" style={{ width: `${progress}%` }} />
+                              </div>
+                              <p className="text-[10px] text-neutral-600 mt-1 font-mono">{completedMilestones}/{totalMilestones} milestones</p>
+                            </div>
+                            {/* Milestone list */}
+                            {project.milestones.length > 0 && (
+                              <div className="space-y-2">
+                                {project.milestones.map((ms) => (
+                                  <div key={ms.id} className="flex items-center gap-3">
+                                    <div className={`w-2 h-2 rounded-full ${ms.completed ? 'bg-accent' : 'bg-neutral-700'}`} />
+                                    <span className={`text-sm ${ms.completed ? 'text-neutral-500 line-through' : 'text-foreground'}`}>{ms.name}</span>
+                                    {ms.date && <span className="text-[10px] text-neutral-600 font-mono ml-auto">{ms.date.slice(0, 10)}</span>}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </section>
             )}
 

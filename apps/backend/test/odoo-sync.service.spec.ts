@@ -5,6 +5,7 @@ import { OdooSyncService } from '../src/modules/odoo/odoo-sync.service';
 import { OdooService } from '../src/modules/odoo/odoo.service';
 import { RedisService } from '../src/modules/storage/redis.service';
 import { EventBus } from '../src/modules/realtime/event-bus.service';
+import { WebhookRetryService } from '../src/modules/odoo/webhook-retry.service';
 import type { OdooWebhookPayload } from '@hexastudio/types';
 
 // ── Mock objects ──────────────────────────────────────────────────────────────
@@ -29,6 +30,10 @@ const mockEventBus = {
 const mockOdooService = {
   searchRead: vi.fn(),
   create: vi.fn(),
+};
+
+const mockWebhookRetryService = {
+  enqueue: vi.fn().mockResolvedValue(undefined),
 };
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
@@ -63,6 +68,7 @@ describe('OdooSyncService', () => {
         { provide: OdooService,   useValue: mockOdooService },
         { provide: RedisService,  useValue: mockRedisService },
         { provide: EventBus,      useValue: mockEventBus },
+        { provide: WebhookRetryService, useValue: mockWebhookRetryService },
       ],
     }).compile();
 

@@ -96,6 +96,30 @@ export class RedisService {
     return exists === 1;
   }
 
+  // -----------------------------------------------------------------------
+  //  Sorted Set (ZSet) helpers — for DLQ and time-scored queues
+  // -----------------------------------------------------------------------
+
+  async zadd(key: string, score: number, member: string): Promise<void> {
+    await this.client.zadd(key, score, member);
+  }
+
+  async zcard(key: string): Promise<number> {
+    return this.client.zcard(key);
+  }
+
+  async zrange(key: string, start: number, stop: number): Promise<string[]> {
+    return this.client.zrange(key, start, stop);
+  }
+
+  async zrangebyscore(key: string, min: number | string, max: number | string): Promise<string[]> {
+    return this.client.zrangebyscore(key, min, max);
+  }
+
+  async zremrangebyscore(key: string, min: number | string, max: number | string): Promise<void> {
+    await this.client.zremrangebyscore(key, min, max);
+  }
+
   async flush(): Promise<void> {
     await this.client.flushall();
   }

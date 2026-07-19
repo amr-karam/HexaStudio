@@ -1,5 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { RedisService } from '../storage/redis.service';
+import { GeoipService } from '../geoip/geoip.service';
 import {
   CurrencyConfig,
   RegionalPricingRule,
@@ -22,7 +23,10 @@ export class CurrencyService implements OnModuleInit {
   private regionalRules: Map<string, RegionalPricingRule> = new Map();
   private exchangeRates: Map<string, Map<string, ExchangeRate>> = new Map();
 
-  constructor(private readonly redis: RedisService) {}
+  constructor(
+    private readonly redis: RedisService,
+    private readonly geoipService: GeoipService,
+  ) {}
 
   async onModuleInit() {
     await this.initializeCurrencies();
@@ -267,11 +271,31 @@ export class CurrencyService implements OnModuleInit {
   }
 
   /**
-   * Detect region from IP address or user preference
-   * TODO: Integrate with MaxMind GeoIP or similar service
+   * Detect region from IP address using GeoIP service.
+   * Maps the country code from geolocation to a regional pricing region.
+   * Falls back to 'DEFAULT' on any error or missing data.
    */
-  detectRegionFromIP(): string {
-    return 'DEFAULT';
+  async detectRegionFromIP(ip?: string): Promise<string> {
+    if (!ip) {
+      return 'DEFAULT';
+    }
+
+    try {
+      const geoData = await this.geoipService.lookup(ip);
+
+      if (geoData.status === 'success' && geoData.countryCode) {
+        const region = this.geoipService.getRegionFromCountry(geoData.countryCode);
+        this.logger.debug(`GeoIP detected region: ${region} for IP ${ip} (country: ${geoData.countryCode})`);
+        return region;
+      }
+
+      return 'DEFAULT';
+    } catch (error) {
+      this.logger.warn(
+        `Region detection failed for IP ${ip}: ${error instanceof Error ? error.message : String(error)}`,
+      );
+      return 'DEFAULT';
+    }
   }
 
   /**
@@ -311,10 +335,47 @@ export class CurrencyService implements OnModuleInit {
 
   /**
    * Sync exchange rates from external source (runs daily)
+   * @deprecated Use ExchangeRateSyncService.syncRates() instead, which
+   * persists rates to Redis and then calls updateRatesFromSync().
    */
   async syncExchangeRates(): Promise<void> {
-    // TODO: Integrate with ECB, OpenExchangeRates, or Fixer API
     this.logger.log('Exchange rate sync completed (scheduled daily)');
+  }
+
+  /**
+   * Update the in-memory exchange rates map after a successful Redis sync.
+   * Called by ExchangeRateSyncService after it fetches and stores fresh rates.
+   * Falls back to the persisted Redis hash if rates are not provided.
+   */
+  async updateRatesFromSync(rates?: Record<string, number>): Promise<void> {
+    try {
+      // If no rates passed in, read them from the Redis hash
+      const latestRates = rates ?? (await this.getLatestRates());
+
+      if (Object.keys(latestRates).length === 0) {
+        this.logger.warn('updateRatesFromSync called with empty rates — skipping');
+        return;
+      }
+
+      // Rebuild the in-memory Map from the flat USD-based rates
+      const fromMap = new Map<string, ExchangeRate>();
+      for (const [to, rate] of Object.entries(latestRates)) {
+        fromMap.set(to, {
+          from: 'USD',
+          to,
+          rate,
+          lastUpdated: new Date(),
+          source: 'openexchangerates',
+        });
+      }
+      this.exchangeRates.set('USD', fromMap);
+
+      this.logger.log(`In-memory exchange rates updated: ${Object.keys(latestRates).length} currencies`);
+    } catch (error) {
+      this.logger.error(
+        `Failed to update in-memory rates: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
   }
 
   // ──────────────────────────────────────────────
