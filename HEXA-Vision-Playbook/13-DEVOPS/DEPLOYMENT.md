@@ -56,4 +56,31 @@ A deployment is "DevOps-Done" only when:
 - [ ] The monitoring dashboard is active and reporting data.
 - [ ] The backup and recovery plan is tested and verified.
 
+---
+
+## 6. DNS MANAGEMENT (Hostinger)
+
+DNS records for `hexastudio.net` are managed via the Hostinger API using `scripts/update-dns.sh`.
+
+### Environment Requirements
+The script reads from the repo root `.env` (gitignored):
+
+```env
+HOSTINGER_API_KEY=your_hostinger_api_key_here
+DNS_DOMAIN=hexastudio.net
+SERVER_IP=19.16.1.100
+```
+
+### Security
+- **Never commit the API key.** The old hardcoded key was removed from `scripts/update-dns.sh`.
+- Store `HOSTINGER_API_KEY` only in `.env` on the server or in your password manager.
+- Rotate the key in Hostinger → re-import API clients → update `.env` on all environments.
+
+### Running the Update
+```bash
+bash scripts/update-dns.sh
+```
+
+The script will fail fast with a clear error if `HOSTINGER_API_KEY` is not set.
+
 *“Stability is the invisible foundation of luxury.”*

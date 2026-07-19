@@ -140,7 +140,7 @@ Elevating `apps/frontend` to HEXA Creative Excellence standard. All gates green
 
 | Task ID | Description | Status |
 |---------|-------------|--------|
-| **S9-P2-001** | Hostinger API key rotation | ⏳ Pending |
+| **S9-P2-001** | Hostinger API key rotation | ✅ Done |
 | **S9-P2-002** | Dependabot remediation (23 moderate vulns) | ⏳ Pending |
 | **S9-P2-003** | Sync playbook docs (arch, deploy, API) | ⏳ Ongoing |
 | **S9-P2-004** | Runbook creation (deploy, rollback, restore, incident) | ✅ Doc complete |

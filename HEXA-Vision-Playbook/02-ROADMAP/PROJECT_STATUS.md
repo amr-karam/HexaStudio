@@ -67,12 +67,13 @@ HEXA Studio is fully deployed and operational on production infrastructure. Spri
 
 - [ ] Mobile API hardening — refresh token rotation, versioning audit, pagination audit, JWT coverage
 - [ ] GeoIP region detection (MaxMind/IP2Location) for auto-pricing
-- [ ] Currency selection UI in frontend (manual override)
-- [ ] Exchange rate auto-sync (ECB API / OpenExchangeRates)
-- [ ] Client Portal v3 — notification preferences, document upload, timeline visualization
-- [ ] Resolve `_corrupted_node_modules_stubs/` NTFS issue
-- [ ] Fix 7 pre-existing backend test failures
-- [ ] Hostinger API key rotation + dependabot remediation
+- [x] Currency selection UI in frontend (manual override)
+- [x] Exchange rate auto-sync (ECB API / OpenExchangeRates)
+- [x] Client Portal v3 — timeline visualization (notification preferences, document upload remaining)
+- [x] Resolve `_corrupted_node_modules_stubs/` NTFS issue
+- [x] Fix 7 pre-existing backend test failures
+- [x] Hostinger API key rotation
+- [ ] Dependabot remediation
 - [ ] Expo/React Native mobile app research for Sprint 14
 
 ---

@@ -34,7 +34,7 @@ Harden the platform for production scale: complete API hardening (refresh token 
 - [ ] **Resolve `_corrupted_node_modules_stubs/` NTFS Issue** — Fix blocking backend vitest (chkdsk /f or re-clone)
 - [ ] **Fix 7 Pre-Existing Backend Test Failures** — Redis/auth related
 - [ ] **Dist Nesting Refactor** — Flatten `dist/apps/backend/src/main.js` to `dist/main.js`
-- [ ] **Hostinger API Key Rotation** — Rotate stale credentials
+- [x] **Hostinger API Key Rotation** — Rotated: removed hardcoded key from `scripts/update-dns.sh`; `HOSTINGER_API_KEY` now read from `.env` (gitignored) on the server
 - [ ] **Dependabot Remediation** — 24 moderate vulns (postcss XSS), deferred to Next.js 16.3+
 
 ### Research (P3)
