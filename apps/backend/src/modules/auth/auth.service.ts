@@ -150,7 +150,7 @@ export class AuthService {
       }
 
       const response = await firstValueFrom(
-        this.httpService.get(`${this.cmsUrl}/api/users/me`, {
+        this.httpService.get(`${this.cmsUrl}/api/users/me?populate=role`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
       );
@@ -330,7 +330,7 @@ export class AuthService {
 
   private async fetchUser(userId: string): Promise<User> {
     const response = await firstValueFrom(
-      this.httpService.get(`${this.cmsUrl}/api/users/${userId}`, {
+      this.httpService.get(`${this.cmsUrl}/api/users/${userId}?populate=role`, {
         headers: { Authorization: `Bearer ${this.jwtService.sign({ sub: userId })}` },
       }),
     );
