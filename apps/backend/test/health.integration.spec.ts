@@ -13,6 +13,7 @@ import { RedisService } from '../src/modules/storage/redis.service';
 import { VectorSyncService } from '../src/modules/vector/vector-sync.service';
 import { VectorModule } from '../src/modules/vector/vector.module';
 import { EventBus } from '../src/modules/realtime/event-bus.service';
+import { RedisModule } from '../src/modules/storage/redis.module';
 
 const mockRedisService = {
   get: vi.fn().mockResolvedValue(null),
@@ -72,12 +73,14 @@ describe('HealthModule', () => {
     process.env.VECTOR_PORT = '6333';
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [ConfigModule.forRoot({ isGlobal: true }), HealthModule, VectorModule],
+      imports: [ConfigModule.forRoot({ isGlobal: true }), RedisModule, HealthModule, VectorModule],
       providers: [
         { provide: RedisService, useValue: mockRedisService },
         { provide: EventBus, useValue: mockEventBus },
       ],
     })
+      .overrideProvider(RedisService)
+      .useValue(mockRedisService)
       .overrideProvider(OdooService)
       .useValue(mockOdooService)
       .overrideProvider(OdooSyncService)

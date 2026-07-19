@@ -4,6 +4,7 @@ import { useMemo, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { useLocale } from '@/i18n/LocaleProvider';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { cn } from '@/lib/utils';
 
 /* -------------------------------------------------------------------------- */
 /*  Types                                                                     */
@@ -51,26 +52,40 @@ const STATUS_CONFIG = {
 } as const;
 
 /* -------------------------------------------------------------------------- */
-/*  Helper: compute bar position & width                                      */
+/*  Helper: compute bar position & width (RTL-aware)                          */
 /* -------------------------------------------------------------------------- */
+
+interface BarStyle {
+  left: string;
+  right: string;
+  width: string;
+}
 
 function computeBarStyle(
   startDate: string,
   endDate: string | undefined,
   rangeStart: number,
   rangeEnd: number,
-): { left: string; width: string } {
+  isRTL: boolean,
+): BarStyle {
   const start = new Date(startDate).getTime();
   const end = endDate ? new Date(endDate).getTime() : start;
   const totalDuration = rangeEnd - rangeStart;
 
-  if (totalDuration <= 0) return { left: '0%', width: '0%' };
+  if (totalDuration <= 0) return { left: '0%', right: '0%', width: '0%' };
 
-  const left = Math.max(0, ((start - rangeStart) / totalDuration) * 100);
+  const fraction = Math.max(0, ((start - rangeStart) / totalDuration) * 100);
   const width = Math.max(2, ((end - start) / totalDuration) * 100);
 
+  if (isRTL) {
+    // In RTL, the bar starts from the right edge
+    const right = fraction;
+    return { left: 'auto', right: `${right}%`, width: `${width}%` };
+  }
+
   return {
-    left: `${left}%`,
+    left: `${fraction}%`,
+    right: 'auto',
     width: `${width}%`,
   };
 }
@@ -101,8 +116,9 @@ export function TimelineView({
   projectEndDate,
   className = '',
 }: TimelineViewProps) {
-  const { t, locale } = useLocale();
+  const { t, locale, dir } = useLocale();
   const prefersReduced = useReducedMotion();
+  const isRTL = dir === 'rtl';
 
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-80px' });
@@ -210,17 +226,20 @@ export function TimelineView({
       <div className="overflow-x-auto overflow-y-visible scrollbar-thin scrollbar-thumb-neutral-700 scrollbar-track-transparent">
         <div className="relative" style={{ minWidth: `${totalWidth}px` }}>
           {/* Month grid lines */}
-          <div className="relative h-10 border-b border-border/20">
+          <div className="relative h-10 border-b border-border/20" dir={isRTL ? 'rtl' : 'ltr'}>
             {monthMarkers.map((marker, i) => (
               <div
                 key={i}
                 className="absolute top-0 bottom-0 flex items-end pb-2"
-                style={{ left: `${marker.position}%` }}
+                style={{ [isRTL ? 'right' : 'left']: `${marker.position}%` }}
               >
                 <span className="text-[9px] font-mono text-neutral-600 uppercase tracking-wider whitespace-nowrap">
                   {marker.label}
                 </span>
-                <div className="absolute inset-y-0 left-0 w-px bg-border/10" />
+                <div
+                  className="absolute inset-y-0 w-px bg-border/10"
+                  style={{ [isRTL ? 'right' : 'left']: 0 }}
+                />
               </div>
             ))}
           </div>
@@ -229,7 +248,7 @@ export function TimelineView({
           <div className="divide-y divide-border/10">
             {milestones.map((milestone, index) => {
               const config = STATUS_CONFIG[milestone.status];
-              const barStyle = computeBarStyle(milestone.startDate, milestone.endDate, rangeStart, rangeEnd);
+              const barStyle = computeBarStyle(milestone.startDate, milestone.endDate, rangeStart, rangeEnd, isRTL);
               const isSingleDay = !milestone.endDate || milestone.startDate === milestone.endDate;
 
               return (
@@ -249,10 +268,18 @@ export function TimelineView({
                     ease: [0.16, 1, 0.3, 1],
                   }}
                   className="relative flex items-center h-14 px-4 hover:bg-white/[0.02] transition-colors duration-300 group"
+                  dir={isRTL ? 'rtl' : 'ltr'}
                 >
-                  {/* Milestone info (name + dates) - fixed on left */}
-                  <div className="flex items-center gap-3 min-w-[220px] shrink-0 z-10">
-                    <div className={`w-2.5 h-2.5 rounded-full border-2 ${config.dot} transition-transform duration-300 group-hover:scale-125`} />
+                  {/* Milestone info (name + dates) - fixed on left (LTR) or right (RTL) */}
+                  <div className={cn(
+                    'flex items-center gap-3 min-w-[220px] shrink-0 z-10',
+                    isRTL ? 'order-last text-right' : 'order-first',
+                  )}>
+                    <div className={cn(
+                      'w-2.5 h-2.5 rounded-full border-2 shrink-0',
+                      config.dot,
+                      'transition-transform duration-300 group-hover:scale-125',
+                    )} />
                     <div className="flex flex-col min-w-0">
                       <span className="text-sm font-medium text-foreground truncate">
                         {milestone.name}
@@ -274,13 +301,20 @@ export function TimelineView({
                         <div
                           key={i}
                           className="absolute top-0 bottom-0 w-px bg-border/5"
-                          style={{ left: `${marker.position}%` }}
+                          style={{ [isRTL ? 'right' : 'left']: `${marker.position}%` }}
                         />
                       ))}
                     </div>
 
                     {/* The bar */}
-                    <div className="absolute top-1/2 -translate-y-1/2 h-7" style={{ left: barStyle.left, width: barStyle.width }}>
+                    <div
+                      className="absolute top-1/2 -translate-y-1/2 h-7"
+                      style={{
+                        left: barStyle.left,
+                        right: barStyle.right,
+                        width: barStyle.width,
+                      }}
+                    >
                       <motion.div
                         initial={prefersReduced ? { scaleX: 1 } : { scaleX: 0 }}
                         animate={isInView ? { scaleX: 1 } : { scaleX: prefersReduced ? 1 : 0 }}
@@ -289,7 +323,7 @@ export function TimelineView({
                           duration: 0.6,
                           ease: [0.16, 1, 0.3, 1],
                         }}
-                        style={{ originX: 0 }}
+                        style={{ originX: isRTL ? 1 : 0 }}
                         className={`h-full rounded-full ${config.bar} flex items-center px-3`}
                       >
                         {!isSingleDay && (
@@ -301,8 +335,11 @@ export function TimelineView({
                     </div>
                   </div>
 
-                  {/* Status badge (right side) */}
-                  <div className="shrink-0 w-24 text-right">
+                  {/* Status badge (right side in LTR, left side in RTL) */}
+                  <div className={cn(
+                    'shrink-0 w-24',
+                    isRTL ? 'order-first text-left' : 'text-right',
+                  )}>
                     <span className={`inline-block text-[9px] uppercase tracking-widest px-2 py-0.5 border rounded-full font-mono ${config.badge}`}>
                       {t(`portal.timeline.${milestone.status === 'in-progress' ? 'inProgress' : milestone.status}`)}
                     </span>
