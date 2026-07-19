@@ -141,6 +141,16 @@ export class AuthService {
     return { accessToken, refreshToken: newRefreshToken, user };
   }
 
+  async validateUser(userId: string, jti?: string): Promise<User> {
+    if (jti) {
+      const blacklisted = await this.redis.get(`blacklist:${jti}`);
+      if (blacklisted) {
+        throw new UnauthorizedException('Token has been revoked');
+      }
+    }
+    return this.fetchUser(userId);
+  }
+
   async validateToken(token: string): Promise<User> {
     try {
       const decoded = this.jwtService.decode(token) as { jti?: string } | null;
