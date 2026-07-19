@@ -1,7 +1,14 @@
 import fetch from "node-fetch";
 
 const HOSTINGER_API = "https://developers.hostinger.com/api/dns/v1/zones";
-const API_TOKEN = process.env.HOSTINGER_API_KEY || "your-token-here";
+
+const API_TOKEN = process.env.HOSTINGER_API_KEY;
+if (!API_TOKEN) {
+  throw new Error(
+    "HOSTINGER_API_KEY is required. Set it in .env (gitignored) on the server, or export it before running this script.",
+  );
+}
+
 const DOMAIN = process.env.DNS_DOMAIN || "hexastudio.net";
 const IP = process.env.SERVER_IP || "19.16.1.100";
 
@@ -48,5 +55,6 @@ async function setARecords() {
     console.log("DNS updated:", update?.updated === true ? "succeeded" : "failed");
   } catch (e) {
     console.error(e);
+    process.exit(1);
   }
 })();
