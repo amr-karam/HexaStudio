@@ -4,4 +4,3 @@ from . import project_project
 from . import project_milestone
 from . import hexa_webhook
 from . import hexa_webhook_log
-from . import documents_document
