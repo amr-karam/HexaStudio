@@ -33,7 +33,6 @@ export class TestimonialsService {
       this.httpService.get(`${this.cmsUrl}/api/testimonials`, {
         params: {
           'populate': '*',
-          'filters[isPublished][$eq]': true,
           'sort': 'createdAt:desc',
           'pagination[page]': safePage,
           'pagination[pageSize]': safeLimit,
@@ -57,8 +56,7 @@ export class TestimonialsService {
       this.httpService.get(`${this.cmsUrl}/api/testimonials`, {
         params: {
           'populate': '*',
-          'filters[isPublished][$eq]': true,
-          'filters[isFeatured][$eq]': true,
+          'filters[featured][$eq]': true,
           'sort': 'createdAt:desc',
         },
       }),
@@ -86,17 +84,17 @@ export class TestimonialsService {
     const attrs = (item.attributes ?? item) as Record<string, unknown>;
     return {
       id: String(item.id),
-      clientName: attrs.clientName as string,
-      clientCompany: attrs.clientCompany as string | undefined,
-      clientRole: attrs.clientRole as string | undefined,
-      content: attrs.content as string,
+      clientName: (attrs.clientName ?? attrs.client_name ?? '') as string,
+      clientCompany: (attrs.clientCompany ?? attrs.client_company) as string | undefined,
+      clientRole: (attrs.clientRole ?? attrs.client_role ?? attrs.clientTitle ?? attrs.client_title) as string | undefined,
+      content: (attrs.content ?? '') as string,
       rating: (attrs.rating as number) ?? 5,
       projectReference: attrs.projectReference as string | undefined,
       avatar: mapMedia(attrs.avatar as StrapiMedia),
-      isFeatured: (attrs.isFeatured as boolean) ?? false,
-      isPublished: (attrs.isPublished as boolean) ?? true,
-      createdAt: (attrs.createdAt as string) ?? new Date().toISOString(),
-      updatedAt: (attrs.updatedAt as string) ?? new Date().toISOString(),
+      isFeatured: (attrs.featured ?? attrs.isFeatured ?? false) as boolean,
+      isPublished: attrs.publishedAt != null || (attrs.isPublished as boolean) === true,
+      createdAt: (attrs.createdAt ?? attrs.created_at ?? new Date().toISOString()) as string,
+      updatedAt: (attrs.updatedAt ?? attrs.updated_at ?? new Date().toISOString()) as string,
     };
   }
 }
