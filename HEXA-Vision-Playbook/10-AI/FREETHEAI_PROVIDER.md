@@ -92,6 +92,67 @@ Verified working on 2026-07-19: `opc/deepseek-v4-flash-free` and `opc/big-pickle
 
 ---
 
+## 2.5 Backend Integration (NestJS)
+
+FreeTheAi is wired into the NestJS backend as a **provider-agnostic chat client** that all assistant and AI services consume via dependency injection. This replaces every direct `new OpenAI()` call.
+
+### Architecture
+
+```
+[Assistant Services] ──► AiChatService (ai/ai-chat.service.ts)
+                              │
+                          createChatClient() (ai/llm.factory.ts)
+                              │
+                    ┌─────────┴─────────┐
+                    ▼                   ▼
+              openai/*              freetheai/*
+           (paid, default)       (free gateway)
+```
+
+### Setting provider
+
+`AI_CHAT_PROVIDER` env var (defined in `config/env.ts`):
+
+| Value | Effect | Key required |
+|---|---|---|
+| `openai` (default) | Uses `OPENAI_API_KEY` and `OPENAI_MODEL` | `OPENAI_API_KEY` |
+| `freetheai` | Uses `FREETHEAI_API_KEY` and `FREETHEAI_MODEL` | `FREETHEAI_API_KEY` |
+
+**File checklist** (7 files total):
+
+| Layer | Files |
+|---|---|
+| Schema | `config/env.ts` — 4 new fields: `FREETHEAI_API_KEY`, `FREETHEAI_BASE_URL`, `FREETHEAI_MODEL`, `AI_CHAT_PROVIDER` |
+| Factory | `modules/ai/llm.factory.ts` — standalone `createChatClient()` function |
+| DI service | `modules/ai/ai-chat.service.ts` — `@Injectable()` wrapper with `client`, `model`, `provider`, `isAvailable` |
+| Module | `modules/ai/ai.module.ts` — `AiChatService` added to `providers` and `exports` |
+| Migrated chat consumers | `modules/ai/auto-tag.service.ts` |
+| | `modules/ai/summary.service.ts` |
+| | `modules/assistants/services/*.ts` (6 services: CEO, Sales, PM, Lighting, Material, Predictive) |
+
+### What is NOT changed
+
+- **EmbeddingService** (`modules/ai/embedding.service.ts`) — still uses `OPENAI_API_KEY` directly because the FreeTheAi gateway lacks an `/embeddings` endpoint. Embeddings always route to the paid OpenAI backend.
+- **GeminiService** (`modules/ai/gemini.service.ts`) — the existing Google Gemini integration remains independent (controlled by `GEMINI_API_KEY` / `GEMINI_MODEL`). It is a separate provider for the R3F assistant.
+
+### Switching providers at runtime
+
+No restart required to flip between cached keys, but changing `AI_CHAT_PROVIDER` or any key requires a container restart since env vars are read at module init.
+
+```
+# .env — switch to FreeTheAi for non-sensitive work
+AI_CHAT_PROVIDER=freetheai
+FREETHEAI_API_KEY=sta_...
+FREETHEAI_MODEL=bbl/gemini-3.5-flash
+
+# .env — switch back to OpenAI for production PII flows
+AI_CHAT_PROVIDER=openai
+OPENAI_API_KEY=sk-...
+OPENAI_MODEL=gpt-4o-mini
+```
+
+---
+
 ## 3. Model Catalog Reference (41 models)
 
 ### 3.1 Coding & engineering (primary picks)
@@ -157,16 +218,22 @@ Verified working on 2026-07-19: `opc/deepseek-v4-flash-free` and `opc/big-pickle
 
 ## 4. HEXA Studio Integration Guide
 
-### 4.1 Where FreeTheAi fits
+### 4.1 Where FreeTheAi sits
 
-Per [AI_ARCHITECTURE.md](./AI_ARCHITECTURE.md), HEXA uses a hybrid AI approach. FreeTheAi is the **zero-cost tier** of the LLM provider layer:
+Per [AI_ARCHITECTURE.md](./AI_ARCHITECTURE.md), HEXA uses a hybrid AI approach. FreeTheAi is the **zero-cost chat tier**:
 
 ```
-[OpenCode Agents]
-    │
-    ├── Paid tier   (openai/*)      → latency-sensitive, final-pass quality
-    └── Free tier   (freetheai/*)   → drafting, exploration, bulk analysis, QA sweeps
+[OpenCode Agents]              [NestJS Assistants]
+    │                                  │
+    ├── Paid (openai/*)               ├── paid (AI_CHAT_PROVIDER=openai)
+    └── Free (freetheai/*)  ──────────└── free (AI_CHAT_PROVIDER=freetheai)
+                                          │
+                                      AiChatService
+                                          │
+                                    createChatClient()
 ```
+
+Both layers — OpenCode agents and NestJS backend assistants — share the same FreeTheAi gateway. The backend switches with `AI_CHAT_PROVIDER` in `.env`, while OpenCode switches via `/model freetheai/<id>`.
 
 ### 4.2 Recommended agent → model mapping
 
@@ -200,9 +267,9 @@ Fan out `explore`/`general` subagents on fast free models to scan the monorepo i
 ### 4.4 Rules of engagement (HEXA Gold Standard)
 
 - **Quality gates are unchanged.** Free-tier output goes through the same `!verify` pipeline (lint, typecheck, tests, Lighthouse) as any other code. Origin model is irrelevant to the gate.
-- **No secrets to the gateway.** FreeTheAi is a third-party service. Never send `.env` contents, JWT secrets, database credentials, or client PII in prompts. Redact before pasting logs.
+- **No secrets to the gateway.** FreeTheAi is a third-party service. Never send `.env` contents, JWT secrets, database credentials, or client PII in prompts. Redact before pasting logs. For the NestJS backend, the `AI_CHAT_PROVIDER=freetheai` setting should **only** be used in development/staging environments; production Odoo assistant flows that process CRM leads, client emails, and financial data must keep `AI_CHAT_PROVIDER=openai`.
 - **Creative Excellence Mode still applies** to frontend work regardless of which model produced the draft (9.5/10 luxury bar).
-- **Availability caveat:** a free gateway has no SLA. If FreeTheAi is down or rate-limited mid-sprint, switch the agent back to `openai/*` and continue — do not block the sprint on a free service.
+- **Availability caveat:** a free gateway has no SLA. If FreeTheAi is down or rate-limited mid-sprint, switch the provider back to `openai` and continue — do not block the sprint on a free service.
 
 ### 4.5 Troubleshooting
 
@@ -213,11 +280,13 @@ Fan out `explore`/`general` subagents on fast free models to scan the monorepo i
 | Model not in `/model` picker | Model ID typo or missing from `models` map | IDs are exact, prefix included (`opc/`, `glm/`, …); re-fetch `/v1/models` to confirm the catalog |
 | Slow responses | Free-tier congestion | Switch to `bbl/*` fast tier or paid provider |
 | New models appear on gateway | Catalog changed upstream | Re-fetch `/v1/models`, add entries to config |
+| Backend assistant returns `401` | `FREETHEAI_API_KEY` not set or wrong in `.env` | Add `FREETHEAI_API_KEY` and set `AI_CHAT_PROVIDER=freetheai` in `.env` |
 
 ---
 
 ## 5. Maintenance
 
 - **Catalog refresh:** the gateway adds/removes models without notice. Re-run the `/v1/models` check monthly (or when a model errors) and sync the config.
-- **Key rotation:** if the key leaks or dies, replace it in `~/.config/opencode/opencode.json` only. Nothing in the monorepo references it.
+- **Key rotation:** if the key leaks or dies, replace it in `~/.config/opencode/opencode.json` (OpenCode) and/or `apps/backend/.env` (NestJS). No key is committed to the monorepo.
+- **.env.example sync:** when adding or removing FreeTheAi env vars, mirror the change in `apps/backend/.env.example` so new clones don't miss them.
 - **Doc ownership:** Documentation Lead. Update this file and `CHANGELOG.md` on any provider/config change, per `AGENTS.md` rules.

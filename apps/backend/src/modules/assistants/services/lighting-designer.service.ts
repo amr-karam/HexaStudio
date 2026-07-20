@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import OpenAI from 'openai';
-import { getEnv, Env } from '../../../config/env';
+import { AiChatService } from '../../ai/ai-chat.service';
 
 export interface AssistantResponse {
   content: string;
@@ -12,18 +11,11 @@ export interface AssistantResponse {
 @Injectable()
 export class LightingDesignerService {
   private readonly logger = new Logger(LightingDesignerService.name);
-  private openai: OpenAI | null = null;
-  private env: Env;
 
-  constructor() {
-    this.env = getEnv();
-    if (this.env.OPENAI_API_KEY) {
-      this.openai = new OpenAI({ apiKey: this.env.OPENAI_API_KEY });
-    }
-  }
+  constructor(private readonly aiChat: AiChatService) {}
 
   async healthCheck(): Promise<boolean> {
-    return !!this.openai;
+    return this.aiChat.isAvailable;
   }
 
   async designLighting(
@@ -34,13 +26,13 @@ export class LightingDesignerService {
     timeOfDay: string,
     constraints: string[],
   ): Promise<AssistantResponse> {
-    if (!this.openai) {
+    if (!this.aiChat.isAvailable) {
       return this.fallbackDesign();
     }
 
     try {
-      const response = await this.openai!.chat.completions.create({
-        model: this.env.OPENAI_MODEL,
+      const response = await this.aiChat.client!.chat.completions.create({
+        model: this.aiChat.model,
         messages: [
           {
             role: 'system',
@@ -75,11 +67,11 @@ Design a complete lighting preset.`,
     referenceImageDescription: string,
     targetSpace: string,
   ): Promise<AssistantResponse> {
-    if (!this.openai) return this.fallbackDesign();
+    if (!this.aiChat.isAvailable) return this.fallbackDesign();
 
     try {
-      const response = await this.openai!.chat.completions.create({
-        model: this.env.OPENAI_MODEL,
+      const response = await this.aiChat.client!.chat.completions.create({
+        model: this.aiChat.model,
         messages: [
           { role: 'system', content: 'Adapt lighting from reference to target space.' },
           { role: 'user', content: `Reference: ${referenceImageDescription}\nTarget: ${targetSpace}\nReturn adapted lighting preset. JSON.` },
