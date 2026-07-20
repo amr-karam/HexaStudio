@@ -1,6 +1,6 @@
 'use client';
 
-import { EffectComposer, Bloom, DepthOfField, Noise, Vignette, ChromaticAberration } from '@react-three/postprocessing';
+import { EffectComposer, Bloom, DepthOfField, Noise, Vignette, SMAA } from '@react-three/postprocessing';
 import { QualityLevel } from '@/hooks/useAdaptiveQuality';
 
 interface PostProcessingProps {
@@ -9,8 +9,8 @@ interface PostProcessingProps {
 
 /**
  * PostProcessing manages the cinematic visual stack.
- * It implements a high-end architectural render style: 
- * sharp focus, subtle bloom, and organic film grain.
+ * It implements a high-end architectural render style:
+ * sharp focus, selective bloom, subtle film grain, and soft anti-aliasing.
  */
 export const PostProcessing = ({ quality }: PostProcessingProps) => {
   if (quality === 'low') return null;
@@ -18,35 +18,32 @@ export const PostProcessing = ({ quality }: PostProcessingProps) => {
   return (
     <EffectComposer enableNormalPass={false}>
       <>
-        
-        <Bloom 
-          intensity={quality === 'high' ? 0.6 : 0.4} 
-          luminanceThreshold={0.9} 
-          luminanceSmoothing={0.1} 
-          radius={0.3} 
+        {/* SMAA anti-aliasing for crisp architectural edges on medium+. */}
+        <SMAA />
+
+        {/* Selective, soft bloom — only the brightest gold/emissive accents glow. */}
+        <Bloom
+          intensity={quality === 'high' ? 0.4 : 0.25}
+          luminanceThreshold={0.85}
+          luminanceSmoothing={0.2}
+          radius={0.4}
         />
-        
-        
+
+        {/* Targeted depth of field for a cinematic focal plane (high only). */}
         {quality === 'high' && (
-          <DepthOfField 
-            focusDistance={0.025} 
-            focalLength={0.05} 
-            bokehScale={2} 
+          <DepthOfField
+            focusDistance={0.02}
+            focalLength={0.025}
+            bokehScale={3}
           />
         )}
-        
-        
-        {quality === 'high' && (
-          <ChromaticAberration offset={[0.0005, 0.0005]} />
-        )}
-        
-        
-        <Noise opacity={quality === 'high' ? 0.03 : 0.02} />
-        
-        
-        <Vignette offset={0.2} darkness={1.2} />
+
+        {/* Subtle film grain — barely perceptible organic texture. */}
+        <Noise opacity={quality === 'high' ? 0.02 : 0.015} />
+
+        {/* Soft vignette — gentle falloff, not aggressive. */}
+        <Vignette offset={0.3} darkness={0.8} />
       </>
     </EffectComposer>
   );
 };
-

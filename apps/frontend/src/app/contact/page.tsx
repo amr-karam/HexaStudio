@@ -63,9 +63,9 @@ export default function ContactPage() {
       <section className="relative flex min-h-screen flex-col items-center justify-center px-8 overflow-hidden">
         {/* Cinematic Background */}
         <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute inset-0 gradient-radial-gold" aria-hidden="true" />
           <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-accent/10 blur-[120px] rounded-full animate-pulse" />
           <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/5 blur-[120px] rounded-full" />
-          <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10" />
         </div>
 
         <div className="text-center relative z-10 mb-16">

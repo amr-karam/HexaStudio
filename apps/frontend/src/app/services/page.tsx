@@ -2,12 +2,14 @@
 
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
+import { GlassCard } from '@/components/ui/GlassCard';
 import Link from 'next/link';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { useServices } from '@/features/services/hooks/useServices';
 import { useLocale } from '@/i18n/LocaleProvider';
 import { Service } from '@/types';
 import { cn } from '@/lib/utils';
+import { makeTransition } from '@/lib/motion';
 
 const fallbackServices: (Service & { accent: string; i18nKey: string })[] = [
   {
@@ -80,6 +82,7 @@ export default function ServicesPage() {
     <div className="bg-background text-foreground min-h-screen">
       <section className="relative min-h-screen flex flex-col items-center justify-center px-8 pt-20 pb-32 overflow-hidden">
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(ellipse_at_center,white,transparent)] opacity-20 pointer-events-none" />
+        <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
         
         <div className="text-center relative z-10 mb-24">
           <motion.span
@@ -126,12 +129,10 @@ export default function ServicesPage() {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className={cn(
-                  "group relative p-8 md:p-12 bg-surface border border-border/50 hover:border-accent/50 transition-all duration-500 overflow-hidden",
-                  isLarge ? "md:col-span-7" : "md:col-span-5"
-                )}
+                transition={makeTransition('entrance', 'page', idx * 0.1)}
+                className={cn(isLarge ? "md:col-span-7" : "md:col-span-5")}
               >
+                <GlassCard variant="default" className="p-8 md:p-12 h-full group relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 blur-3xl rounded-full -mr-32 -mt-32 group-hover:bg-accent/10 transition-colors duration-500" />
                 
                 <div className="relative z-10 h-full flex flex-col">
@@ -164,14 +165,16 @@ export default function ServicesPage() {
                     </Link>
                   </div>
                 </div>
+                </GlassCard>
               </motion.div>
             );
           })}
         </div>
       </section>
 
-      <section className="px-8 md:px-16 py-32 border-t border-border/30">
-        <div className="w-full text-center">
+      <section className="px-8 md:px-16 py-32 border-t border-border/30 relative overflow-hidden">
+        <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
+        <div className="w-full text-center relative z-10">
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}

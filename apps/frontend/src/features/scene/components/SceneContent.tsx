@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo, useEffect, useLayoutEffect, useRef } from 'react';
-import { Float, Html } from '@react-three/drei';
+import { Float, Html, RoundedBox } from '@react-three/drei';
 import * as THREE from 'three';
 import { ArchitecturalModel } from './ArchitecturalModel';
 import { Hotspot } from './Hotspot';
@@ -31,131 +31,228 @@ function statusAccent(status?: string): string {
   return '#D4AF37'; // default gold
 }
 
+// Column footprints: 4 corners + 2 mid-points along the long edges.
+const COLUMN_FOOTPRINTS: Array<[number, number]> = [
+  [2.6, 1.6],
+  [-2.6, 1.6],
+  [2.6, -1.6],
+  [-2.6, -1.6],
+  [0, 1.6],
+  [0, -1.6],
+];
+
+// Glass facade panel layout: front + back of the main volume, split into segments.
+const GLASS_PANELS: Array<[number, number, number]> = [
+  [0.75, 1.4, 1.01],
+  [-0.75, 1.4, 1.01],
+  [0.75, 1.4, -1.01],
+  [-0.75, 1.4, -1.01],
+  [1.2, 1.4, 0.6],
+  [-1.2, 1.4, -0.6],
+];
+
 function ProceduralArchitecture({ accent }: { accent: string }) {
   // Optimization: Use InstancedMesh for repetitive elements to reduce draw calls.
   // Each instanced mesh is a single draw call regardless of instance count.
 
-  // Per-instance transforms for the floating bars (position + rotation).
-  const floatMatrices = useMemo(() => {
+  // Per-instance transforms for the slender gold columns (position only).
+  const columnMatrices = useMemo(() => {
     const matrices: THREE.Matrix4[] = [];
     const dummy = new THREE.Object3D();
-    for (let i = 0; i < 6; i++) {
-      const angle = (i / 6) * Math.PI * 2;
-      const radius = 3;
-      dummy.position.set(
-        Math.cos(angle) * radius,
-        1.5 + Math.sin(i) * 0.5,
-        Math.sin(angle) * radius
-      );
-      dummy.rotation.set(
-        Math.random() * Math.PI,
-        Math.random() * Math.PI,
-        Math.random() * Math.PI
-      );
+    for (const [x, z] of COLUMN_FOOTPRINTS) {
+      // Columns rise from the top of the foundation slab (y = 0.4) up to the
+      // cantilever soffit (y = 3.0). Height 2.6 → centered at 1.7.
+      dummy.position.set(x, 1.7, z);
+      dummy.rotation.set(0, 0, 0);
       dummy.updateMatrix();
       matrices.push(dummy.matrix.clone());
     }
     return matrices;
   }, []);
 
-  // Per-instance transforms for the light spheres (position only).
-  const lightMatrices = useMemo(() => {
+  // Per-instance transforms for the glass facade panels (position only).
+  const glassMatrices = useMemo(() => {
     const matrices: THREE.Matrix4[] = [];
     const dummy = new THREE.Object3D();
-    [0, 90, 180, 270].forEach((deg) => {
-      const rad = (deg * Math.PI) / 180;
-      dummy.position.set(Math.cos(rad) * 1.5, 0.1, Math.sin(rad) * 1.5);
+    for (const [x, y, z] of GLASS_PANELS) {
+      dummy.position.set(x, y, z);
       dummy.rotation.set(0, 0, 0);
       dummy.updateMatrix();
       matrices.push(dummy.matrix.clone());
-    });
+    }
     return matrices;
   }, []);
 
-  const { floatGeom, floatMat, lightGeom, lightMat } = useMemo(() => {
-    return {
-      floatGeom: new THREE.BoxGeometry(0.1, 0.5, 0.1),
-      floatMat: new THREE.MeshPhysicalMaterial({ color: '#D4AF37', roughness: 0, metalness: 1, envMapIntensity: 2 }),
-      lightGeom: new THREE.SphereGeometry(0.04, 16, 16),
-      lightMat: new THREE.MeshPhysicalMaterial({ color: '#D4AF37', emissive: '#D4AF37', emissiveIntensity: 5 }),
-    };
+  // Per-instance transforms for the light spheres (base accents under columns).
+  const lightMatrices = useMemo(() => {
+    const matrices: THREE.Matrix4[] = [];
+    const dummy = new THREE.Object3D();
+    for (const [x, z] of COLUMN_FOOTPRINTS) {
+      dummy.position.set(x, 0.46, z);
+      dummy.rotation.set(0, 0, 0);
+      dummy.updateMatrix();
+      matrices.push(dummy.matrix.clone());
+    }
+    return matrices;
   }, []);
 
-  const floatRef = useRef<THREE.InstancedMesh>(null);
+  // Manually-allocated GPU resources (geometries + materials for the instanced
+  // meshes). These are NOT auto-disposed by R3F, so we own their lifecycle.
+  // The accent color drives the status-tinted gold elements (columns + base
+  // lights), preserving the original per-status theming contract.
+  const accentColor = useMemo(() => new THREE.Color(accent), [accent]);
+  const {
+    columnGeom,
+    columnMat,
+    glassGeom,
+    glassMat,
+    lightGeom,
+    lightMat,
+  } = useMemo(() => {
+    return {
+      // Slender cylindrical gold-accent columns.
+      columnGeom: new THREE.CylinderGeometry(0.045, 0.045, 2.6, 16),
+      columnMat: new THREE.MeshPhysicalMaterial({
+        color: accentColor.clone(),
+        roughness: 0.1,
+        metalness: 1,
+        clearcoat: 1,
+        clearcoatRoughness: 0.1,
+        emissive: accentColor.clone(),
+        emissiveIntensity: 0.15,
+        envMapIntensity: 2,
+      }),
+      // Glass facade panels (thin flat glazing).
+      glassGeom: new THREE.BoxGeometry(1.4, 1.8, 0.04),
+      glassMat: new THREE.MeshPhysicalMaterial({
+        color: new THREE.Color('#ffffff'),
+        roughness: 0.05,
+        metalness: 0,
+        transmission: 0.9,
+        thickness: 0.5,
+        ior: 1.4,
+        transparent: true,
+        opacity: 0.3,
+        envMapIntensity: 1.5,
+      }),
+      // Glowing accent spheres at the column bases.
+      lightGeom: new THREE.SphereGeometry(0.05, 16, 16),
+      lightMat: new THREE.MeshPhysicalMaterial({
+        color: accentColor.clone(),
+        emissive: accentColor.clone(),
+        emissiveIntensity: 5,
+        roughness: 0.2,
+        metalness: 0,
+      }),
+    };
+  }, [accentColor]);
+
+  const columnRef = useRef<THREE.InstancedMesh>(null);
+  const glassRef = useRef<THREE.InstancedMesh>(null);
   const lightRef = useRef<THREE.InstancedMesh>(null);
 
   // Write per-instance matrices once after mount / on data change.
   useLayoutEffect(() => {
-    if (floatRef.current) {
-      floatMatrices.forEach((m, i) => floatRef.current!.setMatrixAt(i, m));
-      floatRef.current.instanceMatrix.needsUpdate = true;
-      floatRef.current.computeBoundingSphere();
+    if (columnRef.current) {
+      columnMatrices.forEach((m, i) => columnRef.current!.setMatrixAt(i, m));
+      columnRef.current.instanceMatrix.needsUpdate = true;
+      columnRef.current.computeBoundingSphere();
+    }
+    if (glassRef.current) {
+      glassMatrices.forEach((m, i) => glassRef.current!.setMatrixAt(i, m));
+      glassRef.current.instanceMatrix.needsUpdate = true;
+      glassRef.current.computeBoundingSphere();
     }
     if (lightRef.current) {
       lightMatrices.forEach((m, i) => lightRef.current!.setMatrixAt(i, m));
       lightRef.current.instanceMatrix.needsUpdate = true;
       lightRef.current.computeBoundingSphere();
     }
-  }, [floatMatrices, lightMatrices]);
+  }, [columnMatrices, glassMatrices, lightMatrices]);
 
+  // Manual disposal of GPU resources we allocated in useMemo.
   useEffect(() => {
     return () => {
-      floatGeom.dispose();
-      floatMat.dispose();
+      columnGeom.dispose();
+      columnMat.dispose();
+      glassGeom.dispose();
+      glassMat.dispose();
       lightGeom.dispose();
       lightMat.dispose();
     };
-  }, [floatGeom, floatMat, lightGeom, lightMat]);
-
+  }, [columnGeom, columnMat, glassGeom, glassMat, lightGeom, lightMat]);
 
   return (
-    <Float speed={0.6} rotationIntensity={0.1} floatIntensity={0.1}>
+    <Float speed={0.4} rotationIntensity={0.05} floatIntensity={0.08}>
       <group position={[0, 1.8, 0]}>
-        
+
+        {/* Foundation slab — dark concrete, thin platform. */}
         <mesh castShadow receiveShadow position={[0, 0.3, 0]}>
           <boxGeometry args={[6, 0.2, 4]} />
           <meshPhysicalMaterial
-            color="#0a0a0f"
-            roughness={0.2}
-            metalness={0.8}
-            envMapIntensity={1.5}
+            color="#1a1a1f"
+            roughness={0.7}
+            metalness={0.1}
+            envMapIntensity={1}
           />
         </mesh>
 
-        
-        <mesh castShadow receiveShadow position={[0, 1, 0]}>
-          <boxGeometry args={[3, 2, 2]} />
+        {/* Main volume — beveled dark-metal pavilion body. */}
+        <RoundedBox
+          args={[3, 2, 2]}
+          radius={0.08}
+          smoothness={4}
+          bevelSegments={3}
+          creaseAngle={0.4}
+          castShadow
+          receiveShadow
+          position={[0, 1.4, 0]}
+        >
           <meshPhysicalMaterial
             color="#0f0f1a"
-            roughness={0.1}
+            roughness={0.15}
             metalness={0.9}
             clearcoat={1}
             clearcoatRoughness={0.1}
             envMapIntensity={1.2}
           />
-        </mesh>
+        </RoundedBox>
 
-        
-        <mesh castShadow receiveShadow position={[1.8, 1.5, 0]}>
-          <boxGeometry args={[0.2, 3, 0.2]} />
+        {/* Floating cantilever element — offset, hovering above. */}
+        <RoundedBox
+          args={[2.6, 0.2, 1.8]}
+          radius={0.05}
+          smoothness={4}
+          bevelSegments={3}
+          creaseAngle={0.4}
+          castShadow
+          receiveShadow
+          position={[-0.8, 3.05, 0.4]}
+        >
           <meshPhysicalMaterial
-            color={accent}
-            roughness={0.1}
-            metalness={1}
-            emissive={accent}
-            emissiveIntensity={0.2}
-            envMapIntensity={2}
+            color="#0f0f1a"
+            roughness={0.15}
+            metalness={0.9}
+            clearcoat={1}
+            clearcoatRoughness={0.1}
+            envMapIntensity={1.4}
           />
-        </mesh>
+        </RoundedBox>
 
-        
+        {/* Slender gold-accent columns (instanced). */}
         <instancedMesh
-          ref={floatRef}
-          args={[floatGeom, floatMat, floatMatrices.length]}
+          ref={columnRef}
+          args={[columnGeom, columnMat, columnMatrices.length]}
           castShadow
         />
 
-        
+        {/* Glass facade panels (instanced, transparent). */}
+        <instancedMesh
+          ref={glassRef}
+          args={[glassGeom, glassMat, glassMatrices.length]}
+        />
+
+        {/* Glowing accent spheres at column bases (instanced). */}
         <instancedMesh
           ref={lightRef}
           args={[lightGeom, lightMat, lightMatrices.length]}
@@ -216,7 +313,7 @@ export const SceneContent = ({
            roughness={0.4}
            metalness={0.1}
          />
-      </mesh>
+       </mesh>
 
     </group>
   );

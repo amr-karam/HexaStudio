@@ -8,14 +8,16 @@ import { Magnetic } from '@/components/ui/Magnetic';
 import { LazySceneCanvas } from '@/features/scene';
 import { SceneErrorBoundary } from '@/features/scene/components/SceneErrorBoundary';
 import { TextReveal } from '@/components/ui/TextReveal';
+import { ShimmerSkeleton } from '@/components/ui/ShimmerSkeleton';
 import { useReducedMotion } from '@/hooks';
-import { EASE } from '@/lib/motion';
+import { EASE, DURATION } from '@/lib/motion';
 
 export const HomeHero = () => {
   const prefersReducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll();
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const glowRef = useRef<HTMLDivElement>(null);
 
   const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.1], [1, 0.9]);
@@ -48,6 +50,16 @@ export const HomeHero = () => {
         duration: 1.5,
         ease: 'power3.out',
       });
+
+      // Mouse-follow ambient glow — subtle gold light that trails the cursor
+      if (glowRef.current) {
+        gsapInstance.to(glowRef.current, {
+          x: clientX - innerWidth / 2,
+          y: clientY - innerHeight / 2,
+          duration: 2,
+          ease: 'power2.out',
+        });
+      }
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -65,9 +77,12 @@ export const HomeHero = () => {
       <SceneErrorBoundary>
         <Suspense fallback={
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-8 h-[1px] bg-accent/40 animate-pulse" />
-              <span className="text-[9px] uppercase tracking-[0.4em] text-white/30 font-mono">Loading scene</span>
+            <div className="flex flex-col items-center gap-6">
+              <ShimmerSkeleton variant="circle" className="h-16 w-16" />
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-12 h-[1px] bg-accent/40 animate-pulse" />
+                <span className="text-[9px] uppercase tracking-[0.4em] text-white/30 font-mono">Loading scene</span>
+              </div>
             </div>
           </div>
         }>
@@ -75,7 +90,18 @@ export const HomeHero = () => {
         </Suspense>
       </SceneErrorBoundary>
 
+      {/* Ambient gradient overlays for cinematic depth */}
       <div className="absolute inset-0 bg-gradient-to-b from-obsidian/60 via-transparent to-obsidian pointer-events-none z-[1]" />
+      <div className="absolute inset-0 gradient-radial-gold pointer-events-none z-[1]" aria-hidden="true" />
+
+      {/* Mouse-follow ambient glow — disabled in reduced motion */}
+      {!prefersReducedMotion && (
+        <div
+          ref={glowRef}
+          className="absolute top-1/2 left-1/2 w-[400px] h-[400px] -translate-x-1/2 -translate-y-1/2 bg-accent/5 blur-[120px] rounded-full pointer-events-none z-[1]"
+          aria-hidden="true"
+        />
+      )}
 
       <motion.div
         ref={contentRef}
@@ -90,18 +116,18 @@ export const HomeHero = () => {
 
         <div className="overflow-hidden mb-6 md:mb-8">
           <TextReveal delay={0.1}>
-            <motion.h1 
+            <motion.h1
               initial={{ letterSpacing: prefersReducedMotion ? "-0.02em" : "-0.05em" }}
               animate={{ letterSpacing: "-0.02em" }}
-              transition={prefersReducedMotion ? { duration: 0.01 } : { 
-                duration: 2, 
-                ease: EASE.entrance, 
-                repeat: Infinity, 
-                repeatType: "reverse" as const 
+              transition={prefersReducedMotion ? { duration: 0.01 } : {
+                duration: 2,
+                ease: EASE.entrance,
+                repeat: Infinity,
+                repeatType: "reverse" as const
               }}
               className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-light tracking-tighter text-white leading-[1.05]"
             >
-              Living <span className="font-serif italic text-gold">Spaces.</span> <br />
+              Living <span className="font-serif italic text-gradient-gold">Spaces.</span> <br />
               Visualized.
             </motion.h1>
           </TextReveal>
@@ -112,29 +138,36 @@ export const HomeHero = () => {
           Where vision takes shape.
         </TextReveal>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pointer-events-auto"
-          >
-            <Magnetic>
-              <Link href="/portfolio"><Button variant="primary" size="lg">Explore Works</Button></Link>
-            </Magnetic>
-            <Magnetic>
-              <Link href="/services"><Button variant="secondary" size="lg">Our Process</Button></Link>
-            </Magnetic>
-          </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pointer-events-auto"
+        >
+          <Magnetic>
+            <Link href="/portfolio" data-cursor="explore"><Button variant="primary" size="lg">Explore Works</Button></Link>
+          </Magnetic>
+          <Magnetic>
+            <Link href="/services" data-cursor="explore"><Button variant="secondary" size="lg">Our Process</Button></Link>
+          </Magnetic>
+        </motion.div>
       </motion.div>
 
+      {/* Scroll indicator with animated gold line */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1.5, delay: 1.2, ease: 'easeInOut' }}
-        className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 pointer-events-none"
+        transition={{ duration: DURATION.page, delay: 1.2, ease: EASE.entrance }}
+        className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 pointer-events-none z-10"
       >
         <span className="text-[10px] uppercase tracking-[0.3em] text-white/30 font-medium">Scroll</span>
-        <div className="h-16 w-[1px] bg-gradient-to-b from-gold/50 to-transparent" />
+        <div className="relative h-16 w-[1px] overflow-hidden bg-white/5">
+          <motion.div
+            animate={prefersReducedMotion ? {} : { y: ['0%', '100%', '0%'] }}
+            transition={{ duration: 2, repeat: Infinity, ease: EASE.entrance }}
+            className="absolute inset-0 bg-gradient-to-b from-gold/60 to-transparent"
+          />
+        </div>
       </motion.div>
     </section>
   );
