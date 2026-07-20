@@ -9,6 +9,8 @@ interface Props {
   className?: string;
   delay?: number;
   duration?: number;
+  /** Use Next.js Image component for optimized loading */
+  children?: React.ReactNode;
 }
 
 const maskImage = (progress: number) => {
