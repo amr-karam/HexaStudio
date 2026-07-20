@@ -2,7 +2,15 @@ import '../setup';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { SummaryService } from '../../src/modules/ai/summary.service';
+import { AiChatService } from '../../src/modules/ai/ai-chat.service';
 import { Project } from '@hexastudio/types';
+
+const mockAiChat = {
+  client: null,
+  model: 'gpt-4o-mini',
+  isAvailable: false,
+  provider: 'openai' as const,
+};
 
 describe('SummaryService', () => {
   let service: SummaryService;
@@ -11,17 +19,11 @@ describe('SummaryService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SummaryService,
+        { provide: AiChatService, useValue: mockAiChat },
         {
           provide: ConfigService,
           useValue: {
-            get: vi.fn((key: string) => {
-              const config: Record<string, any> = {
-                OPENAI_API_KEY: undefined,
-                OPENAI_MODEL: 'gpt-4o-mini',
-                OPENAI_EMBEDDING_MODEL: 'text-embedding-3-small',
-              };
-              return config[key];
-            }),
+            get: vi.fn(() => undefined),
           },
         },
       ],
