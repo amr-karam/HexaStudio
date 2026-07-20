@@ -1,5 +1,6 @@
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
 import { useTheme } from '@/components/ThemeProvider';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -19,13 +20,21 @@ export default function ProfileScreen() {
           </Text>
         </View>
 
-        {user && (
+        {user ? (
           <TouchableOpacity
             onPress={logout}
             style={[styles.button, { backgroundColor: colors.accent }]}
             activeOpacity={0.8}
           >
             <Text style={styles.buttonText}>Sign Out</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => router.push('/login')}
+            style={[styles.button, { backgroundColor: colors.accent }]}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.buttonText}>Sign In</Text>
           </TouchableOpacity>
         )}
       </ScrollView>
