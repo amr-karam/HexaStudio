@@ -112,3 +112,4 @@ apps/frontend/public/models/.gitkeep
 .vercel
 .vercel-tmp/
 .env*
+pnpm-workspace.yaml
