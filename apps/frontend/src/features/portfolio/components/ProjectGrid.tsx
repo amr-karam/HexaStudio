@@ -8,7 +8,6 @@ import { Project } from '@hexastudio/types';
 import { Magnetic } from '@/components/ui/Magnetic';
 import { cn } from '@/lib/utils';
 import { EASE, DURATION, makeTransition } from '@/lib/motion';
-import { RadialGlow } from '@/components/animation';
 
 interface ProjectCardProps {
   title: string;
@@ -180,8 +179,7 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
   return (
     <>
       <section ref={sectionRef} className="px-8 md:px-16 py-32 bg-background relative overflow-hidden">
-        <RadialGlow color="#D4AF37" size={700} top="-250px" right="-150px" blur={80} opacity={0.08} />
-        <RadialGlow color="#D4AF37" size={500} bottom="-200px" left="-100px" blur={60} opacity={0.05} />
+        <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
         <div className="flex flex-col lg:flex-row justify-between items-end mb-24 gap-12">
           <div className="w-full">
               <motion.span

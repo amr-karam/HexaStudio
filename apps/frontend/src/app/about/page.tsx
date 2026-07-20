@@ -2,10 +2,12 @@
 
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
-import Link from 'next/link';
-import Image from 'next/image';
+import { GlassCard } from '@/components/ui/GlassCard';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { TeamSection } from '@/features/team/components/TeamSection';
+import { makeTransition } from '@/lib/motion';
+import Link from 'next/link';
+import Image from 'next/image';
 
 const milestones = [
   { year: '2020', label: 'Founded', description: 'HexaStudio was established with a vision to redefine architectural visualization.' },
@@ -25,6 +27,7 @@ export default function AboutPage() {
   return (
     <div className="bg-background text-foreground">
       <section className="relative min-h-screen flex flex-col items-center justify-center px-8 pt-20 overflow-hidden">
+        <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
         <div className="text-center relative z-10">
           <motion.span
             initial={{ opacity: 0, y: 10 }}
@@ -119,22 +122,24 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="px-8 md:px-16 py-32 bg-surface/30">
-        <div className="w-full">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+      <section className="px-8 md:px-16 py-32 bg-surface/30 relative overflow-hidden">
+        <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
+        <div className="w-full relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((v, i) => (
               <motion.div
                 key={v.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className="group p-8 border border-border/30 bg-background/50 backdrop-blur-sm hover:border-accent/50 transition-all duration-500"
+                transition={makeTransition('entrance', 'page', i * 0.1)}
               >
-                <h3 className="text-xl font-serif font-light text-foreground mb-4 group-hover:text-accent transition-colors duration-500">{v.title}</h3>
-                <p className="text-neutral-500 font-light text-sm leading-relaxed">
-                  {v.description}
-                </p>
+                <GlassCard variant="subtle" className="p-8 h-full group">
+                  <h3 className="text-xl font-serif font-light text-foreground mb-4 group-hover:text-accent transition-colors duration-500">{v.title}</h3>
+                  <p className="text-neutral-500 font-light text-sm leading-relaxed">
+                    {v.description}
+                  </p>
+                </GlassCard>
               </motion.div>
             ))}
           </div>
@@ -144,8 +149,9 @@ export default function AboutPage() {
       <TeamSection />
 
       {/* CTA */}
-      <section className="px-8 md:px-16 py-32 border-t border-border/30">
-        <div className="w-full text-center">
+      <section className="px-8 md:px-16 py-32 border-t border-border/30 relative overflow-hidden">
+        <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
+        <div className="w-full text-center relative z-10">
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}

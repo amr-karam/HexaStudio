@@ -5,7 +5,6 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ScrollFadeIn } from "@/components/ScrollFadeIn";
 import { Button } from "@/components/ui/Button";
 import { Magnetic } from "@/components/ui/Magnetic";
-import { RadialGlow } from "@/components/animation";
 import { makeTransition } from "@/lib/motion";
 import { useReducedMotion } from "@/hooks";
 
@@ -26,8 +25,7 @@ export function CTASection() {
       className="relative px-8 md:px-16 py-48 overflow-hidden bg-surface border-t border-border/30"
     >
       {/* Layered ambient glow */}
-      <RadialGlow color="#D4AF37" size={900} top="-350px" left="50%" blur={120} opacity={0.08} />
-      <RadialGlow color="#D4AF37" size={500} bottom="-200px" right="-100px" blur={80} opacity={0.05} />
+      <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
 
       {/* Architectural line-drawing decoration */}
       <motion.div

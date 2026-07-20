@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { RadialGlow } from '@/components/animation';
+import { GlassCard } from '@/components/ui/GlassCard';
 import { EASE, DURATION, makeTransition, STAGGER } from '@/lib/motion';
 import { useFeaturedTestimonials } from '@/features/testimonials/hooks/useTestimonials';
 import { useLocale } from '@/i18n/LocaleProvider';
@@ -51,28 +51,29 @@ const TestimonialCard = ({
     initial="hidden"
     whileInView="visible"
     viewport={{ once: true, margin: '-60px' }}
-    className="group relative flex flex-col gap-6 p-8 md:p-10 bg-surface/40 border border-border/10 hover:border-gold/20 transition-all duration-700"
   >
-    {/* Decorative quote mark */}
-    <span className="text-5xl font-serif italic text-gold/10 leading-none select-none">
-      &ldquo;
-    </span>
+    <GlassCard variant="default" hover={true} className="flex flex-col gap-6 p-8 md:p-10 group">
+      {/* Decorative quote mark */}
+      <span className="text-5xl font-serif italic text-gold/10 leading-none select-none">
+        &ldquo;
+      </span>
 
-    <blockquote className="text-base md:text-lg text-neutral-300 font-light leading-relaxed flex-1">
-      {quote}
-    </blockquote>
+      <blockquote className="text-base md:text-lg text-neutral-300 font-light leading-relaxed flex-1">
+        {quote}
+      </blockquote>
 
-    <div className="flex flex-col gap-1 pt-4 border-t border-border/10">
-      <p className="text-sm font-medium text-foreground tracking-widest uppercase">
-        {author}
-      </p>
-      <p className="text-[10px] text-gold/50 font-mono tracking-[0.2em]">
-        {role}
-      </p>
-    </div>
+      <div className="flex flex-col gap-1 pt-4 border-t border-border/10">
+        <p className="text-sm font-medium text-foreground tracking-widest uppercase">
+          {author}
+        </p>
+        <p className="text-[10px] text-gold/50 font-mono tracking-[0.2em]">
+          {role}
+        </p>
+      </div>
 
-    {/* Gold accent on hover */}
-    <div className="absolute top-0 left-0 w-0 h-0.5 bg-gold/60 group-hover:w-full transition-all duration-700 ease-out" />
+      {/* Gold accent on hover */}
+      <div className="absolute top-0 left-0 w-0 h-0.5 bg-gold/60 group-hover:w-full transition-all duration-700 ease-out" />
+    </GlassCard>
   </motion.div>
 );
 
@@ -93,8 +94,7 @@ export const TestimonialsSection = () => {
 
   return (
     <section className="relative px-8 md:px-16 py-32 bg-surface border-y border-border/30 overflow-hidden">
-      <RadialGlow color="#D4AF37" size={700} top="-200px" left="-100px" blur={60} opacity={0.08} />
-      <RadialGlow color="#D4AF37" size={500} bottom="-150px" right="-80px" blur={50} opacity={0.05} />
+      <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
 
       <div className="relative z-10 max-w-7xl mx-auto">
         {/* Header */}

@@ -8,21 +8,39 @@ export interface CardProps {
   title?: string;
   description?: string;
   image?: string;
-  variant?: 'featured' | 'minimal' | 'glass' | 'solid';
+  variant?: 'featured' | 'minimal' | 'glass' | 'solid' | 'luxury';
+  as?: 'div' | 'article' | 'section';
+  hover?: boolean;
   children?: React.ReactNode;
   className?: string;
 }
 
-const Card = ({ title, description, image, variant = 'featured', children, className }: CardProps) => {
+const Card = ({
+  title,
+  description,
+  image,
+  variant = 'featured',
+  as = 'div',
+  hover = true,
+  children,
+  className,
+}: CardProps) => {
+  const MotionTag =
+    as === 'article' ? motion.article : as === 'section' ? motion.section : motion.div;
+
   return (
-    <motion.div
-      whileHover={{ y: -4 }}
+    <MotionTag
+      whileHover={hover ? { y: -4 } : undefined}
       className={cn(
         'group relative overflow-hidden rounded-2xl border transition-all duration-500',
-        variant === 'featured' && 'border-white/20 bg-gradient-to-b from-white/10 to-transparent',
+        variant === 'featured' &&
+          'border-white/10 bg-gradient-to-b from-white/[0.08] to-transparent',
         variant === 'minimal' && 'border-transparent hover:bg-white/5',
-        variant === 'glass' && 'bg-[var(--glass-bg)] backdrop-blur-md border-[var(--glass-border)]',
+        variant === 'glass' &&
+          'border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-xl hover:border-[var(--glass-border-hover)]',
         variant === 'solid' && 'bg-surface border-border/50',
+        variant === 'luxury' &&
+          'border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-xl hover:border-accent/40 hover:shadow-[0_0_40px_rgba(212,175,55,0.15)]',
         className
       )}
     >
@@ -32,6 +50,8 @@ const Card = ({ title, description, image, variant = 'featured', children, class
             src={image}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             alt={title || 'Project image'}
+            loading="lazy"
+            decoding="async"
           />
         </div>
       )}
@@ -48,7 +68,7 @@ const Card = ({ title, description, image, variant = 'featured', children, class
         )}
         {children}
       </div>
-    </motion.div>
+    </MotionTag>
   );
 };
 

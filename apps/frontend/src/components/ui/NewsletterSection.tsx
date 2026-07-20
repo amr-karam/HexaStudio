@@ -3,7 +3,6 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/inputs/Input';
-import { RadialGlow } from '@/components/animation';
 import { EASE, DURATION, STAGGER } from '@/lib/motion';
 
 const containerVariants = {
@@ -29,8 +28,7 @@ export function NewsletterSection() {
   return (
     <section className="relative px-8 md:px-16 py-32 border-t border-border/50 overflow-hidden bg-background">
       {/* Ambient gold glow */}
-      <RadialGlow color="#D4AF37" size={600} top="-200px" right="-100px" blur={80} opacity={0.08} />
-      <RadialGlow color="#D4AF37" size={400} bottom="-150px" left="-80px" blur={60} opacity={0.05} />
+      <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
 
       {/* Decorative top gold line */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" />

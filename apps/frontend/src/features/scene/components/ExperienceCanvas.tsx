@@ -46,7 +46,7 @@ export const ExperienceCanvas = ({
   const { isTransitioning } = useCameraStore();
 
   return (
-    <div className="absolute inset-0 -z-10 h-full w-full">
+    <div className="absolute inset-0 -z-10 h-full w-full" data-cursor="drag">
       <SceneAccessibility hotspots={hotspots} projectTitle={projectTitle} />
       <Canvas
         shadows={settings.shadows}
@@ -72,25 +72,40 @@ export const ExperienceCanvas = ({
             />
           )}
 
-          <Environment preset="city" />
+          <Environment preset="warehouse" />
           <SceneContent projectModelUrl={projectModelUrl} hotspots={hotspots} status={status} milestones={milestones} />
-          
+
+          {/* Key light — crisp white from upper right, casting the hero shadow. */}
           <directionalLight
-            position={[10, 15, 5]}
-            intensity={1.5}
+            position={[8, 12, 4]}
+            intensity={2}
+            color="#ffffff"
             castShadow={settings.shadows}
             shadow-mapSize={[2048, 2048]}
+            shadow-bias={-0.0001}
           />
-          <directionalLight position={[-5, 5, -5]} intensity={0.5} color="#D4AF37" />
+          {/* Warm gold fill from the opposite side to lift shadow detail. */}
+          <directionalLight position={[-6, 4, -4]} intensity={0.4} color="#D4AF37" />
+          {/* Cool blue rim light for separation from the background. */}
+          <directionalLight position={[0, 6, -8]} intensity={0.6} color="#7BA7FF" />
+          {/* Overhead spotlight — architectural accent from above. */}
+          <spotLight
+            position={[0, 15, 0]}
+            angle={0.4}
+            penumbra={1}
+            intensity={0.5}
+            color="#ffffff"
+            castShadow={settings.shadows}
+          />
 
-          <fog attach="fog" args={['#050505', 15, 30]} />
+          <fog attach="fog" args={['#050505', 12, 35]} />
 
           <ContactShadows
             position={[0, -0.01, 0]}
-            opacity={0.6}
-            scale={20}
-            blur={3}
-            far={10}
+            opacity={0.5}
+            scale={25}
+            blur={4}
+            far={15}
           />
 
           <Suspense fallback={null}>

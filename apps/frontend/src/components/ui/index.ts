@@ -4,3 +4,7 @@ export { Input } from './inputs/Input';
 export { Modal } from './modals/Modal';
 export { Navbar } from './nav/Navbar';
 export { Skeleton } from './Skeleton';
+export { GlassCard } from './GlassCard';
+export { CinematicText } from './CinematicText';
+export { ParallaxLayer } from './ParallaxLayer';
+export { ShimmerSkeleton } from './ShimmerSkeleton';
