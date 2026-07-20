@@ -33,7 +33,6 @@ export class ServicesService {
       this.httpService.get(`${this.cmsUrl}/api/services`, {
         params: {
           'populate': '*',
-          'filters[isPublished][$eq]': true,
           'sort': 'order:asc',
           'pagination[page]': safePage,
           'pagination[pageSize]': safeLimit,
@@ -82,7 +81,7 @@ export class ServicesService {
       icon: mapMedia(attrs.icon as StrapiMedia) ?? 'settings',
       features: (attrs.features as string[]) ?? [],
       order: (attrs.order as number) ?? 0,
-      isPublished: (attrs.isPublished as boolean) ?? true,
+      isPublished: attrs.publishedAt != null || (attrs.isPublished as boolean) === true,
       createdAt: (attrs.createdAt as string) ?? new Date().toISOString(),
       updatedAt: (attrs.updatedAt as string) ?? new Date().toISOString(),
     };
