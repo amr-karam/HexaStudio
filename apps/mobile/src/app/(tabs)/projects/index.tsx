@@ -1,25 +1,119 @@
-import { Text, ScrollView, StyleSheet } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import {
+  Text,
+  View,
+  FlatList,
+  StyleSheet,
+  ActivityIndicator,
+  RefreshControl,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/components/ThemeProvider';
+import { useAuth } from '@/hooks/useAuth';
+import { fetchProjects, ClientProject } from '@/lib/api';
 
 export default function ProjectsScreen() {
   const { colors } = useTheme();
+  const { user } = useAuth();
+  const [projects, setProjects] = useState<ClientProject[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    try {
+      setError(null);
+      const data = await fetchProjects();
+      setProjects(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load projects');
+    } finally {
+      setIsLoading(false);
+      setIsRefreshing(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      load();
+    } else {
+      setIsLoading(false);
+    }
+  }, [user, load]);
+
+  const onRefresh = useCallback(() => {
+    setIsRefreshing(true);
+    load();
+  }, [load]);
+
+  const renderContent = () => {
+    if (!user) {
+      return (
+        <Text style={[styles.body, { color: colors.muted }]}>
+          Sign in from the Login tab to view your projects.
+        </Text>
+      );
+    }
+    if (isLoading) {
+      return <ActivityIndicator color={colors.foreground} style={styles.spinner} />;
+    }
+    if (error) {
+      return <Text style={[styles.body, { color: colors.muted }]}>{error}</Text>;
+    }
+    if (projects.length === 0) {
+      return (
+        <Text style={[styles.body, { color: colors.muted }]}>
+          No projects yet. New projects appear here once they start.
+        </Text>
+      );
+    }
+    return (
+      <FlatList
+        data={projects}
+        keyExtractor={(item) => String(item.id)}
+        refreshControl={
+          <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} tintColor={colors.muted} />
+        }
+        renderItem={({ item }) => {
+          const total = item.milestones.length;
+          const done = item.milestones.filter((m) => m.completed).length;
+          return (
+            <View
+              style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}
+            >
+              <Text style={[styles.cardTitle, { color: colors.foreground }]}>{item.name}</Text>
+              <Text style={[styles.cardMeta, { color: colors.muted }]}>
+                {item.status} · {item.type}
+              </Text>
+              {total > 0 && (
+                <Text style={[styles.cardMeta, { color: colors.muted }]}>
+                  Milestones: {done}/{total} complete
+                </Text>
+              )}
+            </View>
+          );
+        }}
+      />
+    );
+  };
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
-      <ScrollView contentContainerStyle={styles.content}>
+      <View style={styles.content}>
         <Text style={[styles.title, { color: colors.foreground }]}>Projects</Text>
-        <Text style={[styles.body, { color: colors.muted }]}>
-          Your project list will be fetched from the HEXA API here.
-        </Text>
-      </ScrollView>
+        {renderContent()}
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  content: { padding: 24 },
+  content: { padding: 24, flex: 1 },
   title: { fontSize: 32, fontWeight: '300', marginBottom: 16 },
   body: { fontSize: 14, lineHeight: 22 },
+  spinner: { marginTop: 32 },
+  card: { padding: 20, borderRadius: 4, borderWidth: 1, marginBottom: 12 },
+  cardTitle: { fontSize: 16, fontWeight: '600', marginBottom: 6 },
+  cardMeta: { fontSize: 13, lineHeight: 20 },
 });
