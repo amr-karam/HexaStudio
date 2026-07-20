@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/inputs/Input';
-import { TextReveal } from '@/components/ui/TextReveal';
+import TextCharReveal from '@/components/effects/TextCharReveal';
 import { isValidEmail } from '@hexastudio/utils';
 import { cn } from '@/lib/utils';
 import { FAQSection } from '@/features/faq/components/FAQSection';
@@ -77,11 +77,13 @@ export default function ContactPage() {
           >
             Connect
           </motion.span>
-          <TextReveal delay={0.1}>
-            <h1 className="text-5xl md:text-8xl font-serif font-light tracking-tighter text-foreground leading-tight">
-              Start the <span className="italic text-accent">Conversation.</span>
-            </h1>
-          </TextReveal>
+          <h1 className="text-5xl md:text-8xl font-serif font-light tracking-tighter text-foreground leading-tight">
+            <TextCharReveal text="Start the" delay={0.1} stagger={0.04} blur />
+            <br />
+            <span className="italic text-accent">
+              <TextCharReveal text="Conversation." delay={0.5} stagger={0.04} blur />
+            </span>
+          </h1>
         </div>
 
         <AnimatePresence mode="wait">
