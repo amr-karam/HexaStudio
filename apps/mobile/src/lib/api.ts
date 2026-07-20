@@ -47,3 +47,7 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
 export function fetchProjects(): Promise<ClientProject[]> {
   return apiFetch<ClientProject[]>('/api/portal/odoo/projects');
 }
+
+export function fetchMilestones(projectId: number): Promise<ClientMilestone[]> {
+  return apiFetch<ClientMilestone[]>(`/api/portal/odoo/projects/${projectId}/milestones`);
+}

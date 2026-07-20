@@ -18,6 +18,9 @@ jest.mock('expo-constants', () => ({
 }));
 
 jest.mock('expo-router', () => ({
-  useRouter: () => ({ push: jest.fn() }),
+  router: { push: jest.fn(), replace: jest.fn() },
+  useRouter: () => ({ push: jest.fn(), replace: jest.fn() }),
   useSegments: () => [''],
+  useLocalSearchParams: () => ({ id: '1', name: 'Test Project' }),
+  Stack: { Screen: () => null },
 }));

@@ -6,8 +6,10 @@ import {
   StyleSheet,
   ActivityIndicator,
   RefreshControl,
+  TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
 import { useTheme } from '@/components/ThemeProvider';
 import { useAuth } from '@/hooks/useAuth';
 import { fetchProjects, ClientProject } from '@/lib/api';
@@ -78,8 +80,15 @@ export default function ProjectsScreen() {
           const total = item.milestones.length;
           const done = item.milestones.filter((m) => m.completed).length;
           return (
-            <View
+            <TouchableOpacity
               style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}
+              activeOpacity={0.7}
+              onPress={() =>
+                router.push({
+                  pathname: '/(tabs)/projects/[id]',
+                  params: { id: String(item.id), name: item.name },
+                })
+              }
             >
               <Text style={[styles.cardTitle, { color: colors.foreground }]}>{item.name}</Text>
               <Text style={[styles.cardMeta, { color: colors.muted }]}>
@@ -90,7 +99,7 @@ export default function ProjectsScreen() {
                   Milestones: {done}/{total} complete
                 </Text>
               )}
-            </View>
+            </TouchableOpacity>
           );
         }}
       />
