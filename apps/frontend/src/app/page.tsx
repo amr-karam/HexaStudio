@@ -16,7 +16,7 @@ export default async function HomePage() {
     <div className="bg-background">
       <HomeHero />
       <MarqueeBar />
-      <FeaturedWork />
+      <FeaturedWork project={projectsData.projects?.[0]} />
       <ProcessSection />
       <AchievementsSection />
       <ProjectGrid projects={projectsData.projects ?? []} />

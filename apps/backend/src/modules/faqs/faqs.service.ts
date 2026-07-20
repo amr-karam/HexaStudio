@@ -20,7 +20,6 @@ export class FAQsService {
       this.httpService.get(`${this.cmsUrl}/api/faqs`, {
         params: {
           'populate': '*',
-          'filters[isPublished][$eq]': true,
           'sort': 'order:asc',
           'pagination[page]': safePage,
           'pagination[pageSize]': safeLimit,
@@ -45,7 +44,6 @@ export class FAQsService {
       this.httpService.get(`${this.cmsUrl}/api/faqs`, {
         params: {
           'populate': '*',
-          'filters[isPublished][$eq]': true,
           'filters[category][$eq]': category,
           'sort': 'order:asc',
           ...(locale ? { locale } : {}),

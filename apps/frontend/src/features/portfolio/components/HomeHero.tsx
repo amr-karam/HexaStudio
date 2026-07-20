@@ -120,10 +120,8 @@ export const HomeHero = () => {
               initial={{ letterSpacing: prefersReducedMotion ? "-0.02em" : "-0.05em" }}
               animate={{ letterSpacing: "-0.02em" }}
               transition={prefersReducedMotion ? { duration: 0.01 } : {
-                duration: 2,
+                duration: DURATION.camera,
                 ease: EASE.entrance,
-                repeat: Infinity,
-                repeatType: "reverse" as const
               }}
               className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-light tracking-tighter text-white leading-[1.05]"
             >
@@ -141,7 +139,7 @@ export const HomeHero = () => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1, delay: 0.4, ease: EASE.entrance }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pointer-events-auto"
         >
           <Magnetic>
