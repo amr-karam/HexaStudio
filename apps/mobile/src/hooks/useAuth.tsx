@@ -15,24 +15,42 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 const TOKEN_KEY = 'hexa_access_token';
 const REFRESH_KEY = 'hexa_refresh_token';
 
+function getApiUrl(): string {
+  return Constants.expoConfig?.extra?.apiUrl ?? 'https://api.hexastudio.net';
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    SecureStore.getItemAsync(TOKEN_KEY)
-      .then((token) => {
-        if (token) {
-          // TODO: validate token and fetch user profile
-          setUser({ id: '0', email: '', username: '', role: 'user' });
+    const restoreSession = async () => {
+      try {
+        const token = await SecureStore.getItemAsync(TOKEN_KEY);
+        if (!token) return;
+
+        const response = await fetch(`${getApiUrl()}/api/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (response.ok) {
+          setUser(await response.json());
+        } else {
+          // Token expired or revoked — clear stale credentials
+          await SecureStore.deleteItemAsync(TOKEN_KEY);
+          await SecureStore.deleteItemAsync(REFRESH_KEY);
         }
-      })
-      .finally(() => setIsLoading(false));
+      } catch {
+        // Network error: keep tokens, stay signed out for this session
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    restoreSession();
   }, []);
 
   const login = async (identifier: string, password: string) => {
-    const apiUrl = Constants.expoConfig?.extra?.apiUrl ?? 'https://api.hexastudio.net';
-    const response = await fetch(`${apiUrl}/api/auth/login`, {
+    const response = await fetch(`${getApiUrl()}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ identifier, password }),
@@ -50,6 +68,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
+    const token = await SecureStore.getItemAsync(TOKEN_KEY);
+    const refreshToken = await SecureStore.getItemAsync(REFRESH_KEY);
+    // Best-effort server-side revocation; local cleanup happens regardless
+    try {
+      await fetch(`${getApiUrl()}/api/auth/logout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ refreshToken }),
+      });
+    } catch {
+      // Offline logout is fine — tokens are removed locally
+    }
     await SecureStore.deleteItemAsync(TOKEN_KEY);
     await SecureStore.deleteItemAsync(REFRESH_KEY);
     setUser(null);
