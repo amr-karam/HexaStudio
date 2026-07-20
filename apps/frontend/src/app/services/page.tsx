@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { GlassCard } from '@/components/ui/GlassCard';
 import Link from 'next/link';
 import { TextReveal } from '@/components/ui/TextReveal';
+import TextCharReveal from '@/components/effects/TextCharReveal';
 import { useServices } from '@/features/services/hooks/useServices';
 import { useLocale } from '@/i18n/LocaleProvider';
 import { Service } from '@/types';
@@ -94,11 +95,13 @@ export default function ServicesPage() {
             {t('services.expertise')}
           </motion.span>
           <div className="text-6xl md:text-8xl font-serif font-light tracking-tighter text-foreground leading-tight">
-            <TextReveal delay={0.1}>
-              {hasApiData ? t('services.title') : (
-                <>Our <span className="italic text-accent">Services.</span></>
-              )}
-            </TextReveal>
+            <TextCharReveal
+              text={hasApiData ? String(t('services.title')) : 'Our Services.'}
+              as="h1"
+              delay={0.15}
+              stagger={0.03}
+              blur
+            />
           </div>
         </div>
 
