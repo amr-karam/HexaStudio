@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import OpenAI from 'openai';
-import { getEnv, Env } from '../../../config/env';
+import { AiChatService } from '../../ai/ai-chat.service';
 
 export interface AssistantResponse {
   content: string;
@@ -19,18 +18,11 @@ export interface RiskFactor {
 @Injectable()
 export class PredictiveAnalyticsService {
   private readonly logger = new Logger(PredictiveAnalyticsService.name);
-  private openai: OpenAI | null = null;
-  private env: Env;
 
-  constructor() {
-    this.env = getEnv();
-    if (this.env.OPENAI_API_KEY) {
-      this.openai = new OpenAI({ apiKey: this.env.OPENAI_API_KEY });
-    }
-  }
+  constructor(private readonly aiChat: AiChatService) {}
 
   async healthCheck(): Promise<boolean> {
-    return !!this.openai;
+    return this.aiChat.isAvailable;
   }
 
   async forecastTimeline(
@@ -40,13 +32,13 @@ export class PredictiveAnalyticsService {
     scopeItems: number,
     historicalVelocity: number,
   ): Promise<AssistantResponse & { estimateDays: number; confidenceInterval: [number, number] }> {
-    if (!this.openai) {
+    if (!this.aiChat.isAvailable) {
       return this.fallbackForecast();
     }
 
     try {
-      const response = await this.openai!.chat.completions.create({
-        model: this.env.OPENAI_MODEL,
+      const response = await this.aiChat.client!.chat.completions.create({
+        model: this.aiChat.model,
         messages: [
           {
             role: 'system',
@@ -87,13 +79,13 @@ Forecast timeline with milestones.`,
       dependencies: string[];
     },
   ): Promise<AssistantResponse & { risks: RiskFactor[] }> {
-    if (!this.openai) {
+    if (!this.aiChat.isAvailable) {
       return { content: 'Risk assessment unavailable', confidence: 0.3, actions: ['Manual assessment'], risks: [] };
     }
 
     try {
-      const response = await this.openai!.chat.completions.create({
-        model: this.env.OPENAI_MODEL,
+      const response = await this.aiChat.client!.chat.completions.create({
+        model: this.aiChat.model,
         messages: [
           {
             role: 'system',
@@ -122,13 +114,13 @@ Identify top 5 risks with mitigations.`,
     projects: Array<{ id: string; team: number; deadline: string; priority: number }>,
     availableTeam: number,
   ): Promise<AssistantResponse & { allocation: Record<string, number> }> {
-    if (!this.openai) {
+    if (!this.aiChat.isAvailable) {
       return { content: 'Resource optimization unavailable', confidence: 0.3, actions: ['Manual allocation'], allocation: {} };
     }
 
     try {
-      const response = await this.openai!.chat.completions.create({
-        model: this.env.OPENAI_MODEL,
+      const response = await this.aiChat.client!.chat.completions.create({
+        model: this.aiChat.model,
         messages: [
           {
             role: 'system',
@@ -160,13 +152,13 @@ Optimize allocation.`,
     timeline: string,
     teamRate: number,
   ): Promise<AssistantResponse & { estimate: number; breakdown: Record<string, number> }> {
-    if (!this.openai) {
+    if (!this.aiChat.isAvailable) {
       return { content: 'Budget forecast unavailable', confidence: 0.3, actions: ['Manual estimate'], estimate: 0, breakdown: {} };
     }
 
     try {
-      const response = await this.openai!.chat.completions.create({
-        model: this.env.OPENAI_MODEL,
+      const response = await this.aiChat.client!.chat.completions.create({
+        model: this.aiChat.model,
         messages: [
           {
             role: 'system',

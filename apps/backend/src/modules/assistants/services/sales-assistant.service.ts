@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import OpenAI from 'openai';
-import { getEnv, Env } from '../../../config/env';
+import { AiChatService } from '../../ai/ai-chat.service';
 
 export interface AssistantResponse {
   content: string;
@@ -12,18 +11,11 @@ export interface AssistantResponse {
 @Injectable()
 export class SalesAssistantService {
   private readonly logger = new Logger(SalesAssistantService.name);
-  private openai: OpenAI | null = null;
-  private env: Env;
 
-  constructor() {
-    this.env = getEnv();
-    if (this.env.OPENAI_API_KEY) {
-      this.openai = new OpenAI({ apiKey: this.env.OPENAI_API_KEY });
-    }
-  }
+  constructor(private readonly aiChat: AiChatService) {}
 
   async healthCheck(): Promise<boolean> {
-    return !!this.openai;
+    return this.aiChat.isAvailable;
   }
 
   async qualifyLead(
@@ -33,13 +25,13 @@ export class SalesAssistantService {
     timeline: string,
     requirements: string,
   ): Promise<AssistantResponse> {
-    if (!this.openai) {
+    if (!this.aiChat.isAvailable) {
       return this.fallbackQualification(company);
     }
 
     try {
-      const response = await this.openai!.chat.completions.create({
-        model: this.env.OPENAI_MODEL,
+      const response = await this.aiChat.client!.chat.completions.create({
+        model: this.aiChat.model,
         messages: [
           { role: 'system', content: 'You are the Sales Assistant for HexaStudio. Qualify architectural visualization leads.' },
           { role: 'user', content: `Lead: ${company} (${contact})
@@ -68,13 +60,13 @@ Provide: 1. Qualification score (0-100) 2. Fit assessment 3. Recommended approac
     timeline: string,
     budget: string,
   ): Promise<AssistantResponse> {
-    if (!this.openai) {
+    if (!this.aiChat.isAvailable) {
       return { content: `Proposal draft for ${clientName}`, confidence: 0.5, actions: ['Review manually'] };
     }
 
     try {
-      const response = await this.openai!.chat.completions.create({
-        model: this.env.OPENAI_MODEL,
+      const response = await this.aiChat.client!.chat.completions.create({
+        model: this.aiChat.model,
         messages: [
           { role: 'system', content: 'You are the Sales Assistant. Generate professional architectural visualization proposals.' },
           { role: 'user', content: `Client: ${clientName}\nType: ${projectType}\nScope: ${scope.join(', ')}\nTimeline: ${timeline}\nBudget: ${budget}\n\nGenerate: 1. Executive summary 2. Scope breakdown 3. Timeline 4. Investment 5. Next steps. Return JSON.` },

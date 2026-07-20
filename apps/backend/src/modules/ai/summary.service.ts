@@ -1,23 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import OpenAI from 'openai';
 import type { Project } from '@hexastudio/types';
-import { Env } from '../../config/env';
+import { AiChatService } from './ai-chat.service';
 
 @Injectable()
 export class SummaryService {
   private readonly logger = new Logger(SummaryService.name);
-  private openai: OpenAI | null = null;
 
-  constructor(private configService: ConfigService<Env>) {
-    const apiKey = this.configService.get('OPENAI_API_KEY');
-    if (apiKey) {
-      this.openai = new OpenAI({ apiKey });
-    }
-  }
+  constructor(private readonly aiChat: AiChatService) {}
 
   async generateSummary(project: Project): Promise<string> {
-    if (!this.openai) {
+    if (!this.aiChat.isAvailable) {
       return this.fallbackSummary(project);
     }
 
@@ -33,8 +25,8 @@ Area: ${project.area ?? 'N/A'}
 
 Write in a professional, evocative tone suitable for a high-end architecture portfolio. Highlight the design philosophy, material choices, and spatial experience.`;
 
-      const response = await this.openai!.chat.completions.create({
-        model: this.configService.get<string>('OPENAI_MODEL')!,
+      const response = await this.aiChat.client!.chat.completions.create({
+        model: this.aiChat.model,
         messages: [
           { role: 'system', content: 'You are an architectural copywriter. Generate concise, evocative project summaries in plain text.' },
           { role: 'user', content: prompt },

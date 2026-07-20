@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import OpenAI from 'openai';
-import { getEnv, Env } from '../../../config/env';
+import { AiChatService } from '../../ai/ai-chat.service';
 
 export interface AssistantResponse {
   content: string;
@@ -12,18 +11,11 @@ export interface AssistantResponse {
 @Injectable()
 export class MaterialRecommenderService {
   private readonly logger = new Logger(MaterialRecommenderService.name);
-  private openai: OpenAI | null = null;
-  private env: Env;
 
-  constructor() {
-    this.env = getEnv();
-    if (this.env.OPENAI_API_KEY) {
-      this.openai = new OpenAI({ apiKey: this.env.OPENAI_API_KEY });
-    }
-  }
+  constructor(private readonly aiChat: AiChatService) {}
 
   async healthCheck(): Promise<boolean> {
-    return !!this.openai;
+    return this.aiChat.isAvailable;
   }
 
   async recommendMaterials(
@@ -32,13 +24,13 @@ export class MaterialRecommenderService {
     referenceImages: string[],
     sustainability: boolean,
   ): Promise<AssistantResponse> {
-    if (!this.openai) {
+    if (!this.aiChat.isAvailable) {
       return this.fallbackMaterials();
     }
 
     try {
-      const response = await this.openai!.chat.completions.create({
-        model: this.env.OPENAI_MODEL,
+      const response = await this.aiChat.client!.chat.completions.create({
+        model: this.aiChat.model,
         messages: [
           {
             role: 'system',
@@ -66,11 +58,11 @@ Return JSON: materials[] (name, type, baseColor, roughness, metalness, normalMap
     referenceDescription: string,
     targetElement: string,
   ): Promise<AssistantResponse> {
-    if (!this.openai) return this.fallbackMaterials();
+    if (!this.aiChat.isAvailable) return this.fallbackMaterials();
 
     try {
-      const response = await this.openai!.chat.completions.create({
-        model: this.env.OPENAI_MODEL,
+      const response = await this.aiChat.client!.chat.completions.create({
+        model: this.aiChat.model,
         messages: [
           { role: 'system', content: 'Match material from reference to target element.' },
           { role: 'user', content: `Reference: ${referenceDescription}\nTarget: ${targetElement}\nReturn matched material spec. JSON.` },

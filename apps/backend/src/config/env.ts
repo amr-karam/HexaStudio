@@ -52,6 +52,12 @@ const envSchema = z.object({
   GEMINI_MODEL: z.string().default('gemini-3.5-flash'),
   AI_PROVIDER: z.enum(['openai', 'gemini']).default('openai'),
 
+  // AI / FreeTheAi (OpenAI-compatible gateway — chat only, no embeddings)
+  FREETHEAI_API_KEY: z.string().min(1).optional(),
+  FREETHEAI_BASE_URL: z.string().url().default('https://api.freetheai.xyz/v1'),
+  FREETHEAI_MODEL: z.string().default('bbl/gemini-3.5-flash'),
+  AI_CHAT_PROVIDER: z.enum(['openai', 'freetheai']).default('openai'),
+
   // Exchange Rate API
   EXCHANGE_RATE_API_KEY: z.string().optional(),
   EXCHANGE_RATE_API_URL: z
