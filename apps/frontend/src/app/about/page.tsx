@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { TextReveal } from '@/components/ui/TextReveal';
+import TextCharReveal from '@/components/effects/TextCharReveal';
 import { TeamSection } from '@/features/team/components/TeamSection';
 import { makeTransition } from '@/lib/motion';
 import Link from 'next/link';
@@ -38,10 +39,23 @@ export default function AboutPage() {
             The Studio
           </motion.span>
           <div className="text-6xl md:text-9xl font-serif font-light tracking-tighter text-foreground mb-12 leading-[0.9]">
-            <TextReveal delay={0.1}>
-              Vision <br />
-              <span className="italic text-accent">Realized.</span>
-            </TextReveal>
+            <TextCharReveal
+              text="Vision"
+              as="span"
+              delay={0.1}
+              stagger={0.05}
+              blur
+              className="block"
+            />
+            <span className="italic text-accent">
+              <TextCharReveal
+                text="Realized."
+                as="span"
+                delay={0.4}
+                stagger={0.04}
+                blur
+              />
+            </span>
           </div>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
