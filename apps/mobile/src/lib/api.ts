@@ -51,3 +51,17 @@ export function fetchProjects(): Promise<ClientProject[]> {
 export function fetchMilestones(projectId: number): Promise<ClientMilestone[]> {
   return apiFetch<ClientMilestone[]>(`/api/portal/odoo/projects/${projectId}/milestones`);
 }
+
+export interface ClientInvoice {
+  id: number;
+  name: string;
+  date: string;
+  amount: number;
+  residual: number;
+  paymentState: string;
+  state: string;
+}
+
+export function fetchInvoices(): Promise<ClientInvoice[]> {
+  return apiFetch<ClientInvoice[]>('/api/portal/odoo/invoices');
+}
