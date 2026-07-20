@@ -2,22 +2,21 @@ import '../setup';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { AutoTagService } from '../../src/modules/ai/auto-tag.service';
+import { AiChatService } from '../../src/modules/ai/ai-chat.service';
 
-vi.mock('openai', () => {
-  return {
-    default: class {
-      embeddings = {
-        create: vi.fn(),
-      };
-      chat = {
-        completions: {
-          create: vi.fn().mockResolvedValue({
-            choices: [{ message: { content: '["modern", "residential", "glass", "sustainable"]' } }],
-          }),
-        },
-      };
+const createMockAiChat = () => ({
+  client: {
+    chat: {
+      completions: {
+        create: vi.fn().mockResolvedValue({
+          choices: [{ message: { content: '["modern", "residential", "glass", "sustainable"]' } }],
+        }),
+      },
     },
-  };
+  } as any,
+  model: 'gpt-4o-mini',
+  isAvailable: true,
+  provider: 'openai' as const,
 });
 
 describe('AutoTagService', () => {
@@ -27,15 +26,12 @@ describe('AutoTagService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AutoTagService,
+        { provide: AiChatService, useFactory: createMockAiChat },
         {
           provide: ConfigService,
           useValue: {
             get: vi.fn((key: string) => {
-              const config: Record<string, any> = {
-                OPENAI_API_KEY: 'sk-test',
-                OPENAI_MODEL: 'gpt-4o-mini',
-                OPENAI_EMBEDDING_MODEL: 'text-embedding-3-small',
-              };
+              const config: Record<string, any> = {};
               return config[key];
             }),
           },
@@ -50,34 +46,48 @@ describe('AutoTagService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('generateTags', () => {
-    it('should return an array of tags', async () => {
-      const project = {
-        id: '1',
-        slug: 'modern-villa',
-        title: 'Modern Villa',
-        description: 'A sustainable modern residential building with glass facades',
-        services: ['architecture', 'interior-design'],
-        category: { id: '1', name: 'Residential', slug: 'residential' },
-      };
+  it('should generate tags for a project', async () => {
+    const project = {
+      id: '1',
+      title: 'Modern Villa',
+      description: 'A stunning modern villa with glass facade',
+      category: { name: 'Residential' },
+      services: ['Architecture', 'Interior'],
+    } as any;
 
-      const tags = await service.generateTags(project as any);
-      expect(Array.isArray(tags)).toBe(true);
-      expect(tags.length).toBeGreaterThan(0);
-      expect(tags.length).toBeLessThanOrEqual(10);
+    const tags = await service.generateTags(project);
+    expect(tags).toEqual(['modern', 'residential', 'glass', 'sustainable']);
+  });
+
+  it('should handle empty AI response with keyword fallback', async () => {
+    const mockAi = createMockAiChat();
+    (mockAi.client!.chat.completions.create as any).mockResolvedValueOnce({
+      choices: [{ message: { content: null } }],
     });
 
-    it('should handle empty project gracefully', async () => {
-      const project = {
-        id: '2',
-        slug: 'empty',
-        title: '',
-        description: '',
-        services: [],
-      };
+    const module = await Test.createTestingModule({
+      providers: [
+        AutoTagService,
+        { provide: AiChatService, useValue: mockAi },
+        {
+          provide: ConfigService,
+          useValue: { get: vi.fn(() => undefined) },
+        },
+      ],
+    }).compile();
 
-      const tags = await service.generateTags(project as any);
-      expect(Array.isArray(tags)).toBe(true);
-    });
+    const svc = module.get<AutoTagService>(AutoTagService);
+    const tags = await svc.generateTags({
+      id: '2',
+      title: 'Beach House',
+      description: 'Coastal retreat with ocean views',
+      category: { name: 'Residential' },
+      services: ['Architecture'],
+    } as any);
+
+    // Fallback should extract keywords from title/description
+    expect(tags).toBeDefined();
+    expect(Array.isArray(tags)).toBe(true);
+    expect(tags.length).toBeGreaterThan(0);
   });
 });
