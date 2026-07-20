@@ -1,5 +1,8 @@
 # Node dependencies
+**/node_modules/
 node_modules/
+_corrupted_node_modules_stubs/
+hexa-hub/
 .pnp
 .pnp.js
 

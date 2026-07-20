@@ -93,14 +93,14 @@ function resolveCurrencyName(code: string): string {
 }
 
 export function CurrencyProvider({ children }: { children: ReactNode }) {
-  const hydrate = useCurrencyStore((s) => s.hydrate);
   const setAvailableCurrencies = useCurrencyStore((s) => s.setAvailableCurrencies);
   const setLoading = useCurrencyStore((s) => s.setLoading);
 
-  useEffect(() => {
-    hydrate();
-  }, [hydrate]);
-
+  // Persisted currency preference rehydrates automatically via
+  // zustand/middleware persist (see currency-store.ts). This provider only
+  // hydrates the runtime currency catalog — NEVER blocking render on the API
+  // (Sprint 12 learning #3): children render immediately, fallback list is
+  // applied if the API is unreachable.
   useEffect(() => {
     let cancelled = false;
     setLoading(true);

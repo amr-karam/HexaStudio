@@ -14,7 +14,7 @@ import { useLocale } from '@/i18n/LocaleProvider';
 import { cn } from '@/lib/utils';
 import { API_BASE_URL } from '@/config/constants';
 import { localeToRegion } from './locale-region';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useHEXAMotion } from '@/hooks/useHEXAMotion';
 
 /* -------------------------------------------------------------------------- */
 /*  GeoIP helpers                                                             */
@@ -92,7 +92,8 @@ export function CurrencySelector() {
   } = useCurrencyStore();
 
   const { t, locale, dir } = useLocale();
-  const prefersReduced = useReducedMotion();
+  const hexaMotion = useHEXAMotion();
+  const prefersReduced = hexaMotion.reduced;
   const uid = useId();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -362,7 +363,7 @@ export function CurrencySelector() {
         {/* Chevron */}
         <motion.svg
           animate={{ rotate: isOpen ? 180 : 0 }}
-          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          transition={hexaMotion.transition('entrance', 'micro')}
           className="w-3 h-3 opacity-60 group-hover:opacity-100 transition-opacity duration-300"
           fill="none"
           viewBox="0 0 24 24"
@@ -402,10 +403,7 @@ export function CurrencySelector() {
                 ? { opacity: 0 }
                 : { opacity: 0, y: -8, scaleY: 0.95 }
             }
-            transition={{
-              duration: 0.3,
-              ease: [0.16, 1, 0.3, 1],
-            }}
+            transition={hexaMotion.transition('entrance', 'micro')}
             style={{ originY: 0 }}
             className={cn(
               'absolute z-[100] mt-2 w-72 rounded-xl border',
