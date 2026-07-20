@@ -14,6 +14,7 @@
     "dev:backend": "turbo run dev --filter=backend",
     "dev:cms": "turbo run dev --filter=cms",
     "dev:frontend": "turbo run dev --filter=frontend",
+    "dev:mobile": "turbo run start --filter=mobile",
     "docker:build": "docker compose build",
     "docker:down": "docker compose down",
     "docker:logs": "docker compose logs -f",
@@ -36,6 +37,7 @@
     "@nestjs/cli": "^11.0.24",
     "@lhci/cli": "^0.14.0",
     "@types/node": "^26.1.1",
+    "react-test-renderer": "19.2.7",
     "turbo": "^2.10.4"
   },
   "overrides": {
@@ -44,11 +46,13 @@
     "tmp": ">=0.2.2",
     "uuid": "^11.1.1",
     "postcss": "^8.5.10",
-    "next": "16.2.10"
+    "next": "16.2.10",
+    "@types/react": "19.2.17"
   },
   "workspaces": [
     "apps/frontend",
     "apps/backend",
+    "apps/mobile",
     "packages/types",
     "packages/ui",
     "packages/utils"
