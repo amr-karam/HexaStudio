@@ -65,3 +65,14 @@ export interface ClientInvoice {
 export function fetchInvoices(): Promise<ClientInvoice[]> {
   return apiFetch<ClientInvoice[]>('/api/portal/odoo/invoices');
 }
+
+export interface PortalDashboard {
+  project: { title: string; category: string; status: string };
+  timeline: Array<{ phase: string; status: string; description: string; date?: string }>;
+  invoices: Array<{ id: string; amount: number; date: string; status: 'paid' | 'pending' | 'overdue' }>;
+  lead: { name: string; role: string; email: string; avatar: string };
+}
+
+export function fetchPortalDashboard(): Promise<PortalDashboard> {
+  return apiFetch<PortalDashboard>('/api/portal/me');
+}
