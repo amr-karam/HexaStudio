@@ -1,7 +1,26 @@
 # Playbook Changelog
 
-**Version:** 1.0.0  
-**Last Updated:** 2026-07-12  
+**Version:** 1.0.1  
+**Last Updated:** 2026-07-20
+
+---
+
+## [1.0.1] - 2026-07-20
+
+### Mobile
+
+- Added `apps/mobile/` Expo SDK 53 scaffold (React Native 0.77, React 19, TypeScript 5.8)
+- Configured Expo Router with tabbed navigation (Home, Projects, Settings, Login)
+- Added `AuthProvider`, `ThemeProvider`, and shared color tokens
+- Wired quality gates for mobile: ESLint 9 flat config, TypeScript, Jest + React Native Testing Library
+- Resolved monorepo React type conflict via root `@types/react` override (19.2.17)
+- Added mobile dev scripts to root `package.json` and `turbo.json`
+
+### AI Tooling
+
+- Added `10-AI/FREETHEAI_PROVIDER.md` — FreeTheAi provider setup guide, catalog of 41 models, and HEXA agent integration patterns
+- FreeTheAi registered as custom provider in global OpenCode config (41 chat models, OpenAI-compatible gateway)
+- Lovable MCP disabled in OpenCode config (OAuth restricted to approved clients; use VS Code/Cursor for Lovable tasks)
 
 ---
 

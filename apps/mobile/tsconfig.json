@@ -1,0 +1,15 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "baseUrl": ".",
+    "skipLibCheck": true,
+    "typeRoots": ["./node_modules/@types", "../../node_modules/@types"],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@hexastudio/types": ["../../packages/types"],
+      "@hexastudio/utils": ["../../packages/utils"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx"]
+}
