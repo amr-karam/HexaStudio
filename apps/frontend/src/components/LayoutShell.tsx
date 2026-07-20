@@ -9,6 +9,8 @@ import { SmoothScrollWrapper } from '@/components/SmoothScrollWrapper';
 import { CustomCursor } from '@/components/CustomCursor';
 import { BackToTop } from '@/components/BackToTop';
 import { GrainOverlay } from '@/components/animation';
+import CursorTrail from '@/components/effects/CursorTrail';
+import AmbientScene from '@/components/effects/AmbientScene';
 
 const FULLSCREEN_ROUTES = ['/xr-viewer'];
 
@@ -28,8 +30,10 @@ export function LayoutShell({ children }: { children: ReactNode }) {
       </PageTransition>
       <Footer />
       <CustomCursor />
+      <CursorTrail />
       <BackToTop />
       <GrainOverlay />
+      <AmbientScene />
     </SmoothScrollWrapper>
   );
 }
