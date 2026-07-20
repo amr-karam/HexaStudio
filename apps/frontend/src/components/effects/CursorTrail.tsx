@@ -2,6 +2,7 @@
 
 import { useRef, useEffect } from 'react';
 import { useMotionValue } from 'framer-motion';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 interface TrailDot {
   x: number;
@@ -12,10 +13,14 @@ interface TrailDot {
 }
 
 export default function CursorTrail() {
+  const reducedMotion = useReducedMotion();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const trails = useRef<TrailDot[]>([]);
+
+  // Respect user motion preference
+  if (reducedMotion) return null;
 
   useEffect(() => {
     const canvas = canvasRef.current;
