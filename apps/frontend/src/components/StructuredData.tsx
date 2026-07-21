@@ -1,4 +1,5 @@
 import React from "react";
+import { sanitizeJsonLd } from "@/lib/jsonld";
 export function StructuredData() {
   const schema = {
     "@context": "https://schema.org",
@@ -23,7 +24,7 @@ export function StructuredData() {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      dangerouslySetInnerHTML={{ __html: sanitizeJsonLd(schema) }}
     />
   );
 }
