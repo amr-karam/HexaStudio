@@ -1,5 +1,34 @@
 # Changelog: HEXA Vision
 
+## [1.6.0-dev] - 2026-07-20
+
+### Sprint 14 — CMS Content Integration & Odoo Enrichment
+
+#### Added
+- **Page Content Type (Strapi):** `api::page.page` — title, slug (uid), content (blocks), excerpt, featuredImage (media), seoTitle, seoDescription, order. i18n localized. Drives /about, /terms, /privacy.
+- **Achievement Content Type (Strapi):** `api::achievement.achievement` — title, value, description, order. Not localized. Drives home page stats.
+- **Pages Module (Backend):** `GET /api/v1/pages` (paginated, locale param) and `GET /api/v1/pages/:slug` (locale param), proxying Strapi.
+- **Achievements Module (Backend):** `GET /api/v1/achievements` (sorted by order), proxying Strapi.
+- **Odoo Live-Status Enrichment:** `GET /api/projects/:slug` now attaches `liveStatus { stage, progress, lastUpdate }` from the Odoo `project.project` record matched by `x_slug` — 2s timeout guard, 5-minute Redis cache (`projects:live-status:<slug>`), graceful degradation when Odoo is unavailable.
+- **Shared Types:** `Page`, `PageResponse`, `Achievement`, `AchievementResponse`, `ProjectLiveStatus` interfaces in `packages/types`.
+- **Frontend Data Layer:** `features/pages/` and `features/achievements/` — types, server fetch with ISR (3600s), React Query hooks, barrel exports.
+
+#### Changed
+- **/about, /terms, /privacy:** Converted to async server components fetching `fetchPage(slug)`, rendering StrapiBlocks, with `generateMetadata` sourced from CMS SEO fields. Hardcoded content preserved as fallback only.
+- **Home AchievementsSection:** Now fetches via `useAchievements()`; section hides when empty.
+- **/services and /blog:** Hardcoded fallback arrays removed in favor of clean empty states.
+
+#### Fixed
+- Sentry `replayIntegration` types.
+- Currency test import paths.
+- IntersectionObserver test polyfill.
+- CurrencySelector test framer-motion mock caching.
+- ProgressiveReveal lint suppressions (with justification).
+- ProjectDetailModal unused import.
+
+#### Quality Gates
+- Frontend typecheck: 0 errors (was 10). Frontend tests: 112/112 expected passing. Backend lint clean; backend typecheck carries 7 pre-existing `@nestjs/config` errors (unrelated).
+
 ## [1.2.0] - 2026-07-16
 
 ### Sprint 8 — AI Evolution

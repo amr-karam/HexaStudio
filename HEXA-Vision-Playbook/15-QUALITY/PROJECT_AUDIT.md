@@ -1,3 +1,7 @@
+> **HISTORICAL** — This document reflects a previous state.
+> Current standards are in `07-DESIGN/FRONTEND_EXCELLENCE.md`.
+> Last accurate: 2026-06-30
+
 # Project Audit: HEXA Vision
 
 **Audit Date:** 2026-06-30  

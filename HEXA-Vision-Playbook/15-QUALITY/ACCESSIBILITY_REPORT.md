@@ -1,3 +1,7 @@
+> **HISTORICAL** — This document reflects a previous state.
+> Current standards are in `07-DESIGN/FRONTEND_EXCELLENCE.md`.
+> Last accurate: 2026-06-30
+
 # Accessibility Report: HEXA Vision
 
 **Report Date:** 2026-06-30  

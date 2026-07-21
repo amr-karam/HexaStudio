@@ -1,3 +1,7 @@
+> **HISTORICAL** — This document reflects a previous state.
+> Current standards are in `07-DESIGN/FRONTEND_EXCELLENCE.md`.
+> Last accurate: 2026-07-09
+
 # QUALITY GATE REPORT — HEXA Vision
 
 **Date:** 2026-07-09
