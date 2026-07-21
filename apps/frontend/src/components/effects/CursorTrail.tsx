@@ -1,8 +1,8 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useMotionValue } from 'framer-motion';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 
 interface TrailDot {
   x: number;
@@ -13,16 +13,24 @@ interface TrailDot {
 }
 
 export default function CursorTrail() {
-  const reducedMotion = useReducedMotion();
+  const [mounted, setMounted] = useState(false);
+  const { animationsEnabled, finePointer } = useMotionPolicy();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const trails = useRef<TrailDot[]>([]);
-
-  // Respect user motion preference
-  if (reducedMotion) return null;
+  const rafIdRef = useRef<number>(0);
+  
+  useEffect(() => { setMounted(true); }, []);
+  
+  // Don't render until client-side mount
+  if (!mounted) return null;
+  if (!finePointer || !animationsEnabled) return null;
 
   useEffect(() => {
+    // Gate: only run on fine-pointer devices with animations enabled
+    if (!finePointer || !animationsEnabled) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -39,7 +47,6 @@ export default function CursorTrail() {
     const handleMouse = (e: MouseEvent) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
-      // Add new trail dot
       trails.current.push({
         x: e.clientX,
         y: e.clientY,
@@ -47,7 +54,6 @@ export default function CursorTrail() {
         size: 2 + Math.random() * 2,
         opacity: 0.6 + Math.random() * 0.4,
       });
-      // Cap trail length
       if (trails.current.length > 30) trails.current.shift();
     };
 
@@ -55,7 +61,6 @@ export default function CursorTrail() {
       if (!ctx || !canvas) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Update and draw trails
       for (let i = trails.current.length - 1; i >= 0; i--) {
         const dot = trails.current[i];
         dot.life -= 0.03;
@@ -72,18 +77,27 @@ export default function CursorTrail() {
         ctx.fill();
       }
 
-      requestAnimationFrame(animate);
+      rafIdRef.current = requestAnimationFrame(animate);
     };
 
     window.addEventListener('resize', handleResize);
     window.addEventListener('mousemove', handleMouse);
-    requestAnimationFrame(animate);
+    rafIdRef.current = requestAnimationFrame(animate);
 
     return () => {
+      cancelAnimationFrame(rafIdRef.current);
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', handleMouse);
+      // Clear the canvas trail on cleanup
+      if (ctx && canvas) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      trails.current = [];
     };
-  }, [mouseX, mouseY]);
+  }, [animationsEnabled, finePointer, mouseX, mouseY]);
+
+  // Don't mount canvas at all on coarse pointer or when animations disabled
+  if (!finePointer || !animationsEnabled) return null;
 
   return (
     <canvas
