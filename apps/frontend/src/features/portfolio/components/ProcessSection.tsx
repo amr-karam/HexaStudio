@@ -118,7 +118,7 @@ export const ProcessSection = () => {
       {/* Ambient glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gold/5 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="relative z-10 max-w-7xl mx-auto">
+      <div className="relative z-10 w-full max-w-7xl mx-auto">
         {/* Header */}
         <motion.div style={reducedMotion ? {} : { y: headingY }} className="mb-24">
           <motion.span
@@ -146,7 +146,7 @@ export const ProcessSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={makeTransition('entrance', 'page', 0.15)}
-            className="text-base text-neutral-500 font-light leading-relaxed max-w-lg mt-6"
+            className="text-base text-neutral-500 font-light leading-relaxed w-full max-w-lg mt-6"
           >
             From first sketch to final render, every project follows a proven workflow
             that balances creative ambition with architectural precision.

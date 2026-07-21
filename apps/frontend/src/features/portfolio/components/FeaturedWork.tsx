@@ -111,7 +111,7 @@ export const FeaturedWork = ({ project }: FeaturedWorkProps) => {
         </div>
 
         <div className="relative z-10 h-full flex items-center px-8 md:px-16">
-          <div className="max-w-3xl">
+          <div className="w-full max-w-3xl">
             <span className="text-[9px] uppercase tracking-[0.5em] text-gold/60 mb-6 block font-mono">
               Featured Project
             </span>
@@ -119,7 +119,7 @@ export const FeaturedWork = ({ project }: FeaturedWorkProps) => {
               {content.titleLead}{' '}
               {content.titleAccent && <span className="italic text-gold">{content.titleAccent}</span>}
             </h2>
-            <p className="text-base text-white/40 font-light leading-relaxed max-w-lg mb-10">
+            <p className="text-base text-white/40 font-light leading-relaxed w-full max-w-lg mb-10">
               {content.description}
             </p>
             <div className="flex flex-wrap gap-6 text-[10px] uppercase tracking-[0.3em] text-white/30 font-mono mb-10">
@@ -191,7 +191,7 @@ export const FeaturedWork = ({ project }: FeaturedWorkProps) => {
         style={{ opacity: contentOpacity, y: contentY }}
         className="relative z-10 h-full flex items-center px-8 md:px-16"
       >
-        <div className="max-w-3xl">
+        <div className="w-full max-w-3xl">
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -207,7 +207,7 @@ export const FeaturedWork = ({ project }: FeaturedWorkProps) => {
             {content.titleAccent && <span className="italic text-gold">{content.titleAccent}</span>}
           </h2>
 
-          <p className="text-base text-white/40 font-light leading-relaxed max-w-lg mb-10">
+          <p className="text-base text-white/40 font-light leading-relaxed w-full max-w-lg mb-10">
             {content.description}
           </p>
 

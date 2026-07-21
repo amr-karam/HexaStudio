@@ -96,7 +96,7 @@ export const TestimonialsSection = () => {
     <section className="relative px-8 md:px-16 py-32 bg-surface border-y border-border/30 overflow-hidden">
       <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
 
-      <div className="relative z-10 max-w-7xl mx-auto">
+      <div className="relative z-10 w-full max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-20">
           <motion.span

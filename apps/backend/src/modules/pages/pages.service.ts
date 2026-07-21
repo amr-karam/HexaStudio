@@ -16,18 +16,23 @@ interface StrapiMedia {
   };
 }
 
-function mapMedia(relation: StrapiMedia | undefined): { url: string; alternativeText?: string } | undefined {
+function mapMedia(relation: StrapiMedia | undefined, baseUrl?: string): { url: string; alternativeText?: string } | undefined {
   if (!relation) return undefined;
+  let url: string | undefined;
+  let alt: string | undefined;
   if (relation.url) {
-    return { url: relation.url, alternativeText: relation.alternativeText };
+    url = relation.url;
+    alt = relation.alternativeText;
+  } else if (relation.data?.attributes?.url) {
+    url = relation.data.attributes.url;
+    alt = relation.data.attributes.alternativeText;
   }
-  if (relation.data?.attributes?.url) {
-    return {
-      url: relation.data.attributes.url,
-      alternativeText: relation.data.attributes.alternativeText,
-    };
+  if (!url) return undefined;
+  // Strapi returns relative URLs like /uploads/image.jpg — resolve against CMS base
+  if (baseUrl && url.startsWith('/')) {
+    url = `${baseUrl}${url}`;
   }
-  return undefined;
+  return { url, alternativeText: alt };
 }
 
 @Injectable()
@@ -108,7 +113,7 @@ export class PagesService {
       title: attrs.title as string,
       content: (attrs.content as RichTextBlock[]) ?? [],
       excerpt: attrs.excerpt as string | undefined,
-      featuredImage: mapMedia(attrs.featuredImage as StrapiMedia),
+      featuredImage: mapMedia(attrs.featuredImage as StrapiMedia, this.cmsUrl),
       seoTitle: attrs.seoTitle as string | undefined,
       seoDescription: attrs.seoDescription as string | undefined,
     };

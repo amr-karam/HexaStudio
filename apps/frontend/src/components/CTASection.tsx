@@ -92,7 +92,7 @@ export function CTASection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={makeTransition("entrance", "page", 0.2)}
-          className="text-lg text-neutral-400 font-light leading-relaxed mb-16 mx-auto max-w-2xl"
+          className="text-lg text-neutral-400 font-light leading-relaxed mb-16 mx-auto w-full max-w-2xl"
         >
           Every great project begins with a conversation. Reach out and let&apos;s
           explore what we can create together.

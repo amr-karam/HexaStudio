@@ -136,7 +136,7 @@ export default async function AboutPage() {
           <h2 className="text-4xl md:text-6xl font-serif font-light tracking-tight text-foreground mb-8 leading-tight">
             Ready to <span className="italic text-accent">Collaborate?</span>
           </h2>
-          <p className="text-neutral-400 font-light leading-relaxed mb-12 max-w-2xl mx-auto">
+          <p className="text-neutral-400 font-light leading-relaxed mb-12 w-full max-w-2xl mx-auto">
             We partner with architects, developers, and visionaries worldwide. Let&apos;s create
             something extraordinary together.
           </p>
