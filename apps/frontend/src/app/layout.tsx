@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display, JetBrains_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { AppProviders } from "@/providers/app-providers";
 import { Navbar } from "@/components/ui/nav/Navbar";
 import { Footer } from "@/components/ui/Footer";
@@ -94,6 +95,7 @@ export default function RootLayout({
           </SmoothScrollWrapper>
           <BackToTop />
         </AppProviders>
+        <Analytics />
       </body>
     </html>
   );
