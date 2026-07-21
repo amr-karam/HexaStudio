@@ -111,5 +111,6 @@ apps/frontend/public/models/.gitkeep
 
 .vercel
 .vercel-tmp/
-.env*
+# Note: .env.example is explicitly allowed above (line 20). All other .env* patterns
+# are already covered by .env, .env.local, .env.*.local rules on lines 17-19.
 pnpm-workspace.yaml

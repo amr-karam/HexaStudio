@@ -4,7 +4,7 @@ import {
   ExecutionContext,
   ForbiddenException,
 } from '@nestjs/common';
-import { randomBytes } from 'crypto';
+import { randomBytes, timingSafeEqual } from 'crypto';
 
 const CSRF_COOKIE = 'csrf_token';
 const CSRF_HEADER = 'x-csrf-token';
@@ -25,7 +25,7 @@ export class CsrfGuard implements CanActivate {
     const cookieToken = req.cookies?.[CSRF_COOKIE];
     const headerToken = req.headers[CSRF_HEADER];
 
-    if (!cookieToken || !headerToken || cookieToken !== headerToken) {
+    if (!cookieToken || !headerToken || !timingSafeEqual(Buffer.from(cookieToken), Buffer.from(headerToken))) {
       throw new ForbiddenException('CSRF token mismatch');
     }
 

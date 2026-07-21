@@ -44,6 +44,35 @@ jobs:
       - run: npm run lint --workspace=apps/backend
       - run: npm run lint --workspace=apps/frontend
 
+  security-scan:
+    name: Security Scan (Snyk + npm audit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci --legacy-peer-deps
+      - name: npm audit (high+ blockers)
+        run: npm audit --audit-level=high
+        continue-on-error: false
+      - name: Snyk Open Source (SCA)
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+        continue-on-error: true
+      - name: Snyk Code (SAST)
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+          command: code test
+        continue-on-error: true
+
   test:
     name: Tests
     runs-on: ubuntu-latest

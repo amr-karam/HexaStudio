@@ -1,5 +1,6 @@
 import React from "react";
 import { Project } from "@hexastudio/types";
+import { sanitizeJsonLd } from "@/lib/jsonld";
 interface ProjectStructuredDataProps {
   project: Project;
 }
@@ -25,7 +26,7 @@ export function ProjectStructuredData({ project }: ProjectStructuredDataProps) {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      dangerouslySetInnerHTML={{ __html: sanitizeJsonLd(schema) }}
     />
   );
 }

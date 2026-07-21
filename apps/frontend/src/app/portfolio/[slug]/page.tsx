@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { fetchProject } from '@/features/portfolio/lib/fetchProjects';
 import { LazyProjectSceneWrapper } from '@/features/portfolio/components/LazyProjectSceneWrapper';
+import { sanitizeJsonLd } from '@/lib/jsonld';
 
 interface ProjectPageProps {
   params: Promise<{ slug: string }>;
@@ -53,7 +54,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
     <main className="min-h-screen bg-background">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: sanitizeJsonLd(jsonLd) }}
       />
       {/* Cinematic 3D Header */}
       <section className="relative h-[80vh] w-full overflow-hidden bg-obsidian">

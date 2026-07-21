@@ -18,6 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       ]),
       ignoreExpiration: false,
       secretOrKey: env.JWT_SECRET,
+      algorithms: ['HS256'],  // Enforce HS256 to prevent algorithm confusion attacks. TODO: migrate to RS256 (per SECURITY_STANDARDS.md) when an RSA key pair is provisioned.
     });
   }
 

@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Get, UseGuards, Request, Res, Headers } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { IsEmail, IsString, MinLength, MaxLength } from 'class-validator';
+import { IsEmail, IsString, MinLength, MaxLength, Matches } from 'class-validator';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import type { User } from '@hexastudio/types';
@@ -17,8 +17,11 @@ class RegisterDto {
   username!: string;
 
   @IsString()
-  @MinLength(8)
+  @MinLength(12)
   @MaxLength(100)
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/, {
+    message: 'Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character',
+  })
   password!: string;
 }
 
@@ -47,25 +50,34 @@ class ResetPasswordDto {
   code!: string;
 
   @IsString()
-  @MinLength(8)
+  @MinLength(12)
   @MaxLength(100)
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/, {
+    message: 'Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character',
+  })
   password!: string;
 
   @IsString()
-  @MinLength(8)
+  @MinLength(12)
   @MaxLength(100)
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/, {
+    message: 'Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character',
+  })
   passwordConfirmation!: string;
 }
 
 class ChangePasswordDto {
   @IsString()
-  @MinLength(8)
+  @MinLength(12)
   @MaxLength(100)
   currentPassword!: string;
 
   @IsString()
-  @MinLength(8)
+  @MinLength(12)
   @MaxLength(100)
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/, {
+    message: 'Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character',
+  })
   newPassword!: string;
 }
 
