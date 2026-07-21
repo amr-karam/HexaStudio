@@ -5,7 +5,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Magnetic } from '@/components/ui/Magnetic';
-import { LazyBlueprintHero } from '@/features/experience';
+import { LazySceneCanvas } from '@/features/scene';
 import { SceneErrorBoundary } from '@/features/scene/components/SceneErrorBoundary';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { ShimmerSkeleton } from '@/components/ui/ShimmerSkeleton';
@@ -103,7 +103,7 @@ export const HomeHero = () => {
             </div>
           </div>
         }>
-          <LazyBlueprintHero />
+          <LazySceneCanvas />
         </Suspense>
       </SceneErrorBoundary>
 
