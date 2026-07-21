@@ -1,4 +1,6 @@
 import * as Sentry from '@sentry/nextjs';
+import { replayIntegration } from '@sentry/replay';
+import type { Event, EventHint } from '@sentry/core';
 
 const SENTRY_DSN = process.env.NEXT_PUBLIC_SENTRY_DSN;
 
@@ -14,7 +16,7 @@ if (SENTRY_DSN) {
     replaysOnErrorSampleRate: 1.0,
     tracePropagationTargets: ['localhost', /^https:\/\/hexastudio\.net/],
     integrations: [
-      Sentry.replayIntegration({
+      replayIntegration({
         maskAllText: true,
         blockAllMedia: true,
       }),
@@ -25,7 +27,7 @@ if (SENTRY_DSN) {
       /Non-Error promise rejection captured/,
       /Network request failed/,
     ],
-    beforeSend(event, hint) {
+    beforeSend(event: Event, hint: EventHint) {
       if (process.env.NODE_ENV === 'production' && event.exception) {
         const error = hint.originalException;
         if (error instanceof Error && error.message?.includes('hydration')) {

@@ -54,7 +54,24 @@
   --ease-luxury: cubic-bezier(0.28, 1.2, 0.52, 1);
 }
 
+/* -------------------------------------------------------------------------- */
+/*  HEXA Motion Tokens — CSS Custom Properties (mirrors src/lib/motion.ts)     */
+/* -------------------------------------------------------------------------- */
+
 :root {
+  /* Easing curves */
+  --hexa-ease-entrance: cubic-bezier(0.16, 1, 0.3, 1);
+  --hexa-ease-interaction: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --hexa-ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --hexa-ease-sharp: cubic-bezier(0.4, 0, 0.6, 1);
+
+  /* Durations */
+  --hexa-duration-micro: 0.2s;
+  --hexa-duration-component: 0.4s;
+  --hexa-duration-page: 0.75s;
+  --hexa-duration-camera: 1.4s;
+
+  /* Glass morphism */
   --glass-bg: rgba(255, 255, 255, 0.02);
   --glass-border: rgba(255, 255, 255, 0.05);
   --glass-bg-hover: rgba(255, 255, 255, 0.04);
@@ -106,12 +123,16 @@ body {
   color: var(--color-background);
   padding: 8px 16px;
   z-index: 100;
-  transition: top 0.3s var(--ease-out-expo);
+  transition: top 0.3s var(--hexa-ease-entrance);
 }
 
 .skip-link:focus {
   top: 0;
 }
+
+/* -------------------------------------------------------------------------- */
+/*  Reduced Motion — comprehensive fallback rules                              */
+/* -------------------------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -121,6 +142,13 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* Hide ambient canvases and particle effects */
+  .ambient-canvas,
+  .shader-gradient,
+  .particle-dust {
+    display: none;
   }
 
   .motion-reduce-hidden {
@@ -165,7 +193,7 @@ body {
   box-shadow: 0 0 0 6px rgba(212, 175, 55, 0.1);
 }
 
-/* Shimmer animation for loading states */
+/* Shimmer animation for loading states — documented exception to reduced motion */
 @keyframes shimmer {
   0% { background-position: -1000px 0; }
   100% { background-position: 1000px 0; }
@@ -196,4 +224,16 @@ body {
 
 .animate-slow-zoom {
   animation: slow-zoom 20s ease-out forwards;
+}
+
+/* Button reset utility */
+.button-reset {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
 }

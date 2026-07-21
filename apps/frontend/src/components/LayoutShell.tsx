@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import { ReactNode } from 'react';
+import dynamic from 'next/dynamic';
 import { Navbar } from '@/components/ui/nav/Navbar';
 import { Footer } from '@/components/ui/Footer';
 import { PageTransition } from '@/components/PageTransition';
@@ -10,9 +11,17 @@ import { CustomCursor } from '@/components/CustomCursor';
 import { BackToTop } from '@/components/BackToTop';
 import { GrainOverlay } from '@/components/animation';
 import CursorTrail from '@/components/effects/CursorTrail';
-import AmbientScene from '@/components/effects/AmbientScene';
 
 const FULLSCREEN_ROUTES = ['/xr-viewer'];
+
+/** Marketing routes that benefit from the ambient WebGL background. */
+const AMBIENT_ROUTES = ['/', '/about', '/services', '/portfolio', '/blog', '/contact'];
+
+/** Dynamic import — AmbientScene and its R3F/Three deps only load on marketing routes. */
+const AmbientScene = dynamic(
+  () => import('@/components/effects/AmbientScene').then((m) => m.default),
+  { ssr: false },
+);
 
 export function LayoutShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -21,6 +30,10 @@ export function LayoutShell({ children }: { children: ReactNode }) {
   if (isFullscreen) {
     return <>{children}</>;
   }
+
+  const showAmbient = AMBIENT_ROUTES.some(
+    (route) => pathname === route || (route !== '/' && pathname.startsWith(route)),
+  );
 
   return (
     <SmoothScrollWrapper>
@@ -33,7 +46,7 @@ export function LayoutShell({ children }: { children: ReactNode }) {
       <CursorTrail />
       <BackToTop />
       <GrainOverlay />
-      <AmbientScene />
+      {showAmbient && <AmbientScene />}
     </SmoothScrollWrapper>
   );
 }

@@ -22,10 +22,6 @@ export default function CursorTrail() {
   const rafIdRef = useRef<number>(0);
   
   useEffect(() => { setMounted(true); }, []);
-  
-  // Don't render until client-side mount
-  if (!mounted) return null;
-  if (!finePointer || !animationsEnabled) return null;
 
   useEffect(() => {
     // Gate: only run on fine-pointer devices with animations enabled
@@ -96,8 +92,10 @@ export default function CursorTrail() {
     };
   }, [animationsEnabled, finePointer, mouseX, mouseY]);
 
-  // Don't mount canvas at all on coarse pointer or when animations disabled
-  if (!finePointer || !animationsEnabled) return null;
+  // Don't render until client-side mount; don't mount the canvas at all on
+  // coarse pointer or when animations are disabled. These checks must come
+  // after every hook call (Rules of Hooks).
+  if (!mounted || !finePointer || !animationsEnabled) return null;
 
   return (
     <canvas

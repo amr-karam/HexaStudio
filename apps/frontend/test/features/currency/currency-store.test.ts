@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { useCurrencyStore, type CurrencyOption } from '../currency-store';
+import { useCurrencyStore, type CurrencyOption } from '@/features/currency/currency-store';
 
 const STORAGE_KEY = 'hexa_currency_preference';
 

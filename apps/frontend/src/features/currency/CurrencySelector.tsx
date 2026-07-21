@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 import { API_BASE_URL } from '@/config/constants';
 import { localeToRegion } from './locale-region';
 import { useHEXAMotion } from '@/hooks/useHEXAMotion';
+import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 
 /* -------------------------------------------------------------------------- */
 /*  GeoIP helpers                                                             */
@@ -93,7 +94,8 @@ export function CurrencySelector() {
 
   const { t, locale, dir } = useLocale();
   const hexaMotion = useHEXAMotion();
-  const prefersReduced = hexaMotion.reduced;
+  const { staticMode } = useMotionPolicy();
+  const prefersReduced = hexaMotion.reduced || staticMode;
   const uid = useId();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -341,11 +343,19 @@ export function CurrencySelector() {
       >
         {/* Loading spinner or symbol */}
         {isLoading ? (
+          prefersReduced ? (
+            <span
+              className="block w-3 h-3 rounded-full border-2 border-neutral-700 border-t-accent"
+              role="status"
+              aria-label="Loading currencies"
+            />
+          ) : (
           <motion.span
             animate={{ rotate: 360 }}
             transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
             className="block w-3 h-3 rounded-full border-2 border-neutral-700 border-t-accent"
           />
+          )
         ) : (
           <span
             className={cn(

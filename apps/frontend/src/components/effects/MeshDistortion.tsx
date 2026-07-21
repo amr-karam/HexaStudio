@@ -2,7 +2,12 @@
 
 import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
+import { Color } from 'three';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
+
+/* -------------------------------------------------------------------------- */
+/*  Shaders                                                                    */
+/* -------------------------------------------------------------------------- */
 
 const vertexShader = /* glsl */ `
   uniform float uTime;
@@ -40,26 +45,26 @@ const fragmentShader = /* glsl */ `
   varying vec2 vUv;
 
   void main() {
-    // Edge lighting based on normals
     vec3 light = normalize(vec3(1.0, 1.0, 1.0));
     float diff = max(dot(vNormal, light), 0.0);
     float rim = 1.0 - abs(dot(vNormal, vec3(0.0, 0.0, 1.0)));
 
-    // Iridescent color shift
     vec3 color = uColor;
     color += rim * 0.15 * vec3(0.8, 0.7, 1.0);
     color += diff * 0.1 * vec3(1.0, 0.9, 0.7);
 
-    // Subtle noise pattern
     float n = sin(vUv.x * 50.0 + uTime) * cos(vUv.y * 50.0 + uTime * 0.5) * 0.02;
     color += n;
 
-    // Edge glow
     color += rim * uIntensity * 0.2;
 
     gl_FragColor = vec4(color, 1.0);
   }
 `;
+
+/* -------------------------------------------------------------------------- */
+/*  Types                                                                      */
+/* -------------------------------------------------------------------------- */
 
 interface Props {
   children: React.ReactNode;
@@ -67,21 +72,34 @@ interface Props {
   color?: string;
 }
 
+/* -------------------------------------------------------------------------- */
+/*  Material Component                                                         */
+/* -------------------------------------------------------------------------- */
+
 export function MeshDistortionMaterial({
   intensity = 0.5,
   color = '#D4AF37',
 }: Omit<Props, 'children'>) {
+  const reducedMotion = useReducedMotion();
+  const frozenTime = useRef(0);
+
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
       uIntensity: { value: intensity },
-      uColor: { value: new THREE.Color(color) },
+      uColor: { value: new Color(color) },
     }),
     [intensity, color],
   );
 
   useFrame((_, delta) => {
+    if (reducedMotion) {
+      // Freeze time — distortion stays static.
+      uniforms.uTime.value = frozenTime.current;
+      return;
+    }
     uniforms.uTime.value += delta;
+    frozenTime.current = uniforms.uTime.value;
   });
 
   return (
@@ -97,8 +115,7 @@ export function MeshDistortionMaterial({
 
 /**
  * Wraps children and applies vertex distortion via shaderMaterial override.
- * Passes a custom material to any mesh child via React.cloneElement.
  */
-export default function MeshDistortion({ children, intensity, color }: Props) {
+export default function MeshDistortion({ children }: Props) {
   return <>{children}</>;
 }

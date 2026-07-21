@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/nextjs';
+import { replayIntegration } from '@sentry/replay';
 
 const SENTRY_DSN = process.env.NEXT_PUBLIC_SENTRY_DSN;
 const SENTRY_RELEASE = process.env.SENTRY_RELEASE || process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || undefined;
@@ -13,7 +14,7 @@ if (SENTRY_DSN) {
     replaysSessionSampleRate: 0.1,
     replaysOnErrorSampleRate: 1.0,
     integrations: [
-      Sentry.replayIntegration({
+      replayIntegration({
         maskAllText: true,
         blockAllMedia: true,
       }),

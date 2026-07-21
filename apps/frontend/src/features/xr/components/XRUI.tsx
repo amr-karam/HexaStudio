@@ -96,6 +96,7 @@ export function XRUI({ onExit, modelName }: XRUIProps) {
 
   const isSessionActive = status === 'active';
   const isPlacing = isSessionActive && placementPhase === 'placing';
+  const hasSurface = isPlacing && useXRStore((s) => s.placementPosition) !== null;
   const isPlaced = isSessionActive && placementPhase === 'placed';
 
   return (
@@ -148,7 +149,14 @@ export function XRUI({ onExit, modelName }: XRUIProps) {
           <>
             <div className="pointer-events-auto absolute left-1/2 top-8 -translate-x-1/2">
               <p className="rounded-full bg-black/50 px-4 py-2 text-sm text-white/80 backdrop-blur-sm">
-                Tap a surface to place the model
+                {hasSurface ? (
+                  <span className="flex items-center gap-2">
+                    <span className="inline-block h-2 w-2 rounded-full bg-[#D4AF37] animate-pulse" />
+                    Surface found — tap to place
+                  </span>
+                ) : (
+                  'Scan for a flat surface...'
+                )}
               </p>
             </div>
             <div className="pointer-events-auto absolute bottom-8 left-1/2 -translate-x-1/2">

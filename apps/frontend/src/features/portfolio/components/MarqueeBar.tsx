@@ -1,7 +1,9 @@
 'use client';
 
+import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { useReducedMotion } from '@/hooks';
+import { useMotionPolicy } from '@/hooks/useMotionPolicy';
+import { REDUCED_TRANSITION } from '@/lib/motion';
 
 const brands = [
   'ArchDaily',
@@ -21,14 +23,34 @@ const brands = [
 /**
  * MarqueeBar — An infinite horizontal scroll of notable brand names.
  * Serves as social proof: "Trusted by the industry's leading publications."
- * Disabled for reduced-motion users (static centered layout instead).
+ *
+ * - Disabled for reduced-motion users (static centered layout instead).
+ * - Also paused when user has toggled animations off via motion policy.
+ * - Pauses on hover and focus-visible (WCAG 2.2.2 Pause, Stop, Hide).
+ *
+ * NOTE: The linear easing for seamless loop is an explicit ambient-loop exception.
  */
 export const MarqueeBar = () => {
-  const reducedMotion = useReducedMotion();
+  const { staticMode, paused } = useMotionPolicy();
+  const [isHovered, setIsHovered] = useState(false);
+  const [isFocusWithin, setIsFocusWithin] = useState(false);
 
-  if (reducedMotion) {
+  const isStatic = staticMode || paused || isHovered || isFocusWithin;
+
+  const handleMouseEnter = useCallback(() => setIsHovered(true), []);
+  const handleMouseLeave = useCallback(() => setIsHovered(false), []);
+  const handleFocus = useCallback(() => setIsFocusWithin(true), []);
+  const handleBlur = useCallback(() => setIsFocusWithin(false), []);
+
+  if (isStatic) {
     return (
-      <section className="py-16 bg-surface border-y border-border/20 overflow-hidden">
+      <section
+        className="py-16 bg-surface border-y border-border/20 overflow-hidden"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+      >
         <div className="max-w-7xl mx-auto px-8 md:px-16">
           <p className="text-[9px] uppercase tracking-[0.5em] text-neutral-500 mb-8 text-center font-mono">
             Featured In
@@ -49,7 +71,13 @@ export const MarqueeBar = () => {
   }
 
   return (
-    <section className="py-16 bg-surface border-y border-border/20 overflow-hidden">
+    <section
+      className="py-16 bg-surface border-y border-border/20 overflow-hidden"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+    >
       <p className="text-[9px] uppercase tracking-[0.5em] text-neutral-500 mb-8 text-center font-mono">
         Featured In
       </p>
@@ -60,14 +88,18 @@ export const MarqueeBar = () => {
 
         <motion.div
           className="flex gap-16 w-max"
-          animate={{ x: ['0%', '-50%'] }}
-          transition={{
-            x: {
-              duration: 40,
-              ease: 'linear',
-              repeat: Infinity,
-            },
-          }}
+          animate={isStatic ? { x: '0%' } : { x: ['0%', '-50%'] }}
+          transition={
+            isStatic
+              ? REDUCED_TRANSITION
+              : {
+                  x: {
+                    duration: 40,
+                    ease: 'linear', // Explicit ambient-loop exception
+                    repeat: Infinity,
+                  },
+                }
+          }
         >
           {/* Two copies for seamless loop */}
           {[...brands, ...brands].map((name, i) => (

@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useCallback, useRef } from 'react';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useLocale } from '@/i18n/LocaleProvider';
 import { portalOdooApi, type PortalDocumentRecord } from '@/features/odoo/api';
 import { toast } from 'sonner';
 import { formatFileSize } from '@/lib/utils';
 import { cn } from '@/lib/utils';
+import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 
 interface DocumentUploadProps {
   projectId: number;
@@ -41,7 +42,7 @@ function fileIcon(mimeType: string) {
 
 export function DocumentUpload({ projectId, documents, onDocumentsChange }: DocumentUploadProps) {
   const { t, locale } = useLocale();
-  const prefersReducedMotion = useReducedMotion();
+  const { staticMode } = useMotionPolicy();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -133,7 +134,11 @@ export function DocumentUpload({ projectId, documents, onDocumentsChange }: Docu
   );
 
   return (
-    <section className="bg-surface border border-border/50 rounded-sm overflow-hidden" dir={isRTL ? 'rtl' : 'ltr'}>
+    <section
+      className="bg-surface border border-border/50 rounded-sm overflow-hidden"
+      dir={isRTL ? 'rtl' : 'ltr'}
+      aria-busy={isUploading || deletingId !== null}
+    >
       {/* Header */}
       <div className="px-6 py-5 border-b border-border/20">
         <div className="flex items-center gap-2">
@@ -152,7 +157,7 @@ export function DocumentUpload({ projectId, documents, onDocumentsChange }: Docu
           onDrop={onDrop}
           onClick={() => inputRef.current?.click()}
           animate={
-            prefersReducedMotion
+            staticMode
               ? {}
               : {
                   borderColor: isDragging ? 'rgba(212, 175, 55, 0.6)' : 'rgba(255, 255, 255, 0.08)',
@@ -177,7 +182,7 @@ export function DocumentUpload({ projectId, documents, onDocumentsChange }: Docu
 
           <motion.div
             className="mx-auto mb-4 w-12 h-12 rounded-full border border-border/40 flex items-center justify-center text-neutral-500 group-hover:text-accent group-hover:border-accent/40 transition-colors"
-            animate={prefersReducedMotion ? {} : { y: isDragging ? -4 : 0 }}
+            animate={staticMode ? {} : { y: isDragging ? -4 : 0 }}
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0l-3.75 3.75M12 9.75l3.75 3.75M3 17.25V21h18v-3.75M21 12.75V7.5a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 7.5v5.25" />
@@ -193,12 +198,16 @@ export function DocumentUpload({ projectId, documents, onDocumentsChange }: Docu
 
           {isUploading && (
             <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-              <div className="flex items-center gap-3">
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
-                  className="w-4 h-4 rounded-full border-2 border-accent/30 border-t-accent"
-                />
+              <div className="flex items-center gap-3" role="status" aria-live="polite">
+                {staticMode ? (
+                  <div className="w-4 h-4 rounded-full border-2 border-accent/30 border-t-accent" />
+                ) : (
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+                    className="w-4 h-4 rounded-full border-2 border-accent/30 border-t-accent"
+                  />
+                )}
                 <span className="text-xs text-neutral-500 font-mono">
                   {t('portal.documents.uploading') || 'Uploading...'}
                 </span>
@@ -211,9 +220,9 @@ export function DocumentUpload({ projectId, documents, onDocumentsChange }: Docu
         <AnimatePresence mode="popLayout">
           {documents.length === 0 ? (
             <motion.div
-              initial={prefersReducedMotion ? {} : { opacity: 0 }}
+              initial={staticMode ? {} : { opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={prefersReducedMotion ? {} : { opacity: 0 }}
+              exit={staticMode ? {} : { opacity: 0 }}
               className="text-center py-8 text-neutral-500 text-sm"
             >
               {t('portal.documents.empty') || 'No documents uploaded yet.'}
@@ -223,10 +232,10 @@ export function DocumentUpload({ projectId, documents, onDocumentsChange }: Docu
               {documents.map((doc) => (
                 <motion.li
                   key={doc.id}
-                  layout={!prefersReducedMotion}
-                  initial={prefersReducedMotion ? {} : { opacity: 0, y: 10 }}
+                  layout={!staticMode}
+                  initial={staticMode ? {} : { opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={prefersReducedMotion ? {} : { opacity: 0, scale: 0.98 }}
+                  exit={staticMode ? {} : { opacity: 0, scale: 0.98 }}
                   className="flex items-center gap-4 p-4 bg-background border border-border/30 rounded-sm group hover:border-accent/20 transition-colors"
                 >
                   {/* File icon */}
@@ -265,14 +274,22 @@ export function DocumentUpload({ projectId, documents, onDocumentsChange }: Docu
                       onClick={() => handleDelete(doc.id)}
                       disabled={deletingId === doc.id}
                       className="p-2 text-neutral-500 hover:text-red-400 transition-colors disabled:opacity-50"
-                      aria-label={t('portal.documents.delete') || 'Delete'}
+                      aria-label={
+                        deletingId === doc.id
+                          ? 'Deleting document...'
+                          : (t('portal.documents.delete') || 'Delete')
+                      }
                     >
                       {deletingId === doc.id ? (
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
-                          className="w-4 h-4 rounded-full border-2 border-red-400/30 border-t-red-400"
-                        />
+                        staticMode ? (
+                          <div className="w-4 h-4 rounded-full border-2 border-red-400/30 border-t-red-400" />
+                        ) : (
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+                            className="w-4 h-4 rounded-full border-2 border-red-400/30 border-t-red-400"
+                          />
+                        )
                       ) : (
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
@@ -285,6 +302,11 @@ export function DocumentUpload({ projectId, documents, onDocumentsChange }: Docu
             </ul>
           )}
         </AnimatePresence>
+
+        {/* Live region for delete completion announcements */}
+        <div role="status" aria-live="polite" className="sr-only">
+          {deletingId === null && documents.length > 0 && ''}
+        </div>
       </div>
     </section>
   );

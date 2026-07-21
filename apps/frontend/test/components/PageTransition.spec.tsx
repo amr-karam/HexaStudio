@@ -8,7 +8,7 @@ const { reducedRef } = vi.hoisted(() => ({ reducedRef: { current: false } }));
 vi.mock('framer-motion', () => ({
   motion: {
     div: ({ children, ...props }: { children?: React.ReactNode; [key: string]: unknown }) => {
-      const { initial: _i, animate: _a, exit: _e, transition: _t, ...rest } = props as Record<string, unknown>;
+      const { initial: _i, animate: _a, exit: _e, transition: _t, variants: _v, custom: _c, ...rest } = props as Record<string, unknown>;
       return <div {...rest}>{children as React.ReactNode}</div>;
     },
   },
@@ -20,7 +20,14 @@ vi.mock('next/navigation', () => ({
 }));
 
 vi.mock('@/hooks/useHEXAMotion', () => ({
-  useHEXAMotion: () => ({ reduced: reducedRef.current }),
+  useHEXAMotion: () => ({
+    reduced: reducedRef.current,
+    ease: { entrance: [0.16, 1, 0.3, 1], interaction: [0.34, 1.56, 0.64, 1], transition: [0.25, 0.1, 0.25, 1], sharp: [0.4, 0, 0.6, 1] },
+    duration: { micro: 0.2, component: 0.4, page: 0.75, camera: 1.4 },
+    stagger: { micro: 0, component: 0.05, page: 0.1 },
+    transition: vi.fn(() => ({ duration: 0.01 })),
+    withReduced: vi.fn((v: unknown) => v),
+  }),
 }));
 
 describe('PageTransition', () => {
@@ -54,5 +61,15 @@ describe('PageTransition', () => {
         </PageTransition>,
       ),
     ).not.toThrow();
+  });
+
+  it('renders content visible under reduced motion', () => {
+    reducedRef.current = true;
+    render(
+      <PageTransition>
+        <p>Accessible content</p>
+      </PageTransition>,
+    );
+    expect(screen.getByText('Accessible content')).toBeInTheDocument();
   });
 });

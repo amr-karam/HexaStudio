@@ -3,9 +3,10 @@
 import { useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { getGsap } from '@/lib/gsap';
 import { LetterBounceText } from './LetterBounceText';
+import type gsap from 'gsap';
 
 interface FloatingCard {
   id: string;
@@ -42,23 +43,20 @@ export function FloatingCardsHero({
   cards = DEFAULT_CARDS,
   className,
 }: FloatingCardsHeroProps) {
-  const reduced = useReducedMotion();
+  const { staticMode, finePointer } = useMotionPolicy();
   const sectionRef = useRef<HTMLElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const sublineRef = useRef<HTMLParagraphElement>(null);
   const cardElsRef = useRef<Map<string, HTMLDivElement>>(new Map());
   const mouseRef = useRef({ x: 0, y: 0 });
   const rafRef = useRef<number | null>(null);
+  const gsapCtxRef = useRef<gsap.Context | null>(null);
 
   const getCard = useCallback((id: string) => cardElsRef.current.get(id) ?? null, []);
 
   useEffect(() => {
-    if (reduced) return;
+    if (staticMode) return;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const floatTweens: any[] = [];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let scrollTrigger: any = null;
     let cancelled = false;
 
     (async () => {
@@ -67,119 +65,137 @@ export function FloatingCardsHero({
 
       const { ScrollTrigger } = await import('gsap/ScrollTrigger');
 
-      const section = sectionRef.current;
-      const headlineEl = headlineRef.current;
-      const sublineEl = sublineRef.current;
+      // Create a gsap context for automatic cleanup
+      const ctx = gsap.context(() => {
+        const section = sectionRef.current;
+        const headlineEl = headlineRef.current;
+        const sublineEl = sublineRef.current;
 
-      /* ── Word-by-word headline ── */
-      if (headlineEl) {
-        const wordInners = headlineEl.querySelectorAll<HTMLSpanElement>('.word-inner');
-        if (wordInners.length) {
-          gsap.set(wordInners, { y: '105%' });
-          gsap.to(wordInners, {
-            y: '0%',
-            duration: 0.9,
-            stagger: 0.08,
-            ease: 'power3.out',
-            delay: 0.3,
-          });
+        if (!section) return;
+
+        /* ── Word-by-word headline ── */
+        if (headlineEl) {
+          const wordInners = headlineEl.querySelectorAll<HTMLSpanElement>('.word-inner');
+          if (wordInners.length) {
+            gsap.set(wordInners, { y: '105%' });
+            gsap.to(wordInners, {
+              y: '0%',
+              duration: 0.9,
+              stagger: 0.08,
+              ease: 'power3.out',
+              delay: 0.3,
+            });
+          }
         }
-      }
 
-      /* ── Card intro ── */
-      const cardEls: HTMLDivElement[] = [];
-      cards.forEach((card) => {
-        const el = getCard(card.id);
-        if (!el) return;
-        cardEls.push(el);
-        gsap.set(el, { y: -800, rotation: card.rot + 25, opacity: 0, scale: 0.7 });
-      });
-
-      if (cardEls.length) {
-        gsap.to(cardEls, {
-          rotation: (i: number) => cards[i].rot,
-          opacity: 1,
-          scale: 1,
-          y: 0,
-          stagger: { each: 0.08, from: 'center' },
-          duration: 1.2,
-          ease: 'back.out(1.4)',
-          delay: 0.6,
+        /* ── Card intro ── */
+        const cardEls: HTMLDivElement[] = [];
+        cards.forEach((card) => {
+          const el = getCard(card.id);
+          if (!el) return;
+          cardEls.push(el);
+          gsap.set(el, { y: -800, rotation: card.rot + 25, opacity: 0, scale: 0.7 });
         });
 
-        cardEls.forEach((el, i) => {
-          const rot = cards[i].rot;
-          const tween = gsap.to(el, {
-            y: '+=20',
-            rotation: rot + 1.5,
-            duration: 3 + Math.random() * 2,
-            yoyo: true,
-            repeat: -1,
-            ease: 'sine.inOut',
-            delay: Math.random() * 0.5,
+        if (cardEls.length) {
+          gsap.to(cardEls, {
+            rotation: (i: number) => cards[i].rot,
+            opacity: 1,
+            scale: 1,
+            y: 0,
+            stagger: { each: 0.08, from: 'center' },
+            duration: 1.2,
+            ease: 'back.out(1.4)',
+            delay: 0.6,
           });
-          floatTweens.push(tween);
-        });
-      }
 
-      /* ── ScrollTrigger scrub exit ── */
-      scrollTrigger = ScrollTrigger.create({
-        trigger: section,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: 0.8,
-        onUpdate: (self) => {
-          const p = self.progress;
-          if (headlineEl) {
-            gsap.set(headlineEl, { scale: 1 + 0.15 * p, opacity: 1 - 0.4 * p });
-          }
-          if (sublineEl) {
-            gsap.set(sublineEl, { opacity: 1 - 1.5 * p });
-          }
           cardEls.forEach((el, i) => {
-            const angle = (i / cardEls.length) * Math.PI * 2;
-            const dist = 120 * p;
-            gsap.set(el, {
-              x: Math.cos(angle + i) * dist * 0.5,
-              y: Math.sin(angle + i) * dist * 0.3 - 60 * p,
-              rotation: cards[i].rot + 15 * p,
-              opacity: 1 - 0.6 * p,
+            const rot = cards[i].rot;
+            gsap.to(el, {
+              y: '+=20',
+              rotation: rot + 1.5,
+              duration: 3 + Math.random() * 2,
+              yoyo: true,
+              repeat: -1,
+              ease: 'sine.inOut',
+              delay: Math.random() * 0.5,
             });
           });
-        },
+        }
+
+        /* ── ScrollTrigger scrub exit ── */
+        ScrollTrigger.create({
+          trigger: section,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 0.8,
+          onUpdate: (self) => {
+            const p = self.progress;
+            if (headlineEl) {
+              gsap.set(headlineEl, { scale: 1 + 0.15 * p, opacity: 1 - 0.4 * p });
+            }
+            if (sublineEl) {
+              gsap.set(sublineEl, { opacity: 1 - 1.5 * p });
+            }
+            cardEls.forEach((el, i) => {
+              const angle = (i / cardEls.length) * Math.PI * 2;
+              const dist = 120 * p;
+              gsap.set(el, {
+                x: Math.cos(angle + i) * dist * 0.5,
+                y: Math.sin(angle + i) * dist * 0.3 - 60 * p,
+                rotation: cards[i].rot + 15 * p,
+                opacity: 1 - 0.6 * p,
+              });
+            });
+          },
+        });
       });
+
+      if (cancelled) {
+        ctx.revert();
+        return;
+      }
+      gsapCtxRef.current = ctx;
     })();
 
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseRef.current = {
-        x: e.clientX / window.innerWidth - 0.5,
-        y: e.clientY / window.innerHeight - 0.5,
+    // Mouse parallax — only on fine pointer
+    if (finePointer) {
+      const handleMouseMove = (e: MouseEvent) => {
+        mouseRef.current = {
+          x: e.clientX / window.innerWidth - 0.5,
+          y: e.clientY / window.innerHeight - 0.5,
+        };
       };
-    };
 
-    const parallaxLoop = () => {
-      if (cancelled) return;
-      const { x, y } = mouseRef.current;
-      cards.forEach((card) => {
-        const el = getCard(card.id);
-        if (!el) return;
-        const depth = card.depth;
-        el.style.translate = `${x * depth}px ${y * depth * 0.5}px`;
-      });
+      const parallaxLoop = () => {
+        if (cancelled) return;
+        const { x, y } = mouseRef.current;
+        cards.forEach((card) => {
+          const el = getCard(card.id);
+          if (!el) return;
+          const depth = card.depth;
+          el.style.translate = `${x * depth}px ${y * depth * 0.5}px`;
+        });
+        rafRef.current = requestAnimationFrame(parallaxLoop);
+      };
+
+      window.addEventListener('mousemove', handleMouseMove, { passive: true });
       rafRef.current = requestAnimationFrame(parallaxLoop);
-    };
 
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    rafRef.current = requestAnimationFrame(parallaxLoop);
+      return () => {
+        cancelled = true;
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        window.removeEventListener('mousemove', handleMouseMove);
+        gsapCtxRef.current?.revert();
+      };
+    }
 
     return () => {
       cancelled = true;
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      window.removeEventListener('mousemove', handleMouseMove);
-      floatTweens.forEach((t) => t.kill());
-      scrollTrigger?.kill();
+      gsapCtxRef.current?.revert();
     };
-  }, [reduced, cards, getCard]);
+  }, [staticMode, finePointer, cards, getCard]);
 
   const headlineWords = headline.split(/(\s+)/).map((part, i) => {
     if (/^\s+$/.test(part)) return <span key={i}>&nbsp;</span>;
@@ -190,7 +206,7 @@ export function FloatingCardsHero({
     );
   });
 
-  if (reduced) {
+  if (staticMode) {
     return (
       <section
         ref={sectionRef}
@@ -245,12 +261,13 @@ export function FloatingCardsHero({
           data-rot={card.rot}
           data-depth={card.depth}
           onMouseMove={(e) => {
+            if (!finePointer) return;
             const el = e.currentTarget;
             const rect = el.getBoundingClientRect();
             const px = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
             const py = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-            void getGsap().then((gsap) => {
-              gsap.to(el, {
+            void getGsap().then((g) => {
+              g.to(el, {
                 rotateX: -py * 16,
                 rotateY: px * 16,
                 scale: 1.12,
@@ -262,8 +279,8 @@ export function FloatingCardsHero({
             });
           }}
           onMouseLeave={(e) => {
-            void getGsap().then((gsap) => {
-              gsap.to(e.currentTarget, {
+            void getGsap().then((g) => {
+              g.to(e.currentTarget, {
                 rotateX: 0,
                 rotateY: 0,
                 scale: 1,
@@ -274,8 +291,8 @@ export function FloatingCardsHero({
             });
           }}
           onClick={(e) => {
-            void getGsap().then((gsap) => {
-              gsap.fromTo(e.currentTarget, { scale: 1.15 }, { scale: 1.05, yoyo: true, repeat: 1, duration: 0.15, ease: 'power2.inOut' });
+            void getGsap().then((g) => {
+              g.fromTo(e.currentTarget, { scale: 1.15 }, { scale: 1.05, yoyo: true, repeat: 1, duration: 0.15, ease: 'power2.inOut' });
             });
           }}
         >
@@ -319,8 +336,8 @@ export function FloatingCardsHero({
             href={ctaHref}
             className="nav-cta inline-flex items-center gap-2 px-8 py-3 rounded-full bg-gold text-obsidian text-sm font-medium tracking-wider uppercase hover:bg-gold-light transition-colors"
             onClick={(e) => {
-              void getGsap().then((gsap) => {
-                gsap.fromTo(e.currentTarget, { scale: 1 }, { scale: 0.93, duration: 0.12, yoyo: true, repeat: 1, ease: 'power2.inOut' });
+              void getGsap().then((g) => {
+                g.fromTo(e.currentTarget, { scale: 1 }, { scale: 0.93, duration: 0.12, yoyo: true, repeat: 1, ease: 'power2.inOut' });
               });
             }}
           >

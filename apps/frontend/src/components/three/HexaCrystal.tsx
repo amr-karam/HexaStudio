@@ -1,9 +1,14 @@
 'use client';
 
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Float } from '@react-three/drei';
-import * as THREE from 'three';
+import { Mesh, ShaderMaterial } from 'three';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
+
+/* -------------------------------------------------------------------------- */
+/*  Shaders                                                                    */
+/* -------------------------------------------------------------------------- */
 
 const vertexShader = /* glsl */ `
   uniform float uTime;
@@ -41,8 +46,14 @@ const fragmentShader = /* glsl */ `
   }
 `;
 
+/* -------------------------------------------------------------------------- */
+/*  Component                                                                  */
+/* -------------------------------------------------------------------------- */
+
 export function HexaCrystal() {
-  const meshRef = useRef<THREE.Mesh>(null);
+  const meshRef = useRef<Mesh>(null);
+  const reducedMotion = useReducedMotion();
+  const frozenTime = useRef(0);
 
   const uniforms = useMemo(
     () => ({
@@ -51,10 +62,33 @@ export function HexaCrystal() {
     [],
   );
 
+  // Dispose owned resources on unmount.
+  useEffect(() => {
+    return () => {
+      if (meshRef.current) {
+        const geo = meshRef.current.geometry;
+        const mat = meshRef.current.material;
+        if (geo) geo.dispose();
+        if (mat && 'dispose' in mat) {
+          (mat as ShaderMaterial).dispose();
+        }
+      }
+    };
+  }, []);
+
   useFrame((state) => {
     if (!meshRef.current) return;
+
+    if (reducedMotion) {
+      // Static state: no rotation, no pulsing, freeze time.
+      uniforms.uTime.value = frozenTime.current;
+      return;
+    }
+
     const time = state.clock.getElapsedTime();
     uniforms.uTime.value = time;
+    frozenTime.current = time;
+
     meshRef.current.rotation.y = time * 0.15;
     meshRef.current.rotation.z = Math.sin(time * 0.3) * 0.08;
     const pulse = 1 + Math.sin(time * 1.2) * 0.02;
@@ -62,7 +96,7 @@ export function HexaCrystal() {
   });
 
   return (
-    <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.5}>
+    <Float speed={1.5} rotationIntensity={reducedMotion ? 0 : 0.3} floatIntensity={reducedMotion ? 0 : 0.5}>
       <mesh ref={meshRef}>
         <octahedronGeometry args={[1.2, 2]} />
         <shaderMaterial
