@@ -1,6 +1,5 @@
 import * as Sentry from '@sentry/nextjs';
 import { replayIntegration } from '@sentry/replay';
-import type { Event, EventHint } from '@sentry/core';
 
 const SENTRY_DSN = process.env.NEXT_PUBLIC_SENTRY_DSN;
 
@@ -27,7 +26,7 @@ if (SENTRY_DSN) {
       /Non-Error promise rejection captured/,
       /Network request failed/,
     ],
-    beforeSend(event: Event, hint: EventHint) {
+    beforeSend(event, hint) {
       if (process.env.NODE_ENV === 'production' && event.exception) {
         const error = hint.originalException;
         if (error instanceof Error && error.message?.includes('hydration')) {
