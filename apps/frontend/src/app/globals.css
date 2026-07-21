@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&family=Playfair+Display:wght@400..900&display=swap');
+
 @import "tailwindcss";
 
 @theme {
@@ -34,9 +36,9 @@
   --color-neutral-900: #18181b;
   --color-neutral-950: #09090b;
 
-  --font-sans: var(--font-inter), system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains-mono), monospace;
-  --font-serif: var(--font-playfair), Georgia, serif;
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+  --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
 
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;

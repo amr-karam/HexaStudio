@@ -1,31 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Playfair_Display, JetBrains_Mono } from "next/font/google";
 import { AppProviders } from "@/providers/app-providers";
 import { LayoutShell } from "@/components/LayoutShell";
 import { StructuredData } from "@/components/StructuredData";
 import { CinematicPreloader } from "@/components/ui/overlays/CinematicPreloader";
+import { AnimationDebug } from "@/components/dev/AnimationDebug";
 import { WebVitals } from "@/components/WebVitals";
 import { AnalyticsInit } from "@/lib/analytics";
 import { Suspense } from "react";
 import "./globals.css";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-playfair",
-  display: "swap",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains-mono",
-  display: "swap",
-});
 
 export const viewport: Viewport = {
   themeColor: [
@@ -88,7 +70,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" dir="ltr" className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" dir="ltr">
       <body className="min-h-screen bg-background text-foreground antialiased">
         <noscript>
           <style>{`
@@ -97,6 +79,7 @@ export default function RootLayout({
         </noscript>
         <AppProviders>
           <CinematicPreloader />
+          <AnimationDebug />
           <StructuredData />
           <a
             href="#main-content"
