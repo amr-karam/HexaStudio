@@ -14,10 +14,18 @@ export interface Project {
   area?: string;
   status?: string;
   milestones?: { total: number; completed: number };
+  liveStatus?: ProjectLiveStatus;
   services?: string[];
   isPublished: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+/** Live Odoo-derived project status attached to public portfolio responses. */
+export interface ProjectLiveStatus {
+  stage: string;
+  progress: number;
+  lastUpdate: string;
 }
 
 export interface ProjectModel {
@@ -231,6 +239,43 @@ export interface FAQResponse {
   page: number;
   limit: number;
   totalPages: number;
+}
+
+export interface PageMedia {
+  url: string;
+  alternativeText?: string;
+}
+
+export interface Page {
+  id: number;
+  slug: string;
+  title: string;
+  content: RichTextBlock[];
+  excerpt?: string;
+  featuredImage?: PageMedia;
+  seoTitle?: string;
+  seoDescription?: string;
+}
+
+export interface PageResponse {
+  pages: Page[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export interface Achievement {
+  id: number;
+  title: string;
+  value: string;
+  description?: string;
+  order: number;
+}
+
+export interface AchievementResponse {
+  achievements: Achievement[];
+  total: number;
 }
 
 export type WebhookEvent =
