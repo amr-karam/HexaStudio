@@ -43,6 +43,52 @@ Quality is not a phase. Quality is built into every step of development. Gates a
 - [ ] No secrets committed
 - [ ] Commit message follows Conventional Commits
 
+### Frontend-Specific Checks (apps/frontend)
+
+When modifying frontend code, these additional checks are mandatory:
+
+**Motion Policy Compliance**
+- [ ] All animations use `useMotionPolicy` or `useHEXAMotion`
+- [ ] No inline easing/duration values (sourced from `src/lib/motion.ts`)
+- [ ] No `transition-all` in CSS
+
+**RAF/GSAP Cleanup**
+- [ ] All RAF loops cancellable (ID stored, cancelled on cleanup)
+- [ ] All GSAP tweens inside `gsap.context()` with revert on unmount
+- [ ] No orphaned tweens or timeline references
+
+**Reduced Motion**
+- [ ] Verified via Playwright `reduced-motion` project (browser emulation)
+- [ ] No continuous motion under reduced motion
+- [ ] Loaders are static under reduced motion
+
+**Coarse Pointer**
+- [ ] Verified via Playwright `mobile` project
+- [ ] No mouse-follow, parallax, or cursor effects on touch
+- [ ] All touch targets >= 44x44px
+
+**Focus Management**
+- [ ] Modal/menu traps focus (Tab cycles within)
+- [ ] Escape closes modal/menu and restores focus to trigger
+- [ ] Route changes move focus to main content or heading
+
+**WebGL Fallback**
+- [ ] WebGL unavailable: cover image + project metadata + navigation shown
+- [ ] Context loss: fallback displayed, recovery attempted
+- [ ] Model load failure: fallback with project info shown
+
+**No-JS Content**
+- [ ] Server-rendered content visible and usable without JavaScript
+
+**Mobile**
+- [ ] Real-device test performed (not just viewport emulation)
+
+**Performance**
+- [ ] Frame-time budget met (p95 < 16.7ms on supported hardware)
+- [ ] No always-on WebGL on non-3D routes
+- [ ] Offscreen scenes pause
+- [ ] Tab-hidden scenes pause
+
 ### Failure Action
 
 - Do not commit/push until resolved
@@ -226,6 +272,20 @@ Every feature, bugfix, or task must satisfy ALL of the following:
 - [ ] No dead code (unused imports, variables, functions)
 - [ ] No debug artifacts (console.log, commented code)
 
+### Frontend-Specific (apps/frontend)
+
+- [ ] Animation values from `src/lib/motion.ts` (no inline easing/duration)
+- [ ] All RAF loops cancellable, all GSAP tweens cleaned up
+- [ ] Reduced motion verified (Playwright reduced-motion project)
+- [ ] Coarse pointer verified (Playwright mobile project)
+- [ ] Focus management verified (modal trap, route focus, escape restore)
+- [ ] WebGL fallback verified (cover image + metadata + navigation)
+- [ ] No-JS content availability verified
+- [ ] Real-device mobile test performed
+- [ ] Frame-time budget met (p95 < 16.7ms)
+- [ ] No `transition-all` in CSS
+- [ ] All interactive elements >= 44x44px
+
 ### Functionality
 
 - [ ] Acceptance criteria met
@@ -235,8 +295,8 @@ Every feature, bugfix, or task must satisfy ALL of the following:
 
 ### Quality
 
-- [ ] Performance budget maintained
-- [ ] Accessibility verified
+- [ ] Performance budget maintained (LCP < 1.2s, initial JS < 200KB gzip)
+- [ ] Accessibility verified (WCAG 2.2 AA)
 - [ ] No console errors
 - [ ] Cross-browser tested
 
@@ -246,6 +306,7 @@ Every feature, bugfix, or task must satisfy ALL of the following:
 - [ ] API docs updated (Swagger)
 - [ ] CHANGELOG.md updated
 - [ ] ADR documented (if architectural change)
+- [ ] `FRONTEND_EXCELLENCE.md` referenced for any frontend changes
 
 ### Process
 

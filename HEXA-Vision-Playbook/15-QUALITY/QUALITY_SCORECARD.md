@@ -1,3 +1,7 @@
+> **HISTORICAL** — This document reflects a previous state.
+> Current standards are in `07-DESIGN/FRONTEND_EXCELLENCE.md`.
+> Last accurate: 2026-07-09
+
 # QUALITY SCORECARD — HEXA Vision
 
 **Last Updated:** 2026-07-09

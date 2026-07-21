@@ -25,6 +25,21 @@
 | GET | `/projects/:slug/scene` | Get 3D scene data | No |
 | GET | `/projects/featured` | Get featured projects | No |
 
+> **Odoo live-status enrichment:** `GET /projects/:slug` attaches a `liveStatus { stage, progress, lastUpdate }` object sourced from the Odoo `project.project` record matched by `x_slug`. The lookup has a 2s timeout guard and a 5-minute Redis cache (`projects:live-status:<slug>`); on Odoo unavailability the response degrades gracefully (project returned without `liveStatus`).
+
+## Pages (Strapi Bridge)
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| GET | `/pages` | List CMS pages (paginated, `?locale=` param) | No |
+| GET | `/pages/:slug` | Get CMS page by slug (`?locale=` param) | No |
+
+## Achievements (Strapi Bridge)
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| GET | `/achievements` | List achievements (sorted by `order`) | No |
+
 ## Contacts / CRM
 
 | Method | Endpoint | Description | Auth |
