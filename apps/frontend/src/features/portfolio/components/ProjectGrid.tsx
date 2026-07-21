@@ -221,7 +221,7 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={makeTransition('entrance', 'page', 0.2)}
-            className="text-neutral-500 font-light text-sm leading-relaxed max-w-xs"
+            className="text-neutral-500 font-light text-sm leading-relaxed w-full max-w-xs"
           >
             A curation of architectural narratives defined by light, material, and space.
           </motion.p>

@@ -38,7 +38,7 @@ export function NewsletterSection() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: '-80px' }}
-        className="max-w-3xl mx-auto relative z-10 text-center"
+        className="w-full max-w-3xl mx-auto relative z-10 text-center"
       >
         <motion.span
           variants={childVariants}
@@ -55,7 +55,7 @@ export function NewsletterSection() {
 
         <motion.p
           variants={childVariants}
-          className="text-base text-neutral-400 font-light leading-relaxed mb-12 max-w-lg mx-auto"
+          className="text-base text-neutral-400 font-light leading-relaxed mb-12 w-full max-w-lg mx-auto"
         >
           Be the first to receive exclusive architectural insights, project reveals, and
           behind-the-scenes narratives from our studio.

@@ -71,7 +71,7 @@ export default function ServicesPage() {
                     <h3 className="text-3xl font-serif font-light text-foreground mb-6 group-hover:text-accent transition-colors duration-500">
                       {title}
                     </h3>
-                    <p className="text-neutral-400 font-light leading-relaxed mb-8 max-w-md">
+                    <p className="text-neutral-400 font-light leading-relaxed mb-8 w-full max-w-md">
                       {description}
                     </p>
                     <div className="mt-auto">
@@ -141,7 +141,7 @@ export default function ServicesPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="text-neutral-400 font-light leading-relaxed mb-12 max-w-2xl mx-auto"
+            className="text-neutral-400 font-light leading-relaxed mb-12 w-full max-w-2xl mx-auto"
           >
             {t('services.ctaDescription')}
           </motion.p>

@@ -36,13 +36,23 @@ function mapCategory(relation: StrapiRelation | undefined): Category | undefined
   return { id: String(id), name, slug: slug ?? '' };
 }
 
-function mapMedia(relation: StrapiRelation | undefined): string | undefined {
+function mapMedia(relation: StrapiRelation | undefined, baseUrl?: string): string | undefined {
   if (!relation) return undefined;
-  if (typeof relation === 'string') return relation;
-  // Strapi v4/v5 nested media shape: { data: { attributes: { url } } }
-  if (relation.data?.attributes?.url) return relation.data.attributes.url;
-  if (relation.url) return relation.url;
-  return undefined;
+  let url: string | undefined;
+  if (typeof relation === 'string') {
+    url = relation;
+  } else if (relation.data?.attributes?.url) {
+    // Strapi v4/v5 nested media shape: { data: { attributes: { url } } }
+    url = relation.data.attributes.url;
+  } else if (relation.url) {
+    url = relation.url;
+  }
+  if (!url) return undefined;
+  // Strapi returns relative URLs like /uploads/image.jpg — resolve against CMS base
+  if (baseUrl && url.startsWith('/')) {
+    return `${baseUrl}${url}`;
+  }
+  return url;
 }
 
 interface OdooEnrichment {
@@ -290,7 +300,7 @@ export class ProjectsService {
       slug: attrs.slug as string,
       description: attrs.description as string,
       shortDescription: attrs.shortDescription as string | undefined,
-      coverImage: mapMedia(attrs.coverImage as StrapiRelation) ?? '',
+      coverImage: mapMedia(attrs.coverImage as StrapiRelation, this.cmsUrl) ?? '',
       category: mapCategory(attrs.category as StrapiRelation),
       modelUrl: attrs.modelUrl as string | undefined,
       hotspots: (attrs.hotspots as Array<Record<string, unknown>>)?.map((h) => ({
