@@ -9,6 +9,8 @@ interface ProjectPageProps {
   params: Promise<{ slug: string }>;
 }
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
   const { slug } = await params;
   const project = await fetchProject(slug);

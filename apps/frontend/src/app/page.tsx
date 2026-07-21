@@ -9,6 +9,8 @@ import { CTASection } from "@/components/CTASection";
 import { NewsletterSection } from "@/components/ui/NewsletterSection";
 import { fetchProjects } from "@/features/portfolio/lib/fetchProjects";
 
+export const dynamic = 'force-dynamic';
+
 export default async function HomePage() {
   const projectsData = await fetchProjects();
 
