@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import TextCharReveal from '@/components/effects/TextCharReveal';
 import { TeamSection } from '@/features/team/components/TeamSection';
 
+export const dynamic = 'force-dynamic';
 export const revalidate = 3600;
 
 const FALLBACK_DESCRIPTION =
