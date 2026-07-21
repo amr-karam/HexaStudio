@@ -12,10 +12,16 @@ export class AchievementsService {
     return getEnv().CMS_URL;
   }
 
+  private get cmsHeaders(): Record<string, string> | undefined {
+    const token = getEnv().CMS_API_TOKEN;
+    return token ? { Authorization: `Bearer ${token}` } : undefined;
+  }
+
   async getAllAchievements(): Promise<AchievementResponse> {
     try {
       const response = await firstValueFrom(
         this.httpService.get(`${this.cmsUrl}/api/achievements`, {
+          headers: this.cmsHeaders,
           params: {
             populate: '*',
             sort: 'order:asc',

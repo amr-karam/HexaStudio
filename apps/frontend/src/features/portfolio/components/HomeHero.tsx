@@ -5,7 +5,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Magnetic } from '@/components/ui/Magnetic';
-import { LazySceneCanvas } from '@/features/scene';
+import { LazyBlueprintHero } from '@/features/experience';
 import { SceneErrorBoundary } from '@/features/scene/components/SceneErrorBoundary';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { ShimmerSkeleton } from '@/components/ui/ShimmerSkeleton';
@@ -103,7 +103,7 @@ export const HomeHero = () => {
             </div>
           </div>
         }>
-          <LazySceneCanvas />
+          <LazyBlueprintHero />
         </Suspense>
       </SceneErrorBoundary>
 
@@ -145,9 +145,11 @@ export const HomeHero = () => {
           </TextReveal>
         </div>
 
-        <TextReveal delay={0.2} className="mx-auto text-base md:text-lg font-light text-white/40 mb-8 md:mb-12 leading-relaxed px-4 max-w-2xl">
-          Immersive 3D architectural experiences for the world&apos;s most ambitious projects.
-          Where vision takes shape.
+        <TextReveal delay={0.2} className="mx-auto w-full text-base md:text-lg font-light text-white/40 mb-8 md:mb-12 leading-relaxed px-4 max-w-2xl">
+          <p className="w-full">
+            Immersive 3D architectural experiences for the world&apos;s most ambitious projects.
+            Where vision takes shape.
+          </p>
         </TextReveal>
 
         <motion.div

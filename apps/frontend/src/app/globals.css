@@ -237,3 +237,10 @@ body {
   color: inherit;
   cursor: pointer;
 }
+
+/* Fix max-width constrained elements collapsing to content width in flex
+   containers or as flex items. A max-width without an explicit width can
+   shrink to fit its content in these contexts, breaking text layout. */
+[class*="max-w-"] {
+  width: 100%;
+}

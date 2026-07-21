@@ -38,6 +38,11 @@ export class PagesService {
     return getEnv().CMS_URL;
   }
 
+  private get cmsHeaders(): Record<string, string> | undefined {
+    const token = getEnv().CMS_API_TOKEN;
+    return token ? { Authorization: `Bearer ${token}` } : undefined;
+  }
+
   async getAllPages(page = 1, limit = 20, locale?: string): Promise<PageResponse> {
     const safePage = Math.max(1, page);
     const safeLimit = Math.min(100, Math.max(1, limit));
@@ -45,6 +50,7 @@ export class PagesService {
     try {
       const response = await firstValueFrom(
         this.httpService.get(`${this.cmsUrl}/api/pages`, {
+          headers: this.cmsHeaders,
           params: {
             populate: '*',
             sort: 'createdAt:desc',
@@ -73,6 +79,7 @@ export class PagesService {
     try {
       const response = await firstValueFrom(
         this.httpService.get(`${this.cmsUrl}/api/pages`, {
+          headers: this.cmsHeaders,
           params: {
             populate: '*',
             'filters[slug][$eq]': slug,
