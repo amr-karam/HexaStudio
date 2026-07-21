@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -8,6 +8,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useLocale } from '@/i18n/LocaleProvider';
 import { CurrencySelector } from '@/features/currency';
+import { makeTransition, REDUCED_TRANSITION, EASE } from '@/lib/motion';
+import { useHEXAMotion } from '@/hooks/useHEXAMotion';
 
 interface NavItemProps {
   label: string;
@@ -37,12 +39,17 @@ const NavItem = ({ label, href, active, onClick }: NavItemProps) => (
   </Link>
 );
 
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 export const Navbar = () => {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const { reduced } = useHEXAMotion();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -61,21 +68,54 @@ export const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Body scroll lock + background inert
   useEffect(() => {
-    document.body.style.overflow = isMenuOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+      // Make main content inert
+      const mainContent = document.getElementById('main-content');
+      if (mainContent) {
+        mainContent.setAttribute('inert', '');
+        mainContent.setAttribute('aria-hidden', 'true');
+      }
+      // Move focus into the dialog
+      requestAnimationFrame(() => {
+        const menu = document.getElementById('mobile-menu');
+        if (menu) {
+          const firstFocusable = menu.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
+          firstFocusable?.focus();
+        }
+      });
+    } else {
+      document.body.style.overflow = '';
+      const mainContent = document.getElementById('main-content');
+      if (mainContent) {
+        mainContent.removeAttribute('inert');
+        mainContent.removeAttribute('aria-hidden');
+      }
+    }
+    return () => {
+      document.body.style.overflow = '';
+      const mainContent = document.getElementById('main-content');
+      if (mainContent) {
+        mainContent.removeAttribute('inert');
+        mainContent.removeAttribute('aria-hidden');
+      }
+    };
   }, [isMenuOpen]);
 
+  // Focus trap inside mobile menu
   useEffect(() => {
     if (!isMenuOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') { setIsMenuOpen(false); return; }
+      if (e.key === 'Escape') {
+        setIsMenuOpen(false);
+        return;
+      }
       if (e.key !== 'Tab') return;
       const menu = document.getElementById('mobile-menu');
       if (!menu) return;
-      const focusable = menu.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
-      );
+      const focusable = menu.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
       if (focusable.length === 0) return;
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
@@ -91,9 +131,19 @@ export const Navbar = () => {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isMenuOpen]);
 
+  // Close menu on route change and restore focus
   useEffect(() => {
-    setIsMenuOpen(false);
+    if (isMenuOpen) {
+      setIsMenuOpen(false);
+      triggerRef.current?.focus();
+    }
   }, [pathname]);
+
+  const closeMenu = useCallback(() => {
+    setIsMenuOpen(false);
+    // Focus restored by the pathname effect or explicit call
+    setTimeout(() => triggerRef.current?.focus(), 0);
+  }, []);
 
   const { t } = useLocale();
 
@@ -104,6 +154,9 @@ export const Navbar = () => {
     { label: t('navbar.studio'), href: '/about' },
     { label: t('navbar.contact'), href: '/contact' },
   ];
+
+  // Transitions
+  const menuTransition = reduced ? REDUCED_TRANSITION : makeTransition('entrance', 'component');
 
   return (
     <>
@@ -120,8 +173,8 @@ export const Navbar = () => {
       >
         <Link href="/" className="group flex items-center gap-3">
           <motion.div
-            whileHover={{ rotate: 90 }}
-            transition={{ duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
+            whileHover={reduced ? undefined : { rotate: 90 }}
+            transition={reduced ? undefined : { duration: 0.5, ease: EASE.interaction }}
           >
             <Image
               src="/logo.svg"
@@ -154,6 +207,7 @@ export const Navbar = () => {
         </div>
 
         <button
+          ref={triggerRef}
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="md:hidden flex flex-col gap-1.5 py-2"
           aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
@@ -182,23 +236,23 @@ export const Navbar = () => {
             role="dialog"
             aria-modal="true"
             aria-label="Mobile navigation"
-            initial={{ opacity: 0 }}
+            initial={reduced ? { opacity: 1 } : { opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            exit={reduced ? { opacity: 0 } : { opacity: 0 }}
+            transition={menuTransition}
             className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-16 bg-background/98 backdrop-blur-3xl"
           >
             {navItems.map((item, idx) => (
               <motion.div
                 key={item.href}
-                initial={{ opacity: 0, y: 30 }}
+                initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                transition={{ delay: idx * 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                exit={reduced ? { opacity: 0 } : { opacity: 0, y: 20 }}
+                transition={reduced ? REDUCED_TRANSITION : { delay: idx * 0.1, ...makeTransition('entrance', 'page') }}
               >
                 <Link
                   href={item.href}
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={closeMenu}
                   aria-current={pathname === item.href ? 'page' : undefined}
                   className={cn(
                     'block text-3xl sm:text-4xl font-light tracking-tighter transition-colors duration-500 py-2 min-h-[44px] flex items-center justify-center',
@@ -212,10 +266,10 @@ export const Navbar = () => {
               </motion.div>
             ))}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ delay: navItems.length * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              exit={reduced ? { opacity: 0 } : { opacity: 0, y: 10 }}
+              transition={reduced ? REDUCED_TRANSITION : { delay: navItems.length * 0.1, ...makeTransition('entrance', 'page') }}
               className="mt-8"
             >
               <CurrencySelector />

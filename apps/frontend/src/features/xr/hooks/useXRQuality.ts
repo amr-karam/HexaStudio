@@ -1,15 +1,19 @@
 'use client';
 
-import { useAdaptiveQuality } from '@/hooks/useAdaptiveQuality';
+import { useQualityTier } from '@/providers/quality-provider';
 import { XR_QUALITY } from '../config/xr-config';
 
+/**
+ * XR quality settings: uses the shared quality tier but overrides DPR and
+ * disables shadows/postprocessing for XR performance.
+ */
 export function useXRQuality() {
-  const base = useAdaptiveQuality();
+  const { tier } = useQualityTier();
 
   return {
-    level: base.level,
+    level: tier.level,
     settings: {
-      ...base.settings,
+      ...tier,
       dpr: XR_QUALITY.dpr,
       shadows: false,
       postProcessing: false,

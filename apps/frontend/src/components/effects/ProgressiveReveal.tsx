@@ -52,6 +52,11 @@ export default function ProgressiveReveal({
           revealed: { opacity: 0, transition: { delay: delay + duration * 0.7, duration: 0.4 } },
         }}
       >
+        {/* Raw <img>: the reveal stacks three copies of the same remote CMS image
+            (wireframe, masked color, placeholder). next/image needs intrinsic
+            dimensions or fill, and fill would collapse the in-flow placeholder
+            that gives this container its height. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={src}
           alt=""
@@ -93,6 +98,7 @@ export default function ProgressiveReveal({
           },
         }}
       >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={src} alt={alt} className="w-full h-full object-cover" />
         {/* Gold glow border during reveal */}
         <motion.div
@@ -108,6 +114,7 @@ export default function ProgressiveReveal({
       </motion.div>
 
       {/* Placeholder */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={src} alt={alt} className="w-full h-full object-cover opacity-10" aria-hidden />
     </motion.div>
   );

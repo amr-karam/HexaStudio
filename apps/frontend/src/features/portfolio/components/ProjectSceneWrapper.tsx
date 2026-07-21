@@ -16,7 +16,11 @@ interface ProjectSceneWrapperProps {
  */
 export const ProjectSceneWrapper = ({ project }: ProjectSceneWrapperProps) => {
   return (
-    <SceneErrorBoundary>
+    <SceneErrorBoundary
+      fallbackImage={project.coverImage}
+      title={project.title}
+      description={project.description}
+    >
       <Suspense fallback={<LoadingScreen />}>
         <ExperienceCanvas 
           projectModelUrl={project.modelUrl} 

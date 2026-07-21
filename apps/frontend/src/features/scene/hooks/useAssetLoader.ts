@@ -1,6 +1,7 @@
 import { useGLTF, useProgress } from '@react-three/drei';
 import { useEffect } from 'react';
 import { useAssetStore } from '@/features/scene/store/asset-store';
+import { AnimationClip } from 'three';
 
 const DRACO_URL = process.env.NEXT_PUBLIC_DRACO_URL || 'https://www.gstatic.com/draco/versioned/decoders/1.5.6/';
 
@@ -21,7 +22,7 @@ export function useAssetLoader(url: string) {
 
   return {
     model: gltf.scene,
-    animations: gltf.animations,
+    animations: gltf.animations as AnimationClip[],
     nodes: gltf.nodes,
     materials: gltf.materials,
     loaded,

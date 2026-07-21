@@ -9,11 +9,13 @@ import { LazySceneCanvas } from '@/features/scene';
 import { SceneErrorBoundary } from '@/features/scene/components/SceneErrorBoundary';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { ShimmerSkeleton } from '@/components/ui/ShimmerSkeleton';
-import { useReducedMotion } from '@/hooks';
-import { EASE, DURATION } from '@/lib/motion';
+import { useFinePointer } from '@/hooks/useFinePointer';
+import { useMotionPolicy } from '@/hooks/useMotionPolicy';
+import { EASE, DURATION, REDUCED_TRANSITION } from '@/lib/motion';
 
 export const HomeHero = () => {
-  const prefersReducedMotion = useReducedMotion();
+  const finePointer = useFinePointer();
+  const { staticMode } = useMotionPolicy();
   const { scrollYProgress } = useScroll();
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -23,51 +25,66 @@ export const HomeHero = () => {
   const scale = useTransform(scrollYProgress, [0, 0.1], [1, 0.9]);
 
   useEffect(() => {
-    if (prefersReducedMotion) return;
+    // Gate: only fine pointer + not static
+    if (!finePointer || staticMode) return;
 
     let gsapInstance: typeof import('gsap').default | null = null;
     let cancelled = false;
+    let mouseHandler: ((e: MouseEvent) => void) | null = null;
 
     void import('gsap').then(({ default: gsap }) => {
       if (cancelled) return;
       gsapInstance = gsap;
+
+      mouseHandler = (e: MouseEvent) => {
+        if (!gsapInstance || !contentRef.current) return;
+
+        const { clientX, clientY } = e;
+        const { innerWidth, innerHeight } = window;
+
+        const xPos = clientX / innerWidth - 0.5;
+        const yPos = clientY / innerHeight - 0.5;
+
+        gsapInstance.to(contentRef.current, {
+          x: xPos * 45,
+          y: yPos * 45,
+          rotateX: -yPos * 5,
+          rotateY: xPos * 5,
+          duration: 1.5,
+          ease: 'power3.out',
+        });
+
+        // Mouse-follow ambient glow
+        if (glowRef.current) {
+          gsapInstance.to(glowRef.current, {
+            x: clientX - innerWidth / 2,
+            y: clientY - innerHeight / 2,
+            duration: 2,
+            ease: 'power2.out',
+          });
+        }
+      };
+
+      window.addEventListener('mousemove', mouseHandler);
     });
 
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!gsapInstance || !contentRef.current) return;
-
-      const { clientX, clientY } = e;
-      const { innerWidth, innerHeight } = window;
-
-      const xPos = clientX / innerWidth - 0.5;
-      const yPos = clientY / innerHeight - 0.5;
-
-      gsapInstance.to(contentRef.current, {
-        x: xPos * 45,
-        y: yPos * 45,
-        rotateX: -yPos * 5,
-        rotateY: xPos * 5,
-        duration: 1.5,
-        ease: 'power3.out',
-      });
-
-      // Mouse-follow ambient glow — subtle gold light that trails the cursor
-      if (glowRef.current) {
-        gsapInstance.to(glowRef.current, {
-          x: clientX - innerWidth / 2,
-          y: clientY - innerHeight / 2,
-          duration: 2,
-          ease: 'power2.out',
-        });
-      }
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
     return () => {
       cancelled = true;
-      window.removeEventListener('mousemove', handleMouseMove);
+      if (mouseHandler) {
+        window.removeEventListener('mousemove', mouseHandler);
+      }
+      // Kill any active tweens on these elements
+      if (gsapInstance) {
+        if (contentRef.current) gsapInstance.killTweensOf(contentRef.current);
+        if (glowRef.current) gsapInstance.killTweensOf(glowRef.current);
+      }
     };
-  }, [prefersReducedMotion]);
+  }, [finePointer, staticMode]);
+
+  // Motion values
+  const h1Transition = staticMode ? REDUCED_TRANSITION : { duration: DURATION.camera, ease: EASE.entrance };
+  const ctaTransition = staticMode ? REDUCED_TRANSITION : { duration: 1, delay: 0.4, ease: EASE.entrance };
+  const scrollIndicatorTransition = staticMode ? REDUCED_TRANSITION : { duration: DURATION.page, delay: 1.2, ease: EASE.entrance };
 
   return (
     <section
@@ -94,8 +111,8 @@ export const HomeHero = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-obsidian/60 via-transparent to-obsidian pointer-events-none z-[1]" />
       <div className="absolute inset-0 gradient-radial-gold pointer-events-none z-[1]" aria-hidden="true" />
 
-      {/* Mouse-follow ambient glow — disabled in reduced motion */}
-      {!prefersReducedMotion && (
+      {/* Mouse-follow ambient glow — gated to fine pointer + not static */}
+      {finePointer && !staticMode && (
         <div
           ref={glowRef}
           className="absolute top-1/2 left-1/2 w-[400px] h-[400px] -translate-x-1/2 -translate-y-1/2 bg-accent/5 blur-[120px] rounded-full pointer-events-none z-[1]"
@@ -117,12 +134,9 @@ export const HomeHero = () => {
         <div className="overflow-hidden mb-6 md:mb-8">
           <TextReveal delay={0.1}>
             <motion.h1
-              initial={{ letterSpacing: prefersReducedMotion ? "-0.02em" : "-0.05em" }}
+              initial={{ letterSpacing: staticMode ? "-0.02em" : "-0.05em" }}
               animate={{ letterSpacing: "-0.02em" }}
-              transition={prefersReducedMotion ? { duration: 0.01 } : {
-                duration: DURATION.camera,
-                ease: EASE.entrance,
-              }}
+              transition={h1Transition}
               className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-light tracking-tighter text-white leading-[1.05]"
             >
               Living <span className="font-serif italic text-gradient-gold">Spaces.</span> <br />
@@ -139,7 +153,7 @@ export const HomeHero = () => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.4, ease: EASE.entrance }}
+          transition={ctaTransition}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pointer-events-auto"
         >
           <Magnetic>
@@ -150,23 +164,29 @@ export const HomeHero = () => {
           </Magnetic>
         </motion.div>
       </motion.div>
-
+      
       {/* Scroll indicator with animated gold line */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: DURATION.page, delay: 1.2, ease: EASE.entrance }}
+        transition={scrollIndicatorTransition}
         className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 pointer-events-none z-10"
       >
         <span className="text-[10px] uppercase tracking-[0.3em] text-white/30 font-medium">Scroll</span>
         <div className="relative h-16 w-[1px] overflow-hidden bg-white/5">
-          <motion.div
-            animate={prefersReducedMotion ? {} : { y: ['0%', '100%', '0%'] }}
-            transition={{ duration: 2, repeat: Infinity, ease: EASE.entrance }}
-            className="absolute inset-0 bg-gradient-to-b from-gold/60 to-transparent"
-          />
+          {!staticMode && (
+            <motion.div
+              animate={{ y: ['0%', '100%', '0%'] }}
+              transition={{ duration: 2, repeat: Infinity, ease: EASE.entrance }}
+              className="absolute inset-0 bg-gradient-to-b from-gold/60 to-transparent"
+            />
+          )}
+          {staticMode && (
+            <div className="absolute inset-0 bg-gradient-to-b from-gold/60 to-transparent" />
+          )}
         </div>
       </motion.div>
     </section>
   );
 };
+

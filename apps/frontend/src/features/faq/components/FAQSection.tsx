@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useCallback } from 'react';
 import { ScrollFadeIn } from '@/components/ScrollFadeIn';
 import { RadialGlow } from '@/components/animation';
 import { useFAQs } from '@/features/faq/hooks/useFAQs';
 import { useLocale } from '@/i18n/LocaleProvider';
 import { FAQResponse } from '@hexastudio/types';
+import { useMotionPolicy } from '@/hooks/useMotionPolicy';
+import { cn } from '@/lib/utils';
 
 const fallbackFAQs = [
   { question: 'What types of projects do you specialize in?', answer: 'We specialize in high-end architectural visualization including residential, commercial, hospitality, and cultural projects. Our expertise spans from concept visualization to photorealistic renders and interactive 3D experiences.' },
@@ -20,11 +21,16 @@ export const FAQSection = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const { t } = useLocale();
   const { data } = useFAQs() as { data: FAQResponse | undefined };
+  const { staticMode } = useMotionPolicy();
 
   const faqs = (data?.faqs && data.faqs.length > 0 ? data.faqs : fallbackFAQs).map((item: { question: string; answer: string | Array<{ text?: string }> }) => ({
     question: item.question,
     answer: typeof item.answer === 'string' ? item.answer : (item.answer as Array<{ text?: string }>).map(b => b.text || '').join(''),
   }));
+
+  const toggleFaq = useCallback((idx: number) => {
+    setOpenIndex((prev) => (prev === idx ? null : idx));
+  }, []);
 
   return (
     <section className="px-8 md:px-16 py-32 bg-surface border-t border-border/50">
@@ -40,39 +46,46 @@ export const FAQSection = () => {
         </ScrollFadeIn>
 
         <div className="flex flex-col gap-4">
-          {faqs.map((faq, idx) => (
-            <ScrollFadeIn key={idx} delay={idx * 0.05}>
-              <div className="border border-border/50 rounded-xl overflow-hidden hover:border-accent/20 transition-colors duration-300">
-                <button
-                  onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
-                  className="w-full flex items-center justify-between px-6 py-5 text-start"
-                >
-                  <span className="text-base font-medium text-foreground pe-4">{faq.question}</span>
-                  <motion.span
-                    animate={{ rotate: openIndex === idx ? 45 : 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="text-accent text-xl flex-shrink-0"
+          {faqs.map((faq, idx) => {
+            const isOpen = openIndex === idx;
+            return (
+              <ScrollFadeIn key={idx} delay={idx * 0.05}>
+                <div className="border border-border/50 rounded-xl overflow-hidden hover:border-accent/20 transition-colors duration-300">
+                  <button
+                    onClick={() => toggleFaq(idx)}
+                    aria-expanded={isOpen}
+                    className="w-full flex items-center justify-between px-6 py-5 text-start"
                   >
-                    +
-                  </motion.span>
-                </button>
-                <AnimatePresence>
-                  {openIndex === idx && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                    <span className="text-base font-medium text-foreground pe-4">{faq.question}</span>
+                    <span
+                      className={cn(
+                        'text-accent text-xl flex-shrink-0 transition-transform duration-300',
+                        isOpen && 'rotate-45',
+                      )}
+                      aria-hidden="true"
                     >
+                      +
+                    </span>
+                  </button>
+                  {/* CSS grid-template-rows approach — compositor-friendly, no JS measurement */}
+                  <div
+                    className="grid transition-all"
+                    style={{
+                      gridTemplateRows: isOpen ? '1fr' : '0fr',
+                      transitionDuration: staticMode ? '0ms' : '300ms',
+                      transitionTimingFunction: staticMode ? 'step-end' : 'cubic-bezier(0.16, 1, 0.3, 1)',
+                    }}
+                  >
+                    <div className="overflow-hidden">
                       <div className="px-6 pb-5 text-sm text-neutral-400 leading-relaxed">
                         {faq.answer}
                       </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </ScrollFadeIn>
-          ))}
+                    </div>
+                  </div>
+                </div>
+              </ScrollFadeIn>
+            );
+          })}
         </div>
       </div>
     </section>

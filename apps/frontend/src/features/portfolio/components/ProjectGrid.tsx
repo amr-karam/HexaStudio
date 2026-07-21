@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import Image from 'next/image';
 import { Card } from '@/components/ui/cards/Card';
@@ -15,6 +15,7 @@ interface ProjectCardProps {
   image: string;
   index: number;
   onClick: () => void;
+  isFocused: boolean;
   status?: string;
 }
 
@@ -27,10 +28,11 @@ type ProjectGridCard = {
   status?: string;
 };
 
-const ProjectCard = ({ title, category, image, index, onClick, isFocused, status }: ProjectCardProps & { isFocused: boolean }) => {
+const ProjectCard = ({ title, category, image, index, onClick, isFocused, status }: ProjectCardProps) => {
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
@@ -45,39 +47,47 @@ const ProjectCard = ({ title, category, image, index, onClick, isFocused, status
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-        transition={{
-          duration: DURATION.page,
-          delay: (index % 4) * 0.1,
-          ease: EASE.entrance,
-        }}
-      className="group cursor-pointer perspective-1000"
+      transition={{
+        duration: DURATION.page,
+        delay: (index % 4) * 0.1,
+        ease: EASE.entrance,
+      }}
       data-testid="project-card"
-      onClick={onClick}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
     >
-      <motion.div 
-        style={{ 
-          rotateX: rotate.x, 
-          rotateY: rotate.y,
-          filter: isFocused ? 'blur(0px) grayscale(0%)' : 'blur(2px) grayscale(20%)',
-          opacity: isFocused ? 1 : 0.7
-        }}
-        transition={{ type: 'spring', stiffness: 150, damping: 20 }}
-        className="transition-all duration-700 ease-out"
+      <button
+        ref={buttonRef}
+        type="button"
+        onClick={onClick}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        aria-label={`View details for ${title}`}
+        className={cn(
+          'group w-full text-left cursor-pointer perspective-1000',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-lg',
+        )}
       >
-        <Card variant="solid" className="overflow-hidden p-0 aspect-[3/4]">
-          <div className="absolute inset-0 bg-accent/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
-          <div className="h-full w-full relative overflow-hidden bg-surface-light">
-            <Image
-              src={image}
-              alt={title}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-              className="object-cover opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000 ease-out-expo"
-            />
+        <motion.div
+          style={{
+            rotateX: rotate.x,
+            rotateY: rotate.y,
+            filter: isFocused ? 'blur(0px) grayscale(0%)' : 'blur(2px) grayscale(20%)',
+            opacity: isFocused ? 1 : 0.7,
+          }}
+          transition={{ type: 'spring', stiffness: 150, damping: 20 }}
+          className="transition-all duration-700 ease-out"
+        >
+          <Card variant="solid" className="overflow-hidden p-0 aspect-[3/4]">
+            <div className="absolute inset-0 bg-accent/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
+            <div className="h-full w-full relative overflow-hidden bg-surface-light">
+              <Image
+                src={image}
+                alt={title}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                className="object-cover opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000 ease-out-expo"
+              />
 
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-700" />
 
               <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
                 <div className="transition-all duration-500 ease-out">
@@ -92,12 +102,13 @@ const ProjectCard = ({ title, category, image, index, onClick, isFocused, status
                   <h3 className="text-lg md:text-xl lg:text-2xl font-serif font-light text-foreground/90 group-hover:text-foreground transition-colors duration-500 leading-tight">
                     {title}
                   </h3>
-                <div className="h-[1px] w-0 group-hover:w-full bg-accent transition-all duration-700 mt-4" />
+                  <div className="h-[1px] w-0 group-hover:w-full bg-accent transition-all duration-700 mt-4" />
+                </div>
               </div>
             </div>
-          </div>
-        </Card>
-      </motion.div>
+          </Card>
+        </motion.div>
+      </button>
     </motion.div>
   );
 };
@@ -146,7 +157,7 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
-  
+
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start end', 'end start'],
@@ -175,6 +186,10 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
     if (activeCategory === 'All') return allProjects;
     return allProjects.filter(p => p.category === activeCategory);
   }, [allProjects, activeCategory]);
+
+  const handleCloseModal = useCallback(() => {
+    setSelectedProject(null);
+  }, []);
 
   return (
     <>
@@ -219,8 +234,8 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
                 onClick={() => setActiveCategory(cat)}
                 className={cn(
                   'px-6 py-2 text-[10px] uppercase tracking-[0.3em] transition-all duration-500 rounded-full border',
-                  activeCategory === cat 
-                    ? 'bg-accent text-obsidian border-accent' 
+                  activeCategory === cat
+                    ? 'bg-accent text-obsidian border-accent'
                     : 'bg-transparent text-neutral-500 border-border hover:border-neutral-400'
                 )}
               >
@@ -230,26 +245,26 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
           ))}
         </div>
 
-        <motion.div 
-          layout 
+        <motion.div
+          layout
           className="columns-1 md:columns-2 lg:columns-4 gap-8 space-y-8"
         >
           <AnimatePresence mode="popLayout">
             {filteredProjects.map((project, idx) => (
-              <div 
-                key={project.slug} 
+              <div
+                key={project.slug}
                 className="break-inside-avoid"
                 onMouseEnter={() => setHoveredIndex(idx)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >
-                <ProjectCard 
-                  title={project.title} 
-                  category={project.category} 
-                  image={project.image} 
-                  index={idx} 
+                <ProjectCard
+                  title={project.title}
+                  category={project.category}
+                  image={project.image}
+                  index={idx}
                   isFocused={hoveredIndex === idx}
                   status={project.status}
-                  onClick={() => setSelectedProject(project)} 
+                  onClick={() => setSelectedProject(project)}
                 />
               </div>
             ))}
@@ -259,7 +274,7 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
 
       <ProjectDetailModal
         isOpen={selectedProject !== null}
-        onClose={() => setSelectedProject(null)}
+        onClose={handleCloseModal}
         project={selectedProject ?? fallbackProjects[0]}
       />
     </>

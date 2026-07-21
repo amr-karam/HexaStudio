@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
 import ProgressiveReveal from '@/components/effects/ProgressiveReveal';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';

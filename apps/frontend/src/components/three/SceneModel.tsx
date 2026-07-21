@@ -1,34 +1,72 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useGLTF, Center } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
+import { Group, AnimationMixer } from 'three';
+import type { AnimationActionLoopStyles } from 'three';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { ModelConfig } from '@/features/scene/config/model-registry';
+
+/* -------------------------------------------------------------------------- */
+/*  Types                                                                      */
+/* -------------------------------------------------------------------------- */
 
 interface SceneModelProps {
   config: ModelConfig;
 }
 
+/* -------------------------------------------------------------------------- */
+/*  Component                                                                  */
+/* -------------------------------------------------------------------------- */
+
 export function SceneModel({ config }: SceneModelProps) {
-  const meshRef = useRef<THREE.Group>(null);
-  const [loaded, setLoaded] = useState(false);
+  const meshRef = useRef<Group>(null);
+  const reducedMotion = useReducedMotion();
+  const mixerRef = useRef<AnimationMixer | null>(null);
 
-  // Integrate Draco compression via useGLTF
-  const { scene } = useGLTF(config.path, undefined, undefined, () => {
-    // The loader is automatically configured for Draco if the .glb contains it
-    // but we can explicitly define the decoder path if needed.
-  });
+  const { scene, animations } = useGLTF(config.path);
 
-  React.useEffect(() => {
-    setLoaded(true);
-  }, []);
+  // AnimationMixer setup.
+  useEffect(() => {
+    if (!scene || !animations.length || reducedMotion) return;
 
-  useFrame((state) => {
+    const mixer = new AnimationMixer(scene);
+    mixerRef.current = mixer;
+
+    const clip = config.animation?.clipName
+      ? animations.find((a) => a.name === config.animation!.clipName)
+      : animations[0];
+
+    if (clip) {
+      const action = mixer.clipAction(clip);
+      action.setLoop(config.animation?.loop ?? (2201 as AnimationActionLoopStyles), Infinity);
+      action.timeScale = config.animation?.speed ?? 1;
+      if (config.animation?.autoplay !== false) {
+        action.play();
+      }
+    }
+
+    return () => {
+      mixer.stopAllAction();
+      mixer.uncacheRoot(scene);
+      mixerRef.current = null;
+    };
+  }, [scene, animations, config.animation, reducedMotion]);
+
+  // Per-frame rotation (delta-based).
+  useFrame((_, delta) => {
     if (!meshRef.current) return;
-    const time = state.clock.getElapsedTime();
-    meshRef.current.rotation.y = time * 0.05;
-    meshRef.current.position.y = config.position[1] + Math.sin(time * 0.3) * 0.15;
+
+    // Update animation mixer.
+    if (mixerRef.current) {
+      mixerRef.current.update(delta);
+    }
+
+    // Idle rotation (skip under reduced motion).
+    if (!reducedMotion) {
+      meshRef.current.rotation.y += delta * 0.05;
+    }
   });
 
   return (
@@ -38,10 +76,6 @@ export function SceneModel({ config }: SceneModelProps) {
         scale={config.scale}
         position={config.position}
         rotation={config.rotation}
-        // Cinematic fade-in
-        onUpdate={() => {
-          if (!loaded) setLoaded(true);
-        }}
       />
     </Center>
   );

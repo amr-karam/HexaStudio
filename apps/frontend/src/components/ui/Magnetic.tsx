@@ -3,7 +3,8 @@
 import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useFinePointer } from '@/hooks/useFinePointer';
+import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 
 interface MagneticProps {
   children: React.ReactNode;
@@ -15,16 +16,19 @@ interface MagneticProps {
  * Magnetic creates a subtle "pull" effect towards the cursor when hovering.
  * This is a common high-end agency interaction that adds tactile feel to UI elements.
  *
- * Accessibility: disabled when the user prefers reduced motion or on coarse
- * (touch) pointers, rendering a static, non-interactive wrapper.
+ * Accessibility: disabled when the user prefers reduced motion, when animations
+ * are paused via the motion policy, or on coarse (touch) pointers.
  */
 export const Magnetic = ({ children, strength = 20, className }: MagneticProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  const reducedMotion = useReducedMotion();
+  const finePointer = useFinePointer();
+  const { animationsEnabled, paused } = useMotionPolicy();
+
+  const isDisabled = !finePointer || !animationsEnabled || paused;
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (reducedMotion || !ref.current) return;
+    if (isDisabled || !ref.current) return;
 
     const { clientX, clientY } = e;
     const { left, top, width, height } = ref.current.getBoundingClientRect();
@@ -42,7 +46,7 @@ export const Magnetic = ({ children, strength = 20, className }: MagneticProps) 
     setPosition({ x: 0, y: 0 });
   };
 
-  if (reducedMotion) {
+  if (isDisabled) {
     return <div className={cn('inline-block', className)}>{children}</div>;
   }
 

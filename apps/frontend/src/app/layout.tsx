@@ -90,6 +90,11 @@ export default function RootLayout({
   return (
     <html lang="en" dir="ltr" className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable}`}>
       <body className="min-h-screen bg-background text-foreground antialiased">
+        <noscript>
+          <style>{`
+            .js-only { display: none !important; }
+          `}</style>
+        </noscript>
         <AppProviders>
           <CinematicPreloader />
           <StructuredData />

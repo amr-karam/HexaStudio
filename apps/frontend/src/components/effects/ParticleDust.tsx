@@ -1,8 +1,13 @@
 'use client';
 
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
+import { BufferGeometry, BufferAttribute, PointsMaterial, Points, Color } from 'three';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
+
+/* -------------------------------------------------------------------------- */
+/*  Types                                                                      */
+/* -------------------------------------------------------------------------- */
 
 interface Props {
   count?: number;
@@ -10,7 +15,13 @@ interface Props {
   size?: number;
   color?: string;
   opacity?: number;
+  /** Accept externally-controlled visibility (e.g. from IntersectionObserver). */
+  visible?: boolean;
 }
+
+/* -------------------------------------------------------------------------- */
+/*  Component                                                                  */
+/* -------------------------------------------------------------------------- */
 
 export default function ParticleDust({
   count = 200,
@@ -18,74 +29,90 @@ export default function ParticleDust({
   size = 0.02,
   color = '#D4AF37',
   opacity = 0.15,
+  visible = true,
 }: Props) {
-  const pointsRef = useRef<THREE.Points>(null);
+  const pointsRef = useRef<Points>(null);
+  const reducedMotion = useReducedMotion();
 
-  const { positions, randoms } = useMemo(() => {
+  // Immutable base positions + random phase seeds (set once).
+  const { basePositions, phases } = useMemo(() => {
     const pos = new Float32Array(count * 3);
-    const r = new Float32Array(count); // random seed per particle
+    const ph = new Float32Array(count);
     for (let i = 0; i < count; i++) {
       pos[i * 3] = (Math.random() - 0.5) * spread;
       pos[i * 3 + 1] = (Math.random() - 0.5) * spread * 0.6;
       pos[i * 3 + 2] = Math.random() * spread * 0.5 - spread * 0.25;
-      r[i] = Math.random();
+      ph[i] = Math.random() * Math.PI * 2;
     }
-    return { positions: pos, randoms: r };
+    return { basePositions: pos, phases: ph };
   }, [count, spread]);
 
+  // Geometry — allocated once, disposed on unmount.
   const geometry = useMemo(() => {
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geo.setAttribute('size', new THREE.BufferAttribute(
-      new Float32Array(count).fill(size), 1
-    ));
+    const geo = new BufferGeometry();
+    // Copy base positions into the initial position attribute.
+    const posAttr = new BufferAttribute(new Float32Array(basePositions), 3);
+    geo.setAttribute('position', posAttr);
+    geo.setAttribute(
+      'size',
+      new BufferAttribute(new Float32Array(count).fill(size), 1),
+    );
     return geo;
-  }, [positions, count, size]);
+  }, [basePositions, count, size]);
 
-  const spriteMaterial = useMemo(
+  // Material — allocated once, disposed on unmount.
+  const material = useMemo(
     () =>
-      new THREE.PointsMaterial({
-        color: new THREE.Color(color),
+      new PointsMaterial({
+        color: new Color(color),
         size,
         transparent: true,
         opacity,
-        blending: THREE.AdditiveBlending,
+        blending: 2, // AdditiveBlending
         depthWrite: false,
         depthTest: true,
       }),
     [color, size, opacity],
   );
 
+  // Manual disposal of owned GPU resources.
+  useEffect(() => {
+    return () => {
+      geometry.dispose();
+      material.dispose();
+    };
+  }, [geometry, material]);
+
+  // Per-frame motion: elapsed-time based (not cumulative).
   useFrame((state) => {
-    if (!pointsRef.current) return;
-    const t = state.clock.elapsedTime;
+    if (!pointsRef.current || reducedMotion || !visible) return;
 
-    // Gentle drift + subtle turbulence
-    const pos = pointsRef.current.geometry.attributes.position.array as Float32Array;
+    const elapsed = state.clock.elapsedTime;
+    const posAttr = pointsRef.current.geometry.attributes.position;
+    const arr = posAttr.array as Float32Array;
+
     for (let i = 0; i < count; i++) {
-      const seed = randoms[i];
       const idx = i * 3;
+      const seed = phases[i];
 
-      // Y-axis float: sine wave per particle
-      pos[idx + 1] += Math.sin(t * 0.5 + seed * 10) * 0.001;
+      // Y-axis float: sine wave per particle.
+      arr[idx + 1] =
+        basePositions[idx + 1] + Math.sin(elapsed * 0.5 + seed * 10) * (spread * 0.02);
 
-      // X-axis drift
-      pos[idx] += Math.cos(t * 0.3 + seed * 7) * 0.0008;
+      // X-axis drift.
+      arr[idx] =
+        basePositions[idx] + Math.cos(elapsed * 0.3 + seed * 7) * (spread * 0.015);
 
-      // Z-axis drift
-      pos[idx + 2] += Math.sin(t * 0.4 + seed * 8) * 0.0006;
-
-      // Loop particles that drift too far
-      if (pos[idx + 1] > spread * 0.3) pos[idx + 1] = -spread * 0.3;
-      if (pos[idx] > spread * 0.5) pos[idx] = -spread * 0.5;
-      if (pos[idx] < -spread * 0.5) pos[idx] = spread * 0.5;
+      // Z-axis drift.
+      arr[idx + 2] =
+        basePositions[idx + 2] + Math.sin(elapsed * 0.4 + seed * 8) * (spread * 0.01);
     }
-    pointsRef.current.geometry.attributes.position.needsUpdate = true;
+    posAttr.needsUpdate = true;
 
-    // Subtle global rotation
-    pointsRef.current.rotation.y += 0.0002;
-    pointsRef.current.rotation.x += 0.0001;
+    // Subtle global rotation (delta-based — derived from elapsed time).
+    pointsRef.current.rotation.y = elapsed * 0.02;
+    pointsRef.current.rotation.x = elapsed * 0.01;
   });
 
-  return <points ref={pointsRef} geometry={geometry} material={spriteMaterial} />;
+  return <points ref={pointsRef} geometry={geometry} material={material} />;
 }

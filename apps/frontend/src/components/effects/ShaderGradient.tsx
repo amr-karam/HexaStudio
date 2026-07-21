@@ -1,8 +1,13 @@
 'use client';
 
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useEffect } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import * as THREE from 'three';
+import { Mesh, ShaderMaterial, Color } from 'three';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
+
+/* -------------------------------------------------------------------------- */
+/*  Shaders                                                                    */
+/* -------------------------------------------------------------------------- */
 
 const vertexShader = /* glsl */ `
   varying vec2 vUv;
@@ -21,7 +26,6 @@ const fragmentShader = /* glsl */ `
   uniform float uIntensity;
   varying vec2 vUv;
 
-  // Simplex-like noise for organic flow
   float hash(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
   }
@@ -53,43 +57,28 @@ const fragmentShader = /* glsl */ `
     vec2 uv = vUv;
     float t = uTime * uSpeed;
 
-    // Multi-layered noise for organic gradient flow
     float n1 = fbm(uv * 2.5 + vec2(t * 0.3, t * 0.2));
     float n2 = fbm(uv * 3.0 - vec2(t * 0.15, t * 0.35));
     float n3 = fbm(uv * 1.8 + vec2(t * 0.25, -t * 0.15));
 
-    // Blend noise into radial gradient
     float dist = length(uv - 0.5) * 2.0;
     float radial = smoothstep(1.2, 0.0, dist + n1 * 0.3);
-
-    // Vertical gradient
     float vertical = uv.y + n2 * 0.15;
-
-    // Diagonal flow
     float diag = (uv.x + uv.y) * 0.5 + n3 * 0.2;
 
-    // Mix three colors
     vec3 color = mix(uColor1, uColor2, vertical);
     color = mix(color, uColor3, radial * 0.6);
     color += (n1 + n2) * uIntensity * 0.03;
-
-    // Vignette
     color *= 1.0 - dist * 0.5;
-
-    // Subtle film grain
     color += (hash(uv * t * 100.0) - 0.5) * 0.008;
 
     gl_FragColor = vec4(color, 1.0);
   }
 `;
 
-interface Props {
-  color1?: string;
-  color2?: string;
-  color3?: string;
-  speed?: number;
-  intensity?: number;
-}
+/* -------------------------------------------------------------------------- */
+/*  Defaults                                                                   */
+/* -------------------------------------------------------------------------- */
 
 const HEX = {
   obsidian: '#050508',
@@ -99,30 +88,74 @@ const HEX = {
   charcoal: '#111122',
 };
 
+/* -------------------------------------------------------------------------- */
+/*  Types                                                                      */
+/* -------------------------------------------------------------------------- */
+
+interface Props {
+  color1?: string;
+  color2?: string;
+  color3?: string;
+  speed?: number;
+  intensity?: number;
+  /** External visibility gate (e.g. IntersectionObserver). */
+  visible?: boolean;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Component                                                                  */
+/* -------------------------------------------------------------------------- */
+
 export default function ShaderGradient({
   color1 = HEX.midnight,
   color2 = HEX.deepBlue,
   color3 = HEX.obsidian,
   speed = 0.15,
   intensity = 0.8,
+  visible = true,
 }: Props) {
-  const meshRef = useRef<THREE.Mesh>(null);
+  const meshRef = useRef<Mesh>(null);
   const { viewport } = useThree();
+  const reducedMotion = useReducedMotion();
 
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uColor1: { value: new THREE.Color(color1) },
-      uColor2: { value: new THREE.Color(color2) },
-      uColor3: { value: new THREE.Color(color3) },
+      uColor1: { value: new Color(color1) },
+      uColor2: { value: new Color(color2) },
+      uColor3: { value: new Color(color3) },
       uSpeed: { value: speed },
       uIntensity: { value: intensity },
     }),
     [color1, color2, color3, speed, intensity],
   );
 
+  // Dispose owned resources on unmount.
+  useEffect(() => {
+    return () => {
+      if (meshRef.current) {
+        const geo = meshRef.current.geometry;
+        const mat = meshRef.current.material;
+        if (geo) geo.dispose();
+        if (mat && mat !== meshRef.current.material) {
+          // ShaderMaterial is not auto-disposed by R3F in all cases.
+          (mat as ShaderMaterial).dispose();
+        }
+      }
+    };
+  }, []);
+
+  // Freeze uTime under reduced motion or when not visible.
+  const frozenTime = useRef(0);
+
   useFrame((_, delta) => {
+    if (reducedMotion || !visible) {
+      // Keep uTime constant at the frozen value.
+      uniforms.uTime.value = frozenTime.current;
+      return;
+    }
     uniforms.uTime.value += delta;
+    frozenTime.current = uniforms.uTime.value;
   });
 
   return (

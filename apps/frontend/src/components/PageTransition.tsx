@@ -3,19 +3,19 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
-import { EASE } from '@/lib/motion';
+import { EASE, DURATION, REDUCED_TRANSITION, makeTransition } from '@/lib/motion';
 import { useHEXAMotion } from '@/hooks/useHEXAMotion';
 
 const wipeVariants = {
   initial: { scaleX: 0, transformOrigin: 'left' as const },
   animate: {
     scaleX: 1,
-    transition: { duration: 0.5, ease: [0.7, 0, 0.3, 1] },
+    transition: makeTransition('transition', 'component'),
   },
   exit: {
     scaleX: 0,
     transformOrigin: 'right' as const,
-    transition: { duration: 0.5, ease: [0.7, 0, 0.3, 1], delay: 0.05 },
+    transition: { duration: DURATION.component, ease: EASE.sharp, delay: 0.05 },
   },
 };
 
@@ -23,18 +23,20 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { reduced } = useHEXAMotion();
   const [isWiping, setIsWiping] = useState(false);
-  const wipeTimer = useRef<NodeJS.Timeout>(null);
+  const wipeTimer = useRef<ReturnType<typeof setTimeout>>(null);
 
   const triggerWipe = useCallback(() => {
     setIsWiping(true);
-    // Auto-hide wipe after animation completes
     if (wipeTimer.current) clearTimeout(wipeTimer.current);
-    wipeTimer.current = setTimeout(() => setIsWiping(false), 600);
-  }, []);
+    const wipeDuration = reduced ? 10 : DURATION.component * 1000 + 100;
+    wipeTimer.current = setTimeout(() => setIsWiping(false), wipeDuration);
+  }, [reduced]);
 
   useEffect(() => {
     triggerWipe();
-    return () => { if (wipeTimer.current) clearTimeout(wipeTimer.current); };
+    return () => {
+      if (wipeTimer.current) clearTimeout(wipeTimer.current);
+    };
   }, [pathname, triggerWipe]);
 
   // Scroll to top on every route change
@@ -42,8 +44,19 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
     window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
   }, [pathname, reduced]);
 
-  // GPU-only animation. Reduced motion collapses to pure opacity crossfade.
-  const variants = reduced
+  // Route focus management: focus main content after transition
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      const mainEl = document.getElementById('main-content');
+      if (mainEl) {
+        mainEl.focus({ preventScroll: true });
+      }
+    }, reduced ? 50 : DURATION.page * 1000 + 100);
+    return () => clearTimeout(timeout);
+  }, [pathname, reduced]);
+
+  // Under reduced motion: instant content swap, no wipe overlay
+  const contentVariants = reduced
     ? {
         initial: { opacity: 0 },
         animate: { opacity: 1 },
@@ -55,9 +68,11 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
         exit: { opacity: 0, y: -12 },
       };
 
+  const contentTransition = reduced ? REDUCED_TRANSITION : makeTransition('entrance', 'page');
+
   return (
     <>
-      {/* Curtain wipe overlay */}
+      {/* Curtain wipe overlay — only when not reduced */}
       <AnimatePresence>
         {!reduced && isWiping && (
           <motion.div
@@ -76,10 +91,10 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
       <AnimatePresence mode="wait">
         <motion.div
           key={pathname}
-          initial={variants.initial}
-          animate={variants.animate}
-          exit={variants.exit}
-          transition={{ duration: 0.6, ease: EASE.entrance }}
+          initial={contentVariants.initial}
+          animate={contentVariants.animate}
+          exit={contentVariants.exit}
+          transition={contentTransition}
         >
           {children}
         </motion.div>

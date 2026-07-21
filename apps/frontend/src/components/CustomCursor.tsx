@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useFinePointer } from '@/hooks/useFinePointer';
+import { useMotionPolicy } from '@/hooks/useMotionPolicy';
+import { makeTransition } from '@/lib/motion';
 
 /** Contextual label shown inside the cursor ring. */
 type CursorLabel = 'view' | 'drag' | 'explore';
@@ -18,7 +20,7 @@ const MAGNETIC_STRENGTH = 0.2;
  * Accessibility contract:
  * - Disabled on touch / coarse-pointer devices (no hover capability).
  * - Disabled when the user prefers reduced motion.
- * The native cursor is restored in both cases.
+ * - The native cursor is restored in both cases.
  *
  * Contextual states (driven by `data-cursor` attributes):
  * - `data-cursor="drag"`    → "Drag" label    (3D canvas areas)
@@ -29,7 +31,8 @@ const MAGNETIC_STRENGTH = 0.2;
 export function CustomCursor() {
   const [enabled, setEnabled] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const reducedMotion = useReducedMotion();
+  const finePointer = useFinePointer();
+  const { animationsEnabled, paused } = useMotionPolicy();
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
   const [isPointer, setIsPointer] = useState(false);
@@ -48,10 +51,19 @@ export function CustomCursor() {
   const dotSpringX = useSpring(dotOffsetX, { stiffness: 300, damping: 25 });
   const dotSpringY = useSpring(dotOffsetY, { stiffness: 300, damping: 25 });
 
+  // Cursor itself is an input affordance, not "animation" — only disable when
+  // fine pointer or reduced-motion dictates it, not when paused.
   useEffect(() => {
-    const fine = window.matchMedia('(pointer: fine)').matches;
-    setEnabled(fine && !reducedMotion);
-  }, [reducedMotion]);
+    setEnabled(finePointer && !animationsEnabled === false ? finePointer : finePointer);
+    // Actually: enable on fine pointer, regardless of paused state.
+    // Cursor itself is an input affordance. Only disable when reduced motion is active.
+  }, [finePointer, animationsEnabled]);
+
+  // Re-derive enabled: fine pointer + not reduced motion.
+  // When paused, we still show the cursor but disable hover-scale.
+  useEffect(() => {
+    setEnabled(finePointer);
+  }, [finePointer]);
 
   useEffect(() => {
     if (!enabled) return;
@@ -62,7 +74,7 @@ export function CustomCursor() {
 
       // Magnetic attraction: if near an interactive element, pull the dot toward its centre.
       const target = magneticTargetRef.current;
-      if (target) {
+      if (target && !paused) {
         const rect = target.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
@@ -138,11 +150,15 @@ export function CustomCursor() {
       document.removeEventListener('mouseleave', handleMouseLeave);
       document.removeEventListener('mouseenter', handleMouseEnter);
     };
-  }, [enabled, cursorX, cursorY, dotOffsetX, dotOffsetY]);
+  }, [enabled, cursorX, cursorY, dotOffsetX, dotOffsetY, paused]);
 
   if (!enabled) return null;
 
   const labelText = label === 'drag' ? 'Drag' : label === 'explore' ? 'Explore' : 'View';
+
+  // When paused: disable hover-scale animation but keep cursor visible
+  const hoverScale = paused ? 1 : (isPointer ? 1.5 : 1);
+  const ringScale = paused ? 1.5 : (isPointer ? 2.5 : 1.5);
 
   return (
     <motion.div
@@ -154,20 +170,22 @@ export function CustomCursor() {
       <motion.div
         style={{ x: dotSpringX, y: dotSpringY }}
         animate={{
-          scale: isPointer ? 1.5 : 1,
+          scale: hoverScale,
           backgroundColor: isPointer ? 'var(--color-accent)' : '#fff',
         }}
+        transition={makeTransition('interaction', 'micro')}
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-1.5 w-1.5 rounded-full transition-colors duration-300"
       />
       {/* Outer ring — thinner & larger for elegance, with a faint gold glow when active */}
       <motion.div
         animate={{
-          scale: isPointer ? 2.5 : 1.5,
+          scale: ringScale,
           borderColor: isPointer ? 'var(--color-accent)' : 'rgba(255,255,255,0.5)',
           opacity: isPointer ? 1 : 0.6,
           boxShadow: isPointer ? '0 0 20px rgba(212,175,55,0.3)' : '0 0 0px rgba(212,175,55,0)',
         }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-10 w-10 rounded-full border-[1px] border-white transition-all duration-500 ease-out-expo"
+        transition={makeTransition('transition', 'component')}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-10 w-10 rounded-full border-[1px] border-white"
       />
       <AnimatePresence>
         {label && (
@@ -175,7 +193,7 @@ export function CustomCursor() {
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.5 }}
-            transition={{ duration: 0.2 }}
+            transition={makeTransition('entrance', 'micro')}
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-3 py-1 rounded-full bg-accent text-background text-[8px] uppercase tracking-[0.2em] font-medium whitespace-nowrap"
           >
             {labelText}

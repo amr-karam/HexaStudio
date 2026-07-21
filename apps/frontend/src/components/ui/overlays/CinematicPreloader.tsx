@@ -2,42 +2,51 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { EASE } from '@/lib/motion';
+import { REDUCED_TRANSITION } from '@/lib/motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
+/**
+ * CinematicPreloader — First-visit brand entrance animation.
+ *
+ * - First-visit only (checks sessionStorage).
+ * - Non-blocking: content remains visible beneath.
+ * - Short (< 500ms total).
+ * - Under reduced motion: skip entirely.
+ *
+ * This component does NOT fake progress or block content.
+ */
 export function CinematicPreloader() {
-  const [progress, setProgress] = useState(0);
-  const [isComplete, setIsComplete] = useState(false);
+  const [show, setShow] = useState(false);
   const reducedMotion = useReducedMotion();
 
   useEffect(() => {
-    // Reduced-motion users get a near-instant hand-off to content.
-    if (reducedMotion) {
-      const t = setTimeout(() => setIsComplete(true), 200);
-      return () => clearTimeout(t);
-    }
+    // Skip entirely under reduced motion
+    if (reducedMotion) return;
 
-    const timer = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(timer);
-          setTimeout(() => setIsComplete(true), 500);
-          return 100;
-        }
-        return prev + Math.random() * 15;
-      });
-    }, 150);
+    // First-visit check via sessionStorage
+    const hasVisited = sessionStorage.getItem('hexa:visited');
+    if (hasVisited) return;
 
-    return () => clearInterval(timer);
+    sessionStorage.setItem('hexa:visited', 'true');
+    setShow(true);
+
+    const timer = setTimeout(() => {
+      setShow(false);
+    }, 400);
+
+    return () => clearTimeout(timer);
   }, [reducedMotion]);
+
+  // Under reduced motion, skip entirely
+  if (reducedMotion || !show) return null;
 
   return (
     <AnimatePresence>
-      {!isComplete && (
+      {show && (
         <motion.div
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.8, ease: EASE.entrance } }}
-          className="fixed inset-0 z-[100] bg-background flex items-center justify-center overflow-hidden"
+          exit={{ opacity: 0, transition: REDUCED_TRANSITION }}
+          className="fixed inset-0 z-[100] bg-background flex items-center justify-center overflow-hidden pointer-events-none"
           role="status"
           aria-live="polite"
           aria-label="Loading HexaStudio experience"
@@ -48,22 +57,7 @@ export function CinematicPreloader() {
                 <span className="text-[10px] uppercase tracking-[0.5em] text-neutral-500 font-mono">Initializing</span>
                 <span className="text-xs uppercase tracking-widest text-foreground font-light">HexaStudio Experience</span>
               </div>
-              <span className="text-2xl font-serif font-light text-accent italic">
-                {Math.round(progress)}%
-              </span>
             </div>
-
-            <div className="h-[1px] w-full bg-neutral-800 relative overflow-hidden">
-              <motion.div
-                className="absolute inset-y-0 start-0 bg-accent"
-                initial={{ width: 0 }}
-                animate={{ width: `${progress}%` }}
-                transition={{ ease: 'linear' }}
-              />
-            </div>
-
-            <div className="absolute -top-24 -left-24 w-48 h-48 bg-accent/5 blur-[100px] rounded-full" aria-hidden="true" />
-            <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-accent/5 blur-[100px] rounded-full" aria-hidden="true" />
           </div>
         </motion.div>
       )}

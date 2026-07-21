@@ -1,4 +1,15 @@
 
+export interface AnimationPolicy {
+  /** Clip name to play. If undefined, plays the first clip. */
+  clipName?: string;
+  /** Whether to autoplay on load. */
+  autoplay: boolean;
+  /** Loop mode — use Three.js LoopOnce (2200), LoopRepeat (2201), or LoopPingPong (2202). */
+  loop: 2200 | 2201 | 2202;
+  /** Playback speed multiplier. */
+  speed: number;
+}
+
 export interface ModelConfig {
   path: string;
   scale: number;
@@ -11,6 +22,8 @@ export interface ModelConfig {
     position: [number, number, number];
     lookAt: [number, number, number];
   }[];
+  /** Animation playback policy. Defaults to autoplay, loop, speed 1. */
+  animation?: AnimationPolicy;
 }
 
 /**
@@ -31,6 +44,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
       { name: 'Hero', position: [0, 2, 5], lookAt: [0, 0, 0] },
       { name: 'Detail', position: [2, 1, 2], lookAt: [0, 0, 0] },
     ],
+    animation: { autoplay: true, loop: 2201, speed: 1 },
   },
   'tower': {
     path: '/models/tower.glb',
@@ -44,6 +58,7 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
       { name: 'Mid-Rise', position: [5, 15, 5], lookAt: [0, 15, 0] },
       { name: 'Summit', position: [0, 40, 2], lookAt: [0, 40, 0] },
     ],
+    animation: { autoplay: true, loop: 2201, speed: 1 },
   },
 };
 

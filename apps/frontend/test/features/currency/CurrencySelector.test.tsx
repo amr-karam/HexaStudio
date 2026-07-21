@@ -9,8 +9,12 @@ import userEvent from '@testing-library/user-event';
 /* -------------------------------------------------------------------------- */
 
 // framer-motion → strip animation-only props so DOM assertions stay clean.
+// Components are cached per tag: a fresh identity on every access would make
+// React remount the subtree on each render, detaching DOM nodes mid-test.
 vi.mock('framer-motion', () => {
-  const passthrough = (Tag: string) =>
+  type Passthrough = React.ComponentType<Record<string, unknown> & { children?: ReactNode }>;
+  const cache = new Map<string, Passthrough>();
+  const passthrough = (Tag: string): Passthrough =>
     ({ children, ...props }: Record<string, unknown>) => {
       const {
         initial: _i,
@@ -25,7 +29,7 @@ vi.mock('framer-motion', () => {
         style: _s,
         ...rest
       } = props;
-      const Component = Tag as unknown as React.ElementType;
+      const Component = Tag as unknown as Passthrough;
       return <Component {...rest}>{children as ReactNode}</Component>;
     };
   return {
@@ -33,7 +37,10 @@ vi.mock('framer-motion', () => {
     motion: new Proxy(
       {},
       {
-        get: (_target, tag: string) => passthrough(tag),
+        get: (_target, tag: string) => {
+          if (!cache.has(tag)) cache.set(tag, passthrough(tag));
+          return cache.get(tag);
+        },
       },
     ),
   };
@@ -48,9 +55,9 @@ vi.mock('@/i18n/LocaleProvider', () => ({
   }),
 }));
 
-import { CurrencySelector } from '../CurrencySelector';
-import { useCurrencyStore, type CurrencyOption } from '../currency-store';
-import { currencyApi } from '../api';
+import { CurrencySelector } from '@/features/currency/CurrencySelector';
+import { useCurrencyStore, type CurrencyOption } from '@/features/currency/currency-store';
+import { currencyApi } from '@/features/currency/api';
 
 const SAMPLE: CurrencyOption[] = [
   { code: 'USD', symbol: '$', name: 'US Dollar', region: 'US' },
