@@ -4,6 +4,8 @@ export * from './agents/agents.module';
 export * from './assistants/assistants.module';
 export * from './ai/ai.module';
 export * from './articles/articles.module';
+export * from './pages/pages.module';
+export * from './achievements/achievements.module';
 export * from './auth/auth.module';
 export * from './contact/contact.module';
 export * from './currency/currency.module';

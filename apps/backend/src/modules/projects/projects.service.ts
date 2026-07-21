@@ -1,28 +1,59 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import type { Project, ProjectResponse, Category } from '@hexastudio/types';
+import type { Project, ProjectResponse, Category, ProjectLiveStatus } from '@hexastudio/types';
 import { getEnv } from '../../config/env';
 import { OdooService } from '../odoo/odoo.service';
+import { RedisService } from '../storage/redis.service';
 
 interface StrapiRelation {
   id?: number;
   name?: string;
   slug?: string;
   url?: string;
+  alternativeText?: string;
+  data?: {
+    id?: number;
+    attributes?: {
+      name?: string;
+      slug?: string;
+      url?: string;
+      alternativeText?: string;
+    };
+  };
 }
 
 function mapCategory(relation: StrapiRelation | undefined): Category | undefined {
-  if (!relation?.id || !relation.name) return undefined;
-  return { id: String(relation.id), name: relation.name, slug: relation.slug ?? '' };
+  if (!relation) return undefined;
+
+  // Strapi v4/v5 nested relation shape: { data: { attributes: { name, slug } } }
+  const attrs = relation.data?.attributes;
+  const id = relation.data?.id ?? relation.id;
+  const name = attrs?.name ?? relation.name;
+  const slug = attrs?.slug ?? relation.slug;
+
+  if (!id || !name) return undefined;
+  return { id: String(id), name, slug: slug ?? '' };
 }
 
 function mapMedia(relation: StrapiRelation | undefined): string | undefined {
   if (!relation) return undefined;
   if (typeof relation === 'string') return relation;
-  if ('url' in relation && relation.url) return relation.url;
+  // Strapi v4/v5 nested media shape: { data: { attributes: { url } } }
+  if (relation.data?.attributes?.url) return relation.data.attributes.url;
+  if (relation.url) return relation.url;
   return undefined;
 }
+
+interface OdooEnrichment {
+  status?: string;
+  milestones?: { total: number; completed: number };
+  liveStatus?: ProjectLiveStatus;
+}
+
+const LIVE_STATUS_CACHE_PREFIX = 'projects:live-status:';
+const LIVE_STATUS_CACHE_TTL = 300; // 5 minutes
+const ODOO_ENRICHMENT_TIMEOUT_MS = 2000;
 
 @Injectable()
 export class ProjectsService {
@@ -31,6 +62,7 @@ export class ProjectsService {
   constructor(
     private readonly httpService: HttpService,
     private readonly odooService: OdooService,
+    private readonly redisService: RedisService,
   ) {}
 
   private get cmsUrl(): string {
@@ -141,35 +173,106 @@ export class ProjectsService {
 
     const project = this.mapProject(items[0]);
 
-    try {
-      // Enrich with Odoo data
-      const odooData = await this.odooService.searchRead(
-        'project.project',
-        [['x_slug', '=', slug]],
-        ['id', 'stage_id']
-      );
-
-      if (odooData && odooData.length > 0) {
-        // In Odoo, stage_id is often [id, name]
-        const stage = odooData[0].stage_id;
-        project.status = Array.isArray(stage) ? String(stage[1]) : String((stage as Record<string, unknown>)?.name ?? '');
-
-        const pid = odooData[0].id as number;
-        const milestones = await this.odooService.searchRead(
-          'project.milestone',
-          [['project_id', '=', pid], ['x_hexa_client_viewable', '=', true]],
-          ['id', 'completed']
-        );
-        const completed = milestones.filter((m) => m.completed).length;
-        project.milestones = { total: milestones.length, completed };
-      }
-    } catch (error) {
-      const msg = `Failed to enrich project ${slug} with Odoo data`;
-      this.logger.warn({ msg, slug, error: (error as Error).message });
-      (project as Project & { _enrichmentError?: string })._enrichmentError = msg;
+    const { enrichment, error } = await this.getOdooEnrichment(slug);
+    if (enrichment) {
+      if (enrichment.status) project.status = enrichment.status;
+      if (enrichment.milestones) project.milestones = enrichment.milestones;
+      if (enrichment.liveStatus) project.liveStatus = enrichment.liveStatus;
+    }
+    if (error) {
+      (project as Project & { _enrichmentError?: string })._enrichmentError = error;
     }
 
     return project;
+  }
+
+  /**
+   * Look up live Odoo status for a slug, with a Redis cache (5 min) and a hard
+   * timeout so a slow/unreachable Odoo never blocks the public response.
+   */
+  private async getOdooEnrichment(
+    slug: string,
+  ): Promise<{ enrichment: OdooEnrichment | null; error?: string }> {
+    const cacheKey = `${LIVE_STATUS_CACHE_PREFIX}${slug}`;
+
+    try {
+      const cached = await this.redisService.get<OdooEnrichment>(cacheKey);
+      if (cached) return { enrichment: cached };
+    } catch (error) {
+      this.logger.debug(`Live-status cache read failed for ${slug}: ${(error as Error).message}`);
+    }
+
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    try {
+      const timeout = new Promise<null>((resolve) => {
+        timer = setTimeout(() => resolve(null), ODOO_ENRICHMENT_TIMEOUT_MS);
+      });
+      const fetchPromise = this.fetchOdooEnrichment(slug);
+      // Swallow late rejections when the timeout wins the race below.
+      fetchPromise.catch(() => undefined);
+      const enrichment = await Promise.race([fetchPromise, timeout]);
+
+      if (enrichment === null) {
+        this.logger.debug(`Odoo enrichment skipped for ${slug} (timeout or no match)`);
+        return { enrichment: null };
+      }
+
+      try {
+        await this.redisService.set(cacheKey, enrichment, LIVE_STATUS_CACHE_TTL);
+      } catch (error) {
+        this.logger.debug(`Live-status cache write failed for ${slug}: ${(error as Error).message}`);
+      }
+
+      return { enrichment };
+    } catch (error) {
+      const msg = `Failed to enrich project ${slug} with Odoo data`;
+      this.logger.warn({ msg, slug, error: (error as Error).message });
+      return { enrichment: null, error: msg };
+    } finally {
+      if (timer) clearTimeout(timer);
+    }
+  }
+
+  /** Fetch the Odoo project record and milestone progress for a slug. */
+  private async fetchOdooEnrichment(slug: string): Promise<OdooEnrichment | null> {
+    const odooData = await this.odooService.searchRead(
+      'project.project',
+      [['x_slug', '=', slug]],
+      ['id', 'stage_id', 'x_hexa_status', 'write_date']
+    );
+
+    if (!odooData || odooData.length === 0) return null;
+
+    const record = odooData[0];
+    // In Odoo, stage_id is often [id, name]
+    const stage = record.stage_id;
+    const stageName = Array.isArray(stage)
+      ? String(stage[1])
+      : String((stage as Record<string, unknown>)?.name ?? '');
+
+    const pid = record.id as number;
+    const milestones = await this.odooService.searchRead(
+      'project.milestone',
+      [['project_id', '=', pid], ['x_hexa_client_viewable', '=', true]],
+      ['id', 'completed']
+    );
+    const completed = milestones.filter((m) => m.completed).length;
+    const total = milestones.length;
+
+    const lastUpdate =
+      typeof record.write_date === 'string' && record.write_date
+        ? record.write_date
+        : new Date().toISOString();
+
+    return {
+      status: stageName || undefined,
+      milestones: { total, completed },
+      liveStatus: {
+        stage: stageName || String(record.x_hexa_status ?? 'unknown'),
+        progress: total > 0 ? Math.round((completed / total) * 100) : 0,
+        lastUpdate,
+      },
+    };
   }
 
   private mapProject(item: Record<string, unknown>): Project {
