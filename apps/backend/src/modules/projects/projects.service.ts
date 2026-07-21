@@ -69,12 +69,18 @@ export class ProjectsService {
     return getEnv().CMS_URL;
   }
 
+  private get cmsHeaders(): Record<string, string> | undefined {
+    const token = getEnv().CMS_API_TOKEN;
+    return token ? { Authorization: `Bearer ${token}` } : undefined;
+  }
+
   async getAllProjects(page = 1, limit = 20, locale?: string): Promise<ProjectResponse> {
     const safePage = Math.max(1, page);
     const safeLimit = Math.min(100, Math.max(1, limit));
 
     const response = await firstValueFrom(
       this.httpService.get(`${this.cmsUrl}/api/portfolios`, {
+        headers: this.cmsHeaders,
         params: {
           'populate': '*',
           'sort': 'order:asc',
@@ -158,6 +164,7 @@ export class ProjectsService {
   async getProjectBySlug(slug: string, locale?: string): Promise<Project> {
     const response = await firstValueFrom(
       this.httpService.get(`${this.cmsUrl}/api/portfolios`, {
+        headers: this.cmsHeaders,
         params: {
           'populate': '*',
           'filters[slug][$eq]': slug,
