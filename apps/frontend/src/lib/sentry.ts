@@ -26,7 +26,7 @@ if (SENTRY_DSN) {
       /Non-Error promise rejection captured/,
       /Network request failed/,
     ],
-    beforeSend(event, hint) {
+    beforeSend(event: Sentry.ErrorEvent, hint: Sentry.EventHint) {
       if (process.env.NODE_ENV === 'production' && event.exception) {
         const error = hint.originalException;
         if (error instanceof Error && error.message?.includes('hydration')) {
