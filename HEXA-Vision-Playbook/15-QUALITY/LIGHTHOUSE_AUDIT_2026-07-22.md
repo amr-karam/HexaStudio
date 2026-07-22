@@ -136,12 +136,22 @@
 
 ## 8. Remediation Plan
 
-| Priority | Item | Effort | Impact |
-|----------|------|--------|--------|
-| P1 | FCP/LCP — inline critical CSS, preload hero font weights | S | +0.2 perf |
-| P1 | TBT — defer GSAP ScrollTrigger init to requestIdleCallback | S | +0.1 perf |
-| P2 | CSP strict-dynamic for script loading | M | Security |
-| P3 | Unused JS — await ESM builds from R3F ecosystem | L | Future |
+| Priority | Item | Effort | Impact | Status |
+|----------|------|--------|--------|--------|
+| P1 | FCP/LCP — inline critical CSS, preload hero font weights | S | +0.2 perf | ✅ Done (2026-07-22, commit `9837004`) |
+| P1 | TBT — defer GSAP ScrollTrigger init to requestIdleCallback | S | +0.1 perf | ✅ Done (2026-07-22, commit `9837004`) |
+| P2 | CSP for script loading | M | Security | ✅ Pragmatic CSP shipped (2026-07-22); nonce-based strict-dynamic deferred (needs middleware nonce plumbing) |
+| P3 | Unused JS — await ESM builds from R3F ecosystem | L | Future | ⏳ Deferred |
+
+### P7 Remediation Detail (2026-07-22)
+
+| Change | File(s) | Mechanism |
+|--------|---------|-----------|
+| Font `@import` removed from globals.css | `globals.css` | Eliminates CSS→CSS chain waterfall; font CSS now a parallel `<link>` in `<head>` |
+| Hero woff2 preloads | `layout.tsx` | Inter + Playfair Display latin variable subsets preloaded (also promoted to HTTP `Link:` headers by Next.js) |
+| Idle GSAP init | `lib/idle.ts` + 6 components | `onIdle()` (requestIdleCallback, 1200ms bound, Safari macrotask fallback) wraps ScrollTrigger setup in SectionReveal, KineticTitle, FeaturedWork, ProjectGrid, ProjectScrollCinema, ArticleDetailClient |
+| Inline CSS | `next.config.ts` (`experimental.inlineCss`) | Page CSS inlined into HTML — verified: 2 `<style>` tags, 0 render-blocking stylesheet links (only external font CSS remains) |
+| CSP + security headers | `next.config.ts` | Full CSP (script/style/font/img/connect/worker), HSTS 2y preload, nosniff, SAMEORIGIN, referrer + permissions policies — verified live |
 
 ---
 
