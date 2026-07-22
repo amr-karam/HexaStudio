@@ -63,7 +63,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   transpilePackages: ["@hexastudio/types", "@hexastudio/utils", "@hexastudio/ui"],
   experimental: {
-    optimizePackageImports: ["three", "@react-three/fiber", "@react-three/drei", "gsap"],
+    optimizePackageImports: ["three", "@react-three/fiber", "@react-three/drei", "@react-three/postprocessing", "gsap", "framer-motion", "@sentry/nextjs"],
     // Inline page CSS directly into the HTML — removes the render-blocking
     // stylesheet request from the critical path (FCP). HTML is served
     // no-store through Cloudflare, so separate CSS caching buys little here.

@@ -11,7 +11,10 @@ import { CTASection } from "@/components/CTASection";
 import { NewsletterSection } from "@/components/ui/NewsletterSection";
 import { fetchProjects } from "@/features/portfolio/lib/fetchProjects";
 
-export const dynamic = 'force-dynamic';
+/** ISR: 1h background refresh + on-demand via /api/revalidate (Sprint 15 P9).
+    * Pages prerender at build (gracefully empty when backend is down); deploy
+    * script pings /api/revalidate to fill with live content within seconds. */
+export const revalidate = 3600;
 
 /**
  * Homepage — the chaptered scroll film (Prompt 017).

@@ -2,7 +2,7 @@
 
 import React, { useMemo, useEffect, useLayoutEffect, useRef } from 'react';
 import { Float, Html, RoundedBox } from '@react-three/drei';
-import * as THREE from 'three';
+import { BoxGeometry, Color, CylinderGeometry, InstancedMesh, Matrix4, MeshPhysicalMaterial, Object3D, SphereGeometry } from 'three';
 import { ArchitecturalModel } from './ArchitecturalModel';
 import { Hotspot } from './Hotspot';
 import { ProjectHotspot } from '@hexastudio/types';
@@ -57,8 +57,8 @@ function ProceduralArchitecture({ accent }: { accent: string }) {
 
   // Per-instance transforms for the slender gold columns (position only).
   const columnMatrices = useMemo(() => {
-    const matrices: THREE.Matrix4[] = [];
-    const dummy = new THREE.Object3D();
+    const matrices: Matrix4[] = [];
+    const dummy = new Object3D();
     for (const [x, z] of COLUMN_FOOTPRINTS) {
       // Columns rise from the top of the foundation slab (y = 0.4) up to the
       // cantilever soffit (y = 3.0). Height 2.6 → centered at 1.7.
@@ -72,8 +72,8 @@ function ProceduralArchitecture({ accent }: { accent: string }) {
 
   // Per-instance transforms for the glass facade panels (position only).
   const glassMatrices = useMemo(() => {
-    const matrices: THREE.Matrix4[] = [];
-    const dummy = new THREE.Object3D();
+    const matrices: Matrix4[] = [];
+    const dummy = new Object3D();
     for (const [x, y, z] of GLASS_PANELS) {
       dummy.position.set(x, y, z);
       dummy.rotation.set(0, 0, 0);
@@ -85,8 +85,8 @@ function ProceduralArchitecture({ accent }: { accent: string }) {
 
   // Per-instance transforms for the light spheres (base accents under columns).
   const lightMatrices = useMemo(() => {
-    const matrices: THREE.Matrix4[] = [];
-    const dummy = new THREE.Object3D();
+    const matrices: Matrix4[] = [];
+    const dummy = new Object3D();
     for (const [x, z] of COLUMN_FOOTPRINTS) {
       dummy.position.set(x, 0.46, z);
       dummy.rotation.set(0, 0, 0);
@@ -100,7 +100,7 @@ function ProceduralArchitecture({ accent }: { accent: string }) {
   // meshes). These are NOT auto-disposed by R3F, so we own their lifecycle.
   // The accent color drives the status-tinted gold elements (columns + base
   // lights), preserving the original per-status theming contract.
-  const accentColor = useMemo(() => new THREE.Color(accent), [accent]);
+  const accentColor = useMemo(() => new Color(accent), [accent]);
   const {
     columnGeom,
     columnMat,
@@ -111,8 +111,8 @@ function ProceduralArchitecture({ accent }: { accent: string }) {
   } = useMemo(() => {
     return {
       // Slender cylindrical gold-accent columns.
-      columnGeom: new THREE.CylinderGeometry(0.045, 0.045, 2.6, 16),
-      columnMat: new THREE.MeshPhysicalMaterial({
+      columnGeom: new CylinderGeometry(0.045, 0.045, 2.6, 16),
+      columnMat: new MeshPhysicalMaterial({
         color: accentColor.clone(),
         roughness: 0.1,
         metalness: 1,
@@ -123,9 +123,9 @@ function ProceduralArchitecture({ accent }: { accent: string }) {
         envMapIntensity: 2,
       }),
       // Glass facade panels (thin flat glazing).
-      glassGeom: new THREE.BoxGeometry(1.4, 1.8, 0.04),
-      glassMat: new THREE.MeshPhysicalMaterial({
-        color: new THREE.Color('#ffffff'),
+      glassGeom: new BoxGeometry(1.4, 1.8, 0.04),
+      glassMat: new MeshPhysicalMaterial({
+        color: new Color('#ffffff'),
         roughness: 0.05,
         metalness: 0,
         transmission: 0.9,
@@ -136,8 +136,8 @@ function ProceduralArchitecture({ accent }: { accent: string }) {
         envMapIntensity: 1.5,
       }),
       // Glowing accent spheres at the column bases.
-      lightGeom: new THREE.SphereGeometry(0.05, 16, 16),
-      lightMat: new THREE.MeshPhysicalMaterial({
+      lightGeom: new SphereGeometry(0.05, 16, 16),
+      lightMat: new MeshPhysicalMaterial({
         color: accentColor.clone(),
         emissive: accentColor.clone(),
         emissiveIntensity: 5,
@@ -147,9 +147,9 @@ function ProceduralArchitecture({ accent }: { accent: string }) {
     };
   }, [accentColor]);
 
-  const columnRef = useRef<THREE.InstancedMesh>(null);
-  const glassRef = useRef<THREE.InstancedMesh>(null);
-  const lightRef = useRef<THREE.InstancedMesh>(null);
+  const columnRef = useRef<InstancedMesh>(null);
+  const glassRef = useRef<InstancedMesh>(null);
+  const lightRef = useRef<InstancedMesh>(null);
 
   // Write per-instance matrices once after mount / on data change.
   useLayoutEffect(() => {

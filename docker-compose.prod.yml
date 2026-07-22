@@ -215,6 +215,8 @@ services:
     logging: *default-logging
     environment:
       NODE_ENV: ${NODE_ENV:-production}
+      # Sprint 15 P9: on-demand ISR revalidation secret (must match host env)
+      REVALIDATE_SECRET: ${REVALIDATE_SECRET:-}
     depends_on:
       - backend
     networks:
