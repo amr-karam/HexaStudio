@@ -6,8 +6,8 @@ COPY apps/cms/package-lock.json* ./
 RUN npm install --legacy-peer-deps --no-audit --no-fund
 COPY apps/cms/ ./
 ENV NODE_ENV=development
+ENV NODE_OPTIONS=--max-old-space-size=2048
 RUN npm run build
 ENV NODE_ENV=production
-ENV NODE_OPTIONS=--max-old-space-size=2048
 EXPOSE 1337
 CMD ["npm", "run", "start"]
