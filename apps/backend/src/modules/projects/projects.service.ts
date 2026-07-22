@@ -89,7 +89,7 @@ export class ProjectsService {
     const safeLimit = Math.min(100, Math.max(1, limit));
 
     const response = await firstValueFrom(
-      this.httpService.get(`${this.cmsUrl}/api/projects`, {
+      this.httpService.get(`${this.cmsUrl}/api/portfolios`, {
         headers: this.cmsHeaders,
         params: {
           'populate': '*',
@@ -173,7 +173,7 @@ export class ProjectsService {
 
   async getProjectBySlug(slug: string, locale?: string): Promise<Project> {
     const response = await firstValueFrom(
-      this.httpService.get(`${this.cmsUrl}/api/projects`, {
+      this.httpService.get(`${this.cmsUrl}/api/portfolios`, {
         headers: this.cmsHeaders,
         params: {
           'populate': '*',
