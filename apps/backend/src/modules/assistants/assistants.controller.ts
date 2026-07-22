@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { AssistantsService } from './assistants.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -110,6 +111,8 @@ interface ForecastBudgetBody {
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin', 'editor')
+@ApiTags('Assistants')
+@ApiBearerAuth()
 @Controller({ path: 'assistants', version: '1' })
 export class AssistantsController {
   constructor(
@@ -123,12 +126,14 @@ export class AssistantsController {
   ) {}
 
   @Get('health')
+  @ApiOperation({ summary: 'Health check for assistants service' })
   async healthCheck() {
     return this.assistantsService.healthCheck();
   }
 
   // CEO Assistant endpoints
   @Post('ceo/strategic-summary')
+  @ApiOperation({ summary: 'Generate strategic summary for CEO' })
   async getStrategicSummary(
     @Body() body: { kpis: Record<string, number>; risks: string[]; opportunities: string[] },
   ) {
@@ -136,6 +141,7 @@ export class AssistantsController {
   }
 
   @Post('ceo/risk-alert')
+  @ApiOperation({ summary: 'Get risk alert analysis for CEO' })
   async getRiskAlert(
     @Body() body: { risk: string; impact: 'low' | 'medium' | 'high'; context: string },
   ) {
@@ -143,6 +149,7 @@ export class AssistantsController {
   }
 
   @Post('ceo/executive-summary')
+  @ApiOperation({ summary: 'Generate executive summary' })
   async getExecutiveSummary(
     @Body() body: ExecutiveSummaryBody,
   ) {
@@ -150,44 +157,52 @@ export class AssistantsController {
   }
 
   @Post('ceo/strategic-risks')
+  @ApiOperation({ summary: 'Identify strategic risks' })
   async getStrategicRisks(@Body() body: StrategicRiskBody) {
     return this.ceoAssistant.identifyStrategicRisks(body);
   }
 
   @Post('ceo/board-report')
+  @ApiOperation({ summary: 'Generate board report' })
   async getBoardReport(@Body() body: BoardReportBody) {
     return this.ceoAssistant.generateBoardReport(body.quarter, body.kpis, body.initiatives);
   }
 
   @Post('ceo/question')
+  @ApiOperation({ summary: 'Ask CEO assistant a strategic question' })
   async askQuestion(@Body() body: AskQuestionBody) {
     return this.ceoAssistant.answerStrategicQuestion(body.question, body.context);
   }
 
   // Sales Assistant endpoints
   @Post('sales/qualify-lead')
+  @ApiOperation({ summary: 'Qualify a sales lead' })
   async qualifyLead(@Body() body: QualifyLeadBody) {
     return this.salesAssistant.qualifyLead(body.company, body.contact, body.budget, body.timeline, body.requirements);
   }
 
   @Post('sales/generate-proposal')
+  @ApiOperation({ summary: 'Generate a sales proposal' })
   async generateProposal(@Body() body: GenerateProposalBody) {
     return this.salesAssistant.generateProposal(body.clientName, body.projectType, body.scope, body.timeline, body.budget);
   }
 
   // PM Assistant endpoints
   @Post('pm/plan-sprint')
+  @ApiOperation({ summary: 'Plan a sprint with PM assistant' })
   async planSprint(@Body() body: PlanSprintBody) {
     return this.pmAssistant.planSprint(body.teamCapacity, body.backlog, body.dependencies, body.velocity);
   }
 
   @Post('pm/predict-risk')
+  @ApiOperation({ summary: 'Predict project risk with PM assistant' })
   async predictRisk(@Body() body: PredictRiskBody) {
     return this.pmAssistant.predictRisk(body.projectData);
   }
 
   // Generative Visualization endpoints
   @Post('visualization/lighting-design')
+  @ApiOperation({ summary: 'Design lighting for a project' })
   async designLighting(@Body() body: DesignLightingBody) {
     return this.lightingDesigner.designLighting(
       body.projectType,
@@ -200,11 +215,13 @@ export class AssistantsController {
   }
 
   @Post('visualization/lighting-from-reference')
+  @ApiOperation({ summary: 'Recommend lighting from reference image' })
   async lightingFromReference(@Body() body: { referenceImageDescription: string; targetSpace: string }) {
     return this.lightingDesigner.recommendFromReference(body.referenceImageDescription, body.targetSpace);
   }
 
   @Post('visualization/material-recommendations')
+  @ApiOperation({ summary: 'Get material recommendations' })
   async recommendMaterials(@Body() body: RecommendMaterialsBody) {
     return this.materialRecommender.recommendMaterials(
       body.projectType,
@@ -215,12 +232,14 @@ export class AssistantsController {
   }
 
   @Post('visualization/material-from-reference')
+  @ApiOperation({ summary: 'Match material from reference image' })
   async materialFromReference(@Body() body: { referenceDescription: string; targetElement: string }) {
     return this.materialRecommender.matchFromReference(body.referenceDescription, body.targetElement);
   }
 
   // Predictive Analytics endpoints
   @Post('analytics/forecast-timeline')
+  @ApiOperation({ summary: 'Forecast project timeline' })
   async forecastTimeline(@Body() body: ForecastTimelineBody) {
     return this.predictiveAnalytics.forecastTimeline(
       body.projectType,
@@ -232,16 +251,19 @@ export class AssistantsController {
   }
 
   @Post('analytics/assess-risks')
+  @ApiOperation({ summary: 'Assess project risks' })
   async assessRisks(@Body() body: AssessRisksBody) {
     return this.predictiveAnalytics.assessRisks(body.projectData);
   }
 
   @Post('analytics/optimize-resources')
+  @ApiOperation({ summary: 'Optimize resource allocation' })
   async optimizeResources(@Body() body: OptimizeResourcesBody) {
     return this.predictiveAnalytics.optimizeResources(body.projects, body.availableTeam);
   }
 
   @Post('analytics/forecast-budget')
+  @ApiOperation({ summary: 'Forecast project budget' })
   async forecastBudget(@Body() body: ForecastBudgetBody) {
     return this.predictiveAnalytics.forecastBudget(
       body.projectType,
@@ -253,6 +275,7 @@ export class AssistantsController {
 
   // Health check for all assistants
   @Get('health')
+  @ApiOperation({ summary: 'Health check for all assistants' })
   async getHealth() {
     return this.assistantsService.healthCheck();
   }
