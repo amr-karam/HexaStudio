@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { makeTransition } from '@/lib/motion';
+import { ChapterHeading } from '@/components/scroll/ChapterHeading';
 import { useReducedMotion } from '@/hooks';
 
 const steps = [
@@ -111,7 +112,7 @@ export const ProcessSection = () => {
   const headingY = useTransform(scrollYProgress, [0, 0.3], [60, 0]);
 
   return (
-    <section
+      <section
       ref={sectionRef}
       className="relative px-8 md:px-16 py-32 bg-background overflow-hidden"
     >
@@ -119,38 +120,16 @@ export const ProcessSection = () => {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gold/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-7xl mx-auto">
-        {/* Header */}
+        {/* Header — CH. II */}
         <motion.div style={reducedMotion ? {} : { y: headingY }} className="mb-24">
-          <motion.span
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={makeTransition('entrance', 'component')}
-            className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
-          >
-            Our Process
-          </motion.span>
-
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={makeTransition('entrance', 'page')}
-            className="text-5xl md:text-7xl font-serif font-light tracking-tight text-foreground leading-[1.1]"
-          >
-            How We <span className="italic text-gold">Create</span>
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={makeTransition('entrance', 'page', 0.15)}
-            className="text-base text-neutral-500 font-light leading-relaxed w-full max-w-lg mt-6"
-          >
-            From first sketch to final render, every project follows a proven workflow
-            that balances creative ambition with architectural precision.
-          </motion.p>
+          <ChapterHeading
+            index={3}
+            chapter="Method"
+            kicker="Our Process"
+            title="How We Create"
+            accentWords={['Create']}
+            description="From first sketch to final render, every project follows a proven workflow that balances creative ambition with architectural precision."
+          />
         </motion.div>
 
         {/* Steps grid */}

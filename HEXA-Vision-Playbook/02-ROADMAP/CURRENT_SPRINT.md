@@ -1,3 +1,73 @@
+# CURRENT SPRINT: SIGNATURE SCROLL EXPERIENCE — SCROLL CINEMA INITIATIVE
+
+**Sprint ID:** S-015 | **Focus:** Prompt 017 Scroll Motion Primitives, Global DNA Layer, Chapter Navigation | **Status:** 🔄 IN PROGRESS | **Started:** 2026-07-22
+
+## 1. SPRINT OBJECTIVE
+
+Implement the foundation layer for Prompt 017 — the cinematic scroll experience derived from the 30 reference sites. Deliver reusable, policy-compliant motion primitives (scroll velocity, chapter markers, chapter progress rail, contact ribbon) and wire them into the global layout, creating the scaffolding on which the homepage, project detail, and blog scroll cinema will be built.
+
+---
+
+## 2. DELIVERABLES
+
+### P0 — Motion Primitives
+- [x] `useScrollVelocity` hook (MotionValue, static mode = 0, Lenis-aware, RAF cleanup)
+- [x] `ChapterMarker` component (roman numerals, editorial serif-italic, decorative)
+- [x] `ChapterProgress` component (side rail, IntersectionObserver, fine-pointer only, a11y nav)
+- [x] `ContactRibbon` component (infinite marquee CTA, hover/focus pause, static fallback)
+- [x] Barrels updated in `src/hooks/index.ts`, `src/components/animation/index.ts`, `src/components/ui/index.ts`
+
+### P1 — Global Integration
+- [x] `ContactRibbon` mounted inside `Footer.tsx` (above CTA strip)
+- [x] `Magnetic` exported from `ui/index.ts` for global magnetic button usage
+
+### P2 — Homepage Scroll Cinema
+- [x] `HomeChapterRail` updated to 5 chapters (Vision / Craft / Method / Proof / Contact)
+- [x] `page.tsx` restructured into chapter wrappers with `SectionReveal` sticky-stack hand-offs
+- [x] Chapter markers updated in `FeaturedWork`, `ProcessSection`, `AchievementsSection`, `ProjectGrid`, `TestimonialsSection`, `CTASection`
+- [x] Velocity shear added to `ProjectGrid` cards (demilie.ru DNA)
+- [x] `FractureRingHero` + `FractureRingScene` created and wired into `HomeHero` (CodePen reference)
+
+### P3 — Projects Detail Scroll Cinema
+- [x] `ProjectChapterRail` — thin wrapper around `ChapterProgress` for project detail pages (01–05: Hero/Brief/Experience/Details/Next)
+- [x] `ProjectScrollCinema` — 5-chapter orchestrator: Hero (3D/cover), Brief (editorial metadata + 80ms stagger), Experience (pinned 3D scrub via ScrollTrigger), Details (counters + live status), Next (progress ring + CTA)
+- [x] `projects/[slug]/page.tsx` refactored: server component fetches project + next project, passes to `ProjectScrollCinema`
+- [x] Chapter markers wired into each section; `ChapterProgress` rail mounted for desktop fine-pointer
+
+### P4 — Blog Portal Scroll Cinema
+- [x] `ReadingProgress` — fixed top-edge hairline (`scaleX`-only, RAF-driven, `role="progressbar"`, static under reduced motion)
+- [x] `ArticleDetailClient.tsx` refactored: reading progress hairline + GSAP scroll reveals for excerpt and content blocks
+- [x] Blog index (`blog/page.tsx`) — velocity shear (demilie.ru DNA) applied to article card grid; "Read →" cursor morph on hover
+
+### P5 — Documentation & Quality
+- [x] `COMPONENT_GUIDE.md` updated with ReadingProgress, ProjectChapterRail, ProjectScrollCinema
+- [x] `MOTION_SYSTEM.md` updated: reading progress + project scroll cinema rows in reduced-motion and coarse-pointer matrices
+- [x] Quality gates: lint 0 errors, typecheck 0 errors, 176 tests passing
+
+---
+
+## 3. SPRINT METRICS
+
+| Metric | Target | Actual | Status |
+|--------|--------|--------|--------|
+| New primitives | 5 | 5 | Complete |
+| New components | 3 | 3 (FractureRingHero, FractureRingScene, texture utility) | Complete |
+| New unit tests | 20 | 20 | Complete |
+| Existing test regressions | 0 | 0 | Complete |
+| Frontend typecheck | 0 errors | 0 errors | Complete |
+| Frontend lint | 0 errors / 0 warnings | 0 errors / 0 warnings | Complete |
+| Total frontend tests | 176 | 176 | Complete |
+
+---
+
+## 4. NEXT PHASE
+
+- **P3 — Projects Detail:** chaptered `/portfolio/[slug]` case study with pinned 3D scrub and side pagination rail.
+- **P4 — Blog Portal:** portal editorial transitions and velocity-reactive card grid.
+- **P5 — Creative Excellence Report:** Lighthouse, real-device sweep, a11y regression, luxury scoring.
+
+---
+
 # CURRENT SPRINT: CMS CONTENT INTEGRATION & ODOO ENRICHMENT
 
 **Sprint ID:** S-014 | **Focus:** CMS Content Types, Backend Content Proxies, CMS-Driven Pages, Odoo Live Status | **Status:** ✅ COMPLETE | **Started:** 2026-07-20 | **Completed:** 2026-07-20

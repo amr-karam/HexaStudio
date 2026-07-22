@@ -94,7 +94,7 @@ Use subtle parallax to create a 3D feel on 2D pages:
 
 **Coarse pointer:** Parallax disabled on touch devices.
 
-### The "Surgical" Hover
+ ### The "Surgical" Hover
 
 Avoid jarring changes. Use transitions for:
 - `opacity`
@@ -103,6 +103,16 @@ Avoid jarring changes. Use transitions for:
 - `border-color`
 
 **Coarse pointer:** Hover effects replaced with tap feedback.
+
+### "Scroll Cinema" / Chapter Pacing (Prompt 017)
+
+Long pages are treated as a film composed of chapters. Each chapter follows a **hold → scrub → cut** rhythm:
+- **Hold (0–30%)**: content is static and readable.
+- **Scrub (30–70%)**: scroll-driven animation advances (only `transform`/`opacity`).
+- **Cut (70–100%)**: a fast, decisive transition to the next chapter.
+
+Markers: `(CH. I) — VISION` labels are decorative; real headings keep semantic order.
+Navigation: `ChapterProgress` rail is decorative/pointer-only; keyboard users scroll naturally.
 
 ---
 
@@ -139,6 +149,11 @@ Complete mapping of every effect to its behavior under `prefers-reduced-motion: 
 | Hover effects | Instant state change |
 | Focus ring animation | Instant appearance |
 | Ambient scene route entrance | Render at final state |
+| Scroll velocity / velocity shear | Returns 0; no skew/shear motion |
+| Chapter navigation rail | Static, non-animating; natural scroll remains |
+| Contact ribbon marquee | Static centered label (no continuous motion) |
+| Reading progress hairline | Renders at 0 width (static); no RAF loop |
+| Project scroll cinema pinned 3D scrub | Renders flat (no pin, no scrub); content stacks normally |
 
 **Permitted under reduced motion:** Brief opacity crossfade (max 0.2s) only when it aids comprehension of a state change (e.g., content replacement).
 
@@ -158,6 +173,10 @@ Complete mapping of every effect to its behavior on touch/coarse pointer devices
 | 3D mouse orbit | Disabled (use touch gestures) |
 | Hover-only tooltips | Tap to reveal instead |
 | Hover card flip | Tap to flip instead |
+| Scroll velocity shear / parallax | Disabled |
+| Chapter progress rail | Hidden (decorative only; natural scroll is sufficient) |
+| Contact ribbon | Link remains; no hover pause, focus pauses marquee |
+| Reading progress hairline | Still tracks scroll (RAF-based, no pointer dependency) |
 
 Detection: `useFinePointer()` hook returns `false` on touch devices.
 
