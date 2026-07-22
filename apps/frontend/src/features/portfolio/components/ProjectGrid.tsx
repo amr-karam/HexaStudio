@@ -9,6 +9,7 @@ import { Magnetic } from '@/components/ui/Magnetic';
 import { ChapterMarker } from '@/components/animation/ChapterMarker';
 import { KineticTitle } from '@/components/scroll/KineticTitle';
 import { getGsap } from '@/lib/gsap';
+import { onIdle } from '@/lib/idle';
 import { cn } from '@/lib/utils';
 import { EASE, DURATION, makeTransition } from '@/lib/motion';
 import { velocityToSkew } from '@/lib/motion/scroll-utils';
@@ -64,6 +65,7 @@ const ProjectCard = ({ title, category, image, index, onClick, isFocused, status
     let cancelled = false;
     let ctx: { revert: () => void } | null = null;
 
+    const cancelIdle = onIdle(() => {
     void (async () => {
       const gsap = await getGsap();
       if (cancelled) return;
@@ -87,9 +89,11 @@ const ProjectCard = ({ title, category, image, index, onClick, isFocused, status
         );
       }, card);
     })();
+    }, 1200);
 
     return () => {
       cancelled = true;
+      cancelIdle();
       ctx?.revert();
     };
   }, [reducedMotion, isLowTier]);
@@ -265,12 +269,15 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
   // Filtering shifts card positions — re-measure all scroll choreography.
   useEffect(() => {
     let cancelled = false;
-    void (async () => {
-      const { ScrollTrigger } = await import('gsap/ScrollTrigger');
-      if (!cancelled) ScrollTrigger.refresh();
-    })();
+    const cancelIdle = onIdle(() => {
+      void (async () => {
+        const { ScrollTrigger } = await import('gsap/ScrollTrigger');
+        if (!cancelled) ScrollTrigger.refresh();
+      })();
+    });
     return () => {
       cancelled = true;
+      cancelIdle();
     };
   }, [filteredProjects]);
 
