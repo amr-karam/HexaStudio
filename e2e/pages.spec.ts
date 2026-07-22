@@ -156,7 +156,7 @@ test.describe("SEO metadata", () => {
   test("has JSON-LD structured data", async ({ page }) => {
     await page.goto("/");
     const jsonLd = page.locator('script[type="application/ld+json"]');
-    await expect(jsonLd).toBeVisible();
+    await expect(jsonLd).toBeAttached();
   });
 });
 
