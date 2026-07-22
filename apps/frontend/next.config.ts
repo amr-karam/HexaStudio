@@ -14,6 +14,16 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["three", "@react-three/fiber", "@react-three/drei", "gsap"],
   },
+  async headers() {
+    return [
+      {
+        source: '/_next/static/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
+    ];
+  },
   async redirects() {
     return [
       { source: "/portfolio", destination: "/projects", permanent: true },

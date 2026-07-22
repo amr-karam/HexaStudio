@@ -71,6 +71,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" dir="ltr">
+      <head>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://api.hexastudio.net" />
+      </head>
       <body className="min-h-screen bg-background text-foreground antialiased">
         <noscript>
           <style>{`
