@@ -11,6 +11,7 @@ import { StrapiBlocks } from '@/components/ui/StrapiBlocks';
 import { ReadingProgress } from '@/components/animation/ReadingProgress';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { getGsap } from '@/lib/gsap';
+import { onIdle } from '@/lib/idle';
 import { GSAP_EASING } from '@/lib/motion/tokens';
 
 interface Article {
@@ -41,6 +42,7 @@ export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
     let cancelled = false;
     let ctx: { revert: () => void } | null = null;
 
+    const cancelIdle = onIdle(() => {
     void (async () => {
       const [gsap] = await Promise.all([
         getGsap(),
@@ -91,9 +93,11 @@ export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
         }
       }, content);
     })();
+    }, 1200);
 
     return () => {
       cancelled = true;
+      cancelIdle();
       ctx?.revert();
     };
   }, [staticMode]);
