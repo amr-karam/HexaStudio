@@ -20,7 +20,7 @@ const withBundleAnalyzer = bundleAnalyzer({
  */
 const ContentSecurityPolicy = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.googletagmanager.com https://us.i.posthog.com https://www.gstatic.com",
+  "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.googletagmanager.com https://us.i.posthog.com https://www.gstatic.com https://static.cloudflareinsights.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
   "img-src 'self' data: blob: https:",
@@ -31,7 +31,7 @@ const ContentSecurityPolicy = [
     "https://fonts.googleapis.com https://fonts.gstatic.com https://www.gstatic.com",
     "https://us.i.posthog.com https://us.posthog.com https://*.posthog.com",
     "https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com",
-    "https://*.sentry.io",
+    "https://*.sentry.io", "https://cloudflareinsights.com",
   ].join(" "),
   "worker-src 'self' blob:",
   "frame-src 'none'",
