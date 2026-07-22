@@ -1,16 +1,19 @@
 /**
- * SplineField (S15-FX-003) — flow-path authoring for the particle engine.
+ * SplineField (S15-FX-003) — flow-path authoring for the Living Blueprint.
  *
- * A field is a set of closed Catmull-Rom splines. Each spline is baked into
- * one row of a DataTexture (RGBA float, x/y/z = position) so the velocity
- * shader can look up "where should this particle be heading" with a single
- * texture fetch: u = curve parameter t, v = spline row.
+ * A field is a named collection of closed Catmull‑Rom splines. Each spline
+ * is baked row-by-row into a Float DataTexture (RGBA, u = curve t, v = spline
+ * index) so the simulation shader can resolve "where should this particle be?"
+ * with a single texture fetch.
  *
- * Fields are plain data (JSON-serializable control points), mirroring the
- * `-SPLINES.json` authoring pattern of the reference site — future scenes
- * (S-017) swap fields, not code.
+ * Features:
+ *  - Catmull‑Rom spline interpolation with configurable tension
+ *  - Multiple authored sets: hero‑vortex, architecture‑grid, transition‑dissolve
+ *  - JSON‑authorable format: `{ name, tension, closed, points: Vec3[] }`
+ *  - Set‑to‑set morphing (lerp control points, re‑bake)
+ *  - CPU‑side nearest‑segment query for attraction computation
+ *  - RepeatWrapping on the lookup texture for seamless t=0→1 wrap
  */
-
 import {
   CatmullRomCurve3,
   DataTexture,
@@ -19,25 +22,51 @@ import {
   RepeatWrapping,
   RGBAFormat,
   Vector3,
+  type Curve,
 } from 'three';
 
 /* -------------------------------------------------------------------------- */
 /*  Types                                                                      */
 /* -------------------------------------------------------------------------- */
 
-export interface SplineFieldData {
-  name: string;
-  /** One array of [x, y, z] control points per spline. All splines closed. */
-  splines: [number, number, number][][];
+/** A single spline definition — JSON‑authorable. */
+export interface SplineDef {
+  /** Control points in world space [x, y, z]. */
+  points: [number, number, number][];
+  /** Catmull‑Rom curve type. Default: 'centripetal' for even-parameterised loops. */
+  curveType?: 'centripetal' | 'chordal' | 'catmullrom';
+  /** Tension (0..1), only used when curveType is 'catmullrom'. */
+  tension?: number;
+  /** Whether the spline loops back to its start. Default: true. */
+  closed?: boolean;
 }
 
+/** A named collection of splines. Designed for drop‑in JSON authoring. */
+export interface SplineFieldData {
+  name: string;
+  splines: SplineDef[];
+}
+
+/** Baked field ready for GPU consumption. */
 export interface BakedSplineField {
-  /** Position lookup texture: u = t along curve, v = spline index. */
+  /** Position lookup texture: u = t along curve (0..1), v = spline row index. */
   texture: DataTexture;
   splineCount: number;
-  /** CPU-side curves, reused to scatter initial particle positions. */
+  /** CPU curves — used to scatter initial particle positions and for nearest‑segment queries. */
   curves: CatmullRomCurve3[];
+  /** Original field name for debugging / morph tracking. */
+  name: string;
+  /** Texture + internal resources. */
   dispose: () => void;
+}
+
+/** Result of a nearest-segment lookup on the CPU. */
+export interface NearestSegmentResult {
+  point: Vector3;
+  tangent: Vector3;
+  distance: number;
+  splineIndex: number;
+  parameterT: number;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -46,23 +75,36 @@ export interface BakedSplineField {
 
 const SAMPLES_PER_SPLINE = 256;
 
+/**
+ * Bake a SplineFieldData into GPU textures and CPU curves.
+ *
+ * Each spline becomes one row (v-coordinate) of the output texture. Within
+ * each row, SAMPLES_PER_SPLINE points are sampled uniformly by arc‑length
+ * (getPointAt), producing a u‑coordinate from 0→1 that wraps via
+ * RepeatWrapping.
+ */
 export function bakeSplineField(data: SplineFieldData): BakedSplineField {
   const splineCount = data.splines.length;
   const pixels = new Float32Array(SAMPLES_PER_SPLINE * splineCount * 4);
 
-  const curves = data.splines.map(
-    (points) =>
-      new CatmullRomCurve3(
-        points.map(([x, y, z]) => new Vector3(x, y, z)),
-        true, // closed loop — flowT wraps seamlessly
-        'centripetal',
-      ),
-  );
+  const curves = data.splines.map((def) => {
+    const pts = def.points.map(([x, y, z]) => new Vector3(x, y, z));
+    const closed = def.closed ?? true;
+    const curveType = def.curveType ?? 'centripetal';
+    const tension = def.tension ?? 0.5;
+    return new CatmullRomCurve3(
+      pts,
+      closed,
+      curveType,
+      tension,
+    );
+  });
 
   const sample = new Vector3();
   curves.forEach((curve, row) => {
     for (let i = 0; i < SAMPLES_PER_SPLINE; i++) {
-      curve.getPointAt(i / (SAMPLES_PER_SPLINE - 1), sample);
+      const t = i / (SAMPLES_PER_SPLINE - 1);
+      curve.getPointAt(t, sample);
       const idx = (row * SAMPLES_PER_SPLINE + i) * 4;
       pixels[idx] = sample.x;
       pixels[idx + 1] = sample.y;
@@ -80,57 +122,349 @@ export function bakeSplineField(data: SplineFieldData): BakedSplineField {
   );
   texture.minFilter = LinearFilter;
   texture.magFilter = LinearFilter;
-  texture.wrapS = RepeatWrapping; // flowT wraps around the closed loop
+  texture.wrapS = RepeatWrapping;
   texture.needsUpdate = true;
 
   return {
     texture,
     splineCount,
     curves,
+    name: data.name,
     dispose: () => texture.dispose(),
   };
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Field: "hero vortex" (S-015)                                               */
+/*  Nearest‑segment query (CPU)                                                */
+/* -------------------------------------------------------------------------- */
+
+const _tempVec = new Vector3();
+const _tempTan = new Vector3();
+
+/**
+ * For a given world‑space position, find the closest point on any spline
+ * and return its location, tangent direction, and distance.
+ *
+ * Used by the cursor force‑field to compute the nearest attraction source,
+ * and by the editor to snap control points to geometry.
+ */
+export function nearestSegment(
+  worldPos: Vector3,
+  field: BakedSplineField,
+  samplesPerCurve = 64,
+): NearestSegmentResult {
+  let best: NearestSegmentResult = {
+    point: new Vector3(),
+    tangent: new Vector3(),
+    distance: Infinity,
+    splineIndex: 0,
+    parameterT: 0,
+  };
+
+  for (let s = 0; s < field.curves.length; s++) {
+    const curve = field.curves[s];
+    for (let i = 0; i <= samplesPerCurve; i++) {
+      const t = i / samplesPerCurve;
+      curve.getPointAt(t, _tempVec);
+      const d = worldPos.distanceToSquared(_tempVec);
+      if (d < best.distance) {
+        best.distance = d;
+        best.point.copy(_tempVec);
+        curve.getTangentAt(t, _tempTan);
+        best.tangent.copy(_tempTan);
+        best.splineIndex = s;
+        best.parameterT = t;
+      }
+    }
+  }
+
+  best.distance = Math.sqrt(best.distance);
+  return best;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Morphing between two spline fields                                         */
 /* -------------------------------------------------------------------------- */
 
 /**
- * Interleaved elliptical orbits around the hero headline: three tilted rings
- * plus a wide outer sweep. Generated procedurally for precision; hand-tuned
- * constants are the design decisions.
+ * Linearly interpolate the *control points* of two spline fields and re‑bake
+ * the result into a new GPU‑ready texture.
+ *
+ * @param from   Source field (blend factor 0).
+ * @param to     Target field (blend factor 1).
+ * @param blend  Normalised value 0..1.
+ * @param name   Label for the baked field (e.g. "morph:hero-vortex→arch-grid@0.5").
+ *
+ * Both fields must have the same number of splines with the same number of
+ * control points — otherwise this function throws. The caller is responsible
+ * for matching topology.
  */
-function ellipse(
+export function morphSplineFields(
+  from: SplineFieldData,
+  to: SplineFieldData,
+  blend: number,
+  name?: string,
+): SplineFieldData {
+  if (from.splines.length !== to.splines.length) {
+    throw new Error(
+      `Cannot morph fields with mismatched spline counts: ` +
+        `${from.name}(${from.splines.length}) vs ${to.name}(${to.splines.length})`,
+    );
+  }
+
+  const t = Math.max(0, Math.min(1, blend));
+  const morphed: SplineDef[] = [];
+
+  for (let i = 0; i < from.splines.length; i++) {
+    const fDef = from.splines[i];
+    const tDef = to.splines[i];
+
+    if (fDef.points.length !== tDef.points.length) {
+      throw new Error(
+        `Spline ${i}: mismatched control-point counts — ` +
+          `${from.name}[${i}] has ${fDef.points.length}, ` +
+          `${to.name}[${i}] has ${tDef.points.length}`,
+      );
+    }
+
+    const morphedPoints: [number, number, number][] = fDef.points.map(
+      (fp, j) => {
+        const tp = tDef.points[j];
+        return [
+          fp[0] + (tp[0] - fp[0]) * t,
+          fp[1] + (tp[1] - fp[1]) * t,
+          fp[2] + (tp[2] - fp[2]) * t,
+        ];
+      },
+    );
+
+    // Interpolate curve type: pick 'from' when t < 0.5, 'to' otherwise.
+    const curveType =
+      t < 0.5
+        ? fDef.curveType ?? 'centripetal'
+        : tDef.curveType ?? 'centripetal';
+
+    morphed.push({
+      points: morphedPoints,
+      curveType,
+      tension: fDef.tension ?? 0.5 + ((tDef.tension ?? 0.5) - (fDef.tension ?? 0.5)) * t,
+      closed: t < 0.5 ? (fDef.closed ?? true) : (tDef.closed ?? true),
+    });
+  }
+
+  return {
+    name: name ?? `morph:${from.name}→${to.name}@${t.toFixed(2)}`,
+    splines: morphed,
+  };
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Pre‑authored spline sets                                                   */
+/* -------------------------------------------------------------------------- */
+
+/** Helper to generate elliptical ring control points. */
+function ellipseRing(
   radiusX: number,
   radiusY: number,
-  z: number,
+  zOffset: number,
   tiltRad: number,
   segments = 12,
-  wobble = 0,
-  seed = 0,
+  wobbleAmp = 0,
+  wobbleFreq = 3,
+  phase = 0,
 ): [number, number, number][] {
   const pts: [number, number, number][] = [];
   for (let i = 0; i < segments; i++) {
     const a = (i / segments) * Math.PI * 2;
-    const w = wobble ? Math.sin(a * 3 + seed) * wobble : 0;
-    const x = Math.cos(a) * (radiusX + w);
-    const y = Math.sin(a) * (radiusY + w);
-    // Tilt around the X axis.
+    const wobble = wobbleAmp ? Math.sin(a * wobbleFreq + phase) * wobbleAmp : 0;
+    const rX = radiusX + wobble;
+    const rY = radiusY + wobble;
+    const x = Math.cos(a) * rX;
+    const y = Math.sin(a) * rY;
+    const z = zOffset;
+    // Tilt around X axis
+    const cosT = Math.cos(tiltRad);
+    const sinT = Math.sin(tiltRad);
+    pts.push([x, y * cosT - z * sinT, y * sinT + z * cosT]);
+  }
+  return pts;
+}
+
+/** Helper for straight line (open or closed). */
+function lineChain(
+  start: [number, number, number],
+  end: [number, number, number],
+  segments = 4,
+): [number, number, number][] {
+  const pts: [number, number, number][] = [];
+  for (let i = 0; i <= segments; i++) {
+    const t = i / segments;
     pts.push([
-      x,
-      y * Math.cos(tiltRad) - z * Math.sin(tiltRad),
-      y * Math.sin(tiltRad) + z * Math.cos(tiltRad),
+      start[0] + (end[0] - start[0]) * t,
+      start[1] + (end[1] - start[1]) * t,
+      start[2] + (end[2] - start[2]) * t,
     ]);
   }
   return pts;
 }
 
+// ── Hero‑Vortex (S‑015) ────────────────────────────────────────────────────
+
+/**
+ * Interleaved elliptical orbits around the hero headline region.
+ * Four tilted rings at varying scales create a layered, organic 3D vortex.
+ */
 export const HERO_VORTEX: SplineFieldData = {
   name: 'hero-vortex',
   splines: [
-    ellipse(3.2, 1.4, 0, 0.35, 12, 0.25, 1.7),
-    ellipse(2.6, 1.8, 0.4, -0.5, 12, 0.2, 4.1),
-    ellipse(3.8, 1.1, -0.3, 0.15, 12, 0.3, 2.3),
-    ellipse(4.6, 2.2, 0.6, -0.2, 12, 0.4, 5.9),
+    { points: ellipseRing(3.2, 1.4, 0, 0.35, 12, 0.25, 3, 1.7), tension: 0.5 },
+    { points: ellipseRing(2.6, 1.8, 0.4, -0.5, 12, 0.2, 3, 4.1), tension: 0.5 },
+    { points: ellipseRing(3.8, 1.1, -0.3, 0.15, 12, 0.3, 3, 2.3), tension: 0.5 },
+    { points: ellipseRing(4.6, 2.2, 0.6, -0.2, 12, 0.4, 3, 5.9), tension: 0.5 },
   ],
 };
+
+// ── Architecture‑Grid (S‑015) ───────────────────────────────────────────────
+
+/**
+ * Blueprint‑style rectilinear grid with construction‑line aesthetics.
+ * Horizontal sweep lines + vertical pillars form an architectural cage,
+ * echoing the blueprint UX that overlays the simulation.
+ */
+export const ARCHITECTURE_GRID: SplineFieldData = {
+  name: 'architecture-grid',
+  splines: [
+    // Horizontal sweep — wide bottom arc
+    {
+      points: [
+        [-5, -2.0, 0], [-3, -1.8, 0.2], [0, -1.7, 0], [3, -1.8, -0.2], [5, -2.0, 0],
+      ],
+      tension: 0.5,
+    },
+    // Mid‑horizon line
+    {
+      points: [
+        [-5, 0, -0.5], [-2.5, 0.1, -0.2], [0, 0, 0], [2.5, -0.1, 0.2], [5, 0, 0.5],
+      ],
+      tension: 0.5,
+    },
+    // Upper framing sweep
+    {
+      points: [
+        [-4.5, 1.8, 0], [-2, 2.0, 0.3], [0, 2.1, 0], [2, 2.0, -0.3], [4.5, 1.8, 0],
+      ],
+      tension: 0.5,
+    },
+    // Left vertical pillar (open top‑to‑bottom flow)
+    {
+      points: [
+        [-3.5, -2.5, -0.3], [-3.3, -1.0, -0.1], [-3.6, 1.0, 0.1], [-3.4, 2.5, 0.3],
+      ],
+      curveType: 'chordal',
+      tension: 0.5,
+      closed: false,
+    },
+    // Right vertical pillar
+    {
+      points: [
+        [3.5, -2.5, 0.3], [3.3, -1.0, 0.1], [3.6, 1.0, -0.1], [3.4, 2.5, -0.3],
+      ],
+      curveType: 'chordal',
+      tension: 0.5,
+      closed: false,
+    },
+    // Central crossing diagonals (construction marks)
+    {
+      points: [
+        [-4, -1.5, 0], [0, 0.5, 0.1], [4, 2.5, 0],
+      ],
+      curveType: 'catmullrom',
+      tension: 0.3,
+      closed: false,
+    },
+  ],
+};
+
+// ── Transition‑Dissolve (S‑015) ─────────────────────────────────────────────
+
+/**
+ * Sparse, divergent rays that emanate outward — designed for scroll‑driven
+ * dissolve or page‑transition effects where the particle field "evaporates"
+ * or "condenses" between two states.
+ */
+export const TRANSITION_DISSOLVE: SplineFieldData = {
+  name: 'transition-dissolve',
+  splines: [
+    // Radial burst — 8 spokes at 45° intervals in XY
+    {
+      points: [
+        [0, 0, 0], [1.0, 0.6, 0.1], [2.2, 1.4, 0.3], [4.0, 2.5, 0.6],
+      ],
+      curveType: 'catmullrom',
+      tension: 0.4,
+      closed: false,
+    },
+    {
+      points: [
+        [0, 0, 0], [0.6, 1.0, -0.1], [1.4, 2.2, -0.3], [2.5, 4.0, -0.6],
+      ],
+      curveType: 'catmullrom',
+      tension: 0.4,
+      closed: false,
+    },
+    {
+      points: [
+        [0, 0, 0], [-0.6, 1.0, 0.2], [-1.4, 2.2, 0.4], [-2.5, 4.0, 0.8],
+      ],
+      curveType: 'catmullrom',
+      tension: 0.4,
+      closed: false,
+    },
+    {
+      points: [
+        [0, 0, 0], [-1.0, 0.6, -0.2], [-2.2, 1.4, -0.4], [-4.0, 2.5, -0.8],
+      ],
+      curveType: 'catmullrom',
+      tension: 0.4,
+      closed: false,
+    },
+    {
+      points: [
+        [0, 0, 0], [1.0, -0.6, 0.15], [2.2, -1.4, 0.35], [4.0, -2.5, 0.65],
+      ],
+      curveType: 'catmullrom',
+      tension: 0.4,
+      closed: false,
+    },
+    {
+      points: [
+        [0, 0, 0], [-1.0, -0.6, -0.15], [-2.2, -1.4, -0.35], [-4.0, -2.5, -0.65],
+      ],
+      curveType: 'catmullrom',
+      tension: 0.4,
+      closed: false,
+    },
+    // Orbital decay ring (outer, counter‑clockwise)
+    {
+      points: ellipseRing(3.0, 1.8, 0.1, 0.2, 16, 0.15, 5, 0),
+      tension: 0.5,
+    },
+  ],
+};
+
+/* -------------------------------------------------------------------------- */
+/*  Spline‑set registry (for editor / runtime switching)                       */
+/* -------------------------------------------------------------------------- */
+
+export const SPLINE_SETS = {
+  'hero-vortex': HERO_VORTEX,
+  'architecture-grid': ARCHITECTURE_GRID,
+  'transition-dissolve': TRANSITION_DISSOLVE,
+} as const;
+
+export type SplineSetName = keyof typeof SPLINE_SETS;
+
+/** Lookup a named spline set by its string key. Returns undefined if unknown. */
+export function getSplineSet(name: string): SplineFieldData | undefined {
+  return SPLINE_SETS[name as SplineSetName];
+}

@@ -28,6 +28,10 @@ const Card = ({
   const MotionTag =
     as === 'article' ? motion.article : as === 'section' ? motion.section : motion.div;
 
+  // When only children are provided (no title, description, or image),
+  // skip the padded wrapper so children can use h-full to fill the card.
+  const hasOwnContent = !!(title || description || image);
+
   return (
     <MotionTag
       whileHover={hover ? { y: -4 } : undefined}
@@ -55,19 +59,23 @@ const Card = ({
           />
         </div>
       )}
-      <div className="p-6">
-        {title && (
-          <h3 className="text-xl font-serif mb-2 group-hover:text-accent transition-colors duration-300">
-            {title}
-          </h3>
-        )}
-        {description && (
-          <p className="text-sm text-white/60 line-clamp-2 mb-4 transition-colors duration-300 group-hover:text-white/80">
-            {description}
-          </p>
-        )}
-        {children}
-      </div>
+      {hasOwnContent ? (
+        <div className="p-6">
+          {title && (
+            <h3 className="text-xl font-serif mb-2 group-hover:text-accent transition-colors duration-300">
+              {title}
+            </h3>
+          )}
+          {description && (
+            <p className="text-sm text-white/60 line-clamp-2 mb-4 transition-colors duration-300 group-hover:text-white/80">
+              {description}
+            </p>
+          )}
+          {children}
+        </div>
+      ) : (
+        children
+      )}
     </MotionTag>
   );
 };
