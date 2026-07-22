@@ -1,101 +1,98 @@
 /**
- * ParticleSimulation (S15-FX-001) — GPGPU engine for The Living Blueprint.
+ * ParticleSimulation (S15-FX-001) — GPGPU ping-pong particle engine.
  *
  * Architecture:
- * ┌──────────────┐    ┌─────────────────┐    ┌───────────────┐
- * │  Position FBO │───▶│ simulation.frag │───▶│ Velocity FBO  │
- * │  (ping-pong)  │◀───│  curl + spline  │    │  (ping-pong)  │
- * └──────────────┘    │  + cursor force │    └───────────────┘
- *                     │  + damping      │
- *                     └────────┬────────┘
- *                              │ updated velocity
- *                     ┌────────▼────────┐
- *                     │ position.frag   │
- *                     │ Euler integrate │
- *                     └────────┬────────┘
- *                              │
- *              ┌───────────────▼──────────────┐
- *              │     Points geometry           │
- *              │  render.vert + render.frag   │
- *              │  soft additive gold sprites   │
- *              └──────────────────────────────┘
+ * ┌──────────────────┐     ┌──────────────────────────┐
+ * │  Position FBO    │────▶│  simulation.frag          │
+ * │  (ping-pong 0↔1) │     │  curl + spline + cursor   │
+ * └──────────────────┘     │  + damping → new velocity │
+ *                          └──────────┬───────────────┘
+ * ┌──────────────────┐               │
+ * │  Velocity FBO    │◀──────────────┘
+ * │  (ping-pong 0↔1) │
+ * └────────┬─────────┘
+ *          │ updated velocity
+ * ┌────────▼─────────┐
+ * │  position.frag   │
+ * │  Euler integrate │
+ * │  pos += vel * dt │
+ * └────────┬─────────┘
+ *          │
+ * ┌────────▼──────────────────────────────────────────┐
+ * │  THREE.Points geometry                             │
+ * │  render.vert: billboarded, size-attenuated         │
+ * │  render.frag: quintic soft disc + 2-stage gold LUT │
+ * │  AdditiveBlending, no depthWrite                   │
+ * └────────────────────────────────────────────────────┘
  *
- * Pure Three.js class (no React) — zero per-frame GC allocations.
- * Quality-tier-driven texture sizing via static TEXTURE_SIZES map.
- * Context-lost recovery: reinitialize on webglcontextrestored.
+ * Zero per-frame garbage-collection allocations.
+ * Pure Three.js class — no React / R3F dependency.
+ *
+ * Quality-tier-driven texture dimensions:
+ *   high   = 256² → 65,536 particles
+ *   medium = 128² → 16,384 particles
+ *   low    = null  → simulation never created
  */
-import {
-  AdditiveBlending,
-  BufferAttribute,
-  BufferGeometry,
-  Color,
-  DataTexture,
-  FloatType,
-  HalfFloatType,
-  LinearFilter,
-  Mesh,
-  NearestFilter,
-  OrthographicCamera,
-  PlaneGeometry,
-  Points,
-  RGBAFormat,
-  RepeatWrapping,
-  Scene,
-  ShaderMaterial,
-  Vector2,
-  Vector3,
-  WebGLRenderer,
-  WebGLRenderTarget,
-} from 'three';
+import * as THREE from 'three';
 
-import { bakeSplineField, type BakedSplineField, type SplineFieldData } from './SplineField';
+import { type SplineFieldData, bakeSplineField, type BakedSplineField } from './SplineField';
 import {
-  POSITION_FRAGMENT,
-  RENDER_FRAGMENT,
-  RENDER_VERTEX,
+  SIMULATION_VERTEX,
   SIMULATION_FRAGMENT,
-  SIM_VERTEX,
+  POSITION_FRAGMENT,
+  RENDER_VERTEX,
+  RENDER_FRAGMENT,
 } from './shaders';
 import type { QualityLevel } from '@/providers/quality-provider';
 
-/* -------------------------------------------------------------------------- */
-/*  Constants                                                                   */
-/* -------------------------------------------------------------------------- */
+/* ========================================================================== */
+/*  Constants                                                                  */
+/* ========================================================================== */
 
-/**
- * Simulation texture edge per quality tier.
- *   256² = 65,536 particles (high)
- *   128² = 16,384 particles (medium)
- *   null  = static poster fallback (low tier never creates a simulation)
- */
-export const TEXTURE_SIZE: Record<'high' | 'medium', number> = {
+/** Simulation texture edge length per quality tier. */
+const TEXTURE_SIZES: Record<'high' | 'medium', number> = {
   high: 256,
   medium: 128,
 };
 
-/** Clamp delta to prevent physics explosion after tab-switch / hitch. */
+/** Clamp delta to prevent physics explosion after tab-switch. */
 const MAX_DELTA_SEC = 1 / 30;
 
-/** Damped pointer lerp rate (framerate-normalised via exp) — prevents twitchy forces. */
-const POINTER_SMOOTH_RATE = 8;
+/** Damped pointer lerp rate (framerate-normalised via exponential decay). */
+const POINTER_SMOOTH_RATE = 10;
 
-/* -------------------------------------------------------------------------- */
+/** Default world bounds for NDC → world-space mapping. */
+interface WorldBounds {
+  xMin: number;
+  xMax: number;
+  yMin: number;
+  yMax: number;
+}
+
+const DEFAULT_WORLD_BOUNDS: WorldBounds = {
+  xMin: -6,
+  xMax: 6,
+  yMin: -3.5,
+  yMax: 3.5,
+};
+
+/* ========================================================================== */
 /*  Types                                                                      */
-/* -------------------------------------------------------------------------- */
+/* ========================================================================== */
 
 export interface SimulationParams {
-  /** Attraction strength towards spline targets. */
+  /** Attraction strength pulling particles toward spline targets. */
   attraction: number;
   /** Magnitude of divergence-free curl noise. */
   curlStrength: number;
-  /** Spatial frequency of the curl noise field. */
+  /** Spatial frequency of the curl noise field (higher = more detailed eddies). */
   curlScale: number;
-  /** Framerate-independent damping (higher = faster decay). */
+  /** Framerate-independent damping (higher = faster velocity decay). */
   damping: number;
   /** Cursor force radial radius in world units. */
-  pointerRadius: number;
+  cursorRadius: number;
   /** Cursor force magnitude multiplier. */
-  pointerForce: number;
+  cursorForce: number;
 }
 
 export const DEFAULT_SIM_PARAMS: SimulationParams = {
@@ -103,14 +100,16 @@ export const DEFAULT_SIM_PARAMS: SimulationParams = {
   curlStrength: 0.65,
   curlScale: 0.35,
   damping: 1.6,
-  pointerRadius: 1.8,
-  pointerForce: 3.0,
+  cursorRadius: 1.8,
+  cursorForce: 3.0,
 };
 
 export interface RenderParams {
   pointSize: number;
   opacity: number;
+  /** CSS hex — deep champagne. */
   colorBase: string;
+  /** CSS hex — bright ivory-gold for hot particle cores. */
   colorHot: string;
 }
 
@@ -121,130 +120,151 @@ const DEFAULT_RENDER_PARAMS: RenderParams = {
   colorHot: '#F5E3B3',
 };
 
-/** Texture-backed simulation reference; the Points object is what R3F renders. */
 export interface ParticleSimulationHandle {
-  readonly points: Points;
+  readonly points: THREE.Points;
   readonly simSize: number;
   readonly particleCount: number;
-  update(delta: number, renderer: WebGLRenderer, pixelRatio: number): void;
-  setPointer(world: Vector3, strength: number): void;
+  update(delta: number, mouseNDC: THREE.Vector2, qualityTier: QualityLevel): void;
+  setCursor(world: THREE.Vector3, strength: number): void;
+  setCursorActive(active: boolean): void;
   setSplines(data: SplineFieldData): void;
   setSimParams(partial: Partial<SimulationParams>): void;
   setRenderParams(partial: Partial<RenderParams>): void;
-  resizePoints(pixelRatio: number): void;
   dispose(): void;
 }
 
-/* -------------------------------------------------------------------------- */
+/* ========================================================================== */
 /*  ParticleSimulation                                                         */
-/* -------------------------------------------------------------------------- */
+/* ========================================================================== */
 
 export class ParticleSimulation implements ParticleSimulationHandle {
   readonly simSize: number;
   readonly particleCount: number;
-  readonly points: Points;
+  readonly points: THREE.Points;
 
-  /* ---- FBO ping-pong targets ---------------------------------------------- */
-  private posTargets: [WebGLRenderTarget, WebGLRenderTarget];
-  private velTargets: [WebGLRenderTarget, WebGLRenderTarget];
-  private cur = 0; // index of READ target in ping-pong
+  /* ---- GPGPU renderer (passed at construction, stored for compute passes) - */
+  private readonly renderer: THREE.WebGLRenderer;
+
+  /* ---- FBO ping-pong pairs — [0] and [1] swapped each frame -------------- */
+  private readonly posTargets: [THREE.WebGLRenderTarget, THREE.WebGLRenderTarget];
+  private readonly velTargets: [THREE.WebGLRenderTarget, THREE.WebGLRenderTarget];
+  private cur = 0;
 
   /* ---- Simulation pass infrastructure ------------------------------------- */
-  private readonly simScene: Scene;
-  private readonly simCamera: OrthographicCamera;
-  private readonly simMesh: Mesh;
+  private readonly simScene: THREE.Scene;
+  private readonly simCamera: THREE.OrthographicCamera;
+  private readonly simMesh: THREE.Mesh;
 
   /* ---- Materials ----------------------------------------------------------- */
-  private readonly simMaterial: ShaderMaterial;
-  private readonly posMaterial: ShaderMaterial;
-  private readonly renderMaterial: ShaderMaterial;
+  private readonly simMaterial: THREE.ShaderMaterial;
+  private readonly posMaterial: THREE.ShaderMaterial;
+  private readonly renderMaterial: THREE.ShaderMaterial;
 
-  /* ---- Pre-allocated textures --------------------------------------------- */
-  private initialPositions: DataTexture;
-  private initialVelocities: DataTexture;
-  private paramsTexture: DataTexture;
+  /* ---- Data textures — seeded once, updated on spline swap ---------------- */
+  private initialPositions: THREE.DataTexture;
+  private initialVelocities: THREE.DataTexture;
+  private paramsTexture: THREE.DataTexture;
+
+  /* ---- Baked spline field -------------------------------------------------- */
   private field: BakedSplineField | null = null;
 
-  /* ---- Pre-allocated geometry --------------------------------------------- */
-  private readonly pointsGeometry: BufferGeometry;
+  /* ---- Points geometry (dummy positions, lookup refs) --------------------- */
+  private readonly pointsGeometry: THREE.BufferGeometry;
 
-  /* ---- State --------------------------------------------------------------- */
+  /* ---- Pre-allocated state vectors (no per-frame allocation) -------------- */
   private time = 0;
   private seeded = false;
+  private readonly cursorWorld = new THREE.Vector3();
+  private readonly cursorSmooth = new THREE.Vector3();
+  private readonly cursorTarget = new THREE.Vector3();
+  private cursorStrengthTarget = 0;
+  private cursorStrength = 0;
 
-  /** Smoothed mouse position in world-space — damped each frame. */
-  private readonly pointer = new Vector3(0, 0, 0);
-  private readonly pointerTarget = new Vector3(0, 0, 0);
-  private pointerStrength = 0;
-  private pointerStrengthTarget = 0;
+  /* ---- World bounds for NDC → world mapping ------------------------------- */
+  private readonly worldBounds: WorldBounds;
 
-  /* ---- Simulation tunables ------------------------------------------------- */
+  /* ---- Simulation + render tunables --------------------------------------- */
   private simParams: SimulationParams;
   private renderParams: RenderParams;
 
-  /* ---- Context-lost recovery ---------------------------------------------- */
-  private glContextLost = false;
-  private onContextLost: () => void;
-  private onContextRestored: () => void;
-  private gl: WebGLRenderer | null = null;
+  /* ---- Context-lost recovery state ---------------------------------------- */
+  private contextLost = false;
+  private readonly onContextLost: () => void;
+  private readonly onContextRestored: () => void;
 
-  constructor(
-    tier: 'medium' | 'high',
-    field: SplineFieldData,
-    simOverrides?: Partial<SimulationParams>,
-    renderOverrides?: Partial<RenderParams>,
-  ) {
+  constructor(options: {
+    renderer: THREE.WebGLRenderer;
+    qualityTier: 'medium' | 'high';
+    splineField: SplineFieldData;
+    worldBounds?: Partial<WorldBounds>;
+    simOverrides?: Partial<SimulationParams>;
+    renderOverrides?: Partial<RenderParams>;
+  }) {
+    const {
+      renderer,
+      qualityTier,
+      splineField,
+      worldBounds: wbOverrides,
+      simOverrides,
+      renderOverrides,
+    } = options;
+
+    this.renderer = renderer;
     this.simParams = { ...DEFAULT_SIM_PARAMS, ...simOverrides };
     this.renderParams = { ...DEFAULT_RENDER_PARAMS, ...renderOverrides };
+    this.worldBounds = { ...DEFAULT_WORLD_BOUNDS, ...wbOverrides };
 
-    const size = TEXTURE_SIZE[tier];
+    const size = TEXTURE_SIZES[qualityTier];
     this.simSize = size;
     this.particleCount = size * size;
 
-    /* ---- Seed textures and field ------------------------------------------- */
-    this.field = bakeSplineField(field);
+    /* -- Seed spline field texture ------------------------------------------ */
+    this.field = bakeSplineField(splineField);
 
-    const posArray = new Float32Array(this.particleCount * 4);
-    const velArray = new Float32Array(this.particleCount * 4);
-    const paramArray = new Float32Array(this.particleCount * 4);
-    const scatter = new Vector3();
+    /* -- Allocate pixel buffers (4 floats per particle: x, y, z, w) -------- */
+    const count = this.particleCount;
+    const posBuffer = new Float32Array(count * 4);
+    const velBuffer = new Float32Array(count * 4);
+    const paramBuffer = new Float32Array(count * 4);
 
-    // Scatter all particles along their assigned spline segments.
-    for (let i = 0; i < this.particleCount; i++) {
+    const scatter = new THREE.Vector3();
+    for (let i = 0; i < count; i++) {
       const splineIdx = i % this.field.splineCount;
       const t = Math.random();
       this.field.curves[splineIdx].getPointAt(t, scatter);
 
       const idx = i * 4;
-      // Position: on-spline with small jitter for organic feel.
-      posArray[idx] = scatter.x + (Math.random() - 0.5) * 0.4;
-      posArray[idx + 1] = scatter.y + (Math.random() - 0.5) * 0.4;
-      posArray[idx + 2] = scatter.z + (Math.random() - 0.5) * 0.4;
-      posArray[idx + 3] = 1;
+      // Position: on-spline with small jitter for organic feel
+      posBuffer[idx] = scatter.x + (Math.random() - 0.5) * 0.4;
+      posBuffer[idx + 1] = scatter.y + (Math.random() - 0.5) * 0.4;
+      posBuffer[idx + 2] = scatter.z + (Math.random() - 0.5) * 0.4;
+      posBuffer[idx + 3] = 1;
 
-      // Per-particle metadata for the simulation shader.
-      // x = spline row in v-coordinate (0..1), y = flow offset t,
-      // z = individual flow speed, w = noise seed.
-      paramArray[idx] = (splineIdx + 0.5) / this.field.splineCount;
-      paramArray[idx + 1] = t;
-      paramArray[idx + 2] = 0.015 + Math.random() * 0.03;
-      paramArray[idx + 3] = Math.random();
+      // Per-particle metadata for the simulation shader:
+      //   x = spline row v-coordinate (normalised 0..1)
+      //   y = flow offset along spline (random initial t)
+      //   z = individual flow speed
+      //   w = noise seed for deterministic curl offset
+      paramBuffer[idx] = (splineIdx + 0.5) / this.field.splineCount;
+      paramBuffer[idx + 1] = t;
+      paramBuffer[idx + 2] = 0.015 + Math.random() * 0.03;
+      paramBuffer[idx + 3] = Math.random();
     }
 
-    this.initialPositions = this._makeDataTexture(posArray);
-    this.initialVelocities = this._makeDataTexture(velArray);
-    this.paramsTexture = this._makeDataTexture(paramArray);
+    this.initialPositions = this.createDataTexture(posBuffer);
+    this.initialVelocities = this.createDataTexture(velBuffer);
+    this.paramsTexture = this.createDataTexture(paramBuffer);
 
-    /* ---- Render targets --------------------------------------------------- */
-    this.posTargets = [this._makeTarget(), this._makeTarget()];
-    this.velTargets = [this._makeTarget(), this._makeTarget()];
+    /* -- Render targets (ping-pong pairs) ---------------------------------- */
+    this.posTargets = [this.createTarget(), this.createTarget()];
+    this.velTargets = [this.createTarget(), this.createTarget()];
 
-    /* ---- Simulation pass -------------------------------------------------- */
-    this.simScene = new Scene();
-    this.simCamera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    /* -- Simulation pass --------------------------------------------------- */
+    this.simScene = new THREE.Scene();
+    this.simCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
-    this.simMaterial = new ShaderMaterial({
-      vertexShader: SIM_VERTEX,
+    this.simMaterial = new THREE.ShaderMaterial({
+      vertexShader: SIMULATION_VERTEX,
       fragmentShader: SIMULATION_FRAGMENT,
       uniforms: {
         tPosition: { value: null },
@@ -257,17 +277,17 @@ export class ParticleSimulation implements ParticleSimulationHandle {
         uCurlStrength: { value: this.simParams.curlStrength },
         uCurlScale: { value: this.simParams.curlScale },
         uDamping: { value: this.simParams.damping },
-        uPointer: { value: new Vector3() },
-        uPointerStrength: { value: 0 },
-        uPointerRadius: { value: this.simParams.pointerRadius },
-        uPointerForce: { value: this.simParams.pointerForce },
+        uCursorWorld: { value: new THREE.Vector3() },
+        uCursorStrength: { value: 0 },
+        uCursorRadius: { value: this.simParams.cursorRadius },
+        uCursorForce: { value: this.simParams.cursorForce },
       },
       depthTest: false,
       depthWrite: false,
     });
 
-    this.posMaterial = new ShaderMaterial({
-      vertexShader: SIM_VERTEX,
+    this.posMaterial = new THREE.ShaderMaterial({
+      vertexShader: SIMULATION_VERTEX,
       fragmentShader: POSITION_FRAGMENT,
       uniforms: {
         tPosition: { value: null },
@@ -278,31 +298,33 @@ export class ParticleSimulation implements ParticleSimulationHandle {
       depthWrite: false,
     });
 
-    this.simMesh = new Mesh(new PlaneGeometry(2, 2), this.simMaterial);
+    this.simMesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), this.simMaterial);
     this.simMesh.frustumCulled = false;
     this.simScene.add(this.simMesh);
 
-    /* ---- Render pass geometry --------------------------------------------- */
-    // Each vertex is a lookup ref (UV) into the position texture.
-    // The GPU computes actual vertex positions from the sim texture.
-    this.pointsGeometry = new BufferGeometry();
-    const refs = new Float32Array(this.particleCount * 2);
-    for (let i = 0; i < this.particleCount; i++) {
+    /* -- Render-pass geometry ---------------------------------------------- */
+    this.pointsGeometry = new THREE.BufferGeometry();
+
+    // Dummy position buffer (unused — shader fetches from sim texture).
+    const dummyPositions = new Float32Array(count * 3);
+    this.pointsGeometry.setAttribute(
+      'position',
+      new THREE.BufferAttribute(dummyPositions, 3),
+    );
+
+    // Texture-lookup refs: maps each vertex to a texel in the sim texture.
+    const refs = new Float32Array(count * 2);
+    for (let i = 0; i < count; i++) {
       refs[i * 2] = ((i % size) + 0.5) / size;
       refs[i * 2 + 1] = (Math.floor(i / size) + 0.5) / size;
     }
-    // Dummy position attribute — required by BufferGeometry but unused
-    // since the vertex shader fetches from the simulation texture.
-    this.pointsGeometry.setAttribute(
-      'position',
-      new BufferAttribute(new Float32Array(this.particleCount * 3), 3),
-    );
-    this.pointsGeometry.setAttribute('aRef', new BufferAttribute(refs, 2));
-    // Null bounding sphere disables frustum culling — particles must always
-    // render regardless of their GPU-computed positions.
-    (this.pointsGeometry as unknown as { boundingSphere: null }).boundingSphere = null;
+    this.pointsGeometry.setAttribute('aRef', new THREE.BufferAttribute(refs, 2));
 
-    this.renderMaterial = new ShaderMaterial({
+    // Null bounding sphere — particles are GPU-positioned, so frustum
+    // culling must be disabled.
+    (this.pointsGeometry as unknown as Record<string, unknown>).boundingSphere = null;
+
+    this.renderMaterial = new THREE.ShaderMaterial({
       vertexShader: RENDER_VERTEX,
       fragmentShader: RENDER_FRAGMENT,
       uniforms: {
@@ -310,58 +332,71 @@ export class ParticleSimulation implements ParticleSimulationHandle {
         tVelocity: { value: this.initialVelocities },
         uPointSize: { value: this.renderParams.pointSize },
         uPixelRatio: { value: 1 },
-        uColorBase: { value: new Color(this.renderParams.colorBase) },
-        uColorHot: { value: new Color(this.renderParams.colorHot) },
+        uColorBase: { value: new THREE.Color(this.renderParams.colorBase) },
+        uColorHot: { value: new THREE.Color(this.renderParams.colorHot) },
         uOpacity: { value: this.renderParams.opacity },
       },
       transparent: true,
-      blending: AdditiveBlending,
+      blending: THREE.AdditiveBlending,
       depthWrite: false,
       depthTest: true,
     });
 
-    this.points = new Points(this.pointsGeometry, this.renderMaterial);
+    this.points = new THREE.Points(this.pointsGeometry, this.renderMaterial);
     this.points.frustumCulled = false;
 
-    /* ---- Context loss handlers -------------------------------------------- */
+    /* -- Context-loss handlers --------------------------------------------- */
     this.onContextLost = () => {
-      this.glContextLost = true;
+      this.contextLost = true;
     };
     this.onContextRestored = () => {
-      this.glContextLost = false;
+      this.contextLost = false;
       this.seeded = false;
     };
   }
 
-  /* ------------------------------------------------------------------------ */
+  /* ======================================================================== */
   /*  Public API                                                               */
-  /* ------------------------------------------------------------------------ */
+  /* ======================================================================== */
 
   /**
-   * Advance one simulation step. Call once per animation frame.
+   * Advance one simulation frame. Call once per animation frame.
    *
-   * @param delta   Frame delta in seconds (clamped internally).
-   * @param renderer The Three.js WebGLRenderer (set via `bindRenderer`).
-   * @param pixelRatio Current device pixel ratio for point sizing.
+   * Performs two GPGPU passes on the stored renderer:
+   *   1. Velocity update (simulation.frag)
+   *   2. Position integration (position.frag)
+   *
+   * After both passes, the render material is fed the latest textures
+   * for the display Points object.
+   *
+   * @param delta       Frame delta in seconds (clamped to 1/30s max).
+   * @param mouseNDC    Normalised device coordinates [-1, 1] for cursor force.
+   * @param qualityTier Current quality tier (used to gate update fidelity).
    */
-  update(delta: number, renderer: WebGLRenderer, pixelRatio: number): void {
-    if (this.glContextLost) return;
+  update(delta: number, mouseNDC: THREE.Vector2, qualityTier: QualityLevel): void {
+    if (this.contextLost) return;
+    if (qualityTier === 'low') return;
 
     const dt = Math.min(delta, MAX_DELTA_SEC);
     this.time += dt;
 
-    // Damped pointer smoothing — framerate-normalized exponential decay.
-    const alpha = 1 - Math.exp(-POINTER_SMOOTH_RATE * dt);
-    this.pointer.lerp(this.pointerTarget, alpha);
-    this.pointerStrength +=
-      (this.pointerStrengthTarget - this.pointerStrength) * alpha;
+    // ── Convert NDC → world-space cursor position ────────────────────────
+    const { xMin, xMax, yMin, yMax } = this.worldBounds;
+    this.cursorTarget.set(
+      THREE.MathUtils.mapLinear(mouseNDC.x, -1, 1, xMin, xMax),
+      THREE.MathUtils.mapLinear(mouseNDC.y, -1, 1, yMin, yMax),
+      0,
+    );
 
-    // Ensure renderer binding for context-lost recovery.
-    this.gl = renderer;
+    // Damped pointer smoothing — prevents twitchy force application.
+    const alpha = 1 - Math.exp(-POINTER_SMOOTH_RATE * dt);
+    this.cursorSmooth.lerp(this.cursorTarget, alpha);
+    this.cursorStrength += (this.cursorStrengthTarget - this.cursorStrength) * alpha;
 
     const read = this.cur;
     const write = 1 - this.cur;
 
+    // On the first frame (or after context restore), use the seed textures.
     const posRead = this.seeded
       ? this.posTargets[read].texture
       : this.initialPositions;
@@ -369,48 +404,55 @@ export class ParticleSimulation implements ParticleSimulationHandle {
       ? this.velTargets[read].texture
       : this.initialVelocities;
 
-    // ── Pass 1: velocity (curl + spline + cursor + damping) ────────────────
+    // ── Pass 1: Velocity update ───────────────────────────────────────────
     const su = this.simMaterial.uniforms;
     su.tPosition.value = posRead;
     su.tVelocity.value = velRead;
     su.uTime.value = this.time;
     su.uDelta.value = dt;
-    (su.uPointer.value as Vector3).copy(this.pointer);
-    su.uPointerStrength.value = this.pointerStrength;
+    (su.uCursorWorld.value as THREE.Vector3).copy(this.cursorSmooth);
+    su.uCursorStrength.value = this.cursorStrength;
 
     this.simMesh.material = this.simMaterial;
-    renderer.setRenderTarget(this.velTargets[write]);
-    renderer.render(this.simScene, this.simCamera);
+    this.renderer.setRenderTarget(this.velTargets[write]);
+    this.renderer.render(this.simScene, this.simCamera);
 
-    // ── Pass 2: position (Euler integration) ───────────────────────────────
+    // ── Pass 2: Position integration ──────────────────────────────────────
     const pu = this.posMaterial.uniforms;
     pu.tPosition.value = posRead;
     pu.tVelocity.value = this.velTargets[write].texture;
     pu.uDelta.value = dt;
 
     this.simMesh.material = this.posMaterial;
-    renderer.setRenderTarget(this.posTargets[write]);
-    renderer.render(this.simScene, this.simCamera);
+    this.renderer.setRenderTarget(this.posTargets[write]);
+    this.renderer.render(this.simScene, this.simCamera);
 
-    renderer.setRenderTarget(null);
+    this.renderer.setRenderTarget(null);
 
-    // ── Feed render material with latest position/velocity textures ────────
+    // ── Feed render material with latest textures ─────────────────────────
     const ru = this.renderMaterial.uniforms;
     ru.tPosition.value = this.posTargets[write].texture;
     ru.tVelocity.value = this.velTargets[write].texture;
-    ru.uPixelRatio.value = pixelRatio;
 
     this.cur = write;
     this.seeded = true;
   }
 
-  /** Set the cursor force field origin (world space) + strength (0 = off). */
-  setPointer(world: Vector3, strength: number): void {
-    this.pointerTarget.copy(world);
-    this.pointerStrengthTarget = strength;
+  /**
+   * Feed pre-computed cursor state from an external ForceField.
+   * Use instead of `update()` when ForceField handles NDC→world projection.
+   */
+  setCursor(world: THREE.Vector3, strength: number): void {
+    this.cursorTarget.copy(world);
+    this.cursorStrengthTarget = strength;
   }
 
-  /** Hot-swap the entire spline field at runtime (e.g. morph transition). */
+  /** Set cursor active state — used by ForceField to signal pointer presence. */
+  setCursorActive(active: boolean): void {
+    this.cursorStrengthTarget = active ? 1 : 0;
+  }
+
+  /** Hot-swap the spline field and re-seed particle positions. */
   setSplines(data: SplineFieldData): void {
     if (this.field) {
       this.field.dispose();
@@ -418,39 +460,38 @@ export class ParticleSimulation implements ParticleSimulationHandle {
     this.field = bakeSplineField(data);
     this.simMaterial.uniforms.tSpline.value = this.field.texture;
 
-    // Re-seed particle positions along the new splines so particles "snap"
-    // into valid flow paths immediately rather than slowly drifting back.
     const count = this.particleCount;
-    const posArray = new Float32Array(count * 4);
-    const paramArray = new Float32Array(count * 4);
-    const scatter = new Vector3();
+    const posBuffer = new Float32Array(count * 4);
+    const paramBuffer = new Float32Array(count * 4);
+    const scatter = new THREE.Vector3();
 
     for (let i = 0; i < count; i++) {
       const splineIdx = i % this.field.splineCount;
       const t = Math.random();
       this.field.curves[splineIdx].getPointAt(t, scatter);
+
       const idx = i * 4;
-      posArray[idx] = scatter.x + (Math.random() - 0.5) * 0.3;
-      posArray[idx + 1] = scatter.y + (Math.random() - 0.5) * 0.3;
-      posArray[idx + 2] = scatter.z + (Math.random() - 0.5) * 0.3;
-      posArray[idx + 3] = 1;
-      paramArray[idx] = (splineIdx + 0.5) / this.field.splineCount;
-      paramArray[idx + 1] = t;
-      paramArray[idx + 2] = 0.015 + Math.random() * 0.03;
-      paramArray[idx + 3] = Math.random();
+      posBuffer[idx] = scatter.x + (Math.random() - 0.5) * 0.3;
+      posBuffer[idx + 1] = scatter.y + (Math.random() - 0.5) * 0.3;
+      posBuffer[idx + 2] = scatter.z + (Math.random() - 0.5) * 0.3;
+      posBuffer[idx + 3] = 1;
+
+      paramBuffer[idx] = (splineIdx + 0.5) / this.field.splineCount;
+      paramBuffer[idx + 1] = t;
+      paramBuffer[idx + 2] = 0.015 + Math.random() * 0.03;
+      paramBuffer[idx + 3] = Math.random();
     }
 
     this.initialPositions.dispose();
     this.paramsTexture.dispose();
-    this.initialPositions = this._makeDataTexture(posArray);
-    this.paramsTexture = this._makeDataTexture(paramArray);
+    this.initialPositions = this.createDataTexture(posBuffer);
+    this.paramsTexture = this.createDataTexture(paramBuffer);
 
     this.simMaterial.uniforms.tParams.value = this.paramsTexture;
-    // Re-trigger seeding so simulation picks up new initial positions.
     this.seeded = false;
   }
 
-  /** Update simulation tunables at runtime without recreating materials. */
+  /** Update simulation tunables without recreating materials. */
   setSimParams(partial: Partial<SimulationParams>): void {
     Object.assign(this.simParams, partial);
     const su = this.simMaterial.uniforms;
@@ -458,8 +499,8 @@ export class ParticleSimulation implements ParticleSimulationHandle {
     if (partial.curlStrength !== undefined) su.uCurlStrength.value = partial.curlStrength;
     if (partial.curlScale !== undefined) su.uCurlScale.value = partial.curlScale;
     if (partial.damping !== undefined) su.uDamping.value = partial.damping;
-    if (partial.pointerRadius !== undefined) su.uPointerRadius.value = partial.pointerRadius;
-    if (partial.pointerForce !== undefined) su.uPointerForce.value = partial.pointerForce;
+    if (partial.cursorRadius !== undefined) su.uCursorRadius.value = partial.cursorRadius;
+    if (partial.cursorForce !== undefined) su.uCursorForce.value = partial.cursorForce;
   }
 
   /** Update render parameters at runtime (point size, opacity, colors). */
@@ -468,36 +509,34 @@ export class ParticleSimulation implements ParticleSimulationHandle {
     const ru = this.renderMaterial.uniforms;
     if (partial.pointSize !== undefined) ru.uPointSize.value = partial.pointSize;
     if (partial.opacity !== undefined) ru.uOpacity.value = partial.opacity;
-    if (partial.colorBase !== undefined) (ru.uColorBase.value as Color).set(partial.colorBase);
-    if (partial.colorHot !== undefined) (ru.uColorHot.value as Color).set(partial.colorHot);
+    if (partial.colorBase !== undefined) (ru.uColorBase.value as THREE.Color).set(partial.colorBase);
+    if (partial.colorHot !== undefined) (ru.uColorHot.value as THREE.Color).set(partial.colorHot);
   }
 
-  /** Signal resize — the render material re-reads pixelRatio from uniforms. */
-  resizePoints(pixelRatio: number): void {
-    this.renderMaterial.uniforms.uPixelRatio.value = pixelRatio;
+  /** Signal that the viewport device-pixel-ratio changed. */
+  setPixelRatio(ratio: number): void {
+    this.renderMaterial.uniforms.uPixelRatio.value = ratio;
   }
 
-  /* ------------------------------------------------------------------------ */
-  /*  Context-lost recovery                                                    */
-  /* ------------------------------------------------------------------------ */
+  /* ======================================================================== */
+  /*  Context-loss recovery                                                    */
+  /* ======================================================================== */
 
-  /**
-   * Register WebGL context event listeners on the canvas' DOM element.
-   * Call once after the Points object is mounted in the scene graph.
-   */
+  /** Register WebGL context event listeners. Call after mounting. */
   bindContextRecovery(domElement: HTMLCanvasElement): void {
     domElement.addEventListener('webglcontextlost', this.onContextLost);
     domElement.addEventListener('webglcontextrestored', this.onContextRestored);
   }
 
+  /** Remove WebGL context event listeners. Call before unmounting. */
   unbindContextRecovery(domElement: HTMLCanvasElement): void {
     domElement.removeEventListener('webglcontextlost', this.onContextLost);
     domElement.removeEventListener('webglcontextrestored', this.onContextRestored);
   }
 
-  /* ------------------------------------------------------------------------ */
-  /*  Disposal — anti-leak protocol                                            */
-  /* ------------------------------------------------------------------------ */
+  /* ======================================================================== */
+  /*  Disposal — full resource cleanup (no leaks)                              */
+  /* ======================================================================== */
 
   dispose(): void {
     this.posTargets.forEach((t) => t.dispose());
@@ -514,50 +553,59 @@ export class ParticleSimulation implements ParticleSimulationHandle {
     this.simScene.clear();
   }
 
-  /* ------------------------------------------------------------------------ */
+  /* ======================================================================== */
   /*  Private helpers                                                          */
-  /* ------------------------------------------------------------------------ */
+  /* ======================================================================== */
 
-  private _makeDataTexture(data: Float32Array): DataTexture {
-    const tex = new DataTexture(
+  private createDataTexture(data: Float32Array): THREE.DataTexture {
+    const tex = new THREE.DataTexture(
       data as unknown as BufferSource,
       this.simSize,
       this.simSize,
-      RGBAFormat,
-      FloatType,
+      THREE.RGBAFormat,
+      THREE.FloatType,
     );
-    tex.minFilter = NearestFilter;
-    tex.magFilter = NearestFilter;
+    tex.minFilter = THREE.NearestFilter;
+    tex.magFilter = THREE.NearestFilter;
     tex.needsUpdate = true;
     return tex;
   }
 
-  private _makeTarget(): WebGLRenderTarget {
-    return new WebGLRenderTarget(this.simSize, this.simSize, {
-      format: RGBAFormat,
-      type: HalfFloatType,
-      minFilter: NearestFilter,
-      magFilter: NearestFilter,
+  private createTarget(): THREE.WebGLRenderTarget {
+    return new THREE.WebGLRenderTarget(this.simSize, this.simSize, {
+      format: THREE.RGBAFormat,
+      type: THREE.HalfFloatType,
+      minFilter: THREE.NearestFilter,
+      magFilter: THREE.NearestFilter,
       depthBuffer: false,
       stencilBuffer: false,
     });
   }
 }
 
-/* -------------------------------------------------------------------------- */
+/* ========================================================================== */
 /*  Factory — quality-tier-aware constructor                                  */
-/* -------------------------------------------------------------------------- */
+/* ========================================================================== */
 
 /**
  * Create a ParticleSimulation for the given quality tier.
- * Returns null for 'low' tier (static poster fallback path).
+ * Returns null for 'low' tier — the caller should render a static fallback.
  */
 export function createParticleSimulation(
   tier: QualityLevel,
+  renderer: THREE.WebGLRenderer,
   field: SplineFieldData,
   simOverrides?: Partial<SimulationParams>,
   renderOverrides?: Partial<RenderParams>,
 ): ParticleSimulation | null {
   if (tier === 'low') return null;
-  return new ParticleSimulation(tier, field, simOverrides, renderOverrides);
+  return new ParticleSimulation({
+    renderer,
+    qualityTier: tier,
+    splineField: field,
+    simOverrides,
+    renderOverrides,
+  });
 }
+
+export { TEXTURE_SIZES as TEXTURE_SIZE };

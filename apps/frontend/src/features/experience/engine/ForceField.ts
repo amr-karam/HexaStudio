@@ -91,6 +91,11 @@ export class ForceField {
     this.targetStrength = 0;
   }
 
+  /** Whether the pointer is currently active (over the canvas). */
+  get isActive(): boolean {
+    return this.active;
+  }
+
   /* ------------------------------------------------------------------------ */
   /*  Per-frame update — projects NDC → world, computes velocity, feeds sim   */
   /* ------------------------------------------------------------------------ */
@@ -100,14 +105,13 @@ export class ForceField {
    *          ready to pass into `ParticleSimulation.setPointer()`.
    */
   step(camera: Camera, delta: number): { world: Vector3; strength: number } {
-    this.targetStrength = 0;
-
     if (!this.active) {
-      // No pointer — decay strength smoothly
-      this.strength = 0;
-      this.smoothedStrength = 0;
+      // Decay strength smoothly toward 0 when pointer is inactive.
+      this.targetStrength = 0;
+      const decay = 1 - Math.exp(-8 * delta);
+      this.smoothedStrength += (this.targetStrength - this.smoothedStrength) * decay;
       this.smoothedPoint.set(0, 0, 0);
-      return { world: this.smoothedPoint, strength: 0 };
+      return { world: this.smoothedPoint, strength: this.smoothedStrength };
     }
 
     // Project NDC to world-space intersection with the z=0 plane.
@@ -118,14 +122,15 @@ export class ForceField {
     );
 
     if (!didHit) {
-      this.strength = 0;
-      return { world: this.smoothedPoint, strength: 0 };
+      this.targetStrength = 0;
+      const decay = 1 - Math.exp(-8 * delta);
+      this.smoothedStrength += (this.targetStrength - this.smoothedStrength) * decay;
+      return { world: this.smoothedPoint, strength: this.smoothedStrength };
     }
 
     // Smooth the position to avoid jitter.
     const s = this.config.smoothing;
     this.smoothedPoint.lerp(this.hitPoint, s);
-    this.smoothedStrength = this.strength;
 
     // Compute cursor velocity in world units/s.
     this.velocity.subVectors(this.smoothedPoint, this.prevPoint).divideScalar(Math.max(delta, 0.001));
@@ -133,17 +138,18 @@ export class ForceField {
 
     const speed = this.velocity.length();
 
-    // Only apply force if the cursor is moving above the threshold.
+    // Map speed to target strength (capped at maxStrength).
     if (speed > this.config.velocityThreshold) {
-      // Map speed to strength (capped at maxStrength). Use a smooth curve
-      // so slow movements produce gentle ripples while fast sweeps explode.
-      this.strength = Math.min(speed * this.config.maxStrength, this.config.maxStrength);
+      this.targetStrength = Math.min(speed * this.config.maxStrength, this.config.maxStrength);
     } else {
-      // Decay slowly when stationary to avoid abrupt cut-off.
-      this.strength *= 1 - Math.min(4 * delta, 0.95);
+      this.targetStrength = 0;
     }
 
-    return { world: this.smoothedPoint.clone(), strength: this.strength };
+    // Smooth the strength toward target for natural ramp-up and decay.
+    const gain = 1 - Math.exp(-10 * delta);
+    this.smoothedStrength += (this.targetStrength - this.smoothedStrength) * gain;
+
+    return { world: this.smoothedPoint.clone(), strength: this.smoothedStrength };
   }
 
   /* ------------------------------------------------------------------------ */

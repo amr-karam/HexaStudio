@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useFinePointer } from '@/hooks/useFinePointer';
+import { useQualityTier } from '@/providers/quality-provider';
 
 /**
  * DEVELOPMENT ONLY — Ungated animation diagnostic.
@@ -17,6 +18,7 @@ export function AnimationDebug() {
   const policy = useMotionPolicy();
   const rawReducedMotion = useReducedMotion();
   const rawFinePointer = useFinePointer();
+  const { tier } = useQualityTier();
   const [gsapOk, setGsapOk] = useState<boolean | null>(null);
   const [lenisOk, setLenisOk] = useState<boolean | null>(null);
 
@@ -29,6 +31,11 @@ export function AnimationDebug() {
     console.log('staticMode:         ', policy.staticMode);
     console.log('paused (user):      ', policy.paused);
     console.log('reducedMotion (policy):', policy.reducedMotion);
+    console.log('quality tier:       ', tier.level);
+    console.log('particle count:     ', tier.level === 'high' ? '65K' : tier.level === 'medium' ? '16K' : 'disabled');
+    console.log('bloom enabled:      ', tier.level === 'high');
+    console.log('cursor force:       ', policy.finePointer && !policy.staticMode);
+    console.log('simulation active:  ', policy.animationsEnabled && tier.level !== 'low');
     try {
       console.log('localStorage pause: ', localStorage.getItem('hexa:animations-paused'));
     } catch {
@@ -70,9 +77,12 @@ export function AnimationDebug() {
       </div>
 
       <div className="space-y-0.5">
-        <DiagnosticRow label="framer-motion" ok />
         <DiagnosticRow label="GSAP" ok={gsapOk} unknown={gsapOk === null} />
         <DiagnosticRow label="Lenis" ok={lenisOk} unknown={lenisOk === null} />
+        <DiagnosticRow label="simulation" ok={policy.animationsEnabled && tier.level !== 'low'} warn />
+        <DiagnosticRow label="bloom" ok={tier.level === 'high'} warn />
+        <DiagnosticRow label="particles" ok={tier.level !== 'low'} warn detail={tier.level === 'high' ? '65K' : tier.level === 'medium' ? '16K' : 'off'} />
+        <DiagnosticRow label="cursor force" ok={policy.finePointer && !policy.staticMode} warn />
         <DiagnosticRow label="reduced motion" ok={!rawReducedMotion} warn />
         <DiagnosticRow label="fine pointer" ok={rawFinePointer} warn />
         <DiagnosticRow label="anim. enabled" ok={policy.animationsEnabled} warn />
@@ -87,11 +97,13 @@ function DiagnosticRow({
   ok,
   unknown,
   warn,
+  detail,
 }: {
   label: string;
   ok: boolean | null;
   unknown?: boolean;
   warn?: boolean;
+  detail?: string;
 }) {
   const color =
     unknown ? 'text-yellow-400' :
@@ -104,6 +116,7 @@ function DiagnosticRow({
       <span>{label}</span>
       <span className={color}>
         {unknown ? '⏳' : ok ? '✅' : warn ? '⚠️' : '❌'}
+        {detail && <span className="ml-1 text-white/40">({detail})</span>}
       </span>
     </div>
   );

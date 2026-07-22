@@ -74,6 +74,7 @@ export const ExperienceCanvas = ({
   const [isVisible, setIsVisible] = useState(true);
   const [webglSupported, setWebglSupported] = useState(true);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const cleanupContextRef = useRef<(() => void) | null>(null);
 
   // Pre-mount WebGL detection.
   useEffect(() => {
@@ -104,6 +105,13 @@ export const ExperienceCanvas = ({
     return () => document.removeEventListener('visibilitychange', handleVisibility);
   }, []);
 
+  // Cleanup WebGL context listeners on unmount.
+  useEffect(() => {
+    return () => {
+      cleanupContextRef.current?.();
+    };
+  }, []);
+
   // Webglcontextlost / restored.
   const handleCreated = React.useCallback(
     (state: { gl: { domElement: HTMLCanvasElement; setClearColor: (color: Color) => void } }) => {
@@ -119,6 +127,11 @@ export const ExperienceCanvas = ({
 
       state.gl.domElement.addEventListener('webglcontextlost', onContextLost);
       state.gl.domElement.addEventListener('webglcontextrestored', onContextRestored);
+
+      cleanupContextRef.current = () => {
+        state.gl.domElement.removeEventListener('webglcontextlost', onContextLost);
+        state.gl.domElement.removeEventListener('webglcontextrestored', onContextRestored);
+      };
     },
     [],
   );

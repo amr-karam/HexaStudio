@@ -5,3 +5,4 @@ export { usePerformanceMonitor } from './usePerformanceMonitor';
 export { useScrollProgress } from './useScrollProgress';
 export { useFinePointer } from './useFinePointer';
 export { useMotionPolicy } from './useMotionPolicy';
+export { useScrollVelocity } from './useScrollVelocity';

@@ -22,6 +22,7 @@ const _startLook = new Vector3();
 const _endLook = new Vector3();
 const _targetPos = new Vector3();
 const _targetLook = new Vector3();
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const _currentLook = new Vector3();
 const _targetQuat = new Quaternion();
 

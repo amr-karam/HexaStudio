@@ -8,3 +8,5 @@ export { GlassCard } from './GlassCard';
 export { CinematicText } from './CinematicText';
 export { ParallaxLayer } from './ParallaxLayer';
 export { ShimmerSkeleton } from './ShimmerSkeleton';
+export { ContactRibbon } from './ContactRibbon';
+export { Magnetic } from './Magnetic';

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ScrollFadeIn } from '@/components/ScrollFadeIn';
 import { Magnetic } from '@/components/ui/Magnetic';
+import { ContactRibbon } from '@/components/ui/ContactRibbon';
 import { useLocale } from '@/i18n/LocaleProvider';
 
 const socialLinks = [
@@ -18,7 +19,7 @@ export const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const navLinks = [
-    { name: t('navbar.portfolio'), href: '/portfolio' },
+    { name: t('navbar.portfolio'), href: '/projects' },
     { name: t('navbar.services'), href: '/services' },
     { name: t('navbar.studio'), href: '/about' },
     { name: t('navbar.blog'), href: '/blog' },
@@ -27,6 +28,7 @@ export const Footer = () => {
 
   return (
     <footer className="bg-surface border-t border-border/50">
+      <ContactRibbon />
       <div className="px-4 sm:px-8 md:px-16 py-12 border-b border-border/30">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <p className="text-sm text-neutral-400 font-light">
