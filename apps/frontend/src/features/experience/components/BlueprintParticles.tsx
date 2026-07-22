@@ -2,28 +2,60 @@
 
 import { useEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { Plane, Raycaster, Vector2, Vector3 } from 'three';
 
-import { ParticleSimulation } from '../engine/ParticleSimulation';
+import {
+  createParticleSimulation,
+  ParticleSimulation,
+  type SimulationParams,
+  type RenderParams,
+} from '../engine/ParticleSimulation';
+import { ForceField } from '../engine/ForceField';
 import { HERO_VORTEX, type SplineFieldData } from '../engine/SplineField';
 import { useQualityTier } from '@/providers/quality-provider';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
+import { EASE, DURATION } from '@/lib/motion';
 
 /* -------------------------------------------------------------------------- */
 /*  Types                                                                      */
 /* -------------------------------------------------------------------------- */
 
 interface Props {
+  /** Spline field to flow particles along. */
   field?: SplineFieldData;
-  /** External visibility gate (IntersectionObserver upstream). */
+  /** Visibility gate — upstream IntersectionObserver + document visibility. */
   visible?: boolean;
+  /** Override defaults for sim physics. */
+  simOverrides?: Partial<SimulationParams>;
+  /** Override defaults for rendering. */
+  renderOverrides?: Partial<RenderParams>;
 }
 
-/** Simulation texture edge per quality tier (particles = size²). */
-const SIM_SIZE: Record<'low' | 'medium' | 'high', number> = {
-  low: 0, // low tier never mounts this component; guard anyway
-  medium: 128, // 16,384 particles
-  high: 256, // 65,536 particles
+/**
+ * Per-tier simulation parameter overrides sourced from the motion library
+ * for consistent feel across the experience.
+ */
+const SIM_OVERRIDES: Record<'medium' | 'high', Partial<SimulationParams>> = {
+  medium: {
+    curlStrength: 0.45,    // fewer particles → tamer curl to avoid sparse look
+    pointerRadius: 1.4,
+    pointerForce: 2.2,
+  },
+  high: {
+    curlStrength: 0.65,
+    pointerRadius: 1.8,
+    pointerForce: 3.0,
+  },
+};
+
+const RENDER_OVERRIDES: Record<'medium' | 'high', Partial<RenderParams>> = {
+  medium: {
+    pointSize: 48,   // fewer particles → slightly larger to maintain density
+    opacity: 0.62,
+  },
+  high: {
+    pointSize: 36,
+    opacity: 0.50,
+  },
 };
 
 /* -------------------------------------------------------------------------- */
@@ -31,99 +63,98 @@ const SIM_SIZE: Record<'low' | 'medium' | 'high', number> = {
 /* -------------------------------------------------------------------------- */
 
 /**
- * BlueprintParticles — mounts the GPGPU simulation inside an R3F canvas.
+ * BlueprintParticles (S15-FX-005) — R3F bridge that owns the GPGPU simulation
+ * lifecycle and feeds per-frame cursor data through the ForceField.
  *
- * Policy gates (MOTION_SYSTEM.md matrices):
- * - reduced motion / pause: step() is not called — field freezes in place
- * - coarse pointer: force field strength stays 0
- * - low tier: parent renders the static poster instead of the canvas
+ * Motion policy gates (from MOTION_SYSTEM.md):
+ *  - `reducedMotion` / `paused` → step() is not called; scene freezes in place
+ *     but renderer keeps painting the last texture contents
+ *  - `!finePointer`    → force field strength stays 0 (no cursor interaction)
+ *  - `low` tier        → parent renders the CSS poster instead; this component
+ *     never receives `!low` due to the guard in BlueprintHeroScene
  */
-export default function BlueprintParticles({ field = HERO_VORTEX, visible = true }: Props) {
+export default function BlueprintParticles({
+  field = HERO_VORTEX,
+  visible = true,
+  simOverrides,
+  renderOverrides,
+}: Props) {
   const { tier } = useQualityTier();
   const { animationsEnabled, finePointer } = useMotionPolicy();
   const { gl, camera, size: viewportSize } = useThree();
 
-  const simSize = SIM_SIZE[tier.level];
+  const tierKey = tier.level as 'medium' | 'high';
 
+  // ── Simulation (lazy-init on first render, recreated on tier/field change) ─
   const sim = useMemo(() => {
-    if (simSize === 0) return null;
-    return new ParticleSimulation({
-      size: simSize,
+    const mergedSimOverrides = { ...SIM_OVERRIDES[tierKey], ...simOverrides };
+    const mergedRenderOverrides = { ...RENDER_OVERRIDES[tierKey], ...renderOverrides };
+    return createParticleSimulation(
+      tier.level,
       field,
-      pointSize: tier.level === 'high' ? 36 : 44, // fewer particles → slightly larger
-      opacity: tier.level === 'high' ? 0.5 : 0.62,
-    });
-    // Recreate only when tier or field actually changes.
-  }, [simSize, field, tier.level]);
+      mergedSimOverrides,
+      mergedRenderOverrides,
+    );
+  }, [field, tier.level, simOverrides, renderOverrides, tierKey]);
 
-  // Disposal — anti-leak protocol.
+  // ── Force field — one instance, reset on mount ───────────────────────────
+  const forceField = useMemo(() => new ForceField(), []);
+
+  // ── Disposal — anti-leak protocol ───────────────────────────────────────
   useEffect(() => {
     return () => {
       sim?.dispose();
+      forceField.shutdown();
     };
-  }, [sim]);
+  }, [sim, forceField]);
 
-  /* ---- Pointer → world-space force field (S15-FX-004) -------------------- */
-
-  const pointerState = useRef({
-    ndc: new Vector2(),
-    raycaster: new Raycaster(),
-    plane: new Plane(new Vector3(0, 0, 1), 0), // z = 0 world plane
-    world: new Vector3(),
-    active: false,
-  });
-
+  // ── Context-lost recovery ───────────────────────────────────────────────
   useEffect(() => {
-    // Coarse pointers never receive the force field.
-    if (!finePointer || !sim) return;
+    if (!sim) return;
+    sim.bindContextRecovery(gl.domElement);
+    return () => sim.unbindContextRecovery(gl.domElement);
+  }, [sim, gl]);
+
+  // ── Pointer listeners (fine-pointer only) ───────────────────────────────
+  useEffect(() => {
+    if (!sim || !finePointer) return;
 
     const el = gl.domElement;
-    const state = pointerState.current;
 
     const onMove = (e: PointerEvent) => {
-      const rect = el.getBoundingClientRect();
-      state.ndc.set(
-        ((e.clientX - rect.left) / rect.width) * 2 - 1,
-        -((e.clientY - rect.top) / rect.height) * 2 + 1,
-      );
-      state.active = true;
+      forceField.updateFromEvent(e, el);
     };
     const onLeave = () => {
-      state.active = false;
+      forceField.deactivate();
     };
 
-    // The hero canvas sits behind HTML content, so listen on window: the
-    // force field should react even when the cursor is over the headline.
+    // Listen on window so the force field reacts even when cursor is over
+    // the headline HTML that sits above the canvas (transparent interaction).
     window.addEventListener('pointermove', onMove);
     window.addEventListener('pointerleave', onLeave);
     return () => {
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerleave', onLeave);
     };
-  }, [finePointer, sim, gl]);
+  }, [sim, finePointer, gl, forceField]);
 
-  /* ---- Frame loop --------------------------------------------------------- */
-
+  // ── Frame loop ──────────────────────────────────────────────────────────
   useFrame((state, delta) => {
     if (!sim) return;
-    // Freeze contract: no step() under pause/reduced motion or offscreen.
+
+    // Motion policy gate: freeze when paused or under reduced motion.
     if (!animationsEnabled || !visible) return;
 
-    const ps = pointerState.current;
-    if (finePointer && ps.active) {
-      ps.raycaster.setFromCamera(ps.ndc, camera);
-      const hit = ps.raycaster.ray.intersectPlane(ps.plane, ps.world);
-      sim.setPointer(hit ?? ps.world, hit ? 2.4 : 0);
-    } else {
-      sim.setPointer(sim.pointerTarget, 0);
-    }
+    // Step the force field (NDC → world space, velocity → strength).
+    const { world, strength } = forceField.step(camera, delta);
+    sim.setPointer(world, finePointer ? strength : 0);
 
-    sim.step(state.gl, delta, Math.min(state.gl.getPixelRatio(), 2));
+    // Advance the GPU simulation.
+    const pixelRatio = Math.min(state.gl.getPixelRatio(), tier.maxDpr);
+    sim.update(delta, state.gl, pixelRatio);
   });
 
-  // Keep an eye on resize: nothing to do — point sizing derives from
-  // uPixelRatio and perspective, but reference viewportSize so R3F keeps
-  // this component in the resize update path.
+  // Keep in R3F's resize loop so uPixelRatio stays accurate.
   void viewportSize;
 
   if (!sim) return null;

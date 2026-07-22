@@ -119,8 +119,6 @@ export function useScrollCamera(path: ScrollPathNode[], options?: { enabled?: bo
     camera.position.lerp(_targetPos, Math.min(1, dt * lerpSpeed));
 
     // Rotation: quaternion slerp for smooth orientation.
-    camera.lookAt(_currentLook); // align current orientation
-    _currentLook.copy(camera.position).add(camera.getWorldDirection(new Vector3()));
     // Build a lookAt quaternion from the target direction.
     const dir = _targetLook.clone().sub(_targetPos).normalize();
     _targetQuat.setFromUnitVectors(new Vector3(0, 0, -1), dir);
