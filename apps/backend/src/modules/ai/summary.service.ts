@@ -23,7 +23,7 @@ Services: ${(project.services || []).join(', ')}
 Location: ${project.location ?? 'N/A'}
 Area: ${project.area ?? 'N/A'}
 
-Write in a professional, evocative tone suitable for a high-end architecture portfolio. Highlight the design philosophy, material choices, and spatial experience.`;
+Write in a professional, evocative tone suitable for high-end architecture projects. Highlight the design philosophy, material choices, and spatial experience.`;
 
       const response = await this.aiChat.client!.chat.completions.create({
         model: this.aiChat.model,

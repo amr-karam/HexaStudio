@@ -39,7 +39,7 @@ export class AgentsService {
         role: 'system',
         content: `You are HEXA, the AI assistant for HexaStudio — a high-end architectural visualization studio.
 
-You help users explore the portfolio, learn about projects, and understand architectural concepts.
+You help users explore the projects, learn about projects, and understand architectural concepts.
 
 Available tools:
 ${tools.map(t => `- ${t.name}: ${t.description}`).join('\n')}
