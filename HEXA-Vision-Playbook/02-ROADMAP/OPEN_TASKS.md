@@ -80,6 +80,14 @@
 | **S15-P7-006** | Full CSP + security headers — script/style/font/img/connect/worker-src, HSTS 2y, nosniff, SAMEORIGIN, referrer + permissions | ✅ |
 | **S15-P7-007** | Quality gates — lint 0, typecheck 0, 176/176 tests, production build ✓, deployed + verified live | ✅ |
 
+### P8 — Post-P7 Verification (✅ COMPLETE 2026-07-22)
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S15-P8-001** | 3-run Lighthouse median vs baseline — FCP −27% (1.5s→1.10s), LCP −11% (2.2s→1.95s), SI −14%, TTI −10%, TBT flat | ✅ |
+| **S15-P8-002** | Cloudflare beacon CSP fix — console errors 2→1 (expected 401 only), csp-xss pass (commit ``1296a58``) | ✅ |
+| **S15-P8-003** | Best Practices 85→96 (+11), Accessibility 95→96, Performance 75→77 | ✅ |
+| **S15-P8-004** | Luxury score 9.3 → 9.4/10 | ✅ |
+
 ### 📊 Quality Metrics (Sprint 15)
 | Metric | Target | Actual | Status |
 |--------|--------|--------|--------|

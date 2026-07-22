@@ -155,4 +155,48 @@
 
 ---
 
-*Report generated 2026-07-22 by HEXA Studio Quality Agent.*
+---
+
+## 9. P8 — Post-Remediation Verification (2026-07-22, 3-run median)
+
+**Method:** Lighthouse 12.x, desktop preset, simulated throttling, 3 runs → median. Same methodology as Section 1 baseline.
+
+### Core Web Vitals — Baseline vs Post-P7
+
+| Metric | Baseline | Post-P7 (median) | Delta | Status |
+|--------|----------|------------------|-------|--------|
+| First Contentful Paint | 1.5 s | 1.10 s | **−403 ms (−27%)** | 🟢 Improved |
+| Largest Contentful Paint | 2.2 s | 1.95 s | **−249 ms (−11%)** | 🟢 Improved |
+| Speed Index | 1.5 s | 1.29 s | **−208 ms (−14%)** | 🟢 Improved |
+| Total Blocking Time | 230 ms | 261 ms | +31 ms (within run-to-run noise; runs: 261/220/284) | 🟡 Flat |
+| Cumulative Layout Shift | 0 | 0.00 | — | 🟢 Perfect |
+| Time to Interactive | 2.3 s | 2.06 s | **−243 ms (−10%)** | 🟢 Improved |
+
+### Category Scores
+
+| Category | Baseline | Post-P7 | Delta |
+|----------|----------|---------|-------|
+| Performance | ~75 | 77 | +2 |
+| Accessibility | ~95 | 96 | +1 |
+| Best Practices | ~85 | **96** | **+11** (CSP + security headers) |
+| SEO | ~92 | 92 | — |
+
+### Console Health
+
+- **errors-in-console:** 1 item — the expected 401 from `/api/users/me` for unauthenticated visitors (documented §6.2). Cloudflare beacon CSP violation resolved via `static.cloudflareinsights.com` + `cloudflareinsights.com` allowlist (commit `1296a58`).
+- **csp-xss audit:** pass.
+
+### TBT Note
+
+The `onIdle` GSAP deferral did not reduce TBT under simulated 4× CPU throttling — idle callbacks still execute within the FCP→TTI window under throttle, and GSAP module evaluation remains a single long task regardless of scheduling. FCP/LCP/SI/TTI all improved meaningfully; TBT is unchanged within noise. Further TBT reduction requires shrinking the GSAP/Three.js module-evaluation payload itself (tracked: Unused JS, §5.3).
+
+### Luxury Score Update
+
+| Dimension | Before P7 | After P7/P8 |
+|-----------|-----------|-------------|
+| Performance | 8.5/10 | 8.8/10 |
+| **Overall** | **9.3/10** | **9.4/10** |
+
+Remaining gap to 9.5: unused-JS payload reduction (ESM builds from R3F ecosystem) + FCP sub-1s (edge HTML caching evaluation).
+
+*Report generated 2026-07-22 by HEXA Studio Quality Agent. P8 verification appended 2026-07-22.*
