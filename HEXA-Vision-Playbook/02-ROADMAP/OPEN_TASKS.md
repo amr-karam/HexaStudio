@@ -1,10 +1,91 @@
 # 📝 OPEN TASKS: THE BACKLOG OF EXCELLENCE
 
-**Version:** 3.2 | **Scope:** Sprint 14 — CMS Content Integration & Odoo Enrichment | **Status:** ✅ COMPLETE (2026-07-20)
+**Version:** 3.3 | **Scope:** Sprint 15 — Scroll Cinema Initiative + Security & Lighthouse Hardening | **Status:** ✅ COMPLETE (2026-07-22)
 
-> **All Sprint 14 deliverables are complete as of 2026-07-20.** Static pages (/about, /terms, /privacy) and home achievements are now CMS-driven via new Page/Achievement content types and backend proxy modules; project detail responses are enriched with live Odoo status. See CURRENT_SPRINT.md for full detail.
+> **All Sprint 15 deliverables are complete as of 2026-07-22.** Scroll Cinema Initiative shipped: motion primitives (scroll velocity, chapter markers, progress rail, contact ribbon), homepage/project/blog scroll cinema, FractureRing 3D hero, ReadingProgress hairline, and Security & Lighthouse hardening (Swagger decorators, backend typecheck fix, npm audit, color contrast, preconnect hints, cache headers). See CURRENT_SPRINT.md for full detail.
 
 ---
+
+## 🎯 SPRINT 15 — SCROLL CINEMA INITIATIVE + SECURITY & LIGHTHOUSE HARDENING (✅ COMPLETE)
+
+**Started:** 2026-07-22 | **Completed:** 2026-07-22
+
+### P0 — Motion Primitives
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S15-P0-001** | `useScrollVelocity` hook — MotionValue, static mode = 0, Lenis-aware, RAF cleanup | ✅ |
+| **S15-P0-002** | `ChapterMarker` component — roman numerals, editorial serif-italic, decorative | ✅ |
+| **S15-P0-003** | `ChapterProgress` component — side rail, IntersectionObserver, fine-pointer only, a11y nav | ✅ |
+| **S15-P0-004** | `ContactRibbon` component — infinite marquee CTA, hover/focus pause, static fallback | ✅ |
+| **S15-P0-005** | Barrels updated — hooks, animation, ui index files | ✅ |
+
+### P1 — Global Integration
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S15-P1-001** | `ContactRibbon` mounted inside Footer.tsx (above CTA strip) | ✅ |
+| **S15-P1-002** | `Magnetic` exported from ui/index.ts for global magnetic button usage | ✅ |
+
+### P2 — Homepage Scroll Cinema
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S15-P2-001** | `HomeChapterRail` — 5 chapters (Vision/Craft/Method/Proof/Contact) | ✅ |
+| **S15-P2-002** | `page.tsx` restructured — chapter wrappers with SectionReveal sticky-stack hand-offs | ✅ |
+| **S15-P2-003** | Chapter markers in FeaturedWork, ProcessSection, AchievementsSection, ProjectGrid, TestimonialsSection, CTASection | ✅ |
+| **S15-P2-004** | Velocity shear on ProjectGrid cards (demilie.ru DNA) | ✅ |
+| **S15-P2-005** | `FractureRingHero` + `FractureRingScene` — wired into HomeHero | ✅ |
+
+### P3 — Projects Detail Scroll Cinema
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S15-P3-001** | `ProjectChapterRail` — thin wrapper around ChapterProgress (01-05 chapters) | ✅ |
+| **S15-P3-002** | `ProjectScrollCinema` — 5-chapter orchestrator: Hero, Brief, Experience, Details, Next | ✅ |
+| **S15-P3-003** | `projects/[slug]/page.tsx` refactored — server component, chapter progress rail | ✅ |
+
+### P4 — Blog Portal Scroll Cinema
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S15-P4-001** | `ReadingProgress` — fixed top-edge hairline, RAF-driven, role="progressbar", reduced-motion static | ✅ |
+| **S15-P4-002** | `ArticleDetailClient.tsx` — reading progress + GSAP scroll reveals | ✅ |
+| **S15-P4-003** | Blog index — velocity shear on article cards, "Read →" cursor morph | ✅ |
+
+### P5 — Documentation & Quality
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S15-P5-001** | COMPONENT_GUIDE.md — ReadingProgress, ProjectChapterRail, ProjectScrollCinema | ✅ |
+| **S15-P5-002** | MOTION_SYSTEM.md — reading progress + project scroll cinema rows in reduced-motion matrix | ✅ |
+| **S15-P5-003** | Quality gates — lint 0 errors, typecheck 0 errors, 176 tests passing | ✅ |
+
+### P6 — Security & Lighthouse Hardening
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S15-P6-001** | `npm audit fix` — fast-uri 3.1.4, Sentry 10.67.0, OpenTelemetry 2.10.0 (1 vuln resolved) | ✅ |
+| **S15-P6-002** | CMS Dockerfile — NODE_OPTIONS moved before build step, heap increased to 4096MB (fixed OOM) | ✅ |
+| **S15-P6-003** | Lighthouse audit — FCP 1.5s, LCP 2.2s, CLS 0, TTI 2.3s | ✅ |
+| **S15-P6-004** | Color contrast fix — CinematicPreloader brand text 4.21:1 → 7.5:1 | ✅ |
+| **S15-P6-005** | Preconnect hints — fonts.gstatic.com + api.hexastudio.net added to `<head>` | ✅ |
+| **S15-P6-006** | Static asset caching — Cache-Control: public, max-age=31536000, immutable for /_next/static/* | ✅ |
+| **S15-P6-007** | Lighthouse audit report — 15-QUALITY/LIGHTHOUSE_AUDIT_2026-07-22.md | ✅ |
+| **S15-P6-008** | Backend typecheck fix — @nestjs/config v4 barrel type declaration (11 errors → 0) | ✅ |
+| **S15-P6-009** | Swagger decorators — 13 controllers updated (articles, assistants, faqs, mobile, projects, requests, services, team-members, testimonials, translation, users, vector, webhook-config) | ✅ |
+| **S15-P6-010** | Luxury score — 9.3/10 (gap to 9.5: FCP/LCP optimization, TBT reduction) | ✅ |
+
+### 📊 Quality Metrics (Sprint 15)
+| Metric | Target | Actual | Status |
+|--------|--------|--------|--------|
+| New primitives | 7 | 7 | ✅ |
+| New components | 5 | 5 | ✅ |
+| Pages refactored | 3 | 3 | ✅ |
+| Frontend typecheck | 0 errors | 0 errors | ✅ |
+| Frontend lint | 0 errors / 0 warnings | 0 errors / 0 warnings | ✅ |
+| Total frontend tests | 176 | 176 | ✅ |
+| Backend typecheck | 0 errors | 0 errors (was 11) | ✅ |
+| Backend lint | 0 errors | 0 errors | ✅ |
+| Lighthouse FCP | <2.0s | 1.5s | ✅ |
+| Lighthouse LCP | <2.5s | 2.2s | ✅ |
+| Lighthouse CLS | <0.1 | 0 | ✅ |
+| Luxury score | 9.5/10 | 9.3/10 | 🟡 |
+
+
 
 ## 🎯 SPRINT 14 — CMS CONTENT INTEGRATION & ODOO ENRICHMENT (✅ COMPLETE)
 
@@ -169,7 +250,7 @@ Elevating `apps/frontend` to HEXA Creative Excellence standard. All gates green
 | Task ID | Description | Status |
 |---------|-------------|--------|
 | **S9-P2-001** | Hostinger API key rotation | ✅ Done |
-| **S9-P2-002** | Dependabot remediation (23 moderate vulns) | ⏳ Pending |
+| **S9-P2-002** | Dependabot remediation — 35 total (11 high, 18 moderate, 6 low). Root: 4 high (sharp→next chain, deferred to Next.js 16.3+). CMS: 27 Strapi-ecosystem (require breaking changes). See LIGHTHOUSE_AUDIT_2026-07-22.md | ⏳ Deferred |
 | **S9-P2-003** | Sync playbook docs (arch, deploy, API) | ⏳ Ongoing |
 | **S9-P2-004** | Runbook creation (deploy, rollback, restore, incident) | ✅ Doc complete |
 
@@ -474,3 +555,6 @@ Upgrade from Next.js 15 → 16 is **moderate effort** for this codebase, but **w
 4. Update this file when completing or starting tasks.
 
 *“Focus on the most impactful task. Ignore the noise.”*
+
+
+
