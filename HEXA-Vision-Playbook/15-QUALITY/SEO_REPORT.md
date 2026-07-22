@@ -45,7 +45,7 @@ export async function generateMetadata({ params }): Promise<Metadata> {
 | Page Type | Strategy | Rationale |
 |-----------|----------|-----------|
 | Home | SSG | Fast LCP, stable content |
-| Portfolio list | ISR (60s) | Fresh CMS content |
+| Projects list | ISR (60s) | Fresh CMS content |
 | Project detail | ISR + `generateMetadata` | SEO + performance |
 | Blog | ISR | Content freshness |
 
@@ -53,8 +53,8 @@ export async function generateMetadata({ params }): Promise<Metadata> {
 
 ```
 /                          Home
-/portfolio                 Project gallery
-/portfolio/[slug]          Project detail
+/projects                  Project gallery
+/projects/[slug]           Project detail
 /blog                      Blog index
 /blog/[slug]               Article
 /services                  Services

@@ -223,7 +223,7 @@ export const ProjectDetailModal = ({ isOpen, onClose, project }: ProjectDetailMo
                   transition={reduced ? REDUCED_TRANSITION : { delay: 0.5, duration: 0.8, ease: makeTransition('entrance', 'component') }}
                   className="flex flex-col sm:flex-row gap-4 pt-4"
                 >
-                  <Link href={`/portfolio/${project.slug}`} className="w-full sm:w-auto">
+                  <Link href={`/projects/${project.slug}`} className="w-full sm:w-auto">
                     <Button variant="primary" size="lg" className="w-full">
                       View in 3D
                     </Button>

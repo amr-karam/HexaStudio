@@ -116,7 +116,7 @@ export function CTASection() {
             </Link>
           </Magnetic>
           <Magnetic>
-            <Link href="/portfolio">
+            <Link href="/projects">
               <Button variant="secondary" size="lg" className="min-w-[180px]">
                 View Our Work
               </Button>

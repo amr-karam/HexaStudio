@@ -49,7 +49,7 @@
 - Descriptive, keyword-rich URLs
 - Use hyphens (not underscores)
 - Lowercase
-- Example: `/portfolio/3d-architectural-visualization`
+- Example: `/projects/3d-architectural-visualization`
 
 ---
 

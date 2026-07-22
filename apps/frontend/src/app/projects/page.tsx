@@ -14,7 +14,7 @@ export const metadata: Metadata = {
       "Explore our curated collection of architectural visualization projects.",
   },
 };
-export default async function PortfolioPage() {
+export default async function ProjectsPage() {
   const projectsData = await fetchProjects();
   return (
     <main className="min-h-screen bg-background pt-32 pb-24">

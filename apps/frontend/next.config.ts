@@ -14,6 +14,12 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["three", "@react-three/fiber", "@react-three/drei", "gsap"],
   },
+  async redirects() {
+    return [
+      { source: "/portfolio", destination: "/projects", permanent: true },
+      { source: "/portfolio/:path*", destination: "/projects/:path*", permanent: true },
+    ];
+  },
   images: {
     remotePatterns: [
       {

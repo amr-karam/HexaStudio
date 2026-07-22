@@ -110,7 +110,7 @@ export function CustomCursor() {
       const viewAttrEl = target.closest('[data-cursor="view"]') as HTMLElement | null;
       const link = target.closest('a');
       const isProjectLink =
-        !!link && (link.href.includes('/portfolio/') || link.href.includes('/project/'));
+        !!link && (link.href.includes('/projects/') || link.href.includes('/project/'));
 
       if (dragEl) {
         setLabel('drag');

@@ -30,7 +30,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <p className="text-neutral-500 mb-4">Project not found.</p>
-          <Link href="/portfolio">
+          <Link href="/projects">
             <Button variant="outline">Back to Projects</Button>
           </Link>
         </div>
@@ -142,7 +142,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                     <span className="ml-3 transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
                   </Button>
                 </Link>
-                <Link href="/portfolio">
+                <Link href="/projects">
                   <Button variant="outline" size="lg">
                     More Projects
                   </Button>
