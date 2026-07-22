@@ -40,6 +40,29 @@ for service in "backend" "frontend" "cms"; do
   done
 done
 
+# Sprint 15 P9: kick on-demand ISR revalidation. The frontend was prerendered
+# during build with an empty data cache (backend was unreachable during
+# `docker compose build`). Now that backend is healthy, POST /api/revalidate
+# to flush the whole layout cache; Next regenerates with live data within
+# seconds. Best-effort: if the secret is unset or the call fails, the next
+# user request still triggers regeneration via stale-while-revalidate.
+if [ -n "$REVALIDATE_SECRET" ]; then
+  echo "Triggering on-demand ISR revalidation..."
+  HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+    "https://hexastudio.net/api/revalidate" \
+    -H "Content-Type: application/json" \
+    -H "x-revalidate-secret: $REVALIDATE_SECRET" \
+    -d '{"paths":["/"],"type":"layout"}' \
+    --max-time 10 || echo "000")
+  if [ "$HTTP_CODE" = "200" ]; then
+    echo "Revalidation triggered successfully."
+  else
+    echo "Warning: revalidation returned HTTP $HTTP_CODE (non-fatal; ISR will heal on next request)."
+  fi
+else
+  echo "Skipping on-demand revalidation: REVALIDATE_SECRET not set in deploy environment."
+fi
+
 # Remove old slot
 # NOTE: never use `docker compose stop/rm` here — compose tracks the CURRENT
 # project containers (the new slot we just started), so it would kill the

@@ -1,11 +1,11 @@
-import * as THREE from 'three';
+import { CanvasTexture, RepeatWrapping } from 'three';
 
 /**
  * Generates a 512×512 texture: white stone with dark fracture cracks.
  * Used as the alpha map for the outer stone shell so the wireframe core
  * shows through the gaps.
  */
-export function createFractureTexture(): THREE.CanvasTexture {
+export function createFractureTexture(): CanvasTexture {
   const size = 512;
   const canvas = document.createElement('canvas');
   canvas.width = size;
@@ -45,9 +45,9 @@ export function createFractureTexture(): THREE.CanvasTexture {
     ctx.fillRect(x, y, 2, 2);
   }
 
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.wrapS = THREE.RepeatWrapping;
-  texture.wrapT = THREE.RepeatWrapping;
+  const texture = new CanvasTexture(canvas);
+  texture.wrapS = RepeatWrapping;
+  texture.wrapT = RepeatWrapping;
   texture.repeat.set(2, 1);
   return texture;
 }

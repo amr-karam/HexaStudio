@@ -4,7 +4,6 @@ import { fetchPage } from '@/features/pages/lib/fetchPages';
 import { StrapiBlocks } from '@/components/ui/StrapiBlocks';
 import { Button } from '@/components/ui/Button';
 
-export const dynamic = 'force-dynamic';
 export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {

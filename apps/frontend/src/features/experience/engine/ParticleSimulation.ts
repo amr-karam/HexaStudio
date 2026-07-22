@@ -19,7 +19,7 @@
  * └────────┬─────────┘
  *          │
  * ┌────────▼──────────────────────────────────────────┐
- * │  THREE.Points geometry                             │
+ * │  Points geometry                             │
  * │  render.vert: billboarded, size-attenuated         │
  * │  render.frag: quintic soft disc + 2-stage gold LUT │
  * │  AdditiveBlending, no depthWrite                   │
@@ -33,7 +33,13 @@
  *   medium = 128² → 16,384 particles
  *   low    = null  → simulation never created
  */
-import * as THREE from 'three';
+import {
+  Points, WebGLRenderer, WebGLRenderTarget, Scene, OrthographicCamera,
+  Mesh, ShaderMaterial, DataTexture, BufferGeometry, BufferAttribute,
+  Vector2, Vector3, Color, PlaneGeometry,
+  RGBAFormat, FloatType, HalfFloatType, NearestFilter, AdditiveBlending,
+  MathUtils,
+} from 'three';
 
 import { type SplineFieldData, bakeSplineField, type BakedSplineField } from './SplineField';
 import {
@@ -121,11 +127,11 @@ const DEFAULT_RENDER_PARAMS: RenderParams = {
 };
 
 export interface ParticleSimulationHandle {
-  readonly points: THREE.Points;
+  readonly points: Points;
   readonly simSize: number;
   readonly particleCount: number;
-  update(delta: number, mouseNDC: THREE.Vector2, qualityTier: QualityLevel): void;
-  setCursor(world: THREE.Vector3, strength: number): void;
+  update(delta: number, mouseNDC: Vector2, qualityTier: QualityLevel): void;
+  setCursor(world: Vector3, strength: number): void;
   setCursorActive(active: boolean): void;
   setSplines(data: SplineFieldData): void;
   setSimParams(partial: Partial<SimulationParams>): void;
@@ -140,43 +146,43 @@ export interface ParticleSimulationHandle {
 export class ParticleSimulation implements ParticleSimulationHandle {
   readonly simSize: number;
   readonly particleCount: number;
-  readonly points: THREE.Points;
+  readonly points: Points;
 
   /* ---- GPGPU renderer (passed at construction, stored for compute passes) - */
-  private readonly renderer: THREE.WebGLRenderer;
+  private readonly renderer: WebGLRenderer;
 
   /* ---- FBO ping-pong pairs — [0] and [1] swapped each frame -------------- */
-  private readonly posTargets: [THREE.WebGLRenderTarget, THREE.WebGLRenderTarget];
-  private readonly velTargets: [THREE.WebGLRenderTarget, THREE.WebGLRenderTarget];
+  private readonly posTargets: [WebGLRenderTarget, WebGLRenderTarget];
+  private readonly velTargets: [WebGLRenderTarget, WebGLRenderTarget];
   private cur = 0;
 
   /* ---- Simulation pass infrastructure ------------------------------------- */
-  private readonly simScene: THREE.Scene;
-  private readonly simCamera: THREE.OrthographicCamera;
-  private readonly simMesh: THREE.Mesh;
+  private readonly simScene: Scene;
+  private readonly simCamera: OrthographicCamera;
+  private readonly simMesh: Mesh;
 
   /* ---- Materials ----------------------------------------------------------- */
-  private readonly simMaterial: THREE.ShaderMaterial;
-  private readonly posMaterial: THREE.ShaderMaterial;
-  private readonly renderMaterial: THREE.ShaderMaterial;
+  private readonly simMaterial: ShaderMaterial;
+  private readonly posMaterial: ShaderMaterial;
+  private readonly renderMaterial: ShaderMaterial;
 
   /* ---- Data textures — seeded once, updated on spline swap ---------------- */
-  private initialPositions: THREE.DataTexture;
-  private initialVelocities: THREE.DataTexture;
-  private paramsTexture: THREE.DataTexture;
+  private initialPositions: DataTexture;
+  private initialVelocities: DataTexture;
+  private paramsTexture: DataTexture;
 
   /* ---- Baked spline field -------------------------------------------------- */
   private field: BakedSplineField | null = null;
 
   /* ---- Points geometry (dummy positions, lookup refs) --------------------- */
-  private readonly pointsGeometry: THREE.BufferGeometry;
+  private readonly pointsGeometry: BufferGeometry;
 
   /* ---- Pre-allocated state vectors (no per-frame allocation) -------------- */
   private time = 0;
   private seeded = false;
-  private readonly cursorWorld = new THREE.Vector3();
-  private readonly cursorSmooth = new THREE.Vector3();
-  private readonly cursorTarget = new THREE.Vector3();
+  private readonly cursorWorld = new Vector3();
+  private readonly cursorSmooth = new Vector3();
+  private readonly cursorTarget = new Vector3();
   private cursorStrengthTarget = 0;
   private cursorStrength = 0;
 
@@ -193,7 +199,7 @@ export class ParticleSimulation implements ParticleSimulationHandle {
   private readonly onContextRestored: () => void;
 
   constructor(options: {
-    renderer: THREE.WebGLRenderer;
+    renderer: WebGLRenderer;
     qualityTier: 'medium' | 'high';
     splineField: SplineFieldData;
     worldBounds?: Partial<WorldBounds>;
@@ -227,7 +233,7 @@ export class ParticleSimulation implements ParticleSimulationHandle {
     const velBuffer = new Float32Array(count * 4);
     const paramBuffer = new Float32Array(count * 4);
 
-    const scatter = new THREE.Vector3();
+    const scatter = new Vector3();
     for (let i = 0; i < count; i++) {
       const splineIdx = i % this.field.splineCount;
       const t = Math.random();
@@ -260,10 +266,10 @@ export class ParticleSimulation implements ParticleSimulationHandle {
     this.velTargets = [this.createTarget(), this.createTarget()];
 
     /* -- Simulation pass --------------------------------------------------- */
-    this.simScene = new THREE.Scene();
-    this.simCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    this.simScene = new Scene();
+    this.simCamera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
-    this.simMaterial = new THREE.ShaderMaterial({
+    this.simMaterial = new ShaderMaterial({
       vertexShader: SIMULATION_VERTEX,
       fragmentShader: SIMULATION_FRAGMENT,
       uniforms: {
@@ -277,7 +283,7 @@ export class ParticleSimulation implements ParticleSimulationHandle {
         uCurlStrength: { value: this.simParams.curlStrength },
         uCurlScale: { value: this.simParams.curlScale },
         uDamping: { value: this.simParams.damping },
-        uCursorWorld: { value: new THREE.Vector3() },
+        uCursorWorld: { value: new Vector3() },
         uCursorStrength: { value: 0 },
         uCursorRadius: { value: this.simParams.cursorRadius },
         uCursorForce: { value: this.simParams.cursorForce },
@@ -286,7 +292,7 @@ export class ParticleSimulation implements ParticleSimulationHandle {
       depthWrite: false,
     });
 
-    this.posMaterial = new THREE.ShaderMaterial({
+    this.posMaterial = new ShaderMaterial({
       vertexShader: SIMULATION_VERTEX,
       fragmentShader: POSITION_FRAGMENT,
       uniforms: {
@@ -298,18 +304,18 @@ export class ParticleSimulation implements ParticleSimulationHandle {
       depthWrite: false,
     });
 
-    this.simMesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), this.simMaterial);
+    this.simMesh = new Mesh(new PlaneGeometry(2, 2), this.simMaterial);
     this.simMesh.frustumCulled = false;
     this.simScene.add(this.simMesh);
 
     /* -- Render-pass geometry ---------------------------------------------- */
-    this.pointsGeometry = new THREE.BufferGeometry();
+    this.pointsGeometry = new BufferGeometry();
 
     // Dummy position buffer (unused — shader fetches from sim texture).
     const dummyPositions = new Float32Array(count * 3);
     this.pointsGeometry.setAttribute(
       'position',
-      new THREE.BufferAttribute(dummyPositions, 3),
+      new BufferAttribute(dummyPositions, 3),
     );
 
     // Texture-lookup refs: maps each vertex to a texel in the sim texture.
@@ -318,13 +324,13 @@ export class ParticleSimulation implements ParticleSimulationHandle {
       refs[i * 2] = ((i % size) + 0.5) / size;
       refs[i * 2 + 1] = (Math.floor(i / size) + 0.5) / size;
     }
-    this.pointsGeometry.setAttribute('aRef', new THREE.BufferAttribute(refs, 2));
+    this.pointsGeometry.setAttribute('aRef', new BufferAttribute(refs, 2));
 
     // Null bounding sphere — particles are GPU-positioned, so frustum
     // culling must be disabled.
     (this.pointsGeometry as unknown as Record<string, unknown>).boundingSphere = null;
 
-    this.renderMaterial = new THREE.ShaderMaterial({
+    this.renderMaterial = new ShaderMaterial({
       vertexShader: RENDER_VERTEX,
       fragmentShader: RENDER_FRAGMENT,
       uniforms: {
@@ -332,17 +338,17 @@ export class ParticleSimulation implements ParticleSimulationHandle {
         tVelocity: { value: this.initialVelocities },
         uPointSize: { value: this.renderParams.pointSize },
         uPixelRatio: { value: 1 },
-        uColorBase: { value: new THREE.Color(this.renderParams.colorBase) },
-        uColorHot: { value: new THREE.Color(this.renderParams.colorHot) },
+        uColorBase: { value: new Color(this.renderParams.colorBase) },
+        uColorHot: { value: new Color(this.renderParams.colorHot) },
         uOpacity: { value: this.renderParams.opacity },
       },
       transparent: true,
-      blending: THREE.AdditiveBlending,
+      blending: AdditiveBlending,
       depthWrite: false,
       depthTest: true,
     });
 
-    this.points = new THREE.Points(this.pointsGeometry, this.renderMaterial);
+    this.points = new Points(this.pointsGeometry, this.renderMaterial);
     this.points.frustumCulled = false;
 
     /* -- Context-loss handlers --------------------------------------------- */
@@ -373,7 +379,7 @@ export class ParticleSimulation implements ParticleSimulationHandle {
    * @param mouseNDC    Normalised device coordinates [-1, 1] for cursor force.
    * @param qualityTier Current quality tier (used to gate update fidelity).
    */
-  update(delta: number, mouseNDC: THREE.Vector2, qualityTier: QualityLevel): void {
+  update(delta: number, mouseNDC: Vector2, qualityTier: QualityLevel): void {
     if (this.contextLost) return;
     if (qualityTier === 'low') return;
 
@@ -383,8 +389,8 @@ export class ParticleSimulation implements ParticleSimulationHandle {
     // ── Convert NDC → world-space cursor position ────────────────────────
     const { xMin, xMax, yMin, yMax } = this.worldBounds;
     this.cursorTarget.set(
-      THREE.MathUtils.mapLinear(mouseNDC.x, -1, 1, xMin, xMax),
-      THREE.MathUtils.mapLinear(mouseNDC.y, -1, 1, yMin, yMax),
+      MathUtils.mapLinear(mouseNDC.x, -1, 1, xMin, xMax),
+      MathUtils.mapLinear(mouseNDC.y, -1, 1, yMin, yMax),
       0,
     );
 
@@ -410,7 +416,7 @@ export class ParticleSimulation implements ParticleSimulationHandle {
     su.tVelocity.value = velRead;
     su.uTime.value = this.time;
     su.uDelta.value = dt;
-    (su.uCursorWorld.value as THREE.Vector3).copy(this.cursorSmooth);
+    (su.uCursorWorld.value as Vector3).copy(this.cursorSmooth);
     su.uCursorStrength.value = this.cursorStrength;
 
     this.simMesh.material = this.simMaterial;
@@ -442,7 +448,7 @@ export class ParticleSimulation implements ParticleSimulationHandle {
    * Feed pre-computed cursor state from an external ForceField.
    * Use instead of `update()` when ForceField handles NDC→world projection.
    */
-  setCursor(world: THREE.Vector3, strength: number): void {
+  setCursor(world: Vector3, strength: number): void {
     this.cursorTarget.copy(world);
     this.cursorStrengthTarget = strength;
   }
@@ -463,7 +469,7 @@ export class ParticleSimulation implements ParticleSimulationHandle {
     const count = this.particleCount;
     const posBuffer = new Float32Array(count * 4);
     const paramBuffer = new Float32Array(count * 4);
-    const scatter = new THREE.Vector3();
+    const scatter = new Vector3();
 
     for (let i = 0; i < count; i++) {
       const splineIdx = i % this.field.splineCount;
@@ -509,8 +515,8 @@ export class ParticleSimulation implements ParticleSimulationHandle {
     const ru = this.renderMaterial.uniforms;
     if (partial.pointSize !== undefined) ru.uPointSize.value = partial.pointSize;
     if (partial.opacity !== undefined) ru.uOpacity.value = partial.opacity;
-    if (partial.colorBase !== undefined) (ru.uColorBase.value as THREE.Color).set(partial.colorBase);
-    if (partial.colorHot !== undefined) (ru.uColorHot.value as THREE.Color).set(partial.colorHot);
+    if (partial.colorBase !== undefined) (ru.uColorBase.value as Color).set(partial.colorBase);
+    if (partial.colorHot !== undefined) (ru.uColorHot.value as Color).set(partial.colorHot);
   }
 
   /** Signal that the viewport device-pixel-ratio changed. */
@@ -557,26 +563,26 @@ export class ParticleSimulation implements ParticleSimulationHandle {
   /*  Private helpers                                                          */
   /* ======================================================================== */
 
-  private createDataTexture(data: Float32Array): THREE.DataTexture {
-    const tex = new THREE.DataTexture(
+  private createDataTexture(data: Float32Array): DataTexture {
+    const tex = new DataTexture(
       data as unknown as BufferSource,
       this.simSize,
       this.simSize,
-      THREE.RGBAFormat,
-      THREE.FloatType,
+      RGBAFormat,
+      FloatType,
     );
-    tex.minFilter = THREE.NearestFilter;
-    tex.magFilter = THREE.NearestFilter;
+    tex.minFilter = NearestFilter;
+    tex.magFilter = NearestFilter;
     tex.needsUpdate = true;
     return tex;
   }
 
-  private createTarget(): THREE.WebGLRenderTarget {
-    return new THREE.WebGLRenderTarget(this.simSize, this.simSize, {
-      format: THREE.RGBAFormat,
-      type: THREE.HalfFloatType,
-      minFilter: THREE.NearestFilter,
-      magFilter: THREE.NearestFilter,
+  private createTarget(): WebGLRenderTarget {
+    return new WebGLRenderTarget(this.simSize, this.simSize, {
+      format: RGBAFormat,
+      type: HalfFloatType,
+      minFilter: NearestFilter,
+      magFilter: NearestFilter,
       depthBuffer: false,
       stencilBuffer: false,
     });
@@ -593,7 +599,7 @@ export class ParticleSimulation implements ParticleSimulationHandle {
  */
 export function createParticleSimulation(
   tier: QualityLevel,
-  renderer: THREE.WebGLRenderer,
+  renderer: WebGLRenderer,
   field: SplineFieldData,
   simOverrides?: Partial<SimulationParams>,
   renderOverrides?: Partial<RenderParams>,

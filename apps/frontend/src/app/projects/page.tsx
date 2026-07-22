@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { ProjectGrid } from "@/features/portfolio/components/ProjectGrid";
 import { HeaderSection } from "@/features/portfolio/components/HeaderSection";
 import { fetchProjects } from "@/features/portfolio/lib/fetchProjects";
-export const dynamic = 'force-dynamic';
 export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "Projects",
