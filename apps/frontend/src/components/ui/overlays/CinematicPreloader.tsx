@@ -175,7 +175,7 @@ export function CinematicPreloader() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: DUR.ui, delay: 0.1, ease: EASING.easeOutExpo }}
-            className="absolute top-8 left-8 font-mono text-[10px] uppercase tracking-[0.5em] text-neutral-500"
+            className="absolute top-8 left-8 font-mono text-[10px] uppercase tracking-[0.5em] text-neutral-400"
           >
             HexaStudio
           </motion.span>
