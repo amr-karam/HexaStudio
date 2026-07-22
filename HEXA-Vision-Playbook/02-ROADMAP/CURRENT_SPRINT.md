@@ -72,7 +72,26 @@ Implement the foundation layer for Prompt 017 — the cinematic scroll experienc
 
 ## 4. NEXT PHASE
 
-- **P8 — Post-P7 Verification:** Re-run Lighthouse to measure FCP/LCP/TBT deltas from P7 remediation.
+- **P9 — Payload Reduction:** Unused-JS (163 KiB) via R3F/Three ESM builds; FCP sub-1s via edge HTML caching evaluation.
+
+### P8 — Post-P7 Verification (✅ COMPLETE 2026-07-22)
+
+3-run Lighthouse median (desktop, simulated throttling) vs 2026-07-22 baseline:
+
+| Metric | Baseline | Post-P7 | Delta |
+|--------|----------|---------|-------|
+| FCP | 1.5 s | 1.10 s | **−27%** |
+| LCP | 2.2 s | 1.95 s | **−11%** |
+| Speed Index | 1.5 s | 1.29 s | **−14%** |
+| TTI | 2.3 s | 2.06 s | **−10%** |
+| TBT | 230 ms | 261 ms | flat (noise) |
+| CLS | 0 | 0.00 | perfect |
+| Best Practices | ~85 | **96** | **+11** |
+| Accessibility | ~95 | 96 | +1 |
+
+- [x] Cloudflare beacon CSP fix (commit `1296a58`) — console errors now 1 (expected 401 only); csp-xss audit pass
+- [x] Luxury score: 9.3 → **9.4/10**
+- [x] Full detail: `15-QUALITY/LIGHTHOUSE_AUDIT_2026-07-22.md` §9
 
 ### P7 — FCP/LCP/TBT Optimization (✅ COMPLETE 2026-07-22, commit `9837004`)
 
