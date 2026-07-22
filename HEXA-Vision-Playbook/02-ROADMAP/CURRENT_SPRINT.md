@@ -1,6 +1,6 @@
 # CURRENT SPRINT: SIGNATURE SCROLL EXPERIENCE — SCROLL CINEMA INITIATIVE
 
-**Sprint ID:** S-015 | **Focus:** Prompt 017 Scroll Motion Primitives, Global DNA Layer, Chapter Navigation | **Status:** 🔄 IN PROGRESS | **Started:** 2026-07-22
+**Sprint ID:** S-015 | **Focus:** Prompt 017 Scroll Motion Primitives, Global DNA Layer, Chapter Navigation | **Status:** ✅ COMPLETE | **Started:** 2026-07-22 | **Completed:** 2026-07-22
 
 ## 1. SPRINT OBJECTIVE
 
@@ -50,9 +50,9 @@ Implement the foundation layer for Prompt 017 — the cinematic scroll experienc
 
 | Metric | Target | Actual | Status |
 |--------|--------|--------|--------|
-| New primitives | 5 | 5 | Complete |
-| New components | 3 | 3 (FractureRingHero, FractureRingScene, texture utility) | Complete |
-| New unit tests | 20 | 20 | Complete |
+| New primitives | 7 | 7 (useScrollVelocity, ChapterMarker, ChapterProgress, ContactRibbon, ReadingProgress, ProjectChapterRail, ProjectScrollCinema) | Complete |
+| New components | 5 | 5 (FractureRingHero, FractureRingScene, texture utility, ReadingProgress, ProjectScrollCinema) | Complete |
+| Pages refactored | 3 | 3 (homepage, projects/[slug], blog/[slug]) | Complete |
 | Existing test regressions | 0 | 0 | Complete |
 | Frontend typecheck | 0 errors | 0 errors | Complete |
 | Frontend lint | 0 errors / 0 warnings | 0 errors / 0 warnings | Complete |
@@ -62,8 +62,6 @@ Implement the foundation layer for Prompt 017 — the cinematic scroll experienc
 
 ## 4. NEXT PHASE
 
-- **P3 — Projects Detail:** chaptered `/portfolio/[slug]` case study with pinned 3D scrub and side pagination rail.
-- **P4 — Blog Portal:** portal editorial transitions and velocity-reactive card grid.
 - **P5 — Creative Excellence Report:** Lighthouse, real-device sweep, a11y regression, luxury scoring.
 
 ---
