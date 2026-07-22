@@ -69,6 +69,17 @@
 | **S15-P6-009** | Swagger decorators — 13 controllers updated (articles, assistants, faqs, mobile, projects, requests, services, team-members, testimonials, translation, users, vector, webhook-config) | ✅ |
 | **S15-P6-010** | Luxury score — 9.3/10 (gap to 9.5: FCP/LCP optimization, TBT reduction) | ✅ |
 
+### P7 — FCP/LCP/TBT Optimization (✅ COMPLETE 2026-07-22, commit ``9837004``)
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S15-P7-001** | Font ``@import`` removed from globals.css — font CSS now parallel ``<link>`` in layout.tsx (no chain waterfall) | ✅ |
+| **S15-P7-002** | Hero woff2 preloads — Inter + Playfair Display latin variable subsets (promoted to HTTP ``Link:`` headers) | ✅ |
+| **S15-P7-003** | ``onIdle()`` utility — requestIdleCallback, 1200ms bound, Safari macrotask fallback (``lib/idle.ts``) | ✅ |
+| **S15-P7-004** | GSAP ScrollTrigger idle deferral — SectionReveal, KineticTitle, FeaturedWork, ProjectGrid, ProjectScrollCinema, ArticleDetailClient | ✅ |
+| **S15-P7-005** | ``experimental.inlineCss: true`` — page CSS inlined into HTML (2 ``<style>`` tags, 0 render-blocking stylesheet links) | ✅ |
+| **S15-P7-006** | Full CSP + security headers — script/style/font/img/connect/worker-src, HSTS 2y, nosniff, SAMEORIGIN, referrer + permissions | ✅ |
+| **S15-P7-007** | Quality gates — lint 0, typecheck 0, 176/176 tests, production build ✓, deployed + verified live | ✅ |
+
 ### 📊 Quality Metrics (Sprint 15)
 | Metric | Target | Actual | Status |
 |--------|--------|--------|--------|
