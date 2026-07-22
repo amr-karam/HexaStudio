@@ -4,3 +4,6 @@ export { GrainOverlay } from './GrainOverlay';
 export { RadialGlow } from './RadialGlow';
 export { TeamCard } from './TeamCard';
 export { LetterBounceText } from './LetterBounceText';
+export { ChapterMarker, toRomanNumeral } from './ChapterMarker';
+export { ChapterProgress } from './ChapterProgress';
+export type { Chapter } from './ChapterProgress';

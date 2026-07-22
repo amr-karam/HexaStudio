@@ -2,27 +2,30 @@
  * The Living Blueprint — GPGPU particle shaders (S15-FX-002).
  *
  * Shader pipeline:
- *   SIM_VERTEX        → fullscreen quad pass-through
- *   SIMULATION_FRAGMENT → velocity update (curl + spline + cursor + damping)
- *   POSITION_FRAGMENT → Euler integration (pos += vel * dt)
- *   RENDER_VERTEX     → transform from sim texture to clip space
- *   RENDER_FRAGMENT   → soft additive gold sprite with LUT gradient
+ *   simulation.vert     → fullscreen quad, passes UV
+ *   simulation.frag     → velocity update (curl noise + spline attraction +
+ *                          cursor force + damping) → new velocity
+ *   position.frag       → Euler integration (pos += vel * dt)
+ *   render.vert         → billboarded point sprite from position texture,
+ *                          perspective-correct size with per-particle jitter
+ *   render.frag         → soft quintic disc falloff + 2-stage gold gradient LUT
+ *                          + additive blending
  *
- * All motion is delta-scaled — no cumulative frame-rate-dependent drift.
+ * All shaders target WebGL2 with highp precision for stable GPGPU math.
  */
 
-/* -------------------------------------------------------------------------- */
-/*  Shared GLSL chunks                                                         */
-/* -------------------------------------------------------------------------- */
+/* ========================================================================== */
+/*  Shared GLSL — 3D Simplex noise for divergence-free curl fields             */
+/* ========================================================================== */
 
 /**
  * Simplex 3D noise — Ian McEwan, Ashima Arts (MIT).
- * Embedded GLSL standard for deriving divergence-free curl fields.
+ * Produces values in [-1, 1] with smooth, organic distribution.
  */
-const SIMPLEX_NOISE = /* glsl */ `
+const SIMPLEX_3D = /* glsl */ `
   vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
   vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-  vec4 permute(vec4 x) { return mod289(((x * 34.0) + 1.0) * x); }
+  vec4 permute(vec4 x) { return mod289(((x * 34.0) + 10.0) * x); }
   vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
 
   float snoise(vec3 v) {
@@ -48,7 +51,7 @@ const SIMPLEX_NOISE = /* glsl */ `
       + i.x + vec4(0.0, i1.x, i2.x, 1.0));
 
     float n_ = 0.142857142857;
-    vec3 ns = n_ * D.wyz - D.xzx;
+    vec3  ns = n_ * D.wyz - D.xzx;
 
     vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
 
@@ -74,23 +77,23 @@ const SIMPLEX_NOISE = /* glsl */ `
     vec3 p2 = vec3(a1.xy, h.z);
     vec3 p3 = vec3(a1.zw, h.w);
 
-    vec4 norm = taylorInvSqrt(vec4(dot(p0, p0), dot(p1, p1), dot(p2, p2), dot(p3, p3)));
+    vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
     p0 *= norm.x;
     p1 *= norm.y;
     p2 *= norm.z;
     p3 *= norm.w;
 
-    vec4 m = max(0.6 - vec4(dot(x0, x0), dot(x1, x1), dot(x2, x2), dot(x3, x3)), 0.0);
+    vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
     m = m * m;
-    return 42.0 * dot(m * m, vec4(dot(p0, x0), dot(p1, x1), dot(p2, x2), dot(p3, x3)));
+    return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
   }
 
   /**
    * Divergence-free curl of the noise field via central finite differences.
-   * This produces swirling, incompressible motion — no sink/source artifacts.
+   * Produces swirling, incompressible motion — no sink/source artifacts.
    */
   vec3 curlNoise(vec3 p) {
-    const float e = 0.1;
+    const float e = 0.12;
     float n1 = snoise(vec3(p.x, p.y + e, p.z));
     float n2 = snoise(vec3(p.x, p.y - e, p.z));
     float n3 = snoise(vec3(p.x, p.y, p.z + e));
@@ -105,31 +108,53 @@ const SIMPLEX_NOISE = /* glsl */ `
   }
 `;
 
-/* -------------------------------------------------------------------------- */
-/*  S-01: Fullscreen quad vertex                                               */
-/* -------------------------------------------------------------------------- */
+/* ========================================================================== */
+/*  S-01: simulation.vert — fullscreen quad pass-through                       */
+/* ========================================================================== */
 
-/** Passes UV through; used by both simulation passes. */
-export const SIM_VERTEX = /* glsl */ `
+/**
+ * Minimal vertex shader used by both simulation passes (velocity update
+ * and position integration). Renders a unit quad covering clip space
+ * [-1, 1] so every fragment shader invocation processes exactly one
+ * simulation texel.
+ */
+export const SIMULATION_VERTEX = /* glsl */ `
   varying vec2 vUv;
   void main() {
     vUv = uv;
-    gl_Position = vec4(position, 1.0);
+    gl_Position = vec4(position.xy, 0.0, 1.0);
   }
 `;
 
-/* -------------------------------------------------------------------------- */
-/*  S-02: Simulation fragment — velocity update (GPGPU)                        */
-/* -------------------------------------------------------------------------- */
+/* ========================================================================== */
+/*  S-02: simulation.frag — velocity update (GPGPU)                            */
+/* ========================================================================== */
 
+/**
+ * Computes the next-frame velocity for every particle in parallel.
+ *
+ * Per-particle inputs (from textures):
+ *   tPosition  — current world-space position (read from previous frame)
+ *   tVelocity  — current velocity (read from previous frame)
+ *   tParams    — per-particle: x=splineRow, y=flowOffset, z=flowSpeed, w=seed
+ *   tSpline    — baked spline lookup: u=curve parameter t, v=spline row
+ *
+ * Force contributions (all delta-scaled):
+ *   1. Spline attraction — each particle chases a target moving along its
+ *      assigned spline via flowOffset + time * flowSpeed
+ *   2. Curl noise — divergence-free swirling from 3D simplex noise
+ *   3. Cursor repulsion — radial impulse from NDC-converted world cursor
+ *   4. Damping — exponential decay to prevent runaway orbits
+ *
+ * Velocity is clamped at 20 world-units/s to prevent numerical explosion
+ * after tab-switch hitch recovery.
+ */
 export const SIMULATION_FRAGMENT = /* glsl */ `
   precision highp float;
 
   uniform sampler2D tPosition;
   uniform sampler2D tVelocity;
-  /** Per-particle: x = splineRow, y = flowOffset, z = flowSpeed, w = seed */
   uniform sampler2D tParams;
-  /** Baked spline lookup: u = curve t, v = spline row index */
   uniform sampler2D tSpline;
 
   uniform float uTime;
@@ -139,46 +164,54 @@ export const SIMULATION_FRAGMENT = /* glsl */ `
   uniform float uCurlScale;
   uniform float uDamping;
 
-  uniform vec3  uPointer;
-  uniform float uPointerStrength;
-  uniform float uPointerRadius;
-  uniform float uPointerForce;
+  uniform vec3  uCursorWorld;
+  uniform float uCursorStrength;
+  uniform float uCursorRadius;
+  uniform float uCursorForce;
 
   varying vec2 vUv;
 
-  ${SIMPLEX_NOISE}
+  ${SIMPLEX_3D}
 
   void main() {
     vec3 pos    = texture2D(tPosition, vUv).xyz;
     vec3 vel    = texture2D(tVelocity, vUv).xyz;
     vec4 params = texture2D(tParams, vUv);
 
-    // ── Spline flow attraction ──────────────────────────────────────────
-    // Each particle chases a target that moves along its assigned spline.
-    // flowT wraps thanks to the spline texture's RepeatWrapping.
-    float flowT   = fract(params.y + uTime * params.z);
-    vec3  target  = texture2D(tSpline, vec2(flowT, params.x)).xyz;
+    // ── 1. Spline flow attraction ─────────────────────────────────────────
+    // Each particle is assigned to a spline row (params.x) with a random
+    // flow offset (params.y) and individual speed (params.z). The target
+    // advances along the spline each frame, creating a continuous flow.
+    float flowT  = fract(params.y + uTime * params.z);
+    vec3  target = texture2D(tSpline, vec2(flowT, params.x)).xyz;
     vec3  toTarget = target - pos;
     vel += toTarget * uAttraction * uDelta;
 
-    // ── Curl noise drift (divergence-free, organic swirling) ────────────
-    // Seed varies per particle, creating unique orbits that never collide.
+    // ── 2. Curl noise drift ───────────────────────────────────────────────
+    // Per-particle deterministic noise seed (params.w) creates unique orbits.
+    // The curl field is sampled in world space, scaled by uCurlScale for
+    // spatial frequency control and animated with time for living motion.
     vec3 curl = curlNoise(pos * uCurlScale + uTime * 0.08 + params.w * 10.0);
     vel += curl * uCurlStrength * uDelta;
 
-    // ── Cursor force field (S15-FX-004) ─────────────────────────────────
-    // Radial impulse radiating from the pointer intersection point.
-    // Uses smoothstep for a soft, zero-derivative edge.
-    vec3  fromPtr = pos - uPointer;
-    float dist    = length(fromPtr);
-    float falloff = 1.0 - smoothstep(0.0, uPointerRadius, dist);
-    // Combine falloff with configured force and delta scaling.
-    vel += normalize(fromPtr + 0.0001) * falloff * uPointerForce * uPointerStrength * uDelta;
+    // ── 3. Cursor force field ─────────────────────────────────────────────
+    // Radial repulsion from the cursor world position. Uses smoothstep for
+    // zero-derivative edge falloff — particles near the boundary feel a
+    // smooth fade rather than a hard cutoff.
+    vec3  fromCursor = pos - uCursorWorld;
+    float dist       = length(fromCursor);
+    float falloff    = 1.0 - smoothstep(0.0, uCursorRadius, dist);
+    vec3  cursorDir  = normalize(fromCursor + 0.0001);
+    // Push particles away from the cursor: outward radial impulse.
+    // Strength is modulated by uCursorStrength (0 when cursor is idle).
+    vel += cursorDir * falloff * uCursorForce * uCursorStrength * uDelta;
 
-    // ── Damping (framerate-independent exponential decay) ───────────────
+    // ── 4. Damping ────────────────────────────────────────────────────────
+    // Framerate-independent exponential decay: vel *= e^(-damping * dt).
+    // Higher damping = particles settle faster toward spline targets.
     vel *= exp(-uDamping * uDelta);
 
-    // Clamp extreme velocities to prevent numerical explosion.
+    // ── Clamp ─────────────────────────────────────────────────────────────
     float speed = length(vel);
     if (speed > 20.0) {
       vel = (vel / speed) * 20.0;
@@ -188,10 +221,18 @@ export const SIMULATION_FRAGMENT = /* glsl */ `
   }
 `;
 
-/* -------------------------------------------------------------------------- */
-/*  S-03: Position integration                                                 */
-/* -------------------------------------------------------------------------- */
+/* ========================================================================== */
+/*  S-03: position.frag — Euler integration                                    */
+/* ========================================================================== */
 
+/**
+ * Reads the position from the previous frame and the just-computed velocity,
+ * then performs a simple forward Euler step: pos' = pos + vel * dt.
+ *
+ * This is run as a second fullscreen pass for two reasons:
+ *   1. WebGL1 compatibility (avoids MRT requirement)
+ *   2. Clear separation of concerns — velocity logic stays isolated
+ */
 export const POSITION_FRAGMENT = /* glsl */ `
   precision highp float;
 
@@ -208,10 +249,20 @@ export const POSITION_FRAGMENT = /* glsl */ `
   }
 `;
 
-/* -------------------------------------------------------------------------- */
-/*  S-04: Render vertex — position fetch + clip-space transform                */
-/* -------------------------------------------------------------------------- */
+/* ========================================================================== */
+/*  S-04: render.vert — billboarded point sprite from sim texture              */
+/* ========================================================================== */
 
+/**
+ * Transforms GPU-simulated particle positions into clip space for rendering.
+ *
+ * Key features:
+ *  - Reads world-space position from the simulation texture (tPosition)
+ *  - Reads velocity for energy-driven brightness in the fragment shader
+ *  - Perspective-correct point sizing: size *= pixelRatio / -mvPosition.z
+ *  - Per-particle deterministic jitter via a seed from the lookup UV
+ *  - Billboarded by nature of GL_POINTS rendering
+ */
 export const RENDER_VERTEX = /* glsl */ `
   precision highp float;
 
@@ -230,71 +281,100 @@ export const RENDER_VERTEX = /* glsl */ `
     vec3 pos = texture2D(tPosition, aRef).xyz;
     vec3 vel = texture2D(tVelocity, aRef).xyz;
 
-    // "Energy" drives brightness + warmth in the fragment shader.
-    // Faster particles = hotter cores (champagne → gold → white).
+    // Energy drives brightness + warmth in the fragment shader.
+    // Faster particles = hotter, brighter cores (champagne → gold → white).
     vEnergy = clamp(length(vel) * 0.6, 0.0, 1.0);
-    // Deterministic per-particle seed from the lookup reference UV.
+
+    // Deterministic per-particle seed from lookup reference UV.
+    // Powers subtle brightness variation in the fragment shader so the
+    // field feels alive rather than uniformly lit.
     vSeed = fract(aRef.x * 157.31 + aRef.y * 113.97);
 
     vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
     gl_Position = projectionMatrix * mvPosition;
 
     // Perspective-correct point size with per-particle jitter.
-    // Larger points on medium tier (fewer particles → larger to fill space).
+    // Larger particles on medium tier (fewer particles → larger to fill space).
     float size = uPointSize * (0.6 + vSeed * 0.8);
     gl_PointSize = size * uPixelRatio * (1.0 / -mvPosition.z);
   }
 `;
 
-/* -------------------------------------------------------------------------- */
-/*  S-05: Render fragment — soft additive gold sprite + LUT gradient           */
-/* -------------------------------------------------------------------------- */
+/* ========================================================================== */
+/*  S-05: render.frag — soft additive gold sprite + 2-stage gradient LUT       */
+/* ========================================================================== */
 
+/**
+ * Renders each particle as a soft, additive-blended disc with a hand-tuned
+ * gold gradient that grades from deep champagne (#C5A059) through bright
+ * gold (#F5E3B3) to warm ivory-white at peak energy.
+ *
+ * Design decisions:
+ *  - Quintic (^5) falloff: zero first + second derivatives at the disc edge
+ *    for buttery-smooth blending with no visible halo boundary
+ *  - Two-stage gradient LUT: stage 1 (champagne→gold, energy 0→0.65) and
+ *    stage 2 (gold→ivory, energy 0.65→1.0) for natural metallic sheen
+ *  - Per-particle energy variation: fast particles glow brighter and warmer,
+ *    creating natural "core" highlights that feed the bloom pass
+ *  - AdditiveBlending: particles accumulate in screen space, so dense
+ *    regions glow brighter without saturating (film-like roll-off)
+ */
 export const RENDER_FRAGMENT = /* glsl */ `
   precision highp float;
 
-  uniform vec3 uColorBase;   // deep champagne (#C5A059)
-  uniform vec3 uColorHot;    // bright ivory-gold (#F5E3B3)
+  uniform vec3 uColorBase;   // deep champagne #C5A059
+  uniform vec3 uColorHot;    // bright ivory-gold #F5E3B3
   uniform float uOpacity;
 
   varying float vEnergy;
   varying float vSeed;
 
   void main() {
-    // ── Soft radial disc (no texture fetch) ─────────────────────────────
+    // ── Soft radial disc (no texture fetch needed) ────────────────────────
+    // gl_PointCoord ranges [0,1] in the point sprite. Transform to [-1,1]
+    // for a centered radial distance check.
     vec2 cxy = gl_PointCoord * 2.0 - 1.0;
     float r2 = dot(cxy, cxy);
     if (r2 > 1.0) discard;
 
-    // Quintic smoothstep disc for a buttery falloff (zero derivative at edge).
-    // Feels far more premium than the quadratic alternative.
+    // Quintic smoothstep: disc = (1 - r²)^5
+    // This gives a buttery-soft edge with zero derivatives at r=1,
+    // eliminating the harsh ring that quadratic (^2) or cubic (^3)
+    // falloffs produce against dark backgrounds.
     float disc = 1.0 - r2;
-    float alpha = disc * disc * disc;
+    float alpha = disc * disc * disc * disc * disc;
 
-    // ── Gold gradient LUT ───────────────────────────────────────────────
-    // Ramp: deep champagne (base) → bright gold (hot) → white (peak energy).
-    // The 't' parameter maps energy through a hand-tuned curve:
-    //   low energy → stays near deep champagne
-    //   mid energy → shifts toward bright gold
-    //   high energy → pushes toward ivory-white glow
+    // ── 2-stage gold gradient LUT ─────────────────────────────────────────
+    // Stage 1 (0.0 → 0.65): deep champagne → bright gold
+    // Stage 2 (0.65 → 1.0): bright gold → ivory-white glow
     //
-    // This creates a natural "glow core" on fast particles that feeds
-    // beautifully into the bloom pass.
+    // The energy value drives the transition: slow particles stay cool
+    // and deep-champagne; fast particles heat up through gold to white.
     float t = vEnergy;
-    // Subtle per-particle variation so the field feels alive, not uniform.
+
+    // Subtle per-particle variation (±6%) so the field breathes with
+    // organic micro-diversity rather than looking procedurally uniform.
     t += vSeed * 0.12;
 
-    // Two-stage gradient:
-    //   stage 1 (champagne → gold):  0.0 → 0.65
-    //   stage 2 (gold → white):      0.65 → 1.0
     float stage1T = smoothstep(0.0, 0.65, t);
     float stage2T = smoothstep(0.65, 1.0, t);
-    vec3 gold = mix(uColorBase, uColorHot, stage1T);
-    vec3 finalColor = mix(gold, vec3(1.0, 0.95, 0.85), stage2T * 0.7);
 
-    // Boost luminance for high-energy particles (bloom pass lives on luminance).
+    vec3 gold = mix(uColorBase, uColorHot, stage1T);
+    // Warm ivory-white (not pure white — keeps the metallic character).
+    vec3 ivory = vec3(1.0, 0.95, 0.85);
+    vec3 finalColor = mix(gold, ivory, stage2T * 0.7);
+
+    // Boost luminance for high-energy cores (feeds the bloom pass).
+    // Multiplier ramps from 0.8 (low energy) to 1.7 (peak energy).
     finalColor *= 0.8 + vEnergy * 0.9;
 
     gl_FragColor = vec4(finalColor, alpha * uOpacity);
   }
 `;
+
+/* ========================================================================== */
+/*  Re-exports under both naming conventions for backward compatibility        */
+/* ========================================================================== */
+
+/** @deprecated Use SIMULATION_VERTEX */
+export const SIM_VERTEX = SIMULATION_VERTEX;

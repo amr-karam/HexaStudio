@@ -286,10 +286,13 @@ services:
       USER: ${POSTGRES_USER:-hexastudio}
       PASSWORD: ${POSTGRES_PASSWORD}
       DBNAME: ${ODOO_DB:-hexastudio_odoo}
+      ODOO_MASTER_PASSWORD: ${ODOO_MASTER_PASSWORD:?ODOO_MASTER_PASSWORD must be set}
     volumes:
       - odoo_data:/var/lib/odoo
       - ./docker/odoo/odoo.conf:/etc/odoo/odoo.conf:ro
       - ./docker/odoo/addons:/mnt/extra-addons:ro
+      - ./docker/odoo/entrypoint.sh:/entrypoint.d/hexa-entrypoint.sh:ro
+    entrypoint: ["/bin/bash", "/entrypoint.d/hexa-entrypoint.sh"]
     labels:
       - com.centurylinklabs.watchtower.enable=true
     networks:

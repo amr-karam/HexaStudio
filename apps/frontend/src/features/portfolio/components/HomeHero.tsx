@@ -1,21 +1,21 @@
 'use client';
 
-import React, { Suspense, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Magnetic } from '@/components/ui/Magnetic';
-import { LazySceneCanvas } from '@/features/scene';
-import { SceneErrorBoundary } from '@/features/scene/components/SceneErrorBoundary';
+import { LivingBlueprintHero } from '@/features/experience/components/LivingBlueprintHero';
 import { TextReveal } from '@/components/ui/TextReveal';
-import { ShimmerSkeleton } from '@/components/ui/ShimmerSkeleton';
 import { useFinePointer } from '@/hooks/useFinePointer';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
+import { useQualityTier } from '@/providers/quality-provider';
 import { EASE, DURATION, REDUCED_TRANSITION } from '@/lib/motion';
 
 export const HomeHero = () => {
   const finePointer = useFinePointer();
-  const { staticMode } = useMotionPolicy();
+  const { animationsEnabled, staticMode } = useMotionPolicy();
+  const { tier } = useQualityTier();
   const { scrollYProgress } = useScroll();
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -91,21 +91,12 @@ export const HomeHero = () => {
       ref={containerRef}
       className="relative flex min-h-screen flex-col items-center justify-center px-4 sm:px-8 pt-20 overflow-hidden bg-obsidian"
     >
-      <SceneErrorBoundary>
-        <Suspense fallback={
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="flex flex-col items-center gap-6">
-              <ShimmerSkeleton variant="circle" className="h-16 w-16" />
-              <div className="flex flex-col items-center gap-3">
-                <div className="w-12 h-[1px] bg-accent/40 animate-pulse" />
-                <span className="text-[9px] uppercase tracking-[0.4em] text-white/30 font-mono">Loading scene</span>
-              </div>
-            </div>
-          </div>
-        }>
-          <LazySceneCanvas />
-        </Suspense>
-      </SceneErrorBoundary>
+      <LivingBlueprintHero
+        qualityTier={tier}
+        staticMode={staticMode}
+        finePointer={finePointer}
+        animationsEnabled={animationsEnabled}
+      />
 
       {/* Ambient gradient overlays for cinematic depth */}
       <div className="absolute inset-0 bg-gradient-to-b from-obsidian/60 via-transparent to-obsidian pointer-events-none z-[1]" />
@@ -159,7 +150,7 @@ export const HomeHero = () => {
           className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pointer-events-auto"
         >
           <Magnetic>
-            <Link href="/portfolio" data-cursor="explore"><Button variant="primary" size="lg">Explore Works</Button></Link>
+            <Link href="/projects" data-cursor="explore"><Button variant="primary" size="lg">Explore Works</Button></Link>
           </Magnetic>
           <Magnetic>
             <Link href="/services" data-cursor="explore"><Button variant="secondary" size="lg">Our Process</Button></Link>

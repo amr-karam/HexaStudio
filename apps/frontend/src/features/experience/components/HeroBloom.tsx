@@ -1,10 +1,11 @@
 'use client';
 
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
+import { useQualityTier } from '@/providers/quality-provider';
 
-/* -------------------------------------------------------------------------- */
+/* ========================================================================== */
 /*  Per‑tier gold bloom configuration                                          */
-/* -------------------------------------------------------------------------- */
+/* ========================================================================== */
 
 interface BloomConfig {
   intensity: number;
@@ -16,13 +17,14 @@ interface BloomConfig {
 /**
  * Gold-tuned bloom parameters (S15-FX-006).
  *
- * The gold particles emit luminance in the 0.7–0.95 range — the threshold
- * is set just below their typical brightness so their "hot cores" bloom but
- * the surrounding champagne haze does not. This yields a clean, laser‑etch
- * look while high‑energy particles spill a soft golden aura.
+ * The champagne-gold particles (#C5A059) emit luminance in the 0.7–0.95
+ * range. By setting the threshold to 0.7 we ensure:
+ *  - Hot particle cores (high-energy, near-white) bloom into a soft gold aura
+ *  - Cool champagne surfaces (luminance < 0.7) do NOT bloom
+ *  - The result is a clean, laser‑etch look with a warm ethereal glow
  *
- * Medium tier never mounts this component (see BlueprintHeroScene), but
- * the config is provided for completeness if the tier gating changes.
+ * Medium tier never mounts this component (see condition in render),
+ * but the config is provided for completeness.
  */
 const BLOOM_CONFIG: Record<string, BloomConfig> = {
   high: {
@@ -39,21 +41,38 @@ const BLOOM_CONFIG: Record<string, BloomConfig> = {
   },
 };
 
-interface Props {
-  /** Quality tier override — defaults to 'high'. */
-  tier?: string;
-}
+/* ========================================================================== */
+/*  Component: HeroBloom                                                       */
+/* ========================================================================== */
 
 /**
- * HeroBloom — a thin wrapper around @react-three/postprocessing's Bloom effect
- * tuned specifically for gold-on-obsidian particle sprites.
+ * HeroBloom (S15-FX-006) — gold‑tuned UnrealBloomPass for the Living Blueprint.
  *
- * Lazy-loaded and conditionally rendered in BlueprintHeroScene for the high
- * tier only, keeping the postprocessing bundle off the critical path for
- * medium/low users.
+ * Wraps @react-three/postprocessing's Bloom effect, tuned specifically for
+ * champagne‑gold particle sprites on an obsidian (#0A0A0A) background.
+ *
+ * Rendering policy:
+ * | Tier   | Behaviour                                              |
+ * |--------|--------------------------------------------------------|
+ * | high   | Bloom enabled: threshold 0.7, intensity 0.85          |
+ * | medium | Returns null — bloom skipped to preserve fill-rate    |
+ * | low    | Component never mounted (parent renders static poster)|
+ *
+ * The EffectComposer uses `enableNormalPass={false}` to avoid double‑sampling
+ * the scene when bloom is the only post‑processing effect. This saves ~1 full
+ * render pass per frame.
  */
-export default function HeroBloom({ tier: overrideTier }: Props) {
-  const config = BLOOM_CONFIG[overrideTier ?? 'high'] ?? BLOOM_CONFIG.high;
+export default function HeroBloom() {
+  const { tier, ready } = useQualityTier();
+
+  // Don't render until quality detection is complete.
+  if (!ready) return null;
+
+  // Bloom is a high-tier-only luxury. Medium/low tiers skip it entirely
+  // to preserve GPU fill-rate for the core particle simulation.
+  if (tier.level !== 'high') return null;
+
+  const config = BLOOM_CONFIG.high;
 
   return (
     <EffectComposer enableNormalPass={false}>
