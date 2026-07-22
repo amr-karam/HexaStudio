@@ -72,8 +72,35 @@ export default function RootLayout({
   return (
     <html lang="en" dir="ltr">
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://api.hexastudio.net" />
+        {/* Hero font files — start download immediately, skipping the CSS→font
+            discovery waterfall. Latin variable subsets only (Inter = body/hero,
+            Playfair Display = headings). JetBrains Mono loads on demand. */}
+        {/* eslint-disable @next/next/google-font-preconnect -- false positive: the preconnect to fonts.gstatic.com is present above; the rule does not detect it. */}
+        <link
+          rel="preload"
+          as="font"
+          type="font/woff2"
+          href="https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          as="font"
+          type="font/woff2"
+          href="https://fonts.gstatic.com/s/playfairdisplay/v40/nuFiD-vYSZviVYUb_rj3ij__anPXDTzYgA.woff2"
+          crossOrigin="anonymous"
+        />
+        {/* Font CSS as a top-level <link> (not @import) so it fetches in
+            parallel with globals.css instead of chaining after it.
+            display=swap keeps text visible in fallback fonts immediately. */}
+        {/* eslint-disable @next/next/no-page-custom-font -- Pages-Router rule: in App Router the root layout IS the correct global location for font stylesheets (next/font/google is disabled: build machines have no Google Fonts API access). */}
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&family=Playfair+Display:wght@400..900&display=swap"
+        />
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased">
         <noscript>

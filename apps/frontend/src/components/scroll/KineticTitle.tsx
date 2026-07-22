@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { getGsap } from '@/lib/gsap';
+import { onIdle } from '@/lib/idle';
 import { GSAP_EASING, STAGGER_TOKENS } from '@/lib/motion/tokens';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { useQualityTier } from '@/providers/quality-provider';
@@ -83,6 +84,7 @@ export const KineticTitle = ({
     let cancelled = false;
     let ctx: { revert: () => void } | null = null;
 
+    const cancelIdle = onIdle(() => {
     void (async () => {
       const [gsap, scrollTriggerModule] = await Promise.all([
         getGsap(),
@@ -121,9 +123,11 @@ export const KineticTitle = ({
           .catch(() => undefined);
       }
     })();
+    }, 1200);
 
     return () => {
       cancelled = true;
+      cancelIdle();
       ctx?.revert();
     };
   }, [isStatic, text, accentKey]);

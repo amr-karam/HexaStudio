@@ -10,6 +10,7 @@ import { Magnetic } from '@/components/ui/Magnetic';
 import { ChapterMarker } from '@/components/animation/ChapterMarker';
 import { KineticTitle } from '@/components/scroll/KineticTitle';
 import { getGsap } from '@/lib/gsap';
+import { onIdle } from '@/lib/idle';
 import { EASE, DURATION } from '@/lib/motion';
 import { GSAP_EASING } from '@/lib/motion/tokens';
 import { useReducedMotion } from '@/hooks';
@@ -123,6 +124,7 @@ export const FeaturedWork = ({ project }: FeaturedWorkProps) => {
     let cancelled = false;
     let ctx: { revert: () => void } | null = null;
 
+    const cancelIdle = onIdle(() => {
     void (async () => {
       const gsap = await getGsap();
       if (cancelled) return;
@@ -146,9 +148,11 @@ export const FeaturedWork = ({ project }: FeaturedWorkProps) => {
         );
       }, section);
     })();
+    }, 1200);
 
     return () => {
       cancelled = true;
+      cancelIdle();
       ctx?.revert();
     };
   }, [reducedMotion, isLowTier]);

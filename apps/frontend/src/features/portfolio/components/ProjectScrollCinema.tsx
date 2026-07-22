@@ -12,6 +12,7 @@ import { LazyProjectSceneWrapper } from '@/features/portfolio/components/LazyPro
 import { ProjectChapterRail } from '@/features/portfolio/components/ProjectChapterRail';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { getGsap } from '@/lib/gsap';
+import { onIdle } from '@/lib/idle';
 
 
 /* -------------------------------------------------------------------------- */
@@ -208,6 +209,7 @@ function ChapterExperience({ project }: { project: Project }) {
     let cancelled = false;
     let ctx: { revert: () => void } | null = null;
 
+    const cancelIdle = onIdle(() => {
     void (async () => {
       const [gsap, scrollTriggerModule] = await Promise.all([
         getGsap(),
@@ -251,9 +253,11 @@ function ChapterExperience({ project }: { project: Project }) {
           .catch(() => undefined);
       }
     })();
+    }, 1200);
 
     return () => {
       cancelled = true;
+      cancelIdle();
       ctx?.revert();
     };
   }, [staticMode]);

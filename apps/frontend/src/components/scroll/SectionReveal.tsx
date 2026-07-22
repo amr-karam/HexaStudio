@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { getGsap } from '@/lib/gsap';
+import { onIdle } from '@/lib/idle';
 import { GSAP_EASING } from '@/lib/motion/tokens';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { useQualityTier } from '@/providers/quality-provider';
@@ -66,6 +67,7 @@ export const SectionReveal = ({ children, className, distance = 1 }: SectionReve
     let ctx: { revert: () => void } | null = null;
     let removeLoadListener: (() => void) | null = null;
 
+    const cancelIdle = onIdle(() => {
     void (async () => {
       const [gsap, scrollTriggerModule] = await Promise.all([
         getGsap(),
@@ -136,9 +138,11 @@ export const SectionReveal = ({ children, className, distance = 1 }: SectionReve
         removeLoadListener = () => window.removeEventListener('load', refresh);
       }
     })();
+    }, 1200);
 
     return () => {
       cancelled = true;
+      cancelIdle();
       removeLoadListener?.();
       ctx?.revert();
     };
