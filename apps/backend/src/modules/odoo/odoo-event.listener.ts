@@ -6,7 +6,7 @@ import type { OdooWebhookPayload } from '@hexastudio/types';
 /**
  * Consumes Odoo domain events from the EventBus and keeps derived caches fresh.
  * On a project change it invalidates the Odoo project cache entry so the next
- * Strapi-enriched project read reflects the latest Odoo state.
+ * Strapi-enriched portfolio read reflects the latest Odoo state.
  */
 @Injectable()
 export class OdooEventListener implements OnModuleInit {

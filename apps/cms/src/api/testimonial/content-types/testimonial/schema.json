@@ -37,7 +37,7 @@
     "project": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::project.project"
+      "target": "api::portfolio.portfolio"
     },
     "featured": {
       "type": "boolean",
