@@ -3,7 +3,7 @@ import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { getEnv } from '../../config/env';
 
-const LOCALIZED_TYPES = ['articles', 'portfolios', 'services', 'faqs', 'categories'] as const;
+const LOCALIZED_TYPES = ['articles', 'projects', 'services', 'faqs', 'categories'] as const;
 
 export interface LocaleEntry {
   id: number;

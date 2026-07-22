@@ -27,7 +27,7 @@ Focus on: architecture style, materials, project type, location context, design 
       const response = await this.aiChat.client!.chat.completions.create({
         model: this.aiChat.model,
         messages: [
-          { role: 'system', content: 'You are a tag generator for an architecture portfolio. Return only valid JSON arrays of strings.' },
+          { role: 'system', content: 'You are a tag generator for architecture projects. Return only valid JSON arrays of strings.' },
           { role: 'user', content: prompt },
         ],
         temperature: 0.3,
