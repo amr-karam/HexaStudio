@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 export const metadata: Metadata = {
-  title: "Portfolio | HexaStudio",
+  title: "Projects | HexaStudio",
   description: "Explore our architectural visualization projects.",
 };
 export default function PortfolioLayout({

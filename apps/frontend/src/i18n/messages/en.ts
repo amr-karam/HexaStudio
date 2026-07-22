@@ -26,7 +26,7 @@ export const en = {
     home: 'Home',
     about: 'About',
     services: 'Services',
-    portfolio: 'Portfolio',
+    portfolio: 'Projects',
     blog: 'Blog',
     contact: 'Contact',
     portal: 'Client Portal',
@@ -196,7 +196,7 @@ export const en = {
     tagline: 'Living Spaces. Visualized. Immersive 3D architectural experiences.',
   },
   navbar: {
-    portfolio: 'Portfolio',
+    portfolio: 'Projects',
     services: 'Services',
     blog: 'Blog',
     studio: 'Studio',
