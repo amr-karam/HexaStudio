@@ -14,7 +14,7 @@
  *  - CPU‑side nearest‑segment query: find closest spline point + tangent
  *  - RepeatWrapping on lookup texture for seamless t=0→1 wrap
  */
-import * as THREE from 'three';
+import { DataTexture, CatmullRomCurve3, Vector3, RGBAFormat, FloatType, LinearFilter, RepeatWrapping, MathUtils } from 'three';
 
 /* ========================================================================== */
 /*  Types                                                                      */
@@ -41,10 +41,10 @@ export interface SplineFieldData {
 /** Baked field ready for GPU consumption. */
 export interface BakedSplineField {
   /** Position lookup texture: u = t along curve (0..1), v = spline row index. */
-  texture: THREE.DataTexture;
+  texture: DataTexture;
   splineCount: number;
   /** CPU curves — for scattering initial positions and nearest‑segment queries. */
-  curves: THREE.CatmullRomCurve3[];
+  curves: CatmullRomCurve3[];
   /** Original field name for debugging / morph tracking. */
   name: string;
   /** Release GPU + CPU resources. */
@@ -54,9 +54,9 @@ export interface BakedSplineField {
 /** Result of a nearest-point-on-spline query. */
 export interface NearestSplinePoint {
   /** Closest world-space point on the spline. */
-  point: THREE.Vector3;
+  point: Vector3;
   /** Tangent direction at the closest point (for attraction force computation). */
-  tangent: THREE.Vector3;
+  tangent: Vector3;
   /** Distance from query point to nearest spline point in world units. */
   distance: number;
   /** Index of the spline within the field (0‑based). */
@@ -84,14 +84,14 @@ export function bakeSplineField(data: SplineFieldData): BakedSplineField {
   const pixels = new Float32Array(SAMPLES_PER_SPLINE * splineCount * 4);
 
   const curves = data.splines.map((def) => {
-    const pts = def.points.map(([x, y, z]) => new THREE.Vector3(x, y, z));
+    const pts = def.points.map(([x, y, z]) => new Vector3(x, y, z));
     const closed = def.closed ?? true;
     const curveType = def.curveType ?? 'centripetal';
     const tension = def.tension ?? 0.5;
-    return new THREE.CatmullRomCurve3(pts, closed, curveType, tension);
+    return new CatmullRomCurve3(pts, closed, curveType, tension);
   });
 
-  const sample = new THREE.Vector3();
+  const sample = new Vector3();
   curves.forEach((curve, row) => {
     for (let i = 0; i < SAMPLES_PER_SPLINE; i++) {
       const t = i / (SAMPLES_PER_SPLINE - 1);
@@ -104,16 +104,16 @@ export function bakeSplineField(data: SplineFieldData): BakedSplineField {
     }
   });
 
-  const texture = new THREE.DataTexture(
+  const texture = new DataTexture(
     pixels,
     SAMPLES_PER_SPLINE,
     splineCount,
-    THREE.RGBAFormat,
-    THREE.FloatType,
+    RGBAFormat,
+    FloatType,
   );
-  texture.minFilter = THREE.LinearFilter;
-  texture.magFilter = THREE.LinearFilter;
-  texture.wrapS = THREE.RepeatWrapping;
+  texture.minFilter = LinearFilter;
+  texture.magFilter = LinearFilter;
+  texture.wrapS = RepeatWrapping;
   texture.needsUpdate = true;
 
   return {
@@ -129,8 +129,8 @@ export function bakeSplineField(data: SplineFieldData): BakedSplineField {
 /*  Nearest‑point query (CPU)                                                  */
 /* ========================================================================== */
 
-const _scratchVec = new THREE.Vector3();
-const _scratchTan = new THREE.Vector3();
+const _scratchVec = new Vector3();
+const _scratchTan = new Vector3();
 
 /**
  * Find the nearest point on any spline in the baked field to the given
@@ -144,13 +144,13 @@ const _scratchTan = new THREE.Vector3();
  *                        (default 64 — adequate for smooth fields).
  */
 export function nearestSegment(
-  worldPos: THREE.Vector3,
+  worldPos: Vector3,
   field: BakedSplineField,
   samplesPerCurve = 64,
 ): NearestSplinePoint {
   const best: NearestSplinePoint = {
-    point: new THREE.Vector3(),
-    tangent: new THREE.Vector3(),
+    point: new Vector3(),
+    tangent: new Vector3(),
     distance: Infinity,
     splineIndex: 0,
     parameterT: 0,
@@ -213,7 +213,7 @@ export function morphSplineFields(
     );
   }
 
-  const t = THREE.MathUtils.clamp(blend, 0, 1);
+  const t = MathUtils.clamp(blend, 0, 1);
   const morphed: SplineDef[] = [];
 
   for (let i = 0; i < from.splines.length; i++) {

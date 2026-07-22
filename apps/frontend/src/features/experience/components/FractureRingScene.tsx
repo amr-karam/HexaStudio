@@ -5,7 +5,7 @@ import type { MotionValue } from 'framer-motion';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Environment } from '@react-three/drei';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
-import * as THREE from 'three';
+import { Group, TorusGeometry, BufferAttribute, MeshStandardMaterial, DoubleSide, ACESFilmicToneMapping } from 'three';
 import { createFractureTexture } from './fracture-ring-texture';
 
 /* -------------------------------------------------------------------------- */
@@ -42,7 +42,7 @@ const barycentricFragmentShader = /* glsl */ `
 
 function WireframeTorus() {
   const geometry = useMemo(() => {
-    const geo = new THREE.TorusGeometry(2, 0.4, 80, 80);
+    const geo = new TorusGeometry(2, 0.4, 80, 80);
     const nonIndexed = geo.toNonIndexed();
     const count = nonIndexed.attributes.position.count;
     const bary = new Float32Array(count * 3);
@@ -57,7 +57,7 @@ function WireframeTorus() {
       bary[(i + 2) * 3 + 1] = 0;
       bary[(i + 2) * 3 + 2] = 1;
     }
-    nonIndexed.setAttribute('barycentric', new THREE.BufferAttribute(bary, 3));
+    nonIndexed.setAttribute('barycentric', new BufferAttribute(bary, 3));
     geo.dispose();
     return nonIndexed;
   }, []);
@@ -67,7 +67,7 @@ function WireframeTorus() {
       <shaderMaterial
         vertexShader={barycentricVertexShader}
         fragmentShader={barycentricFragmentShader}
-        side={THREE.DoubleSide}
+        side={DoubleSide}
       />
     </mesh>
   );
@@ -80,14 +80,14 @@ function WireframeTorus() {
 function StoneShell() {
   const material = useMemo(() => {
     const alphaMap = createFractureTexture();
-    return new THREE.MeshStandardMaterial({
+    return new MeshStandardMaterial({
       color: 0x1a1510,
       roughness: 0.85,
       metalness: 0.1,
       alphaMap,
       transparent: true,
       alphaTest: 0.35,
-      side: THREE.DoubleSide,
+      side: DoubleSide,
     });
   }, []);
 
@@ -110,7 +110,7 @@ interface FractureRingSceneProps {
 }
 
 function RingGroup({ scrollProgress, finePointer }: FractureRingSceneProps) {
-  const groupRef = useRef<THREE.Group>(null);
+  const groupRef = useRef<Group>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
   const rotationRef = useRef({ x: 0, y: 0 });
   useThree();
@@ -166,7 +166,7 @@ export function FractureRingScene({ scrollProgress, finePointer }: FractureRingS
       dpr={[1, 2]}
       gl={{
         antialias: true,
-        toneMapping: THREE.ACESFilmicToneMapping,
+        toneMapping: ACESFilmicToneMapping,
         toneMappingExposure: 1.0,
       }}
       style={{ background: 'transparent' }}

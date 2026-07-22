@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useCallback, useLayoutEffect } from 'react';
 import { useThree } from '@react-three/fiber';
-import * as THREE from 'three';
+import { Vector2 } from 'three';
 
 import {
   createParticleSimulation,
@@ -126,7 +126,7 @@ export default function BlueprintParticles({
   const simRef = useRef<ParticleSimulation | null>(null);
   const rafId = useRef<number | null>(null);
   const lastTime = useRef(0);
-  const mouseNDC = useRef(new THREE.Vector2(0, 0));
+  const mouseNDC = useRef(new Vector2(0, 0));
   const forceFieldRef = useRef<ForceField | null>(null);
 
   /* -- Stable tier key + overrides ----------------------------------------- */
