@@ -72,7 +72,17 @@ Implement the foundation layer for Prompt 017 — the cinematic scroll experienc
 
 ## 4. NEXT PHASE
 
-- **P7 — FCP/LCP Optimization:** Inline critical CSS, preload hero font weights, defer GSAP ScrollTrigger init.
+- **P8 — Post-P7 Verification:** Re-run Lighthouse to measure FCP/LCP/TBT deltas from P7 remediation.
+
+### P7 — FCP/LCP/TBT Optimization (✅ COMPLETE 2026-07-22, commit `9837004`)
+
+- [x] Font `@import` removed from `globals.css` (eliminated CSS chain waterfall); font CSS now parallel `<link>` in `layout.tsx`
+- [x] Hero woff2 preloads — Inter + Playfair Display latin variable subsets (promoted to HTTP `Link:` headers by Next.js)
+- [x] `onIdle()` utility (`lib/idle.ts`) — requestIdleCallback with 1200ms bound + Safari macrotask fallback
+- [x] GSAP ScrollTrigger init deferred to idle in 6 components: SectionReveal, KineticTitle, FeaturedWork, ProjectGrid, ProjectScrollCinema, ArticleDetailClient
+- [x] `experimental.inlineCss: true` — page CSS inlined into HTML (verified: 2 `<style>` tags, 0 render-blocking stylesheet links)
+- [x] Full CSP + security headers — CSP (script/style/font/img/connect/worker-src), HSTS 2y preload, nosniff, SAMEORIGIN, referrer + permissions policies (verified live)
+- [x] Quality gates: lint 0 errors, typecheck 0 errors, 176/176 tests, production build ✓
 
 ---
 
