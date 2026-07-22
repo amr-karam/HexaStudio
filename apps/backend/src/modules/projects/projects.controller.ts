@@ -1,8 +1,10 @@
 import { Controller, Get, Param, Query, VERSION_NEUTRAL } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { ProjectsService } from './projects.service';
 import { RecommendationService, SimilarProjectResult } from '../vector/recommendation.service';
 import type { Project, ProjectResponse } from '@hexastudio/types';
 
+@ApiTags('Projects')
 @Controller({ path: 'projects', version: VERSION_NEUTRAL })
 export class ProjectsController {
   constructor(
@@ -11,6 +13,10 @@ export class ProjectsController {
   ) {}
 
   @Get()
+  @ApiOperation({ summary: 'Get all projects with pagination' })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'locale', required: false, type: String })
   async findAll(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
@@ -24,6 +30,7 @@ export class ProjectsController {
   }
 
   @Get(':slug/similar')
+  @ApiOperation({ summary: 'Get similar projects' })
   async findSimilar(
     @Param('slug') slug: string,
     @Query('limit') limit?: string,
@@ -32,6 +39,7 @@ export class ProjectsController {
   }
 
   @Get(':slug')
+  @ApiOperation({ summary: 'Get project by slug' })
   async findOne(
     @Param('slug') slug: string,
     @Query('locale') locale?: string,

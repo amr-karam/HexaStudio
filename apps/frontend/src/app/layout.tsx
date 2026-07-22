@@ -6,6 +6,7 @@ import { CinematicPreloader } from "@/components/ui/overlays/CinematicPreloader"
 import { AnimationDebug } from "@/components/dev/AnimationDebug";
 import { WebVitals } from "@/components/WebVitals";
 import { AnalyticsInit } from "@/lib/analytics";
+import { inter, jetbrainsMono, playfairDisplay } from "@/lib/fonts";
 import { Suspense } from "react";
 import "./globals.css";
 
@@ -70,7 +71,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" dir="ltr">
+    <html lang="en" dir="ltr" className={`${inter.variable} ${jetbrainsMono.variable} ${playfairDisplay.variable}`}>
       <head>
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://api.hexastudio.net" />

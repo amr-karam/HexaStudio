@@ -1,12 +1,18 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { FAQsService } from './faqs.service';
 import type { FAQ, FAQResponse } from '@hexastudio/types';
 
+@ApiTags('FAQs')
 @Controller({ path: 'faqs', version: '1' })
 export class FAQsController {
   constructor(private readonly faqsService: FAQsService) {}
 
   @Get()
+  @ApiOperation({ summary: 'Get all FAQs with pagination' })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'locale', required: false, type: String })
   async findAll(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
@@ -20,6 +26,7 @@ export class FAQsController {
   }
 
   @Get('category/:category')
+  @ApiOperation({ summary: 'Get FAQs by category' })
   async findByCategory(
     @Param('category') category: string,
     @Query('locale') locale?: string,
@@ -28,6 +35,7 @@ export class FAQsController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get FAQ by ID' })
   async findOne(
     @Param('id') id: string,
     @Query('locale') locale?: string,

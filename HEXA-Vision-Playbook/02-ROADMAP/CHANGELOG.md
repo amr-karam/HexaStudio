@@ -9,21 +9,32 @@
 - **Preloader (session intro):** Rebuilt `CinematicPreloader` — mono 0→100 counter tied to real `window.load` progress (timed fallback), serif HEXA logotype staggered clip-reveal, gold hairline progress, gold-edged curtain lift (translateY, `easeInOutQuint`, 0.7s). Hard cap 1.8s; skippable via click/tap/Escape; skipped on repeat visit (`sessionStorage: hexa-intro-seen`), reduced motion, and `navigator.webdriver` (keeps Playwright green). Unmounts after completion — no DOM residue.
 - **Nav underline micro-interaction:** `.nav-underline` draw-from-center hover (transform-only, token-driven) on desktop nav links.
 - **Tests:** `test/lib/motion-tokens.test.ts` (5 specs).
+- **Chaptered homepage structure:** `HomeChapterRail` with numbered chapter markers (CH. I–V); `SectionReveal` pinned hand-offs (pasqua/agencidev DNA); `KineticTitle`/`ChapterHeading`/`ScrollCue` scroll-assembled typography — all in new `src/components/scroll/` directory. `FeaturedWork` grid with scroll-scrubbed clip-path mask reveal. `AchievementsSection` rebuilt as Noomo-style awards wall with hover inversion and line-by-line staggered entry. `StatValue` counters (burocratik restraint, easeOutExpo, run-once). `MarqueeBar` velocity-reactive skew (animation-addons DNA).
+- **3D Hero:** `FractureRingHero`/`FractureRingScene` WebGL component with scroll-scrubbed camera; `LivingBlueprintHero` integration; `heroScrubProgress` seam wired in `HomeHero`.
+- **ProjectScrollCinema:** 5-chapter numbered scroll film for `/projects/[slug]` — hero, overview, gallery, 3D experience, next-project teaser. Consumes `fracture-ring-texture` for background treatment.
+- **Blog kinetic detail:** `ArticleDetailClient` with `ReadingProgress` hairline, GSAP staggered scroll reveals, `TextReveal` hero treatment, category/read-time metadata. Blog index with velocity-reactive skew card grid.
+- **Arabic RTL fix:** `LocaleProvider` now sets `document.documentElement.lang` and `dir` on initial rehydration from localStorage (previously only set on manual locale switch).
+- **Scroll utils:** `src/lib/motion/scroll-utils.ts` — `velocityToSkew`, `velocityToSpeedFactor` + 12 unit tests. `parse-stat-value.ts` for awards counter parsing + 6 tests.
+- **Tests:** `parse-stat-value.test.ts` (6), `scroll-utils.test.ts` (12), `KineticTitle.test.tsx`, `FractureRingHero.test.tsx`.
 
 #### Changed
 - **SmoothScroll (Lenis ↔ GSAP):** `SmoothScroll.tsx` now drives `lenis.raf` from `gsap.ticker` with `lagSmoothing(0)` and fires `ScrollTrigger.update` on Lenis scroll (single shared clock). Not initialized under reduced-motion/paused (`staticMode`) **or** quality tier `low` (native scroll). `anchors: true` for smooth in-page hash navigation; clean destroy on unmount/policy change; plain-rAF fallback if GSAP fails to load.
 - **PageTransition (gold-on-obsidian curtain):** Rebuilt as a `cover → reveal` state machine — obsidian curtain with gold leading edge rises on intercepted internal-link clicks (capture phase), `router.push` fires under cover, curtain lifts on pathname commit (derived-state-during-render → zero FOUC). Back/forward plays reveal-only. 0.4s + 0.4s legs, `easeInOutQuint`. Resilient: safety timeouts force push/reveal if animation callbacks drop; `router.push` failure falls back to native navigation. Children are never remounted (no frozen tree); Lenis-aware instant scroll-to-top; focus management preserved. Reduced motion: instant swap, no interception.
-- **CustomCursor v2:** New `data-cursor="scroll"` → "Scroll" label; ring blooms to 3.5× over imagery (`img/picture/video/canvas/[data-cursor="media"]`) with `mix-blend-difference`; project-link detection extended to `/portfolio/`; magnetic strength aligned to 0.3; enable gate fixed to `finePointer && !reducedMotion` (was contradictory dual-effect).
+- **CustomCursor v2:** New `data-cursor="scroll"` → "Scroll" label; ring blooms to 3.5× over imagery (`img/picture/video/canvas/[data-cursor="media"]`) with `mix-blend-difference`; project-link detection extended to `/projects/`; magnetic strength aligned to 0.3; enable gate fixed to `finePointer && !reducedMotion`.
 - **Magnetic:** `strength` is now a 0–1 pull multiplier (default 0.3, was a divisor of 20); rewritten on motion values + springs — pointer movement no longer triggers React re-renders.
 - **Navbar:** Logo, desktop nav links, and mobile trigger wrapped in `<Magnetic>`; mobile menu items stagger via `STAGGER_TOKENS.lines` with `easeOutExpo` / `DUR.transition`.
 - **`lib/gsap.ts`:** Removed the racy one-time Lenis wiring — the Lenis↔ScrollTrigger bridge is now owned by `SmoothScroll` (documented in-file).
+- **Portfolio → Projects:** Full rename across frontend (route `/portfolio` → `/projects` with permanent redirects, i18n labels, sitemap, structured data, e2e tests) and backend/CMS (API endpoints aligned to `projects`, translation service updated).
+- **Odoo security:** Master password (`ODOO_MASTER_PASSWORD`) now injected via `admin_passwd` in a generated runtime config (handles `%` in passwords safely); both dev and prod compose files pass the env var through the container entrypoint. `list_db = False` in `odoo.conf` to hide the database manager UI entirely.
 
 #### Notes
-- Curtain/preloader use the site's live design tokens (`--color-background` #050505, `--color-accent` #D4AF37) rather than the brief's reference hexes (#0A0A0A / #C5A059) to stay consistent with the shipped design system.
-- No new dependencies (`lenis@1.3.25` was already installed); no metadata/SEO/route changes; all overlays are fixed-position (CLS ~0).
+- Curtain/preloader use the site's live design tokens (`--color-background` #050505, `--color-accent` #D4AF37) rather than the brief's reference hexes (#0A0A0A / #C5A059).
+- No new dependencies added; all metadata/SEO/route structures preserved.
+- `/web/database/manager` returns 403 with `list_db=False`; manage databases via CLI.
+- Odoo server-side deployment: update server .env with `ODOO_MASTER_PASSWORD` and run `docker compose -f docker-compose.prod.yml up -d --force-recreate odoo`.
 
 #### Quality Gates
-- Frontend lint: clean (`--max-warnings=0`). Typecheck: 0 errors. Tests: 152/152 passing (26 files). Production build: 18/18 routes generated.
+- Frontend lint: clean (`--max-warnings=0`). Typecheck: 0 errors. Tests: **176/176 passing** (30 files). Production build: 18/18 routes generated.
 
 ## [1.6.0-dev] - 2026-07-20
 
