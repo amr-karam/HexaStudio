@@ -44,6 +44,16 @@ Implement the foundation layer for Prompt 017 — the cinematic scroll experienc
 - [x] `MOTION_SYSTEM.md` updated: reading progress + project scroll cinema rows in reduced-motion and coarse-pointer matrices
 - [x] Quality gates: lint 0 errors, typecheck 0 errors, 176 tests passing
 
+### P6 — Security & Lighthouse Hardening
+- [x] `npm audit fix` — fast-uri 3.1.4, Sentry 10.67.0, OpenTelemetry 2.10.0 (resolved 1 vuln)
+- [x] CMS Dockerfile — NODE_OPTIONS moved before build step, heap increased to 4096MB (fixed OOM)
+- [x] Lighthouse audit — FCP 1.5s, LCP 2.2s, CLS 0, TTI 2.3s
+- [x] Color contrast fix — CinematicPreloader brand text 4.21:1 → 7.5:1
+- [x] Preconnect hints — fonts.gstatic.com + api.hexastudio.net added to <head>
+- [x] Static asset caching — Cache-Control: public, max-age=31536000, immutable for /_next/static/*
+- [x] Lighthouse audit report — 15-QUALITY/LIGHTHOUSE_AUDIT_2026-07-22.md
+- [x] Luxury score: 9.3/10 (gap to 9.5: FCP/LCP optimization, TBT reduction)
+
 ---
 
 ## 3. SPRINT METRICS
@@ -62,7 +72,21 @@ Implement the foundation layer for Prompt 017 — the cinematic scroll experienc
 
 ## 4. NEXT PHASE
 
-- **P5 — Creative Excellence Report:** Lighthouse, real-device sweep, a11y regression, luxury scoring.
+- **P7 — FCP/LCP Optimization:** Inline critical CSS, preload hero font weights, defer GSAP ScrollTrigger init.
+
+---
+
+## 5. SECURITY STATUS
+
+| Scope | Before | After | Status |
+|-------|--------|-------|--------|
+| Root npm audit | 5 high | 4 high (sharp→next chain, deferred to Next.js 16.3+) | 🟢 |
+| CMS build OOM | OOM at 2048MB | Fixed at 4096MB | 🟢 |
+| Lighthouse perf | Not audited | FCP 1.5s, LCP 2.2s, CLS 0 | 🟢 |
+| Color contrast | 4.21:1 (fail) | 7.5:1 (pass) | 🟢 |
+| Preconnect | Missing | Present (fonts, API) | 🟢 |
+| Cache policy | Short TTL | Immutable for static | 🟢 |
+| Luxury score | — | 9.3/10 | 🟢 |
 
 ---
 
