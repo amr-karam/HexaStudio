@@ -7,12 +7,14 @@ import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { makeTransition } from '@/lib/motion';
 
 /** Contextual label shown inside the cursor ring. */
-type CursorLabel = 'view' | 'drag' | 'explore';
+type CursorLabel = 'view' | 'drag' | 'explore' | 'scroll';
 
 /** Magnetic attraction radius (px). Within this distance the dot pulls toward the element centre. */
 const MAGNETIC_RADIUS = 80;
-/** Strength of the magnetic pull toward the element centre (0–1). */
-const MAGNETIC_STRENGTH = 0.2;
+/** Strength of the magnetic pull toward the element centre (0–1). Matches <Magnetic> default. */
+const MAGNETIC_STRENGTH = 0.3;
+/** Ring scale when hovering imagery — mix-blend-difference does the inversion. */
+const MEDIA_RING_SCALE = 3.5;
 
 /**
  * Lightweight, context-aware custom cursor (UX_STRATEGY.md).
@@ -26,16 +28,19 @@ const MAGNETIC_STRENGTH = 0.2;
  * - `data-cursor="drag"`    → "Drag" label    (3D canvas areas)
  * - `data-cursor="explore"` → "Explore" label  (hero CTAs)
  * - `data-cursor="view"`    → "View" label     (explicit)
+ * - `data-cursor="scroll"`  → "Scroll" label   (scroll-driven sections)
  * - portfolio/project links → "View" label     (default fallback)
+ * - imagery (img/video/canvas/`data-cursor="media"`) → ring scale-up 3.5×
  */
 export function CustomCursor() {
   const [enabled, setEnabled] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const finePointer = useFinePointer();
-  const { animationsEnabled, paused } = useMotionPolicy();
+  const { reducedMotion, paused } = useMotionPolicy();
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
   const [isPointer, setIsPointer] = useState(false);
+  const [isMedia, setIsMedia] = useState(false);
   const [label, setLabel] = useState<CursorLabel | null>(null);
 
   // Magnetic pull offset applied only to the inner dot.
@@ -51,19 +56,13 @@ export function CustomCursor() {
   const dotSpringX = useSpring(dotOffsetX, { stiffness: 300, damping: 25 });
   const dotSpringY = useSpring(dotOffsetY, { stiffness: 300, damping: 25 });
 
-  // Cursor itself is an input affordance, not "animation" — only disable when
-  // fine pointer or reduced-motion dictates it, not when paused.
+  // The custom cursor is an animated affordance: it only renders with a fine
+  // pointer and without an OS reduced-motion preference. When the site-level
+  // pause toggle is active the cursor stays visible but hover scaling is
+  // frozen (handled at render time via `paused`).
   useEffect(() => {
-    setEnabled(finePointer && !animationsEnabled === false ? finePointer : finePointer);
-    // Actually: enable on fine pointer, regardless of paused state.
-    // Cursor itself is an input affordance. Only disable when reduced motion is active.
-  }, [finePointer, animationsEnabled]);
-
-  // Re-derive enabled: fine pointer + not reduced motion.
-  // When paused, we still show the cursor but disable hover-scale.
-  useEffect(() => {
-    setEnabled(finePointer);
-  }, [finePointer]);
+    setEnabled(finePointer && !reducedMotion);
+  }, [finePointer, reducedMotion]);
 
   useEffect(() => {
     if (!enabled) return;
@@ -108,9 +107,18 @@ export function CustomCursor() {
       const dragEl = target.closest('[data-cursor="drag"]') as HTMLElement | null;
       const exploreEl = target.closest('[data-cursor="explore"]') as HTMLElement | null;
       const viewAttrEl = target.closest('[data-cursor="view"]') as HTMLElement | null;
+      const scrollEl = target.closest('[data-cursor="scroll"]') as HTMLElement | null;
+      const mediaEl = target.closest(
+        '[data-cursor="media"], img, picture, video, canvas',
+      ) as HTMLElement | null;
       const link = target.closest('a');
       const isProjectLink =
-        !!link && (link.href.includes('/projects/') || link.href.includes('/project/'));
+        !!link &&
+        (link.href.includes('/projects/') ||
+          link.href.includes('/project/') ||
+          link.href.includes('/portfolio/'));
+
+      setIsMedia(!!mediaEl);
 
       if (dragEl) {
         setLabel('drag');
@@ -118,6 +126,9 @@ export function CustomCursor() {
       } else if (exploreEl) {
         setLabel('explore');
         magneticTargetRef.current = exploreEl;
+      } else if (scrollEl) {
+        setLabel('scroll');
+        magneticTargetRef.current = scrollEl;
       } else if (viewAttrEl) {
         setLabel('view');
         magneticTargetRef.current = viewAttrEl;
@@ -126,12 +137,13 @@ export function CustomCursor() {
         magneticTargetRef.current = link;
       } else {
         setLabel(null);
-        magneticTargetRef.current = interactiveEl;
+        magneticTargetRef.current = interactiveEl ?? mediaEl;
       }
     };
 
     const handleMouseLeave = () => {
       setIsVisible(false);
+      setIsMedia(false);
       magneticTargetRef.current = null;
       dotOffsetX.set(0);
       dotOffsetY.set(0);
@@ -154,11 +166,19 @@ export function CustomCursor() {
 
   if (!enabled) return null;
 
-  const labelText = label === 'drag' ? 'Drag' : label === 'explore' ? 'Explore' : 'View';
+  const labelText =
+    label === 'drag'
+      ? 'Drag'
+      : label === 'explore'
+        ? 'Explore'
+        : label === 'scroll'
+          ? 'Scroll'
+          : 'View';
 
-  // When paused: disable hover-scale animation but keep cursor visible
-  const hoverScale = paused ? 1 : (isPointer ? 1.5 : 1);
-  const ringScale = paused ? 1.5 : (isPointer ? 2.5 : 1.5);
+  // When paused: disable hover-scale animation but keep cursor visible.
+  // Over imagery the ring blooms to ~3.5× and mix-blend-difference inverts it.
+  const hoverScale = paused ? 1 : isPointer ? 1.5 : 1;
+  const ringScale = paused ? 1.5 : isMedia ? MEDIA_RING_SCALE : isPointer ? 2.5 : 1.5;
 
   return (
     <motion.div

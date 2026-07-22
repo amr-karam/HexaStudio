@@ -3,6 +3,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { GlassCard } from '@/components/ui/GlassCard';
+import { ChapterMarker } from '@/components/animation/ChapterMarker';
+import { KineticTitle } from '@/components/scroll/KineticTitle';
 import { EASE, DURATION, makeTransition, STAGGER } from '@/lib/motion';
 import { useFeaturedTestimonials } from '@/features/testimonials/hooks/useTestimonials';
 import { useLocale } from '@/i18n/LocaleProvider';
@@ -94,6 +96,9 @@ export const TestimonialsSection = () => {
 
   return (
     <section className="relative px-8 md:px-16 py-32 bg-surface border-y border-border/30 overflow-hidden">
+      <div className="absolute top-12 left-8 md:left-16 z-20">
+        <ChapterMarker index={4} title="Proof" />
+      </div>
       <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
 
       <div className="relative z-10 w-full max-w-7xl mx-auto">
@@ -109,15 +114,11 @@ export const TestimonialsSection = () => {
             {t('home.stats.clients')}
           </motion.span>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={makeTransition('entrance', 'page')}
+          <KineticTitle
+            text="What Our Partners Say"
+            accentWords={['Say']}
             className="text-5xl md:text-7xl font-serif font-light tracking-tight text-foreground leading-tight"
-          >
-            What Our Partners <span className="italic text-gold">Say</span>
-          </motion.h2>
+          />
         </div>
 
         {/* Card grid */}

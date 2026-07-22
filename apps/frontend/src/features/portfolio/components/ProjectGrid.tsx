@@ -1,13 +1,21 @@
 'use client';
-import React, { useState, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import Image from 'next/image';
 import { Card } from '@/components/ui/cards/Card';
 import { ProjectDetailModal } from '@/components/ui/modals/ProjectDetailModal';
 import { Project } from '@hexastudio/types';
 import { Magnetic } from '@/components/ui/Magnetic';
+import { ChapterMarker } from '@/components/animation/ChapterMarker';
+import { KineticTitle } from '@/components/scroll/KineticTitle';
+import { getGsap } from '@/lib/gsap';
 import { cn } from '@/lib/utils';
 import { EASE, DURATION, makeTransition } from '@/lib/motion';
+import { velocityToSkew } from '@/lib/motion/scroll-utils';
+import { GSAP_EASING, STAGGER_TOKENS } from '@/lib/motion/tokens';
+import { useReducedMotion, useScrollVelocity, useFinePointer } from '@/hooks';
+import { useMotionPolicy } from '@/hooks/useMotionPolicy';
+import { useQualityTier } from '@/providers/quality-provider';
 
 interface ProjectCardProps {
   title: string;
@@ -31,6 +39,60 @@ type ProjectGridCard = {
 const ProjectCard = ({ title, category, image, index, onClick, isFocused, status }: ProjectCardProps) => {
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const imageClipRef = useRef<HTMLDivElement>(null);
+  const imageScaleRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
+  const { tier } = useQualityTier();
+  const isLowTier = tier.level === 'low';
+
+  /**
+   * Work-card reveal (Phase 2A): the image wipes open via a scrubbed
+   * clip-path mask while the imagery settles from scale 1.08 → 1.
+   * Property discipline: framer-motion owns the card transform/opacity and
+   * the CSS hover scale (middle wrapper); GSAP owns clip-path + inner scale.
+   * PHASE 2B SEAM: `data-distortion="work-card"` marks the WebGL hover
+   * distortion target.
+   */
+  useEffect(() => {
+    if (reducedMotion || isLowTier) return;
+    const card = cardRef.current;
+    const clipTarget = imageClipRef.current;
+    const scaleTarget = imageScaleRef.current;
+    if (!card || !clipTarget || !scaleTarget) return;
+
+    let cancelled = false;
+    let ctx: { revert: () => void } | null = null;
+
+    void (async () => {
+      const gsap = await getGsap();
+      if (cancelled) return;
+
+      ctx = gsap.context(() => {
+        const scrubRange = {
+          trigger: card,
+          start: 'top 92%',
+          end: 'top 55%',
+          scrub: 1,
+        };
+        gsap.fromTo(
+          clipTarget,
+          { clipPath: 'inset(100% 0% 0% 0%)' },
+          { clipPath: 'inset(0% 0% 0% 0%)', ease: GSAP_EASING.easeInOutQuint, scrollTrigger: scrubRange },
+        );
+        gsap.fromTo(
+          scaleTarget,
+          { scale: 1.08 },
+          { scale: 1, ease: GSAP_EASING.easeOutExpo, scrollTrigger: scrubRange },
+        );
+      }, card);
+    })();
+
+    return () => {
+      cancelled = true;
+      ctx?.revert();
+    };
+  }, [reducedMotion, isLowTier]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -43,13 +105,14 @@ const ProjectCard = ({ title, category, image, index, onClick, isFocused, status
 
   return (
     <motion.div
+      ref={cardRef}
       layout
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{
         duration: DURATION.page,
-        delay: (index % 4) * 0.1,
+        delay: (index % 4) * STAGGER_TOKENS.cards,
         ease: EASE.entrance,
       }}
       data-testid="project-card"
@@ -78,14 +141,19 @@ const ProjectCard = ({ title, category, image, index, onClick, isFocused, status
         >
           <Card variant="solid" className="overflow-hidden p-0 aspect-[3/4]">
             <div className="absolute inset-0 bg-accent/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
-            <div className="h-full w-full relative overflow-hidden bg-surface-light">
-              <Image
-                src={image}
-                alt={title}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                className="object-cover opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000 ease-out-expo"
-              />
+            <div ref={imageClipRef} className="h-full w-full relative overflow-hidden bg-surface-light">
+              {/* Hover zoom (CSS-owned transform) wraps the GSAP-owned settle scale */}
+              <div className="h-full w-full transition-transform duration-1000 ease-out-expo group-hover:scale-110">
+                <div ref={imageScaleRef} data-distortion="work-card" className="relative h-full w-full">
+                  <Image
+                    src={image}
+                    alt={title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    className="object-cover opacity-70 group-hover:opacity-100 transition-opacity duration-1000 ease-out-expo"
+                  />
+                </div>
+              </div>
 
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-700" />
 
@@ -164,6 +232,13 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
   });
   const headingY = useTransform(scrollYProgress, [0, 0.5], [60, 0]);
 
+  // demilie.ru / cuberto DNA: velocity shear on the project card grid.
+  const { staticMode } = useMotionPolicy();
+  const finePointer = useFinePointer();
+  const velocity = useScrollVelocity();
+  const skewY = useTransform(velocity, (v) => velocityToSkew(v, 3));
+  const enableShear = !staticMode && finePointer;
+
   const allProjects = useMemo((): ProjectGridCard[] => {
     const mapped = projects?.map((p) => ({
       title: p.title,
@@ -187,6 +262,18 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
     return allProjects.filter(p => p.category === activeCategory);
   }, [allProjects, activeCategory]);
 
+  // Filtering shifts card positions — re-measure all scroll choreography.
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      const { ScrollTrigger } = await import('gsap/ScrollTrigger');
+      if (!cancelled) ScrollTrigger.refresh();
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [filteredProjects]);
+
   const handleCloseModal = useCallback(() => {
     setSelectedProject(null);
   }, []);
@@ -194,6 +281,9 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
   return (
     <>
       <section ref={sectionRef} className="px-8 md:px-16 py-32 bg-background relative overflow-hidden">
+        <div className="absolute top-12 left-8 md:left-16 z-20">
+          <ChapterMarker index={4} title="Proof" />
+        </div>
         <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
         <div className="flex flex-col lg:flex-row justify-between items-end mb-24 gap-12">
           <div className="w-full">
@@ -205,16 +295,19 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
               >
                 Selected Works
               </motion.span>
-            <motion.h2
+            <motion.div
               style={{ y: headingY }}
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={makeTransition('entrance', 'page')}
-              className="text-5xl md:text-7xl font-serif font-light tracking-tight text-foreground leading-[1.1]"
             >
-              Creating <span className="italic text-accent">Visual</span> Truth
-            </motion.h2>
+              <KineticTitle
+                text="Creating Visual Truth"
+                accentWords={['Visual']}
+                className="text-5xl md:text-7xl font-serif font-light tracking-tight text-foreground leading-[1.1]"
+              />
+            </motion.div>
           </div>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -246,29 +339,34 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
         </div>
 
         <motion.div
-          layout
-          className="columns-1 md:columns-2 lg:columns-4 gap-8 space-y-8"
+          style={enableShear ? { skewY } : undefined}
+          className="will-change-transform"
         >
-          <AnimatePresence mode="popLayout">
-            {filteredProjects.map((project, idx) => (
-              <div
-                key={project.slug}
-                className="break-inside-avoid"
-                onMouseEnter={() => setHoveredIndex(idx)}
-                onMouseLeave={() => setHoveredIndex(null)}
-              >
-                <ProjectCard
-                  title={project.title}
-                  category={project.category}
-                  image={project.image}
-                  index={idx}
-                  isFocused={hoveredIndex === idx}
-                  status={project.status}
-                  onClick={() => setSelectedProject(project)}
-                />
-              </div>
-            ))}
-          </AnimatePresence>
+          <motion.div
+            layout
+            className="columns-1 md:columns-2 lg:columns-4 gap-8 space-y-8"
+          >
+            <AnimatePresence mode="popLayout">
+              {filteredProjects.map((project, idx) => (
+                <div
+                  key={project.slug}
+                  className="break-inside-avoid"
+                  onMouseEnter={() => setHoveredIndex(idx)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                >
+                  <ProjectCard
+                    title={project.title}
+                    category={project.category}
+                    image={project.image}
+                    index={idx}
+                    isFocused={hoveredIndex === idx}
+                    status={project.status}
+                    onClick={() => setSelectedProject(project)}
+                  />
+                </div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
         </motion.div>
       </section>
 

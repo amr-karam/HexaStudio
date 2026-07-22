@@ -1,14 +1,19 @@
 'use client';
 
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Project } from '@hexastudio/types';
 import { Button } from '@/components/ui/Button';
 import { Magnetic } from '@/components/ui/Magnetic';
+import { ChapterMarker } from '@/components/animation/ChapterMarker';
+import { KineticTitle } from '@/components/scroll/KineticTitle';
+import { getGsap } from '@/lib/gsap';
 import { EASE, DURATION } from '@/lib/motion';
+import { GSAP_EASING } from '@/lib/motion/tokens';
 import { useReducedMotion } from '@/hooks';
+import { useQualityTier } from '@/providers/quality-provider';
 
 interface FeaturedWorkProps {
   /** The project to feature. When omitted, a curated fallback is rendered. */
@@ -71,13 +76,26 @@ function resolveContent(project?: Project): FeaturedContent {
 }
 
 /**
- * FeaturedWork — A full-bleed project showcase with a split-screen reveal.
- * On scroll, the image halves slide apart from center, revealing the project
- * title and metadata between them. Uses the signature entrance easing.
+ * FeaturedWork — CH. III opener. A full-bleed showcase with a split-screen
+ * parallax; on section entry the image halves wipe open via a scrubbed
+ * clip-path mask while the imagery settles from scale 1.08 → 1.
+ *
+ * Property discipline: framer-motion owns the halves' `x` parallax; GSAP
+ * owns `clip-path` (halves) and `scale` (inner image wrappers) — the two
+ * engines never write the same property on one node.
+ *
+ * PHASE 2B SEAM: image wrappers carry `data-distortion="featured"` — the
+ * WebGL hover-distortion pass targets these nodes in Phase 2B.
  */
 export const FeaturedWork = ({ project }: FeaturedWorkProps) => {
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const leftHalfRef = useRef<HTMLDivElement>(null);
+  const rightHalfRef = useRef<HTMLDivElement>(null);
+  const leftImageRef = useRef<HTMLDivElement>(null);
+  const rightImageRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
+  const { tier } = useQualityTier();
+  const isLowTier = tier.level === 'low';
   const content = resolveContent(project);
 
   const { scrollYProgress } = useScroll({
@@ -89,6 +107,51 @@ export const FeaturedWork = ({ project }: FeaturedWorkProps) => {
   const rightX = useTransform(scrollYProgress, [0, 1], ['5%', '0%']);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.6, 1], [0, 0, 1]);
   const contentY = useTransform(scrollYProgress, [0, 1], [40, 0]);
+
+  /* Mask-wipe reveal: clip-path on the halves + scale settle on imagery. */
+  useEffect(() => {
+    if (reducedMotion || isLowTier) return;
+    const section = sectionRef.current;
+    const halves = [leftHalfRef.current, rightHalfRef.current].filter(
+      (el): el is HTMLDivElement => el !== null,
+    );
+    const images = [leftImageRef.current, rightImageRef.current].filter(
+      (el): el is HTMLDivElement => el !== null,
+    );
+    if (!section || halves.length === 0 || images.length === 0) return;
+
+    let cancelled = false;
+    let ctx: { revert: () => void } | null = null;
+
+    void (async () => {
+      const gsap = await getGsap();
+      if (cancelled) return;
+
+      ctx = gsap.context(() => {
+        const scrubRange = {
+          trigger: section,
+          start: 'top 85%',
+          end: 'top 30%',
+          scrub: 1,
+        };
+        gsap.fromTo(
+          halves,
+          { clipPath: 'inset(100% 0% 0% 0%)' },
+          { clipPath: 'inset(0% 0% 0% 0%)', ease: GSAP_EASING.easeInOutQuint, scrollTrigger: scrubRange },
+        );
+        gsap.fromTo(
+          images,
+          { scale: 1.08 },
+          { scale: 1, ease: GSAP_EASING.easeOutExpo, scrollTrigger: scrubRange },
+        );
+      }, section);
+    })();
+
+    return () => {
+      cancelled = true;
+      ctx?.revert();
+    };
+  }, [reducedMotion, isLowTier]);
 
   // Reduced motion: static layout
   if (reducedMotion) {
@@ -110,16 +173,21 @@ export const FeaturedWork = ({ project }: FeaturedWorkProps) => {
           <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-background" />
         </div>
 
+        <div className="absolute top-12 left-8 md:left-16 z-20">
+          <ChapterMarker index={3} title="Work" />
+        </div>
+
         <div className="relative z-10 h-full flex items-center px-8 md:px-16">
-          <div style={{ width: '100%', maxWidth: '48rem' }}>
+          <div className="w-full max-w-3xl">
             <span className="text-[9px] uppercase tracking-[0.5em] text-gold/60 mb-6 block font-mono">
               Featured Project
             </span>
-            <h2 className="text-6xl md:text-8xl font-serif font-light text-white leading-[1.05] mb-6">
-              {content.titleLead}{' '}
-              {content.titleAccent && <span className="italic text-gold">{content.titleAccent}</span>}
-            </h2>
-            <p style={{ width: '100%', maxWidth: '32rem' }} className="text-base text-white/40 font-light leading-relaxed mb-10">
+            <KineticTitle
+              text={`${content.titleLead} ${content.titleAccent}`.trim()}
+              accentWords={content.titleAccent ? [content.titleAccent] : []}
+              className="text-6xl md:text-8xl font-serif font-light text-white leading-[1.05] mb-6"
+            />
+            <p className="text-base text-white/40 font-light leading-relaxed w-full max-w-lg mb-10">
               {content.description}
             </p>
             <div className="flex flex-wrap gap-6 text-[10px] uppercase tracking-[0.3em] text-white/30 font-mono mb-10">
@@ -137,13 +205,14 @@ export const FeaturedWork = ({ project }: FeaturedWorkProps) => {
   }
 
   return (
-    <section ref={sectionRef} className="relative h-screen min-h-[700px] bg-background overflow-hidden">
-      {/* Split image halves */}
+      <section ref={sectionRef} className="relative h-screen min-h-[700px] bg-background overflow-hidden">
+      {/* Split image halves — GSAP owns clip-path; framer owns x parallax */}
       <motion.div
+        ref={leftHalfRef}
         style={{ x: leftX }}
         className="absolute inset-y-0 left-0 w-1/2 overflow-hidden"
       >
-        <div className="relative h-full w-[200%] opacity-40">
+        <div ref={leftImageRef} data-distortion="featured" className="relative h-full w-[200%] opacity-40">
           <Image
             src={content.imageUrl}
             alt=""
@@ -159,10 +228,11 @@ export const FeaturedWork = ({ project }: FeaturedWorkProps) => {
       </motion.div>
 
       <motion.div
+        ref={rightHalfRef}
         style={{ x: rightX }}
         className="absolute inset-y-0 right-0 w-1/2 overflow-hidden"
       >
-        <div className="relative h-full w-[200%] -translate-x-1/2 opacity-40">
+        <div ref={rightImageRef} data-distortion="featured" className="relative h-full w-[200%] -translate-x-1/2 opacity-40">
           <Image
             src={content.imageUrl}
             alt=""
@@ -176,6 +246,11 @@ export const FeaturedWork = ({ project }: FeaturedWorkProps) => {
         </div>
         <div className="absolute inset-0 bg-gradient-to-l from-background via-background/20 to-transparent" />
       </motion.div>
+
+      {/* Chapter marker — CH. III */}
+      <div className="absolute top-12 left-8 md:left-16 z-20">
+        <ChapterMarker index={2} title="Craft" />
+      </div>
 
       {/* Center divider line (animated) */}
       <motion.div
@@ -191,7 +266,7 @@ export const FeaturedWork = ({ project }: FeaturedWorkProps) => {
         style={{ opacity: contentOpacity, y: contentY }}
         className="relative z-10 h-full flex items-center px-8 md:px-16"
       >
-        <div style={{ width: '100%', maxWidth: '48rem' }}>
+        <div className="w-full max-w-3xl">
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -202,12 +277,13 @@ export const FeaturedWork = ({ project }: FeaturedWorkProps) => {
             Featured Project
           </motion.span>
 
-          <h2 className="text-6xl md:text-8xl font-serif font-light text-white leading-[1.05] mb-6">
-            {content.titleLead}{' '}
-            {content.titleAccent && <span className="italic text-gold">{content.titleAccent}</span>}
-          </h2>
+          <KineticTitle
+            text={`${content.titleLead} ${content.titleAccent}`.trim()}
+            accentWords={content.titleAccent ? [content.titleAccent] : []}
+            className="text-6xl md:text-8xl font-serif font-light text-white leading-[1.05] mb-6"
+          />
 
-          <p style={{ width: '100%', maxWidth: '32rem' }} className="text-base text-white/40 font-light leading-relaxed mb-10">
+          <p className="text-base text-white/40 font-light leading-relaxed w-full max-w-lg mb-10">
             {content.description}
           </p>
 

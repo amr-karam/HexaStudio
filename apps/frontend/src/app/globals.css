@@ -67,11 +67,18 @@
   --hexa-ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
   --hexa-ease-sharp: cubic-bezier(0.4, 0, 0.6, 1);
 
+  /* Phase 1 motion tokens (mirrors src/lib/motion/tokens.ts) */
+  --hexa-ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --hexa-ease-in-out-quint: cubic-bezier(0.76, 0, 0.24, 1);
+
   /* Durations */
   --hexa-duration-micro: 0.2s;
   --hexa-duration-component: 0.4s;
   --hexa-duration-page: 0.75s;
   --hexa-duration-camera: 1.4s;
+  --hexa-duration-ui: 0.4s;
+  --hexa-duration-scene: 0.8s;
+  --hexa-duration-transition: 0.7s;
 
   /* Glass morphism */
   --glass-bg: rgba(255, 255, 255, 0.02);
@@ -193,6 +200,19 @@ body {
   outline: 2px solid var(--color-accent);
   outline-offset: 4px;
   box-shadow: 0 0 0 6px rgba(212, 175, 55, 0.1);
+}
+
+/* Nav link underline — draws from center on hover/focus (Phase 1 tokens).
+   Transform-only, GPU-composited; neutralized by the reduced-motion reset. */
+.nav-underline {
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform var(--hexa-duration-ui) var(--hexa-ease-in-out-quint);
+}
+
+.group:hover .nav-underline,
+.group:focus-visible .nav-underline {
+  transform: scaleX(1);
 }
 
 /* Shimmer animation for loading states — documented exception to reduced motion */

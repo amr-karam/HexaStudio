@@ -1,5 +1,30 @@
 # Changelog: HEXA Vision
 
+## [1.7.0-dev] - 2026-07-22
+
+### Awwwards Redesign — Phase 1: Global Motion Foundation
+
+#### Added
+- **Motion Tokens:** `src/lib/motion/tokens.ts` — canonical Phase-1 motion module: `EASING` (`easeOutExpo` [0.16,1,0.3,1], `easeInOutQuint` [0.76,0,0.24,1]), `DUR` (micro 0.2 / ui 0.4 / scene 0.8 / transition 0.7), `STAGGER_TOKENS` (chars 0.03 / cards 0.06 / lines 0.08), plus CSS/GSAP string mirrors and a `tokenTransition()` helper. Mirrored as CSS custom properties in `globals.css`.
+- **Preloader (session intro):** Rebuilt `CinematicPreloader` — mono 0→100 counter tied to real `window.load` progress (timed fallback), serif HEXA logotype staggered clip-reveal, gold hairline progress, gold-edged curtain lift (translateY, `easeInOutQuint`, 0.7s). Hard cap 1.8s; skippable via click/tap/Escape; skipped on repeat visit (`sessionStorage: hexa-intro-seen`), reduced motion, and `navigator.webdriver` (keeps Playwright green). Unmounts after completion — no DOM residue.
+- **Nav underline micro-interaction:** `.nav-underline` draw-from-center hover (transform-only, token-driven) on desktop nav links.
+- **Tests:** `test/lib/motion-tokens.test.ts` (5 specs).
+
+#### Changed
+- **SmoothScroll (Lenis ↔ GSAP):** `SmoothScroll.tsx` now drives `lenis.raf` from `gsap.ticker` with `lagSmoothing(0)` and fires `ScrollTrigger.update` on Lenis scroll (single shared clock). Not initialized under reduced-motion/paused (`staticMode`) **or** quality tier `low` (native scroll). `anchors: true` for smooth in-page hash navigation; clean destroy on unmount/policy change; plain-rAF fallback if GSAP fails to load.
+- **PageTransition (gold-on-obsidian curtain):** Rebuilt as a `cover → reveal` state machine — obsidian curtain with gold leading edge rises on intercepted internal-link clicks (capture phase), `router.push` fires under cover, curtain lifts on pathname commit (derived-state-during-render → zero FOUC). Back/forward plays reveal-only. 0.4s + 0.4s legs, `easeInOutQuint`. Resilient: safety timeouts force push/reveal if animation callbacks drop; `router.push` failure falls back to native navigation. Children are never remounted (no frozen tree); Lenis-aware instant scroll-to-top; focus management preserved. Reduced motion: instant swap, no interception.
+- **CustomCursor v2:** New `data-cursor="scroll"` → "Scroll" label; ring blooms to 3.5× over imagery (`img/picture/video/canvas/[data-cursor="media"]`) with `mix-blend-difference`; project-link detection extended to `/portfolio/`; magnetic strength aligned to 0.3; enable gate fixed to `finePointer && !reducedMotion` (was contradictory dual-effect).
+- **Magnetic:** `strength` is now a 0–1 pull multiplier (default 0.3, was a divisor of 20); rewritten on motion values + springs — pointer movement no longer triggers React re-renders.
+- **Navbar:** Logo, desktop nav links, and mobile trigger wrapped in `<Magnetic>`; mobile menu items stagger via `STAGGER_TOKENS.lines` with `easeOutExpo` / `DUR.transition`.
+- **`lib/gsap.ts`:** Removed the racy one-time Lenis wiring — the Lenis↔ScrollTrigger bridge is now owned by `SmoothScroll` (documented in-file).
+
+#### Notes
+- Curtain/preloader use the site's live design tokens (`--color-background` #050505, `--color-accent` #D4AF37) rather than the brief's reference hexes (#0A0A0A / #C5A059) to stay consistent with the shipped design system.
+- No new dependencies (`lenis@1.3.25` was already installed); no metadata/SEO/route changes; all overlays are fixed-position (CLS ~0).
+
+#### Quality Gates
+- Frontend lint: clean (`--max-warnings=0`). Typecheck: 0 errors. Tests: 152/152 passing (26 files). Production build: 18/18 routes generated.
+
 ## [1.6.0-dev] - 2026-07-20
 
 ### Sprint 14 — CMS Content Integration & Odoo Enrichment

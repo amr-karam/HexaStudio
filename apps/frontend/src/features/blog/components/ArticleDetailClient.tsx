@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -7,6 +8,10 @@ import { Button } from '@/components/ui/Button';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { NewsletterSection } from '@/components/ui/NewsletterSection';
 import { StrapiBlocks } from '@/components/ui/StrapiBlocks';
+import { ReadingProgress } from '@/components/animation/ReadingProgress';
+import { useMotionPolicy } from '@/hooks/useMotionPolicy';
+import { getGsap } from '@/lib/gsap';
+import { GSAP_EASING } from '@/lib/motion/tokens';
 
 interface Article {
   title: string;
@@ -24,8 +29,80 @@ interface ArticleDetailClientProps {
 }
 
 export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
+  const { staticMode } = useMotionPolicy();
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  // GSAP scroll reveals for article content blocks (activetheory DNA).
+  useEffect(() => {
+    if (staticMode) return;
+    const content = contentRef.current;
+    if (!content) return;
+
+    let cancelled = false;
+    let ctx: { revert: () => void } | null = null;
+
+    void (async () => {
+      const [gsap] = await Promise.all([
+        getGsap(),
+        import('gsap/ScrollTrigger'),
+      ]);
+      if (cancelled) return;
+
+      ctx = gsap.context(() => {
+        // Reveal the excerpt block.
+        const excerpt = content.querySelector('[data-article-excerpt]');
+        if (excerpt) {
+          gsap.fromTo(
+            excerpt,
+            { opacity: 0, y: 30 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: GSAP_EASING.easeOutExpo,
+              scrollTrigger: {
+                trigger: excerpt,
+                start: 'top 85%',
+                once: true,
+              },
+            },
+          );
+        }
+
+        // Staggered reveal for StrapiBlocks content sections.
+        const blocks = content.querySelectorAll('[data-article-block]');
+        if (blocks.length > 0) {
+          gsap.fromTo(
+            blocks,
+            { opacity: 0, y: 24 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.7,
+              stagger: 0.08, // 80ms cascade
+              ease: GSAP_EASING.easeOutExpo,
+              scrollTrigger: {
+                trigger: blocks[0],
+                start: 'top 85%',
+                once: true,
+              },
+            },
+          );
+        }
+      }, content);
+    })();
+
+    return () => {
+      cancelled = true;
+      ctx?.revert();
+    };
+  }, [staticMode]);
+
   return (
     <main className="min-h-screen bg-background text-foreground">
+      {/* Reading progress hairline (F5 DNA) */}
+      <ReadingProgress />
+
       <section className="relative h-[70vh] w-full overflow-hidden">
         <motion.div
           initial={{ scale: 1.1, opacity: 0 }}
@@ -77,22 +154,19 @@ export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
       </section>
 
       <section className="px-8 md:px-16 py-24">
-        <div className="mx-auto w-full">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="prose prose-invert prose-neutral max-w-none"
-          >
-            <p className="text-xl md:text-2xl font-light text-neutral-300 leading-relaxed mb-12 italic border-s-2 border-accent ps-6">
-              {article.excerpt}
-            </p>
+        <div className="mx-auto w-full" ref={contentRef}>
+          <div className="prose prose-invert prose-neutral max-w-none">
+            <div data-article-excerpt className="text-xl md:text-2xl font-light text-neutral-300 leading-relaxed mb-12 italic border-s-2 border-accent ps-6">
+              <p>{article.excerpt}</p>
+            </div>
 
-            <div className="flex flex-col gap-12 text-neutral-400 font-light leading-relaxed text-lg">
+            <div
+              data-article-block
+              className="flex flex-col gap-12 text-neutral-400 font-light leading-relaxed text-lg"
+            >
               <StrapiBlocks content={article.content || []} />
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 

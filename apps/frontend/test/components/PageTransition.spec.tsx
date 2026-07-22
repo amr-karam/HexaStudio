@@ -17,6 +17,7 @@ vi.mock('framer-motion', () => ({
 
 vi.mock('next/navigation', () => ({
   usePathname: () => '/current',
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn(), prefetch: vi.fn() }),
 }));
 
 vi.mock('@/hooks/useHEXAMotion', () => ({

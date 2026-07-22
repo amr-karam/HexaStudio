@@ -7,3 +7,4 @@ export { LetterBounceText } from './LetterBounceText';
 export { ChapterMarker, toRomanNumeral } from './ChapterMarker';
 export { ChapterProgress } from './ChapterProgress';
 export type { Chapter } from './ChapterProgress';
+export { ReadingProgress } from './ReadingProgress';

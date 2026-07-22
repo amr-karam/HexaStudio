@@ -64,6 +64,15 @@ interface LivingBlueprintHeroProps {
   finePointer: boolean;
   /** `true` when animations are allowed to run. */
   animationsEnabled: boolean;
+  /**
+   * PHASE 2B SEAM — hero camera scrub.
+   * Scroll progress (0 → 1) across the hero section, produced by
+   * `useScroll({ target: heroRef, offset: ['start start', 'end start'] })`
+   * in `HomeHero`. Phase 2A only provides the value; Phase 2B threads it
+   * through to `BlueprintHeroScene` to drive the scroll-scrubbed camera
+   * dolly + particle dissolve (hero → CH. I hand-off). Unused in 2A.
+   */
+  scrollProgress?: import('framer-motion').MotionValue<number>;
 }
 
 /* -------------------------------------------------------------------------- */

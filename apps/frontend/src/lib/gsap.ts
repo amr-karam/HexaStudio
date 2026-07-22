@@ -19,9 +19,10 @@ export function getGsap(): Promise<typeof import('gsap').default> {
       const { ScrollTrigger } = ScrollTriggerModule;
       gsap.registerPlugin(ScrollTrigger);
 
-      if (typeof window !== 'undefined' && window.__lenis) {
-        window.__lenis.on('scroll', ScrollTrigger.update);
-      }
+      // NOTE: The Lenis ↔ ScrollTrigger bridge (`lenis.on('scroll',
+      // ScrollTrigger.update)` + gsap.ticker driving `lenis.raf`) is owned by
+      // `SmoothScroll.tsx` (Phase 1). Wiring it here raced Lenis init, so this
+      // loader intentionally stays side-effect free beyond plugin registration.
 
       return gsap;
     })();

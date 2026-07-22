@@ -3,6 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ScrollFadeIn } from "@/components/ScrollFadeIn";
+import { ChapterMarker } from "@/components/animation/ChapterMarker";
 import { Button } from "@/components/ui/Button";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { makeTransition } from "@/lib/motion";
@@ -24,6 +25,9 @@ export function CTASection() {
       ref={sectionRef}
       className="relative px-8 md:px-16 py-48 overflow-hidden bg-surface border-t border-border/30"
     >
+      <div className="absolute top-12 left-8 md:left-16 z-20">
+        <ChapterMarker index={5} title="Contact" />
+      </div>
       {/* Layered ambient glow */}
       <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
 
