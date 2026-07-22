@@ -39,7 +39,7 @@ export function FloatingCardsHero({
   highlight,
   subline,
   ctaLabel = 'Explore Works',
-  ctaHref = '/portfolio',
+  ctaHref = '/projects',
   cards = DEFAULT_CARDS,
   className,
 }: FloatingCardsHeroProps) {

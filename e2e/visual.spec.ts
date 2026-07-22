@@ -78,8 +78,8 @@ test.describe("Visual Regression — Full Page Screenshots", () => {
     });
   });
 
-  test("Portfolio page", async ({ page }) => {
-    await page.goto("/portfolio");
+  test("Projects page", async ({ page }) => {
+    await page.goto("/projects");
     await page.waitForLoadState("networkidle");
     await page.waitForTimeout(1000);
     await expect(page).toHaveScreenshot("portfolio-page.png", {
@@ -156,8 +156,8 @@ test.describe("Visual Regression — Mobile Viewport", () => {
     });
   });
 
-  test("Portfolio page — mobile", async ({ page }) => {
-    await page.goto("/portfolio");
+  test("Projects page — mobile", async ({ page }) => {
+    await page.goto("/projects");
     await page.waitForLoadState("networkidle");
     await page.waitForTimeout(1000);
     await expect(page).toHaveScreenshot("portfolio-mobile.png", {

@@ -60,7 +60,7 @@ export default function NotFound() {
               <span className="ml-3 transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
             </Button>
           </Link>
-          <Link href="/portfolio">
+          <Link href="/projects">
             <Button variant="outline" size="lg">
               View Projects
             </Button>

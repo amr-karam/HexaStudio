@@ -15,7 +15,7 @@ export function ProjectStructuredData({ project }: ProjectStructuredDataProps) {
     name: project.title,
     description: project.shortDescription || project.description,
     image: imageUrl,
-    url: `${baseUrl}/portfolio/${project.slug}`,
+    url: `${baseUrl}/projects/${project.slug}`,
     author: { "@type": "Organization", name: "HexaStudio", url: baseUrl },
     keywords: project.category?.name,
     dateCreated: project.createdAt,

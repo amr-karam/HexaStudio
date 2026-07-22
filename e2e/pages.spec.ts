@@ -10,7 +10,7 @@ test.describe("Navigation", () => {
       { label: "Home", path: "/" },
       { label: "About", path: "/about" },
       { label: "Services", path: "/services" },
-      { label: "Portfolio", path: "/portfolio" },
+      { label: "Projects", path: "/projects" },
       { label: "Blog", path: "/blog" },
       { label: "Contact", path: "/contact" },
     ];
@@ -56,14 +56,14 @@ test.describe("Services page", () => {
   });
 });
 
-test.describe("Portfolio page", () => {
+test.describe("Projects page", () => {
   test("loads successfully", async ({ page }) => {
-    await page.goto("/portfolio");
-    await expect(page).toHaveURL(/\/portfolio/);
+    await page.goto("/projects");
+    await expect(page).toHaveURL(/\/projects/);
   });
 
   test("displays project grid", async ({ page }) => {
-    await page.goto("/portfolio");
+    await page.goto("/projects");
     await page.waitForLoadState("networkidle");
     const projectCards = page.locator('[data-testid="project-card"]');
     const count = await projectCards.count();
@@ -73,14 +73,14 @@ test.describe("Portfolio page", () => {
 
 test.describe("Project detail page", () => {
   test("loads successfully with 3D scene", async ({ page }) => {
-    await page.goto("/portfolio");
+    await page.goto("/projects");
     await page.waitForLoadState("networkidle");
     
     const firstProject = page.locator('[data-testid="project-card"]').first();
     if (await firstProject.isVisible()) {
       await firstProject.click();
       await page.waitForLoadState("networkidle");
-      await expect(page).toHaveURL(/\/portfolio\/[^/]+$/);
+      await expect(page).toHaveURL(/\/projects\/[^/]+$/);
       
       const canvas = page.locator("canvas");
       await expect(canvas).toBeVisible();
@@ -88,7 +88,7 @@ test.describe("Project detail page", () => {
   });
 
   test("has accessibility controls", async ({ page }) => {
-    await page.goto("/portfolio");
+    await page.goto("/projects");
     await page.waitForLoadState("networkidle");
     
     const firstProject = page.locator('[data-testid="project-card"]').first();
@@ -170,7 +170,7 @@ test.describe("Accessibility", () => {
   });
 
   test("keyboard navigation works", async ({ page }) => {
-    await page.goto("/portfolio");
+    await page.goto("/projects");
     await page.waitForLoadState("networkidle");
     
     await page.keyboard.press("Tab");
@@ -179,7 +179,7 @@ test.describe("Accessibility", () => {
   });
 
   test("aria labels are present on interactive elements", async ({ page }) => {
-    await page.goto("/portfolio");
+    await page.goto("/projects");
     await page.waitForLoadState("networkidle");
     
     const buttons = page.locator("button");

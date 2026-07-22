@@ -148,7 +148,7 @@ export const Navbar = () => {
   const { t } = useLocale();
 
   const navItems = [
-    { label: t('navbar.portfolio'), href: '/portfolio' },
+    { label: t('navbar.portfolio'), href: '/projects' },
     { label: t('navbar.services'), href: '/services' },
     { label: t('navbar.blog'), href: '/blog' },
     { label: t('navbar.studio'), href: '/about' },

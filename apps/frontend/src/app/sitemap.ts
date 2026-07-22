@@ -30,7 +30,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
     {
-      url: `${baseUrl}/portfolio`,
+      url: `${baseUrl}/projects`,
       lastModified: new Date(),
       changeFrequency: 'weekly' as const,
       priority: 0.9,
@@ -40,7 +40,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const projectsData = await fetchProjects();
     const projectPages = projectsData.projects?.map((project) => ({
-      url: `${baseUrl}/portfolio/${project.slug}`,
+      url: `${baseUrl}/projects/${project.slug}`,
       lastModified: new Date(project.updatedAt),
       changeFrequency: 'monthly' as const,
       priority: 0.8,

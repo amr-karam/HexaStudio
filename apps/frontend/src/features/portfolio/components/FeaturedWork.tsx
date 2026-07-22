@@ -41,7 +41,7 @@ function resolveContent(project?: Project): FeaturedContent {
         'A translucent commercial pavilion that appears to float above its waterfront site. ETFE cushions and precision steel form a crystalline envelope that refracts sunlight throughout the day.',
       imageUrl: FALLBACK_IMAGE,
       meta: ['Commercial · 2025', 'Location: Dubai Marina', 'Status: Built'],
-      href: '/portfolio/lumina-pavilion',
+      href: '/projects/lumina-pavilion',
     };
   }
 
@@ -66,7 +66,7 @@ function resolveContent(project?: Project): FeaturedContent {
     description: project.shortDescription || project.description,
     imageUrl: project.coverImage || FALLBACK_IMAGE,
     meta,
-    href: `/portfolio/${project.slug}`,
+    href: `/projects/${project.slug}`,
   };
 }
 

@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Navbar } from '@/components/ui/nav/Navbar';
 
 vi.mock('next/navigation', () => ({
-  usePathname: () => '/portfolio',
+  usePathname: () => '/projects',
 }));
 
 vi.mock('next/link', () => ({
