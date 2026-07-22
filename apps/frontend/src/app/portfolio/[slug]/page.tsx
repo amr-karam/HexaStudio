@@ -31,7 +31,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
         <div className="text-center">
           <p className="text-neutral-500 mb-4">Project not found.</p>
           <Link href="/portfolio">
-            <Button variant="outline">Back to Portfolio</Button>
+            <Button variant="outline">Back to Projects</Button>
           </Link>
         </div>
       </div>

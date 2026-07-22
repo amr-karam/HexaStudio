@@ -5,11 +5,11 @@ import { fetchProjects } from "@/features/portfolio/lib/fetchProjects";
 export const dynamic = 'force-dynamic';
 export const revalidate = 3600;
 export const metadata: Metadata = {
-  title: "Portfolio",
+  title: "Projects",
   description:
     "Explore our curated collection of architectural visualization projects — from residential masterpieces to commercial landmarks.",
   openGraph: {
-    title: "Portfolio | HexaStudio",
+    title: "Projects | HexaStudio",
     description:
       "Explore our curated collection of architectural visualization projects.",
   },

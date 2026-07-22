@@ -28,7 +28,7 @@ export const ar = {
     home: 'الرئيسية',
     about: 'عن الشركة',
     services: 'الخدمات',
-    portfolio: 'أعمالنا',
+    portfolio: 'مشاريعنا',
     blog: 'المدونة',
     contact: 'اتصل بنا',
     portal: 'بوابة العميل',
@@ -87,7 +87,7 @@ export const ar = {
     tagline: 'مساحات حية. مُتصوَّرة. تجارب معمارية ثلاثية الأبعاد غامرة.',
   },
   navbar: {
-    portfolio: 'أعمالنا',
+    portfolio: 'مشاريعنا',
     services: 'الخدمات',
     blog: 'المدونة',
     studio: 'الاستوديو',
