@@ -10,7 +10,7 @@ import {
   DefaultValuePipe,
   ParseIntPipe,
   UseGuards,
-} from '@nestjs/common';
+  VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { WebhookConfigService } from './webhook-config.service';
 import type { WebhookConfig, CreateWebhookDto, UpdateWebhookDto } from '@hexastudio/types';
@@ -22,7 +22,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 @Roles('admin')
 @ApiTags('Webhooks')
 @ApiBearerAuth()
-@Controller({ path: 'webhooks', version: '1' })
+@Controller({ path: 'webhooks', version: ['1', VERSION_NEUTRAL] })
 export class WebhookConfigController {
   constructor(private readonly webhookConfigService: WebhookConfigService) {}
 

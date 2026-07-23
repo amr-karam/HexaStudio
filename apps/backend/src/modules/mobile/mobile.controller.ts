@@ -1,10 +1,10 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { AuthService } from '../auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
 
 @ApiTags('Mobile')
-@Controller({ path: 'mobile', version: '1' })
+@Controller({ path: 'mobile', version: ['1', VERSION_NEUTRAL] })
 export class MobileApiController {
   constructor(
     private authService: AuthService,

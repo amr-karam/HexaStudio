@@ -4,7 +4,7 @@ import { AchievementsService } from './achievements.service';
 import type { AchievementResponse } from '@hexastudio/types';
 
 @ApiTags('Achievements')
-@Controller({ path: 'achievements', version: VERSION_NEUTRAL })
+@Controller({ path: 'achievements', version: ['1', VERSION_NEUTRAL] })
 export class AchievementsController {
   constructor(private readonly achievementsService: AchievementsService) {}
 
