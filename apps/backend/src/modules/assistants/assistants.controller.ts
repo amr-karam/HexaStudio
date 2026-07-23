@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { AssistantsService } from './assistants.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -113,7 +113,7 @@ interface ForecastBudgetBody {
 @Roles('admin', 'editor')
 @ApiTags('Assistants')
 @ApiBearerAuth()
-@Controller({ path: 'assistants', version: '1' })
+@Controller({ path: 'assistants', version: ['1', VERSION_NEUTRAL] })
 export class AssistantsController {
   constructor(
     private readonly assistantsService: AssistantsService,

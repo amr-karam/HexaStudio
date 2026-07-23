@@ -1,10 +1,10 @@
-import { Controller, Post, Get, Body, Patch, Param, Query, DefaultValuePipe, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Body, Patch, Param, Query, DefaultValuePipe, ParseIntPipe, UseGuards, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { RequestsService, ProjectRequest } from './requests.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Requests')
-@Controller({ path: 'requests', version: '1' })
+@Controller({ path: 'requests', version: ['1', VERSION_NEUTRAL] })
 export class RequestsController {
   constructor(private readonly requestsService: RequestsService) {}
 
