@@ -4,6 +4,7 @@ import { HttpService } from '@nestjs/axios';
 import { of, throwError } from 'rxjs';
 import { ProjectsService } from '../src/modules/projects/projects.service';
 import { OdooService } from '../src/modules/odoo/odoo.service';
+import { RedisService } from '../src/modules/storage/redis.service';
 import { NotFoundException } from '@nestjs/common';
 
 describe('ProjectsService', () => {
@@ -39,6 +40,16 @@ describe('ProjectsService', () => {
         {
           provide: OdooService,
           useValue: { searchRead: vi.fn().mockResolvedValue([]) },
+        },
+        {
+          provide: RedisService,
+          useValue: {
+            get: vi.fn().mockResolvedValue(null),
+            set: vi.fn().mockResolvedValue(undefined),
+            del: vi.fn().mockResolvedValue(undefined),
+            exists: vi.fn().mockResolvedValue(0),
+            expire: vi.fn().mockResolvedValue(undefined),
+          },
         },
       ],
     }).compile();
