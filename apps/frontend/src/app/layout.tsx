@@ -5,6 +5,7 @@ import { StructuredData } from "@/components/StructuredData";
 import { CinematicPreloader } from "@/components/ui/overlays/CinematicPreloader";
 import { AnimationDebug } from "@/components/dev/AnimationDebug";
 import { WebVitals } from "@/components/WebVitals";
+import { LivePreview } from "@/components/LivePreview";
 import { AnalyticsInit } from "@/lib/analytics";
 import { Suspense } from "react";
 import "./globals.css";
@@ -123,6 +124,7 @@ export default function RootLayout({
             <AnalyticsInit />
           </Suspense>
           <WebVitals />
+          <LivePreview />
         </AppProviders>
       </body>
     </html>

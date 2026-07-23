@@ -217,6 +217,7 @@ services:
       NODE_ENV: ${NODE_ENV:-production}
       # Sprint 15 P9: on-demand ISR revalidation secret (must match host env)
       REVALIDATE_SECRET: ${REVALIDATE_SECRET:-}
+      PREVIEW_SECRET: ${PREVIEW_SECRET:-}
     depends_on:
       - backend
     networks:
@@ -257,6 +258,8 @@ services:
       ADMIN_JWT_SECRET: ${STRAPI_ADMIN_JWT_SECRET:?STRAPI_ADMIN_JWT_SECRET is required}
       TRANSFER_TOKEN_SALT: ${STRAPI_TRANSFER_TOKEN_SALT:?STRAPI_TRANSFER_TOKEN_SALT is required}
       JWT_SECRET: ${STRAPI_JWT_SECRET:?STRAPI_JWT_SECRET is required}
+      CLIENT_URL: ${CLIENT_URL:-https://hexastudio.net}
+      PREVIEW_SECRET: ${PREVIEW_SECRET:-}
     depends_on:
       postgres:
         condition: service_healthy

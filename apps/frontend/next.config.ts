@@ -35,7 +35,7 @@ const ContentSecurityPolicy = [
   ].join(" "),
   "worker-src 'self' blob:",
   "frame-src 'none'",
-  "frame-ancestors 'self'",
+  "frame-ancestors 'self' https://hexastudio.net http://localhost:1337",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",

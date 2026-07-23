@@ -78,4 +78,25 @@ else
   echo "Skipping on-demand revalidation: REVALIDATE_SECRET not set in deploy environment."
 fi
 
+# Sprint 15 P10: purge Cloudflare edge cache so stale HTML is replaced
+# immediately with freshly-prerendered ISR content. Uses the Cloudflare
+# Global API Key (same credentials as Traefik DNS challenge).
+if [ -n "$CLOUDFLARE_EMAIL" ] && [ -n "$CLOUDFLARE_API_KEY" ]; then
+  echo "Purging Cloudflare edge cache..."
+  PURGE_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE \
+    "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/purge_cache" \
+    -H "X-Auth-Email: $CLOUDFLARE_EMAIL" \
+    -H "X-Auth-Key: $CLOUDFLARE_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d '{"purge_everything":true}' \
+    --max-time 15 || echo "000")
+  if [ "$PURGE_CODE" = "200" ]; then
+    echo "Cloudflare cache purged successfully."
+  else
+    echo "Warning: Cloudflare cache purge returned HTTP $PURGE_CODE (non-fatal; stale-while-revalidate will heal)."
+  fi
+else
+  echo "Skipping Cloudflare cache purge: CLOUDFLARE_EMAIL/CLOUDFLARE_API_KEY not set."
+fi
+
 echo "Zero-downtime deployment complete!"

@@ -6,6 +6,22 @@
 
 ---
 
+## 🎯 P10 INFRASTRUCTURE + STRAPI PREVIEW (✅ COMPLETE 2026-07-24)
+
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S15-P10-001** | Cloudflare Edge Cache — ISR regex for root path, Surrogate-Control header, purge-on-deploy | ✅ |
+| **S15-P10-002** | Cloudflare Cache documentation — `CLOUDFLARE_CACHE.md` | ✅ |
+| **S15-P10-003** | Strapi Preview — config/admin.ts handler for articles, projects, pages | ✅ |
+| **S15-P10-004** | Strapi Preview — middlewares.ts CSP frame-ancestors + CORS | ✅ |
+| **S15-P10-005** | Frontend `/api/preview` route — Next.js draft mode with PREVIEW_SECRET | ✅ |
+| **S15-P10-006** | Frontend `LivePreview.tsx` — Strapi Live Preview message listener | ✅ |
+| **S15-P10-007** | CSP frame-ancestors — Strapi admin + localhost:1337 | ✅ |
+| **S15-P10-008** | Docker env vars — PREVIEW_SECRET + CLIENT_URL in docker-compose.prod.yml | ✅ |
+| **S15-P10-009** | next@16.2.10 → 16.2.11 security patch | ✅ |
+
+---
+
 ## 🎯 SPRINT 15 — SCROLL CINEMA INITIATIVE + SECURITY & LIGHTHOUSE HARDENING (✅ COMPLETE)
 
 **Started:** 2026-07-22 | **Completed:** 2026-07-22
