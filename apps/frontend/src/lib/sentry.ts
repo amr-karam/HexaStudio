@@ -1,10 +1,10 @@
-import * as Sentry from '@sentry/nextjs';
+import { init, browserTracingIntegration, type ErrorEvent, type EventHint } from '@sentry/nextjs';
 import { replayIntegration } from '@sentry/replay';
 
 const SENTRY_DSN = process.env.NEXT_PUBLIC_SENTRY_DSN;
 
 if (SENTRY_DSN) {
-  Sentry.init({
+  init({
     dsn: SENTRY_DSN,
     enabled: process.env.NODE_ENV === 'production',
     environment: process.env.NEXT_PUBLIC_VERCEL_ENV || 'production',
@@ -19,14 +19,14 @@ if (SENTRY_DSN) {
         maskAllText: true,
         blockAllMedia: true,
       }),
-      Sentry.browserTracingIntegration(),
+      browserTracingIntegration(),
     ],
     ignoreErrors: [
       /ResizeObserver loop limit exceeded/,
       /Non-Error promise rejection captured/,
       /Network request failed/,
     ],
-    beforeSend(event: Sentry.ErrorEvent, hint: Sentry.EventHint) {
+    beforeSend(event: ErrorEvent, hint: EventHint) {
       if (process.env.NODE_ENV === 'production' && event.exception) {
         const error = hint.originalException;
         if (error instanceof Error && error.message?.includes('hydration')) {

@@ -3,6 +3,7 @@
 import { useEffect, useCallback } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { analytics } from './provider';
+import { onIdle } from '@/lib/idle';
 
 export function useAnalytics() {
   const track = useCallback(
@@ -27,7 +28,10 @@ export function AnalyticsInit() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    analytics.init();
+    // Defer third-party analytics script injection to idle time so it
+    // doesn't compete with hydration / first paint work on the main thread.
+    const cancel = onIdle(() => analytics.init(), 2000);
+    return () => cancel();
   }, []);
 
   useEffect(() => {

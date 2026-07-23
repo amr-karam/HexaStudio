@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/nextjs';
+import { captureException } from '@sentry/nextjs';
 import { Achievement, AchievementResponse } from '../types';
 import { API_BASE_URL } from '@/config/constants';
 
@@ -37,7 +37,7 @@ export async function fetchAchievements(): Promise<AchievementResponse> {
     });
 
     if (!response.ok) {
-      Sentry.captureException(
+      captureException(
         new Error(
           `Achievements API Error: ${response.status} ${response.statusText}`,
         ),
@@ -47,7 +47,7 @@ export async function fetchAchievements(): Promise<AchievementResponse> {
 
     return (await response.json()) as AchievementResponse;
   } catch (error) {
-    Sentry.captureException(error);
+    captureException(error);
     return EMPTY_ACHIEVEMENT_RESPONSE;
   }
 }

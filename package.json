@@ -34,9 +34,10 @@
     "react-error-boundary": "^6.1.2"
   },
   "devDependencies": {
-    "@nestjs/cli": "^11.0.24",
     "@lhci/cli": "^0.14.0",
+    "@nestjs/cli": "^11.0.24",
     "@types/node": "^26.1.1",
+    "caniuse-lite": "^1.0.30001806",
     "react-test-renderer": "19.2.7",
     "turbo": "^2.10.4"
   },

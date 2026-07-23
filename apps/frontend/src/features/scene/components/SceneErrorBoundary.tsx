@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import * as Sentry from '@sentry/nextjs';
+import { captureException } from '@sentry/nextjs';
 
 /* -------------------------------------------------------------------------- */
 /*  Types                                                                      */
@@ -47,7 +47,7 @@ export class SceneErrorBoundary extends React.Component<
 
     // Capture once — don't repeat on re-renders.
     if (!this.state.sentryReported) {
-      Sentry.captureException(error, {
+      captureException(error, {
         extra: { componentStack: errorInfo.componentStack },
       });
       this.setState({ sentryReported: true });

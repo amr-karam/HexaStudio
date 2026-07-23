@@ -40,9 +40,24 @@ for service in "backend" "frontend" "cms"; do
   done
 done
 
+# Remove old slot FIRST so Traefik routes exclusively to the new slot.
+# NOTE: never use `docker compose stop/rm` here — compose tracks the CURRENT
+# project containers (the new slot we just started), so it would kill the
+# fresh deployment. Target the old slot's containers explicitly by name.
+if [ -n "$CURRENT_SOT" ]; then
+  echo "Removing $CURRENT_SOT slot..."
+  for service in backend frontend cms; do
+    docker stop "hexa-${service}-${CURRENT_SOT}" 2>/dev/null || true
+    docker rm "hexa-${service}-${CURRENT_SOT}" 2>/dev/null || true
+  done
+  # Give Traefik a moment to detect the old containers are gone.
+  sleep 3
+fi
+
 # Sprint 15 P9: kick on-demand ISR revalidation. The frontend was prerendered
 # during build with an empty data cache (backend was unreachable during
-# `docker compose build`). Now that backend is healthy, POST /api/revalidate
+# `docker compose build`). Now that backend is healthy AND the old slot is
+# removed (so the request hits the new slot exclusively), POST /api/revalidate
 # to flush the whole layout cache; Next regenerates with live data within
 # seconds. Best-effort: if the secret is unset or the call fails, the next
 # user request still triggers regeneration via stale-while-revalidate.
@@ -61,18 +76,6 @@ if [ -n "$REVALIDATE_SECRET" ]; then
   fi
 else
   echo "Skipping on-demand revalidation: REVALIDATE_SECRET not set in deploy environment."
-fi
-
-# Remove old slot
-# NOTE: never use `docker compose stop/rm` here — compose tracks the CURRENT
-# project containers (the new slot we just started), so it would kill the
-# fresh deployment. Target the old slot's containers explicitly by name.
-if [ -n "$CURRENT_SOT" ]; then
-  echo "Removing $CURRENT_SOT slot..."
-  for service in backend frontend cms; do
-    docker stop "hexa-${service}-${CURRENT_SOT}" 2>/dev/null || true
-    docker rm "hexa-${service}-${CURRENT_SOT}" 2>/dev/null || true
-  done
 fi
 
 echo "Zero-downtime deployment complete!"

@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/nextjs';
+import { captureException } from '@sentry/nextjs';
 import { TeamMember, TeamMemberResponse } from '@hexastudio/types';
 import { API_BASE_URL } from '@/config/constants';
 
@@ -24,13 +24,13 @@ export async function fetchTeamMembers(): Promise<TeamMemberResponse> {
     });
 
     if (!response.ok) {
-      Sentry.captureException(new Error(`API Error: ${response.status} ${response.statusText}`));
+      captureException(new Error(`API Error: ${response.status} ${response.statusText}`));
       return { teamMembers: [], total: 0, page: 1, limit: 50, totalPages: 0 };
     }
 
     return await response.json();
   } catch (error) {
-    Sentry.captureException(error);
+    captureException(error);
     return { teamMembers: [], total: 0, page: 1, limit: 50, totalPages: 0 };
   }
 }
@@ -51,7 +51,7 @@ export async function fetchTeamMember(slug: string): Promise<TeamMember | null> 
 
     return await response.json();
   } catch (error) {
-    Sentry.captureException(error);
+    captureException(error);
     return null;
   }
 }

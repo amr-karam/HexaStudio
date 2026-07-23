@@ -72,7 +72,23 @@ Implement the foundation layer for Prompt 017 — the cinematic scroll experienc
 
 ## 4. NEXT PHASE
 
-- **P9 — Payload Reduction:** Unused-JS (163 KiB) via R3F/Three ESM builds; FCP sub-1s via edge HTML caching evaluation.
+### S-016 — TBT Reduction and Real-Device Sweep (in progress — 2026-07-23)
+
+- [x] Analytics script injection deferred to idle time — `AnalyticsInit` now uses `onIdle()` to schedule PostHog/GA4 script tag insertion off the post-hydration critical path
+- [ ] TBT profiling — identify long tasks via Chrome DevTools/Lighthouse; target TBT < 200 ms
+- [ ] Real-device Lighthouse sweep — mobile + desktop on actual hardware
+- [ ] Final luxury scoring — verify 9.5/10 bar
+- [ ] R3F/Three ESM sub-path imports (blocked: Turbopack bundles Three.js as a single unit; requires webpack mode or upstream R3F ESM sub-path exports)
+
+### P9 — Payload Reduction (✅ COMPLETE 2026-07-23)
+
+- [x] Named imports for Three.js — converted 6 `import * as THREE` barrel imports to explicit named imports across SplineField, ParticleSimulation, FractureRingScene, fracture-ring-texture, BlueprintParticles, SceneContent
+- [x] Named imports for Sentry — converted 10 `import * as Sentry` barrel imports to `import { captureException }` / `import { init, browserTracingIntegration }` across 9 fetch files + error boundaries + sentry.ts
+- [x] `optimizePackageImports` expanded — added `@react-three/postprocessing`, `framer-motion`, `@sentry/nextjs` (now 7 packages optimized)
+- [x] Edge HTML caching — `stale-while-revalidate=86400` + `s-maxage=3600` headers added for ISR pages (projects, blog, about, services, privacy, terms, contact) in `next.config.ts`
+- [x] Pre-existing TS errors fixed — `revalidate/route.ts`: removed invalid `'tag'` type from `revalidatePath`, added required second argument (`'max'`) to `revalidateTag` (Next.js 16 API change)
+- [x] Quality gates: lint 0 errors, typecheck 0 errors (was 2), 176/176 tests, production build ✓
+- [ ] R3F/Three ESM sub-path imports for deeper tree-shaking (blocked: Turbopack bundles Three.js as a single unit; requires webpack mode or upstream R3F ESM sub-path exports)
 
 ### P8 — Post-P7 Verification (✅ COMPLETE 2026-07-22)
 
