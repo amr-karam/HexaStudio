@@ -4,7 +4,7 @@ import { PagesService } from './pages.service';
 import type { Page, PageResponse } from '@hexastudio/types';
 
 @ApiTags('Pages')
-@Controller({ path: 'pages', version: VERSION_NEUTRAL })
+@Controller({ path: 'pages', version: ['1', VERSION_NEUTRAL] })
 export class PagesController {
   constructor(private readonly pagesService: PagesService) {}
 

@@ -5,7 +5,7 @@ import { RecommendationService, SimilarProjectResult } from '../vector/recommend
 import type { Project, ProjectResponse } from '@hexastudio/types';
 
 @ApiTags('Projects')
-@Controller({ path: 'projects', version: VERSION_NEUTRAL })
+@Controller({ path: 'projects', version: ['1', VERSION_NEUTRAL] })
 export class ProjectsController {
   constructor(
     private readonly projectsService: ProjectsService,

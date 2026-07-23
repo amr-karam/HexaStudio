@@ -1,10 +1,10 @@
-import { Controller, Post, Get, Patch, Param, Body, UseGuards, Request } from '@nestjs/common';
+import { Controller, Post, Get, Patch, Param, Body, UseGuards, Request, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { ApprovalService } from './approval.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Approvals')
-@Controller({ path: 'approvals', version: '1' })
+@Controller({ path: 'approvals', version: ['1', VERSION_NEUTRAL] })
 export class ApprovalController {
   constructor(private readonly approvalService: ApprovalService) {}
 

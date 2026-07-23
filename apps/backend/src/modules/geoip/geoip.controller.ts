@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Req, UseGuards, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Param, Req, UseGuards, HttpCode, HttpStatus, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -8,7 +8,7 @@ import type { GeoIpResult } from './geoip.service';
 import type { Request } from 'express';
 
 @ApiTags('GeoIP')
-@Controller({ path: 'geoip', version: '1' })
+@Controller({ path: 'geoip', version: ['1', VERSION_NEUTRAL] })
 export class GeoipController {
   constructor(private readonly geoipService: GeoipService) {}
 

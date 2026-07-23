@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, UseGuards, Request, Res, Headers } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Request, Res, Headers, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { IsEmail, IsString, MinLength, MaxLength, Matches } from 'class-validator';
 import { Response } from 'express';
@@ -90,7 +90,7 @@ const COOKIE_OPTIONS = {
 };
 
 @ApiTags('Auth')
-@Controller({ path: 'auth', version: '1' })
+@Controller({ path: 'auth', version: ['1', VERSION_NEUTRAL] })
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 

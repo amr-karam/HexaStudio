@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Query, HttpCode, HttpStatus, Logger, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, HttpCode, HttpStatus, Logger, UseGuards, Req, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import type { Request } from 'express';
 import { CurrencyService } from './currency.service';
@@ -17,7 +17,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
  * - GET /api/pricing/rates — Get current exchange rates
  */
 @ApiTags('Currency')
-@Controller({ path: 'currency', version: '1' })
+@Controller({ path: 'currency', version: ['1', VERSION_NEUTRAL] })
 export class CurrencyController {
   private readonly logger = new Logger(CurrencyController.name);
 
@@ -95,7 +95,7 @@ export class CurrencyController {
 /**
  * PricingController: Calculate regional pricing with tax compliance
  */
-@Controller({ path: 'pricing', version: '1' })
+@Controller({ path: 'pricing', version: ['1', VERSION_NEUTRAL] })
 export class PricingController {
   private readonly logger = new Logger(PricingController.name);
 

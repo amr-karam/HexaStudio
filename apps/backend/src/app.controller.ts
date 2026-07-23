@@ -2,7 +2,7 @@ import { Controller, Get, VERSION_NEUTRAL } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 
 @ApiTags("root")
-@Controller({ version: VERSION_NEUTRAL })
+@Controller({ version: ['1', VERSION_NEUTRAL] })
 export class AppController {
   @Get()
   @ApiOperation({ summary: "API root" })
