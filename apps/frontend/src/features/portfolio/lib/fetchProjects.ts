@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/nextjs';
+import { captureException } from '@sentry/nextjs';
 import { Project, ProjectResponse } from '@hexastudio/types';
 import { API_BASE_URL } from '@/config/constants';
 
@@ -29,13 +29,13 @@ export async function fetchProjects(locale?: string): Promise<ProjectResponse> {
     });
 
     if (!response.ok) {
-      Sentry.captureException(new Error(`API Error: ${response.status} ${response.statusText}`));
+      captureException(new Error(`API Error: ${response.status} ${response.statusText}`));
       return { projects: [], total: 0, page: 1, limit: 20, totalPages: 0 };
     }
 
     return await response.json();
   } catch (error) {
-    Sentry.captureException(error);
+    captureException(error);
     return { projects: [], total: 0, page: 1, limit: 20, totalPages: 0 };
   }
 }
@@ -60,7 +60,7 @@ export async function fetchProject(slug: string, locale?: string): Promise<Proje
 
     return await response.json();
   } catch (error) {
-    Sentry.captureException(error);
+    captureException(error);
     return null;
   }
 }

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import * as Sentry from '@sentry/nextjs';
+import { captureException } from '@sentry/nextjs';
 export default function Error({
   error,
   reset,
@@ -10,7 +10,7 @@ export default function Error({
 }) {
   useEffect(() => {
     console.error("Uncaught error:", error);
-    Sentry.captureException(error);
+    captureException(error);
   }, [error]);
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center p-8 text-center">
