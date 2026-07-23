@@ -75,7 +75,7 @@ Implement the foundation layer for Prompt 017 — the cinematic scroll experienc
 ### S-016 — TBT Reduction and Real-Device Sweep (in progress — 2026-07-23)
 
 - [x] Analytics script injection deferred to idle time — `AnalyticsInit` now uses `onIdle()` to schedule PostHog/GA4 script tag insertion off the post-hydration critical path
-- [ ] TBT profiling — identify long tasks via Chrome DevTools/Lighthouse; target TBT < 200 ms
+- [ ] TBT profiling — identify long tasks via Chrome DevTools/Lighthouse; target TBT < 200 ms. Local Lighthouse run attempted but returned NO_FCP in headless Chrome; full profiling requires a GUI Chrome session or real-device test.
 - [ ] Real-device Lighthouse sweep — mobile + desktop on actual hardware
 - [ ] Final luxury scoring — verify 9.5/10 bar
 - [ ] R3F/Three ESM sub-path imports (blocked: Turbopack bundles Three.js as a single unit; requires webpack mode or upstream R3F ESM sub-path exports)
