@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/nextjs';
+import { captureException } from '@sentry/nextjs';
 import { Page, PageResponse } from '../types';
 import { API_BASE_URL } from '@/config/constants';
 
@@ -45,7 +45,7 @@ export async function fetchPages(locale?: string): Promise<PageResponse> {
     );
 
     if (!response.ok) {
-      Sentry.captureException(
+      captureException(
         new Error(`Pages API Error: ${response.status} ${response.statusText}`),
       );
       return EMPTY_PAGE_RESPONSE;
@@ -53,7 +53,7 @@ export async function fetchPages(locale?: string): Promise<PageResponse> {
 
     return (await response.json()) as PageResponse;
   } catch (error) {
-    Sentry.captureException(error);
+    captureException(error);
     return EMPTY_PAGE_RESPONSE;
   }
 }
@@ -88,7 +88,7 @@ export async function fetchPage(
 
     return (await response.json()) as Page;
   } catch (error) {
-    Sentry.captureException(error);
+    captureException(error);
     return null;
   }
 }

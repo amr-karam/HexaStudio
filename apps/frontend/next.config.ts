@@ -77,6 +77,18 @@ const nextConfig: NextConfig = {
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
+      // ISR pages: serve stale HTML at the edge while revalidating in the
+      // background. `s-maxage` controls CDN cache; `stale-while-revalidate`
+      // lets Cloudflare serve the previous build's HTML instantly while the
+      // background ISR regenerates fresh content.  The 86400s (24 h) SWR
+      // window covers deploy-time regeneration gaps without showing content
+      // older than one day.
+      {
+        source: "/(projects|blog|about|services|privacy|terms|contact|)",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=3600, stale-while-revalidate=86400" },
+        ],
+      },
       {
         source: "/:path*",
         headers: securityHeaders,

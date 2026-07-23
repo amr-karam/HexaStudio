@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/nextjs';
+import { captureException } from '@sentry/nextjs';
 import { FAQ, FAQResponse } from '@hexastudio/types';
 import { API_BASE_URL } from '@/config/constants';
 
@@ -28,13 +28,13 @@ export async function fetchFAQs(locale?: string): Promise<FAQResponse> {
     });
 
     if (!response.ok) {
-      Sentry.captureException(new Error(`API Error: ${response.status} ${response.statusText}`));
+      captureException(new Error(`API Error: ${response.status} ${response.statusText}`));
       return { faqs: [], total: 0, page: 1, limit: 50, totalPages: 0 };
     }
 
     return await response.json();
   } catch (error) {
-    Sentry.captureException(error);
+    captureException(error);
     return { faqs: [], total: 0, page: 1, limit: 50, totalPages: 0 };
   }
 }
@@ -59,7 +59,7 @@ export async function fetchFAQsByCategory(category: string, locale?: string): Pr
 
     return await response.json();
   } catch (error) {
-    Sentry.captureException(error);
+    captureException(error);
     return [];
   }
 }
