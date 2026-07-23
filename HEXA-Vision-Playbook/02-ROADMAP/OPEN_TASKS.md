@@ -88,6 +88,17 @@
 | **S15-P8-003** | Best Practices 85→96 (+11), Accessibility 95→96, Performance 75→77 | ✅ |
 | **S15-P8-004** | Luxury score 9.3 → 9.4/10 | ✅ |
 
+### P9 — Payload Reduction + ISR Conversion (✅ COMPLETE 2026-07-23)
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S15-P9-001** | ISR conversion — removed ``force-dynamic`` from 6 pages; ``revalidate = 3600`` (1h) | ✅ |
+| **S15-P9-002** | On-demand revalidation endpoint ``/api/revalidate`` with constant-time shared-secret auth | ✅ |
+| **S15-P9-003** | Deploy hook — POSTs revalidate after old slot removed + 3s Traefik convergence | ✅ |
+| **S15-P9-004** | ``REVALIDATE_SECRET`` injected via docker-compose.prod.yml environment | ✅ |
+| **S15-P9-005** | Turbopack ``optimizePackageImports`` — wildcard three imports → named imports (5 engine files) | ✅ |
+| **S15-P9-006** | Bundle analysis — 163 KiB unused JS = lazy 3D scene chunks (not eager); no FCP impact | ✅ |
+| **S15-P9-007** | Lighthouse 3-run median: Perf 86 (+9), TBT 157ms (−40%, below 200ms), TTFB 128ms (−70%) | ✅ |
+| **S15-P9-008** | Cache-Control: ``s-maxage=3600, stale-while-revalidate`` (was ``no-store``) | ✅ |
 ### 📊 Quality Metrics (Sprint 15)
 | Metric | Target | Actual | Status |
 |--------|--------|--------|--------|
