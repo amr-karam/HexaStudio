@@ -38,13 +38,21 @@ variables:
   NEXT_PUBLIC_CMS_URL: "https://cms.hexastudio.net"
   NEXT_PUBLIC_SITE_URL: "https://hexastudio.net"
 
+# Default pipeline rules (apply if job doesn't override)
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+# ----------------------------------------------------------------------------
+# 0. SECURITY & COMPLIANCE (replaces GitHub Dependabot + Snyk)
+# ----------------------------------------------------------------------------
+include:
+  - local: '.gitlab/security.yml'
+
 # ----------------------------------------------------------------------------
 # 1. QUALITY GATE STAGE
 # ----------------------------------------------------------------------------
-
-include:
-  - local: '.gitlab-ci/types.yml'
-  - local: '.gitlab-ci/templates.yml'
 
 # Cache npm modules across pipeline jobs
 .cache_npm: &cache_npm
