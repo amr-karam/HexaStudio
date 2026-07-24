@@ -199,7 +199,7 @@ export default function PortalPage() {
   if (!data) return null;
 
   return (
-    <main className="min-h-screen bg-background pt-32 pb-24 px-8 md:px-16">
+    <div className="min-h-screen bg-background pt-32 pb-24 px-8 md:px-16">
       <div className="w-full">
         <header className="mb-24">
           <motion.span
@@ -593,6 +593,6 @@ export default function PortalPage() {
           </div>
         )}
       </AnimatePresence>
-    </main>
+    </div>
   );
 }

@@ -34,7 +34,7 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center p-8 bg-background relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center p-8 bg-background relative overflow-hidden">
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-[-10%] left-[-10%] w-1/2 h-1/2 bg-accent/5 blur-[120px] rounded-full" />
         <div className="absolute bottom-[-10%] right-[-10%] w-1/2 h-1/2 bg-accent/5 blur-[120px] rounded-full" />
@@ -95,6 +95,6 @@ export default function LoginPage() {
           </p>
         </div>
       </motion.div>
-    </main>
+    </div>
   );
 }

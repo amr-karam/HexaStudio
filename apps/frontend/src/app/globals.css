@@ -122,21 +122,6 @@ body {
   outline-offset: 2px;
 }
 
-.skip-link {
-  position: absolute;
-  top: -40px;
-  inset-inline-start: 0;
-  background: var(--color-foreground);
-  color: var(--color-background);
-  padding: 8px 16px;
-  z-index: 100;
-  transition: top 0.3s var(--hexa-ease-entrance);
-}
-
-.skip-link:focus {
-  top: 0;
-}
-
 /* -------------------------------------------------------------------------- */
 /*  Reduced Motion — comprehensive fallback rules                              */
 /* -------------------------------------------------------------------------- */

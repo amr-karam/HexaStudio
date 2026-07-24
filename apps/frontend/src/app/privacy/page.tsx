@@ -29,7 +29,7 @@ export default async function PrivacyPage() {
   const page = await fetchPage('privacy');
 
   return (
-    <main className="min-h-screen bg-background pt-40 pb-32 relative">
+    <div className="min-h-screen bg-background pt-40 pb-32 relative">
       {/* Subtle background */}
       <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-accent/3 blur-[200px] rounded-full pointer-events-none" />
 
@@ -114,6 +114,6 @@ export default async function PrivacyPage() {
           </Link>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

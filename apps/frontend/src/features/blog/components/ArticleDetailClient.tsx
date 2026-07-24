@@ -103,7 +103,7 @@ export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
   }, [staticMode]);
 
   return (
-    <main className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Reading progress hairline (F5 DNA) */}
       <ReadingProgress />
 
@@ -194,6 +194,6 @@ export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
         </div>
       </section>
       <NewsletterSection />
-    </main>
+    </div>
   );
 }
