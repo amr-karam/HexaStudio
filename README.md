@@ -55,8 +55,8 @@ Our platform is built on three pillars:
 ### 2. Local Setup
 ```bash
 # Clone the repository
-git clone https://github.com/amr-karam/HexaStudio.git
-cd HexaStudio
+git clone ssh://git@19.16.1.100:2222/hexa/hexa-studio.git
+cd hexa-studio
 
 # Automated preparation (installs deps, builds, validates)
 bash .setup.sh

@@ -1,0 +1,36 @@
+# GitLab Runner — Docker executor
+# Runs CI/CD jobs in Docker containers
+# Register with: docker exec -it hexa-gitlab-runner gitlab-runner register
+# (see scripts/deploy-gitlab.sh for automated registration)
+
+services:
+  gitlab-runner:
+    image: gitlab/gitlab-runner:latest
+    container_name: hexa-gitlab-runner
+    restart: unless-stopped
+    depends_on:
+      - gitlab
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - gitlab_runner_config:/etc/gitlab-runner
+    networks:
+      - gitlab-net
+    environment:
+      # Registration token from GitLab (set after first GitLab boot)
+      # Get from: http://19.16.1.100:8929/admin/runners
+      CI_SERVER_URL: "http://gitlab:8929"
+      RUNNER_EXECUTOR: "docker"
+      DOCKER_IMAGE: "alpine:latest"
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '2'
+
+volumes:
+  gitlab_runner_config:
+
+networks:
+  gitlab-net:
+    external: true
+    name: hexa-gitlab-net
