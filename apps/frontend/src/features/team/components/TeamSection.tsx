@@ -1,10 +1,13 @@
 'use client';
 
-import React from 'react';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 import { ScrollFadeIn } from '@/components/ScrollFadeIn';
+import { LiquidGlassCard } from '@/components/ui/LiquidGlassCard';
 import { useTeamMembers } from '@/features/team/hooks/useTeamMembers';
 import { useLocale } from '@/i18n/LocaleProvider';
+
+const SPRING_TRANSITION = { type: 'spring' as const, stiffness: 120, damping: 20, mass: 0.8 };
 
 const fallbackTeam = [
   { name: 'Ahmed Al-Rashid', role: 'Founder & Creative Director', department: 'Leadership', skills: ['3D Visualization', 'Creative Direction', 'Architecture'] },
@@ -39,29 +42,36 @@ export const TeamSection = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
         {team.map((member, idx) => (
           <ScrollFadeIn key={member.name} delay={idx * 0.1}>
-            <div className="group relative bg-surface border border-border/50 rounded-2xl p-6 hover:border-accent/30 transition-all duration-500">
-              <div className="w-full aspect-square rounded-xl bg-neutral-900 mb-6 overflow-hidden">
-                {member.avatar ? (
-                  <Image src={member.avatar} alt={member.name} width={300} height={300} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-4xl font-serif text-neutral-700">
-                    {member.name.split(' ').map(n => n[0]).join('')}
-                  </div>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ ...SPRING_TRANSITION, delay: idx * 0.1 }}
+            >
+              <LiquidGlassCard glow className="p-6 group">
+                <div className="w-full aspect-square rounded-xl bg-neutral-900 mb-6 overflow-hidden">
+                  {member.avatar ? (
+                    <Image src={member.avatar} alt={member.name} width={300} height={300} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-4xl font-serif text-neutral-700">
+                      {member.name.split(' ').map(n => n[0]).join('')}
+                    </div>
+                  )}
+                </div>
+                <h3 className="text-lg font-medium text-foreground mb-1 group-hover:text-accent transition-colors duration-500">{member.name}</h3>
+                <p className="text-sm text-accent mb-1">{member.role}</p>
+                {member.department && (
+                  <p className="text-xs text-neutral-500 mb-3">{member.department}</p>
                 )}
-              </div>
-              <h3 className="text-lg font-medium text-foreground mb-1">{member.name}</h3>
-              <p className="text-sm text-accent mb-1">{member.role}</p>
-              {member.department && (
-                <p className="text-xs text-neutral-500 mb-3">{member.department}</p>
-              )}
-              <div className="flex flex-wrap gap-1.5">
-                {member.skills.slice(0, 3).map((skill) => (
-                  <span key={skill} className="text-[10px] uppercase tracking-wider text-neutral-500 border border-neutral-800 rounded-full px-2 py-0.5">
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {member.skills.slice(0, 3).map((skill) => (
+                    <span key={skill} className="text-[10px] uppercase tracking-wider text-neutral-500 border border-neutral-800 rounded-full px-2 py-0.5 group-hover:border-accent/30 transition-colors duration-500">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </LiquidGlassCard>
+            </motion.div>
           </ScrollFadeIn>
         ))}
       </div>

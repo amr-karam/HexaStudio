@@ -1,4 +1,5 @@
 import { Controller, Post, Body, Get, UseGuards, Request, Res, Headers, VERSION_NEUTRAL } from '@nestjs/common';
+import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
 import { ApiTags, ApiOperation, ApiBody, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { IsEmail, IsString, MinLength, MaxLength, Matches } from 'class-validator';
 import { Response } from 'express';
@@ -183,6 +184,8 @@ export class AuthController {
   }
 
   @Post('forgot-password')
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ default: { limit: 3, ttl: 300000 } })
   @ApiOperation({ summary: 'Request password reset email' })
   @ApiBody({ type: ForgotPasswordDto })
   @ApiResponse({ status: 200, description: 'Reset email sent' })
@@ -192,6 +195,8 @@ export class AuthController {
   }
 
   @Post('reset-password')
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ default: { limit: 3, ttl: 300000 } })
   @ApiOperation({ summary: 'Reset password with code' })
   @ApiBody({ type: ResetPasswordDto })
   @ApiResponse({ status: 200, description: 'Password reset successfully' })
