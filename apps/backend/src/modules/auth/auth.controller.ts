@@ -1,4 +1,5 @@
-import { Controller, Post, Body, Get, UseGuards, Request, Res, Headers } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Request, Res, Headers, VERSION_NEUTRAL } from '@nestjs/common';
+import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
 import { ApiTags, ApiOperation, ApiBody, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { IsEmail, IsString, MinLength, MaxLength, Matches } from 'class-validator';
 import { Response } from 'express';
@@ -6,34 +7,7 @@ import { AuthService } from './auth.service';
 import type { User } from '@hexastudio/types';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CsrfGuard, generateCsrfToken, CSRF_COOKIE_NAME } from './guards/csrf.guard';
-
-class RegisterDto {
-  @IsEmail()
-  email!: string;
-
-  @IsString()
-  @MinLength(3)
-  @MaxLength(30)
-  username!: string;
-
-  @IsString()
-  @MinLength(12)
-  @MaxLength(100)
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/, {
-    message: 'Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character',
-  })
-  password!: string;
-}
-
-class LoginDto {
-  @IsString()
-  @MaxLength(100)
-  identifier!: string;
-
-  @IsString()
-  @MaxLength(100)
-  password!: string;
-}
+import { RegisterDto, LoginDto } from './dto/auth.dto';
 
 class RefreshTokenDto {
   @IsString()
@@ -90,7 +64,7 @@ const COOKIE_OPTIONS = {
 };
 
 @ApiTags('Auth')
-@Controller({ path: 'auth', version: '1' })
+@Controller({ path: 'auth', version: ['1', VERSION_NEUTRAL] })
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -183,6 +157,8 @@ export class AuthController {
   }
 
   @Post('forgot-password')
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ default: { limit: 3, ttl: 300000 } })
   @ApiOperation({ summary: 'Request password reset email' })
   @ApiBody({ type: ForgotPasswordDto })
   @ApiResponse({ status: 200, description: 'Reset email sent' })
@@ -192,6 +168,8 @@ export class AuthController {
   }
 
   @Post('reset-password')
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ default: { limit: 3, ttl: 300000 } })
   @ApiOperation({ summary: 'Reset password with code' })
   @ApiBody({ type: ResetPasswordDto })
   @ApiResponse({ status: 200, description: 'Password reset successfully' })

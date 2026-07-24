@@ -20,10 +20,10 @@ export class CreateContactDto {
   @IsString()
   phone?: string;
 
-  @ApiPropertyOptional({ example: 'residential', description: 'Service type: residential, commercial, or interior' })
+  @ApiPropertyOptional({ example: 'residential', description: 'Service slug (e.g. "residential", "commercial")' })
   @IsOptional()
-  @IsIn(['residential', 'commercial', 'interior'])
-  service?: 'residential' | 'commercial' | 'interior';
+  @IsString()
+  service?: string;
 
   @ApiPropertyOptional({ example: '100k_500k', description: 'Budget range: under_50k, 50k_100k, 100k_500k, 500k_plus' })
   @IsOptional()

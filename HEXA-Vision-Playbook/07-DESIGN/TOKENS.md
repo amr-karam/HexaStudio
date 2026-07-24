@@ -25,7 +25,7 @@ Based on a **4px base unit**. All spacing must be a multiple of 4.
 We use a "Sharp-Modern" aesthetic. We avoid large, bubbly rounded corners in favor of precision.
 
 | Token | Value | Usage |
-|-------|-------| and |
+|-------|-------|-------|
 | `--radius-none` | 0px | Architectural, hard edges |
 | `--radius-sm` | 2px | Tiny buttons, checkboxes |
 | `--radius-md` | 4px | Standard cards, inputs |
@@ -70,7 +70,62 @@ theme: {
 
 ---
 
-## 6. QUALITY GATE: TOKEN AUDIT
+## 6. ARTISAN GLASS TOKENS (v1.3.0)
+
+A premium glass-morphism system defined in `artisan-tokens.css`.
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--artisan-glass-bg` | `rgba(18, 18, 20, 0.55)` | Default glass background |
+| `--artisan-glass-bg-hover` | `rgba(26, 26, 30, 0.70)` | Glass hover state |
+| `--artisan-glass-border` | `rgba(255, 255, 255, 0.08)` | Default glass border |
+| `--artisan-glass-border-hover` | `rgba(212, 175, 55, 0.35)` | Gold border on hover |
+| `--artisan-glass-blur` | `24px` | Frosted glass blur radius |
+| `--artisan-glass-saturate` | `200%` | Color saturation multiplier |
+
+### CSS Classes
+- **`.artisan-glass`**: Full glass background with `backdrop-filter: blur(24px) saturate(200%)`. Transition to gold border on hover.
+- **`.artisan-glass-gold`**: Same as above with `saturate(220%)`, used for accent/CTA sections.
+- **`.artisan-specular-top`**: A `50px` top-edge hairline highlight for specular reflection effect.
+
+### LiquidGlassCard Component
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `goldAccent` | `boolean` | `false` | Enables gold-tinted glass variant |
+| `glow` | `boolean` | `true` | Enables mouse-reactive radial highlight |
+| `className` | `string` | `''` | Additional classes |
+
+---
+
+## 7. SPRING MOTION TOKENS (v1.3.0)
+
+Spring physics parameters for Framer Motion animations, complementing the cubic-bezier system.
+
+| Context | `stiffness` | `damping` | `delay` Formula |
+|---------|-------------|-----------|-----------------|
+| Micro-interaction | 300 | 25 | 0 |
+| Group reveal | 200 | 22 | `index * 0.05` |
+| Heading entrance | 180 | 22 | `0 + index * 0.1` |
+| Paragraph entrance | 150 | 20 | `0.2` |
+| CTA group | 140 | 18 | `0.3` |
+| Utility/text | 100 | 20 | `0.6` |
+
+**Pattern**: Natural cascade uses decreasing `stiffness` (200→100) paired with increasing `delay` to create a flowing reveal sequence. All spring transitions respect `prefers-reduced-motion` via `useReducedMotion()` hook.
+
+---
+
+## 8. SILK SHADER TOKENS (v1.3.0)
+
+| Token | Value | Description |
+|-------|-------|-------------|
+| Default speed | `0.4` | Animation speed multiplier |
+| Default opacity | `0.15` | Canvas opacity |
+| Default palette | Gold (#D4AF37), Champagne (#E5C76B), Obsidian (#050508), Ivory | Iridescent silk wave colors |
+| Bundled size | ~3KB gzipped | WebGL raw canvas, no Three.js |
+
+---
+
+## 9. QUALITY GATE: TOKEN AUDIT
 A component is "Token-Done" only when:
 - [ ] Zero hard-coded pixels/colors are used in the CSS/JSX.
 - [ ] All spacing is a multiple of 4px.

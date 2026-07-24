@@ -1,10 +1,10 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { TestimonialsService } from './testimonials.service';
 import type { Testimonial, TestimonialResponse } from '@hexastudio/types';
 
 @ApiTags('Testimonials')
-@Controller({ path: 'testimonials', version: '1' })
+@Controller({ path: 'testimonials', version: ['1', VERSION_NEUTRAL] })
 export class TestimonialsController {
   constructor(private readonly testimonialsService: TestimonialsService) {}
 

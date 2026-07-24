@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, UseGuards, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { TranslationService, TranslationExport, TranslationStatus } from './translation.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -9,7 +9,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 @Roles('admin', 'editor')
 @ApiTags('Translations')
 @ApiBearerAuth()
-@Controller({ path: 'translations', version: '1' })
+@Controller({ path: 'translations', version: ['1', VERSION_NEUTRAL] })
 export class TranslationController {
   constructor(private readonly translationService: TranslationService) {}
 

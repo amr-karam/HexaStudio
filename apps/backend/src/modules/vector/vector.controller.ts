@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Param, UseGuards, Query } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, UseGuards, Query, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { VectorService } from './vector.service';
 import { VectorSyncService } from './vector-sync.service';
@@ -10,7 +10,7 @@ import type { SemanticSearchRequest, SemanticSearchResponse } from '@hexastudio/
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Vector')
-@Controller({ path: 'vector', version: '1' })
+@Controller({ path: 'vector', version: ['1', VERSION_NEUTRAL] })
 export class VectorController {
   constructor(
     private readonly vectorService: VectorService,

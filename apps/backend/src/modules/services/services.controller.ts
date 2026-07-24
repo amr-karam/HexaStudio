@@ -1,10 +1,10 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { ServicesService } from './services.service';
 import type { Service, ServiceResponse } from '@hexastudio/types';
 
 @ApiTags('Services')
-@Controller({ path: 'services', version: '1' })
+@Controller({ path: 'services', version: ['1', VERSION_NEUTRAL] })
 export class ServicesController {
   constructor(private readonly servicesService: ServicesService) {}
 
