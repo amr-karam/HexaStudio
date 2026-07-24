@@ -16,11 +16,11 @@ export const metadata: Metadata = {
 export default async function ProjectsPage() {
   const projectsData = await fetchProjects();
   return (
-    <main className="min-h-screen bg-background pt-32 pb-24">
+    <div className="min-h-screen bg-background pt-32 pb-24">
       {" "}
       <HeaderSection /> <ProjectGrid
         projects={projectsData.projects ?? []}
       />{" "}
-    </main>
+    </div>
   );
 }

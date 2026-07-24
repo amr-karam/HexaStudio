@@ -87,6 +87,16 @@ export class RedisService {
     return parsed;
   }
 
+  async hget<T>(key: string, field: string): Promise<T | null> {
+    const data = await this.client.hget(key, field);
+    if (!data) return null;
+    try {
+      return JSON.parse(data) as T;
+    } catch {
+      return data as unknown as T;
+    }
+  }
+
   async hdel(key: string, field: string): Promise<void> {
     await this.client.hdel(key, field);
   }

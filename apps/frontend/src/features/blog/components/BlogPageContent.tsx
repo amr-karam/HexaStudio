@@ -25,7 +25,7 @@ export function BlogPageContent({ articles }: BlogPageContentProps) {
   const enableShear = !staticMode && finePointer;
 
   return (
-    <main className="min-h-screen bg-background pt-32 pb-24">
+    <div className="min-h-screen bg-background pt-32 pb-24">
       <div className="px-8 md:px-16">
         <header className="mb-32">
           <motion.span
@@ -143,6 +143,6 @@ export function BlogPageContent({ articles }: BlogPageContentProps) {
           </motion.div>
         )}
       </div>
-    </main>
+    </div>
   );
 }

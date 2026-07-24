@@ -53,7 +53,7 @@ export default function AdminRequestsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background pt-32 pb-24 px-8 md:px-16">
+    <div className="min-h-screen bg-background pt-32 pb-24 px-8 md:px-16">
       <div className="w-full">
         <header className="mb-16">
           <motion.span 
@@ -138,6 +138,6 @@ export default function AdminRequestsPage() {
           </table>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
