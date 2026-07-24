@@ -6,15 +6,28 @@ import {
   useSpring,
   AnimatePresence,
 } from "framer-motion";
+
+function isTouchDevice(): boolean {
+  if (typeof window === "undefined") return false;
+  return (
+    "ontouchstart" in window ||
+    navigator.maxTouchPoints > 0 ||
+    window.matchMedia("(pointer: coarse)").matches
+  );
+}
+
 export function CustomCursor() {
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
   const [isPointer, setIsPointer] = useState(false);
   const [isHoveringLink, setIsHoveringLink] = useState(false);
+  const [enabled, setEnabled] = useState(false);
   const springConfig = { stiffness: 400, damping: 30 };
   const springX = useSpring(cursorX, springConfig);
   const springY = useSpring(cursorY, springConfig);
   useEffect(() => {
+    if (isTouchDevice()) return;
+    setEnabled(true);
     const moveCursor = (e: MouseEvent) => {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
@@ -35,6 +48,7 @@ export function CustomCursor() {
       window.removeEventListener("mouseover", handleMouseOver);
     };
   }, [cursorX, cursorY]);
+  if (!enabled) return null;
   return (
     <motion.div
       className="fixed top-0 left-0 pointer-events-none z-[9999] mix-blend-difference"

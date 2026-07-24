@@ -2,10 +2,21 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
-import { fetchProject } from '@/features/portfolio/lib/fetchProjects';
+import { fetchProject, fetchProjects } from '@/features/portfolio/lib/fetchProjects';
 
 interface ProjectPageProps {
   params: Promise<{ slug: string }>;
+}
+
+export const revalidate = 3600;
+
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
+  try {
+    const projectsData = await fetchProjects();
+    return (projectsData.projects ?? []).map((project) => ({ slug: project.slug }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {

@@ -5,13 +5,14 @@ import { Canvas } from '@react-three/fiber';
 import {
   OrbitControls,
   PerspectiveCamera,
-  ContactShadows,
   Stage,
 } from '@react-three/drei';
 
-import { SceneContent } from './SceneContent';
+const SceneContent = lazy(() => import('./SceneContent').then((module) => ({ default: module.SceneContent })));
 import { CameraController } from './CameraController';
 const PostProcessing = lazy(() => import('./PostProcessing').then((module) => ({ default: module.PostProcessing })));
+
+const ContactShadowsLazy = lazy(() => import('@react-three/drei').then((module) => ({ default: module.ContactShadows })));
 import { SceneAccessibility } from './SceneAccessibility';
 import * as THREE from 'three';
 import { useAdaptiveQuality } from '@/hooks/useAdaptiveQuality';
@@ -74,7 +75,9 @@ export const ExperienceCanvas = ({
             shadows={true} 
             adjustCamera={false}
           >
-            <SceneContent projectModelUrl={projectModelUrl} hotspots={hotspots} />
+            <Suspense fallback={null}>
+              <SceneContent projectModelUrl={projectModelUrl} hotspots={hotspots} />
+            </Suspense>
           </Stage>
           
           <directionalLight
@@ -88,13 +91,15 @@ export const ExperienceCanvas = ({
 
           <fog attach="fog" args={['#050505', 15, 30]} />
 
-          <ContactShadows
-            position={[0, -0.01, 0]}
-            opacity={0.6}
-            scale={20}
-            blur={3}
-            far={10}
-          />
+          <Suspense fallback={null}>
+            <ContactShadowsLazy
+              position={[0, -0.01, 0]}
+              opacity={0.6}
+              scale={20}
+              blur={3}
+              far={10}
+            />
+          </Suspense>
 
           <Suspense fallback={null}>
             <PostProcessing quality={level} />
