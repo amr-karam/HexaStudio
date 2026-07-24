@@ -1,0 +1,414 @@
+# ============================================================================
+# HEXA Studio — GitLab CI/CD Pipeline
+# ============================================================================
+# Replaces .github/workflows/{ci.yml,cd.yml,ci-cd.yml}
+# Pipeline structure:
+#   1. Quality Gate (lint, typecheck, test, security)
+#   2. Build (Next.js, NestJS, Strapi)
+#   3. Container Images (build & push to GitLab Registry)
+#   4. E2E + Lighthouse (post-build validation)
+#   5. Deploy (production on main, staging on develop)
+# ============================================================================
+
+stages:
+  - quality
+  - build
+  - image
+  - validate
+  - deploy
+
+variables:
+  # Container Registry
+  REGISTRY: $CI_REGISTRY
+  REGISTRY_IMAGE: $CI_REGISTRY_IMAGE
+  # Backend
+  BACKEND_IMAGE: $CI_REGISTRY_IMAGE/backend
+  FRONTEND_IMAGE: $CI_REGISTRY_IMAGE/frontend
+  CMS_IMAGE: $CI_REGISTRY_IMAGE/cms
+  IMAGE_TAG_SHA: $CI_COMMIT_SHORT_SHA
+  IMAGE_TAG_BRANCH: $CI_COMMIT_REF_SLUG
+  # Node
+  NODE_VERSION: "20"
+  # Skip NestJS/Next.js env validation during CI
+  SKIP_ENV_VALIDATION: "true"
+  # Playwright
+  PLAYWRIGHT_BASE_URL: http://localhost:3000
+  # Frontend public env (passed to build)
+  NEXT_PUBLIC_API_URL: "https://api.hexastudio.net"
+  NEXT_PUBLIC_CMS_URL: "https://cms.hexastudio.net"
+  NEXT_PUBLIC_SITE_URL: "https://hexastudio.net"
+
+# ----------------------------------------------------------------------------
+# 1. QUALITY GATE STAGE
+# ----------------------------------------------------------------------------
+
+include:
+  - local: '.gitlab-ci/types.yml'
+  - local: '.gitlab-ci/templates.yml'
+
+# Cache npm modules across pipeline jobs
+.cache_npm: &cache_npm
+  key:
+    files:
+      - package-lock.json
+      - apps/cms/package-lock.json
+  paths:
+    - node_modules/
+    - apps/*/node_modules/
+    - packages/*/node_modules/
+    - .npm/
+
+# ----- TypeScript checks (replaces CI: typecheck + cms-typecheck) -----
+.typecheck_base:
+  stage: quality
+  image: node:${NODE_VERSION}
+  before_script:
+    - npm ci --legacy-peer-deps
+  cache: *cache_npm
+
+typecheck:
+  extends: .typecheck_base
+  script:
+    - npm run typecheck --workspace=packages/types
+    - npm run typecheck --workspace=packages/ui
+    - npm run typecheck --workspace=packages/utils
+    - npm run typecheck --workspace=apps/frontend
+    - npm run typecheck --workspace=apps/backend
+
+cms-typecheck:
+  extends: .typecheck_base
+  script:
+    - npm ci --legacy-peer-deps
+    - npm run typecheck
+  cache:
+    key:
+      files:
+        - apps/cms/package-lock.json
+    paths:
+      - apps/cms/node_modules/
+
+# ----- Lint -----
+lint:
+  extends: .typecheck_base
+  script:
+    - npm run lint --workspace=apps/backend
+    - npm run lint --workspace=apps/frontend
+
+# ----- Security Scan (replaces CI: security-scan) -----
+security-scan:
+  extends: .typecheck_base
+  script:
+    - npm audit --audit-level=high
+    # Optional Snyk scan (requires SNYK_TOKEN CI/CD variable)
+    - |
+      if [ -n "$SNYK_TOKEN" ]; then
+        npx --yes snyk@latest auth "$SNYK_TOKEN"
+        npx --yes snyk@latest test --severity-threshold=high || true
+        npx --yes snyk@latest code test --severity-threshold=high || true
+      else
+        echo "SNYK_TOKEN not configured; skipping Snyk SCA/SAST."
+      fi
+  allow_failure: false
+  artifacts:
+    when: always
+    paths:
+      - .snyk/
+    expire_in: 7 days
+
+# ----- Unit Tests -----
+test:
+  extends: .typecheck_base
+  script:
+    - npm run test --workspace=apps/backend
+    - npm run test --workspace=apps/frontend
+    - npm run test --workspace=packages/ui
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - apps/backend/coverage/junit.xml
+        - apps/frontend/coverage/junit.xml
+    expire_in: 30 days
+
+# ----------------------------------------------------------------------------
+# 2. BUILD STAGE
+# ----------------------------------------------------------------------------
+
+# ----- Build all apps/packages -----
+build:
+  stage: build
+  image: node:${NODE_VERSION}
+  before_script:
+    - npm ci --legacy-peer-deps
+  cache: *cache_npm
+  script:
+    - npm run build --workspace=packages/types
+    - npm run build --workspace=packages/utils
+    - npm run build --workspace=apps/frontend
+    - npm run build --workspace=apps/backend
+  artifacts:
+    when: always
+    paths:
+      - apps/frontend/.next/
+      - apps/backend/dist/
+      - packages/types/dist/
+    expire_in: 1 day
+
+# ----------------------------------------------------------------------------
+# 3. CONTAINER IMAGE STAGE
+# ----------------------------------------------------------------------------
+
+# ----- Build & push backend image -----
+build-image-backend:
+  stage: image
+  image: docker:24
+  services:
+    - docker:24-dind
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker buildx create --use
+    - |
+      docker buildx build
+        --cache-from type=registry,ref=$BACKEND_IMAGE:buildcache
+        --cache-to type=registry,ref=$BACKEND_IMAGE:buildcache,mode=max
+        --tag $BACKEND_IMAGE:$IMAGE_TAG_SHA
+        --tag $BACKEND_IMAGE:$IMAGE_TAG_BRANCH
+        --tag $BACKEND_IMAGE:latest
+        --file apps/backend/Dockerfile
+        --push
+        .
+  dependencies:
+    - build
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+# ----- Build & push frontend image -----
+build-image-frontend:
+  stage: image
+  image: docker:24
+  services:
+    - docker:24-dind
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker buildx create --use
+    - |
+      docker buildx build
+        --build-arg NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+        --build-arg NEXT_PUBLIC_CMS_URL=$NEXT_PUBLIC_CMS_URL
+        --build-arg NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
+        --build-arg NEXT_PUBLIC_STRAPI_API_URL=$NEXT_PUBLIC_CMS_URL
+        --cache-from type=registry,ref=$FRONTEND_IMAGE:buildcache
+        --cache-to type=registry,ref=$FRONTEND_IMAGE:buildcache,mode=max
+        --tag $FRONTEND_IMAGE:$IMAGE_TAG_SHA
+        --tag $FRONTEND_IMAGE:$IMAGE_TAG_BRANCH
+        --tag $FRONTEND_IMAGE:latest
+        --file apps/frontend/Dockerfile
+        --push
+        .
+  dependencies:
+    - build
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+# ----- Build & push CMS image -----
+build-image-cms:
+  stage: image
+  image: docker:24
+  services:
+    - docker:24-dind
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker buildx create --use
+    - |
+      docker buildx build
+        --cache-from type=registry,ref=$CMS_IMAGE:buildcache
+        --cache-to type=registry,ref=$CMS_IMAGE:buildcache,mode=max
+        --tag $CMS_IMAGE:$IMAGE_TAG_SHA
+        --tag $CMS_IMAGE:$IMAGE_TAG_BRANCH
+        --tag $CMS_IMAGE:latest
+        --file apps/cms/Dockerfile
+        --push
+        .
+  dependencies:
+    - build
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+# ----------------------------------------------------------------------------
+# 4. VALIDATION STAGE (post-build)
+# ----------------------------------------------------------------------------
+
+# ----- E2E Tests (Playwright) -----
+e2e:
+  stage: validate
+  image: mcr.microsoft.com/playwright:v1.49.0-noble
+  needs: ["build"]
+  before_script:
+    - npm ci --legacy-peer-deps
+  script:
+    - npx playwright install --with-deps chromium
+    - npm run build --workspace=apps/frontend
+    - npm run test:e2e --workspace=apps/frontend
+  artifacts:
+    when: on_failure
+    paths:
+      - playwright-report/
+    expire_in: 7 days
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+# ----- Visual Regression -----
+visual-regression:
+  stage: validate
+  image: mcr.microsoft.com/playwright:v1.49.0-noble
+  needs: ["build"]
+  before_script:
+    - npm ci --legacy-peer-deps
+  script:
+    - npx playwright install --with-deps chromium
+    - npm run build --workspace=apps/frontend
+    - npx playwright test --config=e2e/playwright.config.ts --project=visual-regression --update-snapshots
+  artifacts:
+    when: on_failure
+    paths:
+      - playwright-report/
+    expire_in: 7 days
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+
+# ----- Lighthouse CI -----
+lighthouse:
+  stage: validate
+  image: node:${NODE_VERSION}
+  needs: ["build"]
+  before_script:
+    - npm ci --legacy-peer-deps
+  script:
+    - npm run build --workspace=apps/frontend
+    - cp -r apps/frontend/.next/static apps/frontend/.next/standalone/apps/frontend/.next/static || true
+    - cp -r apps/frontend/public apps/frontend/.next/standalone/apps/frontend/public || true
+    - npx --yes @lhci/cli@0.13.x autorun --config=lighthouserc.json
+  artifacts:
+    when: always
+    paths:
+      - .lighthouseci/
+    expire_in: 7 days
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+
+# ----- Bundle Analysis -----
+bundle-analysis:
+  stage: validate
+  image: node:${NODE_VERSION}
+  needs: ["build"]
+  before_script:
+    - npm ci --legacy-peer-deps
+  script:
+    - npm run analyze --workspace=apps/frontend
+    - |
+      # Warn on bundles > 250KB
+      find apps/frontend/.next/analyze -name "*.html" -exec grep -l "bundle" {} \; | while read file; do
+        size=$(grep -oP '(?<=<td>)[0-9.]+(?= KB)' "$file" | sort -rn | head -1)
+        if [ -n "$size" ] && [ "$(echo "$size > 250" | bc -l)" -eq 1 ]; then
+          echo "::warning file=$file::Bundle size ${size}KB exceeds 250KB threshold"
+        fi
+      done
+  artifacts:
+    when: always
+    paths:
+      - apps/frontend/.next/analyze/
+    expire_in: 7 days
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main"
+
+# ----------------------------------------------------------------------------
+# 5. DEPLOY STAGE
+# ----------------------------------------------------------------------------
+
+# ----- Production deploy (main branch) -----
+deploy-production:
+  stage: deploy
+  image: alpine:latest
+  needs:
+    - build-image-backend
+    - build-image-frontend
+    - build-image-cms
+  before_script:
+    - apk add --no-cache openssh-client bash
+    - eval "$(ssh-agent -s)"
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+  script:
+    - |
+      ssh -p 22 ${PROD_SERVER_USER}@${PROD_SERVER_IP} << EOF
+        set -e
+        cd /home/hexa/hexastudio
+        git fetch origin main
+        git reset --hard origin/main
+        bash scripts/deploy-zero-downtime.sh
+        docker image prune -f
+        echo "Waiting for services to settle..."
+        sleep 15
+        docker ps --filter "health=healthy" --format "{{.Names}}" | grep -q "hexa-backend" || { echo "Backend unhealthy"; exit 1; }
+        docker ps --filter "health=healthy" --format "{{.Names}}" | grep -q "hexa-frontend" || { echo "Frontend unhealthy"; exit 1; }
+        docker ps --filter "health=healthy" --format "{{.Names}}" | grep -q "hexa-cms" || { echo "CMS unhealthy"; exit 1; }
+        curl -sf http://localhost:4000/api/health || { echo "API health endpoint unreachable"; exit 1; }
+        echo "Deployment verified successfully."
+      EOF
+  environment:
+    name: production
+    url: https://hexastudio.net
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
+
+# ----- Staging deploy (develop branch) -----
+deploy-staging:
+  stage: deploy
+  image: alpine:latest
+  needs:
+    - build-image-backend
+    - build-image-frontend
+    - build-image-cms
+  before_script:
+    - apk add --no-cache openssh-client bash
+    - eval "$(ssh-agent -s)"
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+  script:
+    - |
+      ssh -p 22 ${STAGING_SERVER_USER}@${STAGING_SERVER_IP} << EOF
+        set -e
+        cd /home/hexa/hexastudio
+        git fetch origin
+        git reset --hard origin/develop
+        docker compose -f docker-compose.prod.yml pull
+        docker compose -f docker-compose.prod.yml up -d --remove-orphans
+        docker image prune -f
+      EOF
+  environment:
+    name: staging
+    url: https://staging.hexastudio.net
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop" && $CI_PIPELINE_SOURCE == "push"

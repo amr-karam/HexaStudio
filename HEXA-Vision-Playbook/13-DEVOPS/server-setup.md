@@ -49,7 +49,7 @@ sudo usermod -aG docker $USER
 
 ```bash
 # Clone repository
-git clone https://github.com/hexastudio/hexa-studio.git /opt/hexastudio
+git clone ssh://git@19.16.1.100:2222/hexa/hexa-studio.git /opt/hexastudio
 cd /opt/hexastudio
 
 # Setup environment

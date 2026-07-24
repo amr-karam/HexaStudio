@@ -98,7 +98,7 @@
 
 ```bash
 # Clone repository
-git clone https://github.com/hexastudio/hexa-studio.git
+git clone ssh://git@19.16.1.100:2222/hexa/hexa-studio.git
 cd hexa-studio
 
 # Install dependencies

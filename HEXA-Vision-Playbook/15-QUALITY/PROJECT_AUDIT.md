@@ -5,7 +5,7 @@
 # Project Audit: HEXA Vision
 
 **Audit Date:** 2026-06-30  
-**Repository:** [github.com/justfilmk/HexaStudio](https://github.com/justfilmk/HexaStudio)  
+**Repository:** [gitlab.hexastudio.local/hexa/hexa-studio](ssh://git@19.16.1.100:2222/hexa/hexa-studio.git)  
 **Version:** 0.1.0  
 **Auditor:** Principal Engineering Team (Master Agent)
 

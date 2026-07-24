@@ -18,8 +18,8 @@ sudo apt install -y git curl wget
 
 ### 2. Clone Repository
 ```bash
-git clone https://github.com/your-repo/hexastudio.git
-cd hexastudio
+git clone ssh://git@19.16.1.100:2222/hexa/hexa-studio.git
+cd hexa-studio
 ```
 
 ### 3. Configure Environment

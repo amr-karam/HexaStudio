@@ -111,7 +111,7 @@ docker exec minio mc rm --recursive --force local/hexa-studio-test
 ```bash
 # 1. Provision test server (or use staging)
 # 2. Deploy infrastructure
-git clone https://github.com/amr-karam/HexaStudio.git /opt/hexa-test
+git clone ssh://git@19.16.1.100:2222/hexa/hexa-studio.git /opt/hexa-test
 cd /opt/hexa-test
 
 # 3. Restore databases
