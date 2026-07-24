@@ -1,13 +1,14 @@
 'use client';
 
-import React from 'react';
 import { motion } from 'framer-motion';
-import { GlassCard } from '@/components/ui/GlassCard';
+import { LiquidGlassCard } from '@/components/ui/LiquidGlassCard';
 import { ChapterMarker } from '@/components/animation/ChapterMarker';
 import { KineticTitle } from '@/components/scroll/KineticTitle';
-import { EASE, DURATION, makeTransition, STAGGER } from '@/lib/motion';
+import { STAGGER } from '@/lib/motion';
 import { useFeaturedTestimonials } from '@/features/testimonials/hooks/useTestimonials';
 import { useLocale } from '@/i18n/LocaleProvider';
+
+const SPRING_TRANSITION = { type: 'spring' as const, stiffness: 120, damping: 20, mass: 0.8 };
 
 const fallbackTestimonials = [
   {
@@ -32,7 +33,7 @@ const cardVariants = {
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: DURATION.component, ease: EASE.entrance, delay: i * STAGGER.component },
+    transition: { ...SPRING_TRANSITION, delay: i * STAGGER.component },
   }),
 };
 
@@ -54,7 +55,7 @@ const TestimonialCard = ({
     whileInView="visible"
     viewport={{ once: true, margin: '-60px' }}
   >
-    <GlassCard variant="default" hover={true} className="flex flex-col gap-6 p-8 md:p-10 group">
+    <LiquidGlassCard glow className="flex flex-col gap-6 p-8 md:p-10 group">
       {/* Decorative quote mark */}
       <span className="text-5xl font-serif italic text-gold/10 leading-none select-none">
         &ldquo;
@@ -75,7 +76,7 @@ const TestimonialCard = ({
 
       {/* Gold accent on hover */}
       <div className="absolute top-0 left-0 w-0 h-0.5 bg-gold/60 group-hover:w-full transition-all duration-700 ease-out" />
-    </GlassCard>
+    </LiquidGlassCard>
   </motion.div>
 );
 
@@ -108,7 +109,7 @@ export const TestimonialsSection = () => {
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={makeTransition('entrance', 'component')}
+            transition={SPRING_TRANSITION}
             className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
           >
             {t('home.stats.clients')}
