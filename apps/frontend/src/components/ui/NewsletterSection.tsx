@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/inputs/Input';
-import { EASE, DURATION, STAGGER } from '@/lib/motion';
+import { STAGGER } from '@/lib/motion';
 
 const containerVariants = {
   hidden: {},
@@ -20,7 +20,7 @@ const childVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: DURATION.component, ease: EASE.entrance },
+    transition: { type: 'spring', stiffness: 200, damping: 22 },
   },
 };
 

@@ -1,13 +1,20 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ScrollFadeIn } from "@/components/ScrollFadeIn";
 import { ChapterMarker } from "@/components/animation/ChapterMarker";
 import { Button } from "@/components/ui/Button";
 import { Magnetic } from "@/components/ui/Magnetic";
+import { LiquidGlassCard } from "@/components/ui/LiquidGlassCard";
 import { makeTransition } from "@/lib/motion";
 import { useReducedMotion } from "@/hooks";
+
+const SilkShaderBackground = dynamic(
+  () => import("@/components/effects/SilkShaderBackground"),
+  { ssr: false },
+);
 
 export function CTASection() {
   const reducedMotion = useReducedMotion();
@@ -29,6 +36,7 @@ export function CTASection() {
         <ChapterMarker index={5} title="Contact" />
       </div>
       {/* Layered ambient glow */}
+      <SilkShaderBackground speed={0.35} opacity={0.12} />
       <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
 
       {/* Architectural line-drawing decoration */}
@@ -69,12 +77,12 @@ export function CTASection() {
         </motion.div>
       </motion.div>
 
-      <ScrollFadeIn className="mx-auto text-center relative z-10">
+      <LiquidGlassCard goldAccent className="mx-auto text-center relative z-10 max-w-4xl !p-12 md:!p-16">
         <motion.span
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={makeTransition("entrance", "component")}
+          transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0 }}
           className="text-xs uppercase tracking-[0.5em] text-gold/60 mb-8 block font-mono"
         >
           Collaboration
@@ -84,7 +92,7 @@ export function CTASection() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={makeTransition("entrance", "page", 0.1)}
+          transition={{ type: "spring", stiffness: 180, damping: 22, delay: 0.1 }}
           className="text-5xl md:text-8xl font-serif font-light tracking-tighter text-foreground mb-12 leading-[1.1]"
         >
           Ready to Define Your <br />
@@ -95,7 +103,7 @@ export function CTASection() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={makeTransition("entrance", "page", 0.2)}
+          transition={{ type: "spring", stiffness: 150, damping: 20, delay: 0.2 }}
           className="text-lg text-neutral-400 font-light leading-relaxed mb-16 mx-auto w-full max-w-2xl"
         >
           Every great project begins with a conversation. Reach out and let&apos;s
@@ -106,7 +114,7 @@ export function CTASection() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={makeTransition("entrance", "page", 0.3)}
+          transition={{ type: "spring", stiffness: 140, damping: 18, delay: 0.3 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-6"
         >
           <Magnetic>
@@ -127,7 +135,7 @@ export function CTASection() {
             </Link>
           </Magnetic>
         </motion.div>
-      </ScrollFadeIn>
+      </LiquidGlassCard>
 
       {/* Bottom gold accent divider */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />

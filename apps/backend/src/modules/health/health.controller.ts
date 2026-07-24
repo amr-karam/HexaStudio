@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { OdooService } from "../odoo/odoo.service";
 
 @ApiTags("health")
-@Controller({ path: "health", version: VERSION_NEUTRAL })
+@Controller({ path: "health", version: ['1', VERSION_NEUTRAL] })
 export class HealthController {
   constructor(private readonly odooService: OdooService) {}
 

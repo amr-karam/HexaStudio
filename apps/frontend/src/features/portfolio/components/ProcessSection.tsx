@@ -2,6 +2,7 @@
 
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { LiquidGlassCard } from '@/components/ui/LiquidGlassCard';
 import { makeTransition } from '@/lib/motion';
 import { ChapterHeading } from '@/components/scroll/ChapterHeading';
 import { useReducedMotion } from '@/hooks';
@@ -58,11 +59,14 @@ const StepCard = ({ step, index }: { step: (typeof steps)[0]; index: number }) =
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-80px' }}
-      transition={makeTransition('entrance', 'page', index * 0.15)}
-      className="relative flex flex-col gap-4 p-8 md:p-10 bg-surface/30 border border-border/10 hover:border-gold/20 transition-colors duration-700 group"
+      transition={{ type: 'spring', stiffness: 180, damping: 22, delay: index * 0.15 }}
+    >
+    <LiquidGlassCard
+      goldAccent
+      className="!p-8 md:!p-10"
     >
       {/* Step number — large, decorative */}
-      <span className="text-[40px] md:text-[60px] font-serif italic text-gold/10 absolute -top-2 -right-2 leading-none select-none">
+      <span className="text-[40px] md:text-[60px] font-serif italic text-gold/10 absolute -top-2 -right-2 leading-none select-none pointer-events-none">
         {step.number}
       </span>
 
@@ -92,6 +96,7 @@ const StepCard = ({ step, index }: { step: (typeof steps)[0]; index: number }) =
 
       {/* Bottom accent line on hover */}
       <div className="absolute bottom-0 left-0 w-0 h-px bg-gold/40 group-hover:w-full transition-all duration-700 ease-out" />
+    </LiquidGlassCard>
     </motion.div>
   );
 };

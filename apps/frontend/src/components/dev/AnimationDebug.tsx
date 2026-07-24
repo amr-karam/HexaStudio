@@ -23,6 +23,8 @@ export function AnimationDebug() {
   const [lenisOk, setLenisOk] = useState<boolean | null>(null);
 
   useEffect(() => {
+    if (process.env.NODE_ENV !== 'development') return;
+
     // Log animation policy state to console
     console.group('🎬 HEXA Animation Debug');
     console.log('reducedMotion (raw):', rawReducedMotion);

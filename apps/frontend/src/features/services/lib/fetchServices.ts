@@ -1,5 +1,5 @@
 import { captureException } from '@sentry/nextjs';
-import type { ServiceResponse } from '@hexastudio/types';
+import type { Service, ServiceResponse } from '@hexastudio/types';
 import { API_BASE_URL } from '@/config/constants';
 
 async function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutMs = 5000) {

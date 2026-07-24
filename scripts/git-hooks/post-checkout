@@ -16,6 +16,17 @@ cd "$ROOT"
 # ── Skip if HEAD is detached or unborn ──────────────────────────────────────
 HEAD=$(git rev-parse --short HEAD 2>/dev/null || echo "unborn")
 
+# Skip automatic setup in linked worktrees.
+# In a linked worktree (created by `git worktree add`), $ROOT/.git is a file
+# pointing at the real gitdir; in the main checkout/clone it is a directory.
+# Worktrees are often short-lived, so skip the heavy install/build here and let
+# the developer run `bash .setup.sh` on demand. Clones/main checkouts still set up.
+if [ -f "$ROOT/.git" ]; then
+  echo "  Linked worktree detected — skipping automatic setup."
+  echo "  Run 'bash .setup.sh' inside the worktree if you need dependencies."
+  exit 0
+fi
+
 # ── Detect new/uninitialized worktree ────────────────────────────────────────
 if [ ! -d "node_modules" ]; then
   echo ""
@@ -28,7 +39,13 @@ if [ ! -d "node_modules" ]; then
   if [ -f ".setup.sh" ]; then
     bash .setup.sh
   else
-    npm install --no-audit --no-fund && npm run build
+    # Match the documented install/build contract (AGENTS.md / ci.yml).
+    npm install --legacy-peer-deps --no-audit --no-fund && \
+      SKIP_ENV_VALIDATION="${SKIP_ENV_VALIDATION:-true}" \
+      NEXT_PUBLIC_API_URL="${NEXT_PUBLIC_API_URL:-https://api.hexastudio.net}" \
+      NEXT_PUBLIC_CMS_URL="${NEXT_PUBLIC_CMS_URL:-https://cms.hexastudio.net}" \
+      NEXT_PUBLIC_SITE_URL="${NEXT_PUBLIC_SITE_URL:-https://hexastudio.net}" \
+      npm run build
   fi
 
   echo ""
@@ -45,6 +62,6 @@ if [ -f "package-lock.json" ]; then
     echo "  package-lock.json changed since last checkout."
     echo "  Running npm install..."
     echo "────────────────────────────────────────────────────────────────────"
-    npm install --no-audit --no-fund
+    npm install --legacy-peer-deps --no-audit --no-fund
   fi
 fi
