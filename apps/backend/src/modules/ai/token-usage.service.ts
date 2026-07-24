@@ -252,11 +252,12 @@ export class TokenUsageService {
 
     // Check for methods with high token usage
     for (const [method, data] of Object.entries(stats.byMethod)) {
-      if (data.averageTokensPerRequest > 1000) {
-        const potentialSavings = (data.averageTokensPerRequest - 500) * 0.0001 * data.requests;
+      const avgTokens = data.requests > 0 ? data.tokens / data.requests : 0;
+      if (avgTokens > 1000) {
+        const potentialSavings = (avgTokens - 500) * 0.0001 * data.requests;
         recommendations.push({
           type: 'prompt-optimization',
-          description: `Optimize prompts for ${method} (avg ${Math.round(data.averageTokensPerRequest)} tokens/request)`,
+          description: `Optimize prompts for ${method} (avg ${Math.round(avgTokens)} tokens/request)`,
           potentialSavings,
           priority: 'medium',
         });
