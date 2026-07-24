@@ -156,6 +156,29 @@ export class OdooApiService {
     return this.odooService.write('project.milestone', [id], data);
   }
 
+  async findProjectBySlug(slug: string): Promise<OdooProject | null> {
+    const results = await this.odooService.execute<Record<string, unknown>[]>(
+      'project.project',
+      'search_read',
+      [[['x_slug', '=', slug]], ['name', 'partner_id', 'x_slug', 'x_hexa_type', 'x_hexa_status', 'stage_id'], 0, 1],
+    );
+    return results.length ? (results[0] as unknown as OdooProject) : null;
+  }
+
+  async createProject(data: Record<string, unknown>): Promise<number> {
+    return this.odooService.create('project.project', data);
+  }
+
+  async getOrCreatePartner(name: string, extraData?: Record<string, unknown>): Promise<number> {
+    const results = await this.odooService.execute<Record<string, unknown>[]>(
+      'res.partner',
+      'search_read',
+      [[['name', '=', name]], ['id'], 0, 1],
+    );
+    if (results.length) return results[0].id as number;
+    return this.odooService.create('res.partner', { name, ...extraData });
+  }
+
   // --- Invoices & Sales ---
 
   async getInvoices(limit = 50, offset = 0): Promise<OdooInvoice[]> {
