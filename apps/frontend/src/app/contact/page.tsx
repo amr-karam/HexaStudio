@@ -2,14 +2,22 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/inputs/Input';
+import { LiquidGlassCard } from '@/components/ui/LiquidGlassCard';
 import TextCharReveal from '@/components/effects/TextCharReveal';
 import { isValidEmail } from '@hexastudio/utils';
 import { cn } from '@/lib/utils';
+import { useServices } from '@/features/services/hooks/useServices';
 import { FAQSection } from '@/features/faq/components/FAQSection';
 import { API_BASE_URL } from '@/config/constants';
+
+const SilkShaderBackground = dynamic(
+  () => import('@/components/effects/SilkShaderBackground'),
+  { ssr: false },
+);
 
 interface FormErrors {
   name?: string;
@@ -29,6 +37,8 @@ export default function ContactPage() {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const { data: servicesData } = useServices();
+  const serviceOptions = servicesData?.services ?? [];
 
   const validate = (): boolean => {
     const errs: FormErrors = {};
@@ -63,6 +73,7 @@ export default function ContactPage() {
       <section className="relative flex min-h-screen flex-col items-center justify-center px-8 overflow-hidden">
         {/* Cinematic Background */}
         <div className="absolute inset-0 pointer-events-none">
+          <SilkShaderBackground speed={0.3} opacity={0.12} />
           <div className="absolute inset-0 gradient-radial-gold" aria-hidden="true" />
           <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-accent/10 blur-[120px] rounded-full animate-pulse" />
           <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/5 blur-[120px] rounded-full" />
@@ -72,7 +83,7 @@ export default function ContactPage() {
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ type: 'spring', stiffness: 150, damping: 20 }}
             className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
           >
             Connect
@@ -90,12 +101,13 @@ export default function ContactPage() {
           {status !== 'sent' && status !== 'error' ? (
             <motion.div
               key="form"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="relative z-10 w-full max-w-5xl bg-surface/30 backdrop-blur-2xl border border-border/50 p-8 md:p-16 rounded-sm shadow-2xl"
+              initial={{ opacity: 0, y: 30, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 120, damping: 20, mass: 0.8 }}
+              className="relative z-10 w-full max-w-5xl"
             >
+            <LiquidGlassCard goldAccent glow className="p-8 md:p-16">
               <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
                 <div className="flex flex-col gap-2 group">
                   <label className="text-[10px] uppercase tracking-widest text-neutral-500 group-focus-within:text-accent transition-colors duration-500">Full Name</label>
@@ -149,9 +161,9 @@ export default function ContactPage() {
                     className="w-full bg-transparent border-b border-border text-foreground p-0 focus:outline-none focus:border-accent transition-colors duration-300 appearance-none cursor-pointer"
                   >
                     <option value="" className="bg-neutral-900">Select a service...</option>
-                    <option value="residential" className="bg-neutral-900">Residential</option>
-                    <option value="commercial" className="bg-neutral-900">Commercial</option>
-                    <option value="interior" className="bg-neutral-900">Interior Design</option>
+                    {serviceOptions.map((s) => (
+                      <option key={s.id} value={s.slug} className="bg-neutral-900">{s.title}</option>
+                    ))}
                   </select>
                 </div>
 
@@ -186,7 +198,7 @@ export default function ContactPage() {
                     variant="primary" 
                     size="lg" 
                     disabled={status === 'sending'}
-                    className="min-w-[200px] group relative overflow-hidden"
+                    className="min-w-[200px] group relative overflow-hidden active:scale-[0.97] transition-transform duration-150"
                   >
                     <span className="relative z-10">
                       {status === 'sending' ? 'Transmitting...' : 'Send Message'}
@@ -194,42 +206,61 @@ export default function ContactPage() {
                   </Button>
                 </div>
               </form>
+            </LiquidGlassCard>
             </motion.div>
           ) : (
             <motion.div
               key="status"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="relative z-10 w-full max-w-4xl text-center p-12 bg-surface/30 backdrop-blur-3xl border border-border/50 rounded-sm"
+              initial={{ opacity: 0, scale: 0.85, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.85, y: 20 }}
+              transition={{ type: 'spring', stiffness: 100, damping: 15, mass: 0.8 }}
+              className="relative z-10 w-full max-w-4xl text-center"
             >
-              <div className={cn(
-                "w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-8 transition-colors duration-700",
-                status === 'sent' ? "bg-accent/20 text-accent" : "bg-red-500/20 text-red-500"
-              )}>
-                {status === 'sent' ? (
-                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M22 11.08V12a10 10 0 1 1-20 0v-0.92" />
-                    <polyline points="22 4 12 14.01 9 11.01" />
-                  </svg>
-                ) : (
-                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M15 9l-6 6M9 9l6 6" />
-                  </svg>
-                )}
-              </div>
-              <h2 className="text-4xl font-serif font-light mb-4">
-                {status === 'sent' ? 'Message Received' : 'Transmission Failed'}
-              </h2>
-              <p className="text-neutral-400 font-light mb-12 w-full max-w-3xl mx-auto leading-relaxed">
-                {status === 'sent' 
-                  ? 'Thank you for reaching out. Our architects will review your vision and respond shortly.' 
-                  : 'Our systems are experiencing a momentary glitch. Please try again in a few moments.'}
-              </p>
-              <Button variant="outline" onClick={() => setStatus('idle')}>
-                {status === 'sent' ? 'Send Another' : 'Try Again'}
-              </Button>
+              <LiquidGlassCard goldAccent glow className="p-12">
+                <motion.div
+                  initial={{ scale: 0, rotate: -180 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ type: 'spring', stiffness: 200, damping: 12, delay: 0.15 }}
+                  className={cn(
+                    "w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-8",
+                    status === 'sent' ? "bg-accent/20 text-accent" : "bg-red-500/20 text-red-500"
+                  )}
+                >
+                  {status === 'sent' ? (
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <motion.path
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                        d="M22 11.08V12a10 10 0 1 1-20 0v-0.92"
+                      />
+                      <motion.polyline
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 0.4, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                        points="22 4 12 14.01 9 11.01"
+                      />
+                    </svg>
+                  ) : (
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M15 9l-6 6M9 9l6 6" />
+                    </svg>
+                  )}
+                </motion.div>
+                <h2 className="text-4xl font-serif font-light mb-4">
+                  {status === 'sent' ? 'Message Received' : 'Transmission Failed'}
+                </h2>
+                <p className="text-neutral-400 font-light mb-12 w-full max-w-3xl mx-auto leading-relaxed">
+                  {status === 'sent' 
+                    ? 'Thank you for reaching out. Our architects will review your vision and respond shortly.' 
+                    : 'Our systems are experiencing a momentary glitch. Please try again in a few moments.'}
+                </p>
+                <Button variant="outline" onClick={() => setStatus('idle')} className="active:scale-[0.97] transition-transform duration-150">
+                  {status === 'sent' ? 'Send Another' : 'Try Again'}
+                </Button>
+              </LiquidGlassCard>
             </motion.div>
           )}
         </AnimatePresence>
