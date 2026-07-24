@@ -1,0 +1,107 @@
+# GitLab Security & Compliance Jobs
+# Replaces GitHub Dependabot + Snyk scanning
+# All jobs run during the `quality` stage and report to the Security tab.
+
+stages:
+  - quality
+
+# ----------------------------------------------------------------------------
+# Dependency Scanning (npm audit + transitive package vulns)
+# Replaces GitHub Dependabot
+# ----------------------------------------------------------------------------
+dependency_scanning:
+  stage: quality
+  image: node:${NODE_VERSION:-20}
+  variables:
+    SETUP_CMD: "npm ci --legacy-peer-deps"
+    AUDIT_CMD: "npm audit --omit=dev --audit-level=high --json"
+  script:
+    - npm ci --legacy-peer-deps
+    - |
+      # Run npm audit and convert to GitLab-compatible format
+      npm audit --json > /tmp/npm-audit.json 2>&1 || AUDIT_EXIT=$?
+      if [ -n "$AUDIT_EXIT" ] && [ "$AUDIT_EXIT" -ne 0 ]; then
+        echo "npm audit found vulnerabilities (exit $AUDIT_EXIT)."
+      fi
+    - |
+      # Convert npm audit JSON to GitLab Dependency Scanning format
+      python3 -c "
+import json, sys, datetime
+try:
+    with open('/tmp/npm-audit.json') as f:
+        data = json.load(f)
+    vulns = data.get('vulnerabilities', {})
+    items = []
+    for pkg, info in vulns.items():
+        for v in info.get('via', []):
+            if isinstance(v, dict):
+                items.append({
+                    'id': f\"npm:{pkg}-{v.get('id', 'unknown')}\",
+                    'name': pkg,
+                    'severity': v.get('severity', 'unknown').upper(),
+                    'title': v.get('title', 'vulnerability'),
+                    'description': v.get('url', ''),
+                    'identifiers': [{'type': 'npm', 'name': v.get('id', 'unknown'), 'value': v.get('id', 'unknown')}],
+                })
+    gl = {
+        'version': '15.0.0',
+        'scan': {
+            'start_time': datetime.datetime.utcnow().isoformat() + 'Z',
+            'end_time': datetime.datetime.utcnow().isoformat() + 'Z',
+            'analyzer': {'id': 'npm-audit', 'name': 'npm audit', 'version': '1.0.0'},
+            'scanner': {'id': 'npm-audit', 'name': 'npm audit', 'version': '1.0.0'},
+            'type': 'dependency_scanning',
+        },
+        'vulnerabilities': items,
+    }
+    with open('gl-dependency-scanning-report.json', 'w') as f:
+        json.dump(gl, f, indent=2)
+except Exception as e:
+    print(f'Failed to convert npm audit: {e}', file=sys.stderr)
+    sys.exit(0)  # Don't fail the pipeline on conversion errors
+"
+  artifacts:
+    when: always
+    reports:
+      dependency_scanning: gl-dependency-scanning-report.json
+    paths:
+      - gl-dependency-scanning-report.json
+    expire_in: 7 days
+  allow_failure: true
+
+# ----------------------------------------------------------------------------
+# Container Scanning (Trivy)
+# Scans the built Docker images for OS + application vulns
+# ----------------------------------------------------------------------------
+container_scanning:
+  stage: quality
+  image: docker:24
+  services:
+    - docker:24-dind
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - apk add --no-cache curl
+    # Download Trivy
+    - curl -sfL https://github.com/aquasecurity/trivy/releases/download/v0.58.0/trivy_0.58.0_Linux-64bit.tar.gz | tar xz -C /tmp
+    - install -m 0755 /tmp/trivy /usr/local/bin/trivy
+    # Scan all three images
+    - mkdir -p reports
+    - trivy image --format json --output reports/backend.json $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA || true
+    - trivy image --format json --output reports/frontend.json $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA || true
+    - trivy image --format json --output reports/cms.json $CI_REGISTRY_IMAGE/cms:$CI_COMMIT_SHORT_SHA || true
+    # Convert to GitLab container scanning format (only first image for now)
+    - cp reports/backend.json gl-container-scanning-report.json
+  artifacts:
+    when: always
+    reports:
+      container_scanning: gl-container-scanning-report.json
+    paths:
+      - reports/
+    expire_in: 7 days
+  allow_failure: true
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"

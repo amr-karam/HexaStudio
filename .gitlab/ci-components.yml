@@ -1,0 +1,35 @@
+# GitLab CI/CD Component Configuration
+# Generated for HEXA Studio — 2026-07-24
+# Enables auto-detection of vulnerabilities, license compliance, and code quality.
+
+include:
+  # Container scanning — scans Docker images for known vulnerabilities
+  - component: gitlab.com/gitlab-org/components/container-scanning/container-scanning@main
+    inputs:
+      cs-image: $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA
+      cs-services: "docker:dind,docker:24"
+      cs-dockerfile-path: "Dockerfile"
+
+  # Dependency scanning — npm audit + OS package vulns (replaces GitHub Dependabot)
+  - component: gitlab.com/gitlab-org/components/dependency-scanning/dependency-scanning@main
+    inputs:
+      stage: quality
+      fail-on-severity: "high"
+
+  # Static Application Security Testing (SAST) — code-level scanning
+  - component: gitlab.com/gitlab-org/components/sast/sast@main
+    inputs:
+      stage: quality
+
+  # Secret detection — scan commits for committed secrets
+  - component: gitlab.com/gitlab-org/components/secret-detection/secret-detection@main
+    inputs:
+      stage: quality
+
+  # License compliance
+  - component: gitlab.com/gitlab-org/components/license-scanning/license-scanning@main
+    inputs:
+      stage: quality
+
+# These jobs run automatically when the component include is scanned.
+# They appear in the pipeline UI under "Security" tab.
