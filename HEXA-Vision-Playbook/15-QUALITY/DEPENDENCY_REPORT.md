@@ -108,7 +108,7 @@
 
 ## 8. Security Vulnerabilities (npm audit — 2026-07-15)
 
-`npm audit --omit=dev` against the current lockfile reports **35 vulnerabilities (11 high, 18 moderate, 6 low)**, all surfaced by GitHub Dependabot on `main`.
+`npm audit --omit=dev` against the current lockfile reports **35 vulnerabilities (11 high, 18 moderate, 6 low)**, all surfaced by GitLab Dependency Scanning on `main`.
 
 ### Root Causes (all transitive / indirect)
 
@@ -121,7 +121,7 @@
 ### Decision & Remediation Plan
 
 - **Do NOT apply `npm audit fix --force` to the live production system.** Every available fix is a breaking change (notably a Strapi 5 → 4 downgrade and NestJS major bump) that would require a full rebuild + regression test of backend and CMS before any deploy. The production stack on `19.16.1.100` is currently healthy and must not be destabilized.
-- **Accept as known risk** for the current release; track via Dependabot on GitHub (`amr-karam/HexaStudio`).
+- **Accept as known risk** for the current release; track via GitLab Dependency Scanning on the `hexa/hexa-studio` project.
 - **Schedule a Dependency Upgrade Sprint** (Phase: Maintenance) to:
   1. Upgrade Strapi 5 to the latest patched 5.x (avoid the 4.x downgrade) — addresses the `@ai-sdk/*` chain via Strapi's own bump.
   2. Bump `@nestjs/*` to the patched 11.1.x line with a backend test pass.

@@ -14,8 +14,8 @@ Thank you for your interest in contributing to HEXA Studio. This document provid
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/amr-karam/HexaStudio.git
-   cd HexaStudio
+   git clone ssh://git@19.16.1.100:2222/hexa/hexa-studio.git
+   cd hexa-studio
    ```
 
 2. Install dependencies:
