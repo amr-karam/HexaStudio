@@ -1,4 +1,3 @@
-import React from "react";
 import { Project } from "@hexastudio/types";
 import { sanitizeJsonLd } from "@/lib/jsonld";
 interface ProjectStructuredDataProps {
