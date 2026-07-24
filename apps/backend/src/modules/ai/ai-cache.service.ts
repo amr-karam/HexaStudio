@@ -177,12 +177,13 @@ export class AiCacheService {
     topMethods: Array<{ method: string; hits: number }>;
   }> {
     try {
-      if (this.redis) {
+      const redis = this.redis;
+      if (redis) {
         const pattern = 'ai:*';
-        const keys = await this.redis.keys(pattern);
+        const keys = await redis.keys(pattern);
         const entries = await Promise.all(
           keys.map(async (key) => {
-            const cached = await this.redis.get(key);
+            const cached = await redis.get(key);
             return cached ? JSON.parse(cached) as CacheEntry<unknown> : null;
           })
         );
