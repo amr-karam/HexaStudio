@@ -130,4 +130,39 @@ Note: The P9 audit used Lighthouse simulated throttling on a local build. This a
 
 ---
 
+## 9. Post-Fix Baseline (Pre-Deploy Re-Audit — 2026-07-24)
+
+A second Lighthouse run was performed on the live site (before the font CSS fix is deployed) to capture an updated baseline now that Cloudflare edge cache is warm.
+
+| Metric | Previous Run | This Run | Delta |
+|--------|-------------|----------|-------|
+| Performance Score | 76 | **88** | +12 (CDN warmed) |
+| FCP | 1.2 s | **1.1 s** | -100ms |
+| LCP | 1.7 s | **1.6 s** | -100ms |
+| TBT | 190 ms | **160 ms** | -30ms |
+| CLS | 0.0003 | **0.001** | ~same |
+| Speed Index | 5.8 s | **1.2 s** | -4.6s (artifact resolved) |
+| TTI | 2.1 s | **1.7 s** | -400ms |
+| TTFB | 330 ms | **140 ms** | -190ms |
+
+**Key finding:** The Google Fonts CSS is **still render-blocking** (374ms waste) — our fix hasn't been deployed yet. Once deployed, expect FCP to drop below 1.0s and the 620ms render-blocking insight to resolve.
+
+### Remaining Fail Audits
+
+| Audit | Score | Detail |
+|-------|-------|--------|
+| render-blocking-insight | FAIL | 374ms from Google Fonts CSS + 246ms from other resources |
+| forced-reflow-insight | FAIL | 299ms reflow from `423owfgx2fki1.js` (369ms boot-up) |
+| network-dependency-tree-insight | FAIL | Cloudflare beacon.min.js (11KB, 617ms) |
+
+### Action Required
+
+1. Merge `bugfix/security-scan-severity-gating` to `main` → triggers CD pipeline
+2. Post-deploy: re-run Lighthouse to verify font CSS fix impact
+3. Target: Performance score ≥95, FCP <1.0s, TBT <100ms
+
+*Updated 2026-07-24. Font CSS fix pending deployment.*
+
+---
+
 *Report generated 2026-07-24 by HEXA Studio Quality Agent. Font CSS optimization applied.*
