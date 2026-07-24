@@ -1,6 +1,6 @@
 # Odoo Modules
 
-**Last Updated:** 2026-07-16
+**Last Updated:** 2026-07-24
 
 ---
 
@@ -14,6 +14,7 @@
 | **Invoicing** (`account`) | Customer invoices & payments | Sales, Account |
 | **Documents** (`documents`) | File management | — |
 | **Contacts** (`contacts`) | Contact & company management | — |
+| **Discuss** (`mail`) | Internal messaging, activities | — |
 
 ## Custom Module: `hexa_studio`
 
@@ -92,6 +93,36 @@ signature, writes to Redis cache, and emits a domain event on the EventBus.
 |--------|----------|------|
 | GET | `/api/odoo/sales/orders` | JWT |
 | GET | `/api/odoo/invoices` | JWT |
+
+### Tasks
+| Method | Endpoint | Auth |
+|--------|----------|------|
+| GET | `/api/odoo/tasks` | JWT |
+| GET | `/api/odoo/tasks/:id` | JWT |
+| POST | `/api/odoo/tasks` | JWT |
+| PATCH | `/api/odoo/tasks/:id` | JWT |
+
+### Quotations
+| Method | Endpoint | Auth |
+|--------|----------|------|
+| GET | `/api/odoo/quotations` | JWT |
+| GET | `/api/odoo/quotations/:id` | JWT |
+| GET | `/api/odoo/quotations/:id/lines` | JWT |
+| POST | `/api/odoo/quotations` | JWT |
+| PATCH | `/api/odoo/quotations/:id` | JWT |
+
+### Activities (mail.activity)
+| Method | Endpoint | Auth |
+|--------|----------|------|
+| GET | `/api/odoo/activities` | JWT |
+| POST | `/api/odoo/activities` | JWT |
+| PATCH | `/api/odoo/activities/:id` | JWT |
+| POST | `/api/odoo/activities/:id/complete` | JWT |
+
+### Company Settings
+| Method | Endpoint | Auth |
+|--------|----------|------|
+| GET | `/api/odoo/company/settings` | JWT |
 
 ### Sync & Health
 | Method | Endpoint | Auth |
