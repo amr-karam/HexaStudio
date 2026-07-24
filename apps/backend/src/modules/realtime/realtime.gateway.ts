@@ -149,4 +149,9 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
     this.eventBus.emit('collab:leave', { projectId: payload.projectId, id: client.id });
     return { event: 'collab:left', data: { id: client.id } };
   }
+
+  /** Broadcast an event to all clients in a named room. */
+  emitToRoom(room: string, event: string, data: unknown) {
+    this.server?.to(room).emit(event, data);
+  }
 }
