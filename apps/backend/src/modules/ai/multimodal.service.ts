@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { GoogleGenAI } from '@google/genai';
+import { Content, GoogleGenAI } from '@google/genai';
 import { Env } from '../../config/env';
 
 @Injectable()
@@ -55,22 +55,22 @@ export class MultimodalService {
 Return as JSON with: style, materials[], lighting, spatialComposition, suggestions[], confidence (0-1)`
               },
               {
-                inline_data: {
-                  mime_type: mimeType,
+                inlineData: {
+                  mimeType: mimeType,
                   data: imageData
                 }
               }
             ]
           }
-        ],
-        generationConfig: {
+        ] as Content[],
+        config: {
           temperature: 0.3,
           maxOutputTokens: 1000,
           responseMimeType: 'application/json'
         }
       });
 
-      const text = response.response.text();
+      const text = response.text ?? '';
       return JSON.parse(text);
     } catch (error) {
       this.logger.error(`Image analysis failed: ${error}`);
@@ -115,22 +115,22 @@ Return as JSON with: style, materials[], lighting, spatialComposition, suggestio
 Return as JSON with: visualQuality, lightingQuality, materialRealism, composition, improvements[], technicalNotes[]`
               },
               {
-                inline_data: {
-                  mime_type: mimeType,
+                inlineData: {
+                  mimeType: mimeType,
                   data: imageData
                 }
               }
             ]
           }
-        ],
-        generationConfig: {
+        ] as Content[],
+        config: {
           temperature: 0.2,
           maxOutputTokens: 1200,
           responseMimeType: 'application/json'
         }
       });
 
-      const text = response.response.text();
+      const text = response.text ?? '';
       return JSON.parse(text);
     } catch (error) {
       this.logger.error(`3D scene analysis failed: ${error}`);
@@ -175,22 +175,22 @@ Return as JSON with: visualQuality, lightingQuality, materialRealism, compositio
 Return as JSON with: materialType, colorPalette[], textureCharacteristics[], suitableApplications[], sustainabilityScore, maintenanceNotes[]`
               },
               {
-                inline_data: {
-                  mime_type: mimeType,
+                inlineData: {
+                  mimeType: mimeType,
                   data: imageData
                 }
               }
             ]
           }
-        ],
-        generationConfig: {
+        ] as Content[],
+        config: {
           temperature: 0.3,
           maxOutputTokens: 1000,
           responseMimeType: 'application/json'
         }
       });
 
-      const text = response.response.text();
+      const text = response.text ?? '';
       return JSON.parse(text);
     } catch (error) {
       this.logger.error(`Material analysis failed: ${error}`);
@@ -234,28 +234,28 @@ Return as JSON with: materialType, colorPalette[], textureCharacteristics[], sui
 Return as JSON with: similarityScore, sharedElements[], differences[], stylisticRelationship, recommendation`
               },
               {
-                inline_data: {
-                  mime_type: mimeType,
+                inlineData: {
+                  mimeType: mimeType,
                   data: image1Data
                 }
               },
               {
-                inline_data: {
-                  mime_type: mimeType,
+                inlineData: {
+                  mimeType: mimeType,
                   data: image2Data
                 }
               }
             ]
           }
-        ],
-        generationConfig: {
+        ] as Content[],
+        config: {
           temperature: 0.3,
           maxOutputTokens: 1000,
           responseMimeType: 'application/json'
         }
       });
 
-      const text = response.response.text();
+      const text = response.text ?? '';
       return JSON.parse(text);
     } catch (error) {
       this.logger.error(`Design comparison failed: ${error}`);
@@ -312,22 +312,22 @@ Also provide:
 Return as JSON with: conceptVariations[{title, description, keyFeatures[], materials[]}], technicalRecommendations[], feasibilityScore`
               },
               {
-                inline_data: {
-                  mime_type: mimeType,
+                inlineData: {
+                  mimeType: mimeType,
                   data: referenceImageData
                 }
               }
             ]
           }
-        ],
-        generationConfig: {
+        ] as Content[],
+        config: {
           temperature: 0.4,
           maxOutputTokens: 1500,
           responseMimeType: 'application/json'
         }
       });
 
-      const text = response.response.text();
+      const text = response.text ?? '';
       return JSON.parse(text);
     } catch (error) {
       this.logger.error(`Design suggestions failed: ${error}`);
@@ -374,22 +374,22 @@ Return as JSON with: conceptVariations[{title, description, keyFeatures[], mater
 Return as JSON with: detectedElements[{type, count, confidence}], viewType, scale, layerInformation[], potentialIssues[]`
               },
               {
-                inline_data: {
-                  mime_type: mimeType,
+                inlineData: {
+                  mimeType: mimeType,
                   data: imageData
                 }
               }
             ]
           }
-        ],
-        generationConfig: {
+        ] as Content[],
+        config: {
           temperature: 0.2,
           maxOutputTokens: 1000,
           responseMimeType: 'application/json'
         }
       });
 
-      const text = response.response.text();
+      const text = response.text ?? '';
       return JSON.parse(text);
     } catch (error) {
       this.logger.error(`BIM metadata extraction failed: ${error}`);

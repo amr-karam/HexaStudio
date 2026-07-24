@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { GoogleGenAI } from '@google/genai';
+import { Content, GoogleGenAI } from '@google/genai';
 import { z } from 'zod';
 import { Env } from '../../config/env';
 
@@ -104,7 +104,7 @@ export class StructuredOutputService {
     }
 
     const {
-      model = this.configService.get('GEMINI_MODEL', 'gemini-3.5-flash'),
+      model = this.configService.get('GEMINI_MODEL') ?? 'gemini-3.5-flash',
       temperature = 0.3,
       maxTokens = 1000,
       retries = 2
@@ -121,19 +121,19 @@ export class StructuredOutputService {
               role: 'user',
               parts: [
                 {
-                  text: `${prompt}\n\nReturn the response as valid JSON that conforms to this schema:\n${JSON.stringify(schema.shape, null, 2)}`
+                  text: `${prompt}\n\nReturn the response as valid JSON that conforms to this schema:\n${JSON.stringify(('shape' in schema ? (schema as unknown as { shape: unknown }).shape : schema), null, 2)}`
                 }
               ]
             }
-          ],
-          generationConfig: {
+          ] as Content[],
+          config: {
             temperature,
             maxOutputTokens: maxTokens,
             responseMimeType: 'application/json'
           }
         });
 
-        const text = response.response.text();
+        const text = response.text ?? '';
         const parsed = JSON.parse(text);
         
         // Validate against Zod schema
@@ -313,6 +313,9 @@ Provide:
    * Generate JSON schema from Zod schema for API documentation
    */
   getJsonSchema<T>(schema: z.ZodSchema<T>): Record<string, unknown> {
-    return schema.shape;
+    if ('shape' in schema) {
+      return (schema as unknown as { shape: Record<string, unknown> }).shape;
+    }
+    return {};
   }
 }

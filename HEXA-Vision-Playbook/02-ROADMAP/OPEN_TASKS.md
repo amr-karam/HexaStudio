@@ -1,5 +1,36 @@
 # 📝 OPEN TASKS: THE BACKLOG OF EXCELLENCE
 
+## 🎯 S-016 — TBT REDUCTION & REAL-DEVICE SWEEP (IN PROGRESS)
+
+**Started:** 2026-07-23 | **Focus:** TBT Profiling, Font CSS Optimization
+
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S16-P11-001** | Live-site Lighthouse audit — Lighthouse 13.4.1, desktop, headless Chrome | ✅ |
+| **S16-P11-002** | TBT profiling — 190ms (borderline), 1089ms primary long task identified | ✅ |
+| **S16-P11-003** | Font CSS async — converted render-blocking to non-blocking preload (391ms savings) | ✅ |
+| **S16-P11-004** | Noscript fallback for font CSS | ✅ |
+| **S16-P11-005** | Quality gates — lint 0, typecheck 0, 176/176 tests | ✅ |
+| **S16-P11-006** | Lighthouse audit report — `LIGHTHOUSE_AUDIT_2026-07-24.md` | ✅ |
+| **S16-P11-007** | Post-fix verification — re-run Lighthouse after deployment | ⏳ |
+| **S16-P11-008** | Final luxury scoring — verify 9.5/10 bar | ⏳ |
+
+### 📊 Quality Metrics (S-016)
+| Metric | Target | Actual | Status |
+|--------|--------|--------|--------|
+| Frontend typecheck | 0 errors | 0 errors | ✅ |
+| Frontend lint | 0 errors | 0 errors | ✅ |
+| Frontend tests | 176 | 176/176 | ✅ |
+| TBT | <200 ms | 190 ms | 🟡 Borderline |
+| FCP | <1.8 s | 1.2 s | ✅ |
+| LCP | <2.5 s | 1.7 s | ✅ |
+| CLS | <0.1 | 0.0003 | ✅ |
+| Render-blocking resources | 0 | 0 (after font CSS fix) | ✅ |
+
+---
+
+
+
 **Version:** 3.3 | **Scope:** Sprint 15 — Scroll Cinema Initiative + Security & Lighthouse Hardening | **Status:** ✅ COMPLETE (2026-07-22)
 
 > **All Sprint 15 deliverables are complete as of 2026-07-22.** Scroll Cinema Initiative shipped: motion primitives (scroll velocity, chapter markers, progress rail, contact ribbon), homepage/project/blog scroll cinema, FractureRing 3D hero, ReadingProgress hairline, and Security & Lighthouse hardening (Swagger decorators, backend typecheck fix, npm audit, color contrast, preconnect hints, cache headers). See CURRENT_SPRINT.md for full detail.
