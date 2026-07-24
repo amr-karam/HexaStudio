@@ -9,15 +9,15 @@
 
 ```
 ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐
-│  GitHub   │   │   CI     │   │  Build   │   │  Deploy  │
+│  GitLab  │   │   CI     │   │  Build   │   │  Deploy  │
 │   Push    │──►│  Checks  │──►│  Image   │──►│  Server  │
 └──────────┘   └──────────┘   └──────────┘   └──────────┘
-                    │
-                    ▼
-               ┌──────────┐
-               │  Notify  │
-               │  (Slack) │
-               └──────────┘
+                     │
+                     ▼
+                ┌──────────┐
+                │  Notify  │
+                │  (Slack) │
+                └──────────┘
 ```
 
 ---
@@ -51,25 +51,25 @@ services:
       - ./traefik/acme.json:/acme.json
 
   frontend:
-    image: ghcr.io/hexastudio/frontend:${VERSION}
+    image: registry.hexastudio.net/hexa/hexa-studio/frontend:${VERSION}
     environment:
       - NODE_ENV=production
       - NEXT_PUBLIC_API_URL=https://api.hexastudio.net
 
   backend:
-    image: ghcr.io/hexastudio/backend:${VERSION}
+    image: registry.hexastudio.net/hexa/hexa-studio/backend:${VERSION}
     environment:
       - NODE_ENV=production
       - DATABASE_URL=${DATABASE_URL}
       - JWT_SECRET=${JWT_SECRET}
 
   cms:
-    image: ghcr.io/hexastudio/cms:${VERSION}
+    image: registry.hexastudio.net/hexa/hexa-studio/cms:${VERSION}
     environment:
       - DATABASE_URL=${CMS_DATABASE_URL}
 
   odoo:
-    image: ghcr.io/hexastudio/odoo:${VERSION}
+    image: registry.hexastudio.net/hexa/hexa-studio/odoo:${VERSION}
 
   postgres:
     image: postgres:16-alpine
@@ -91,100 +91,71 @@ volumes:
 
 ---
 
-## CI/CD Pipeline (GitHub Actions)
+## CI/CD Pipeline (GitLab CI)
 
-### Workflow: CI
+> **Note:** This section previously documented GitHub Actions. As of 2026-07-24 the project migrated to self-hosted GitLab CE.
+> See `.gitlab-ci.yml` at the repo root and `HEXA-Vision-Playbook/13-DEVOPS/GITLAB_OPERATIONS.md` for the operational runbook.
+
+### Pipeline Stages
 
 ```yaml
-# .github/workflows/ci.yml
-name: CI
-
-on:
-  pull_request:
-    branches: [main, develop]
-
-jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm ci
-      - run: npm run lint
-
-  typecheck:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm ci
-      - run: npm run typecheck
-
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm ci
-      - run: npm run test
-
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm ci
-      - run: npm run build
+# .gitlab-ci.yml (excerpt)
+stages:
+  - quality   # lint, typecheck, test, security scan (Trivy + npm audit)
+  - build     # Next.js, NestJS, Strapi
+  - image     # Buildx + DinD → GitLab Container Registry
+  - validate  # E2E, Lighthouse, visual regression, bundle analysis
+  - deploy    # production (main), staging (develop)
 ```
 
-### Workflow: Deploy
+### Build & Push
 
 ```yaml
-# .github/workflows/deploy.yml
-name: Deploy
+build-image-backend:
+  stage: image
+  image: docker:24
+  services:
+    - docker:24-dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker buildx create --use
+    - |
+      docker buildx build
+        --cache-from type=registry,ref=$BACKEND_IMAGE:buildcache
+        --cache-to type=registry,ref=$BACKEND_IMAGE:buildcache,mode=max
+        --tag $BACKEND_IMAGE:$CI_COMMIT_SHORT_SHA
+        --tag $BACKEND_IMAGE:$CI_COMMIT_REF_SLUG
+        --tag $BACKEND_IMAGE:latest
+        --file apps/backend/Dockerfile
+        --push
+        .
+```
 
-on:
-  push:
-    branches: [main]
+### Deploy
 
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Build Docker images
-        run: |
-          docker build -t ghcr.io/hexastudio/frontend:${{ github.sha }} -f apps/frontend/Dockerfile .
-          docker build -t ghcr.io/hexastudio/backend:${{ github.sha }} -f apps/backend/Dockerfile .
-          docker build -t ghcr.io/hexastudio/cms:${{ github.sha }} -f apps/cms/Dockerfile .
-
-      - name: Push to registry
-        run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-          docker push ghcr.io/hexastudio/frontend:${{ github.sha }}
-          docker push ghcr.io/hexastudio/backend:${{ github.sha }}
-          docker push ghcr.io/hexastudio/cms:${{ github.sha }}
-
-      - name: Deploy to server
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_KEY }}
-          script: |
-            cd /opt/hexastudio
-            docker compose pull
-            docker compose up -d --remove-orphans
-            docker system prune -f
+```yaml
+deploy-production:
+  stage: deploy
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache openssh-client bash
+    - eval "$(ssh-agent -s)"
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  script:
+    - |
+      ssh -p 22 ${PROD_SERVER_USER}@${PROD_SERVER_IP} << 'EOF'
+        set -e
+        cd /home/hexa/hexastudio
+        git fetch origin main
+        git reset --hard origin/main
+        bash scripts/deploy-zero-downtime.sh
+        docker image prune -f
+      EOF
+  environment:
+    name: production
+    url: https://hexastudio.net
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
 ```
 
 ---
