@@ -31,6 +31,7 @@ const envSchema = z.object({
 
   // CMS (Strapi)
   CMS_API_TOKEN: z.string().optional(),
+  STRAPI_WEBHOOK_SECRET: z.string().optional(),
 
   // Redis
   REDIS_HOST: z.string().default('redis'),
