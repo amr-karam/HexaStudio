@@ -1,4 +1,5 @@
-import { Body, Controller, HttpCode, Post, VERSION_NEUTRAL } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, UseGuards, VERSION_NEUTRAL } from '@nestjs/common';
+import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
 import { ApiTags, ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { ContactService } from './contact.service';
 import { CreateContactDto } from './dto/create-contact.dto';
@@ -9,6 +10,8 @@ export class ContactController {
   constructor(private readonly contactService: ContactService) {}
 
   @Post()
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @HttpCode(200)
   @ApiOperation({ summary: 'Submit a contact message' })
   @ApiBody({ type: CreateContactDto })
