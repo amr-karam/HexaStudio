@@ -65,12 +65,20 @@ echo ""
 
 # ── 3. Install dependencies ─────────────────────────────────────────────────
 info "Installing dependencies..."
-npm install --no-audit --no-fund 2>&1 | tail -1
+# --legacy-peer-deps matches the documented contract (AGENTS.md) and CI (ci.yml)
+# so local installs resolve the same way and avoid peer-dependency conflicts.
+npm install --legacy-peer-deps --no-audit --no-fund 2>&1 | tail -1
 ok "Dependencies installed."
 echo ""
 
 # ── 4. Build ─────────────────────────────────────────────────────────────────
 info "Building all workspaces..."
+# The Next.js frontend build/typecheck fail without these (see AGENTS.md / ci.yml).
+# Respect any values already set; otherwise fall back to the CI defaults.
+export SKIP_ENV_VALIDATION="${SKIP_ENV_VALIDATION:-true}"
+export NEXT_PUBLIC_API_URL="${NEXT_PUBLIC_API_URL:-https://api.hexastudio.net}"
+export NEXT_PUBLIC_CMS_URL="${NEXT_PUBLIC_CMS_URL:-https://cms.hexastudio.net}"
+export NEXT_PUBLIC_SITE_URL="${NEXT_PUBLIC_SITE_URL:-https://hexastudio.net}"
 npm run build 2>&1 | tail -5
 ok "Build complete."
 echo ""

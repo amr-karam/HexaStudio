@@ -10,6 +10,8 @@ import { useScrollVelocity, useFinePointer } from '@/hooks';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import type { Article } from '@hexastudio/types';
 
+const SPRING_TRANSITION = { type: 'spring' as const, stiffness: 120, damping: 20, mass: 0.8 };
+
 interface BlogPageContentProps {
   articles: Article[];
 }
@@ -29,7 +31,7 @@ export function BlogPageContent({ articles }: BlogPageContentProps) {
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            transition={SPRING_TRANSITION}
             className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
           >
             Thoughts & Insights
@@ -43,7 +45,7 @@ export function BlogPageContent({ articles }: BlogPageContentProps) {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ ...SPRING_TRANSITION, delay: 0.1 }}
             className="text-neutral-400 text-lg font-light mt-12 leading-relaxed w-full max-w-5xl"
           >
             Exploring the intersection of spatial design, real-time technology, and the
@@ -65,7 +67,7 @@ export function BlogPageContent({ articles }: BlogPageContentProps) {
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.8, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ ...SPRING_TRANSITION, delay: idx * 0.08 }}
                     className={cn(
                       "group block",
                       isFeatured ? "md:col-span-12 lg:col-span-8" : "md:col-span-6 lg:col-span-4"
@@ -82,7 +84,7 @@ export function BlogPageContent({ articles }: BlogPageContentProps) {
                             alt={article.title}
                             fill
                             sizes={isFeatured ? "100vw" : "33vw"}
-                            className="object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000"
+                            className="object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
                           />
                         ) : (
                           <div className="w-full h-full bg-surface-dark" />
@@ -132,7 +134,7 @@ export function BlogPageContent({ articles }: BlogPageContentProps) {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            transition={SPRING_TRANSITION}
             className="text-center py-24"
           >
             <p className="text-neutral-500 font-light text-lg">

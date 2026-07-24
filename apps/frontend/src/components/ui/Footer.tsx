@@ -2,10 +2,25 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 import { ScrollFadeIn } from '@/components/ScrollFadeIn';
 import { Magnetic } from '@/components/ui/Magnetic';
 import { ContactRibbon } from '@/components/ui/ContactRibbon';
 import { useLocale } from '@/i18n/LocaleProvider';
+
+const linkVariants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: 'spring' as const,
+      stiffness: 200,
+      damping: 20,
+      delay: 0.05 * i,
+    },
+  }),
+};
 
 const socialLinks = [
   { name: 'Instagram', href: 'https://instagram.com/hexastudio' },
@@ -27,9 +42,9 @@ export const Footer = () => {
   ];
 
   return (
-    <footer className="bg-surface border-t border-border/50">
+    <footer className="artisan-glass-gold border-t border-artisan-glass-border">
       <ContactRibbon />
-      <div className="px-4 sm:px-8 md:px-16 py-12 border-b border-border/30">
+      <div className="px-4 sm:px-8 md:px-16 py-12 border-b border-artisan-glass-border">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <p className="text-sm text-neutral-400 font-light">
             {t('footer.cta')}
@@ -70,14 +85,22 @@ export const Footer = () => {
               {t('footer.navigation')}
             </span>
             <div className="flex flex-col gap-3">
-              {navLinks.map((item) => (
-                <Link
+              {navLinks.map((item, i) => (
+                <motion.div
                   key={item.href}
-                  href={item.href}
-                  className="text-sm text-neutral-500 hover:text-accent transition-colors duration-500 w-fit py-1"
+                  custom={i}
+                  variants={linkVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
                 >
-                  {item.name}
-                </Link>
+                  <Link
+                    href={item.href}
+                    className="text-sm text-neutral-500 hover:text-accent transition-colors duration-500 w-fit py-1"
+                  >
+                    {item.name}
+                  </Link>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -87,8 +110,23 @@ export const Footer = () => {
               {t('footer.legal')}
             </span>
             <div className="flex flex-col gap-3">
-              <Link href="/privacy" className="text-sm text-neutral-500 hover:text-accent transition-colors duration-500 w-fit py-1">{t('footer.privacy')}</Link>
-              <Link href="/terms" className="text-sm text-neutral-500 hover:text-accent transition-colors duration-500 w-fit py-1">{t('footer.terms')}</Link>
+              {['/privacy', '/terms'].map((href, i) => (
+                <motion.div
+                  key={href}
+                  custom={i + 5}
+                  variants={linkVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                >
+                  <Link
+                    href={href}
+                    className="text-sm text-neutral-500 hover:text-accent transition-colors duration-500 w-fit py-1"
+                  >
+                    {href === '/privacy' ? t('footer.privacy') : t('footer.terms')}
+                  </Link>
+                </motion.div>
+              ))}
             </div>
           </div>
 
@@ -97,29 +135,43 @@ export const Footer = () => {
               {t('footer.connect')}
             </span>
             <div className="flex flex-col gap-3">
-              {socialLinks.map((link) => (
-                <a
+              {socialLinks.map((link, i) => (
+                <motion.div
                   key={link.name}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-neutral-500 hover:text-accent transition-colors duration-500 w-fit py-1"
+                  custom={i + 7}
+                  variants={linkVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
                 >
-                  {link.name}
-                </a>
+                  <a
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-neutral-500 hover:text-accent transition-colors duration-500 w-fit py-1"
+                  >
+                    {link.name}
+                  </a>
+                </motion.div>
               ))}
             </div>
           </div>
         </div>
 
-        <div className="mt-16 md:mt-24 pt-8 border-t border-border/50 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ type: 'spring', stiffness: 100, damping: 20, delay: 0.6 }}
+          className="mt-16 md:mt-24 pt-8 border-t border-artisan-glass-border flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6"
+        >
           <p className="text-xs uppercase tracking-widest text-neutral-600">
             &copy; {currentYear} HexaStudio. {t('footer.rights')}
           </p>
           <p className="text-[11px] uppercase tracking-widest text-neutral-600 font-medium">
             Precision &mdash; Purpose &mdash; Vision
           </p>
-        </div>
+        </motion.div>
       </ScrollFadeIn>
     </footer>
   );

@@ -4,7 +4,7 @@ import { MinioService } from './minio.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Storage')
-@Controller({ path: 'storage', version: VERSION_NEUTRAL })
+@Controller({ path: 'storage', version: ['1', VERSION_NEUTRAL] })
 export class StorageController {
   constructor(private readonly minioService: MinioService) {}
 

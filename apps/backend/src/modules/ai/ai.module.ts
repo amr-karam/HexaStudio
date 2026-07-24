@@ -4,6 +4,10 @@ import { AutoTagService } from './auto-tag.service';
 import { LightingService } from './lighting.service';
 import { SummaryService } from './summary.service';
 import { AiChatService } from './ai-chat.service';
+import { MultimodalService } from './multimodal.service';
+import { StructuredOutputService } from './structured-output.service';
+import { AiCacheService } from './ai-cache.service';
+import { TokenUsageService } from './token-usage.service';
 import { VectorModule } from '../vector/vector.module';
 
 /**
@@ -31,6 +35,10 @@ import { VectorModule } from '../vector/vector.module';
     AutoTagService,
     LightingService,
     SummaryService,
+    MultimodalService,
+    StructuredOutputService,
+    AiCacheService,
+    TokenUsageService,
   ],
   exports: [
     AiChatService,
@@ -38,6 +46,10 @@ import { VectorModule } from '../vector/vector.module';
     AutoTagService,
     LightingService,
     SummaryService,
+    MultimodalService,
+    StructuredOutputService,
+    AiCacheService,
+    TokenUsageService,
   ],
 })
 export class AIModule {}

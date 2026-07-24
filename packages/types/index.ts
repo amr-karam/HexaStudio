@@ -129,7 +129,7 @@ export interface ContactMessage {
   email: string;
   company?: string;
   phone?: string;
-  service?: 'residential' | 'commercial' | 'interior';
+  service?: string;
   budget?: 'under_50k' | '50k_100k' | '100k_500k' | '500k_plus';
   message: string;
 }

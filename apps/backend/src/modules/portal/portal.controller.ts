@@ -13,7 +13,7 @@ import {
   ParseFilePipe,
   MaxFileSizeValidator,
   FileTypeValidator,
-} from '@nestjs/common';
+  VERSION_NEUTRAL } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiTags,
@@ -26,7 +26,7 @@ import { PortalService } from './portal.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Portal')
-@Controller({ path: 'portal', version: '1' })
+@Controller({ path: 'portal', version: ['1', VERSION_NEUTRAL] })
 export class PortalController {
   constructor(private readonly portalService: PortalService) {}
 

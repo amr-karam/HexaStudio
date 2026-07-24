@@ -1,11 +1,11 @@
-import { Controller, Get, Param, NotFoundException, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, NotFoundException, UseGuards, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import type { User } from '@hexastudio/types';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Users')
-@Controller({ path: 'users', version: '1' })
+@Controller({ path: 'users', version: ['1', VERSION_NEUTRAL] })
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 

@@ -1,11 +1,18 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import { fetchPage } from '@/features/pages/lib/fetchPages';
 import { StrapiBlocks } from '@/components/ui/StrapiBlocks';
 import { Button } from '@/components/ui/Button';
 import TextCharReveal from '@/components/effects/TextCharReveal';
 import { TeamSection } from '@/features/team/components/TeamSection';
+import { LiquidGlassCard } from '@/components/ui/LiquidGlassCard';
+
+const SilkShaderBackground = dynamic(
+  () => import('@/components/effects/SilkShaderBackground'),
+  { ssr: false },
+);
 
 export const revalidate = 3600;
 
@@ -37,6 +44,7 @@ export default async function AboutPage() {
     <div className="bg-background text-foreground">
       {/* Hero */}
       <section className="relative min-h-screen flex flex-col items-center justify-center px-8 pt-20 overflow-hidden">
+        <SilkShaderBackground speed={0.4} opacity={0.18} className="z-0" />
         <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
         {heroImage && (
           <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
@@ -127,13 +135,14 @@ export default async function AboutPage() {
 
       {/* CTA */}
       <section className="px-8 md:px-16 py-32 border-t border-border/30 relative overflow-hidden">
+        <SilkShaderBackground speed={0.3} opacity={0.10} />
         <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
-        <div className="w-full text-center relative z-10">
-          <span className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono">
+        <LiquidGlassCard goldAccent className="w-full max-w-4xl mx-auto text-center relative z-10 !p-16">
+          <span className="text-xs uppercase tracking-[0.5em] text-gold/60 mb-6 block font-mono">
             Work With Us
           </span>
           <h2 className="text-4xl md:text-6xl font-serif font-light tracking-tight text-foreground mb-8 leading-tight">
-            Ready to <span className="italic text-accent">Collaborate?</span>
+            Ready to <span className="italic text-gold">Collaborate?</span>
           </h2>
           <p className="text-neutral-400 font-light leading-relaxed mb-12 w-full max-w-2xl mx-auto">
             We partner with architects, developers, and visionaries worldwide. Let&apos;s create
@@ -147,7 +156,7 @@ export default async function AboutPage() {
               </span>
             </Button>
           </Link>
-        </div>
+        </LiquidGlassCard>
       </section>
     </div>
   );

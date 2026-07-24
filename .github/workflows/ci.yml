@@ -31,6 +31,21 @@ jobs:
       - run: npm run typecheck --workspace=apps/frontend
       - run: npm run typecheck --workspace=apps/backend
 
+  cms-typecheck:
+    name: CMS TypeScript
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: apps/cms/package-lock.json
+      - run: npm ci --legacy-peer-deps
+        working-directory: apps/cms
+      - run: npm run typecheck
+        working-directory: apps/cms
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -47,6 +62,10 @@ jobs:
   security-scan:
     name: Security Scan (Snyk + npm audit)
     runs-on: ubuntu-latest
+    env:
+      # Lift the secret to job scope so step-level `if` can gate on its presence
+      # (the `secrets` context is not available in step `if` conditionals).
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -56,22 +75,22 @@ jobs:
       - run: npm ci --legacy-peer-deps
       - name: npm audit (high+ blockers)
         run: npm audit --audit-level=high
-        continue-on-error: false
+      - name: Warn when Snyk token is unavailable
+        if: env.SNYK_TOKEN == ''
+        run: echo "::warning::SNYK_TOKEN is not configured; skipping Snyk SCA/SAST scans. Configure the secret to enforce high-severity SAST/SCA gating."
       - name: Snyk Open Source (SCA)
+        if: env.SNYK_TOKEN != ''
         uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
+          # No continue-on-error: a high-severity finding must fail the job.
           args: --severity-threshold=high
-        continue-on-error: true
       - name: Snyk Code (SAST)
+        if: env.SNYK_TOKEN != ''
         uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --severity-threshold=high
+          # No continue-on-error: a high-severity finding must fail the job.
           command: code test
-        continue-on-error: true
+          args: --severity-threshold=high
 
   test:
     name: Tests

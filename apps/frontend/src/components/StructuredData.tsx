@@ -1,4 +1,3 @@
-import React from "react";
 import { sanitizeJsonLd } from "@/lib/jsonld";
 export function StructuredData() {
   const schema = {

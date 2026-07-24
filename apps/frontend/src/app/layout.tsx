@@ -5,6 +5,7 @@ import { StructuredData } from "@/components/StructuredData";
 import { CinematicPreloader } from "@/components/ui/overlays/CinematicPreloader";
 import { AnimationDebug } from "@/components/dev/AnimationDebug";
 import { WebVitals } from "@/components/WebVitals";
+import { LivePreview } from "@/components/LivePreview";
 import { AnalyticsInit } from "@/lib/analytics";
 import { Suspense } from "react";
 import "./globals.css";
@@ -93,14 +94,28 @@ export default function RootLayout({
           href="https://fonts.gstatic.com/s/playfairdisplay/v40/nuFiD-vYSZviVYUb_rj3ij__anPXDTzYgA.woff2"
           crossOrigin="anonymous"
         />
-        {/* Font CSS as a top-level <link> (not @import) so it fetches in
-            parallel with globals.css instead of chaining after it.
-            display=swap keeps text visible in fallback fonts immediately. */}
+        {/* Non-blocking font CSS — preloaded as stylesheet, promoted to
+            rel="stylesheet" by the inline script below. Font woff2 files
+            are already preloaded above, so fonts render from cache once
+            @font-face rules arrive. display=swap keeps text visible in
+            fallback fonts during the async fetch. */}
         {/* eslint-disable @next/next/no-page-custom-font -- Pages-Router rule: in App Router the root layout IS the correct global location for font stylesheets (next/font/google is disabled: build machines have no Google Fonts API access). */}
         <link
-          rel="stylesheet"
+          rel="preload"
+          as="style"
           href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&family=Playfair+Display:wght@400..900&display=swap"
         />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `!function(){var l=document.querySelector('link[rel="preload"][as="style"][href*="fonts.googleapis.com"]');if(l){l.onload=function(){l.rel="stylesheet";l.onload=null}}}`,
+          }}
+        />
+        <noscript>
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&family=Playfair+Display:wght@400..900&display=swap"
+          />
+        </noscript>
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased">
         <noscript>
@@ -110,7 +125,7 @@ export default function RootLayout({
         </noscript>
         <AppProviders>
           <CinematicPreloader />
-          <AnimationDebug />
+          {process.env.NODE_ENV === 'development' && <AnimationDebug />}
           <StructuredData />
           <a
             href="#main-content"
@@ -123,6 +138,7 @@ export default function RootLayout({
             <AnalyticsInit />
           </Suspense>
           <WebVitals />
+          <LivePreview />
         </AppProviders>
       </body>
     </html>

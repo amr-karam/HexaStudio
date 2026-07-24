@@ -1,5 +1,5 @@
 import { NestFactory } from "@nestjs/core";
-import { Logger, ValidationPipe } from "@nestjs/common";
+import { Logger, ValidationPipe, VersioningType, VERSION_NEUTRAL } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import helmet from "helmet";
 import * as Sentry from "@sentry/node";
@@ -24,11 +24,13 @@ async function bootstrap() {
 
   app.use(helmet());
   app.setGlobalPrefix("api");
-  // Versioning disabled for now — all controllers are neutral-version.
-  // app.enableVersioning({
-  //   type: VersioningType.URI,
-  //   defaultVersion: '1',
-  // });
+  // URI versioning enabled — dual-path: /api/v1/* (versioned) and /api/* (VERSION_NEUTRAL backward compat).
+  // Controllers declare version: ['1', VERSION_NEUTRAL] so both URL patterns resolve.
+  // This allows the frontend to migrate incrementally from /api/articles → /api/v1/articles.
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: ['1', VERSION_NEUTRAL],
+  });
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

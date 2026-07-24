@@ -1,25 +1,35 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { Controller, Post, Body, Get, UseGuards, VERSION_NEUTRAL } from '@nestjs/common';
+import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
+import { ApiTags, ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
+import { RegisterDto, LoginDto } from '../auth/dto/auth.dto';
 import { AuthService } from '../auth/auth.service';
-import { JwtService } from '@nestjs/jwt';
 
 @ApiTags('Mobile')
-@Controller({ path: 'mobile', version: '1' })
+@Controller({ path: 'mobile', version: ['1', VERSION_NEUTRAL] })
 export class MobileApiController {
   constructor(
     private authService: AuthService,
-    private jwtService: JwtService
   ) {}
 
   @Post('register')
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @ApiOperation({ summary: 'Register a new user (mobile)' })
-  async register(@Body() body: { email: string, username: string, password: string }) {
+  @ApiBody({ type: RegisterDto })
+  @ApiResponse({ status: 201, description: 'User registered successfully' })
+  @ApiResponse({ status: 400, description: 'Validation failed' })
+  async register(@Body() body: RegisterDto) {
     return this.authService.register(body.email, body.username, body.password);
   }
 
   @Post('login')
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({ summary: 'Login with credentials (mobile)' })
-  async login(@Body() body: { identifier: string, password: string }) {
+  @ApiBody({ type: LoginDto })
+  @ApiResponse({ status: 200, description: 'Login successful' })
+  @ApiResponse({ status: 401, description: 'Invalid credentials' })
+  async login(@Body() body: LoginDto) {
     return this.authService.login(body.identifier, body.password);
   }
 
