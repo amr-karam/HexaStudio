@@ -251,4 +251,138 @@ export class OdooApiController {
     await this.odooDocument.deleteDocument(parseInt(projectId, 10), id);
     return { success: true };
   }
+
+  // --- Tasks ---
+
+  @Get('tasks')
+  @ApiOperation({ summary: 'List project tasks' })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
+  @ApiQuery({ name: 'projectId', required: false, type: Number })
+  async getTasks(
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+    @Query('projectId') projectId?: string,
+  ) {
+    return this.odooApi.getTasks(
+      limit ? parseInt(limit, 10) : 50,
+      offset ? parseInt(offset, 10) : 0,
+      projectId ? parseInt(projectId, 10) : undefined,
+    );
+  }
+
+  @Get('tasks/:id')
+  @ApiOperation({ summary: 'Get task detail' })
+  @ApiParam({ name: 'id', type: Number })
+  async getTaskDetail(@Param('id') id: string) {
+    return this.odooApi.getTaskDetail(parseInt(id, 10));
+  }
+
+  @Post('tasks')
+  @ApiOperation({ summary: 'Create a new project task' })
+  async createTask(@Body() data: Record<string, unknown>) {
+    const id = await this.odooApi.createTask(data);
+    return { id, success: true };
+  }
+
+  @Patch('tasks/:id')
+  @ApiOperation({ summary: 'Update a project task' })
+  @ApiParam({ name: 'id', type: Number })
+  async updateTask(@Param('id') id: string, @Body() data: Record<string, unknown>) {
+    await this.odooApi.updateTask(parseInt(id, 10), data);
+    return { success: true };
+  }
+
+  // --- Quotations ---
+
+  @Get('quotations')
+  @ApiOperation({ summary: 'List sales quotations' })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
+  @ApiQuery({ name: 'state', required: false, type: String, description: 'Filter by state: draft, sent, sale, done, cancel' })
+  async getQuotations(
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+    @Query('state') state?: string,
+  ) {
+    return this.odooApi.getQuotations(
+      limit ? parseInt(limit, 10) : 50,
+      offset ? parseInt(offset, 10) : 0,
+      state,
+    );
+  }
+
+  @Get('quotations/:id')
+  @ApiOperation({ summary: 'Get quotation detail' })
+  @ApiParam({ name: 'id', type: Number })
+  async getQuotationDetail(@Param('id') id: string) {
+    return this.odooApi.getQuotationDetail(parseInt(id, 10));
+  }
+
+  @Get('quotations/:id/lines')
+  @ApiOperation({ summary: 'Get quotation line items' })
+  @ApiParam({ name: 'id', type: Number })
+  async getQuotationLines(@Param('id') id: string) {
+    return this.odooApi.getQuotationLines(parseInt(id, 10));
+  }
+
+  @Post('quotations')
+  @ApiOperation({ summary: 'Create a new quotation' })
+  async createQuotation(@Body() data: Record<string, unknown>) {
+    const id = await this.odooApi.createQuotation(data);
+    return { id, success: true };
+  }
+
+  @Patch('quotations/:id')
+  @ApiOperation({ summary: 'Update a quotation' })
+  @ApiParam({ name: 'id', type: Number })
+  async updateQuotation(@Param('id') id: string, @Body() data: Record<string, unknown>) {
+    await this.odooApi.updateQuotation(parseInt(id, 10), data);
+    return { success: true };
+  }
+
+  // --- Activities ---
+
+  @Get('activities')
+  @ApiOperation({ summary: 'List activities (mail.activity)' })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
+  @ApiQuery({ name: 'resModel', required: false, type: String, description: 'Filter by resource model (e.g., project.project, crm.lead)' })
+  @ApiQuery({ name: 'resId', required: false, type: Number, description: 'Filter by resource ID' })
+  async getActivities(
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+    @Query('resModel') resModel?: string,
+    @Query('resId') resId?: string,
+  ) {
+    return this.odooApi.getActivities(
+      limit ? parseInt(limit, 10) : 50,
+      offset ? parseInt(offset, 10) : 0,
+      resModel,
+      resId ? parseInt(resId, 10) : undefined,
+    );
+  }
+
+  @Post('activities')
+  @ApiOperation({ summary: 'Create a new activity' })
+  async createActivity(@Body() data: Record<string, unknown>) {
+    const id = await this.odooApi.createActivity(data);
+    return { id, success: true };
+  }
+
+  @Patch('activities/:id')
+  @ApiOperation({ summary: 'Update an activity' })
+  @ApiParam({ name: 'id', type: Number })
+  async updateActivity(@Param('id') id: string, @Body() data: Record<string, unknown>) {
+    await this.odooApi.updateActivity(parseInt(id, 10), data);
+    return { success: true };
+  }
+
+  @Post('activities/:id/complete')
+  @ApiOperation({ summary: 'Mark an activity as completed' })
+  @ApiParam({ name: 'id', type: Number })
+  async completeActivity(@Param('id') id: string) {
+    await this.odooApi.completeActivity(parseInt(id, 10));
+    return { success: true };
+  }
 }
