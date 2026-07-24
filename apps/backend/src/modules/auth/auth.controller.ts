@@ -7,34 +7,7 @@ import { AuthService } from './auth.service';
 import type { User } from '@hexastudio/types';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CsrfGuard, generateCsrfToken, CSRF_COOKIE_NAME } from './guards/csrf.guard';
-
-class RegisterDto {
-  @IsEmail()
-  email!: string;
-
-  @IsString()
-  @MinLength(3)
-  @MaxLength(30)
-  username!: string;
-
-  @IsString()
-  @MinLength(12)
-  @MaxLength(100)
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/, {
-    message: 'Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character',
-  })
-  password!: string;
-}
-
-class LoginDto {
-  @IsString()
-  @MaxLength(100)
-  identifier!: string;
-
-  @IsString()
-  @MaxLength(100)
-  password!: string;
-}
+import { RegisterDto, LoginDto } from './dto/auth.dto';
 
 class RefreshTokenDto {
   @IsString()
