@@ -8,6 +8,10 @@ import type {
   OdooPipelineSummary,
   OdooPartner,
   OdooMilestone,
+  OdooTask,
+  OdooCompany,
+  OdooQuotation,
+  OdooActivity,
 } from '@hexastudio/types';
 
 export interface OdooSalesOrder {
@@ -54,6 +58,9 @@ export interface OdooCompanySettings {
   currency?: string;
   logo?: string;
 }
+
+// --- Task, Quotation, Activity API types (re-exported from @hexastudio/types) ---
+export type { OdooTask, OdooCompany, OdooQuotation, OdooActivity } from '@hexastudio/types';
 
 const BASE = `${API_BASE_URL}/api/odoo`;
 
@@ -134,9 +141,41 @@ export const odooApi = {
   getDocumentDownloadUrl: (documentId: string) =>
     request<{ url: string }>(`/documents/download/${documentId}`),
 
+  // Tasks CRUD
+  getTasks: (limit = 50, offset = 0, projectId?: number) =>
+    request<OdooTask[]>(`/tasks?limit=${limit}&offset=${offset}${projectId ? `&projectId=${projectId}` : ''}`),
+  getTaskDetail: (id: number) =>
+    request<OdooTask>(`/tasks/${id}`),
+  createTask: (data: Record<string, unknown>) =>
+    mutate<{ id: number; success: boolean }>('/tasks', 'POST', data),
+  updateTask: (id: number, data: Record<string, unknown>) =>
+    mutate<{ success: boolean }>(`/tasks/${id}`, 'PATCH', data),
+
+  // Quotations CRUD
+  getQuotations: (limit = 50, offset = 0, state?: string) =>
+    request<OdooQuotation[]>(`/quotations?limit=${limit}&offset=${offset}${state ? `&state=${state}` : ''}`),
+  getQuotationDetail: (id: number) =>
+    request<OdooQuotation>(`/quotations/${id}`),
+  getQuotationLines: (id: number) =>
+    request<Record<string, unknown>[]>(`/quotations/${id}/lines`),
+  createQuotation: (data: Record<string, unknown>) =>
+    mutate<{ id: number; success: boolean }>('/quotations', 'POST', data),
+  updateQuotation: (id: number, data: Record<string, unknown>) =>
+    mutate<{ success: boolean }>(`/quotations/${id}`, 'PATCH', data),
+
+  // Activities CRUD
+  getActivities: (limit = 50, offset = 0, resModel?: string, resId?: number) =>
+    request<OdooActivity[]>(`/activities?limit=${limit}&offset=${offset}${resModel ? `&resModel=${encodeURIComponent(resModel)}` : ''}${resId ? `&resId=${resId}` : ''}`),
+  createActivity: (data: Record<string, unknown>) =>
+    mutate<{ id: number; success: boolean }>('/activities', 'POST', data),
+  updateActivity: (id: number, data: Record<string, unknown>) =>
+    mutate<{ success: boolean }>(`/activities/${id}`, 'PATCH', data),
+  completeActivity: (id: number) =>
+    mutate<{ success: boolean }>(`/activities/${id}/complete`, 'POST'),
+
   // Company Settings
   getCompanySettings: (companyId?: number) =>
-    request<OdooCompanySettings>(`/company/settings${companyId ? `?companyId=${companyId}` : ''}`),
+    request<OdooCompany>(`/company/settings${companyId ? `?companyId=${companyId}` : ''}`),
   uploadDocument: async (projectId: number, file: File) => {
     const formData = new FormData();
     formData.append('file', file);

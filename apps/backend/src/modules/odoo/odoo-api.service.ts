@@ -7,26 +7,13 @@ import {
   OdooPipelineSummary,
   OdooPartner,
   OdooMilestone,
+  OdooTask,
+  OdooCompany,
+  OdooQuotation,
+  OdooActivity,
 } from '@hexastudio/types';
 
-export interface OdooCompanySettings {
-  id: number;
-  name: string;
-  street?: string;
-  street2?: string;
-  city?: string;
-  state?: string;
-  zip?: string;
-  country?: string;
-  phone?: string;
-  mobile?: string;
-  email?: string;
-  website?: string;
-  vat?: string;
-  registry?: string;
-  currency?: string;
-  logo?: string;
-}
+// OdooCompanySettings is now defined in @hexastudio/types as OdooCompany
 
 @Injectable()
 export class OdooApiService {
@@ -187,7 +174,7 @@ export class OdooApiService {
     );
   }
 
-  async getCompanySettings(companyId?: number): Promise<OdooCompanySettings> {
+  async getCompanySettings(companyId?: number): Promise<OdooCompany> {
     const domain = companyId ? [['id', '=', companyId]] : [];
     const results = await this.odooService.execute<Record<string, unknown>[]>(
       'res.company',
@@ -199,25 +186,22 @@ export class OdooApiService {
     );
     if (!results.length) throw new Error('Company not found');
     const c = results[0];
-    const state = c.state_id as [number, string] | undefined;
-    const country = c.country_id as [number, string] | undefined;
-    const currency = c.currency_id as [number, string] | undefined;
     return {
       id: c.id as number,
       name: (c.name as string) || '',
       street: (c.street as string) || undefined,
       street2: (c.street2 as string) || undefined,
       city: (c.city as string) || undefined,
-      state: state ? state[1] : undefined,
+      state_id: c.state_id as [number, string] | undefined,
       zip: (c.zip as string) || undefined,
-      country: country ? country[1] : undefined,
+      country_id: c.country_id as [number, string] | undefined,
       phone: (c.phone as string) || undefined,
       mobile: (c.mobile as string) || undefined,
       email: (c.email as string) || undefined,
       website: (c.website as string) || undefined,
       vat: (c.vat as string) || undefined,
-      registry: (c.company_registry as string) || undefined,
-      currency: currency ? currency[1] : undefined,
+      company_registry: (c.company_registry as string) || undefined,
+      currency_id: c.currency_id as [number, string] | undefined,
       logo: (c.logo as string) || undefined,
     };
   }
@@ -226,5 +210,123 @@ export class OdooApiService {
   async getHealth() {
     const ok = await this.odooService.ping();
     return { odoo: ok ? 'ok' : 'error', circuit: this.odooService.getCircuitState() };
+  }
+
+  // --- Tasks ---
+
+  async getTasks(limit = 50, offset = 0, projectId?: number): Promise<OdooTask[]> {
+    const domain: unknown[] = projectId ? [['project_id', '=', projectId]] : [];
+    return (await this.odooService.execute<Record<string, unknown>[]>(
+      'project.task',
+      'search_read',
+      [
+        domain,
+        ['name', 'project_id', 'milestone_id', 'user_ids', 'stage_id', 'state', 'date_deadline', 'date_assign', 'date_end', 'planned_hours', 'effective_hours', 'remaining_hours', 'x_hexa_client_viewable', 'x_hexa_priority', 'description'],
+        offset,
+        limit,
+        'date_deadline asc',
+      ],
+    )) as unknown as OdooTask[];
+  }
+
+  async getTaskDetail(id: number): Promise<OdooTask> {
+    const results = await this.odooService.execute<Record<string, unknown>[]>(
+      'project.task',
+      'search_read',
+      [
+        [['id', '=', id]],
+        ['name', 'project_id', 'milestone_id', 'user_ids', 'stage_id', 'state', 'date_deadline', 'date_assign', 'date_end', 'planned_hours', 'effective_hours', 'remaining_hours', 'x_hexa_client_viewable', 'x_hexa_priority', 'description'],
+      ],
+    );
+    if (!results.length) throw new Error(`Task #${id} not found`);
+    return results[0] as unknown as OdooTask;
+  }
+
+  async createTask(data: Record<string, unknown>): Promise<number> {
+    return this.odooService.create('project.task', data);
+  }
+
+  async updateTask(id: number, data: Record<string, unknown>): Promise<boolean> {
+    return this.odooService.write('project.task', [id], data);
+  }
+
+  // --- Quotations ---
+
+  async getQuotations(limit = 50, offset = 0, state?: string): Promise<OdooQuotation[]> {
+    const domain: unknown[] = state ? [['state', '=', state]] : [];
+    return (await this.odooService.execute<Record<string, unknown>[]>(
+      'sale.order',
+      'search_read',
+      [
+        domain,
+        ['name', 'partner_id', 'state', 'date_order', 'date_validity', 'amount_total', 'amount_untaxed', 'amount_tax', 'currency_id', 'user_id', 'x_hexa_project_id'],
+        offset,
+        limit,
+        'date_order desc',
+      ],
+    )) as unknown as OdooQuotation[];
+  }
+
+  async getQuotationDetail(id: number): Promise<OdooQuotation> {
+    const results = await this.odooService.execute<Record<string, unknown>[]>(
+      'sale.order',
+      'search_read',
+      [
+        [['id', '=', id]],
+        ['name', 'partner_id', 'state', 'date_order', 'date_validity', 'amount_total', 'amount_untaxed', 'amount_tax', 'currency_id', 'user_id', 'x_hexa_project_id'],
+      ],
+    );
+    if (!results.length) throw new Error(`Quotation #${id} not found`);
+    return results[0] as unknown as OdooQuotation;
+  }
+
+  async getQuotationLines(orderId: number): Promise<Record<string, unknown>[]> {
+    return this.odooService.execute<Record<string, unknown>[]>(
+      'sale.order.line',
+      'search_read',
+      [
+        [['order_id', '=', orderId]],
+        ['id', 'product_id', 'name', 'product_uom_qty', 'price_unit', 'price_subtotal', 'price_tax'],
+      ],
+    );
+  }
+
+  async createQuotation(data: Record<string, unknown>): Promise<number> {
+    return this.odooService.create('sale.order', data);
+  }
+
+  async updateQuotation(id: number, data: Record<string, unknown>): Promise<boolean> {
+    return this.odooService.write('sale.order', [id], data);
+  }
+
+  // --- Activities ---
+
+  async getActivities(limit = 50, offset = 0, resModel?: string, resId?: number): Promise<OdooActivity[]> {
+    const domain: unknown[] = [];
+    if (resModel) domain.push(['res_model', '=', resModel]);
+    if (resId) domain.push(['res_id', '=', resId]);
+    return (await this.odooService.execute<Record<string, unknown>[]>(
+      'mail.activity',
+      'search_read',
+      [
+        domain,
+        ['name', 'activity_type_id', 'summary', 'note', 'user_id', 'res_model', 'res_id', 'date_deadline', 'state', 'create_date'],
+        offset,
+        limit,
+        'date_deadline asc',
+      ],
+    )) as unknown as OdooActivity[];
+  }
+
+  async createActivity(data: Record<string, unknown>): Promise<number> {
+    return this.odooService.create('mail.activity', data);
+  }
+
+  async updateActivity(id: number, data: Record<string, unknown>): Promise<boolean> {
+    return this.odooService.write('mail.activity', [id], data);
+  }
+
+  async completeActivity(id: number): Promise<boolean> {
+    return this.odooService.execute<boolean>('mail.activity', 'action_done', [[id]]);
   }
 }

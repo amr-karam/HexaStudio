@@ -69,10 +69,78 @@ export interface OdooTask {
   id: number;
   name: string;
   project_id?: OdooIdName;
+  milestone_id?: OdooIdName;
+  user_ids?: OdooIdName[];
   stage_id?: OdooIdName;
   state?: string;
   date_deadline?: string;
+  date_assign?: string;
+  date_end?: string;
+  planned_hours?: number;
+  effective_hours?: number;
+  remaining_hours?: number;
   x_hexa_client_viewable?: boolean;
+  x_hexa_priority?: number;
+  description?: string;
+}
+
+export interface OdooCompany {
+  id: number;
+  name: string;
+  street?: string;
+  street2?: string;
+  city?: string;
+  state_id?: OdooIdName;
+  zip?: string;
+  country_id?: OdooIdName;
+  phone?: string;
+  mobile?: string;
+  email?: string;
+  website?: string;
+  vat?: string;
+  company_registry?: string;
+  currency_id?: OdooIdName;
+  logo?: string;
+}
+
+export interface OdooQuotation {
+  id: number;
+  name: string;
+  partner_id?: OdooIdName;
+  state?: 'draft' | 'sent' | 'sale' | 'done' | 'cancel';
+  date_order?: string;
+  date_validity?: string;
+  amount_total?: number;
+  amount_untaxed?: number;
+  amount_tax?: number;
+  currency_id?: OdooIdName;
+  user_id?: OdooIdName;
+  x_hexa_project_id?: OdooIdName;
+  order_line?: OdooQuotationLine[];
+}
+
+export interface OdooQuotationLine {
+  id: number;
+  product_id?: OdooIdName;
+  name?: string;
+  product_uom_qty?: number;
+  price_unit?: number;
+  price_subtotal?: number;
+  price_tax?: number;
+}
+
+export interface OdooActivity {
+  id: number;
+  name?: string;
+  activity_type_id?: OdooIdName;
+  summary?: string;
+  note?: string;
+  user_id?: OdooIdName;
+  res_model?: string;
+  res_id?: number;
+  date_deadline?: string;
+  state?: string;
+  create_date?: string;
 }
 
 export interface OdooInvoice {

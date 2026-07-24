@@ -494,7 +494,7 @@ export default function OdooDashboardPage() {
               <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4">
                 <p className="text-xs uppercase tracking-wide text-white/40">Address</p>
                 <p className="mt-1 text-sm text-white">
-                  {[company.data.street, company.data.street2, company.data.city, company.data.state, company.data.zip, company.data.country]
+                  {[company.data.street, company.data.street2, company.data.city, Array.isArray(company.data.state_id) ? company.data.state_id[1] : undefined, company.data.zip, Array.isArray(company.data.country_id) ? company.data.country_id[1] : undefined]
                     .filter(Boolean)
                     .join(', ') || '—'}
                 </p>
@@ -513,7 +513,7 @@ export default function OdooDashboardPage() {
               </div>
               <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4">
                 <p className="text-xs uppercase tracking-wide text-white/40">Currency</p>
-                <p className="mt-1 text-sm text-white">{company.data.currency || '—'}</p>
+                <p className="mt-1 text-sm text-white">{Array.isArray(company.data.currency_id) ? company.data.currency_id[1] : '—'}</p>
               </div>
             </div>
           )}
