@@ -113,6 +113,7 @@ export default function AIPage() {
               <span className="text-sm font-medium text-foreground">{t('ai.brand')}</span>
             </div>
             <select
+              aria-label="AI provider"
               value={provider}
               onChange={e => setProvider(e.target.value as Provider)}
               className="text-xs bg-background border border-border rounded-lg px-2 py-1 text-muted-foreground focus:outline-none focus:ring-1 focus:ring-accent"
@@ -169,6 +170,7 @@ export default function AIPage() {
             <div className="flex gap-3">
               <input
                 type="text"
+                aria-label="Chat message"
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 placeholder={t('ai.placeholder')}

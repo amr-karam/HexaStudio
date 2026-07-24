@@ -66,7 +66,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   };
 
   return (
-    <main className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: sanitizeJsonLd(jsonLd) }}
@@ -74,6 +74,6 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
       {/* Scroll Cinema: 5-chapter cinematic case study */}
       <ProjectScrollCinema project={project} nextProject={nextProject} />
-    </main>
+    </div>
   );
 }
