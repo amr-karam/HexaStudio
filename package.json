@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "turbo run build",
+    "ci:validate": "node scripts/validate-gitlab-ci.js",
     "clean": "turbo run clean",
     "dev": "turbo run dev",
     "dev:backend": "turbo run dev --filter=backend",
@@ -19,6 +20,10 @@
     "docker:down": "docker compose down",
     "docker:logs": "docker compose logs -f",
     "docker:up": "docker compose up -d",
+    "gitlab:deploy": "bash scripts/deploy-gitlab.sh",
+    "gitlab:runner:register": "bash scripts/register-gitlab-runner.sh",
+    "gitlab:setup": "bash scripts/setup-gitlab-variables.sh",
+    "gitlab:migrate": "bash scripts/migrate-from-github.sh",
     "lint": "turbo run lint",
     "test": "turbo run test",
     "test:e2e": "npm run test:e2e --workspace=apps/frontend",

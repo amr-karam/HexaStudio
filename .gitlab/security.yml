@@ -12,54 +12,11 @@ stages:
 dependency_scanning:
   stage: quality
   image: node:${NODE_VERSION:-20}
-  variables:
-    SETUP_CMD: "npm ci --legacy-peer-deps"
-    AUDIT_CMD: "npm audit --omit=dev --audit-level=high --json"
   script:
     - npm ci --legacy-peer-deps
-    - |
-      # Run npm audit and convert to GitLab-compatible format
-      npm audit --json > /tmp/npm-audit.json 2>&1 || AUDIT_EXIT=$?
-      if [ -n "$AUDIT_EXIT" ] && [ "$AUDIT_EXIT" -ne 0 ]; then
-        echo "npm audit found vulnerabilities (exit $AUDIT_EXIT)."
-      fi
-    - |
-      # Convert npm audit JSON to GitLab Dependency Scanning format
-      python3 -c "
-import json, sys, datetime
-try:
-    with open('/tmp/npm-audit.json') as f:
-        data = json.load(f)
-    vulns = data.get('vulnerabilities', {})
-    items = []
-    for pkg, info in vulns.items():
-        for v in info.get('via', []):
-            if isinstance(v, dict):
-                items.append({
-                    'id': f\"npm:{pkg}-{v.get('id', 'unknown')}\",
-                    'name': pkg,
-                    'severity': v.get('severity', 'unknown').upper(),
-                    'title': v.get('title', 'vulnerability'),
-                    'description': v.get('url', ''),
-                    'identifiers': [{'type': 'npm', 'name': v.get('id', 'unknown'), 'value': v.get('id', 'unknown')}],
-                })
-    gl = {
-        'version': '15.0.0',
-        'scan': {
-            'start_time': datetime.datetime.utcnow().isoformat() + 'Z',
-            'end_time': datetime.datetime.utcnow().isoformat() + 'Z',
-            'analyzer': {'id': 'npm-audit', 'name': 'npm audit', 'version': '1.0.0'},
-            'scanner': {'id': 'npm-audit', 'name': 'npm audit', 'version': '1.0.0'},
-            'type': 'dependency_scanning',
-        },
-        'vulnerabilities': items,
-    }
-    with open('gl-dependency-scanning-report.json', 'w') as f:
-        json.dump(gl, f, indent=2)
-except Exception as e:
-    print(f'Failed to convert npm audit: {e}', file=sys.stderr)
-    sys.exit(0)  # Don't fail the pipeline on conversion errors
-"
+    - npm audit --json > /tmp/npm-audit.json || AUDIT_EXIT=$?
+    - echo "npm audit exit: ${AUDIT_EXIT:-0}"
+    - node scripts/npm-audit-to-gitlab.js
   artifacts:
     when: always
     reports:
@@ -92,14 +49,19 @@ container_scanning:
     - trivy image --format json --output reports/backend.json $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA || true
     - trivy image --format json --output reports/frontend.json $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA || true
     - trivy image --format json --output reports/cms.json $CI_REGISTRY_IMAGE/cms:$CI_COMMIT_SHORT_SHA || true
-    # Convert to GitLab container scanning format (only first image for now)
-    - cp reports/backend.json gl-container-scanning-report.json
+    # Generate GitLab Container Scanning report (aggregated)
+    - echo '{"version":"15.0.0","vulnerabilities":[]}' > gl-container-scanning-report.json
+      && jq -s 'add' reports/backend.json reports/frontend.json reports/cms.json
+      > reports/aggregated.json
+      || cp reports/backend.json reports/aggregated.json
+    - node -e "const fs=require('fs');const a=JSON.parse(fs.readFileSync('reports/aggregated.json','utf8'));const v=[];for(const r of (Array.isArray(a)?a:[a])){for(const finding of (r.Results||[])){for(const v0 of (finding.Vulnerabilities||[])){v.push({id:`trivy:${finding.Target}:${v0.VulnerabilityID}`,severity:(v0.Severity||'UNKNOWN').toUpperCase(),name:v0.PkgName,version:v0.InstalledVersion,fixed_version:v0.FixedVersion,description:v0.Title||v0.VulnerabilityID,identifiers:[{type:'trivy',name:v0.VulnerabilityID,value:v0.VulnerabilityID}]});}}}const r={version:'15.0.0',scan:{start_time:new Date().toISOString(),end_time:new Date().toISOString(),analyzer:{id:'trivy',name:'Trivy',version:'0.58.0'},scanner:{id:'trivy',name:'Trivy',version:'0.58.0'},type:'container_scanning'},vulnerabilities:v};fs.writeFileSync('gl-container-scanning-report.json',JSON.stringify(r,null,2));console.log('Wrote '+v.length+' container vulns');"
   artifacts:
     when: always
     reports:
       container_scanning: gl-container-scanning-report.json
     paths:
       - reports/
+      - gl-container-scanning-report.json
     expire_in: 7 days
   allow_failure: true
   rules:
