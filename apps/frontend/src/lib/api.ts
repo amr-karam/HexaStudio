@@ -1,3 +1,5 @@
+import { captureException } from '@sentry/nextjs';
+
 /**
  * Shared HTTP helpers for talking to the backend/API.
  *
@@ -43,12 +45,12 @@ export async function fetchJsonSafe<T>(
       timeoutMs !== undefined ? AbortSignal.timeout(timeoutMs) : options.signal;
     const response = await fetch(url, { ...options, signal });
     if (!response.ok) {
-      console.error(`fetchJsonSafe: ${url} responded with ${response.status} ${response.statusText}`);
+      captureException(new Error(`fetchJsonSafe: ${url} responded with ${response.status} ${response.statusText}`));
       return fallback;
     }
     return (await response.json()) as T;
   } catch (error) {
-    console.error(`fetchJsonSafe: request to ${url} failed:`, error);
+    captureException(error);
     return fallback;
   }
 }
