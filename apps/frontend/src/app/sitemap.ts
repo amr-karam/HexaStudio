@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { fetchProjects } from '@/features/portfolio/lib/fetchProjects';
+import { captureException } from '@sentry/nextjs';
 
 const baseUrl = 'https://hexastudio.net';
 
@@ -48,7 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     return [...staticPages, ...projectPages];
   } catch (error) {
-    console.error('Failed to fetch projects for sitemap:', error);
+    captureException(error);
     return staticPages;
   }
 }

@@ -9,7 +9,6 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("Uncaught error:", error);
     captureException(error);
   }, [error]);
   return (

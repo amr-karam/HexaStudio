@@ -5,7 +5,7 @@ import { ScrollFadeIn } from '@/components/ScrollFadeIn';
 import { RadialGlow } from '@/components/animation';
 import { useFAQs } from '@/features/faq/hooks/useFAQs';
 import { useLocale } from '@/i18n/LocaleProvider';
-import { FAQResponse } from '@hexastudio/types';
+import { FAQ, FAQResponse } from '@hexastudio/types';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { cn } from '@/lib/utils';
 
@@ -17,13 +17,21 @@ const fallbackFAQs = [
   { question: 'Can you integrate with our existing BIM workflow?', answer: 'Yes. We work with Revit, ArchiCAD, SketchUp, and other BIM tools. We can import your models directly and build upon your existing design data to create stunning visualizations.' },
 ];
 
-export const FAQSection = () => {
+interface FAQSectionProps {
+  faqs?: FAQ[];
+}
+
+export const FAQSection = ({ faqs: serverFaqs }: FAQSectionProps = {}) => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const { t } = useLocale();
   const { data } = useFAQs() as { data: FAQResponse | undefined };
   const { staticMode } = useMotionPolicy();
 
-  const faqs = (data?.faqs && data.faqs.length > 0 ? data.faqs : fallbackFAQs).map((item: { question: string; answer: string | Array<{ text?: string }> }) => ({
+  const rawFaqs = serverFaqs && serverFaqs.length > 0
+    ? serverFaqs
+    : (data?.faqs && data.faqs.length > 0 ? data.faqs : fallbackFAQs);
+
+  const faqs = rawFaqs.map((item: { question: string; answer: string | Array<{ text?: string }> }) => ({
     question: item.question,
     answer: typeof item.answer === 'string' ? item.answer : (item.answer as Array<{ text?: string }>).map(b => b.text || '').join(''),
   }));
