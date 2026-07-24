@@ -125,7 +125,7 @@ export default function RootLayout({
         </noscript>
         <AppProviders>
           <CinematicPreloader />
-          <AnimationDebug />
+          {process.env.NODE_ENV === 'development' && <AnimationDebug />}
           <StructuredData />
           <a
             href="#main-content"
