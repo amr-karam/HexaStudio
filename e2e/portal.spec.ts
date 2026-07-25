@@ -323,7 +323,5 @@ test.describe("Portal - Cross-page navigation", () => {
       const h1 = page.locator("h1").first();
       await expect(h1).toBeVisible({ timeout: 8000 });
     }
-  });
 });
-
-}
+});
