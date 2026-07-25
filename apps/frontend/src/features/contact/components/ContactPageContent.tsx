@@ -78,7 +78,7 @@ export function ContactPageContent({ faqs }: ContactPageContentProps) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
+            className="text-xs uppercase tracking-[0.5em] text-neutral-400 mb-6 block font-mono"
           >
             Connect
           </motion.span>
@@ -103,8 +103,8 @@ export function ContactPageContent({ faqs }: ContactPageContentProps) {
             >
               <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
                 <div className="flex flex-col gap-2 group">
-                  <label className="text-[10px] uppercase tracking-widest text-neutral-500 group-focus-within:text-accent transition-colors duration-500">Full Name</label>
                   <Input
+                    label="Full Name"
                     placeholder="John Doe"
                     value={formState.name}
                     onChange={(e) => setFormState({ ...formState, name: e.target.value })}
@@ -114,8 +114,8 @@ export function ContactPageContent({ faqs }: ContactPageContentProps) {
                 </div>
 
                 <div className="flex flex-col gap-2 group">
-                  <label className="text-[10px] uppercase tracking-widest text-neutral-500 group-focus-within:text-accent transition-colors duration-500">Email Address</label>
                   <Input
+                    label="Email Address"
                     placeholder="email@example.com"
                     type="email"
                     value={formState.email}
@@ -126,8 +126,8 @@ export function ContactPageContent({ faqs }: ContactPageContentProps) {
                 </div>
 
                 <div className="flex flex-col gap-2 md:col-span-2 group">
-                  <label className="text-[10px] uppercase tracking-widest text-neutral-500 group-focus-within:text-accent transition-colors duration-500">Company (Optional)</label>
                   <Input
+                    label="Company (Optional)"
                     placeholder="Studio or Firm Name"
                     value={formState.company}
                     onChange={(e) => setFormState({ ...formState, company: e.target.value })}
@@ -136,8 +136,8 @@ export function ContactPageContent({ faqs }: ContactPageContentProps) {
                 </div>
 
                 <div className="flex flex-col gap-2 group">
-                  <label className="text-[10px] uppercase tracking-widest text-neutral-500 group-focus-within:text-accent transition-colors duration-500">Phone (Optional)</label>
                   <Input
+                    label="Phone (Optional)"
                     placeholder="+1 (555) 000-0000"
                     type="tel"
                     value={formState.phone}
@@ -147,8 +147,9 @@ export function ContactPageContent({ faqs }: ContactPageContentProps) {
                 </div>
 
                 <div className="flex flex-col gap-2 group">
-                  <label className="text-[10px] uppercase tracking-widest text-neutral-500 group-focus-within:text-accent transition-colors duration-500">Service Type (Optional)</label>
+                  <label className="text-[10px] uppercase tracking-widest text-neutral-400 group-focus-within:text-accent transition-colors duration-500">Service Type (Optional)</label>
                   <select
+                    aria-label="Service Type"
                     value={formState.service}
                     onChange={(e) => setFormState({ ...formState, service: e.target.value })}
                     className="w-full bg-transparent border-b border-border text-foreground p-0 focus:outline-none focus:border-accent transition-colors duration-300 appearance-none cursor-pointer"
@@ -161,8 +162,9 @@ export function ContactPageContent({ faqs }: ContactPageContentProps) {
                 </div>
 
                 <div className="flex flex-col gap-2 md:col-span-2 group">
-                  <label className="text-[10px] uppercase tracking-widest text-neutral-500 group-focus-within:text-accent transition-colors duration-500">Budget Range (Optional)</label>
+                  <label className="text-[10px] uppercase tracking-widest text-neutral-400 group-focus-within:text-accent transition-colors duration-500">Budget Range (Optional)</label>
                   <select
+                    aria-label="Budget Range"
                     value={formState.budget}
                     onChange={(e) => setFormState({ ...formState, budget: e.target.value })}
                     className="w-full bg-transparent border-b border-border text-foreground p-0 focus:outline-none focus:border-accent transition-colors duration-300 appearance-none cursor-pointer"
@@ -176,8 +178,9 @@ export function ContactPageContent({ faqs }: ContactPageContentProps) {
                 </div>
 
                 <div className="flex flex-col gap-2 md:col-span-2 group">
-                  <label className="text-[10px] uppercase tracking-widest text-neutral-500 group-focus-within:text-accent transition-colors duration-500">Your Vision</label>
+                  <label className="text-[10px] uppercase tracking-widest text-neutral-400 group-focus-within:text-accent transition-colors duration-500">Your Vision</label>
                   <textarea
+                    aria-label="Your Vision"
                     placeholder="Tell us about your architectural goals..."
                     value={formState.message}
                     onChange={(e) => setFormState({ ...formState, message: e.target.value })}

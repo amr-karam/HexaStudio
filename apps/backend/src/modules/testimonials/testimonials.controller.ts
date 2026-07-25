@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query, VERSION_NEUTRAL } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { TestimonialsService } from './testimonials.service';
 import type { Testimonial, TestimonialResponse } from '@hexastudio/types';
 
@@ -12,6 +12,7 @@ export class TestimonialsController {
   @ApiOperation({ summary: 'Get all testimonials with pagination' })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiResponse({ status: 200, description: 'List of testimonials' })
   async findAll(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
@@ -24,12 +25,14 @@ export class TestimonialsController {
 
   @Get('featured')
   @ApiOperation({ summary: 'Get featured testimonials' })
+  @ApiResponse({ status: 200, description: 'Featured testimonials' })
   async findFeatured(): Promise<Testimonial[]> {
     return this.testimonialsService.getFeaturedTestimonials();
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get testimonial by ID' })
+  @ApiResponse({ status: 200, description: 'Testimonial found' })
   async findOne(@Param('id') id: string): Promise<Testimonial> {
     return this.testimonialsService.getTestimonialById(id);
   }

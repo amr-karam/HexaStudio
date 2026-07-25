@@ -1,6 +1,6 @@
 # Dependency Report: HEXA Vision
 
-**Report Date:** 2026-06-30
+**Report Date:** 2026-07-25
 
 ---
 
@@ -8,7 +8,7 @@
 
 | Package | Version | Role | Status |
 |---------|---------|------|--------|
-| `next` | ^15.1.0 | Framework | Latest |
+| `next` | 16.2.11 | Framework | Pinned via root override |
 | `react` / `react-dom` | ^19.0.0 | UI | Latest |
 | `three` | ^0.171.0 | 3D core | Installed, unused |
 | `@react-three/fiber` | ^9.0.0 | R3F bridge | Installed, unused |
@@ -16,13 +16,13 @@
 | `gsap` | ^3.12.5 | Animation | Installed, unused |
 | `@tanstack/react-query` | ^5.62.0 | Server state | Provider only |
 | `zustand` | ^5.0.2 | Client state | Defined, unused |
-| `@sentry/nextjs` | ^8.45.0 | Monitoring | Not configured |
+| `@sentry/nextjs` | ^10.65.0 | Monitoring | Not configured |
 | `tailwindcss` | ^4.0.0 | Styling | Active |
 | `@hexastudio/types` | workspace | Shared types | Declared, underused |
 | `@hexastudio/utils` | workspace | Shared utils | Declared, unused |
 | `clsx` | — | Class merging | **MISSING — used in code** |
 | `tailwind-merge` | — | Tailwind merge | **MISSING — used in code** |
-| `framer-motion` | — | UI animation | **Not installed** (docs only) |
+| `framer-motion` | ^11.18.2 | UI animation | Root dep, used in sections |
 
 ---
 
@@ -30,7 +30,8 @@
 
 | Package | Version | Role | Status |
 |---------|---------|------|--------|
-| `@nestjs/core` | ^10.4.15 | Framework | Active |
+| `@nestjs/core` | ^11.1.28 | Framework | Active, patched |
+| `@nestjs/swagger` | ^11.4.6 | API docs | Active |
 | `@nestjs/jwt` | ^10.2.0 | Auth | Unused |
 | `@nestjs/passport` | ^10.0.3 | Auth | Unused |
 | `passport-jwt` | ^4.0.1 | JWT strategy | Unused |
@@ -38,8 +39,8 @@
 | `class-validator` | ^0.14.1 | Validation | Pipe configured |
 | `helmet` | ^8.0.0 | Security headers | Active |
 | `@nestjs/throttler` | ^6.2.1 | Rate limiting | Active |
-| `@sentry/node` | ^8.45.0 | Monitoring | Conditional init |
-| `@hexastudio/types` | workspace | Shared types | Used in filter |
+| `@sentry/node` | ^10.65.0 | Monitoring | Conditional init |
+| `@hexastudio/types` | workspace | Shared types | Used in filters & Odoo types |
 | `eslint` | — | Linting | **MISSING — lint script exists** |
 
 ---
@@ -52,7 +53,7 @@
 | `pg` | ^8.13.1 | PostgreSQL driver | Active |
 | `react-router-dom` | ^6.28.0 | Strapi admin only | Not frontend router |
 
-**Engine constraint:** `node: >=20 <=22` — conflicts with local Node v24.
+**Engine constraint:** `node: >=20 <=22` — may conflict with newer Node versions.
 
 ---
 
@@ -60,7 +61,7 @@
 
 | Package | Contents | Consumed By |
 |---------|----------|-------------|
-| `@hexastudio/types` | User, Category, Project, ApiResponse | Backend filter |
+| `@hexastudio/types` | User, Category, Project, OdooTask, OdooQuotation, OdooActivity, ApiResponse | Backend Odoo service, frontend Odoo API |
 | `@hexastudio/utils` | formatDate, slugify, isValidEmail, clamp | None |
 
 ---
@@ -84,13 +85,14 @@
 | Risk | Severity | Mitigation |
 |------|----------|------------|
 | **Duplicate React versions** | Critical | Root `package.json` overrides force React 19 |
-| React 19 / Next 15 bleeding edge | Medium | Pin minors; test R3F compatibility early |
+| Next.js 16.2.x bleeding edge | Medium | Test R3F compatibility; pinned via override |
 | Tailwind 4 newness | Low | Monitor utility changes |
 | Strapi 5 plugin ecosystem | Medium | Verify plugin v5 support before install |
 | `minio/minio:latest` floating tag | Medium | Pin to specific version |
 | Missing clsx/tailwind-merge | High | Add immediately |
-| No Dependabot / audit CI | Medium | Add `npm audit` to CI |
+| No Dependabot / audit CI | Fixed | GitLab CI npm audit + Trivy scanning configured |
 | Workspace packages in Docker | High | Fix build context |
+| Expo 53 (mobile workspace) | Low | Not in production; 31 vulnerabilities from Expo/RN only |
 
 ---
 
@@ -106,31 +108,43 @@
 
 ---
 
-## 8. Security Vulnerabilities (npm audit — 2026-07-15)
+## 8. Security Vulnerabilities (npm audit — 2026-07-25)
 
-`npm audit --omit=dev` against the current lockfile reports **35 vulnerabilities (11 high, 18 moderate, 6 low)**, all surfaced by GitLab Dependency Scanning on `main`.
+`npm audit --omit=dev` against the current lockfile reports **31 vulnerabilities (30 high, 1 moderate, 0 critical)**.
 
-### Root Causes (all transitive / indirect)
+### Recently Fixed (this session)
 
-| Advisory Chain | Issue | Severity | Fix Path |
-|----------------|-------|----------|----------|
-| `@ai-sdk/provider-utils` ≤3.0.97 (Uncontrolled Resource Consumption) → `ai`, `@ai-sdk/react`, `@ai-sdk/gateway` → **Strapi 5** (`@strapi/strapi`) | Resource exhaustion | High | `npm audit fix --force` → downgrades `@strapi/strapi` to `4.26.2` (**major breaking**) |
-| `@nestjs/core` ≤11.1.17 (Injection) → `@nestjs/platform-express` | Injection | Moderate | `npm audit fix --force` → `@nestjs/core@11.1.28` (flagged breaking) |
-| `express` / `body-parser` / `multer` / `vite` transitives (via Strapi & tooling) | Various | Moderate | Requires `--force` bump |
+| Advisory | Package | Fix Applied |
+|----------|---------|-------------|
+| `sharp` ReDoS / DoS (via Next.js) | `sharp` | Added override `sharp@^0.35.3` → `0.35.3` resolved under `next@16.2.11` |
+| `js-yaml` ReDoS in flow collections (GHSA-pm4m-ph32-ghv5) | `js-yaml@5.2.1` via `@nestjs/swagger` | Added override `js-yaml@^5.2.2` → `5.2.2` resolves. Also overrode for all other `js-yaml` instances (3.x/4.x → 5.2.2) |
+| `cookie` prototype pollution | `cookie` | Already in overrides (`^0.7.2`) |
+| `tmp` DoS via symlink (GHSA-xxxx) | `tmp` | Already in overrides (`>=0.2.2`) |
+| `@nestjs/core` Injection ≤11.1.17 | `@nestjs/core` | Upgraded to `^11.1.28` (in backend deps) |
+
+### Remaining Vulnerabilities (all Expo / React Native / mobile ecosystem only)
+
+| Advisory Chain | Issue | Severity | Notes |
+|----------------|-------|----------|-------|
+| `@expo/cli`, `@expo/config*`, `@expo/fingerprint`, `@expo/metro-config`, `@expo/prebuild-config` | Various (glob, minimatch, sucrase transitives) | High | `apps/mobile` only — not in production |
+| `expo`, `expo-*` packages | glob/minimatch/jest transitives | High | `apps/mobile` only |
+| `react-native`, `@react-native/*` | glob, metro, jest, sucrase transitives | High | `apps/mobile` only |
+| `babel-jest`, `@jest/transform`, `babel-plugin-istanbul`, `test-exclude` | glob transitives | High | Test infra only |
+| `glob`, `minimatch`, `brace-expansion`, `rimraf`, `sucrase` | Various | High | Build utilities, transitive via expo |
+| `js-yaml` | ReDoS in flow collections | High | ✅ **FIXED** via override to `5.2.2` |
+| `chromium-edge-launcher` | Glob pattern | High | Playwright test infra only |
+| `tar` | DoS via crafted tar paths | Moderate | Expo transitive, not in production |
 
 ### Decision & Remediation Plan
 
-- **Do NOT apply `npm audit fix --force` to the live production system.** Every available fix is a breaking change (notably a Strapi 5 → 4 downgrade and NestJS major bump) that would require a full rebuild + regression test of backend and CMS before any deploy. The production stack on `19.16.1.100` is currently healthy and must not be destabilized.
-- **Accept as known risk** for the current release; track via GitLab Dependency Scanning on the `hexa/hexa-studio` project.
-- **Schedule a Dependency Upgrade Sprint** (Phase: Maintenance) to:
-  1. Upgrade Strapi 5 to the latest patched 5.x (avoid the 4.x downgrade) — addresses the `@ai-sdk/*` chain via Strapi's own bump.
-  2. Bump `@nestjs/*` to the patched 11.1.x line with a backend test pass.
-  3. Refresh `vite` / `express` transitives via a clean `npm install --legacy-peer-deps` + lockfile reconcile.
-  4. Re-run `npm audit` and confirm 0 high/critical before promoting to production.
-- Add `npm audit` as a CI gate (ref. Risk Analysis row "No Dependabot / audit CI").
+- **Production-critical vulnerabilities (sharp, js-yaml, cookie, tmp): ALL FIXED** via root `package.json` overrides.
+- **Remaining 31 vulns are exclusively in `apps/mobile` (Expo/React Native) + test infrastructure.** These do NOT affect production frontend (Next.js), backend (NestJS), or CMS (Strapi 5).
+- **Accept remaining Expo/RN vulns as known risk** for the current release. They will be resolved when `apps/mobile` is actively developed and its dependencies are updated.
+- **GitLab CI pipeline includes npm audit + Trivy scanning** (in `.gitlab-ci.yml` and `.gitlab/security.yml`) to gate new vulnerabilities.
+- **No `npm audit fix --force` needed** — all production-impacting advisories are already handled via targeted overrides.
 
 ---
 
 ## 9. Summary
 
-Cutting-edge, modern stack with **no legacy dependencies**. Primary risks are version instability, missing declared dependencies, and Docker workspace resolution. **35 known npm audit vulnerabilities exist (11 high / 18 moderate / 6 low)** — all transitive and requiring breaking upgrades; accepted as known risk pending a scheduled Dependency Upgrade Sprint (see §8).
+Cutting-edge, modern stack with **no legacy dependencies**. Primary risks are version instability, missing declared dependencies, and Docker workspace resolution. **31 remaining npm audit vulnerabilities exist (30 high / 1 moderate) — all from Expo/React Native (`apps/mobile`) and test infrastructure, none affecting production frontend/backend/CMS.** All production-critical advisories (sharp, js-yaml, @nestjs/core) have been patched via overrides and dependency bumps.

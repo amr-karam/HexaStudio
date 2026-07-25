@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query, VERSION_NEUTRAL } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { PagesService } from './pages.service';
 import type { Page, PageResponse } from '@hexastudio/types';
 
@@ -13,6 +13,7 @@ export class PagesController {
   @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number (default: 1)' })
   @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Items per page (default: 20, max: 100)' })
   @ApiQuery({ name: 'locale', required: false, type: String, description: 'Locale code (default: en)' })
+  @ApiResponse({ status: 200, description: 'List of pages' })
   async findAll(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
@@ -28,6 +29,7 @@ export class PagesController {
   @Get(':slug')
   @ApiOperation({ summary: 'Get a page by slug' })
   @ApiQuery({ name: 'locale', required: false, type: String, description: 'Locale code (default: en)' })
+  @ApiResponse({ status: 200, description: 'Page found' })
   async findOne(
     @Param('slug') slug: string,
     @Query('locale') locale?: string,

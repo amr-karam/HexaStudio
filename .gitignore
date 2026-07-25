@@ -100,6 +100,10 @@ deploy.py
 sshrun.py
 upload_script*.py
 
+# Lighthouse CI temp data
+.lighthouse-tmp/
+HEXA-Vision-Playbook/**/lighthouse-*.json
+
 # Large 3D source assets (not web-ready)
 *.max
 *.rar

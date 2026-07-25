@@ -21,14 +21,20 @@ import {
   ApiBearerAuth,
   ApiConsumes,
   ApiBody,
+  ApiResponse,
 } from '@nestjs/swagger';
 import { PortalService } from './portal.service';
+import { PortalCopilotService } from './portal-copilot.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import type { PortalDashboardData, PortalTask, PortalTeamMember, PortalProjectDetail } from './portal-dashboard.types';
 
 @ApiTags('Portal')
 @Controller({ path: 'portal', version: ['1', VERSION_NEUTRAL] })
 export class PortalController {
-  constructor(private readonly portalService: PortalService) {}
+  constructor(
+    private readonly portalService: PortalService,
+    private readonly portalCopilot: PortalCopilotService,
+  ) {}
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
@@ -36,9 +42,23 @@ export class PortalController {
     return this.portalService.getClientProjectData();
   }
 
-  @Get('demo')
-  async getDemoPortalData() {
-    return this.portalService.getClientProjectData();
+  // --- Dashboard Aggregation ---
+
+  @Get('dashboard')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get aggregated dashboard data',
+    description:
+      'Returns project health, KPIs, recent activity, upcoming milestones, pending approvals, and notification summary for the authenticated client.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Dashboard data returned successfully.',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized – invalid or missing JWT.' })
+  async getDashboard(@Req() req: { user: { email: string } }): Promise<PortalDashboardData> {
+    return this.portalService.getDashboardData(req.user.email);
   }
 
   // --- Client-scoped Odoo endpoints ---
@@ -75,6 +95,50 @@ export class PortalController {
     const partnerId = await this.portalService.resolvePartnerId(req.user.email);
     if (!partnerId) return [];
     return this.portalService.getClientInvoices(partnerId);
+  }
+
+  // --- Workspace & Kanban ---
+
+  @Get('projects/:projectId/detail')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get detailed project information for the workspace',
+    description: 'Returns project metadata, team members, milestones, and progress for the authenticated client.',
+  })
+  @ApiResponse({ status: 200, description: 'Project detail returned successfully.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized – invalid or missing JWT.' })
+  async getProjectDetail(
+    @Param('projectId') projectId: string,
+    @Req() req: { user: { email: string } },
+  ): Promise<PortalProjectDetail | null> {
+    return this.portalService.getProjectDetail(parseInt(projectId, 10), req.user.email);
+  }
+
+  @Get('projects/:projectId/tasks')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get Kanban tasks for a project',
+    description: 'Returns client-visible tasks mapped to Kanban status columns (Todo, In Progress, Review, Done).',
+  })
+  @ApiResponse({ status: 200, description: 'Tasks returned successfully.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized – invalid or missing JWT.' })
+  async getProjectTasks(@Param('projectId') projectId: string): Promise<PortalTask[]> {
+    return this.portalService.getProjectTasks(parseInt(projectId, 10));
+  }
+
+  @Get('projects/:projectId/team')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get team members assigned to a project',
+    description: 'Returns HEXA Studio team members working on the project.',
+  })
+  @ApiResponse({ status: 200, description: 'Team members returned successfully.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized – invalid or missing JWT.' })
+  async getProjectTeam(@Param('projectId') projectId: string): Promise<PortalTeamMember[]> {
+    return this.portalService.getProjectTeam(parseInt(projectId, 10));
   }
 
   // --- Document Endpoints ---
@@ -167,5 +231,18 @@ export class PortalController {
   @ApiOperation({ summary: 'Get notification preferences for the authenticated user' })
   async getNotificationPreferences(@Req() req: { user: { id: string } }) {
     return this.portalService.getNotificationPreferences(req.user.id);
+  }
+
+  @Post('copilot/query')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Query the HEXA Portal AI Copilot for project context' })
+  @ApiResponse({ status: 200, description: 'Copilot response returned.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized – invalid or missing JWT.' })
+  async copilotQuery(
+    @Body('query') query: string,
+    @Body('projectName') projectName?: string,
+  ) {
+    return this.portalCopilot.processClientQuery(query, projectName);
   }
 }

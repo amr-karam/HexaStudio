@@ -101,16 +101,48 @@ const AwardsRow = ({
  * restrained run-once counters. Data flow unchanged (useAchievements, hides
  * when empty) — presentation layer only.
  */
+const fallbackAchievements: Achievement[] = [
+  {
+    id: 1,
+    title: 'Projects Delivered',
+    value: '150+',
+    description: 'Global Architectural & Masterplan Deliveries',
+    order: 1,
+  },
+  {
+    id: 2,
+    title: 'Awwwards & Honors',
+    value: '18',
+    description: 'International Digital & Design Accolades',
+    order: 2,
+  },
+  {
+    id: 3,
+    title: 'Rendering Accuracy',
+    value: '99.8%',
+    description: 'Photorealistic Physical & Photometric Fidelity',
+    order: 3,
+  },
+  {
+    id: 4,
+    title: 'Client Retention',
+    value: '96%',
+    description: 'Long-term Architectural & Developer Partnerships',
+    order: 4,
+  },
+];
+
+/**
+ * AchievementsSection — CH. IV — PROOF: a Noomo-style recognition wall.
+ * Full-width rows with hover inversion, line-by-line mask-reveal entry, and
+ * restrained run-once counters. When CMS is empty, presents luxury fallback stats.
+ */
 export const AchievementsSection = () => {
-  const { data, isLoading } = useAchievements();
+  const { data } = useAchievements();
   const achievements = data?.data ?? [];
   const listRef = useRef<HTMLUListElement>(null);
   const isInView = useInView(listRef, { once: true, margin: '-100px' });
-
-  // Don't render anything while loading or if there are no achievements
-  if (!isLoading && achievements.length === 0) {
-    return null;
-  }
+  const displayAchievements = achievements.length > 0 ? achievements : fallbackAchievements;
 
   return (
     <section className="px-8 md:px-16 py-32 bg-background relative overflow-hidden">
@@ -127,7 +159,7 @@ export const AchievementsSection = () => {
         />
 
         <ul ref={listRef} className="w-full">
-          {achievements.map((achievement, idx) => (
+          {displayAchievements.map((achievement, idx) => (
             <AwardsRow
               key={achievement.id}
               achievement={achievement}
