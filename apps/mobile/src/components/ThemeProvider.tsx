@@ -1,31 +1,30 @@
-import { createContext, useContext, ReactNode } from 'react';
+/**
+ * HEXA Studio — Premium Theme Provider
+ *
+ * Exposes the full luxury design token system (colors, typography, spacing,
+ * motion, shadows, glass) to every component via React Context.
+ *
+ * Design source: 07-DESIGN/DESIGN_SYSTEM.md, COLORS.md, TYPOGRAPHY.md
+ * Motion source: 06-STANDARDS/MOTION_SYSTEM.md
+ *
+ * @module components/ThemeProvider
+ */
 
-export interface ThemeColors {
-  background: string;
-  surface: string;
-  foreground: string;
-  muted: string;
-  accent: string;
-  border: string;
-  error: string;
-}
+import { createContext, useContext, type ReactNode } from 'react';
+import { theme, type Theme } from '../theme/tokens';
 
-const HEXA_THEME: ThemeColors = {
-  background: '#0a0a0a',
-  surface: '#111111',
-  foreground: '#f5f5f0',
-  muted: '#8a8a80',
-  accent: '#d4af37',
-  border: 'rgba(255, 255, 255, 0.08)',
-  error: '#ef4444',
-};
-
-const ThemeContext = createContext<{ colors: ThemeColors }>({ colors: HEXA_THEME });
+const ThemeContext = createContext<Theme>(theme);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  return <ThemeContext.Provider value={{ colors: HEXA_THEME }}>{children}</ThemeContext.Provider>;
+  return <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>;
 }
 
-export function useTheme() {
+/** Full theme: colors, typography, spacing, motion, shadows, glass */
+export function useTheme(): Theme {
   return useContext(ThemeContext);
+}
+
+/** Color token shortcut — the most frequently used subset */
+export function useColors() {
+  return useContext(ThemeContext).colors;
 }

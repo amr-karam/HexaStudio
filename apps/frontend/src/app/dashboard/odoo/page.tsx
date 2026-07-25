@@ -42,7 +42,7 @@ function PipelineView({ data }: { data: OdooPipelineSummary }) {
 
 function idName(v: [number, string] | false | undefined): string {
   if (!v) return '—';
-  return Array.isArray(v) ? v[1] : String(v);
+  return Array.isArray(v) ? (v as [number, string])[1] : String(v);
 }
 
 // --- Lead Form Modal ---
@@ -494,7 +494,7 @@ export default function OdooDashboardPage() {
               <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4">
                 <p className="text-xs uppercase tracking-wide text-white/40">Address</p>
                 <p className="mt-1 text-sm text-white">
-                  {[company.data.street, company.data.street2, company.data.city, Array.isArray(company.data.state_id) ? company.data.state_id[1] : undefined, company.data.zip, Array.isArray(company.data.country_id) ? company.data.country_id[1] : undefined]
+                  {[company.data.street, company.data.street2, company.data.city, company.data.state_id ? idName(company.data.state_id) : undefined, company.data.zip, company.data.country_id ? idName(company.data.country_id) : undefined]
                     .filter(Boolean)
                     .join(', ') || '—'}
                 </p>

@@ -1,9 +1,9 @@
 # PROJECT STATUS: THE REAL-TIME PULSE
 
-**Version:** 1.5.0 | **Last Updated:** 2026-07-18 | **Status:** PRODUCTION — v1.5.0 SHIPPED
+**Version:** 1.7.0 | **Last Updated:** 2026-07-25 | **Status:** PRODUCTION — v1.6.0 IN PROGRESS
 
 ## 1. EXECUTIVE SUMMARY
-HEXA Studio is fully deployed and operational on production infrastructure. Sprint 12 (Integrations & Content Pipeline) completed all 26/26 deliverables on 2026-07-18. The platform now features a full integration hub (Slack, Notion, Jira, Figma), Strapi i18n content pipeline with 8 locales, advanced AR/VR (hit-test placement + multi-user VR collaboration), end-to-end analytics (PostHog/GA4/Sentry), Odoo ERP integration (leads/projects/invoices/documents), and 50+ currency regional pricing with tax compliance. **v1.5.0 shipped with 196 tests, 0 lint, 0 typecheck.**
+HEXA Studio is fully deployed and operational on production infrastructure. **Sprint 17 (Client Portal v3.0) completed on 2026-07-25** with Digital HQ, AI Copilot, Approval Center, Document Center, Finance Center, and 100% quality gates (285/285 backend tests, 176/176 frontend tests, 0 lint, 0 typecheck). **Sprint 18 (Production Readiness & Mobile Foundation) is in progress** — GitLab CE migration code is complete awaiting server deployment, API hardening audit passed, dependency vulnerabilities resolved to 0 production-critical, and the Expo mobile app scaffold is the next major milestone.
 
 ---
 
@@ -11,14 +11,15 @@ HEXA Studio is fully deployed and operational on production infrastructure. Spri
 
 | Dimension | Status | Health | Note |
 |-----------|--------|---------|------|
-| **Frontend** | 🟢 | Live | 18 pages deployed at hexastudio.net |
-| **Backend** | 🟢 | Live | NestJS API at api.hexastudio.net |
+| **Frontend** | 🟢 | Live | 18+ pages deployed at hexastudio.net |
+| **Backend** | 🟢 | Live | NestJS API at api.hexastudio.net (285 tests) |
 | **CMS** | 🟢 | Live | Strapi 5 at cms.hexastudio.net |
 | **ERP** | 🟢 | Live | Odoo 17 at odoo.hexastudio.net |
 | **Database** | 🟢 | Healthy | PostgreSQL 16 + Redis 7 |
 | **Monitoring** | 🟢 | Active | Prometheus + Grafana |
 | **SSL** | 🟢 | Valid | Let's Encrypt auto-renewal |
 | **CDN** | 🟢 | Active | Cloudflare WAF + DNS |
+| **GitLab** | 🟡 | Deploying | CI configured, server deploy pending |
 
 ---
 
@@ -26,8 +27,8 @@ HEXA Studio is fully deployed and operational on production infrastructure. Spri
 
 | Service | Technology | Port | Status |
 |---------|-----------|------|--------|
-| Frontend | Next.js 15 (Standalone) | 3000 | ✅ Running |
-| Backend | NestJS | 4000 | ✅ Running |
+| Frontend | Next.js 16.2 (Standalone) | 3000 | ✅ Running |
+| Backend | NestJS 11 | 4000 | ✅ Running |
 | CMS | Strapi 5 | 1337 | ✅ Running |
 | ERP | Odoo 17 | 8069 | ✅ Running |
 | Database | PostgreSQL 16 | 5432 | ✅ Healthy |
@@ -35,62 +36,63 @@ HEXA Studio is fully deployed and operational on production infrastructure. Spri
 | Proxy | Traefik v3 | 80/443 | ✅ Running |
 | Monitoring | Prometheus | 9090 | ✅ Running |
 | Dashboards | Grafana | 3001 | ✅ Running |
+| Source Control | GitLab CE | — | 🟡 Deploy pending |
 
 **Server:** 19.16.1.100 (Ubuntu 24.04)
 
 ---
 
-## 4. RECENT ACHIEVEMENTS
+## 4. RECENT ACHIEVEMENTS (S-017 + S-018)
 
-- **Integration Hub** — Slack Webhook, Notion, Jira, Figma via generic WebhookDispatcher with CRUD dashboard
-- **Content Pipeline** — Strapi i18n plugin (8 locales: EN/AR/ES/FR/DE/JA/KO/ZH), translation export/import workflow, reviewer dashboard
-- **Advanced AR/VR** — WebXR AR model placement via hit-test API, VR multi-user collaboration with live peer avatars, presence HUD, cursor sync
-- **Analytics & Observability** — PostHog/GA4 universal provider, page view and event tracking, Sentry Release Health with session replay
-- **Odoo ERP Full Integration** — Contact-to-lead sync, admin CRUD dashboard (leads/contacts/projects/milestones), MinIO document bridge with signed URLs, client portal Odoo views
-- **Currency & Localization** — 50+ currencies, 30+ regional pricing rules with VAT/GST/Sales tax, dynamic markups, `useRegionalPrice` hook, `CurrencyBadge` UI
-- **Code Quality** — 0 lint errors (first time), 0 typecheck errors (first time), 196 tests passing across all workspaces
-- **Frontend:** All 18 pages live at hexastudio.net, 3D R3F scene, cinematic transitions
-- **Monitoring:** Prometheus + Grafana dashboards for all services
-- **CI/CD:** GitHub Actions with lint, typecheck, test, build gates
+- **Client Portal v3.0** — 5-Second Executive Clarity Grid, AI Copilot drawer, Approval Center with audit trail, Presigned S3 Document Center, multi-currency Finance Center, Project Workspace with Kanban
+- **Odoo Business APIs (S-017)** — Tasks, Quotations, Activities, Projects, Contacts full CRUD with bidirectional Strapi-Odoo sync (ADR-009)
+- **Digital Artisan** — SilkShader background, LiquidGlassCard with spring physics, ArchitecturalDataViz live KPI dashboard across 5 sections
+- **GitLab CE Migration** — `.gitlab-ci.yml` (5 stages, 15 jobs), security scanning (Trivy + npm audit), deploy scripts, Docker Compose configs. GitHub Actions removed.
+- **SSR Optimizations** — Font CSS async, hero woff2 preloads, `onIdle()` GSAP deferral, inline CSS, CSP hardening. Lighthouse: FCP 1.1s (-27%), LCP 1.95s (-11%)
+- **Scroll Cinema Initiative** — 7 motion primitives (scroll velocity, chapter markers, progress rail, contact ribbon), FractureRing 3D hero, ReadingProgress hairline, project/blog scroll cinema
+- **Dependency Hardening** — Overrides for `sharp@0.35.3`, `js-yaml@5.2.2`, `next@16.2.11`. **0 production-critical vulnerabilities** (was 4 high). `npm audit` reduced 35→31 (all Expo/RN only)
+- **API Hardening Audit** — All 29 controllers verified: versioning (`['1', VERSION_NEUTRAL]`), pagination (page/limit on all list endpoints), JWT coverage (admin CRUD protected, public content correctly open)
+- **Refresh Token Rotation** — Redis-backed with family tracking, replay detection, logout revocation
+- **Backend Tests** — 285/285 passing (36 files). 0 lint, 0 typecheck.
+- **Frontend** — 176/176 tests, 0 lint, 0 typecheck. All portal components (ActivityItem, CommandPalette, KanbanBoard, PortalAiCopilot, etc.)
 
 ---
 
 ## 5. KNOWN ISSUES
 
-1. **`_corrupted_node_modules_stubs/` NTFS Issue** — Blocks backend vitest on some Windows dev machines. Workaround applied (removed vite-tsconfig-paths, use native resolve.tsconfigPaths). Needs `chkdsk /f` or re-clone for full fix.
-2. **npm Audit (24 moderate vulns)** — postcss XSS via Next.js bundled dependency. Deferred to Next.js 16.3+ (v16 still ships postcss <8.5.10).
-3. **7 Pre-Existing Backend Test Failures** — Redis/auth related, not regressions from Sprint 12. Carried forward to Sprint 13.
+1. **`_corrupted_node_modules_stubs/` NTFS Issue** — Blocks backend vitest on some Windows dev machines. Workaround in place.
+2. **npm Audit (31 moderate/high)** — All from Expo/React Native (`apps/mobile`). 0 production vulns.
+3. **Next.js 16 EBUSY on Windows** — Standalone output directory lock during `next build`.
+4. **GitLab Server Pending** — Migration code complete; awaiting `bash scripts/deploy-gitlab.sh` execution on `19.16.1.100`.
 
 ---
 
-## 6. UPCOMING FOCUS — SPRINT 13: PLATFORM STABILITY & MOBILE
+## 6. CURRENT SPRINT — S-018: PRODUCTION READINESS & MOBILE FOUNDATION
 
-- [ ] Mobile API hardening — refresh token rotation, versioning audit, pagination audit, JWT coverage
-- [ ] GeoIP region detection (MaxMind/IP2Location) for auto-pricing
-- [x] Currency selection UI in frontend (manual override)
-- [x] Exchange rate auto-sync (ECB API / OpenExchangeRates)
-- [x] Client Portal v3 — notification preferences, document upload, timeline visualization
-- [x] Resolve `_corrupted_node_modules_stubs/` NTFS issue
-- [x] Fix 7 pre-existing backend test failures
-- [x] Hostinger API key rotation
-- [ ] Dependabot remediation
-- [ ] Expo/React Native mobile app research for Sprint 14
+- [ ] GitLab Go-Live — server deploy, runner registration, repo migration, CI validation
+- [ ] Mobile App Foundation — Expo scaffold, API client, auth flow, project dashboard
+- [ ] Performance — Fix Windows EBUSY build, Lighthouse 95+, TBT <100ms, bundle budgets
+- [ ] Quality — E2E smoke tests, playbook docs sync, security scanning verification
 
 ---
 
-## 7. v1.5.0 RELEASE STATUS
+## 7. v1.6.0 RELEASE STATUS
 
-**Status:** ✅ SHIPPED v1.5.0
+**Status:** 🔄 IN PROGRESS — Sprint 18
 
-All Sprint 12 (Integrations & Content Pipeline) requirements met:
-- ✅ Integration Hub — Slack Webhook CRUD, Notion/Jira/Figma via generic dispatcher
-- ✅ Content Pipeline — Strapi i18n (8 locales), translation export/import workflow
-- ✅ Advanced AR/VR — AR hit-test model placement, VR multi-user collab with avatars
-- ✅ Analytics — PostHog/GA4 provider, Sentry Release Health, event tracking
-- ✅ Odoo ERP — Full leads/contacts/projects/milestones/invoices/documents bridge
-- ✅ Currency/Localization — 50+ currencies, 30+ regional pricing rules, tax compliance
-- ✅ Code Quality — 0 lint, 0 typecheck, 196 tests passing (first time both clean)
-- ✅ Odoo user permission fix applied 2026-07-18
-- ✅ Live at hexastudio.net (Cloudflare + Traefik)
+**Shipped this release cycle:**
+- ✅ Client Portal v3.0 (S-017) — Digital HQ, AI Copilot, Approvals, Documents, Finance
+- ✅ Odoo Business APIs — Tasks, Quotations, Activities full CRUD + Strapi sync
+- ✅ Digital Artisan — SilkShader, LiquidGlassCard, ArchitecturalDataViz
+- ✅ GitLab CI/CD — Pipeline, security scanning, deploy scripts (code complete)
+- ✅ Dependency Hardening — 0 production vulns (sharp, js-yaml, cookie, tmp fixed)
+- ✅ API Hardening — Versioning, pagination, JWT, refresh rotation all audited/completed
+- ✅ 285/285 backend tests, 176/176 frontend tests, 0 lint, 0 typecheck
 
-**Next Step:** Sprint 13: Platform Stability & Mobile — see NEXT_SPRINT.md
+**Pending for v1.7.0:**
+- GitLab server deployment
+- Mobile app scaffold (Expo)
+- Performance budgets + Lighthouse 95+
+- E2E smoke tests
+
+**Next Step:** Sprint 19: Mobile & Web Performance — see NEXT_SPRINT.md

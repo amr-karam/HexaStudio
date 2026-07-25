@@ -7,11 +7,12 @@ import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useLocale } from '@/i18n/LocaleProvider';
-import { CurrencySelector } from '@/features/currency';
+import dynamic from 'next/dynamic';
 import { makeTransition, REDUCED_TRANSITION, EASE } from '@/lib/motion';
 import { EASING, DUR, STAGGER_TOKENS } from '@/lib/motion/tokens';
 import { Magnetic } from '@/components/ui/Magnetic';
 import { useHEXAMotion } from '@/hooks/useHEXAMotion';
+const CurrencySelector = dynamic(() => import('@/features/currency/CurrencySelector').then((m) => ({ default: m.CurrencySelector })), { ssr: false });
 
 interface NavItemProps {
   label: string;

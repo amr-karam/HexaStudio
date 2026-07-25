@@ -58,7 +58,12 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  // Standalone output enables self-contained deployment by bundling
+  // node_modules into .next/standalone.  On Windows the recursive rmdir
+  // of the standalone tree can fail with EBUSY when directories are locked
+  // by file watchers / antivirus (Next.js 16 known Windows issue).
+  // Guard with an env var so local Windows dev uses default output mode.
+  output: process.env.NEXT_OUTPUT_STANDALONE === "true" ? "standalone" : undefined,
   reactStrictMode: true,
   poweredByHeader: false,
   transpilePackages: ["@hexastudio/types", "@hexastudio/utils", "@hexastudio/ui"],

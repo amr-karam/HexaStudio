@@ -1,24 +1,26 @@
 'use client';
 
-/**
- * HEXA Portal v3.0 — Support Center View
- *
- * Tickets, SLAs, Live Chat trigger, Knowledge Base, and priority escalations.
- */
-
 import React, { useState } from 'react';
 import { Icon } from './PortalIcons';
-import type { SupportTicket } from '../types';
 
-const TICKETS: SupportTicket[] = [
+interface Ticket {
+  id: string;
+  subject: string;
+  category: string;
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  status: 'open' | 'in_progress' | 'resolved';
+  createdAt: string;
+  messages: Array<{ id: string; sender: string; role: 'client' | 'support'; message: string; timestamp: string }>;
+}
+
+const TICKETS: Ticket[] = [
   {
-    id: 'TICK-101',
-    subject: 'Request for high-resolution 8K render export for print campaign',
-    category: 'technical',
-    priority: 'high',
+    id: 'TCK-2026-089',
+    subject: 'Request for 8K resolution render export',
+    category: 'Asset Request',
+    priority: 'medium',
     status: 'in_progress',
     createdAt: '2026-07-23T11:00:00Z',
-    updatedAt: '2026-07-23T14:30:00Z',
     messages: [
       { id: 'm1', sender: 'Client User', role: 'client', message: 'Can we get an 8K resolution export of Vantage Point A?', timestamp: '2026-07-23T11:00:00Z' },
       { id: 'm2', sender: 'Elena Rostova', role: 'support', message: 'Rendering pipeline queued for 8K output. Estimated delivery in 4 hours.', timestamp: '2026-07-23T14:30:00Z' },
@@ -28,6 +30,7 @@ const TICKETS: SupportTicket[] = [
 
 export function SupportCenterView() {
   const [showCreate, setShowCreate] = useState(false);
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -106,6 +109,39 @@ export function SupportCenterView() {
           ))}
         </div>
       </div>
+
+      {/* Submit Ticket Modal */}
+      {showCreate && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-neutral-900 border border-neutral-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-bold text-neutral-100">Submit Support Request</h3>
+              <button onClick={() => setShowCreate(false)} className="text-neutral-400 hover:text-neutral-200">
+                <Icon name="x" className="w-5 h-5" />
+              </button>
+            </div>
+            <p className="text-xs text-neutral-400">Your dedicated Project Manager will respond within your 15-minute SLA window.</p>
+            <div className="space-y-3">
+              <div>
+                <label className="text-xs font-medium text-neutral-300 block mb-1">Subject</label>
+                <input type="text" placeholder="e.g. Export request, Material query..." className="w-full bg-neutral-800 border border-neutral-700 rounded-xl px-3 py-2 text-sm text-neutral-100 placeholder-neutral-500" />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-neutral-300 block mb-1">Message</label>
+                <textarea rows={3} placeholder="Provide details for your request..." className="w-full bg-neutral-800 border border-neutral-700 rounded-xl px-3 py-2 text-sm text-neutral-100 placeholder-neutral-500" />
+              </div>
+            </div>
+            <div className="flex justify-end space-x-3 pt-2">
+              <button onClick={() => setShowCreate(false)} className="px-4 py-2 text-xs font-medium text-neutral-400 hover:text-neutral-200">
+                Cancel
+              </button>
+              <button onClick={() => setShowCreate(false)} className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold rounded-xl text-xs">
+                Submit Ticket
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

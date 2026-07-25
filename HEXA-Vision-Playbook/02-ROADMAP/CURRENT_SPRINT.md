@@ -1,14 +1,96 @@
-# CURRENT SPRINT: S-016 — TBT REDUCTION & REAL-DEVICE SWEEP (IN PROGRESS)
+# CURRENT SPRINT: S-018 — PRODUCTION READINESS & MOBILE FOUNDATION
 
-**Sprint ID:** S-016 | **Focus:** TBT Profiling, Real-Device Lighthouse, Font CSS Optimization | **Status:** IN PROGRESS | **Started:** 2026-07-23
+**Sprint ID:** S-018 | **Focus:** GitLab Go-Live, Mobile App Foundation, Performance Optimization, Quality Hardening | **Status:** IN PROGRESS | **Started:** 2026-07-25 | **Target:** 2026-08-15 | **v1.7.0 Target**
 
 ## 1. SPRINT OBJECTIVE
 
-Profile and reduce Total Blocking Time (TBT) below 200ms, run real-device Lighthouse sweeps, and close the remaining gap to 9.5/10 luxury score.
+Complete the GitLab CE migration (server deployment), lay the foundation for the Expo/React Native mobile application, resolve remaining Windows build issues, and harden quality gates for production confidence.
 
 ---
 
-## 2. DELIVERABLES
+## 2. DELIVERABLES & VERIFICATION
+
+### P0 — GitLab Go-Live
+- [ ] **GitLab CE Server Deployment** — Run `bash scripts/deploy-gitlab.sh` on `19.16.1.100`; verify GitLab CE web UI at `gitlab.hexastudio.net`
+- [ ] **GitLab Runner Registration** — Run `bash scripts/register-gitlab-runner.sh` with Docker executor
+- [ ] **Repo Migration** — Run `bash scripts/migrate-from-github.sh` to mirror `hexa-platform` monorepo
+- [ ] **CI Pipeline Validation** — Verify `.gitlab-ci.yml` pipeline executes (5 stages, 15 jobs) on first push
+- [ ] **Delete GitHub Remotes** — Remove GitHub Actions remnants after GitLab is confirmed operational
+- [ ] **Update README & Docs** — Point all documentation links to GitLab
+
+### P1 — Mobile App Foundation (Expo/React Native)
+- [ ] **Expo SDK Scaffold** — Initialize Expo project in `apps/mobile` with TypeScript, navigation, theming
+- [ ] **API Client Module** — Shared API client consuming NestJS backend endpoints (auth, projects, portal)
+- [ ] **Authentication Flow** — Login/register screens with JWT + refresh token rotation
+- [ ] **Project Dashboard** — Read-only project list and detail views consuming portal API
+- [ ] **Push Notification Setup** — Expo push notifications for project updates and approvals
+
+### P2 — Performance & Build Optimization
+- [ ] **Fix Windows EBUSY Build Error** — Resolve Next.js 16 standalone output directory lock on Windows
+- [ ] **Lighthouse Post-Fix Verification** — Re-run Lighthouse on live site; verify luxury score 9.5/10
+- [ ] **TBT Optimization** — Reduce primary long task (1089ms hydration + Three.js) via code splitting
+- [ ] **Bundle Size Budget** — Set explicit bundle budgets in `next.config.ts`
+
+### P3 — Quality Hardening
+- [ ] **Dependabot/GitLab Security Scanning** — Verify Trivy + npm audit gates in GitLab CI
+- [ ] **Update Playbook Docs** — Sync all docs to reflect S-017 and S-018 state
+- [ ] **E2E Smoke Tests** — Verify portal login flow, project view, approval workflow
+
+---
+
+## 3. SPRINT METRICS
+
+| Metric | Target |
+|--------|--------|
+| GitLab CI pipeline | ✅ Green (15/15 jobs) |
+| Mobile app scaffold | ✅ TypeScript, navigation, API client |
+| Lighthouse performance | >95 desktop |
+| Luxury score | 9.5/10 |
+| Backend tests | 285/285 passing |
+| Frontend tests | 176/176 passing |
+| Typecheck | 0 errors (all workspaces) |
+| Lint | 0 errors/0 warnings (all workspaces) |
+| Production vulns | 0 critical, 0 high |
+
+---
+
+## 4. KEY FILES
+
+| File | Purpose |
+|------|---------|
+| `scripts/deploy-gitlab.sh` | GitLab CE server deployment |
+| `scripts/migrate-from-github.sh` | Repo mirror from GitHub → GitLab |
+| `scripts/register-gitlab-runner.sh` | Docker executor runner registration |
+| `.gitlab-ci.yml` | CI pipeline (5 stages, 15 jobs) |
+| `apps/mobile/` | Expo/React Native mobile app |
+| `apps/frontend/next.config.ts` | Bundle budgets + standalone config |
+
+---
+
+# CURRENT SPRINT: S-017 — HEXA CLIENT PORTAL v3.0 (ENTERPRISE PREMIUM) (✅ COMPLETE)
+
+**Sprint ID:** S-017 | **Focus:** Client Portal v3.0 Digital HQ, Copilot AI Drawer, Approvals, Presigned S3 Documents, Finance & Multi-Currency | **Status:** ✅ COMPLETE | **Completed:** 2026-07-25
+
+## 1. SPRINT OBJECTIVE
+
+Build and launch **HEXA Client Portal v3.0** as the Digital Headquarters for every HEXA Studio client (`portal.hexastudio.net`), featuring 5-Second Executive Clarity, embedded AI Copilot, audit-trailed Approval Center, presigned S3 Document Center, multi-currency Finance view, and 100% Quality Gate verification.
+
+---
+
+## 2. DELIVERABLES & VERIFICATION
+
+- [x] **5-Second Executive Clarity Grid (`/portal`)**: Live status hero banner, 94/100 health score, next milestone due date, pending approvals, and activity stream.
+- [x] **Embedded AI Copilot (`PortalAiCopilot.tsx`)**: Context-aware client assistant drawer on every page for status explanations, document search, and report generation within partner data boundaries.
+- [x] **Approval Center (`/portal/approvals`)**: Audit-trailed digital sign-off for 3D renderings, wireframes, contracts, quotations, invoices, and scope changes.
+- [x] **Document Center (`/portal/documents`)**: Presigned MinIO S3 deliverable storage with folder categories (*Design, Contracts, Blueprints, Reports*) and tag filtering.
+- [x] **Finance Center (`/portal/finance`)**: Real-time Odoo `account.move` sync, dynamic USD/EUR/GBP exchange conversion, and contract summaries.
+- [x] **Project Workspace (`/portal/projects`)**: Unified workspace tabs (*Overview, Timeline, Kanban Tasks, Deliverables, Approvals, Team Roster*).
+- [x] **Support & Analytics (`/portal/support`, `/portal/analytics`)**: SLA tracking (<15 mins response), ticket management, and milestone velocity KPIs.
+- [x] **Quality Gates**: `apps/frontend` (lint 0, typecheck 0, 176/176 tests passing), `apps/backend` (lint 0, typecheck 0, 285/285 tests passing).
+
+---
+
+# SPRINT: S-016 — TBT REDUCTION & REAL-DEVICE SWEEP (✅ COMPLETE)
 
 ### P11 — Font CSS Async Loading & Luxury Content Sweep (✅ COMPLETE 2026-07-25)
 - [x] Live-site Lighthouse audit — Lighthouse 13.4.1, desktop preset, headless Chrome
