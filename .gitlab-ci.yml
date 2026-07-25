@@ -323,7 +323,12 @@ lighthouse:
     - if: $CI_COMMIT_BRANCH == "main"
     - if: $CI_COMMIT_BRANCH == "develop"
 
-# ----- Bundle Analysis -----
+# ----- Bundle Analysis (S-019 P1) -----
+# Enforces three bundle-size budgets (S-019 P1 success criteria):
+#   - First-load JS per route: 200KB max
+#   - Total initial bundle:    500KB max
+#   - Largest single chunk:    500KB max
+# Exits 1 (fail build) if any threshold is exceeded.
 bundle-analysis:
   stage: validate
   image: node:${NODE_VERSION}
@@ -332,14 +337,7 @@ bundle-analysis:
     - npm ci --legacy-peer-deps
   script:
     - npm run analyze --workspace=apps/frontend
-    - |
-      # Warn on bundles > 250KB
-      find apps/frontend/.next/analyze -name "*.html" -exec grep -l "bundle" {} \; | while read file; do
-        size=$(grep -oP '(?<=<td>)[0-9.]+(?= KB)' "$file" | sort -rn | head -1)
-        if [ -n "$size" ] && [ "$(echo "$size > 250" | bc -l)" -eq 1 ]; then
-          echo "::warning file=$file::Bundle size ${size}KB exceeds 250KB threshold"
-        fi
-      done
+    - node scripts/check-bundle-budgets.mjs
   artifacts:
     when: always
     paths:

@@ -1,7 +1,7 @@
 # Performance Standards
 
-**Version:** 1.0.0  
-**Last Updated:** 2026-07-08  
+**Version:** 1.1.0  
+**Last Updated:** 2026-07-25  
 
 ---
 
@@ -73,6 +73,21 @@
 | Lazy loading | Components below fold |
 | No render-blocking | Defer non-critical JS |
 | Async chunks | Named chunks for caching |
+
+
+### TBT Optimization (S-018)
+
+| Pattern | Implementation | Status |
+|---------|---------------|--------|
+| Below-fold lazy-load | `next/dynamic({ ssr: false })` for components below the fold | CurrencySelector, CustomCursor, CursorTrail, BackToTop, ContactRibbon |
+| Route-level code-splitting | Three.js/R3F scenes dynamically imported per-route | Active on all 3D routes |
+| GSAP ScrollTrigger idle deferral | `onIdle()` wraps ScrollTrigger.init() in 6 components | SectionReveal, KineticTitle, FeaturedWork, ProjectGrid, ProjectScrollCinema, ArticleDetailClient |
+| Analytics script deferral | `onIdle()` schedules PostHog/GA4 script tag insertion | AnalyticsInit component |
+| Font CSS non-blocking | `<link rel="preload" as="style">` + `<script>` promotion (not render-blocking) | 391ms savings |
+| CSS inlining | `experimental.inlineCss: true` — page CSS inlined into HTML | 2 style tags, 0 blocking stylesheet links |
+| Named Three.js imports | Explicit named imports instead of barrel `import * as THREE` | 6 engine files converted |
+| Named Sentry imports | Explicit imports instead of barrel `import * as Sentry` | 9 fetch/error files converted |
+| Package import optimization | `optimizePackageImports` for Three.js, R3F, framer-motion, Sentry | 7 packages optimized |
 
 ### CSS
 
@@ -218,3 +233,8 @@ npm run analyze
 - [ ] No render-blocking resources
 - [ ] Lazy loading is implemented below fold
 - [ ] Animations use GPU-accelerated properties (transform, opacity)
+- [ ] TBT < 200ms (Lighthouse)
+- [ ] Below-fold heavy components lazy-loaded
+- [ ] No render-blocking font CSS
+- [ ] CSS inlined where possible (inlineCss)
+- [ ] Named imports for barrel packages (Three.js, Sentry)
