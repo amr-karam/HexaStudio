@@ -3,12 +3,10 @@ import React from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ScrollFadeIn } from "@/components/ScrollFadeIn";
 import { ChapterMarker } from "@/components/animation/ChapterMarker";
 import { Button } from "@/components/ui/Button";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { LiquidGlassCard } from "@/components/ui/LiquidGlassCard";
-import { makeTransition } from "@/lib/motion";
 import { useReducedMotion } from "@/hooks";
 
 const SilkShaderBackground = dynamic(

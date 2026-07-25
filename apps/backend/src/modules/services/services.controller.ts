@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query, VERSION_NEUTRAL } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { ServicesService } from './services.service';
 import type { Service, ServiceResponse } from '@hexastudio/types';
 
@@ -13,6 +13,7 @@ export class ServicesController {
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
   @ApiQuery({ name: 'locale', required: false, type: String })
+  @ApiResponse({ status: 200, description: 'List of services' })
   async findAll(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
@@ -27,6 +28,7 @@ export class ServicesController {
 
   @Get(':slug')
   @ApiOperation({ summary: 'Get service by slug' })
+  @ApiResponse({ status: 200, description: 'Service found' })
   async findOne(
     @Param('slug') slug: string,
     @Query('locale') locale?: string,

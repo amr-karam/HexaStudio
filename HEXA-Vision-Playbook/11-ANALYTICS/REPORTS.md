@@ -1,3 +1,23 @@
-# Reports
+# 📄 BUSINESS & PERFORMANCE REPORT TEMPLATES
 
-Custom reporting standards.
+**Version:** 1.0.0 | **Scope:** Automated Reporting | **Standard:** Standardized Executive Reports
+
+---
+
+## 1. OVERVIEW & PURPOSE
+
+Automated reporting definitions for weekly project delivery reports, monthly executive financials, and quarterly performance reviews.
+
+---
+
+## 2. REPORT TYPES
+
+- **Weekly Operational Digest**: Milestone progress, active project delivery status, team allocation.
+- **Monthly Financial & Sales Review**: Pipeline conversion, invoicing summaries, margin analysis.
+- **Quarterly Technical Performance Report**: Core Web Vitals RUM metrics, Lighthouse CI scores, uptime SLA.
+
+---
+
+## 3. RELATED DOCUMENTATION
+
+- [BI.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/HEXA-Vision-Playbook/11-ANALYTICS/BI.md) — Business intelligence.
