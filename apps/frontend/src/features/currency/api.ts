@@ -45,10 +45,15 @@ export interface PreviewPriceParams {
 const BASE = `${API_BASE_URL}/api`;
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json' },
-    ...init,
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${BASE}${path}`, {
+      headers: { 'Content-Type': 'application/json' },
+      ...init,
+    });
+  } catch {
+    throw new Error(`Currency API error: network failure`);
+  }
   if (!res.ok) {
     throw new Error(`Currency API error: ${res.status} ${res.statusText}`);
   }
