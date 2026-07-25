@@ -8,7 +8,7 @@ async function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutM
   try {
     const response = await fetch(url, { ...options, signal: controller.signal });
     return response;
-  } finally {
+  } catch (err) { throw err; } finally {
     clearTimeout(timer);
   }
 }
