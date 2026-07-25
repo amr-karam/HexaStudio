@@ -65,21 +65,31 @@ export type { OdooTask, OdooCompany, OdooQuotation, OdooActivity } from '@hexast
 const BASE = `${API_BASE_URL}/api/odoo`;
 
 async function request<T>(path: string): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${BASE}${path}`, {
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+    });
+  } catch {
+    throw new Error(`Odoo API error: network failure`);
+  }
   if (!res.ok) throw new Error(`Odoo API error: ${res.status}`);
   return res.json() as Promise<T>;
 }
 
 async function mutate<T>(path: string, method: string, body?: unknown): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, {
-    method,
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: body ? JSON.stringify(body) : undefined,
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${BASE}${path}`, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  } catch {
+    throw new Error(`Odoo API error: network failure`);
+  }
   if (!res.ok) throw new Error(`Odoo API error: ${res.status}`);
   return res.json() as Promise<T>;
 }
@@ -179,11 +189,16 @@ export const odooApi = {
   uploadDocument: async (projectId: number, file: File) => {
     const formData = new FormData();
     formData.append('file', file);
-    const res = await fetch(`${BASE}/documents/${projectId}`, {
-      method: 'POST',
-      body: formData,
-      credentials: 'include',
-    });
+    let res: Response;
+    try {
+      res = await fetch(`${BASE}/documents/${projectId}`, {
+        method: 'POST',
+        body: formData,
+        credentials: 'include',
+      });
+    } catch {
+      throw new Error(`Upload failed: network error`);
+    }
     if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
     return res.json() as Promise<OdooDocumentRecord>;
   },
@@ -193,10 +208,15 @@ export const odooApi = {
 const PORTAL_BASE = `${API_BASE_URL}/api/portal`;
 
 async function portalRequest<T>(path: string): Promise<T> {
-  const res = await fetch(`${PORTAL_BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${PORTAL_BASE}${path}`, {
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+    });
+  } catch {
+    throw new Error(`Portal API error: network failure`);
+  }
   if (!res.ok) throw new Error(`Portal API error: ${res.status}`);
   return res.json() as Promise<T>;
 }
@@ -257,20 +277,30 @@ export const portalOdooApi = {
     formData.append('file', file);
     if (description) formData.append('description', description);
 
-    const res = await fetch(`${PORTAL_BASE}/projects/${projectId}/documents`, {
-      method: 'POST',
-      body: formData,
-      credentials: 'include',
-    });
+    let res: Response;
+    try {
+      res = await fetch(`${PORTAL_BASE}/projects/${projectId}/documents`, {
+        method: 'POST',
+        body: formData,
+        credentials: 'include',
+      });
+    } catch {
+      throw new Error(`Upload failed: network error`);
+    }
     if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
     return res.json() as Promise<PortalDocumentRecord>;
   },
 
   deleteDocument: async (projectId: number, documentId: string) => {
-    const res = await fetch(`${PORTAL_BASE}/projects/${projectId}/documents/${documentId}`, {
-      method: 'DELETE',
-      credentials: 'include',
-    });
+    let res: Response;
+    try {
+      res = await fetch(`${PORTAL_BASE}/projects/${projectId}/documents/${documentId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+    } catch {
+      throw new Error(`Delete failed: network error`);
+    }
     if (!res.ok) throw new Error(`Delete failed: ${res.status}`);
     return res.json() as Promise<{ success: boolean }>;
   },

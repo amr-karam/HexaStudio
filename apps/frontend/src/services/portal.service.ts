@@ -51,28 +51,43 @@ export interface PortalData {
 
 export const portalService = {
   async getDemoData(): Promise<PortalData> {
-    const response = await fetch(`${API_BASE_URL}/api/portal/demo`, {
-      credentials: 'include',
-    });
+    let response: Response;
+    try {
+      response = await fetch(`${API_BASE_URL}/api/portal/demo`, {
+        credentials: 'include',
+      });
+    } catch {
+      throw new Error('Failed to fetch portal data');
+    }
     if (!response.ok) throw new Error('Failed to fetch portal data');
     return response.json();
   },
 
   async sendRequest(requestData: Partial<ProjectRequest>): Promise<ProjectRequest> {
-    const response = await fetch(`${API_BASE_URL}/api/requests`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify(requestData),
-    });
+    let response: Response;
+    try {
+      response = await fetch(`${API_BASE_URL}/api/requests`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(requestData),
+      });
+    } catch {
+      throw new Error('Failed to send request');
+    }
     if (!response.ok) throw new Error('Failed to send request');
     return response.json();
   },
 
   async getClientRequests(clientId: string): Promise<{ data: ProjectRequest[]; meta: unknown }> {
-    const response = await fetch(`${API_BASE_URL}/api/requests/client/${clientId}`, {
-      credentials: 'include',
-    });
+    let response: Response;
+    try {
+      response = await fetch(`${API_BASE_URL}/api/requests/client/${clientId}`, {
+        credentials: 'include',
+      });
+    } catch {
+      throw new Error('Failed to fetch requests');
+    }
     if (!response.ok) throw new Error('Failed to fetch requests');
     return response.json();
   },

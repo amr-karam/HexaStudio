@@ -34,23 +34,38 @@ const BASE = `${API_BASE_URL}/api/translations`;
 
 export const translationApi = {
   exportLocale: async (locale: string): Promise<TranslationExport> => {
-    const res = await fetch(`${BASE}/export/${locale}`);
+    let res: Response;
+    try {
+      res = await fetch(`${BASE}/export/${locale}`);
+    } catch {
+      throw new Error(`Export failed: network error`);
+    }
     if (!res.ok) throw new Error(`Export failed: ${res.status}`);
     return res.json();
   },
 
   importLocale: async (locale: string, data: TranslationExport): Promise<{ updated: number }> => {
-    const res = await fetch(`${BASE}/import/${locale}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
+    let res: Response;
+    try {
+      res = await fetch(`${BASE}/import/${locale}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+    } catch {
+      throw new Error(`Import failed: network error`);
+    }
     if (!res.ok) throw new Error(`Import failed: ${res.status}`);
     return res.json();
   },
 
   getStatus: async (): Promise<TranslationStatus[]> => {
-    const res = await fetch(`${BASE}/status`);
+    let res: Response;
+    try {
+      res = await fetch(`${BASE}/status`);
+    } catch {
+      throw new Error(`Status failed: network error`);
+    }
     if (!res.ok) throw new Error(`Status failed: ${res.status}`);
     return res.json();
   },
