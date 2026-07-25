@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { usePathname } from 'next/navigation';
 import { ReactNode } from 'react';
@@ -7,7 +7,7 @@ import { Navbar } from '@/components/ui/nav/Navbar';
 import { Footer } from '@/components/ui/Footer';
 import { PageTransition } from '@/components/PageTransition';
 import { SmoothScrollWrapper } from '@/components/SmoothScrollWrapper';
-import { BackToTop } from '@/components/BackToTop';
+
 import { GrainOverlay } from '@/components/animation';
 
 const FULLSCREEN_ROUTES = ['/xr-viewer'];
@@ -34,6 +34,16 @@ const CustomCursor = dynamic(
 
 const CursorTrail = dynamic(
   () => import('@/components/effects/CursorTrail'),
+  { ssr: false },
+);
+
+/**
+ * TBT optimization (S-018): BackToTop is below-the-fold and only appears
+ * after the user scrolls > 600px. Defer hydration until then by lazy-loading
+ * with ssr: false; the framer-motion dependency is split into its own chunk.
+ */
+const BackToTop = dynamic(
+  () => import('@/components/BackToTop').then((m) => ({ default: m.BackToTop })),
   { ssr: false },
 );
 

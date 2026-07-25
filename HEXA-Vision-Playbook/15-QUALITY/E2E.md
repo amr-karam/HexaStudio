@@ -1,6 +1,6 @@
 # 🎭 END-TO-END & VISUAL REGRESSION TESTING STANDARDS
 
-**Version:** 1.0.0 | **Scope:** Playwright E2E & Visual Diffing | **Standard:** Zero Visual & Functional Regression
+**Version:** 1.1.0 | **Last Updated:** 2026-07-25 | **Scope:** Playwright E2E & Visual Diffing | **Standard:** Zero Visual & Functional Regression
 
 ---
 
@@ -45,15 +45,55 @@ export default defineConfig({
 
 ---
 
-## 3. CORE E2E USER JOURNEY SUITES
+## 3. TEST FILE INVENTORY
 
-1. **Gold Path Navigation**: Homepage $\rightarrow$ Living Blueprint 3D view $\rightarrow$ Projects listing $\rightarrow$ Project detail modal $\rightarrow$ Contact form submission.
-2. **Client Portal Operations**: JWT login $\rightarrow$ Milestone progress review $\rightarrow$ File download $\rightarrow$ Proposal approval.
-3. **3D Experience Interactivity**: Canvas mount $\rightarrow$ Camera vantage point navigation $\rightarrow$ Model LOD switch $\rightarrow$ Reduced motion emulation.
+| Spec File | Purpose | Test Cases | Notes |
+|-----------|---------|------------|-------|
+| `e2e/pages.spec.ts` | Public page navigation tests | Multiple | Verifies route rendering and basic navigation across all public pages |
+| `e2e/portal.spec.ts` | Client portal smoke tests | 18 test cases, 10 groups | Backend-independent via `MOCK_FALLBACK_DASHBOARD`; covers login, dashboard, sidebar, protected routes, accessibility, approvals, documents, finance, support, analytics |
+| `e2e/visual.spec.ts` | Visual regression snapshot tests | Multiple | Desktop + mobile screenshot comparison with pixel-diff thresholds |
 
 ---
 
-## 4. VISUAL REGRESSION & SNAPSHOT TESTING
+## 4. CORE E2E USER JOURNEY SUITES
+
+1. **Gold Path Navigation**: Homepage → Living Blueprint 3D view → Projects listing → Project detail modal → Contact form submission.
+2. **Client Portal Operations** (`e2e/portal.spec.ts`):
+   - **Login flow** — Form validation, error handling, ARIA attributes
+   - **Dashboard** — Mock fallback render, Copilot button presence
+   - **Sidebar navigation** — Key areas and route links
+   - **Protected routes** — Redirect to login when unauthenticated
+   - **Accessibility** — Skip-link, keyboard reach, ARIA compliance
+   - **Approval Center** — Approval workflow rendering
+   - **Document Center** — Document listing and interactions
+   - **Finance Center** — Finance data display
+   - **Support Center** — Support ticket listing
+   - **Analytics Center** — Analytics dashboard rendering
+   - **Cross-page navigation** — Navigation between portal sections
+3. **3D Experience Interactivity**: Canvas mount → Camera vantage point navigation → Model LOD switch → Reduced motion emulation.
+
+---
+
+## 5. PORTAL TEST GROUPS (`e2e/portal.spec.ts`)
+
+| # | Group | Test Cases | Description |
+|---|-------|------------|-------------|
+| 1 | Login flow | 4 | Form loads, validation, error state, ARIA labels |
+| 2 | Dashboard | 2 | Mock fallback render, Copilot button |
+| 3 | Sidebar navigation | 2 | Key areas visible, route links functional |
+| 4 | Protected routes | 1 | Redirect to `/portal/login` when unauthenticated |
+| 5 | Accessibility | 3 | Skip-link, keyboard reach, ARIA landmarks |
+| 6 | Approval Center | 1 | Approval workflow page renders |
+| 7 | Document Center | 1 | Document listing page renders |
+| 8 | Finance Center | 1 | Finance page renders |
+| 9 | Support Center | 1 | Support page renders |
+| 10 | Analytics Center | 1 | Analytics page renders |
+
+**Total:** 18 test cases across 10 groups. All tests are backend-independent via `MOCK_FALLBACK_DASHBOARD` constant.
+
+---
+
+## 6. VISUAL REGRESSION & SNAPSHOT TESTING
 
 Visual diffing (`visual.spec.ts`) captures pixel-perfect screenshots of key UI Organisms and 3D Canvas states:
 ```typescript
@@ -70,7 +110,7 @@ test("Homepage hero visual snapshot", async ({ page }) => {
 
 ---
 
-## 5. OPERATIONAL COMMANDS
+## 7. OPERATIONAL COMMANDS
 
 ```bash
 # Run all E2E tests locally
@@ -88,8 +128,9 @@ npx playwright show-report e2e/playwright-report
 
 ---
 
-## 6. RELATED DOCUMENTATION
+## 8. RELATED DOCUMENTATION
 
 - [QUALITY_GATES.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/HEXA-Vision-Playbook/15-QUALITY/QUALITY_GATES.md) — CI Quality Gates.
 - [UNIT_TESTS.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/HEXA-Vision-Playbook/15-QUALITY/UNIT_TESTS.md) — Unit test specifications.
 - [ACCESSIBILITY_AUDIT.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/HEXA-Vision-Playbook/15-QUALITY/ACCESSIBILITY_AUDIT.md) — WCAG audit procedures.
+- [CURRENT_SPRINT.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/HEXA-Vision-Playbook/02-ROADMAP/CURRENT_SPRINT.md) — S-018 E2E smoke test deliverables.

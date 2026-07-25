@@ -6,13 +6,34 @@
 |---------|-------------|--------|
 | **S18-P2-001** | Fix Windows EBUSY Build Error — Already gated behind NEXT_OUTPUT_STANDALONE env var in 
 ext.config.ts (line 66) | ✅ |
-| **S18-P2-002** | TBT Optimization — Lazy-loaded 3 heavy client components: CurrencySelector (Navbar.tsx), CustomCursor + CursorTrail (LayoutShell.tsx), all with { ssr: false } | ✅ |
+| **S18-P2-002** | TBT Optimization — Lazy-loaded 4 heavy client components: CurrencySelector (Navbar.tsx), CustomCursor + CursorTrail + BackToTop (LayoutShell.tsx), all with { ssr: false } | ✅ |
 | **S18-P2-003** | Bundle Size Budget — @next/bundle-analyzer already configured; run ANALYZE=true npm run build to inspect | ✅ |
+| **S18-P2-004** | TBT Lazy-Load ContactRibbon — Footer.tsx below-fold ContactRibbon lazy-loaded | ✅ |
+
+### P1 — Mobile App Foundation (✅ ALREADY COMPLETE — verified 2026-07-25)
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S18-P1-001** | Expo SDK Scaffold (SDK 53, RN 0.77) — pps/mobile exists with full expo-router structure (pp/_layout.tsx, pp/login.tsx, pp/(tabs)/{index,invoices,notifications,profile,projects/{index,[id]}}.tsx) | ✅ |
+| **S18-P1-002** | API Client Module — lib/api.ts + hooks/useAuth.tsx with xpo-secure-store for refresh tokens, @hexastudio/types shared types | ✅ |
+| **S18-P1-003** | Authentication Flow — pp/login.tsx + auth hook with login/logout/refresh | ✅ |
+| **S18-P1-004** | Project Dashboard — Read-only pp/(tabs)/projects/index.tsx + detail [id].tsx consuming portal API | ✅ |
+| **S18-P1-005** | Push Notifications — lib/haptics.ts (foundation; Expo push setup deferred to S-019) | ✅ |
+
+**Quality gates (apps/mobile):**
+| Gate | Result |
+|------|--------|
+| Lint | ✅ 0 errors |
+| Typecheck | ✅ 0 errors |
+| Tests | ✅ 10/10 passing (5 suites: HomeScreen, ProjectsScreen, ProjectMilestonesScreen, InvoicesScreen, NotificationsScreen) |
+
+---
 
 ### P3 — Quality Hardening
 | Task ID | Description | Status |
 |---------|-------------|--------|
-| **S18-P3-001** | E2E Smoke Tests (Portal) — Created 2e/portal.spec.ts (227 lines, 9161 bytes): 5 test groups covering login flow (load, form validation, error handling, ARIA), dashboard (mock-fallback render, Copilot button), sidebar nav (key areas, routes), protected routes (redirect to login), and accessibility (skip-link, keyboard reach, ARIA). Backend-independent via MOCK_FALLBACK_DASHBOARD. | ✅ |
+| **S18-P3-001** | E2E Smoke Tests (Portal) — Created e2e/portal.spec.ts (18 test cases, 10 groups): login flow, dashboard mock fallback, sidebar nav, protected routes, accessibility, approval/document/finance/support/analytics centers, cross-page navigation. Backend-independent via MOCK_FALLBACK_DASHBOARD. | ✅ |
+| **S18-P3-002** | Update Playbook Docs — Sync QUALITY_GATES.md, PERFORMANCE_STANDARDS.md, E2E.md to reflect S-018 state | ✅ |
+| **S18-P3-003** | TBT Lazy-Load ContactRibbon — Footer.tsx ContactRibbon lazy-loaded via next/dynamic({ ssr: false }) | ✅ |
 
 ### Quality Metrics (S-018 so far)
 | Gate | Status |
@@ -26,7 +47,7 @@ ext.config.ts (line 66) | ✅ |
 |------|--------|
 | pps/frontend/src/components/ui/nav/Navbar.tsx | Lazy-load CurrencySelector via 
 ext/dynamic({ ssr: false }) |
-| pps/frontend/src/components/LayoutShell.tsx | Lazy-load CustomCursor + CursorTrail via 
+| pps/frontend/src/components/LayoutShell.tsx | Lazy-load CustomCursor + CursorTrail + BackToTop via 
 ext/dynamic({ ssr: false }) |
 | 2e/portal.spec.ts | NEW — Portal smoke tests (5 groups, 12 test cases) |
 
@@ -710,7 +731,6 @@ Upgrade from Next.js 15 → 16 is **moderate effort** for this codebase, but **w
 4. Update this file when completing or starting tasks.
 
 *“Focus on the most impactful task. Ignore the noise.”*
-
 
 
 

@@ -1,7 +1,7 @@
 # Quality Gates
 
-**Version:** 1.0.0  
-**Last Updated:** 2026-07-08  
+**Version:** 1.1.0  
+**Last Updated:** 2026-07-25  
 
 ---
 
@@ -89,6 +89,19 @@ When modifying frontend code, these additional checks are mandatory:
 - [ ] Offscreen scenes pause
 - [ ] Tab-hidden scenes pause
 
+
+**TBT / Lazy-Loading Verification**
+- [ ] Below-fold components lazy-loaded via `next/dynamic({ ssr: false })`
+- [ ] Heavy animation libraries (framer-motion, GSAP) not in initial bundle for non-critical UI
+- [ ] Three.js/R3F scene components dynamically imported per-route
+
+**Mobile Workspace (apps/mobile)**
+- [ ] `npm run lint` — 0 errors
+- [ ] `npm run typecheck` — 0 errors
+- [ ] `npm run test` — All tests green (10/10)
+- [ ] Expo TypeScript compliance
+- [ ] No hardcoded secrets
+
 ### Failure Action
 
 - Do not commit/push until resolved
@@ -113,6 +126,9 @@ When modifying frontend code, these additional checks are mandatory:
 | Lighthouse | Lighthouse CI | Score ≥ 95 |
 | Dependency Audit | npm audit | 0 critical |
 | Test Coverage | c8 | ≥ 80% |
+| Mobile Lint | ESLint | Pass (apps/mobile) |
+| Mobile TypeCheck | tsc | Pass (apps/mobile) |
+| Mobile Tests | Vitest | 100% pass (apps/mobile) |
 
 ### Failure Action
 
