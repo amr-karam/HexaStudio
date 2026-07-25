@@ -1,4 +1,37 @@
 
+## 🎯 S-018 — PRODUCTION READINESS & MOBILE FOUNDATION (IN PROGRESS 2026-07-25)
+
+### P2 — Performance & Build Optimization
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S18-P2-001** | Fix Windows EBUSY Build Error — Already gated behind NEXT_OUTPUT_STANDALONE env var in 
+ext.config.ts (line 66) | ✅ |
+| **S18-P2-002** | TBT Optimization — Lazy-loaded 3 heavy client components: CurrencySelector (Navbar.tsx), CustomCursor + CursorTrail (LayoutShell.tsx), all with { ssr: false } | ✅ |
+| **S18-P2-003** | Bundle Size Budget — @next/bundle-analyzer already configured; run ANALYZE=true npm run build to inspect | ✅ |
+
+### P3 — Quality Hardening
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S18-P3-001** | E2E Smoke Tests (Portal) — Created 2e/portal.spec.ts (227 lines, 9161 bytes): 5 test groups covering login flow (load, form validation, error handling, ARIA), dashboard (mock-fallback render, Copilot button), sidebar nav (key areas, routes), protected routes (redirect to login), and accessibility (skip-link, keyboard reach, ARIA). Backend-independent via MOCK_FALLBACK_DASHBOARD. | ✅ |
+
+### Quality Metrics (S-018 so far)
+| Gate | Status |
+|------|--------|
+| Frontend lint | ✅ 0 errors |
+| Frontend typecheck | ✅ 0 errors |
+| Backend tests | ✅ 285/285 |
+
+### Files Changed (S-018)
+| File | Action |
+|------|--------|
+| pps/frontend/src/components/ui/nav/Navbar.tsx | Lazy-load CurrencySelector via 
+ext/dynamic({ ssr: false }) |
+| pps/frontend/src/components/LayoutShell.tsx | Lazy-load CustomCursor + CursorTrail via 
+ext/dynamic({ ssr: false }) |
+| 2e/portal.spec.ts | NEW — Portal smoke tests (5 groups, 12 test cases) |
+
+---
+
 ## 🎯 S-013 — PLATFORM STABILITY & MOBILE (✅ COMPLETE 2026-07-25)
 
 **Started:** 2026-07-25 | **Completed:** 2026-07-25
@@ -677,6 +710,7 @@ Upgrade from Next.js 15 → 16 is **moderate effort** for this codebase, but **w
 4. Update this file when completing or starting tasks.
 
 *“Focus on the most impactful task. Ignore the noise.”*
+
 
 
 
