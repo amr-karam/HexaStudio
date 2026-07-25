@@ -5,7 +5,11 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { ScrollFadeIn } from '@/components/ScrollFadeIn';
 import { Magnetic } from '@/components/ui/Magnetic';
-import { ContactRibbon } from '@/components/ui/ContactRibbon';
+import dynamic from 'next/dynamic';
+const ContactRibbon = dynamic(
+  () => import('@/components/ui/ContactRibbon').then((m) => m.ContactRibbon),
+  { ssr: false }
+);
 import { useLocale } from '@/i18n/LocaleProvider';
 
 const linkVariants = {

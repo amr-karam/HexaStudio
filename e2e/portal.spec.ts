@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+﻿import { test, expect } from "@playwright/test";
 
 /**
  * HEXA Client Portal v3.0 — Smoke tests (S-018 P3)
@@ -225,3 +225,105 @@ test.describe("Portal — Accessibility", () => {
     await expect(submit).toBeAttached();
   });
 });
+
+
+
+test.describe("Portal - Approval workflow", () => {
+  test("loads the Approval Center heading", async ({ page }) => {
+    page.setDefaultTimeout(8000);
+    await page.goto("/portal/approvals", { waitUntil: "domcontentloaded" });
+
+    await expect(page.locator("h1:has-text('Approval Center')").first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator("text=/audit/i").first()).toBeVisible();
+  });
+
+  test("renders at least one pending approval card", async ({ page }) => {
+    page.setDefaultTimeout(8000);
+    await page.goto("/portal/approvals", { waitUntil: "domcontentloaded" });
+
+    // The Approval Center ships with INITIAL_APPROVALS (mock fallback)
+    // so we always have at least one card visible without a backend.
+    await expect(page.locator("text=/3D Exterior Renderings|Design|Contract|Invoice/i").first()).toBeVisible({
+      timeout: 10000,
+    });
+  });
+
+  test("exposes an action affordance (Approve / Request Revision)", async ({ page }) => {
+    page.setDefaultTimeout(8000);
+    await page.goto("/portal/approvals", { waitUntil: "domcontentloaded" });
+
+    const actionBtn = page
+      .locator("button:has-text('Approve'), button:has-text('Request'), button:has-text('Sign')")
+      .first();
+    await expect(actionBtn).toBeVisible({ timeout: 10000 });
+  });
+});
+
+test.describe("Portal - Document Center", () => {
+  test("loads the Document Center heading", async ({ page }) => {
+    page.setDefaultTimeout(8000);
+    await page.goto("/portal/documents", { waitUntil: "domcontentloaded" });
+
+    await expect(page.locator("h1:has-text('Document')").first()).toBeVisible({ timeout: 10000 });
+  });
+
+  test("renders at least one folder category", async ({ page }) => {
+    page.setDefaultTimeout(8000);
+    await page.goto("/portal/documents", { waitUntil: "domcontentloaded" });
+
+    const categories = ["Design", "Contracts", "Blueprints", "Reports"];
+    let visibleCount = 0;
+    for (const cat of categories) {
+      const el = page.locator("text=" + cat).first();
+      if (await el.isVisible({ timeout: 1000 }).catch(() => false)) visibleCount++;
+    }
+    expect(visibleCount).toBeGreaterThanOrEqual(1);
+  });
+});
+
+test.describe("Portal - Finance Center", () => {
+  test("loads the Finance Center heading", async ({ page }) => {
+    page.setDefaultTimeout(8000);
+    await page.goto("/portal/finance", { waitUntil: "domcontentloaded" });
+
+    await expect(page.locator("h1:has-text('Finance')").first()).toBeVisible({ timeout: 10000 });
+  });
+});
+
+test.describe("Portal - Support Center", () => {
+  test("loads the Support Center heading", async ({ page }) => {
+    page.setDefaultTimeout(8000);
+    await page.goto("/portal/support", { waitUntil: "domcontentloaded" });
+
+    await expect(page.locator("h1:has-text('Support')").first()).toBeVisible({ timeout: 10000 });
+  });
+});
+
+test.describe("Portal - Analytics", () => {
+  test("loads the Analytics heading", async ({ page }) => {
+    page.setDefaultTimeout(8000);
+    await page.goto("/portal/analytics", { waitUntil: "domcontentloaded" });
+
+    await expect(page.locator("h1:has-text('Analytics')").first()).toBeVisible({ timeout: 10000 });
+  });
+});
+
+test.describe("Portal - Cross-page navigation", () => {
+  test("sidebar navigation reaches all key portal areas", async ({ page }) => {
+    page.setDefaultTimeout(8000);
+    const routes = [
+      "/portal",
+      "/portal/projects",
+      "/portal/approvals",
+      "/portal/documents",
+      "/portal/finance",
+    ];
+    for (const route of routes) {
+      await page.goto(route, { waitUntil: "domcontentloaded" });
+      const h1 = page.locator("h1").first();
+      await expect(h1).toBeVisible({ timeout: 8000 });
+    }
+  });
+});
+
+}

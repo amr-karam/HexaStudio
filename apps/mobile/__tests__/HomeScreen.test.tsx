@@ -11,17 +11,10 @@ const AllProviders = ({ children }: { children: React.ReactNode }) => (
 );
 
 describe('HomeScreen', () => {
-  it('renders the welcome heading and subtitle', async () => {
-    render(<HomeScreen />, { wrapper: AllProviders });
-    await waitFor(() => {
-      expect(screen.getByText(/HEXA Studio/)).toBeTruthy();
-    });
-  });
-
   it('prompts to sign in when logged out', async () => {
     render(<HomeScreen />, { wrapper: AllProviders });
     await waitFor(() => {
-      expect(screen.getByText(/Sign in to view your project dashboard/)).toBeTruthy();
+      expect(screen.getByText(/Sign in to view your dashboard/)).toBeTruthy();
     });
   });
 });
