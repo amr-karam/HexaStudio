@@ -56,11 +56,16 @@ const MOCK_FALLBACK_DASHBOARD: DashboardData = {
 };
 
 async function fetchDashboardData(): Promise<DashboardData> {
-  const res = await fetch(`${API_BASE_URL}/api/portal/dashboard`, {
-    credentials: 'include',
-  }).catch(() => null);
+  let res: Response | null = null;
+  try {
+    res = await fetch(`${API_BASE_URL}/api/portal/dashboard`, {
+      credentials: 'include',
+    });
+  } catch {
+    return MOCK_FALLBACK_DASHBOARD;
+  }
 
-  if (!res || !res.ok) return MOCK_FALLBACK_DASHBOARD;
+  if (!res.ok) return MOCK_FALLBACK_DASHBOARD;
   return res.json();
 }
 

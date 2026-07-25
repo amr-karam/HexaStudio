@@ -14,40 +14,21 @@ services:
     hostname: 'gitlab.hexastudio.local'
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        # External URL - change to your actual GitLab domain
         external_url 'http://19.16.1.100'
-        # Enable Container Registry
         registry_external_url 'http://19.16.1.100:5050'
-        # Disable bundled nginx (we use Traefik)
-        nginx['enable'] = false
-        # Listen on internal ports
-        puma['listen'] = '0.0.0.0:8929'
-        puma['port'] = 8929
-        # SSH (mapped to host 2222)
         gitlab_rails['gitlab_shell_ssh_port'] = 2222
-        # Container Registry
         registry['enable'] = true
-        registry['port'] = 5050
-        registry['http_secret'] = "${REGISTRY_HTTP_SECRET:-hexa-registry-secret-change-me}"
-        registry['registry_http_addr'] = "0.0.0.0:5050"
-        # Disable Prometheus (we have our own monitoring)
+        registry['port'] = 5000
+        registry['registry_http_addr'] = '127.0.0.1:5000'
         prometheus_monitoring['enable'] = false
-        # Reduce resource footprint for single-server deployment
         sidekiq['max_concurrency'] = 5
-        postgresql['shared_buffers'] = "256MB"
+        postgresql['shared_buffers'] = '256MB'
         postgresql['max_connections'] = 200
-        # Disable unnecessary services
-        mattermost['enable'] = false
-        # Grafana (disabled - handled by external stack)
-        grafana['enable'] = false
-        # Backup settings
         gitlab_rails['backup_keep_time'] = 604800
-        # Email (configure SMTP later)
         gitlab_rails['smtp_enable'] = false
-        # SSL will be terminated by Traefik
         letsencrypt['enable'] = false
     ports:
-      - "8929:8929"    # HTTP (Puma)
+      - "8929:80"    # HTTP (Puma)
       - "5050:5050"    # Container Registry
       - "2222:22"      # SSH
     volumes:
@@ -57,7 +38,7 @@ services:
     networks:
       - gitlab-net
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8929/-/health"]
+      test: ["CMD", "curl", "-f", "http://localhost/-/health"]
       interval: 60s
       timeout: 30s
       retries: 10

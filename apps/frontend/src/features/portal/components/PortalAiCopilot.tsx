@@ -50,14 +50,18 @@ export function PortalAiCopilot({ isOpen, onClose, projectName = 'Horizon Villa'
     if (!textToSend) setInput('');
     setIsTyping(true);
 
+    let response: Response | null = null;
     try {
-      // Simulate backend API query or invoke NestJS copilot endpoint
-      const response = await fetch('/api/portal/copilot/query', {
+      response = await fetch('/api/portal/copilot/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, projectName }),
-      }).catch(() => null);
+      });
+    } catch {
+      response = null;
+    }
 
+    try {
       let replyContent = '';
       if (response && response.ok) {
         const data = await response.json();
