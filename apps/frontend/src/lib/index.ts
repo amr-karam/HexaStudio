@@ -2,6 +2,15 @@
  * Library utilities export
  */
 
+// Auth-aware API client (refresh token rotation)
+export {
+  authFetch,
+  authenticatedFetch,
+  setRefreshToken,
+  getRefreshToken,
+  onAuthLogout,
+} from './api-client';
+
 // Task scheduling utilities
 export {
   scheduleTask,

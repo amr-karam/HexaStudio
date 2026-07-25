@@ -3,6 +3,11 @@
 import { useState, useEffect, useCallback, createContext, useContext } from 'react';
 import { User } from '@/types';
 import { API_BASE_URL } from '@/config/constants';
+import {
+  setRefreshToken,
+  onAuthLogout,
+  authFetch,
+} from '@/lib/api-client';
 
 interface AuthContextType {
   user: User | null;
@@ -18,35 +23,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-    const fetchUser = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/users/me`, {
-          credentials: 'include', // Include cookies
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data.data ?? data);
-        } else {
-          setUser(null);
-        }
-      } catch {
-        setUser(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  // Register logout handler — when refresh token is revoked/expired, force UI logout
+  useEffect(() => {
+    onAuthLogout(() => {
+      setRefreshToken(null);
+      setUser(null);
+    });
+  }, []);
+
+  const fetchUser = useCallback(async () => {
+    try {
+      const data = await authFetch<{ data?: User; id?: string }>(
+        `${API_BASE_URL}/api/users/me`,
+      );
+      setUser(data.data ?? (data as unknown as User));
+    } catch {
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     // Check if user is logged in by calling /me (cookie is sent automatically)
     fetchUser();
-  }, []);
-
+  }, [fetchUser]);
 
   const login = async (identifier: string, password: string) => {
     const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      credentials: 'include', // Include cookies
+      credentials: 'include',
       body: JSON.stringify({ identifier, password }),
     });
 
@@ -57,13 +64,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const data = await response.json();
     setUser(data.user);
+
+    // Store refresh token in memory for automatic renewal
+    if (data.refreshToken) {
+      setRefreshToken(data.refreshToken);
+    }
   };
 
   const register = async (email: string, username: string, password: string) => {
     const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      credentials: 'include', // Include cookies
+      credentials: 'include',
       body: JSON.stringify({ email, username, password }),
     });
 
@@ -74,6 +86,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const data = await response.json();
     setUser(data.user);
+
+    // Store refresh token in memory for automatic renewal
+    if (data.refreshToken) {
+      setRefreshToken(data.refreshToken);
+    }
   };
 
   const logout = useCallback(async () => {
@@ -83,6 +100,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         credentials: 'include',
       });
     } finally {
+      setRefreshToken(null);
       setUser(null);
     }
   }, []);

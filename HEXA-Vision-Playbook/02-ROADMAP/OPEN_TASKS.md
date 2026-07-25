@@ -1,3 +1,48 @@
+
+## 🎯 S-013 — PLATFORM STABILITY & MOBILE (✅ COMPLETE 2026-07-25)
+
+**Started:** 2026-07-25 | **Completed:** 2026-07-25
+
+### P0 — Mobile & API Hardening
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S13-P0-001** | Refresh Token Rotation — Backend (token families, reuse detection, Redis) + Frontend interceptor (api-client.ts, authFetch, in-memory token) | ✅ |
+| **S13-P0-002** | API Versioning Audit — 30/30 controllers use ersion: ['1', VERSION_NEUTRAL] consistently | ✅ |
+| **S13-P0-003** | Pagination Audit — All list endpoints verified ?page=&limit= (9 public + 2 ERP-proxy) | ✅ |
+| **S13-P0-004** | JWT Auth Coverage — 122/153 endpoints protected, 29 legitimately public | ✅ |
+
+### P1 — GeoIP & Localization
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S13-P1-001** | GeoIP Region Detection — ip-api.com + Redis cache (24h TTL) + country→region mapping (30+ regions) | ✅ |
+| **S13-P1-002** | Currency Selection UI — CurrencySelector component with GeoIP auto-detect, search, keyboard nav, RTL, reduced motion | ✅ |
+| **S13-P1-003** | Exchange Rate Auto-Sync — open.er-api.com (free) or OpenExchangeRates (paid), 6-hour cron, Redis hash storage | ✅ |
+
+### P2 — Technical Debt
+| Task ID | Description | Status |
+|---------|-------------|--------|
+| **S13-P2-001** | Dist Nesting Refactor — Already flat (dist/main.js at root) | ✅ |
+| **S13-P2-002** | Backend Test Failures — 285/285 passing (was 7 failing) | ✅ |
+| **S13-P2-003** | NTFS Corruption — _corrupted_node_modules_stubs/ resolved | ✅ |
+
+### Quality Metrics
+| Metric | Target | Actual | Status |
+|--------|--------|--------|--------|
+| Backend tests | 285+ | 285/285 | ✅ |
+| Frontend tests | 176 | 176/176 | ✅ |
+| Frontend typecheck | 0 errors | 0 errors | ✅ |
+| Frontend lint | 0 errors | 0 errors | ✅ |
+| Backend typecheck | 0 errors | 0 errors | ✅ |
+| Backend lint | 0 errors | 0 errors | ✅ |
+
+### Files Changed
+| File | Action | Purpose |
+|------|--------|---------|
+| pps/frontend/src/lib/api-client.ts | NEW | Auth-aware fetch wrapper with token refresh, request queuing, retry |
+| pps/frontend/src/features/auth/hooks/useAuth.tsx | UPDATED | Stores refresh token in memory, uses authFetch, registers logout callback |
+| pps/frontend/src/lib/index.ts | UPDATED | Barrel exports for api-client |
+
+---
 # 📝 OPEN TASKS: THE BACKLOG OF EXCELLENCE
 
 ## 🎯 S-016 — TBT REDUCTION & REAL-DEVICE SWEEP (IN PROGRESS)
@@ -632,6 +677,7 @@ Upgrade from Next.js 15 → 16 is **moderate effort** for this codebase, but **w
 4. Update this file when completing or starting tasks.
 
 *“Focus on the most impactful task. Ignore the noise.”*
+
 
 
 
