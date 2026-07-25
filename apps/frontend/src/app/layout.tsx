@@ -3,12 +3,12 @@ import { AppProviders } from "@/providers/app-providers";
 import { LayoutShell } from "@/components/LayoutShell";
 import { StructuredData } from "@/components/StructuredData";
 import { CinematicPreloader } from "@/components/ui/overlays/CinematicPreloader";
-import { AnimationDebug } from "@/components/dev/AnimationDebug";
 import { WebVitals } from "@/components/WebVitals";
 import { LivePreview } from "@/components/LivePreview";
 import { AnalyticsInit } from "@/lib/analytics";
 import { Suspense } from "react";
 import "./globals.css";
+import { AnimationDebugLoader } from "@/components/dev/AnimationDebugLoader";
 
 export const viewport: Viewport = {
   themeColor: [
@@ -71,7 +71,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" dir="ltr">
+    <html lang="en" dir="ltr" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -105,11 +105,6 @@ export default function RootLayout({
           as="style"
           href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&family=Playfair+Display:wght@400..900&display=swap"
         />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `!function(){var l=document.querySelector('link[rel="preload"][as="style"][href*="fonts.googleapis.com"]');if(l){l.onload=function(){l.rel="stylesheet";l.onload=null}}}`,
-          }}
-        />
         <noscript>
           <link
             rel="stylesheet"
@@ -117,7 +112,7 @@ export default function RootLayout({
           />
         </noscript>
       </head>
-      <body className="min-h-screen bg-background text-foreground antialiased">
+      <body className="min-h-screen bg-background text-foreground antialiased" suppressHydrationWarning>
         <noscript>
           <style>{`
             .js-only { display: none !important; }
@@ -125,7 +120,7 @@ export default function RootLayout({
         </noscript>
         <AppProviders>
           <CinematicPreloader />
-          {process.env.NODE_ENV === 'development' && <AnimationDebug />}
+          {process.env.NODE_ENV === 'development' && <AnimationDebugLoader />}
           <StructuredData />
           <a
             href="#main-content"
