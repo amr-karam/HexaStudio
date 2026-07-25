@@ -24,6 +24,7 @@ export class ProjectsController {
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
   @ApiQuery({ name: 'locale', required: false, type: String })
+  @ApiResponse({ status: 200, description: 'List of projects' })
   async findAll(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
@@ -38,6 +39,7 @@ export class ProjectsController {
 
   @Get(':slug/similar')
   @ApiOperation({ summary: 'Get similar projects' })
+  @ApiResponse({ status: 200, description: 'Similar projects' })
   async findSimilar(
     @Param('slug') slug: string,
     @Query('limit') limit?: string,
@@ -47,6 +49,7 @@ export class ProjectsController {
 
   @Get(':slug')
   @ApiOperation({ summary: 'Get project by slug' })
+  @ApiResponse({ status: 200, description: 'Project found' })
   async findOne(
     @Param('slug') slug: string,
     @Query('locale') locale?: string,

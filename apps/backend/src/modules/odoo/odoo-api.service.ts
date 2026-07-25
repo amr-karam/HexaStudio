@@ -11,6 +11,14 @@ import {
   OdooCompany,
   OdooQuotation,
   OdooActivity,
+  OdooHelpdeskTicket,
+  OdooEmployee,
+  OdooTimesheet,
+  OdooKnowledgeArticle,
+  OdooCalendarEvent,
+  OdooMailMessage,
+  OdooDocument,
+  OdooHubExecutiveDashboard,
 } from '@hexastudio/types';
 
 // OdooCompanySettings is now defined in @hexastudio/types as OdooCompany
@@ -112,6 +120,18 @@ export class OdooApiService {
     return this.odooService.create('res.partner', data);
   }
 
+  async getOrCreatePartner(name: string, email?: string): Promise<number> {
+    if (email) {
+      const existing = await this.odooService.execute<Record<string, unknown>[]>(
+        'res.partner',
+        'search_read',
+        [[['email', '=', email]], ['id'], 0, 1],
+      );
+      if (existing.length) return existing[0].id as number;
+    }
+    return this.createPartner({ name, email });
+  }
+
   async updatePartner(id: number, data: Record<string, unknown>): Promise<boolean> {
     return this.odooService.write('res.partner', [id], data);
   }
@@ -124,6 +144,19 @@ export class OdooApiService {
       'search_read',
       [[], ['name', 'partner_id', 'x_slug', 'x_hexa_type', 'x_hexa_status', 'x_hexa_budget_amount', 'stage_id'], offset, limit, 'name asc'],
     )) as unknown as OdooProject[];
+  }
+
+  async findProjectBySlug(slug: string): Promise<OdooProject | null> {
+    const results = await this.odooService.execute<Record<string, unknown>[]>(
+      'project.project',
+      'search_read',
+      [[['x_slug', '=', slug]], ['id', 'name', 'partner_id', 'x_slug', 'x_hexa_type', 'x_hexa_status', 'x_hexa_budget_amount'], 0, 1],
+    );
+    return results.length ? (results[0] as unknown as OdooProject) : null;
+  }
+
+  async createProject(data: Record<string, unknown>): Promise<number> {
+    return this.odooService.create('project.project', data);
   }
 
   async getProjectDetail(id: number): Promise<OdooProject> {
@@ -154,29 +187,6 @@ export class OdooApiService {
 
   async updateMilestone(id: number, data: Record<string, unknown>): Promise<boolean> {
     return this.odooService.write('project.milestone', [id], data);
-  }
-
-  async findProjectBySlug(slug: string): Promise<OdooProject | null> {
-    const results = await this.odooService.execute<Record<string, unknown>[]>(
-      'project.project',
-      'search_read',
-      [[['x_slug', '=', slug]], ['name', 'partner_id', 'x_slug', 'x_hexa_type', 'x_hexa_status', 'stage_id'], 0, 1],
-    );
-    return results.length ? (results[0] as unknown as OdooProject) : null;
-  }
-
-  async createProject(data: Record<string, unknown>): Promise<number> {
-    return this.odooService.create('project.project', data);
-  }
-
-  async getOrCreatePartner(name: string, extraData?: Record<string, unknown>): Promise<number> {
-    const results = await this.odooService.execute<Record<string, unknown>[]>(
-      'res.partner',
-      'search_read',
-      [[['name', '=', name]], ['id'], 0, 1],
-    );
-    if (results.length) return results[0].id as number;
-    return this.odooService.create('res.partner', { name, ...extraData });
   }
 
   // --- Invoices & Sales ---
@@ -351,5 +361,236 @@ export class OdooApiService {
 
   async completeActivity(id: number): Promise<boolean> {
     return this.odooService.execute<boolean>('mail.activity', 'action_done', [[id]]);
+  }
+
+  // --- Documents (ir.attachment) ---
+
+  async getDocuments(limit = 50, offset = 0, resModel?: string, resId?: number): Promise<OdooDocument[]> {
+    const domain: unknown[] = [];
+    if (resModel) domain.push(['res_model', '=', resModel]);
+    if (resId) domain.push(['res_id', '=', resId]);
+    return (await this.odooService.execute<Record<string, unknown>[]>(
+      'ir.attachment',
+      'search_read',
+      [
+        domain,
+        ['name', 'mimetype', 'file_size', 'res_model', 'res_id', 'create_date', 'create_uid'],
+        offset,
+        limit,
+        'create_date desc',
+      ],
+    )) as unknown as OdooDocument[];
+  }
+
+  // --- Helpdesk Tickets ---
+
+  async getHelpdeskTickets(limit = 50, offset = 0): Promise<OdooHelpdeskTicket[]> {
+    return (await this.odooService.execute<Record<string, unknown>[]>(
+      'helpdesk.ticket',
+      'search_read',
+      [
+        [],
+        ['name', 'partner_id', 'stage_id', 'user_id', 'priority', 'description', 'create_date', 'close_date'],
+        offset,
+        limit,
+        'create_date desc',
+      ],
+    )) as unknown as OdooHelpdeskTicket[];
+  }
+
+  async getHelpdeskTicketDetail(id: number): Promise<OdooHelpdeskTicket> {
+    const results = await this.odooService.execute<Record<string, unknown>[]>(
+      'helpdesk.ticket',
+      'search_read',
+      [
+        [['id', '=', id]],
+        ['name', 'partner_id', 'stage_id', 'user_id', 'priority', 'description', 'create_date', 'close_date'],
+      ],
+    );
+    if (!results.length) throw new Error(`Ticket #${id} not found`);
+    return results[0] as unknown as OdooHelpdeskTicket;
+  }
+
+  async createHelpdeskTicket(data: Record<string, unknown>): Promise<number> {
+    return this.odooService.create('helpdesk.ticket', data);
+  }
+
+  async updateHelpdeskTicket(id: number, data: Record<string, unknown>): Promise<boolean> {
+    return this.odooService.write('helpdesk.ticket', [id], data);
+  }
+
+  // --- Employees / HR ---
+
+  async getEmployees(limit = 50, offset = 0): Promise<OdooEmployee[]> {
+    return (await this.odooService.execute<Record<string, unknown>[]>(
+      'hr.employee',
+      'search_read',
+      [
+        [['active', '=', true]],
+        ['name', 'work_email', 'work_phone', 'job_title', 'department_id', 'parent_id', 'user_id', 'active'],
+        offset,
+        limit,
+        'name asc',
+      ],
+    )) as unknown as OdooEmployee[];
+  }
+
+  async getEmployeeDetail(id: number): Promise<OdooEmployee> {
+    const results = await this.odooService.execute<Record<string, unknown>[]>(
+      'hr.employee',
+      'search_read',
+      [
+        [['id', '=', id]],
+        ['name', 'work_email', 'work_phone', 'job_title', 'department_id', 'parent_id', 'user_id', 'active'],
+      ],
+    );
+    if (!results.length) throw new Error(`Employee #${id} not found`);
+    return results[0] as unknown as OdooEmployee;
+  }
+
+  // --- Timesheets ---
+
+  async getTimesheets(limit = 50, offset = 0, projectId?: number): Promise<OdooTimesheet[]> {
+    const domain: unknown[] = projectId ? [['project_id', '=', projectId]] : [];
+    return (await this.odooService.execute<Record<string, unknown>[]>(
+      'account.analytic.line',
+      'search_read',
+      [
+        domain,
+        ['name', 'date', 'user_id', 'project_id', 'task_id', 'unit_amount', 'employee_id'],
+        offset,
+        limit,
+        'date desc',
+      ],
+    )) as unknown as OdooTimesheet[];
+  }
+
+  async createTimesheet(data: Record<string, unknown>): Promise<number> {
+    return this.odooService.create('account.analytic.line', data);
+  }
+
+  // --- Knowledge / Articles ---
+
+  async getKnowledgeArticles(limit = 50, offset = 0): Promise<OdooKnowledgeArticle[]> {
+    return (await this.odooService.execute<Record<string, unknown>[]>(
+      'knowledge.article',
+      'search_read',
+      [
+        [],
+        ['name', 'body', 'category_id', 'create_uid', 'create_date', 'write_date'],
+        offset,
+        limit,
+        'write_date desc',
+      ],
+    )) as unknown as OdooKnowledgeArticle[];
+  }
+
+  async getKnowledgeArticleDetail(id: number): Promise<OdooKnowledgeArticle> {
+    const results = await this.odooService.execute<Record<string, unknown>[]>(
+      'knowledge.article',
+      'search_read',
+      [
+        [['id', '=', id]],
+        ['name', 'body', 'category_id', 'create_uid', 'create_date', 'write_date'],
+      ],
+    );
+    if (!results.length) throw new Error(`Knowledge Article #${id} not found`);
+    return results[0] as unknown as OdooKnowledgeArticle;
+  }
+
+  // --- Calendar Events ---
+
+  async getCalendarEvents(limit = 50, offset = 0): Promise<OdooCalendarEvent[]> {
+    return (await this.odooService.execute<Record<string, unknown>[]>(
+      'calendar.event',
+      'search_read',
+      [
+        [],
+        ['name', 'start', 'stop', 'duration', 'allday', 'partner_ids', 'user_id', 'description', 'location'],
+        offset,
+        limit,
+        'start asc',
+      ],
+    )) as unknown as OdooCalendarEvent[];
+  }
+
+  async createCalendarEvent(data: Record<string, unknown>): Promise<number> {
+    return this.odooService.create('calendar.event', data);
+  }
+
+  // --- Mail Messages / Communication ---
+
+  async getMailMessages(limit = 50, offset = 0, resModel?: string, resId?: number): Promise<OdooMailMessage[]> {
+    const domain: unknown[] = [];
+    if (resModel) domain.push(['model', '=', resModel]);
+    if (resId) domain.push(['res_id', '=', resId]);
+    return (await this.odooService.execute<Record<string, unknown>[]>(
+      'mail.message',
+      'search_read',
+      [
+        domain,
+        ['subject', 'body', 'date', 'email_from', 'author_id', 'model', 'res_id', 'message_type'],
+        offset,
+        limit,
+        'date desc',
+      ],
+    )) as unknown as OdooMailMessage[];
+  }
+
+  async postMailMessage(data: Record<string, unknown>): Promise<number> {
+    return this.odooService.create('mail.message', data);
+  }
+
+  // --- Executive Hub Dashboard Aggregator ---
+
+  async getExecutiveDashboard(): Promise<OdooHubExecutiveDashboard> {
+    try {
+      const [pipeline, projects, invoices, tickets, timesheets] = await Promise.all([
+        this.getCrmPipeline().catch(() => ({ totalLeads: 0, totalExpectedRevenue: 0, stages: [] })),
+        this.getProjects(100).catch(() => []),
+        this.getInvoices(100).catch(() => []),
+        this.getHelpdeskTickets(100).catch(() => []),
+        this.getTimesheets(100).catch(() => []),
+      ]);
+
+      const unpaidInvoices = invoices.filter((i) => i.payment_state !== 'paid');
+      const totalUnpaidAmount = unpaidInvoices.reduce((sum, inv) => sum + (inv.amount_residual || 0), 0);
+      const activeProjects = projects.filter((p) => p.stage_id && Array.isArray(p.stage_id) && !p.stage_id[1].toLowerCase().includes('done'));
+      const openTickets = tickets.filter((t) => t.stage_id && Array.isArray(t.stage_id) && !t.stage_id[1].toLowerCase().includes('solved'));
+      const totalHoursLogged = timesheets.reduce((sum, ts) => sum + (ts.unit_amount || 0), 0);
+
+      return {
+        crm: {
+          totalLeads: pipeline.totalLeads,
+          expectedRevenue: pipeline.totalExpectedRevenue,
+          pipelineStagesCount: pipeline.stages.length,
+        },
+        projects: {
+          activeProjectsCount: activeProjects.length,
+          totalProjectsCount: projects.length,
+        },
+        finance: {
+          unpaidInvoicesCount: unpaidInvoices.length,
+          totalUnpaidAmount,
+        },
+        helpdesk: {
+          openTicketsCount: openTickets.length,
+        },
+        timesheets: {
+          totalHoursLoggedThisMonth: totalHoursLogged,
+        },
+        timestamp: new Date().toISOString(),
+      };
+    } catch (error) {
+      this.logger.error('Failed to compute executive dashboard from Odoo', error);
+      return {
+        crm: { totalLeads: 0, expectedRevenue: 0, pipelineStagesCount: 0 },
+        projects: { activeProjectsCount: 0, totalProjectsCount: 0 },
+        finance: { unpaidInvoicesCount: 0, totalUnpaidAmount: 0 },
+        helpdesk: { openTicketsCount: 0 },
+        timesheets: { totalHoursLoggedThisMonth: 0 },
+        timestamp: new Date().toISOString(),
+      };
+    }
   }
 }

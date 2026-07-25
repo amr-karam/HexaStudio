@@ -58,6 +58,12 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
     this.logger.log(`Client disconnected: ${client.id}`);
   }
 
+  emitToRoom(room: string, event: string, data: unknown) {
+    if (this.server) {
+      this.server.to(room).emit(event, data);
+    }
+  }
+
   @SubscribeMessage('join-project')
   handleJoinProject(client: Socket, projectId: string) {
     const room = `project:${projectId}`;
@@ -148,10 +154,5 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
     client.to(room).emit('collab:peer-left', { id: client.id });
     this.eventBus.emit('collab:leave', { projectId: payload.projectId, id: client.id });
     return { event: 'collab:left', data: { id: client.id } };
-  }
-
-  /** Broadcast an event to all clients in a named room. */
-  emitToRoom(room: string, event: string, data: unknown) {
-    this.server?.to(room).emit(event, data);
   }
 }

@@ -211,12 +211,28 @@ const fallbackProjects: ProjectGridCard[] = [
     description: 'A vertical garden tower in the heart of the city, where every residence opens to sky terraces with cascading greenery. The facade breathes — opening and closing in response to solar exposure.',
   },
   {
-    title: 'Zenith Office',
+    title: 'Zenith Office Headquarters',
     category: 'Commercial',
     image: 'https://images.unsplash.com/photo-1497366811353-6870744d4b62?w=800&q=80',
     slug: 'zenith-office',
     status: 'Consultation',
     description: 'A reimagined workplace where biophilic design meets cutting-edge technology. Triple-height atriums, living walls, and adaptive lighting create an environment that evolves with its occupants.',
+  },
+  {
+    title: 'Kaze Mountain Sanctuary',
+    category: 'Cultural',
+    image: 'https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=800&q=80',
+    slug: 'kaze-sanctuary',
+    status: 'Active',
+    description: 'A serene timber retreat suspended over an alpine ravine, celebrating traditional craftsmanship through modern parametric joinery and acoustic isolation.',
+  },
+  {
+    title: 'Solstice Cultural Center',
+    category: 'Public',
+    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+    slug: 'solstice-center',
+    status: 'Active',
+    description: 'A civic landmark celebrating natural light cycles. Curved white concrete shell structures frame winter and summer solstice sun paths, creating dramatic interior light corridors.',
   },
 ];
 
@@ -244,15 +260,17 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
   const enableShear = !staticMode && finePointer;
 
   const allProjects = useMemo((): ProjectGridCard[] => {
-    const mapped = projects?.map((p) => ({
-      title: p.title,
-      category: p.category?.name ?? 'Project',
-      image: p.coverImage ? `${p.coverImage}?w=800&q=80` : '',
-      slug: p.slug,
-      description: p.shortDescription || p.description,
-      status: p.status,
-    })) ?? fallbackProjects;
-    return mapped;
+    if (projects && projects.length > 0) {
+      return projects.map((p) => ({
+        title: p.title,
+        category: p.category?.name ?? 'Project',
+        image: p.coverImage ? `${p.coverImage}?w=800&q=80` : '',
+        slug: p.slug,
+        description: p.shortDescription || p.description,
+        status: p.status,
+      }));
+    }
+    return fallbackProjects;
   }, [projects]);
 
   const categories = useMemo(() => {

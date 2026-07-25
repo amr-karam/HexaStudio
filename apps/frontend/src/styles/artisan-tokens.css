@@ -1,0 +1,76 @@
+/* -------------------------------------------------------------------------- */
+/*  HEXA Vision — The Digital Artisan Standard Design System Tokens           */
+/* -------------------------------------------------------------------------- */
+
+:root {
+  /* Artisan Glassmorphism Tokens (Hermès / Stripe / Apple standard) */
+  --artisan-glass-bg: rgba(18, 18, 20, 0.55);
+  --artisan-glass-bg-hover: rgba(26, 26, 30, 0.70);
+  --artisan-glass-border: rgba(255, 255, 255, 0.08);
+  --artisan-glass-border-hover: rgba(212, 175, 55, 0.35);
+  --artisan-glass-blur: 24px;
+  --artisan-glass-saturate: 200%;
+
+  /* Specular Highlight & Reflection Tokens */
+  --artisan-specular-top: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 100%);
+  --artisan-gold-reflection: linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, rgba(229, 199, 107, 0.02) 50%, rgba(184, 134, 11, 0) 100%);
+
+  /* Physics Spring Easing Constants */
+  --ease-physics-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-physics-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Artisan Glassmorphism Utility Classes                                    */
+/* -------------------------------------------------------------------------- */
+
+.artisan-glass {
+  background: var(--artisan-glass-bg);
+  backdrop-filter: blur(var(--artisan-glass-blur)) saturate(var(--artisan-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--artisan-glass-blur)) saturate(var(--artisan-glass-saturate));
+  border: 1px solid var(--artisan-glass-border);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: background 0.4s var(--ease-physics-smooth), border-color 0.4s var(--ease-physics-smooth), box-shadow 0.4s var(--ease-physics-smooth);
+}
+
+.artisan-glass:hover {
+  background: var(--artisan-glass-bg-hover);
+  border-color: var(--artisan-glass-border-hover);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(212, 175, 55, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.artisan-glass-gold {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(18, 18, 20, 0.75) 100%);
+  backdrop-filter: blur(var(--artisan-glass-blur)) saturate(220%);
+  -webkit-backdrop-filter: blur(var(--artisan-glass-blur)) saturate(220%);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(229, 199, 107, 0.25);
+}
+
+.artisan-specular-top {
+  position: relative;
+}
+
+.artisan-specular-top::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Data-Viz SVG Spring Polish */
+.artisan-chart-path {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: draw-chart 1.6s var(--ease-physics-smooth) forwards;
+}
+
+@keyframes draw-chart {
+  to {
+    stroke-dashoffset: 0;
+  }
+}

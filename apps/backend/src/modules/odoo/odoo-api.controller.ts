@@ -385,4 +385,150 @@ export class OdooApiController {
     await this.odooApi.completeActivity(parseInt(id, 10));
     return { success: true };
   }
+
+  // --- Helpdesk Tickets ---
+
+  @Get('helpdesk/tickets')
+  @ApiOperation({ summary: 'List Helpdesk tickets' })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
+  async getHelpdeskTickets(@Query('limit') limit?: string, @Query('offset') offset?: string) {
+    return this.odooApi.getHelpdeskTickets(limit ? parseInt(limit, 10) : 50, offset ? parseInt(offset, 10) : 0);
+  }
+
+  @Get('helpdesk/tickets/:id')
+  @ApiOperation({ summary: 'Get Helpdesk ticket detail' })
+  @ApiParam({ name: 'id', type: Number })
+  async getHelpdeskTicketDetail(@Param('id') id: string) {
+    return this.odooApi.getHelpdeskTicketDetail(parseInt(id, 10));
+  }
+
+  @Post('helpdesk/tickets')
+  @ApiOperation({ summary: 'Create a Helpdesk ticket' })
+  async createHelpdeskTicket(@Body() data: Record<string, unknown>) {
+    const id = await this.odooApi.createHelpdeskTicket(data);
+    return { id, success: true };
+  }
+
+  @Patch('helpdesk/tickets/:id')
+  @ApiOperation({ summary: 'Update a Helpdesk ticket' })
+  @ApiParam({ name: 'id', type: Number })
+  async updateHelpdeskTicket(@Param('id') id: string, @Body() data: Record<string, unknown>) {
+    await this.odooApi.updateHelpdeskTicket(parseInt(id, 10), data);
+    return { success: true };
+  }
+
+  // --- Employees / HR ---
+
+  @Get('employees')
+  @ApiOperation({ summary: 'List employees (hr.employee)' })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
+  async getEmployees(@Query('limit') limit?: string, @Query('offset') offset?: string) {
+    return this.odooApi.getEmployees(limit ? parseInt(limit, 10) : 50, offset ? parseInt(offset, 10) : 0);
+  }
+
+  @Get('employees/:id')
+  @ApiOperation({ summary: 'Get employee detail' })
+  @ApiParam({ name: 'id', type: Number })
+  async getEmployeeDetail(@Param('id') id: string) {
+    return this.odooApi.getEmployeeDetail(parseInt(id, 10));
+  }
+
+  // --- Timesheets ---
+
+  @Get('timesheets')
+  @ApiOperation({ summary: 'List project timesheets (account.analytic.line)' })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
+  @ApiQuery({ name: 'projectId', required: false, type: Number })
+  async getTimesheets(
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+    @Query('projectId') projectId?: string,
+  ) {
+    return this.odooApi.getTimesheets(
+      limit ? parseInt(limit, 10) : 50,
+      offset ? parseInt(offset, 10) : 0,
+      projectId ? parseInt(projectId, 10) : undefined,
+    );
+  }
+
+  @Post('timesheets')
+  @ApiOperation({ summary: 'Create a timesheet entry' })
+  async createTimesheet(@Body() data: Record<string, unknown>) {
+    const id = await this.odooApi.createTimesheet(data);
+    return { id, success: true };
+  }
+
+  // --- Knowledge Articles ---
+
+  @Get('knowledge/articles')
+  @ApiOperation({ summary: 'List knowledge articles (knowledge.article)' })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
+  async getKnowledgeArticles(@Query('limit') limit?: string, @Query('offset') offset?: string) {
+    return this.odooApi.getKnowledgeArticles(limit ? parseInt(limit, 10) : 50, offset ? parseInt(offset, 10) : 0);
+  }
+
+  @Get('knowledge/articles/:id')
+  @ApiOperation({ summary: 'Get knowledge article detail' })
+  @ApiParam({ name: 'id', type: Number })
+  async getKnowledgeArticleDetail(@Param('id') id: string) {
+    return this.odooApi.getKnowledgeArticleDetail(parseInt(id, 10));
+  }
+
+  // --- Calendar Events ---
+
+  @Get('calendar/events')
+  @ApiOperation({ summary: 'List calendar events (calendar.event)' })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
+  async getCalendarEvents(@Query('limit') limit?: string, @Query('offset') offset?: string) {
+    return this.odooApi.getCalendarEvents(limit ? parseInt(limit, 10) : 50, offset ? parseInt(offset, 10) : 0);
+  }
+
+  @Post('calendar/events')
+  @ApiOperation({ summary: 'Create a calendar event' })
+  async createCalendarEvent(@Body() data: Record<string, unknown>) {
+    const id = await this.odooApi.createCalendarEvent(data);
+    return { id, success: true };
+  }
+
+  // --- Mail Messages ---
+
+  @Get('messages')
+  @ApiOperation({ summary: 'List mail messages (mail.message)' })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
+  @ApiQuery({ name: 'resModel', required: false, type: String })
+  @ApiQuery({ name: 'resId', required: false, type: Number })
+  async getMailMessages(
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+    @Query('resModel') resModel?: string,
+    @Query('resId') resId?: string,
+  ) {
+    return this.odooApi.getMailMessages(
+      limit ? parseInt(limit, 10) : 50,
+      offset ? parseInt(offset, 10) : 0,
+      resModel,
+      resId ? parseInt(resId, 10) : undefined,
+    );
+  }
+
+  @Post('messages')
+  @ApiOperation({ summary: 'Post a mail message' })
+  async postMailMessage(@Body() data: Record<string, unknown>) {
+    const id = await this.odooApi.postMailMessage(data);
+    return { id, success: true };
+  }
+
+  // --- Executive Hub Dashboard Aggregator ---
+
+  @Get('dashboard/executive')
+  @ApiOperation({ summary: 'Get Executive Hub Dashboard metrics (aggregated cross-module SOT payload)' })
+  async getExecutiveDashboard() {
+    return this.odooApi.getExecutiveDashboard();
+  }
 }

@@ -3,7 +3,6 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { LiquidGlassCard } from '@/components/ui/LiquidGlassCard';
-import { makeTransition } from '@/lib/motion';
 import { ChapterHeading } from '@/components/scroll/ChapterHeading';
 import { useReducedMotion } from '@/hooks';
 

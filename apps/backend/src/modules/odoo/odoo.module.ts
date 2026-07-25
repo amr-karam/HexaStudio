@@ -12,9 +12,13 @@ import { WebhookRetryService } from './webhook-retry.service';
 import { RealtimeModule } from '../realtime/realtime.module';
 import { StorageModule } from '../storage/storage.module';
 
+import { StrapiProjectSyncService } from './strapi-project-sync.service';
+import { StrapiWebhookController } from './strapi-webhook.controller';
+import { HttpModule } from '@nestjs/axios';
+
 @Module({
-  imports: [ConfigModule, ScheduleModule.forRoot(), RealtimeModule, StorageModule],
-  controllers: [OdooWebhookController, OdooApiController],
+  imports: [ConfigModule, ScheduleModule.forRoot(), RealtimeModule, StorageModule, HttpModule],
+  controllers: [OdooWebhookController, OdooApiController, StrapiWebhookController],
   providers: [
     OdooService,
     OdooSyncService,
@@ -22,7 +26,8 @@ import { StorageModule } from '../storage/storage.module';
     OdooDocumentService,
     OdooEventListener,
     WebhookRetryService,
+    StrapiProjectSyncService,
   ],
-  exports: [OdooService, OdooSyncService, OdooApiService, OdooDocumentService, WebhookRetryService],
+  exports: [OdooService, OdooSyncService, OdooApiService, OdooDocumentService, WebhookRetryService, StrapiProjectSyncService],
 })
 export class OdooModule {}

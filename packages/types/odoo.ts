@@ -199,3 +199,108 @@ export interface OdooPipelineSummary {
   totalExpectedRevenue: number;
   weightedRevenue: number;
 }
+
+export interface OdooHelpdeskTicket {
+  id: number;
+  name: string;
+  partner_id?: OdooIdName;
+  stage_id?: OdooIdName;
+  user_id?: OdooIdName;
+  priority?: string;
+  description?: string;
+  create_date?: string;
+  close_date?: string;
+}
+
+export interface OdooEmployee {
+  id: number;
+  name: string;
+  work_email?: string;
+  work_phone?: string;
+  job_title?: string;
+  department_id?: OdooIdName;
+  parent_id?: OdooIdName;
+  user_id?: OdooIdName;
+  active?: boolean;
+}
+
+export interface OdooTimesheet {
+  id: number;
+  name: string;
+  date: string;
+  user_id?: OdooIdName;
+  project_id?: OdooIdName;
+  task_id?: OdooIdName;
+  unit_amount: number;
+  employee_id?: OdooIdName;
+}
+
+export interface OdooKnowledgeArticle {
+  id: number;
+  name: string;
+  body?: string;
+  category_id?: OdooIdName;
+  create_uid?: OdooIdName;
+  create_date?: string;
+  write_date?: string;
+}
+
+export interface OdooCalendarEvent {
+  id: number;
+  name: string;
+  start: string;
+  stop: string;
+  duration?: number;
+  allday?: boolean;
+  partner_ids?: OdooIdName[];
+  user_id?: OdooIdName;
+  description?: string;
+  location?: string;
+}
+
+export interface OdooMailMessage {
+  id: number;
+  subject?: string;
+  body?: string;
+  date?: string;
+  email_from?: string;
+  author_id?: OdooIdName;
+  model?: string;
+  res_id?: number;
+  message_type?: string;
+}
+
+export interface OdooDocument {
+  id: number;
+  name: string;
+  mimetype?: string;
+  file_size?: number;
+  res_model?: string;
+  res_id?: number;
+  create_date?: string;
+  create_uid?: OdooIdName;
+}
+
+/** Aggregated Executive Dashboard payload from Odoo SOT. */
+export interface OdooHubExecutiveDashboard {
+  crm: {
+    totalLeads: number;
+    expectedRevenue: number;
+    pipelineStagesCount: number;
+  };
+  projects: {
+    activeProjectsCount: number;
+    totalProjectsCount: number;
+  };
+  finance: {
+    unpaidInvoicesCount: number;
+    totalUnpaidAmount: number;
+  };
+  helpdesk: {
+    openTicketsCount: number;
+  };
+  timesheets: {
+    totalHoursLoggedThisMonth: number;
+  };
+  timestamp: string;
+}

@@ -21,9 +21,78 @@ interface ServicesPageContentProps {
   services: Service[];
 }
 
+const FALLBACK_SERVICES: Service[] = [
+  {
+    id: 'fallback-1',
+    title: 'Architectural Exterior Rendering',
+    slug: 'exterior-rendering',
+    description: 'Photorealistic exterior visual simulation capturing light physics, atmospheric depth, and material nuances across all weather conditions and times of day.',
+    features: ['4K & 8K Resolution Still Imagery', 'Physically-Based Lighting & Atmosphere', 'Landscape & Context Integration', 'Day-to-Night Transition Studies'],
+    order: 1,
+    isPublished: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'fallback-2',
+    title: 'Interior Spatial Experience',
+    slug: 'interior-experience',
+    description: 'Immersive interior visualization showcasing tactile material textures, bespoke furniture compositions, and subtle acoustic/lighting ambiance.',
+    features: ['Custom PBR Shader Creation', 'Bespoke Furniture & Prop Modeling', 'Natural & Artificial Light Orchestration', 'Material Specular & Displacement Mapping'],
+    order: 2,
+    isPublished: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'fallback-3',
+    title: '4K Architectural Cinema & Motion',
+    slug: 'architectural-cinema',
+    description: 'Cinematic film walkthroughs with choreographed camera movement, atmospheric soundscapes, and photorealistic motion blur.',
+    features: ['Choreographed GSAP & Camera Timelines', '4K 60FPS Video Rendering', 'Depth of Field & Anamorphic Lens Effects', 'Color Grading & Sound Design'],
+    order: 3,
+    isPublished: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'fallback-4',
+    title: 'WebXR & Real-Time Interactive Tours',
+    slug: 'webxr-tours',
+    description: 'Browser-native 3D exploration allowing clients and stakeholders to step inside spaces, swap materials, and evaluate spatial flow in real time.',
+    features: ['React Three Fiber & WebGL Canvas', 'Interactive Material & Lighting Swapping', 'Multi-User VR Co-Review Rooms', '60 FPS Mobile & Desktop Optimization'],
+    order: 4,
+    isPublished: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'fallback-5',
+    title: 'Masterplanning & Urban Visualization',
+    slug: 'masterplanning',
+    description: 'Large-scale urban development visualizations illustrating spatial relationships, pedestrian flow, environmental context, and masterplan vision.',
+    features: ['City-Scale Context Modeling', 'Solar Exposure & Shadow Impact Studies', 'Pedestrian & Traffic Flow Animations', 'Phasing & Construction Sequence Renders'],
+    order: 5,
+    isPublished: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'fallback-6',
+    title: 'AI Spatial Synthesis & Prototyping',
+    slug: 'ai-spatial-synthesis',
+    description: 'Generative AI-assisted concept exploration, rapid material variations, and automated lighting preset generation for preliminary design reviews.',
+    features: ['GPT & Neural Concept Iteration', 'Automated Mood & Lighting Preset Generation', 'Semantic Style Transfer on 3D Passes', 'Predictive Aesthetic Analytics'],
+    order: 6,
+    isPublished: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+];
+
 export function ServicesPageContent({ services }: ServicesPageContentProps) {
   const { t } = useLocale();
-  const hasServices = services.length > 0;
+  const displayServices = services.length > 0 ? services : FALLBACK_SERVICES;
 
   return (
     <div className="bg-background text-foreground min-h-screen">
@@ -42,7 +111,7 @@ export function ServicesPageContent({ services }: ServicesPageContentProps) {
           </motion.span>
           <div className="text-6xl md:text-8xl font-serif font-light tracking-tighter text-foreground leading-tight">
             <TextCharReveal
-              text={hasServices ? String(t('services.title')) : 'Our Services.'}
+              text={String(t('services.title')) || 'Our Services.'}
               as="h1"
               delay={0.15}
               stagger={0.03}
@@ -51,24 +120,23 @@ export function ServicesPageContent({ services }: ServicesPageContentProps) {
           </div>
         </div>
 
-        {hasServices ? (
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 w-full relative z-10">
-            {services.map((service, idx) => {
-              const isLarge = idx === 0 || idx === 2;
-              const title = service.title;
-              const description = service.description;
-              const features = service.features;
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 w-full relative z-10">
+          {displayServices.map((service, idx) => {
+            const isLarge = idx === 0 || idx === 2 || idx === 4;
+            const title = service.title;
+            const description = service.description;
+            const features = service.features;
 
-              return (
-                <motion.div
-                  key={service.id || title}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ ...SPRING_TRANSITION, delay: idx * 0.1 }}
-                  className={cn(isLarge ? "md:col-span-7" : "md:col-span-5")}
-                >
-              <LiquidGlassCard glow className="p-8 md:p-12 h-full group relative overflow-hidden">
+            return (
+              <motion.div
+                key={service.id || title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ ...SPRING_TRANSITION, delay: idx * 0.1 }}
+                className={cn(isLarge ? "md:col-span-7" : "md:col-span-5")}
+              >
+                <LiquidGlassCard glow className="p-8 md:p-12 h-full group relative overflow-hidden">
                   <div className="relative z-10 h-full flex flex-col">
                     <span className="text-xs font-mono text-neutral-600 mb-4 block">0{idx + 1} — SERVICE</span>
                     <h3 className="text-3xl font-serif font-light text-foreground mb-6 group-hover:text-accent transition-colors duration-500">
@@ -99,23 +167,11 @@ export function ServicesPageContent({ services }: ServicesPageContentProps) {
                       </Link>
                     </div>
                   </div>
-                  </LiquidGlassCard>
-                </motion.div>
-              );
-            })}
-          </div>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="text-center relative z-10 py-24"
-          >
-            <p className="text-neutral-500 font-light text-lg">
-              {t('services.comingSoon') || 'Our services are coming soon. Stay tuned.'}
-            </p>
-          </motion.div>
-        )}
+                </LiquidGlassCard>
+              </motion.div>
+            );
+          })}
+        </div>
       </section>
 
       <section className="px-8 md:px-16 py-32 border-t border-border/30 relative overflow-hidden">

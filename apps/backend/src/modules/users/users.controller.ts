@@ -1,5 +1,5 @@
 import { Controller, Get, Param, NotFoundException, UseGuards, VERSION_NEUTRAL } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import type { User } from '@hexastudio/types';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -13,6 +13,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get current user profile' })
+  @ApiResponse({ status: 200, description: 'Current user profile' })
   async findMe(): Promise<User> {
     const user = await this.usersService.findById('1');
     if (!user) throw new NotFoundException('User not found');
@@ -23,6 +24,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get user by ID' })
+  @ApiResponse({ status: 200, description: 'User found' })
   async findOne(@Param('id') id: string): Promise<User> {
     const user = await this.usersService.findById(id);
     if (!user) throw new NotFoundException(`User ${id} not found`);

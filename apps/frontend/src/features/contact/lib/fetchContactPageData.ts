@@ -1,6 +1,5 @@
 import { captureException } from '@sentry/nextjs';
 import type { FAQ, Service } from '@hexastudio/types';
-import { API_BASE_URL } from '@/config/constants';
 
 async function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutMs = 5000) {
   const controller = new AbortController();

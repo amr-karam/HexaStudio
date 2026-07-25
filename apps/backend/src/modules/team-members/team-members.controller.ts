@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query, VERSION_NEUTRAL } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { TeamMembersService } from './team-members.service';
 import type { TeamMember, TeamMemberResponse } from '@hexastudio/types';
 
@@ -12,6 +12,7 @@ export class TeamMembersController {
   @ApiOperation({ summary: 'Get all team members with pagination' })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiResponse({ status: 200, description: 'List of team members' })
   async findAll(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
@@ -24,6 +25,7 @@ export class TeamMembersController {
 
   @Get(':slug')
   @ApiOperation({ summary: 'Get team member by slug' })
+  @ApiResponse({ status: 200, description: 'Team member found' })
   async findOne(@Param('slug') slug: string): Promise<TeamMember> {
     return this.teamMembersService.getTeamMemberBySlug(slug);
   }
