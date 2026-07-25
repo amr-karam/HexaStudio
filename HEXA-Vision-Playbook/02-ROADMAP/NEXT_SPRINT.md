@@ -1,47 +1,36 @@
-# Next Sprint: Platform Stability & Mobile
+# Next Sprint: Mobile & Web Performance
 
-**Sprint ID:** S-013 | **Focus:** Platform Stability, Mobile API Hardening, GeoIP & Localization | **Status:** PLANNING | **Start:** 2026-07-18 | **Target:** 2026-09-15 | **v1.6.0 Target**
+**Sprint ID:** S-019 | **Focus:** Mobile App v1.0, Web Performance Tuning, Production Polish | **Status:** PLANNING | **Target:** 2026-08-15 | **v1.8.0 Target**
 
 ## 1. SPRINT OBJECTIVE
 
-Harden the platform for production scale: complete API hardening (refresh token rotation, versioning audit, pagination audit, JWT coverage), ship GeoIP-driven regional pricing and currency selection, deliver Client Portal v3 with notification preferences and document upload, and resolve remaining technical debt blocking full CI green.
+Ship the first version of the HEXA mobile app (Expo/React Native) with auth, project dashboard, and push notifications. Continue performance optimization (TBT reduction, bundle budgets, Lighthouse 95+). Polish production experience with E2E smoke tests and documentation sync.
 
 ---
 
 ## 2. HIGH-PRIORITY DELIVERABLES
 
-### Mobile & API Hardening (P0)
+### Mobile App v1.0 (P0)
 
-- [ ] **Refresh Token Rotation** — Code written, needs verification end-to-end
-- [ ] **API Versioning Audit** — Verify all controllers use `@Version('1')` consistently
-- [ ] **Pagination Audit** — Verify `?page=&limit=` works on all list endpoints
-- [ ] **JWT Auth Coverage** — Audit that ALL `/api/*` endpoints are behind auth guard except explicitly public ones
+- [ ] **Complete mobile navigation** — Tab-based (Dashboard / Projects / Notifications / Profile)
+- [ ] **Offline support** — Local caching of project data with offline-first strategy
+- [ ] **Push notifications** — Expo push for approvals, project updates, document uploads
+- [ ] **App store assets** — Icons, splash screen, app store screenshots
+- [ ] **OTA updates** — Expo Updates / EAS for over-the-air JS bundle updates
 
-### GeoIP & Localization (P1)
+### Web Performance (P1)
 
-- [ ] **GeoIP Region Detection** — MaxMind or IP2Location integration for auto-detecting user's region for pricing
-- [ ] **Currency Selection UI** — Frontend manual override of detected currency
-- [ ] **Exchange Rate Auto-Sync** — Periodic fetch from ECB API or OpenExchangeRates
+- [ ] **TBT < 100ms** — Code-split Three.js/R3F from main bundle; dynamic import on route entry
+- [ ] **LCP < 1.5s** — Optimize hero image loading with priority hints
+- [ ] **Bundle budgets** — Enforce 200KB JS per-route budget in CI
+- [ ] **Lighthouse 95+** — Desktop and mobile audits
 
-### Client Portal v3 (P1)
+### Production Polish (P2)
 
-- [x] **Portal Notification Preferences** — Toggle UI on `/portal/settings` with localStorage + backend sync
-- [x] **Portal Document Upload** — Drag-drop upload, document list, download/delete on project detail page
-- [x] **Portal Project Timeline Visualization** — Gantt toggle on main portal page + RTL support
-
-### Technical Debt (P2)
-
-- [ ] **Resolve `_corrupted_node_modules_stubs/` NTFS Issue** — Fix blocking backend vitest (chkdsk /f or re-clone)
-- [ ] **Fix 7 Pre-Existing Backend Test Failures** — Redis/auth related
-- [ ] **Dist Nesting Refactor** — Flatten `dist/apps/backend/src/main.js` to `dist/main.js`
-- [x] **Hostinger API Key Rotation** — Rotated: removed hardcoded key from `scripts/update-dns.sh`; `HOSTINGER_API_KEY` now read from `.env` (gitignored) on the server
-- [ ] **Dependabot Remediation** — 24 moderate vulns (postcss XSS), deferred to Next.js 16.3+
-
-### Research (P3)
-
-- [ ] **Expo/React Native Mobile App Scaffold** — Planning for Sprint 14
-- [ ] **Next.js 16 Upgrade Watch** — Reassess when 16.3 ships
-- [ ] **WebGPU Rendering Research** — Evaluate for 3D scenes performance improvement
+- [ ] **E2E smoke tests** — Playwright for portal login, project view, approval flow
+- [ ] **Error tracking review** — Verify Sentry captures all critical error boundaries
+- [ ] **Documentation sync** — Update all playbook docs to v1.8.0
+- [ ] **Performance budget CI gate** — Fail CI on bundle size regressions
 
 ---
 
@@ -49,28 +38,30 @@ Harden the platform for production scale: complete API hardening (refresh token 
 
 | Metric | Target |
 |--------|--------|
-| Backend tests passing | 90+ (recover 7 failing, no regressions) |
-| Typecheck | 0 errors |
-| Lint | 0 errors |
-| npm vulns | <10 or documented exceptions |
-| GeoIP accuracy | >98% region detection |
-| Portal notification opt-out | Functional |
+| Mobile app | v1.0 on TestFlight/Expo Go |
+| Lighthouse performance | >95 desktop, >85 mobile |
+| TBT | <100ms |
+| LCP | <1.5s |
+| Bundle size | <200KB per route JS |
+| E2E tests | 5+ critical paths passing |
+| Backend tests | 285/285 |
+| Production vulns | 0 critical, 0 high |
 
 ---
 
 ## 4. DEPENDENCIES
 
-- MaxMind GeoIP2 or IP2Location database subscription
-- ECB API or OpenExchangeRates API key for exchange rate auto-sync
-- Client Portal WebSocket infrastructure (already in place, extend for notifications)
-- MinIO signed URL mechanism (already in place, extend for client uploads)
+- Expo EAS Build account for iOS/Android builds
+- Apple Developer Program account (for TestFlight)
+- Google Play Console account
+- Push notification infrastructure (Expo Push API)
 
 ---
 
 ## 5. RELEASE READINESS
 
-**v1.6.0 Target:** 2026-09-15
+**v1.8.0 Target:** 2026-09-01
 
 ---
 
-*"Stability before scale. Hardening before growth."*
+*"Mobile first, performance always."*

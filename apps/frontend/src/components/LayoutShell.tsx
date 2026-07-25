@@ -7,10 +7,8 @@ import { Navbar } from '@/components/ui/nav/Navbar';
 import { Footer } from '@/components/ui/Footer';
 import { PageTransition } from '@/components/PageTransition';
 import { SmoothScrollWrapper } from '@/components/SmoothScrollWrapper';
-import { CustomCursor } from '@/components/CustomCursor';
 import { BackToTop } from '@/components/BackToTop';
 import { GrainOverlay } from '@/components/animation';
-import CursorTrail from '@/components/effects/CursorTrail';
 
 const FULLSCREEN_ROUTES = ['/xr-viewer'];
 
@@ -20,6 +18,22 @@ const AMBIENT_ROUTES = ['/', '/about', '/services', '/projects', '/blog', '/cont
 /** Dynamic import — AmbientScene and its R3F/Three deps only load on marketing routes. */
 const AmbientScene = dynamic(
   () => import('@/components/effects/AmbientScene').then((m) => m.default),
+  { ssr: false },
+);
+
+/**
+ * TBT-optimized dynamic imports (S-018):
+ * CustomCursor initializes framer-motion springs + global mouse listeners;
+ * CursorTrail sets up a canvas RAF loop. Both are irrelevant on touch devices
+ * and should not block initial hydration on any device — defer via next/dynamic.
+ */
+const CustomCursor = dynamic(
+  () => import('@/components/CustomCursor').then((m) => ({ default: m.CustomCursor })),
+  { ssr: false },
+);
+
+const CursorTrail = dynamic(
+  () => import('@/components/effects/CursorTrail'),
   { ssr: false },
 );
 
