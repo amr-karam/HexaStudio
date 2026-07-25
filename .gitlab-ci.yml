@@ -66,6 +66,7 @@ workflow:
   image: node:${NODE_VERSION}
   before_script:
     - npm ci --legacy-peer-deps
+    - npm rebuild
   cache: *cache_npm
 
 typecheck:
