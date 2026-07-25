@@ -132,30 +132,38 @@ export function CurrencySelector() {
     let cancelled = false;
     setGeoLoading(true);
 
-    fetchGeoIP()
-      .then((geo) => {
-        if (cancelled) return;
-        if (geo) {
-          const suggested = geo.currency ?? suggestCurrencyFromCountry(geo.country);
-          if (suggested && availableCurrencies.find((c) => c.code === suggested)) {
-            setCurrency(suggested);
-            setGeoLoading(false);
-            return;
+    // Wrap in try/catch to handle synchronous Chrome-extension throws that
+    // bypass the async function's internal try/catch (e.g., Money Helper
+    // extensions intercepting window.fetch before it reaches the network).
+    try {
+      fetchGeoIP()
+        .then((geo) => {
+          if (cancelled) return;
+          if (geo) {
+            const suggested = geo.currency ?? suggestCurrencyFromCountry(geo.country);
+            if (suggested && availableCurrencies.find((c) => c.code === suggested)) {
+              setCurrency(suggested);
+              setGeoLoading(false);
+              return;
+            }
           }
-        }
-        // Fallback to locale-based default
-        const { currency: localeCurrency } = localeToRegion(locale);
-        if (localeCurrency && localeCurrency !== 'USD') {
-          if (availableCurrencies.find((c) => c.code === localeCurrency)) {
-            setCurrency(localeCurrency);
+          // Fallback to locale-based default
+          const { currency: localeCurrency } = localeToRegion(locale);
+          if (localeCurrency && localeCurrency !== 'USD') {
+            if (availableCurrencies.find((c) => c.code === localeCurrency)) {
+              setCurrency(localeCurrency);
+            }
           }
-        }
-        setGeoLoading(false);
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setGeoLoading(false);
-      });
+          setGeoLoading(false);
+        })
+        .catch(() => {
+          if (cancelled) return;
+          setGeoLoading(false);
+        });
+    } catch {
+      if (cancelled) return;
+      setGeoLoading(false);
+    }
 
     return () => {
       cancelled = true;
