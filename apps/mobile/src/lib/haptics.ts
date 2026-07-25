@@ -1,48 +1,53 @@
 /**
  * HEXA Studio — Haptic Feedback Utility
  *
- * Provides subtle haptic feedback for premium interactions.
- * Usesexpo-haptics when available, no-op gracefully otherwise.
+ * Provides subtle haptic feedback for premium mobile interactions.
+ * Safe fallback implementation.
  *
  * @module lib/haptics
  */
 
-import * as Haptics from 'expo-haptics';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+let HapticsModule: any = null;
+try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  HapticsModule = require('expo-haptics');
+} catch {
+  HapticsModule = null;
+}
 
-const isEnabled = true;
-
-/** Light tap — selection, card tap */
 export function hapticLight(): void {
-  if (!isEnabled) return;
-  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+  if (HapticsModule?.impactAsync) {
+    HapticsModule.impactAsync(HapticsModule.ImpactFeedbackStyle?.Light || 'light').catch(() => {});
+  }
 }
 
-/** Medium tap — button press, toggle */
 export function hapticMedium(): void {
-  if (!isEnabled) return;
-  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+  if (HapticsModule?.impactAsync) {
+    HapticsModule.impactAsync(HapticsModule.ImpactFeedbackStyle?.Medium || 'medium').catch(() => {});
+  }
 }
 
-/** Heavy tap — destructive action confirmation */
 export function hapticHeavy(): void {
-  if (!isEnabled) return;
-  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid).catch(() => {});
+  if (HapticsModule?.impactAsync) {
+    HapticsModule.impactAsync(HapticsModule.ImpactFeedbackStyle?.Rigid || 'heavy').catch(() => {});
+  }
 }
 
-/** Success notification — login success, approval submitted */
 export function hapticSuccess(): void {
-  if (!isEnabled) return;
-  Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+  if (HapticsModule?.notificationAsync) {
+    HapticsModule.notificationAsync(HapticsModule.NotificationFeedbackType?.Success || 'success').catch(() => {});
+  }
 }
 
-/** Warning notification — validation error */
 export function hapticWarning(): void {
-  if (!isEnabled) return;
-  Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => {});
+  if (HapticsModule?.notificationAsync) {
+    HapticsModule.notificationAsync(HapticsModule.NotificationFeedbackType?.Warning || 'warning').catch(() => {});
+  }
 }
 
-/** Error notification — network failure */
 export function hapticError(): void {
-  if (!isEnabled) return;
-  Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => {});
+  if (HapticsModule?.notificationAsync) {
+    HapticsModule.notificationAsync(HapticsModule.NotificationFeedbackType?.Error || 'error').catch(() => {});
+  }
 }

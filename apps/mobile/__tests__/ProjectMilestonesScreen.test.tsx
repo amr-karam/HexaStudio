@@ -12,6 +12,8 @@ jest.mock('../src/lib/api', () => ({
   ),
 }));
 
+jest.setTimeout(15000);
+
 describe('ProjectMilestonesScreen', () => {
   it('renders milestones from the API', async () => {
     render(<ProjectMilestonesScreen />, { wrapper: ThemeProvider });

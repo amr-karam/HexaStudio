@@ -15,7 +15,7 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
   interpolate,
-  type AnimatedSharedValue,
+  type SharedValue,
 } from 'react-native-reanimated';
 import { useTheme } from './ThemeProvider';
 import { SPRING } from '../theme/motion';
@@ -46,7 +46,7 @@ export function GoldButton({
   ...rest
 }: GoldButtonProps) {
   const { colors, typography, radius, shadows } = useTheme();
-  const pressed = useRef<AnimatedSharedValue<number>>(useSharedValue(0)).current;
+  const pressed = useRef<SharedValue<number>>(useSharedValue(0)).current;
 
   const animatedStyle = useAnimatedStyle(() => {
     const scale = interpolate(pressed.value, [0, 1], [1, 0.97]);

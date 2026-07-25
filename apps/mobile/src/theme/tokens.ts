@@ -52,6 +52,14 @@ export const colors = {
   statusPending: '#D4AF37', // Pending / in-progress (gold)
   statusOverdue: '#EF4444', // Overdue / failed
   statusDraft: '#6B7280', // Draft / neutral
+
+  // Standard semantic aliases
+  background: '#050505',
+  foreground: '#FFFFFF',
+  surface: '#0F0F10',
+  muted: '#6A6A6E',
+  accent: '#D4AF37',
+  error: '#EF4444',
 } as const;
 
 /** Gold gradient stops for shimmer effects */
