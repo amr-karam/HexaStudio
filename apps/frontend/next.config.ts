@@ -14,13 +14,15 @@ const withBundleAnalyzer = bundleAnalyzer({
  *   (`self.__next_f`) and the JSON-LD structured-data script. A nonce-based
  *   strict-dynamic policy requires middleware nonce plumbing and is tracked
  *   as a future hardening item.
+ * - `'unsafe-eval'` is required by React dev tooling, PostHog, Sentry Replay,
+ *   and Three.js WASM workers.
  * - `'wasm-unsafe-eval'` allows the Draco WASM mesh decoder (gstatic CDN).
  * - `worker-src blob:` covers Draco decoder workers and Sentry Replay.
  * - Socket.IO reaches api.hexastudio.net over both https (polling) and wss.
  */
 const ContentSecurityPolicy = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.googletagmanager.com https://us.i.posthog.com https://www.gstatic.com https://static.cloudflareinsights.com",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https://www.googletagmanager.com https://us.i.posthog.com https://www.gstatic.com https://static.cloudflareinsights.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
   "img-src 'self' data: blob: https:",

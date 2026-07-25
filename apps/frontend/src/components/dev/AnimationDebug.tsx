@@ -15,6 +15,7 @@ import { useQualityTier } from '@/providers/quality-provider';
  * This component is automatically stripped from production builds.
  */
 export function AnimationDebug() {
+  const [mounted, setMounted] = useState(false);
   const policy = useMotionPolicy();
   const rawReducedMotion = useReducedMotion();
   const rawFinePointer = useFinePointer();
@@ -23,6 +24,7 @@ export function AnimationDebug() {
   const [lenisOk, setLenisOk] = useState<boolean | null>(null);
 
   useEffect(() => {
+    setMounted(true);
     if (process.env.NODE_ENV !== 'development') return;
 
     // Log animation policy state to console
@@ -60,8 +62,8 @@ export function AnimationDebug() {
     );
   }, [rawReducedMotion, rawFinePointer, policy]);
 
-  // Only show in development
-  if (process.env.NODE_ENV === 'production') return null;
+  // Only show on client in development
+  if (!mounted || process.env.NODE_ENV === 'production') return null;
 
   return (
     <div
@@ -90,6 +92,14 @@ export function AnimationDebug() {
         <DiagnosticRow label="anim. enabled" ok={policy.animationsEnabled} warn />
         <DiagnosticRow label="paused" ok={!policy.paused} warn />
       </div>
+
+      <button
+        type="button"
+        onClick={policy.togglePause}
+        className="mt-2.5 w-full rounded border border-white/20 bg-white/10 px-2 py-1 text-[10px] font-semibold text-white hover:bg-white/20 transition-colors"
+      >
+        {policy.paused ? '▶ Resume Animations' : '⏸ Pause Animations'}
+      </button>
     </div>
   );
 }
