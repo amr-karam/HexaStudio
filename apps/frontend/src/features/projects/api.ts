@@ -3,10 +3,15 @@ import { API_BASE_URL } from '@/config/constants';
 const BASE = `${API_BASE_URL}/api/projects`;
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json' },
-    ...init,
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${BASE}${path}`, {
+      headers: { 'Content-Type': 'application/json' },
+      ...init,
+    });
+  } catch {
+    throw new Error(`Project API error: network failure`);
+  }
   if (!response.ok) {
     const body = await response.text().catch(() => '');
     throw new Error(`Project API error ${response.status}: ${body || response.statusText}`);

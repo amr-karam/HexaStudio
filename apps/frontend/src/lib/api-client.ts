@@ -68,14 +68,22 @@ export async function authenticatedFetch(
     },
   };
 
-  let response = await fetch(url, merged);
+  let response: Response;
+  try {
+    response = await fetch(url, merged);
+  } catch {
+    throw new Error('Network request failed');
+  }
 
   // If 401 and we have a refresh token, try to refresh once
   if (response.status === 401 && _refreshToken) {
     const refreshed = await attemptTokenRefresh();
     if (refreshed) {
-      // Retry the original request — cookies are now updated
-      response = await fetch(url, merged);
+      try {
+        response = await fetch(url, merged);
+      } catch {
+        throw new Error('Network request failed after token refresh');
+      }
     }
   }
 

@@ -19,7 +19,12 @@ export async function fetchJson<T>(
   options?: RequestInit,
   errorMessage = 'Request failed',
 ): Promise<T> {
-  const response = await fetch(url, options);
+  let response: Response;
+  try {
+    response = await fetch(url, options);
+  } catch {
+    throw new Error(errorMessage);
+  }
   if (!response.ok) {
     throw new Error(errorMessage);
   }
