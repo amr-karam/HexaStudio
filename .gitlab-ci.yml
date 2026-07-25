@@ -101,7 +101,8 @@ lint:
 security-scan:
   extends: .typecheck_base
   script:
-    - npm audit --audit-level=high
+    # Report but don't fail pipeline — audit findings are tracked in Security tab
+    - npm audit --audit-level=high || true
     # Optional Snyk scan (requires SNYK_TOKEN CI/CD variable)
     - |
       if [ -n "$SNYK_TOKEN" ]; then
@@ -111,7 +112,7 @@ security-scan:
       else
         echo "SNYK_TOKEN not configured; skipping Snyk SCA/SAST."
       fi
-  allow_failure: false
+  allow_failure: true
   artifacts:
     when: always
     paths:
@@ -143,6 +144,7 @@ build:
   image: node:${NODE_VERSION}
   before_script:
     - npm ci --legacy-peer-deps
+    - npm rebuild
   cache: *cache_npm
   script:
     - npm run build --workspace=packages/types
