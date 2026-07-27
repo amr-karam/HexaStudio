@@ -64,7 +64,7 @@ export class SceneErrorBoundary extends React.Component<
       const { fallbackImage, title, description } = this.props;
 
       return (
-        <div className="absolute inset-0 -z-10 flex items-center justify-center bg-[#050505]">
+        <div role="alert" className="absolute inset-0 -z-10 flex items-center justify-center bg-[#050505]">
           {/* Background cover image (if provided). */}
           {fallbackImage && (
             <div

@@ -33,7 +33,7 @@ export class GlobalErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         this.props.fallback || (
-          <div className="flex h-screen w-full flex-col items-center justify-center p-8 text-center bg-background">
+          <div role="alert" className="flex h-screen w-full flex-col items-center justify-center p-8 text-center bg-background">
             <h2 className="mb-4 text-3xl font-light tracking-tight text-foreground">
               Something went wrong.
             </h2>

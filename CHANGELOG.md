@@ -5,6 +5,34 @@ All notable changes to the HEXA Vision platform are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.8.0] — 2026-07-27
+
+### Sprint 19 — Mobile & Web Performance (IN PROGRESS)
+
+#### Added
+- **Dead Three.js Code Removal**: Removed 11 unused files (BlueprintParticles, SplineField, ForceField, ParticleSimulation, HeroBloom, HexaCrystal, SceneModel, MeshDistortion, LivingBlueprintHero, shaders, entire features/experience/engine). Cleaned up barrels and empty directories. ~25 KB bundle reduction.
+- **Bundle Budgets Enforced**: 200KB JS per-route budget via webpack `config.performance` with production build errors.
+- **Bundle Analyzer**: Enhanced configuration producing static HTML report + stats JSON when `ANALYZE=true`.
+- **OpenTelemetry Tracing**: Backend instrumentation added with trace propagation across services.
+- **Request ID Propagation**: `RequestIdMiddleware` generates and propagates `X-Request-ID` header across all services for end-to-end request tracking.
+- **Tempo Tracing Service**: `grafana/tempo:2.6.1` added to `docker-compose.prod.yml` with Grafana datasource configuration.
+- **Enterprise Architecture Governance Framework**: 11 documents, 7,831 lines defining architecture standards, CI/CD governance, and decision record processes.
+- **3 New Architecture Decision Records**:
+  - ADR-007: Routing & Layout Strategy
+  - ADR-008: Persistent Experience Layer
+  - ADR-009: Bidirectional Strapi-Odoo Sync
+
+#### Quality
+- TBT at 60ms (target: <100ms) — already exceeding target
+- Frontend typecheck: 0 errors
+- Frontend lint: 0 errors
+- Backend typecheck: 0 errors
+- Backend lint: 0 errors
+- Backend tests: 285/285 passing
+- Frontend tests: 176/176 passing
+
+---
+
 ## [1.3.0] — 2026-07-24
 
 ### Added

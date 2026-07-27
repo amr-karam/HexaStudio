@@ -7,11 +7,13 @@ import { useCollaboration } from '@/features/xr/hooks/useCollaboration';
 import { useXRStore } from '@/features/xr/store/xr-store';
 import { CollabPresence } from '@/features/xr/components/CollabPresence';
 import { useAnalytics } from '@/lib/analytics';
+import { captureException } from '@sentry/nextjs';
 
 class ErrorBoundary extends Component<{ children: ReactNode; onError?: (error: Error) => void; fallback: (error: Error) => ReactNode }> {
   state = { error: null as Error | null };
   static getDerivedStateFromError(error: Error) { return { error }; }
   componentDidCatch(error: Error) {
+    captureException(error);
     this.props.onError?.(error);
   }
   render() {

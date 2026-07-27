@@ -76,6 +76,8 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://api.hexastudio.net" />
+        {/* FractureRingHero 3D scene loads HDR environment map from this CDN */}
+        <link rel="preconnect" href="https://raw.githack.com" crossOrigin="anonymous" />
         {/* Hero font files — start download immediately, skipping the CSS→font
             discovery waterfall. Latin variable subsets only (Inter = body/hero,
             Playfair Display = headings). JetBrains Mono loads on demand. */}

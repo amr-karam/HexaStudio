@@ -12,7 +12,7 @@ export default function Error({
     captureException(error);
   }, [error]);
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center p-8 text-center">
+    <div role="alert" className="flex h-screen w-full flex-col items-center justify-center p-8 text-center">
       {" "}
       <h2 className="mb-4 text-3xl font-light tracking-tight text-foreground">
         {" "}
