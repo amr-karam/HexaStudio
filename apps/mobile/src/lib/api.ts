@@ -1,5 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
 import Constants from 'expo-constants';
+import { setCachedData, getCachedData, DEFAULT_TTL } from './cache';
 
 const TOKEN_KEY = 'hexa_access_token';
 
@@ -44,12 +45,34 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
   return response.json() as Promise<T>;
 }
 
+async function withCache<T>(
+  cacheKey: string,
+  ttlMinutes: number,
+  fetcher: () => Promise<T>,
+): Promise<T> {
+  try {
+    const data = await fetcher();
+    setCachedData(cacheKey, data, ttlMinutes);
+    return data;
+  } catch (error) {
+    if (error instanceof TypeError) {
+      const cached = await getCachedData<T>(cacheKey);
+      if (cached !== null) return cached;
+    }
+    throw error;
+  }
+}
+
 export function fetchProjects(): Promise<ClientProject[]> {
-  return apiFetch<ClientProject[]>('/api/portal/odoo/projects');
+  return withCache('cache:projects', DEFAULT_TTL.projects, () =>
+    apiFetch<ClientProject[]>('/api/portal/odoo/projects'),
+  );
 }
 
 export function fetchMilestones(projectId: number): Promise<ClientMilestone[]> {
-  return apiFetch<ClientMilestone[]>(`/api/portal/odoo/projects/${projectId}/milestones`);
+  return withCache(`cache:project:${projectId}`, DEFAULT_TTL.project, () =>
+    apiFetch<ClientMilestone[]>(`/api/portal/odoo/projects/${projectId}/milestones`),
+  );
 }
 
 export interface ClientInvoice {
@@ -63,7 +86,9 @@ export interface ClientInvoice {
 }
 
 export function fetchInvoices(): Promise<ClientInvoice[]> {
-  return apiFetch<ClientInvoice[]>('/api/portal/odoo/invoices');
+  return withCache('cache:invoices', DEFAULT_TTL.invoices, () =>
+    apiFetch<ClientInvoice[]>('/api/portal/odoo/invoices'),
+  );
 }
 
 export interface PortalDashboard {
@@ -74,5 +99,7 @@ export interface PortalDashboard {
 }
 
 export function fetchPortalDashboard(): Promise<PortalDashboard> {
-  return apiFetch<PortalDashboard>('/api/portal/me');
+  return withCache('cache:dashboard', DEFAULT_TTL.dashboard, () =>
+    apiFetch<PortalDashboard>('/api/portal/me'),
+  );
 }
