@@ -69,6 +69,7 @@ const nextConfig: NextConfig = {
   output: process.env.NEXT_OUTPUT_STANDALONE === "true" ? "standalone" : undefined,
   reactStrictMode: true,
   poweredByHeader: false,
+  turbopack: {},
   transpilePackages: ["@hexastudio/types", "@hexastudio/utils", "@hexastudio/ui"],
   experimental: {
     optimizePackageImports: ["three", "@react-three/fiber", "@react-three/drei", "@react-three/postprocessing", "gsap", "framer-motion", "@sentry/nextjs"],

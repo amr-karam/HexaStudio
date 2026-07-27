@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build --workspace=apps/frontend -- --webpack"
+  command = "npm run build --workspace=apps/frontend"
   publish = "apps/frontend/.next"
   environment = { SKIP_ENV_VALIDATION = "true" }
 
