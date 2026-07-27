@@ -1,6 +1,6 @@
 # HEXA Studio — RISK REGISTER
 
-> Version: 1.0 | Last Updated: 2026-07-26 | Authority: Project Lead
+> Version: 1.1 | Last Updated: 2026-07-27 | Authority: Project Lead / Architecture Review Board
 
 ## Risk Rating Matrix
 
@@ -60,6 +60,9 @@
 | R-020 | **Third-party API deprecation** — Cloudflare, Sentry, or other external service changes/deprecates API | Possible | Moderate | MEDIUM | Monitor API changelogs and deprecation notices; abstract external API calls behind adapter layer; version-pin SDKs | Update adapter to new API version; test in staging; deploy | Backend Lead | Quarterly |
 | R-021 | **npm registry downtime** — Unable to install dependencies during CI/CD or local dev | Unlikely | High | MEDIUM | `npm ci` uses lockfile; GitLab CI/CD caches `node_modules/`; npm cache in `.npm/`; alternative registry mirror configured | Use npm cache; switch to mirror registry; wait for restoration | DevOps | Quarterly |
 | R-022 | **Docker Hub rate limiting** — Anonymous pull limits hit during CI/CD builds | Possible | Moderate | LOW | Authenticated pulls via GitLab CI (free tier); images pulled from GitLab Container Registry; Buildx cache reduces pulls | Add Docker Hub credentials to CI/CD variables; use mirror registry | DevOps | Monthly |
+| R-026 | **Cross-platform optional dependency omitted from npm lockfile** — Windows-generated lockfile can omit Linux native bindings and stop GitLab tests | Possible | High | HIGH | Exact governed optional binding; npm 11.17.0; clean Linux install and load test; ADR-010 | Revert atomic CI commit or regenerate lockfile in verified Linux environment | DevOps / QA | Per Vite/Vitest upgrade |
+| R-027 | **Single GitLab runner bottleneck** — Serial 30+ minute pipelines delay feedback and incident recovery | Likely | Moderate | MEDIUM | Cancel superseded pipelines; optimize cache; track queue/runtime | Add a second isolated runner and architecture-keyed caches | DevOps | Weekly |
+| R-028 | **GitLab credentials exposed over plain HTTP or embedded remote URLs** — credentials can be intercepted or leaked from local configuration/transcripts | Possible | Critical | CRITICAL | Rotate exposed credentials; remove inline credentials; use SSH/credential helper; place GitLab behind TLS and restricted access | Revoke credentials, audit logs, rotate runner/project credentials, investigate unauthorized access | Security / DevOps | Immediate until closed |
 
 ### Team Risks
 
@@ -113,3 +116,4 @@ Risks with severity **CRITICAL** must have mitigation, contingency, and be repor
 | 2026-07-13 | Production deployment broke API | Missing env var in CI/CD pipeline | Rolled back, fixed variable, re-deployed | R-016 |
 | 2026-07-20 | Staging disk full | Logs consumed 100% of SSD | Added log rotation, pruned logs | R-002 |
 | 2026-07-22 | Odoo sync stalled | Odoo service unreachable due to config change | Restarted Odoo, cleared pending queue | R-015 |
+| 2026-07-25 | GitLab Pipeline #8 test job failed | npm lockfile omitted Linux Rolldown native binding; npm rebuild could not repair dependency graph | ADR-010 remediation: exact optional binding, npm/Node pin, clean Linux verification | R-026 |
