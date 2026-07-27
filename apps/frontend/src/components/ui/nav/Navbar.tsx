@@ -193,6 +193,7 @@ export const Navbar = () => {
                 alt="HexaStudio Logo"
                 width={32}
                 height={32}
+                priority
                 className="transition-transform duration-500"
               />
             </motion.div>

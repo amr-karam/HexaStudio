@@ -24,7 +24,7 @@ export function XRErrorFallback({
   const handleReload = () => window.location.reload();
 
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-[#0A0A0A]">
+    <div role="alert" className="flex h-screen w-screen items-center justify-center bg-[#0A0A0A]">
       {/* Background image (if provided). */}
       {coverImage && (
         <div
