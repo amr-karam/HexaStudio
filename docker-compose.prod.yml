@@ -460,6 +460,7 @@ volumes:
   prometheus_data:
   grafana_data:
   loki_data:
+  tempo_data:
   odoo_data:
   backup_data:
   qdrant_data:

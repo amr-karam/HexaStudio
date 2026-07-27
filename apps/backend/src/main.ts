@@ -1,3 +1,8 @@
+import { initTracing } from "./tracing";
+
+// Initialize OpenTelemetry before anything else
+initTracing();
+
 import { NestFactory } from "@nestjs/core";
 import { Logger, ValidationPipe, VersioningType, VERSION_NEUTRAL } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
