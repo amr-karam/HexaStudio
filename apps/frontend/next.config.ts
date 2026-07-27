@@ -4,7 +4,8 @@ import bundleAnalyzer from "@next/bundle-analyzer";
 const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
   openAnalyzer: false,
-});
+  analyzerMode: "static",
+} as any);
 
 /**
  * Content-Security-Policy (Sprint 15 P7).
@@ -75,6 +76,20 @@ const nextConfig: NextConfig = {
     // stylesheet request from the critical path (FCP). HTML is served
     // no-store through Cloudflare, so separate CSS caching buys little here.
     inlineCss: true,
+  },
+  // S-019 performance budgets
+  // - 200 KB JS per-route budget (enforced via webpack performance)
+  // - TBT < 100ms  (monitored via Sentry + Core Web Vitals)
+  // - LCP < 1.5s   (monitored via Sentry + Core Web Vitals)
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.performance = {
+        maxAssetSize: 200 * 1024,
+        maxEntrypointSize: 200 * 1024,
+        hints: process.env.NODE_ENV === "production" ? "error" : "warning",
+      };
+    }
+    return config;
   },
   async headers() {
     return [
