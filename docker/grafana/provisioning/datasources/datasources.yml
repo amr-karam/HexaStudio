@@ -10,3 +10,24 @@ datasources:
     jsonData:
       timeInterval: "15s"
       queryTimeout: "60s"
+
+  - name: Tempo
+    type: tempo
+    access: proxy
+    url: http://tempo:3200
+    editable: false
+    jsonData:
+      tracesToLogs:
+        datasourceUid: loki
+        tags: ['service.name', 'http.method', 'http.url']
+        mappedTags: [{ key: 'service.name', value: 'service_name' }]
+        spanStartTimeShift: '-5m'
+        spanEndTimeShift: '5m'
+        filterByTraceID: true
+        filterBySpanID: false
+      serviceMap:
+        datasourceUid: prometheus
+      nodeGraph:
+        enabled: true
+      search:
+        hide: false
