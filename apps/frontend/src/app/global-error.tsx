@@ -1,0 +1,38 @@
+"use client";
+
+import { useEffect } from "react";
+import { captureException } from "@sentry/nextjs";
+
+export default function GlobalError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  useEffect(() => {
+    captureException(error);
+  }, [error]);
+
+  return (
+    <html lang="en" dir="ltr">
+      <body className="min-h-screen bg-background text-foreground antialiased">
+        <div role="alert" className="flex h-screen w-full flex-col items-center justify-center p-8 text-center">
+          <h2 className="mb-4 text-3xl font-light tracking-tight text-foreground">
+            Critical Error
+          </h2>
+          <p className="mb-10 text-sm text-neutral-500 max-w-md leading-relaxed">
+            A critical error occurred. Please refresh the page to continue.
+          </p>
+          <button
+            type="button"
+            onClick={reset}
+            className="border border-accent/30 px-8 py-3 text-xs uppercase tracking-widest text-accent transition-all duration-300 hover:bg-accent hover:text-background"
+          >
+            Try Again
+          </button>
+        </div>
+      </body>
+    </html>
+  );
+}
