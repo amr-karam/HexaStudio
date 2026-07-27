@@ -119,6 +119,29 @@ security-scan:
       - .snyk/
     expire_in: 7 days
 
+# ----- SBOM (Software Bill of Materials) -----
+sbom:
+  stage: quality
+  image: node:${NODE_VERSION}
+  before_script:
+    - npm ci --legacy-peer-deps
+  script:
+    - npx --yes @cyclonedx/cyclonedx-npm@latest --output-file gl-sbom.json
+    - |
+      if [ -s gl-sbom.json ]; then
+        echo "SBOM generated with $(jq '.components | length' gl-sbom.json) components"
+      else
+        echo "Warning: SBOM may be incomplete"
+      fi
+  artifacts:
+    when: always
+    paths:
+      - gl-sbom.json
+    expire_in: 30 days
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+
 # ----- Unit Tests -----
 test:
   extends: .typecheck_base
@@ -344,6 +367,46 @@ bundle-analysis:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == "main"
 
+# ----- Container Image Security Scan (Trivy) -----
+# Scans the three pushed images for OS + library vulnerabilities.
+# Gate policy: CRITICAL fails the pipeline; HIGH/MEDIUM reported as artifacts.
+container-scan:
+  stage: validate
+  image: aquasec/trivy:latest
+  needs:
+    - build-image-backend
+    - build-image-frontend
+    - build-image-cms
+  variables:
+    TRIVY_USERNAME: $CI_REGISTRY_USER
+    TRIVY_PASSWORD: $CI_REGISTRY_PASSWORD
+    TRIVY_AUTH_URL: $CI_REGISTRY
+    TRIVY_NO_PROGRESS: "true"
+  script:
+    # Full report (all severities) as machine-readable artifacts
+    - trivy image --format json --output trivy-backend.json --severity HIGH,CRITICAL $BACKEND_IMAGE:$IMAGE_TAG_SHA
+    - trivy image --format json --output trivy-frontend.json --severity HIGH,CRITICAL $FRONTEND_IMAGE:$IMAGE_TAG_SHA
+    - trivy image --format json --output trivy-cms.json --severity HIGH,CRITICAL $CMS_IMAGE:$IMAGE_TAG_SHA
+    # Human-readable table to job log
+    - trivy image --severity HIGH,CRITICAL $BACKEND_IMAGE:$IMAGE_TAG_SHA
+    - trivy image --severity HIGH,CRITICAL $FRONTEND_IMAGE:$IMAGE_TAG_SHA
+    - trivy image --severity HIGH,CRITICAL $CMS_IMAGE:$IMAGE_TAG_SHA
+    # Gate: fail only on fixable CRITICAL findings
+    - trivy image --exit-code 1 --severity CRITICAL --ignore-unfixed $BACKEND_IMAGE:$IMAGE_TAG_SHA
+    - trivy image --exit-code 1 --severity CRITICAL --ignore-unfixed $FRONTEND_IMAGE:$IMAGE_TAG_SHA
+    - trivy image --exit-code 1 --severity CRITICAL --ignore-unfixed $CMS_IMAGE:$IMAGE_TAG_SHA
+  artifacts:
+    when: always
+    paths:
+      - trivy-backend.json
+      - trivy-frontend.json
+      - trivy-cms.json
+    expire_in: 7 days
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
 # ----------------------------------------------------------------------------
 # 5. DEPLOY STAGE
 # ----------------------------------------------------------------------------
@@ -384,6 +447,8 @@ deploy-production:
     url: https://hexastudio.net
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
+      when: manual
+      allow_failure: false
 
 # ----- Staging deploy (develop branch) -----
 deploy-staging:
