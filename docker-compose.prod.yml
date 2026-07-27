@@ -357,6 +357,20 @@ services:
     networks:
       - internal
 
+  tempo:
+    image: grafana/tempo:2.6.1
+    <<: *default-restart
+    logging: *default-logging
+    command:
+      - -config.file=/etc/tempo/tempo.yml
+    volumes:
+      - ./docker/tempo/tempo.yml:/etc/tempo/tempo.yml:ro
+      - tempo_data:/tmp/tempo
+    ports:
+      - "4318:4318"  # OTLP HTTP receiver
+    networks:
+      - internal
+
   promtail:
     image: grafana/promtail:3.2.1
     <<: *default-restart

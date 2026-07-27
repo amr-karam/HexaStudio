@@ -12,6 +12,9 @@ This directory contains Architecture Decision Records for HEXA Vision.
 | [ADR-004](004-monorepo-structure.md) | Monorepo Structure with Shared Packages | Accepted |
 | [ADR-005](005-tailwindcss.md) | TailwindCSS 4 for Styling | Accepted |
 | [ADR-006](006-state-management.md) | Zustand + TanStack Query for State Management | Accepted |
+| [ADR-007](007-opentelemetry-tracing.md) | OpenTelemetry + Grafana Tempo for Distributed Tracing | Accepted |
+| [ADR-008](008-request-id-propagation.md) | Request ID Propagation for End-to-End Traceability | Accepted |
+| [ADR-009](009-enterprise-governance-framework.md) | Enterprise Architecture Governance Framework | Accepted |
 
 ## Creating New ADRs
 
