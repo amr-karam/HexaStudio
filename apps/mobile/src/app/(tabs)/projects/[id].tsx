@@ -3,22 +3,22 @@ import { Text, View, FlatList, StyleSheet, ActivityIndicator } from 'react-nativ
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, Stack } from 'expo-router';
 import { useTheme } from '@/components/ThemeProvider';
-import { fetchMilestones, ClientMilestone } from '@/lib/api';
+import { fetchProjectDetail, ClientProjectDetail } from '@/lib/api';
 
 export default function ProjectMilestonesScreen() {
   const { colors } = useTheme();
   const { id, name } = useLocalSearchParams<{ id: string; name?: string }>();
-  const [milestones, setMilestones] = useState<ClientMilestone[]>([]);
+  const [project, setProject] = useState<ClientProjectDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     try {
       setError(null);
-      const data = await fetchMilestones(Number(id));
-      setMilestones(data);
+      const data = await fetchProjectDetail(Number(id));
+      setProject(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load milestones');
+      setError(err instanceof Error ? err.message : 'Failed to load project');
     } finally {
       setIsLoading(false);
     }
@@ -35,17 +35,31 @@ export default function ProjectMilestonesScreen() {
     if (error) {
       return <Text style={[styles.body, { color: colors.muted }]}>{error}</Text>;
     }
-    if (milestones.length === 0) {
+    if (!project) {
       return (
         <Text style={[styles.body, { color: colors.muted }]}>
-          No milestones for this project yet.
+          Project not found.
         </Text>
       );
     }
+
+    const milestones = project.milestones ?? [];
     return (
       <FlatList
         data={milestones}
         keyExtractor={(item) => String(item.id)}
+        ListHeaderComponent={
+          <View style={[styles.headerCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+            <Text style={[styles.status, { color: colors.muted }]}>
+              {project.type} · {project.status}
+            </Text>
+            {project.progress > 0 && (
+              <Text style={[styles.progress, { color: colors.accent }]}>
+                {project.progress}% complete
+              </Text>
+            )}
+          </View>
+        }
         renderItem={({ item }) => (
           <View
             style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}
@@ -74,9 +88,9 @@ export default function ProjectMilestonesScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
-      <Stack.Screen options={{ title: name ?? 'Milestones' }} />
+      <Stack.Screen options={{ title: name ?? 'Project' }} />
       <View style={styles.content}>
-        <Text style={[styles.title, { color: colors.foreground }]}>{name ?? 'Milestones'}</Text>
+        <Text style={[styles.title, { color: colors.foreground }]}>{name ?? 'Project'}</Text>
         {renderContent()}
       </View>
     </SafeAreaView>
@@ -89,6 +103,9 @@ const styles = StyleSheet.create({
   title: { fontSize: 28, fontWeight: '300', marginBottom: 16 },
   body: { fontSize: 14, lineHeight: 22 },
   spinner: { marginTop: 32 },
+  headerCard: { padding: 16, borderRadius: 4, borderWidth: 1, marginBottom: 16 },
+  status: { fontSize: 13, lineHeight: 20, marginBottom: 4 },
+  progress: { fontSize: 14, fontWeight: '600' },
   card: { padding: 20, borderRadius: 4, borderWidth: 1, marginBottom: 12 },
   cardHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 6 },
   dot: { width: 10, height: 10, borderRadius: 5, marginRight: 10 },

@@ -1,6 +1,6 @@
 # 👥 CLIENT JOURNEY: THE EMOTIONAL MAP
 
-**Version:** 1.0 | **Domain:** Business | **Focus:** User Psychology
+**Version:** 1.1 | **Domain:** Business | **Focus:** User Psychology
 
 ## 1. THE JOURNEY VISION
 The client journey is not a linear path; it is an **Emotional Arc**. We want the user to move from **Curiosity** $\rightarrow$ **Awe** $\rightarrow$ **Trust** $\rightarrow$ **Desire**.

@@ -5,10 +5,23 @@
  *
  * Audit-trailed approval workflows for wireframes, 3D renderings, contracts,
  * invoices, and scope change requests.
+ *
+ * Cinematic framer-motion choreography:
+ *  - Staggered entrance for the approval list cards
+ *  - Crossfade + lift transitions when switching the selected approval
+ *  - Pulsing gold indicator dot for pending items
+ *  - Hover-lift micro-interaction on list cards
+ *  - Premium empty state with icon
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
 import { Icon } from './PortalIcons';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { fadeLift, staggerContainer, makeTransition, STAGGER, REDUCED_TRANSITION } from '@/lib/motion';
+import { cn } from '@/lib/utils';
+import { portalApi } from '@/features/portal/api';
 import type { PendingApproval } from '../types';
 
 const INITIAL_APPROVALS: PendingApproval[] = [
@@ -43,9 +56,53 @@ const INITIAL_APPROVALS: PendingApproval[] = [
   },
 ];
 
+interface PendingDotProps {
+  reduced: boolean;
+}
+
+function PendingDot({ reduced }: PendingDotProps) {
+  return (
+    <span className="relative inline-flex w-2 h-2" aria-hidden="true">
+      <motion.span
+        className={cn('absolute inset-0 rounded-full bg-amber-400')}
+        animate={reduced ? undefined : { scale: [1, 2.4], opacity: [0.7, 0] }}
+        transition={reduced ? REDUCED_TRANSITION : { duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
+      />
+      <span className="relative inline-flex w-2 h-2 rounded-full bg-amber-400" />
+    </span>
+  );
+}
+
 export function ApprovalCenterView() {
-  const [approvals, setApprovals] = useState<PendingApproval[]>(INITIAL_APPROVALS);
-  const [selectedId, setSelectedId] = useState<string | null>(approvals[0]?.id || null);
+  const reduced = useReducedMotion();
+  const [dataSource, setDataSource] = useState<'live' | 'demo'>('demo');
+  const [approvals, setApprovals] = useState<PendingApproval[]>([]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const { data: dashboardData } = useQuery({
+    queryKey: ['portal-dashboard'],
+    queryFn: () => portalApi.getDashboard(),
+    staleTime: 60000,
+    retry: false,
+  });
+
+  // Hydrate from dashboard API when available; fall back to mock data on first load
+  useEffect(() => {
+    if (dashboardData?.pendingApprovals && dashboardData.pendingApprovals.length > 0) {
+      setApprovals(dashboardData.pendingApprovals as PendingApproval[]);
+      setDataSource('live');
+    } else if (approvals.length === 0) {
+      setApprovals(INITIAL_APPROVALS);
+      setDataSource('demo');
+    }
+  }, [dashboardData]);
+
+  // Auto-select the first approval once data is populated
+  useEffect(() => {
+    if (approvals.length > 0 && !selectedId) {
+      setSelectedId(approvals[0].id);
+    }
+  }, [approvals]);
 
   const activeApproval = approvals.find((a) => a.id === selectedId);
 
@@ -70,118 +127,192 @@ export function ApprovalCenterView() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-neutral-100">Approval Center</h1>
+      <motion.div
+        variants={fadeLift}
+        custom={reduced}
+        initial="hidden"
+        animate="visible"
+      >
+        <h1 className="text-2xl font-bold text-neutral-100 inline-flex items-center gap-2">
+          Approval Center
+          <span
+            className={cn(
+              'text-[10px] font-mono px-2 py-0.5 rounded-full border',
+              dataSource === 'live'
+                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+            )}
+          >
+            {dataSource === 'live' ? 'Live' : 'Demo'}
+          </span>
+        </h1>
         <p className="text-sm text-neutral-400">
           Review, sign, and authorize deliverables, scope changes, and milestone invoices with full audit logging.
         </p>
-      </div>
+      </motion.div>
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Approvals List */}
-        <div className="lg:col-span-5 space-y-3">
-          {approvals.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setSelectedId(item.id)}
-              className={`w-full text-left p-4 rounded-xl border transition-all ${
-                selectedId === item.id
-                  ? 'bg-amber-500/10 border-amber-500/50 shadow-lg'
-                  : 'bg-neutral-900 border-neutral-800 hover:border-neutral-700'
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-neutral-800 text-amber-400 border border-amber-500/20 uppercase tracking-wider">
-                  {item.type}
-                </span>
-                <span
-                  className={`text-xs px-2 py-0.5 rounded-full capitalize font-medium ${
-                    item.status === 'approved'
-                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                      : item.status === 'revision_requested'
-                      ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
-                      : 'bg-amber-500/20 text-amber-300 border border-amber-500/30 animate-pulse'
-                  }`}
-                >
-                  {item.status.replace('_', ' ')}
-                </span>
-              </div>
-              <h3 className="text-sm font-semibold text-neutral-100 mt-2 line-clamp-1">{item.title}</h3>
-              <p className="text-xs text-neutral-400 mt-1">{item.phaseName}</p>
-              <div className="flex items-center justify-between mt-3 text-[11px] text-neutral-500">
-                <span>By: {item.submittedBy}</span>
-                <span>{new Date(item.submittedAt).toLocaleDateString()}</span>
-              </div>
-            </button>
-          ))}
-        </div>
+        <motion.div
+          variants={staggerContainer(STAGGER.component)}
+          custom={reduced}
+          initial="hidden"
+          animate="visible"
+          className="lg:col-span-5 space-y-3"
+          role="list"
+          aria-label="Pending approvals list"
+        >
+          {approvals.map((item) => {
+            const isActive = selectedId === item.id;
+            const isPending = item.status === 'pending';
+            return (
+              <motion.button
+                key={item.id}
+                variants={fadeLift}
+                whileHover={reduced ? undefined : { y: -4, transition: makeTransition('interaction', 'micro') }}
+                whileTap={reduced ? undefined : { scale: 0.985 }}
+                onClick={() => setSelectedId(item.id)}
+                aria-pressed={isActive}
+                aria-label={`Open approval ${item.title}, status ${item.status.replace('_', ' ')}`}
+                role="listitem"
+                className={cn(
+                  'w-full text-left p-4 rounded-xl border transition-colors',
+                  isActive
+                    ? 'bg-amber-500/10 border-amber-500/50 shadow-lg shadow-amber-500/10'
+                    : 'bg-neutral-900 border-neutral-800 hover:border-neutral-700'
+                )}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="inline-flex items-center gap-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-neutral-800 text-amber-400 border border-amber-500/20 uppercase tracking-wider">
+                    {isPending && <PendingDot reduced={reduced} />}
+                    {item.type}
+                  </span>
+                  <span
+                    className={cn(
+                      'text-xs px-2 py-0.5 rounded-full capitalize font-medium',
+                      item.status === 'approved'
+                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                        : item.status === 'revision_requested'
+                        ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                        : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                    )}
+                  >
+                    {item.status.replace('_', ' ')}
+                  </span>
+                </div>
+                <h3 className="text-sm font-semibold text-neutral-100 mt-2 line-clamp-1">{item.title}</h3>
+                <p className="text-xs text-neutral-400 mt-1">{item.phaseName}</p>
+                <div className="flex items-center justify-between mt-3 text-[11px] text-neutral-500">
+                  <span>By: {item.submittedBy}</span>
+                  <span>{new Date(item.submittedAt).toLocaleDateString()}</span>
+                </div>
+              </motion.button>
+            );
+          })}
+        </motion.div>
 
         {/* Selected Detail & Audit Trail */}
-        <div className="lg:col-span-7 bg-neutral-900 border border-neutral-800 rounded-xl p-6 flex flex-col justify-between">
-          {activeApproval ? (
-            <div className="space-y-6">
-              <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-amber-400">{activeApproval.type}</span>
-                <h2 className="text-xl font-bold text-neutral-100 mt-1">{activeApproval.title}</h2>
-                <p className="text-xs text-neutral-400 mt-1">{activeApproval.projectName} • {activeApproval.phaseName}</p>
-              </div>
-
-              {/* Preview Card */}
-              <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800 flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="p-3 bg-neutral-800 rounded-lg text-amber-400">
-                    <Icon name="file-text" className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-neutral-200">Deliverable Package File</p>
-                    <p className="text-xs text-neutral-500">PDF • Signed Presigned URL ready</p>
-                  </div>
+        <div className="lg:col-span-7 bg-neutral-900 border border-neutral-800 rounded-xl p-6 flex flex-col justify-between min-h-[24rem]">
+          <AnimatePresence mode="wait">
+            {activeApproval ? (
+              <motion.div
+                key={activeApproval.id}
+                variants={fadeLift}
+                custom={reduced}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                className="space-y-6"
+              >
+                <div>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-amber-400">{activeApproval.type}</span>
+                  <h2 className="text-xl font-bold text-neutral-100 mt-1">{activeApproval.title}</h2>
+                  <p className="text-xs text-neutral-400 mt-1">{activeApproval.projectName} • {activeApproval.phaseName}</p>
                 </div>
-                <button className="text-xs bg-neutral-800 hover:bg-neutral-700 text-neutral-100 font-medium px-3 py-1.5 rounded-lg border border-neutral-700 transition-colors flex items-center space-x-1.5">
-                  <Icon name="eye" className="w-3.5 h-3.5" />
-                  <span>Preview</span>
-                </button>
-              </div>
 
-              {/* Action Buttons */}
-              {activeApproval.status === 'pending' && (
-                <div className="flex items-center space-x-3 pt-2">
-                  <button
-                    onClick={() => handleAction(activeApproval.id, 'approved')}
-                    className="flex-1 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-sm transition-colors shadow-lg shadow-emerald-500/20"
-                  >
-                    Approve Deliverable
-                  </button>
-                  <button
-                    onClick={() => handleAction(activeApproval.id, 'revision_requested', 'Please adjust lighting angle')}
-                    className="flex-1 py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700 font-medium text-sm transition-colors"
-                  >
-                    Request Revision
-                  </button>
-                </div>
-              )}
-
-              {/* Audit Trail */}
-              <div>
-                <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3">Audit Trail Log</h4>
-                <div className="space-y-3 font-mono text-xs border-l-2 border-neutral-800 pl-4">
-                  {activeApproval.auditTrail?.map((log, idx) => (
-                    <div key={idx} className="relative">
-                      <span className="absolute -left-[21px] top-1.5 w-2 h-2 rounded-full bg-amber-400" />
-                      <p className="text-neutral-200 font-sans font-medium">{log.action}</p>
-                      <p className="text-neutral-500 text-[11px]">{new Date(log.timestamp).toLocaleString()} • {log.actor}</p>
-                      {log.notes && <p className="text-amber-300 text-[11px] mt-0.5 font-sans">"{log.notes}"</p>}
+                {/* Preview Card */}
+                <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800 flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-3 bg-neutral-800 rounded-lg text-amber-400">
+                      <Icon name="file-text" className="w-6 h-6" />
                     </div>
-                  ))}
+                    <div>
+                      <p className="text-sm font-medium text-neutral-200">Deliverable Package File</p>
+                      <p className="text-xs text-neutral-500">PDF • Signed Presigned URL ready</p>
+                    </div>
+                  </div>
+                  <button
+                    className="text-xs bg-neutral-800 hover:bg-neutral-700 text-neutral-100 font-medium px-3 py-1.5 rounded-lg border border-neutral-700 transition-colors flex items-center space-x-1.5"
+                    aria-label="Preview deliverable package file"
+                  >
+                    <Icon name="eye" className="w-3.5 h-3.5" />
+                    <span>Preview</span>
+                  </button>
                 </div>
-              </div>
-            </div>
-          ) : (
-            <div className="h-64 flex items-center justify-center text-neutral-500 text-sm">
-              Select an item to view approval details.
-            </div>
-          )}
+
+                {/* Action Buttons */}
+                {activeApproval.status === 'pending' && (
+                  <motion.div
+                    variants={fadeLift}
+                    custom={reduced}
+                    initial="hidden"
+                    animate="visible"
+                    className="flex items-center space-x-3 pt-2"
+                  >
+                    <button
+                      onClick={() => handleAction(activeApproval.id, 'approved')}
+                      className="flex-1 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-sm transition-colors shadow-lg shadow-emerald-500/20"
+                      aria-label="Approve this deliverable"
+                    >
+                      Approve Deliverable
+                    </button>
+                    <button
+                      onClick={() => handleAction(activeApproval.id, 'revision_requested', 'Please adjust lighting angle')}
+                      className="flex-1 py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700 font-medium text-sm transition-colors"
+                      aria-label="Request a revision"
+                    >
+                      Request Revision
+                    </button>
+                  </motion.div>
+                )}
+
+                {/* Audit Trail */}
+                <div>
+                  <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3">Audit Trail Log</h4>
+                  <div className="space-y-3 font-mono text-xs border-l-2 border-neutral-800 pl-4">
+                    {activeApproval.auditTrail?.map((log, idx) => (
+                      <div key={idx} className="relative">
+                        <span className="absolute -left-[21px] top-1.5 w-2 h-2 rounded-full bg-amber-400" />
+                        <p className="text-neutral-200 font-sans font-medium">{log.action}</p>
+                        <p className="text-neutral-500 text-[11px]">{new Date(log.timestamp).toLocaleString()} • {log.actor}</p>
+                        {log.notes && <p className="text-amber-300 text-[11px] mt-0.5 font-sans">"{log.notes}"</p>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="empty"
+                variants={fadeLift}
+                custom={reduced}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                className="h-64 flex flex-col items-center justify-center text-neutral-500 text-sm space-y-3"
+                role="status"
+              >
+                <div className="p-4 rounded-2xl bg-neutral-800/40 border border-neutral-800 text-neutral-300">
+                  <Icon name="file-check" className="w-8 h-8" />
+                </div>
+                <div className="text-center">
+                  <p className="text-neutral-300 font-medium">No approval selected</p>
+                  <p className="text-xs text-neutral-500 mt-0.5">Choose an item from the queue to review its full detail and audit trail.</p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>

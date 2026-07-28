@@ -1,6 +1,6 @@
 # 🛠️ CODING STANDARDS: THE HEXA QUALITY BAR
 
-**Version:** 1.0 | **Scope:** All Engineering | **Standard:** Production-Grade / Zero-Debt
+**Version:** 1.1 | **Scope:** All Engineering | **Standard:** Production-Grade / Zero-Debt
 
 ## 1. THE PHILOSOPHY OF CODE
 At HEXA Studio, we write code for the **next engineer**. We value **readability over cleverness** and **explicitly over implicitly**. Our code is our documentation.

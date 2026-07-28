@@ -1,6 +1,6 @@
 # HEXA Studio Mobile
 
-React Native client portal for HEXA Studio — view projects, milestones, invoices, and manage notifications on the go.
+React Native client portal for HEXA Studio — view projects, milestones, and manage notifications on the go.
 
 ## Tech Stack
 
@@ -9,6 +9,8 @@ React Native client portal for HEXA Studio — view projects, milestones, invoic
 - **TypeScript 5.8**
 - Shared packages: `@hexastudio/types`, `@hexastudio/utils`
 - Icons: `@expo/vector-icons` (Ionicons)
+- Storage: `@react-native-async-storage/async-storage`
+- Network: `@react-native-community/netinfo`
 
 ## Setup
 
@@ -31,42 +33,55 @@ npm run start --workspace=apps/mobile
 | `web` | Web browser |
 | `lint` | ESLint flat config |
 | `typecheck` | TypeScript strict |
-| `test` | Jest (10 tests, 5 suites) |
+| `test` | Jest (25+ tests, 8 suites) |
 
 ## Architecture
 
 ```
 src/
   app/
-    _layout.tsx              # Root layout (providers + banner)
+    _layout.tsx              # Root layout (providers + banners)
     login.tsx                # Sign in (modal)
     (tabs)/
-      _layout.tsx            # Tab bar (Ionicons, gold accent)
+      _layout.tsx            # Tab bar: Dashboard / Projects / Notifications / Profile
       index.tsx              # Home — portal dashboard
       projects/
         index.tsx            # Odoo project list
-        [id].tsx             # Milestone detail
-      invoices/
-        index.tsx            # Invoice list with amounts
+        [id].tsx             # Project detail + milestones
       notifications/
         index.tsx            # Preference toggles
       profile/
         index.tsx            # Sign out / profile card
   components/
     ThemeProvider.tsx         # Dark luxury theme (obsidian + gold)
-    NetworkBanner.tsx         # Offline detection banner
+    OfflineBanner.tsx         # Offline detection banner
+    UpdateBanner.tsx          # OTA update prompt
+    Banners.tsx               # Stacked banner container
     ContentSkeleton.tsx       # Pulsing placeholder
   hooks/
     useAuth.tsx               # Auth: login, session restore, logout
+    useNetworkStatus.ts       # NetInfo connectivity hook
+    useNotifications.ts       # Push token registration + response routing
+    useOTAUpdates.ts          # Expo Updates check / download / restart
   lib/
-    api.ts                    # API client (JWT via SecureStore)
+    api.ts                    # API client with offline-first cache
+    cache.ts                  # AsyncStorage TTL cache
+    notifications.ts          # Local notification helpers
 ```
 
 ## Features
 
 - **Auth**: `POST /api/auth/login` → SecureStore JWT → `GET /api/auth/me` session restore → `POST /api/auth/logout` server-side revocation
-- **Projects**: `GET /api/portal/odoo/projects` with milestone detail push
-- **Invoices**: `GET /api/portal/odoo/invoices` with payment state badges
-- **Dashboard**: `GET /api/portal/me` with milestone progress bar and invoice summary
+- **Dashboard**: `GET /api/portal/me` with milestone progress ring and invoice summary
+- **Projects**: `GET /api/portal/odoo/projects` with cached offline-first list; `GET /api/portal/projects/:id/detail` for project detail + milestones
 - **Notifications**: `GET/PUT /api/portal/notifications/preferences` with 5 toggle switches
-- **Offline**: Network status banner with 30-second health poll
+- **Push Notifications**: `expo-notifications` integration → `POST /api/mobile/push/register` stores the Expo push token per user (Redis)
+- **Offline-First**: API layer wraps requests with `AsyncStorage` TTL cache; cached data is shown when the device is offline with an animated banner
+- **OTA Updates**: `expo-updates` checks for new JS bundles on launch; shows a download banner and restart prompt when an update is ready
+- **App Store Assets**: Icons, splash screen, adaptive icon, notification icon, and favicon live in `assets/` and are configured in `app.json`
+
+## Release / Store Notes
+
+- `app.json` is configured for EAS Update with a placeholder project ID (`00000000-0000-0000-0000-000000000000`). Replace it with the real EAS project ID before building.
+- Push notification credentials (APNs/FCM) must be configured in Expo/EAS before production push works.
+- Placeholder assets were generated in `assets/`; replace them with final brand artwork before App Store submission.

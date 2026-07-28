@@ -17,14 +17,15 @@ Failure to read this file before writing, modifying, or reviewing code is a **cr
 Before performing ANY task, read these documents in order:
 
 1. `HEXA-Vision-Playbook/00-GOVERNANCE/PROJECT_CONSTITUTION.md`
-2. `HEXA-Vision-Playbook/00-GOVERNANCE/PROJECT_OVERVIEW.md`
-3. `HEXA-Vision-Playbook/01-ARCHITECTURE/SYSTEM_ARCHITECTURE.md`
-4. `HEXA-Vision-Playbook/02-ROADMAP/PROJECT_ROADMAP.md`
-5. `HEXA-Vision-Playbook/02-ROADMAP/CURRENT_SPRINT.md`
-6. `HEXA-Vision-Playbook/02-ROADMAP/OPEN_TASKS.md`
-7. `HEXA-Vision-Playbook/06-STANDARDS/CODING_STANDARDS.md`
-8. `HEXA-Vision-Playbook/06-STANDARDS/SECURITY_STANDARDS.md`
-9. `HEXA-Vision-Playbook/04-AGENTS/AI_AGENT_GUIDE.md`
+2. `HEXA-Vision-Playbook/00-GOVERNANCE/ENTERPRISE_ARCHITECTURE_GOVERNANCE.md`
+3. `HEXA-Vision-Playbook/00-GOVERNANCE/PROJECT_OVERVIEW.md`
+4. `HEXA-Vision-Playbook/01-ARCHITECTURE/SYSTEM_ARCHITECTURE.md`
+5. `HEXA-Vision-Playbook/02-ROADMAP/PROJECT_ROADMAP.md`
+6. `HEXA-Vision-Playbook/02-ROADMAP/CURRENT_SPRINT.md`
+7. `HEXA-Vision-Playbook/02-ROADMAP/OPEN_TASKS.md`
+8. `HEXA-Vision-Playbook/06-STANDARDS/CODING_STANDARDS.md`
+9. `HEXA-Vision-Playbook/06-STANDARDS/SECURITY_STANDARDS.md`
+10. `HEXA-Vision-Playbook/04-AGENTS/AI_AGENT_GUIDE.md`
 
 After reading them:
 - Summarize your understanding of the project.

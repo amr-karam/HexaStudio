@@ -1,7 +1,7 @@
 # Motion System
 
-**Version:** 2.0.0  
-**Last Updated:** 2026-07-20  
+**Version:** 2.0.1  
+**Last Updated:** 2026-07-27  
 **Authority:** `07-DESIGN/FRONTEND_EXCELLENCE.md` is the binding contract. This document provides implementation details.
 
 ---

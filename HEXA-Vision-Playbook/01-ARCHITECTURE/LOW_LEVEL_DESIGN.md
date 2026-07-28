@@ -1,6 +1,6 @@
 # ⚙️ LOW LEVEL DESIGN: THE TECHNICAL BLUEPRINT
 
-**Version:** 1.0 | **Domain:** Architecture | **Focus:** Implementation Details
+**Version:** 1.1 | **Domain:** Architecture | **Focus:** Implementation Details
 
 ## 1. COMPONENT COMMUNICATION PATTERN
 To avoid "Prop Drilling" and maintain a high-performance render loop, we use a **Tiered State Architecture**.

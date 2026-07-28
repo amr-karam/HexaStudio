@@ -1,6 +1,6 @@
 # 🧪 UNIT TESTING STANDARDS & PATTERNS
 
-**Version:** 1.0.0 | **Scope:** Vitest & Jest Suites | **Standard:** 80%+ Mandatory Code Coverage
+**Version:** 1.1.0 | **Scope:** Vitest & Jest Suites | **Standard:** 80%+ Mandatory Code Coverage
 
 ---
 
@@ -15,7 +15,7 @@ HEXA Vision uses **Vitest** for `apps/frontend` and **Jest / Vitest** for `apps/
 | Workspace | Target Branch Coverage | Target Statement Coverage | Active Test Suite Count |
 |-----------|------------------------|---------------------------|-------------------------|
 | `apps/frontend` | $\ge 80\%$ | $\ge 85\%$ | 176 Passing Specs |
-| `apps/backend` | $\ge 80\%$ | $\ge 85\%$ | 239 Passing Specs |
+| `apps/backend` | $\ge 80\%$ | $\ge 85\%$ | 285 Passing Specs |
 | `packages/utils` | $\ge 90\%$ | $\ge 95\%$ | Pure Function Suite |
 | `packages/types` | $100\%$ Type Correctness | N/A | Type Check Gate |
 

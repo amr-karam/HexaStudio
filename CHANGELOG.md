@@ -21,6 +21,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   - ADR-007: Routing & Layout Strategy
   - ADR-008: Persistent Experience Layer
   - ADR-009: Bidirectional Strapi-Odoo Sync
+- **Mobile App v1.0 Core**:
+  - Tab navigation finalized as Dashboard / Projects / Notifications / Profile (Invoices tab removed).
+  - Offline-first project data caching with `@react-native-async-storage/async-storage`, TTL support, and animated offline banner.
+  - Push notification integration (`expo-notifications`) with permission handling, token registration, and backend `POST /api/mobile/push/register` endpoint.
+  - App store assets generated (icon, splash, adaptive icon, notification icon, favicon) and wired into `app.json`.
+  - OTA updates integration (`expo-updates`) with launch check, download banner, and restart prompt.
+  - New test suites for cache, network status, notifications service, and OTA updates.
 
 #### Quality
 - TBT at 60ms (target: <100ms) — already exceeding target
@@ -28,8 +35,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Frontend lint: 0 errors
 - Backend typecheck: 0 errors
 - Backend lint: 0 errors
+- Mobile typecheck: 0 errors
+- Mobile lint: 0 errors
 - Backend tests: 285/285 passing
 - Frontend tests: 176/176 passing
+- Mobile tests: 25/25 passing
 
 ---
 

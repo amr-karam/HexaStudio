@@ -1,8 +1,8 @@
 # HEXA Vision Playbook
 
-**Version:** 1.0.0  
-**Status:** Foundation  
-**Last Updated:** 2026-07-08  
+**Version:** 1.1.0  
+**Status:** Active  
+**Last Updated:** 2026-07-27  
 **Owner:** Chief Enterprise Architect  
 
 ---

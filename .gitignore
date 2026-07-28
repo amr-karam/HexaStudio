@@ -94,6 +94,23 @@ apps/backend/dist/
 paseo-hooks/
 .gitwandrc
 opencode.json
+.agents/
+.codex/
+.gemini/
+.junie/
+
+# Temporary output files
+.output.txt
+
+# Python (AI agent scripts)
+.venv/
+requirements.txt
+
+# Netlify build cache
+apps/frontend/.netlify/
+
+# Lighthouse report
+lh-report.json
 
 # Deploy scripts (keep local — contain server connection logic)
 deploy.py

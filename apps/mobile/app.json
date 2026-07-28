@@ -38,6 +38,15 @@
       "output": "static",
       "favicon": "./assets/favicon.png"
     },
+    "updates": {
+      "url": "https://u.expo.dev/00000000-0000-0000-0000-000000000000",
+      "enabled": true,
+      "fallbackToCacheTimeout": 30000,
+      "checkAutomatically": "ON_LOAD"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
     "plugins": [
       "expo-router",
       [
@@ -48,14 +57,18 @@
           "androidMode": "default",
           "androidCollapsedTitle": "HEXA Studio"
         }
-      ]
+      ],
+      "expo-updates"
     ],
     "experiments": {
       "typedRoutes": true
     },
     "extra": {
       "apiUrl": "https://api.hexastudio.net",
-      "cmsUrl": "https://cms.hexastudio.net"
+      "cmsUrl": "https://cms.hexastudio.net",
+      "eas": {
+        "projectId": "00000000-0000-0000-0000-000000000000"
+      }
     }
   }
 }

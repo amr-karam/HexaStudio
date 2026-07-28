@@ -1,6 +1,6 @@
 # 🗺️ PROJECT ROADMAP: THE EVOLUTION OF HEXA VISION
 
-**Version:** 1.0 | **Horizon:** 2024–2026 | **Status:** Strategic Blueprint
+**Version:** 1.1 | **Horizon:** 2024–2026 | **Status:** Strategic Blueprint
 
 ## 1. STRATEGIC OBJECTIVE
 The roadmap is designed to transition HEXA Vision from a **High-End Portfolio** to a **Comprehensive Architectural Ecosystem**. We are not just building a site; we are building the infrastructure for the future of digital architecture.

@@ -4,7 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Notifications from 'expo-notifications';
 import { AuthProvider } from '@/hooks/useAuth';
 import { ThemeProvider } from '@/components/ThemeProvider';
-import { OfflineBanner } from '@/components/OfflineBanner';
+import { Banners } from '@/components/Banners';
 import { useNotifications } from '@/hooks/useNotifications';
 
 Notifications.setNotificationHandler({
@@ -23,7 +23,7 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <ThemeProvider>
         <AuthProvider>
-          <OfflineBanner />
+          <Banners />
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="login" options={{ presentation: 'modal' }} />

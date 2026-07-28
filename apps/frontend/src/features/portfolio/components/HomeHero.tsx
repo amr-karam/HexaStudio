@@ -103,8 +103,8 @@ export const HomeHero = () => {
         });
         tl.fromTo(
           q('[data-hero-kicker]'),
-          { opacity: 0, y: 16 },
-          { opacity: 1, y: 0, duration: DUR.ui },
+          { y: 16 },
+          { y: 0, duration: DUR.ui },
         )
           .fromTo(
             q('[data-hero-char]'),
@@ -114,20 +114,20 @@ export const HomeHero = () => {
           )
           .fromTo(
             q('[data-hero-subline]'),
-            { opacity: 0, y: 24 },
-            { opacity: 1, y: 0, duration: DUR.ui },
+            { y: 24 },
+            { y: 0, duration: DUR.ui },
             '-=0.45',
           )
           .fromTo(
             q('[data-hero-cta]'),
-            { opacity: 0, y: 28 },
-            { opacity: 1, y: 0, duration: DUR.ui, stagger: STAGGER_TOKENS.cards },
+            { y: 28 },
+            { y: 0, duration: DUR.ui, stagger: STAGGER_TOKENS.cards },
             '-=0.3',
           )
           .fromTo(
             q('[data-hero-marker]'),
-            { opacity: 0, x: -16 },
-            { opacity: 1, x: 0, duration: DUR.ui },
+            { x: -16 },
+            { x: 0, duration: DUR.ui },
             0.3,
           );
       }, root);
