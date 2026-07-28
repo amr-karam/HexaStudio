@@ -1,6 +1,6 @@
 # 📖 DEFINITIONS: THE UNIFIED LANGUAGE
 
-**Version:** 1.0 | **Domain:** Governance | **Purpose:** Semantic Consistency
+**Version:** 1.1 | **Domain:** Governance | **Purpose:** Semantic Consistency
 
 ## 1. THE IMPORTANCE OF SEMANTICS
 In a multidisciplinary team (Architects, Designers, Engineers), a single word can mean three different things. To avoid catastrophic misunderstandings, we define our terms strictly.

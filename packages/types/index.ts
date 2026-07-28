@@ -141,6 +141,11 @@ export interface AuthResponse {
   refreshToken?: string;
 }
 
+export interface PushTokenRegistration {
+  token: string;
+  platform: 'ios' | 'android' | 'web' | string;
+}
+
 export interface ApiResponse<T> {
   data: T;
   status: number;

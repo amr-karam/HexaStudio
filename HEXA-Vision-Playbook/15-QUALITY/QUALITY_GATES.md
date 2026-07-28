@@ -1,7 +1,7 @@
 # Quality Gates
 
-**Version:** 1.1.0  
-**Last Updated:** 2026-07-25  
+**Version:** 1.2.0  
+**Last Updated:** 2026-07-27  
 
 ---
 
@@ -22,6 +22,32 @@ Quality is not a phase. Quality is built into every step of development. Gates a
 │ checks  │   │ checks  │   │ review  │   │ testing │   │ off     │
 └─────────┘   └─────────┘   └─────────┘   └─────────┘   └─────────┘
 ```
+
+---
+
+## S-019 Quality Gate Results (v1.8.0)
+
+| Gate | Check | Result | Status |
+|------|-------|--------|--------|
+| Development | Frontend lint | 0 errors | ✅ |
+| Development | Frontend typecheck | 0 errors | ✅ |
+| Development | Backend lint | 0 errors | ✅ |
+| Development | Backend typecheck | 0 errors | ✅ |
+| Development | Mobile lint | 0 errors | ✅ |
+| Development | Mobile typecheck | 0 errors | ✅ |
+| Development | Backend tests | 285/285 passing | ✅ |
+| Development | Frontend tests | 176/176 passing | ✅ |
+| Development | Mobile tests | 10/10 passing | ✅ |
+| CI | E2E smoke tests (`e2e/portal.spec.ts`) | 18/18 passing | ✅ |
+| CI | Bundle budget gate (`scripts/check-bundle-budgets.mjs`) | Enforced | ✅ |
+| Performance | TBT | 60ms (target <100ms) | ✅ |
+| Performance | LCP | 1.6s (target <1.5s) | 🟡 |
+| Performance | Lighthouse performance (desktop) | 92/100 (target >95) | 🟡 |
+| Security | Production runtime vulnerabilities | 0 critical, 0 high | ✅ |
+
+### Blockers / Remediation
+- **LCP / Lighthouse 95+**: hero image priority hints and remaining JS execution optimization needed.
+- **Mobile release readiness**: backend push endpoint, app store assets, and `expo-updates` OTA channel not yet configured.
 
 ---
 

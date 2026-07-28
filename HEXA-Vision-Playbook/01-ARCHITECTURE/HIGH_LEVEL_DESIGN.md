@@ -1,6 +1,6 @@
 # 🌐 HIGH LEVEL DESIGN: THE MACRO BLUEPRINT
 
-**Version:** 1.0 | **Domain:** System Topology | **Standard:** Enterprise-Scale
+**Version:** 1.1 | **Domain:** System Topology | **Standard:** Enterprise-Scale
 
 ## 1. THE ARCHITECTURAL CONCEPT: "THE SYMPHONY"
 The HEXA architecture is designed as a symphony where the **Content (Strapi)**, **Logic (NestJS)**, and **Experience (Next.js)** play in perfect harmony. There is no "center"; there is only a flow of data from the source to the eye.
@@ -21,7 +21,7 @@ The HEXA architecture is designed as a symphony where the **Content (Strapi)**, 
 - **Caching:** It utilizes Redis to cache expensive API calls, ensuring the frontend remains instantaneous.
 
 ### III. The Experience Layer (The "Performance")
-**Next.js 15** delivers the final result.
+**Next.js 16** delivers the final result.
 - **Hybrid Rendering:** Static generation for SEO-critical pages, Client-side rendering for the 3D canvas.
 - **Asset Pipeline:** Uses a customized loading strategy to stream 3D assets without blocking the UI thread.
 - **Visual Orchestration:** GSAP and Framer Motion handle the transitions between "scenes."

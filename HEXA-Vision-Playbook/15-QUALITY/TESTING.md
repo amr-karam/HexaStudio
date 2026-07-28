@@ -1,6 +1,6 @@
 # 🧪 TESTING STRATEGY: THE ZERO-DEFECT PROTOCOL
 
-**Version:** 1.0 | **Scope:** All Engineering | **Goal:** 100% Reliability
+**Version:** 1.1 | **Scope:** All Engineering | **Goal:** 100% Reliability
 
 ## 1. THE TESTING PHILOSOPHY
 At HEXA Studio, testing is not a final step; it is **integrated into the development process**. We use a "Shift-Left" approach, testing as early as possible to avoid costly late-stage bugs.

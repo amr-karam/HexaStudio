@@ -1,14 +1,6 @@
 import { HomeHero } from "@/features/portfolio/components/HomeHero";
-import { MarqueeBar } from "@/features/portfolio/components/MarqueeBar";
-import { FeaturedWork } from "@/features/portfolio/components/FeaturedWork";
-import { ProcessSection } from "@/features/portfolio/components/ProcessSection";
-import { AchievementsSection } from "@/features/portfolio/components/AchievementsSection";
-import { ProjectGrid } from "@/features/portfolio/components/ProjectGrid";
-import { TestimonialsSection } from "@/features/portfolio/components/TestimonialsSection";
 import { HomeChapterRail } from "@/features/portfolio/components/HomeChapterRail";
-import { SectionReveal } from "@/components/scroll/SectionReveal";
-import { CTASection } from "@/components/CTASection";
-import { NewsletterSection } from "@/components/ui/NewsletterSection";
+import { HomePageDynamic } from "@/features/portfolio/components/HomePageDynamic";
 import { fetchProjects } from "@/features/portfolio/lib/fetchProjects";
 
 /** ISR: 1h background refresh + on-demand via /api/revalidate (Sprint 15 P9).
@@ -37,28 +29,10 @@ export default async function HomePage() {
     <div className="bg-background">
       <HomeChapterRail />
       <HomeHero />
-      <MarqueeBar />
-      <SectionReveal>
-        <div id="ch-craft">
-          <FeaturedWork project={projectsData.projects?.[0]} />
-        </div>
-      </SectionReveal>
-      <SectionReveal>
-        <div id="ch-method">
-          <ProcessSection />
-          <AchievementsSection />
-        </div>
-      </SectionReveal>
-      <SectionReveal>
-        <div id="ch-proof">
-          <ProjectGrid projects={projectsData.projects ?? []} />
-          <TestimonialsSection />
-        </div>
-      </SectionReveal>
-      <div id="ch-contact">
-        <CTASection />
-        <NewsletterSection />
-      </div>
+      <HomePageDynamic
+        featuredProject={projectsData.projects?.[0]}
+        projects={projectsData.projects ?? []}
+      />
     </div>
   );
 }

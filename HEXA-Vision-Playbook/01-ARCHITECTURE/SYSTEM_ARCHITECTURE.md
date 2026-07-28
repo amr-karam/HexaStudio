@@ -1,6 +1,6 @@
 # 🏗️ SYSTEM ARCHITECTURE: THE HEXA ENGINE
 
-**Version:** 1.0 | **Domain:** Technical Blueprint | **Standard:** Enterprise-Grade
+**Version:** 1.1 | **Domain:** Technical Blueprint | **Standard:** Enterprise-Grade
 
 ## 1. ARCHITECTURAL VISION
 The HEXA Vision architecture is designed for **High-Fidelity Delivery**. The goal is to minimize the "time-to-visual" while maximizing "interactivity." We achieve this through a **Decoupled Hybrid Architecture**.
@@ -10,7 +10,7 @@ The HEXA Vision architecture is designed for **High-Fidelity Delivery**. The goa
 ## 2. THE HIGH-LEVEL TOPOLOGY
 
 ### I. The Presentation Layer (The "Experience")
-- **Framework:** Next.js 15 (App Router) for SEO, Speed, and Routing.
+- **Framework:** Next.js 16 (App Router) for SEO, Speed, and Routing.
 - **3D Core:** React Three Fiber (R3F) $\rightarrow$ Three.js $\rightarrow$ WebGL.
 - **Orchestration:** Zustand for global state (client-side) and TanStack Query for server-state synchronization.
 - **Visual Polish:** GSAP for cinematic timelines and Framer Motion for UI transitions.

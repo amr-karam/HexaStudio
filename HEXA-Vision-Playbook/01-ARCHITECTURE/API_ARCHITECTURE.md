@@ -4,7 +4,7 @@
 
 ## Overview
 
-The HEXA Studio API architecture defines a modern, scalable approach to building RESTful APIs using NestJS, with clear separation of concerns, robust error handling, and comprehensive documentation.
+The HEXA Studio API architecture defines a modern, scalable approach to building RESTful APIs using NestJS 11, with clear separation of concerns, robust error handling, and comprehensive documentation.
 
 ---
 

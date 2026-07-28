@@ -6,13 +6,22 @@
  * Four-column Kanban: Todo, In Progress, Review, Done.
  * Fetches tasks from GET /api/portal/projects/:projectId/tasks.
  * Luxury dark UI with amber accent, priority indicators, and due-date badges.
+ *
+ * Cinematic framer-motion choreography:
+ *  - Staggered entrance for task cards within each column
+ *  - Hover-lift micro-interaction on task cards
+ *  - Premium loading skeleton with a sweeping gold shimmer
  */
 
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { motion } from 'framer-motion';
 import { API_BASE_URL } from '@/config/constants';
 import { Icon, type IconName } from './PortalIcons';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { fadeLift, staggerContainer, makeTransition, STAGGER, REDUCED_TRANSITION } from '@/lib/motion';
 import type { PortalTask, TaskStatus, TaskPriority } from '../types';
+import { cn } from '@/lib/utils';
 
 interface KanbanBoardProps {
   projectId: number;
@@ -32,21 +41,58 @@ const PRIORITY_STYLES: Record<TaskPriority, { bg: string; text: string; label: s
   low: { bg: 'bg-neutral-700/50', text: 'text-neutral-400', label: 'Low' },
 };
 
-function TaskCard({ task }: { task: PortalTask }) {
+function ShimmerBlock({ reduced, className }: { reduced: boolean; className?: string }) {
+  return (
+    <div className={cn('relative overflow-hidden rounded bg-neutral-800', className)} aria-hidden="true">
+      <motion.div
+        className="absolute inset-0"
+        style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(212,175,55,0.10) 50%, transparent 100%)' }}
+        animate={reduced ? undefined : { x: ['-100%', '100%'] }}
+        transition={reduced ? REDUCED_TRANSITION : { duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+      />
+    </div>
+  );
+}
+
+function KanbanSkeleton({ reduced }: { reduced: boolean }) {
+  return (
+    <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 space-y-4">
+      <ShimmerBlock reduced={reduced} className="h-4 w-28" />
+      <div className="flex space-x-4">
+        {COLUMNS.map((col) => (
+          <div key={col.status} className="flex-1 space-y-3">
+            <ShimmerBlock reduced={reduced} className="h-4 w-20" />
+            <ShimmerBlock reduced={reduced} className="h-24 rounded-xl" />
+            <ShimmerBlock reduced={reduced} className="h-24 rounded-xl" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TaskCard({ task, reduced }: { task: PortalTask; reduced: boolean }) {
   const priority = PRIORITY_STYLES[task.priority];
   const isOverdue = task.dueDate && new Date(task.dueDate) < new Date();
 
   return (
-    <div className="bg-neutral-950 border border-neutral-800 rounded-xl p-4 space-y-2 hover:border-neutral-700 transition-colors group">
+    <motion.div
+      variants={fadeLift}
+      whileHover={reduced ? undefined : { y: -4, transition: makeTransition('interaction', 'micro') }}
+      className="bg-neutral-950 border border-neutral-800 rounded-xl p-4 space-y-2 hover:border-amber-500/40 transition-colors group"
+    >
       <div className="flex items-center justify-between">
         <span
-          className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${priority.bg} ${priority.text} uppercase tracking-wider`}
+          className={cn(
+            'text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider',
+            priority.bg, priority.text
+          )}
         >
           {priority.label}
         </span>
         {task.dueDate && (
           <span
-            className={`text-[10px] font-mono ${isOverdue ? 'text-red-400 font-bold' : 'text-neutral-500'}`}
+            className={cn('text-[10px] font-mono', isOverdue ? 'text-red-400 font-bold' : 'text-neutral-500')}
           >
             {isOverdue
               ? 'Overdue'
@@ -80,7 +126,7 @@ function TaskCard({ task }: { task: PortalTask }) {
           <span className="text-[10px] text-neutral-500">{task.assigneeName}</span>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }
 
@@ -89,17 +135,22 @@ function KanbanColumn({
   icon,
   color,
   tasks,
+  reduced,
 }: {
   label: string;
   icon: IconName;
   color: string;
   tasks: PortalTask[];
+  reduced: boolean;
 }) {
   return (
-    <div className="flex flex-col space-y-3 min-w-[240px] flex-1">
+    <section
+      className="flex flex-col space-y-3 min-w-[240px] flex-1"
+      aria-label={`${label} column`}
+    >
       <div className="flex items-center justify-between px-1">
         <div className="flex items-center space-x-2">
-          <Icon name={icon} className={`w-4 h-4 ${color}`} />
+          <Icon name={icon} className={cn('w-4 h-4', color)} />
           <h3 className="text-xs font-bold text-neutral-300 uppercase tracking-wider">
             {label}
           </h3>
@@ -108,17 +159,27 @@ function KanbanColumn({
           {tasks.length}
         </span>
       </div>
-      <div className="space-y-2">
+      <motion.div
+        variants={staggerContainer(STAGGER.component)}
+        custom={reduced}
+        initial="hidden"
+        animate="visible"
+        className="space-y-2"
+      >
         {tasks.map((task) => (
-          <TaskCard key={task.id} task={task} />
+          <TaskCard key={task.id} task={task} reduced={reduced} />
         ))}
         {tasks.length === 0 && (
-          <div className="border border-dashed border-neutral-800 rounded-xl p-8 text-center">
+          <motion.div
+            variants={fadeLift}
+            custom={reduced}
+            className="border border-dashed border-neutral-800 rounded-xl p-8 text-center"
+          >
             <p className="text-[11px] text-neutral-600">No tasks</p>
-          </div>
+          </motion.div>
         )}
-      </div>
-    </div>
+      </motion.div>
+    </section>
   );
 }
 
@@ -131,30 +192,24 @@ async function fetchProjectTasks(projectId: number): Promise<PortalTask[]> {
 }
 
 export function KanbanBoard({ projectId }: KanbanBoardProps) {
+  const reduced = useReducedMotion();
   const { data: tasks = [], isLoading } = useQuery<PortalTask[]>({
     queryKey: ['portal-tasks', projectId],
     queryFn: () => fetchProjectTasks(projectId),
   });
 
   if (isLoading) {
-    return (
-      <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 space-y-4">
-        <div className="h-4 w-28 bg-neutral-800 rounded animate-pulse" />
-        <div className="flex space-x-4">
-          {COLUMNS.map((col) => (
-            <div key={col.status} className="flex-1 space-y-3">
-              <div className="h-4 w-20 bg-neutral-800 rounded animate-pulse" />
-              <div className="h-24 bg-neutral-900 rounded-xl animate-pulse" />
-              <div className="h-24 bg-neutral-900 rounded-xl animate-pulse" />
-            </div>
-          ))}
-        </div>
-      </div>
-    );
+    return <KanbanSkeleton reduced={reduced} />;
   }
 
   return (
-    <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 space-y-4">
+    <motion.div
+      variants={fadeLift}
+      custom={reduced}
+      initial="hidden"
+      animate="visible"
+      className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 space-y-4"
+    >
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-bold text-neutral-100">Project Tasks</h3>
         <span className="text-[10px] text-neutral-500 font-mono">{tasks.length} total</span>
@@ -169,10 +224,11 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
               icon={col.icon}
               color={col.color}
               tasks={columnTasks}
+              reduced={reduced}
             />
           );
         })}
       </div>
-    </div>
+    </motion.div>
   );
 }

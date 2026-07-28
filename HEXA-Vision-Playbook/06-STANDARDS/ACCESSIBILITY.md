@@ -1,6 +1,6 @@
 # ♿ Accessibility (A11y) Standards
 
-**Version:** 1.0 | **Last Updated:** 2026-07-16 | **Standard:** WCAG 2.1 Level AA
+**Version:** 1.1 | **Last Updated:** 2026-07-27 | **Standard:** WCAG 2.1 Level AA
 
 ## Commitment
 

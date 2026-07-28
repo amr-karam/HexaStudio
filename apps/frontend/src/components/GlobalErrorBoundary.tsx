@@ -23,7 +23,9 @@ export class GlobalErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Uncaught error:', error, errorInfo);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Uncaught error:', error, errorInfo);
+    }
     captureException(error, {
       extra: { componentStack: errorInfo.componentStack },
     });

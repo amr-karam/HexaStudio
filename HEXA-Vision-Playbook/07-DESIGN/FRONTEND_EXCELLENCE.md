@@ -1,6 +1,6 @@
 # Frontend Excellence Contract
 
-**Version:** 2.0 | **Scope:** `apps/frontend` | **Standard:** HEXA Creative Excellence (9.5/10 Luxury)
+**Version:** 1.1 | **Scope:** `apps/frontend` | **Standard:** HEXA Creative Excellence (9.5/10 Luxury)
 **Authority:** Binding frontend implementation contract. Hierarchy: Constitution > FRONTEND_EXCELLENCE.md > specialized standards.
 
 ---

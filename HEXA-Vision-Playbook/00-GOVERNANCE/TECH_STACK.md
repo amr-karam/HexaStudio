@@ -1,7 +1,7 @@
 # Technology Stack
 
-**Version:** 1.0.0  
-**Last Updated:** 2026-07-08  
+**Version:** 1.1.0  
+**Last Updated:** 2026-07-27
 
 ---
 
@@ -33,7 +33,7 @@
 
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| **Next.js** | 15 (App Router) | React framework with SSR/SSG/ISR |
+| **Next.js** | 16 (App Router) | React framework with SSR/SSG/ISR |
 | **TypeScript** | 5.x | Type-safe JavaScript |
 | **TailwindCSS** | 4 | Utility-first styling |
 | **Three.js** | Latest | 3D rendering engine |
@@ -49,7 +49,7 @@
 
 | Decision | Rationale |
 |----------|-----------|
-| Next.js 15 App Router | Best SSR/SSG/ISR support for SEO and performance |
+| Next.js 16 App Router | Best SSR/SSG/ISR support for SEO and performance |
 | TailwindCSS 4 | JIT compiler produces minimal CSS; utility-first is fast |
 | R3F + drei | Declarative 3D integrates naturally with React component model |
 | GSAP + Framer Motion | GSAP for complex 3D timelines; Framer for simple UI animations |
@@ -143,8 +143,10 @@
 | **Grafana** | Visualization and dashboards |
 | **Loki** | Log aggregation |
 | **Promtail** | Log shipping |
-| **Sentry** | Error tracking |
+| **Tempo** | Distributed tracing |
+| **Sentry** | Error tracking and performance monitoring |
 | **Uptime Kuma** | Uptime monitoring |
+| **Qdrant** | Vector database for AI embeddings |
 
 ---
 
@@ -152,9 +154,23 @@
 
 | Technology | Purpose |
 |------------|---------|
-| **GitHub Actions** | Pipeline automation |
-| **GitHub Container Registry** | Docker image storage |
+| **GitLab CI/CD** | Pipeline automation |
+| **GitLab Container Registry** | Docker image storage |
 | **SSH Deploy** | Deployment mechanism |
+| **Netlify** | Frontend deployment (static/ISR) |
+
+---
+
+## Mobile App
+
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| **React Native (Expo)** | Latest | Cross-platform mobile application |
+| **expo-router** | Latest | File-based routing for mobile |
+| **expo-notifications** | Latest | Push notification delivery |
+| **expo-updates** | Latest | OTA JS bundle updates |
+| **AsyncStorage** | Latest | Offline data caching |
+| **Jest** | Latest | Mobile unit testing |
 
 ---
 

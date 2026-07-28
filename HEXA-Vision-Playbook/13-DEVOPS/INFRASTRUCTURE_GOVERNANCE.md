@@ -1,6 +1,6 @@
 # HEXA Studio — Infrastructure Governance
 
-> Version: 1.0 | Last Updated: 2026-07-26 | Authority: DevOps Lead
+**Version:** 1.1 | **Last Updated:** 2026-07-27 | **Authority:** DevOps Lead
 
 ## Table of Contents
 
