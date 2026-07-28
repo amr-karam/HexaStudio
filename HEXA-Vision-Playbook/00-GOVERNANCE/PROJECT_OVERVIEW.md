@@ -1,7 +1,7 @@
 # Project Overview
 
-**Version:** 1.0.0  
-**Last Updated:** 2026-07-08  
+**Version:** 1.1.0  
+**Last Updated:** 2026-07-27  
 
 ---
 
@@ -85,4 +85,4 @@ HEXA Vision is a unified platform that provides:
 
 ## Current Status
 
-The project is at **v1.0.0** — released 2026-07-13. All phases 1–3 complete (Foundation, Expansion, Interaction). Sprint 6 (Enterprise Hardening) delivered 120 tests, 7 CI jobs, security hardening, and full production deployment at hexastudio.net. Next: Phase 4 — Intelligence (AI Evolution).
+The project is at **v1.8.0** — Sprint 19 (Mobile & Web Performance) in progress. All phases 1–3 complete (Foundation, Expansion, Interaction). Sprint 18 delivered GitLab CI/CD, mobile app foundation, performance optimization, and quality hardening. Sprint 19 delivered: mobile app v1.0 core (tab navigation, offline support, push notifications, app store assets, OTA updates), 415+ tests, E2E portal smoke tests, bundle budgets, Sentry hardening, Tempo tracing, and full enterprise governance documentation. Next: Sprint 20 — Mobile Release & Lighthouse 95+.

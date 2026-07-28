@@ -22,6 +22,30 @@ export interface ClientProject {
   milestones: ClientMilestone[];
 }
 
+export interface ClientProjectDetail {
+  id: number;
+  name: string;
+  type: string;
+  status: string;
+  progress: number;
+  startDate: string;
+  endDate: string;
+  description?: string;
+  team: Array<{
+    id: string;
+    name: string;
+    role: string;
+    email: string;
+    avatar?: string;
+  }>;
+  milestones: ClientMilestone[];
+  budgetSummary?: {
+    total: number;
+    invoiced: number;
+    remaining: number;
+  };
+}
+
 function getApiUrl(): string {
   return Constants.expoConfig?.extra?.apiUrl ?? 'https://api.hexastudio.net';
 }
@@ -52,10 +76,10 @@ async function withCache<T>(
 ): Promise<T> {
   try {
     const data = await fetcher();
-    setCachedData(cacheKey, data, ttlMinutes);
+    await setCachedData(cacheKey, data, ttlMinutes);
     return data;
   } catch (error) {
-    if (error instanceof TypeError) {
+    if (error instanceof TypeError || (error instanceof Error && /network/i.test(error.message))) {
       const cached = await getCachedData<T>(cacheKey);
       if (cached !== null) return cached;
     }
@@ -66,6 +90,12 @@ async function withCache<T>(
 export function fetchProjects(): Promise<ClientProject[]> {
   return withCache('cache:projects', DEFAULT_TTL.projects, () =>
     apiFetch<ClientProject[]>('/api/portal/odoo/projects'),
+  );
+}
+
+export function fetchProjectDetail(projectId: number): Promise<ClientProjectDetail> {
+  return withCache(`cache:project-detail:${projectId}`, DEFAULT_TTL.project, () =>
+    apiFetch<ClientProjectDetail>(`/api/portal/projects/${projectId}/detail`),
   );
 }
 

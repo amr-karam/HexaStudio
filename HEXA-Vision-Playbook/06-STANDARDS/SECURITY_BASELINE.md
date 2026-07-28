@@ -1,6 +1,6 @@
 # HEXA Studio — SECURITY BASELINE
 
-> **Version:** 1.0 | **Classification:** Confidential | **Last Updated:** 2026-07-26
+> **Version:** 1.1 | **Classification:** Confidential | **Last Updated:** 2026-07-27
 >
 > This document defines the minimum security posture for the HEXA Studio platform.
 > All deviations must be documented as exceptions and approved by the security lead.

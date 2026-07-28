@@ -1,12 +1,12 @@
 # Frontend Architecture
 
-**Last Updated:** 2026-07-08
+**Last Updated:** 2026-07-27
 
 ---
 
 ## Technology
 
-- **Framework:** Next.js 15 (App Router)
+- **Framework:** Next.js 16 (App Router)
 - **Language:** TypeScript (strict mode)
 - **Styling:** TailwindCSS 4
 - **3D:** React Three Fiber + @react-three/drei

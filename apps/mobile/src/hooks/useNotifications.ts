@@ -2,11 +2,9 @@ import { useEffect, useRef } from 'react';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import { Platform } from 'react-native';
-import { router } from 'expo-router';
+import { router, type Href } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import { apiFetch } from '@/lib/api';
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 const PUSH_TOKEN_KEY = 'hexa_push_token';
 
@@ -24,22 +22,20 @@ export async function registerForPushNotificationsAsync(): Promise<string | null
     });
   }
 
-  const { status: existingStatus } =
-    (await Notifications.getPermissionsAsync()) as unknown as {
-      status: string;
-    };
+  const existingPermission = await Notifications.getPermissionsAsync();
+  const existingStatus = (existingPermission as unknown as { status?: string }).status;
   let finalStatus = existingStatus;
 
   if (existingStatus !== 'granted') {
-    const { status } = (await Notifications.requestPermissionsAsync({
+    const requestedPermission = await Notifications.requestPermissionsAsync({
       ios: {
         allowAlert: true,
         allowBadge: true,
         allowSound: true,
       },
       android: {},
-    })) as unknown as { status: string };
-    finalStatus = status;
+    });
+    finalStatus = (requestedPermission as unknown as { status?: string }).status;
   }
 
   if (finalStatus !== 'granted') {
@@ -80,9 +76,9 @@ export function useNotifications() {
 
     responseListenerRef.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        const data = response.notification.request.content.data;
+        const data = response.notification.request.content.data as Record<string, unknown> | undefined;
         if (data?.screen && typeof data.screen === 'string') {
-          router.push(data.screen as any);
+          router.push(data.screen as Href);
         }
       });
 

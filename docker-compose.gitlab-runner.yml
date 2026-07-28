@@ -8,8 +8,9 @@ services:
     image: gitlab/gitlab-runner:latest
     container_name: hexa-gitlab-runner
     restart: unless-stopped
-    depends_on:
-      - gitlab
+    # NOTE: GitLab CE runs in docker-compose.gitlab.yml on the same external
+    # network (hexa-gitlab-net). Start GitLab first; no depends_on possible
+    # across compose projects with an external network.
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - gitlab_runner_config:/etc/gitlab-runner
@@ -18,7 +19,9 @@ services:
     environment:
       # Registration token from GitLab (set after first GitLab boot)
       # Get from: http://19.16.1.100:8929/admin/runners
-      CI_SERVER_URL: "http://gitlab:8929"
+      # Container-to-container traffic targets GitLab's internal port 80
+      # (host port 8929 is only the published mapping).
+      CI_SERVER_URL: "http://gitlab:80"
       RUNNER_EXECUTOR: "docker"
       DOCKER_IMAGE: "alpine:latest"
     deploy:

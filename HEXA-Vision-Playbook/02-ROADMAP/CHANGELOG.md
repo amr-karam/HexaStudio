@@ -1,30 +1,54 @@
 # Changelog: HEXA Vision
 
-## [1.8.0-dev] - 2026-07-27
+## [1.8.0] - 2026-07-27
 
-### Sprint 19 — Mobile & Web Performance (IN PROGRESS)
+### Sprint 19 — Mobile & Web Performance (v1.8.0 state)
+
+Shipped the mobile app v1.0 core, locked in bundle budgets and TBT gains, added a bundle-size CI gate and portal E2E smoke tests, and completed the v1.8.0 playbook documentation sync. Push notification backend delivery, app store assets, OTA updates, and Lighthouse 95+ remain in backlog for S-020.
 
 #### Added
+- **Mobile App v1.0 Core**: Expo/React Native tab navigation (Dashboard / Projects / Invoices / Notifications / Profile) in `apps/mobile/src/app/(tabs)/_layout.tsx`.
+- **Mobile Offline Support**: AsyncStorage-backed cache with TTLs (`apps/mobile/src/lib/cache.ts`) plus `OfflineBanner` and `NetworkBanner` connectivity indicators.
+- **Mobile Push Notifications (Client)**: `useNotifications` hook requests permissions, retrieves the Expo push token, and posts it to `/api/mobile/push/register`; local notification scheduling available via `lib/notifications.ts`.
+- **Mobile Auth + Dashboard**: Login screen + JWT auth hook; premium home dashboard with project summary, milestones, invoices, shimmer skeletons, and haptic feedback.
+- **Mobile Theming**: Dark luxury theme provider, glass cards, gold button, progress ring, status badges, and mono labels.
 - **Dead Three.js Code Removal**: Removed 11 unused files (BlueprintParticles, SplineField, ForceField, ParticleSimulation, HeroBloom, HexaCrystal, SceneModel, MeshDistortion, LivingBlueprintHero, shaders, entire features/experience/engine). Cleaned up barrels and empty directories. ~25 KB bundle reduction.
-- **Bundle Budgets Enforced**: 200KB JS per-route budget via webpack `config.performance` with production build errors.
+- **Bundle Budgets Enforced**: 200KB JS per-route budget via webpack `config.performance` with production build errors in `apps/frontend/next.config.ts`.
+- **Bundle Budget CI Gate**: `scripts/check-bundle-budgets.mjs` enforces 200KB per-route, 500KB total initial, and 500KB largest-chunk budgets; `bundle-analysis` job added to `.gitlab-ci.yml`.
 - **Bundle Analyzer**: Enhanced configuration producing static HTML report + stats JSON when `ANALYZE=true`.
+- **E2E Smoke Tests**: `e2e/portal.spec.ts` with 18 test cases covering portal login, dashboard, sidebar navigation, approvals, documents, finance, support, analytics, and cross-page navigation.
+- **Error Tracking Review**: Verified Sentry `captureException` in `GlobalErrorBoundary.tsx` and client/server/edge Sentry configurations.
 - **OpenTelemetry Tracing**: Backend instrumentation added with trace propagation across services.
 - **Request ID Propagation**: `RequestIdMiddleware` generates and propagates `X-Request-ID` header across all services for end-to-end request tracking.
 - **Tempo Tracing Service**: `grafana/tempo:2.6.1` added to `docker-compose.prod.yml` with Grafana datasource configuration.
-- **Enterprise Architecture Governance Framework**: 11 documents, 7,831 lines defining architecture standards, CI/CD governance, and decision record processes.
+- **Enterprise Architecture Governance Framework**: 11 documents defining architecture standards, CI/CD governance, and decision record processes.
 - **3 New Architecture Decision Records**:
   - ADR-007: Routing & Layout Strategy
   - ADR-008: Persistent Experience Layer
   - ADR-009: Bidirectional Strapi-Odoo Sync
 
 #### Quality
-- TBT at 60ms (target: <100ms) — already exceeding target
 - Frontend typecheck: 0 errors
 - Frontend lint: 0 errors
 - Backend typecheck: 0 errors
 - Backend lint: 0 errors
+- Mobile typecheck: 0 errors
+- Mobile lint: 0 errors
 - Backend tests: 285/285 passing
 - Frontend tests: 176/176 passing
+- Mobile tests: 10/10 passing
+- E2E smoke tests: 18/18 passing
+- TBT: 60ms (target: <100ms) ✅
+- LCP: 1.6s (target: <1.5s) 🟡
+- Lighthouse performance: 92/100 (target: 95+) 🟡
+- Bundle budget: enforced ✅
+- Production runtime vulnerabilities: 0 critical, 0 high ✅
+
+#### Deferred to S-020
+- Backend push notification delivery endpoint (`/api/mobile/push/register`) and Expo/APNs/FCM credentials.
+- Mobile app store assets (`apps/mobile/assets/` is empty).
+- OTA updates (`expo-updates` / EAS channel not configured).
+- LCP <1.5s and Lighthouse 95+ desktop optimization.
 
 ---
 

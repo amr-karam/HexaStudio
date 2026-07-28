@@ -1,7 +1,7 @@
 # Performance Standards
 
 **Version:** 1.1.0  
-**Last Updated:** 2026-07-25  
+**Last Updated:** 2026-07-27  
 
 ---
 
@@ -15,7 +15,7 @@
 | **FID** (First Input Delay) | < 100ms | Interactivity |
 | **CLS** (Cumulative Layout Shift) | < 0.1 | Visual stability |
 | **INP** (Interaction to Next Paint) | < 200ms | Overall responsiveness |
-| **TBT** (Total Blocking Time) | < 200ms | JS execution |
+| **TBT** (Total Blocking Time) | < 100ms | JS execution |
 
 ### Bundle Size
 

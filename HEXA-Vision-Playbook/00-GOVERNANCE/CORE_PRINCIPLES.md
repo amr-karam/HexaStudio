@@ -1,6 +1,6 @@
 # 💎 CORE PRINCIPLES: THE HEXA DNA
 
-**Version:** 1.0 | **Status:** Binding | **Domain:** Organizational Philosophy
+**Version:** 1.1 | **Status:** Binding | **Domain:** Organizational Philosophy
 
 ## 1. THE SUPREMACY OF QUALITY
 At HEXA Studio, "good enough" is the enemy. We operate on the principle of **Absolute Quality**. 

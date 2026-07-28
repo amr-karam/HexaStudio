@@ -11,6 +11,11 @@ export default defineConfig({
     baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:3000",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
+    // Force reduced motion so Framer Motion animations are instant in E2E.
+    // Without this, elements start with opacity:0 and toBeVisible() fails
+    // before the entrance animation completes.
+    reducedMotion: "reduce",
+    colorScheme: "dark",
   },
   projects: [
     {

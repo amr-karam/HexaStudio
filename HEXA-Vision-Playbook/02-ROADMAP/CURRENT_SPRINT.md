@@ -1,35 +1,25 @@
-# CURRENT SPRINT: S-019 — MOBILE & WEB PERFORMANCE
+# CURRENT SPRINT: S-020 — AI MULTIMODAL & APP STORE RELEASE
 
-**Sprint ID:** S-019 | **Focus:** Mobile App v1.0, Web Performance Tuning, Production Polish | **Status:** IN PROGRESS | **Started:** 2026-07-27 | **Target:** 2026-08-15 | **v1.8.0 Target**
+**Sprint ID:** S-020 | **Focus:** Gemini Multimodal Integration, App Store & TestFlight Deployment, Real-Time VR Audio/Video | **Status:** IN PROGRESS | **Started:** 2026-07-28 | **Target:** 2026-08-30 | **v1.9.0 Target**
 
 ## 1. SPRINT OBJECTIVE
 
-Ship the first version of the HEXA mobile app (Expo/React Native) with auth, project dashboard, and push notifications. Continue performance optimization (TBT reduction, bundle budgets, Lighthouse 95+). Polish production experience with E2E smoke tests and documentation sync.
+Integrate advanced AI Multimodal capabilities (Gemini vision & voice analysis for 3D renderings and portal documents), establish automated TestFlight and Google Play build/signing pipelines via EAS, and finalize real-time WebRTC audio/video signaling for multi-user VR co-review rooms.
 
 ---
 
 ## 2. DELIVERABLES & VERIFICATION
 
-### P0 — Mobile App v1.0
-- [ ] **Complete mobile navigation** — Tab-based (Dashboard / Projects / Notifications / Profile)
-- [ ] **Offline support** — Local caching of project data with offline-first strategy
-- [ ] **Push notifications** — Expo push for approvals, project updates, document uploads
-- [ ] **App store assets** — Icons, splash screen, app store screenshots
-- [ ] **OTA updates** — Expo Updates / EAS for over-the-air JS bundle updates
+### P0 — AI Multimodal Integration
+- [ ] **Gemini Vision Analysis** — Backend service integrating Gemini 2.0/1.5 Pro for architectural design critique and automated tagging of 3D models/renderings uploaded to MinIO.
+- [ ] **Multimodal Portal Copilot** — Portal AI Copilot drawer supporting image/screenshot attachments and voice input transcription.
 
-### P1 — Web Performance (IN PROGRESS)
-- [x] **Dead Three.js code removal** — Removed 11 unused files (BlueprintParticles, SplineField, ForceField, ParticleSimulation, HeroBloom, HexaCrystal, SceneModel, MeshDistortion, LivingBlueprintHero, shaders, entire features/experience/engine), cleaned up barrels and empty dirs (~25 KB bundle reduction)
-- [x] **200KB JS per-route budget** — Enforced via webpack config.performance with production build errors
-- [x] **Bundle analyzer config** — Enhanced with static HTML report + stats JSON when ANALYZE=true
-- [ ] **LCP < 1.5s** — Optimize hero image loading with priority hints
-- [ ] **Lighthouse 95+** — Desktop audit (current: 92)
-- [ ] **TBT < 100ms** — Already achieved (current: 60ms live site, 190ms local devtools); monitoring via Sentry
+### P1 — App Store & TestFlight Deployment
+- [ ] **EAS Build Configuration** — Production `eas.json` profiles for iOS (TestFlight) and Android (Internal App Sharing / Play Store).
+- [ ] **App Store Submission Pipeline** — Automated GitHub Actions / GitLab CI workflow for building and submitting mobile binaries.
 
-### P2 — Production Polish
-- [ ] **E2E smoke tests** — Playwright for portal login, project view, approval flow (18 test cases exist)
-- [ ] **Error tracking review** — Verify Sentry captures all critical error boundaries
-- [ ] **Documentation sync** — Update all playbook docs to v1.8.0
-- [ ] **Performance budget CI gate** — Fail CI on bundle size regressions
+### P2 — Real-Time VR Audio/Video
+- [ ] **WebRTC Signaling** — Socket.IO signaling gateway for peer-to-peer audio/video streaming in multi-user VR co-review rooms.
 
 ---
 
@@ -41,7 +31,61 @@ Ship the first version of the HEXA mobile app (Expo/React Native) with auth, pro
 | Frontend lint | 0 errors | 0 errors | ✅ |
 | Backend typecheck | 0 errors | 0 errors | ✅ |
 | Backend lint | 0 errors | 0 errors | ✅ |
-| Mobile App | v1.0 on TestFlight/Expo Go | Not started | ⏳ |
+| Mobile tests | 25/25 | 25/25 | ✅ |
+| Backend tests | 285/285 | 285/285 | ✅ |
+| Frontend tests | 176/176 | 176/176 | ✅ |
+
+---
+
+# CURRENT SPRINT: S-019 — MOBILE & WEB PERFORMANCE
+
+**Sprint ID:** S-019 | **Focus:** Mobile App v1.0, Web Performance Tuning, Production Polish | **Status:** IN PROGRESS — documentation sync complete; deferred items moved to backlog | **Started:** 2026-07-27 | **Target:** 2026-08-15 | **v1.8.0 Target**
+
+## 1. SPRINT OBJECTIVE
+
+Ship the first version of the HEXA mobile app (Expo/React Native) with auth, project dashboard, and push notifications. Continue performance optimization (TBT reduction, bundle budgets, Lighthouse 95+). Polish production experience with E2E smoke tests and documentation sync.
+
+---
+
+## 2. DELIVERABLES & VERIFICATION
+
+### P0 — Mobile App v1.0
+- [x] **Complete mobile navigation** — Tab-based (Dashboard / Projects / Notifications / Profile) in `apps/mobile/src/app/(tabs)/_layout.tsx`; Invoices tab removed (invoice summary lives on Dashboard)
+- [x] **Offline support** — AsyncStorage-backed cache (`apps/mobile/src/lib/cache.ts`) with TTLs + `OfflineBanner` connectivity indicator; project list and project detail cached
+- [x] **Push notifications** — `expo-notifications` integration with permission handling, Expo push token retrieval, local scheduling, and backend `POST /api/mobile/push/register` token storage (Redis)
+- [x] **App store assets** — Icons, splash screen, adaptive icon, notification icon, and favicon generated in `apps/mobile/assets/` and configured in `app.json`
+- [x] **OTA updates** — `expo-updates` launch check with `UpdateBanner` download/restart UI
+- [ ] **Backend push delivery service** — Expo Push API dispatch service; **deferred to S-020** pending APNs/FCM credentials
+
+### P1 — Web Performance
+- [x] **Dead Three.js code removal** — Removed 11 unused files (BlueprintParticles, SplineField, ForceField, ParticleSimulation, HeroBloom, HexaCrystal, SceneModel, MeshDistortion, LivingBlueprintHero, shaders, entire features/experience/engine), cleaned up barrels and empty dirs (~25 KB bundle reduction)
+- [x] **200KB JS per-route budget** — Enforced via webpack `config.performance` with production build errors in `apps/frontend/next.config.ts`
+- [x] **Bundle analyzer config** — Enhanced with static HTML report + stats JSON when `ANALYZE=true`
+- [x] **LCP < 1.5s optimizations applied** — Fixed non-blocking font CSS promotion, added preconnect/dns-prefetch hints, removed opacity-blocking hero text so the LCP element renders immediately; pending production Lighthouse confirmation
+- [x] **Lighthouse 95+ audit pass items applied** — Accessibility/Best-practices/SEO gaps verified (96/96/100 on local audit); performance score pending production re-run against a warmed CDN origin
+- [x] **TBT < 100ms** — Already achieved (current: 60ms live site); monitored via Sentry
+
+### P2 — Production Polish
+- [x] **E2E smoke tests** — Playwright portal smoke suite (`e2e/portal.spec.ts`) covering login, dashboard, sidebar navigation, approvals, documents, finance, support, analytics, and cross-page navigation
+- [x] **Error tracking review** — Sentry `captureException` wired in `GlobalErrorBoundary.tsx`; client/server/edge Sentry configs verified
+- [x] **Documentation sync** — Playbook docs updated to v1.8.0 state
+- [x] **Performance budget CI gate** — `scripts/check-bundle-budgets.mjs` enforces 200KB per-route, 500KB total initial, and 500KB largest-chunk budgets; `bundle-analysis` job in `.gitlab-ci.yml`
+
+---
+
+## 3. SPRINT METRICS
+
+| Metric | Target | Current | Status |
+|--------|--------|---------|--------|
+| Frontend typecheck | 0 errors | 0 errors | ✅ |
+| Frontend lint | 0 errors | 0 errors | ✅ |
+| Backend typecheck | 0 errors | 0 errors | ✅ |
+| Backend lint | 0 errors | 0 errors | ✅ |
+| Mobile lint | 0 errors | 0 errors | ✅ |
+| Mobile typecheck | 0 errors | 0 errors | ✅ |
+| Mobile App | v1.0 on TestFlight/Expo Go | Nav/auth/offline/push/assets/OTA ready | ✅ |
+| Mobile tests | 10/10 | 25/25 | ✅ |
+| E2E smoke tests | 18/18 | 18/18 | ✅ |
 | Lighthouse performance | >95 desktop | 92 | 🟡 |
 | TBT | <100ms | 60ms | ✅ |
 | LCP | <1.5s | 1.6s | 🟡 |
@@ -49,6 +93,15 @@ Ship the first version of the HEXA mobile app (Expo/React Native) with auth, pro
 | Backend tests | 285/285 | 285/285 | ✅ |
 | Frontend tests | 176/176 | 176/176 | ✅ |
 | Production vulns | 0 critical, 0 high runtime | 0 critical, 0 high | ✅ |
+
+---
+
+## 4. BLOCKERS & DEFERRED ITEMS
+
+| ID | Item | Reason | Next Sprint |
+|----|------|--------|-------------|
+| B1 | Backend push delivery service | Expo Push API dispatch service not implemented; APNs/FCM credentials still required | S-020 |
+| B2 | LCP / Lighthouse 95+ production verification | Local Windows dev server is too slow/variable for a trustworthy Lighthouse measurement; changes require a production/CDN-warmed build to validate the LCP drop from 1.6s to <1.5s and performance score from 92 to 95+ | S-020 |
 
 ---
 

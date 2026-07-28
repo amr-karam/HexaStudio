@@ -1,6 +1,6 @@
 # Domain Model
 
-**Last Updated:** 2026-07-08
+**Last Updated:** 2026-07-27
 
 ---
 

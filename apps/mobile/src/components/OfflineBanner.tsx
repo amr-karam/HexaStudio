@@ -1,27 +1,33 @@
 import { useEffect, useRef } from 'react';
 import { Text, StyleSheet, Animated } from 'react-native';
-import NetInfo from '@react-native-community/netinfo';
 import { useTheme } from './ThemeProvider';
+import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 
-export function OfflineBanner() {
+export interface OfflineBannerProps {
+  floating?: boolean;
+}
+
+export function OfflineBanner({ floating = true }: OfflineBannerProps) {
   const { colors } = useTheme();
+  const { isOffline } = useNetworkStatus();
   const opacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener((state) => {
-      const offline = !(state.isConnected && state.isInternetReachable !== false);
-      Animated.timing(opacity, {
-        toValue: offline ? 1 : 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    });
-
-    return () => unsubscribe();
-  }, [opacity]);
+    Animated.timing(opacity, {
+      toValue: isOffline ? 1 : 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, [isOffline, opacity]);
 
   return (
-    <Animated.View style={[styles.banner, { opacity, backgroundColor: colors.accent }]}>
+    <Animated.View
+      style={[
+        styles.banner,
+        !floating && styles.inline,
+        { opacity, backgroundColor: colors.accent },
+      ]}
+    >
       <Text style={[styles.text, { color: colors.background }]}>
         You're offline — showing cached data
       </Text>
@@ -39,6 +45,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 16,
     alignItems: 'center',
+  },
+  inline: {
+    position: 'relative',
+    top: undefined,
+    left: undefined,
+    right: undefined,
   },
   text: {
     fontSize: 12,

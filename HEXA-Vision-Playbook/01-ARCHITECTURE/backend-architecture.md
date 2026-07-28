@@ -1,12 +1,12 @@
 # Backend Architecture
 
-**Last Updated:** 2026-07-08
+**Last Updated:** 2026-07-27
 
 ---
 
 ## Technology
 
-- **Framework:** NestJS (latest)
+- **Framework:** NestJS 11 (latest)
 - **Language:** TypeScript (strict mode)
 - **API:** REST with Swagger documentation
 - **Auth:** JWT (RS256) with Passport strategies

@@ -1,6 +1,6 @@
 # 📚 GLOSSARY: THE HEXA LEXICON
 
-**Version:** 1.0 | **Domain:** Governance | **Format:** A-Z Reference
+**Version:** 1.1 | **Domain:** Governance | **Format:** A-Z Reference
 
 ## A
 - **Awwwards:** A professional web design competition. We use their "Site of the Day" as our visual benchmark.

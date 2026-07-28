@@ -1,6 +1,8 @@
 # HEXA Studio — PROJECT INDEX
 
-> **Version:** 1.0 | **Last Updated:** 2026-07-26 | **Domain:** [hexastudio.net](https://hexastudio.net)
+> **Version:** 1.1 | **Last Updated:** 2026-07-27 | **Domain:** [hexastudio.net](https://hexastudio.net)
+
+> **Governance:** Project relationships and catalogs are controlled by `HEXA-Vision-Playbook/00-GOVERNANCE/ENTERPRISE_ARCHITECTURE_GOVERNANCE.md`. Significant changes require synchronized catalog, risk, health, ADR, and deployment evidence updates.
 
 ---
 

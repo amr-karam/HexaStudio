@@ -98,7 +98,7 @@ export const textReveal: Variants = {
 };
 
 /** Parent variant that staggers its children into view once. */
-export const staggerContainer = (stagger = STAGGER.component, delayChildren = 0): Variants => ({
+export const staggerContainer = (stagger: number = STAGGER.component, delayChildren: number = 0): Variants => ({
   hidden: {},
   visible: {
     transition: { staggerChildren: stagger, delayChildren },

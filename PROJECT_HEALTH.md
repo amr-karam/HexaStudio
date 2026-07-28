@@ -1,6 +1,6 @@
 # HEXA Studio — PROJECT HEALTH
 
-> Version: 1.0 | Last Updated: 2026-07-26
+> Version: 1.1 | Last Updated: 2026-07-27 | Governance: Enterprise Architecture Governance v2.0
 
 ## Overall Engineering Score: 8.2 / 10
 
@@ -46,7 +46,9 @@ Note: The 8.9 score from QUALITY_SCORECARD.md (2026-07-09) used a different rubr
 
 ### Blocking Issues
 
-None currently. All previously identified P0 blockers (BLOCKING_ISSUES.md) are resolved:
+**Release validation is currently blocked.** GitLab Pipeline #8 failed in the test job because the npm lockfile omitted the Linux Rolldown native binding. ADR-010 defines the remediation; production readiness remains blocked until clean Linux verification and a complete green replacement pipeline are recorded.
+
+All previously identified application P0 blockers (BLOCKING_ISSUES.md) are resolved:
 
 - Hardcoded database password: FIXED
 - DNS misconfiguration: FIXED
@@ -56,6 +58,19 @@ None currently. All previously identified P0 blockers (BLOCKING_ISSUES.md) are r
 - First-load JS budget exceeded: FIXED (188kB, within 200kB budget)
 - Insufficient test coverage: PARTIALLY RESOLVED (415+ tests, CI integrated)
 - Sitemap missing: FIXED
+
+### Governance Checkpoint Status — ADR-010
+
+| Checkpoint | Status | Evidence |
+|------------|--------|----------|
+| Business validation | PASS | Restores trustworthy CI and GitLab go-live |
+| Architecture validation | PASS | ADR-010 accepted for implementation |
+| Security validation | PENDING | Native dependency and credential/transport review |
+| Performance validation | PENDING | CI setup/runtime and cache review |
+| Accessibility validation | N/A pending sign-off | No user-facing change |
+| Documentation validation | IN PROGRESS | Governance, CI, dependency, risk, and health records synchronized |
+| Deployment validation | BLOCKED | Replacement pipeline not yet green |
+| Production validation | BLOCKED | No deployment until upstream gates pass |
 
 ### Raw Data Sources
 
