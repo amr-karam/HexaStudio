@@ -5,7 +5,7 @@
 set -e
 
 SRC_ADDONS="/mnt/extra-addons"
-WORK_ADDONS="/opt/hexa-addons"
+WORK_ADDONS="/tmp/hexa-addons"
 
 mkdir -p "${WORK_ADDONS}"
 cp -r "${SRC_ADDONS}/." "${WORK_ADDONS}/"
