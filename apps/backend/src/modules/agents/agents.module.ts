@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { AgentsController } from './agents.controller';
 import { AgentsService } from './agents.service';
 import { GeminiService } from '../ai/gemini.service';
@@ -11,7 +11,7 @@ import { RealtimeModule } from '../realtime/realtime.module';
 import { WebhooksModule } from '../webhooks/webhooks.module';
 
 @Module({
-  imports: [ProjectsModule, VectorModule, AIModule, RealtimeModule, WebhooksModule],
+  imports: [ProjectsModule, VectorModule, AIModule, RealtimeModule, forwardRef(() => WebhooksModule)],
   controllers: [AgentsController],
   providers: [AgentsService, GeminiService, ToolRegistry, SwarmOrchestratorService],
   exports: [AgentsService, GeminiService, SwarmOrchestratorService],
