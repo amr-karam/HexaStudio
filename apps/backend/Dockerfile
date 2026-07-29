@@ -1,5 +1,5 @@
 FROM node:22-alpine AS base
-RUN apk add --no-cache libc6-compat curl
+RUN apk add --no-cache libc6-compat wget curl
 WORKDIR /app
 
 FROM base AS deps
