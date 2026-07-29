@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { SlackService } from './slack.service';
 import { WebhookListener } from './webhook.listener';
@@ -11,7 +11,7 @@ import { RealtimeModule } from '../realtime/realtime.module';
 import { AgentsModule } from '../agents/agents.module';
 
 @Module({
-  imports: [HttpModule, RealtimeModule, AgentsModule],
+  imports: [HttpModule, RealtimeModule, forwardRef(() => AgentsModule)],
   controllers: [WebhookConfigController, GitWebhookController],
   providers: [SlackService, WebhookListener, WebhookDispatcher, WebhookConfigService, GitWebhookService],
   exports: [SlackService, WebhookConfigService, GitWebhookService],
