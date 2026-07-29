@@ -1,6 +1,6 @@
 # Stage 1: Base
-FROM node:20-alpine AS base
-RUN apk add --no-cache libc6-compat wget
+FROM node:20-bookworm-slim AS base
+RUN apt-get update && apt-get install -y wget && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 # Stage 2: Dependencies (with full source for workspace resolution)
@@ -24,8 +24,8 @@ ENV SKIP_ENV_VALIDATION=true
 RUN npm run build --workspace=apps/frontend
 
 # Stage 4: Runner
-FROM node:20-alpine AS runner
-RUN apk add --no-cache curl
+FROM node:20-bookworm-slim AS runner
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 ENV NODE_ENV=production
