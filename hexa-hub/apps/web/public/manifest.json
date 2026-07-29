@@ -1,0 +1,10 @@
+{
+  "name": "HEXA Hub",
+  "short_name": "HEXA Hub",
+  "description": "Enterprise Workspace for HEXA Studio",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "icons": []
+}

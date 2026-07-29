@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Button } from '@hexastudio/ui';
+import { Button } from '@/components/ui';
+import { Input } from '@/components/ui';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { useAuth } from '@/providers/AuthProvider';
@@ -11,6 +12,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
   const router = useRouter();
   const { login } = useAuth();
 
@@ -18,19 +20,15 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     setIsLoading(true);
     try {
       const response = await axios.post(`${API_URL}/auth/login`, { email, password });
       login(response.data.access_token, response.data.user);
-      
       const role = response.data.user.role;
-      if (role === 'CLIENT') {
-        router.push('/client');
-      } else {
-        router.push('/dashboard');
-      }
-    } catch (error) {
-      alert('Invalid credentials. Please try again.');
+      router.push(role === 'CLIENT' ? '/client' : '/dashboard');
+    } catch {
+      setError('Invalid credentials. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -44,50 +42,63 @@ export default function LoginPage() {
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-gold/5 blur-[120px] rounded-full" />
       </div>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         className="relative z-10 w-full max-w-md"
       >
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-serif font-light text-white mb-2">Welcome to <span className="text-gold">HUB</span></h1>
-          <p className="text-neutral-500 font-light text-sm tracking-widest uppercase">Enterprise Workspace</p>
+          <h1 className="text-4xl font-serif font-light text-white mb-2">
+            Welcome to <span className="text-gold">HUB</span>
+          </h1>
+          <p className="text-neutral-500 font-light text-sm tracking-widest uppercase">
+            Enterprise Workspace
+          </p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-6">
-          <div className="space-y-2">
-            <label className="text-[10px] uppercase tracking-widest text-neutral-500 ml-1">Email Address</label>
-            <input 
-              type="email" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-surface border border-border p-4 rounded-lg text-white focus:border-gold/50 outline-none transition-all duration-300 font-light"
-              placeholder="email@hexastudio.net"
-              required
-            />
-          </div>
+        <form onSubmit={handleLogin} className="space-y-5">
+          <Input
+            label="Email Address"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="email@hexastudio.net"
+            required
+          />
 
-          <div className="space-y-2">
-            <label className="text-[10px] uppercase tracking-widest text-neutral-500 ml-1">Password</label>
-            <input 
-              type="password" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-surface border border-border p-4 rounded-lg text-white focus:border-gold/50 outline-none transition-all duration-300 font-light"
-              placeholder="••••••••"
-              required
-            />
-          </div>
+          <Input
+            label="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            required
+          />
 
-          <button 
-            type="submit" 
-            className="w-full py-6 text-sm uppercase tracking-widest bg-gold text-obsidian rounded-lg hover:bg-gold/90 transition-all disabled:opacity-50"
-            disabled={isLoading}
+          {error && (
+            <motion.p
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-sm text-red-400 text-center font-light"
+            >
+              {error}
+            </motion.p>
+          )}
+
+          <Button
+            type="submit"
+            size="lg"
+            isLoading={isLoading}
+            className="w-full uppercase tracking-widest"
           >
             {isLoading ? 'Authenticating...' : 'Enter Workspace'}
-          </button>
+          </Button>
         </form>
+
+        <p className="text-center mt-8 text-xs text-[#444] font-light">
+          HEXA Studio &copy; {new Date().getFullYear()}
+        </p>
       </motion.div>
     </div>
   );

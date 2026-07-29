@@ -42,4 +42,25 @@ export class MessagesService {
   async markAsRead(messageId: string) {
     await this.messageRepo.update(messageId, { isRead: true });
   }
+
+  async getThreadContext(messageId: string) {
+    const parent = await this.messageRepo.findOne({ where: { id: messageId } });
+    if (!parent) return null;
+    const replies = await this.messageRepo.find({
+      where: { replyTo: messageId },
+      order: { createdAt: 'ASC' },
+    });
+    return { parent, replies };
+  }
+
+  async replyToMessage(senderId: string, receiverId: string, replyTo: string, content: string, type: 'text' | 'file' | 'system' = 'text') {
+    const message = this.messageRepo.create({
+      senderId,
+      receiverId,
+      content,
+      type,
+      replyTo,
+    });
+    return this.messageRepo.save(message);
+  }
 }

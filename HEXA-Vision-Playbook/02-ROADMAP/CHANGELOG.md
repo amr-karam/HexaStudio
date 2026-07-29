@@ -1,5 +1,74 @@
 # Changelog: HEXA Vision
 
+## [1.9.0] - 2026-07-29
+
+### Sprint 20 — AI Multimodal & App Store Release
+
+Delivered the Gemini Multimodal integration (vision analysis, voice transcription, multimodal Portal Copilot), EAS Build configuration for iOS/Android app store submission with mobile CI/CD pipeline, WebRTC real-time audio signaling for multi-user VR collaboration, and the backend push notification service deferred from S-019.
+
+#### Added
+- **Gemini Vision Automated Tagging** (`auto-tag-vision.service.ts`) — Vision-powered tag generation for 3D model renderings (style, materials, colors, lighting detection) using Gemini
+- **MinIO Vision Pipeline** (`minio-vision.listener.ts`) — Upload-triggered analysis with Redis caching
+- **Voice Transcription Service** (`voice.service.ts`) — Speech-to-text via Gemini audio processing
+- **Multimodal Portal Copilot** — Combined image upload with drag-drop preview, Web Speech API voice input, and text queries in `PortalAiCopilot.tsx`
+- **Multimodal Query API** — `POST copilot/multimodal-query` endpoint in `portal.controller.ts` + Next.js proxy route
+- **EAS Build Configuration** — Production `eas.json` with `credentialsSource: remote`, iOS TestFlight + Android Internal Track submit config
+- **Mobile CI/CD Pipeline** — GitLab CI mobile stage: `mobile-typecheck`, `mobile-test`, `build-mobile` (manual), `submit-mobile` (manual)
+- **EAS Setup Guide** — `scripts/eas-build-setup.md` with step-by-step project setup instructions
+- **WebRTC Signaling** — 5 Socket.IO handlers (`webrtc:offer/answer/ice-candidate/peer-join/peer-leave`) in `realtime.gateway.ts`
+- **useWebRTC Hook** — Audio-only P2P with speaking detection and connection quality monitoring
+- **MediaControls Component** — Floating mic/speaking/quality panel for VR collaboration
+- **MobilePushService** — Expo Push API dispatch with domain helpers: `notifyProjectUpdate`, `notifyApprovalRequired`, `notifyMilestoneReached`, `notifyDocumentUploaded`
+- **Push Error Handling** — `DeviceNotRegistered` token cleanup from Redis, retry for transient failures
+- **CopilotMessage Types** — Added `imageUrl` and `isProcessing` fields to `types.ts`
+
+#### Quality
+- Frontend typecheck: 0 errors
+- Frontend lint: 0 errors
+- Backend typecheck: 0 errors
+- Backend lint: 0 errors
+- Mobile typecheck: 0 errors
+- Mobile lint: 0 errors
+- Backend tests: 285/285 passing
+- Frontend tests: 176/176 passing
+- Mobile tests: 25/25 passing
+- Production runtime vulnerabilities: 0 critical, 0 high ✅
+
+---
+
+## [2.0.0] - 2026-07-28
+
+### Sprint 20 & 21 — AI Multimodal, Autonomous Agents & Production v2.0 Release
+
+Major milestone release delivering the AI Multimodal Studio, Multi-Agent Executive Studio, WebRTC VR real-time audio/video signaling, system telemetry command centers, and automated visual regression/disaster-recovery test suites.
+
+#### Added
+- **AI Multimodal Studio (`/portal/ai`)**: Gemini 3.5 Flash vision analysis controller (`/api/v1/ai/multimodal/*`) and interactive frontend dropzone UI for architectural image analysis, 3D render QA, material inspection, and BIM metadata extraction.
+- **AI Architectural Brief Generator (`/ai/brief-generator`)**: Generative scoping tool producing professional architectural briefs, spatial programs, and timeline estimates.
+- **Multi-Agent Executive Studio (`/portal/agents`)**: Secure REST endpoints and luxury dark-UI chat workspace for four specialized autonomous agent personas (`HEXA-CEO`, `HEXA-Sales`, `HEXA-PM`, `HEXA-Reviewer`).
+- **WebRTC VR Signaling**: Socket.IO signaling events (`webrtc:offer`, `webrtc:answer`, `webrtc:ice-candidate`) in `RealtimeGateway` for peer-to-peer audio/video streaming during multi-user VR design reviews.
+- **System Telemetry & Health Command Center (`/admin/telemetry`)**: Real-time microservice monitoring grid tracking active WebSockets, AI token consumption, Redis cache hit rates, and global CDN edge latencies.
+- **Performance & Error Budget Dashboard (`/admin/performance`)**: Continuous tracking of Core Web Vitals (LCP, FID, CLS, TBT) and Sentry error budgets.
+- **Automated Visual Regression Suite (`e2e/visual.spec.ts`)**: Playwright snapshot regression tests covering homepage, portal login, and AI Multimodal Studio.
+- **Route Availability Smoke Suite (`e2e/routes.spec.ts`)**: Automated test verifying all 34 public, portal, and admin routes load successfully (< 400).
+- **Enterprise Disaster Recovery & Backup Verification (`scripts/verify-backup.js`)**: Automated validation script for PostgreSQL persistence, Redis RDB snapshots, and MinIO S3 deliverable storage.
+- **Monorepo Dependency Audit (`scripts/audit-deps.js`)**: Workspace and package integrity validator.
+
+#### Quality
+- Frontend typecheck: 0 errors
+- Frontend lint: 0 errors (0 warnings)
+- Backend typecheck: 0 errors
+- Backend lint: 0 errors
+- Mobile typecheck: 0 errors
+- Mobile lint: 0 errors
+- Backend tests: 285/285 passing
+- Frontend tests: 179/179 passing
+- Mobile tests: 25/25 passing
+- E2E route smoke tests: 34/34 passing
+- Production runtime vulnerabilities: 0 critical, 0 high ✅
+
+---
+
 ## [1.8.0] - 2026-07-27
 
 ### Sprint 19 — Mobile & Web Performance (v1.8.0 state)

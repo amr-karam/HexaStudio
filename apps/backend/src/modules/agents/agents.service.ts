@@ -12,6 +12,8 @@ interface ChatMessage {
   tool_call_id?: string;
 }
 
+export type AgentPersona = 'general' | 'ceo' | 'sales' | 'pm' | 'code-review';
+
 @Injectable()
 export class AgentsService {
   private readonly logger = new Logger(AgentsService.name);
@@ -28,25 +30,48 @@ export class AgentsService {
     }
   }
 
-  async chat(message: string): Promise<{ response: string; toolCalls: number }> {
+  private getSystemPrompt(persona: AgentPersona, toolsDescription: string): string {
+    switch (persona) {
+      case 'ceo':
+        return `You are HEXA-CEO, the executive strategy assistant for HexaStudio. 
+Focus on high-level KPIs, financial growth, risk mitigation, resource utilization, and enterprise vision. 
+Provide concise, executive-level summaries.
+Available tools:
+${toolsDescription}`;
+      case 'sales':
+        return `You are HEXA-Sales, the business development assistant for HexaStudio.
+Focus on client lead qualification, tailored proposal generation, pricing negotiation strategies, and CRM sync.
+Available tools:
+${toolsDescription}`;
+      case 'pm':
+        return `You are HEXA-PM, the project management assistant for HexaStudio.
+Focus on sprint planning, milestone velocity, bottleneck prediction, team resource allocation, and timeline forecasting.
+Available tools:
+${toolsDescription}`;
+      case 'code-review':
+        return `You are HEXA-Reviewer, the technical quality and architecture assistant for HexaStudio.
+Focus on code cleanlines, TypeScript strictness, security standards, OWASP guidelines, and performance optimization.
+Available tools:
+${toolsDescription}`;
+      default:
+        return `You are HEXA, the AI assistant for HexaStudio — a high-end architectural visualization studio.
+You help users explore projects, learn about design craft, and understand architectural concepts.
+Available tools:
+${toolsDescription}`;
+    }
+  }
+
+  async chat(message: string, persona: AgentPersona = 'general'): Promise<{ response: string; toolCalls: number }> {
     if (!this.openai) {
       return { response: 'AI agent is unavailable (no API key configured).', toolCalls: 0 };
     }
 
     const tools = this.toolRegistry.getDefinitions();
+    const toolsDescription = tools.map(t => `- ${t.name}: ${t.description}`).join('\n');
+    const systemPrompt = this.getSystemPrompt(persona, toolsDescription);
+
     const messages: ChatMessage[] = [
-      {
-        role: 'system',
-        content: `You are HEXA, the AI assistant for HexaStudio — a high-end architectural visualization studio.
-
-You help users explore the projects, learn about projects, and understand architectural concepts.
-
-Available tools:
-${tools.map(t => `- ${t.name}: ${t.description}`).join('\n')}
-
-Use tools when you need information. If a tool call fails, tell the user gracefully.
-Answer concisely and professionally. When citing projects, include their titles and key details.`,
-      },
+      { role: 'system', content: systemPrompt },
       { role: 'user', content: message },
     ];
 
@@ -74,7 +99,6 @@ Answer concisely and professionally. When citing projects, include their titles 
       const choice = response.choices[0];
       const assistantMessage = choice.message;
 
-      // Add assistant message to history
       messages.push({
         role: 'assistant',
         content: assistantMessage.content,

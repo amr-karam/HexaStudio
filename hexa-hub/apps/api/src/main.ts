@@ -2,13 +2,28 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import type { Request, Response, NextFunction } from 'express';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
 
-  // ─── Global API Prefix ────────────────────────────────────────────────────
-  app.setGlobalPrefix('api');
+  // ─── Global API Prefix — v1 ──────────────────────────────────────────────
+  app.setGlobalPrefix('api/v1');
+
+  // ─── Legacy Redirect: /api → /api/v1 ────────────────────────────────────
+  const httpAdapter = app.getHttpAdapter();
+  httpAdapter.use('/api', (req: Request, res: Response, next: NextFunction) => {
+    // Only redirect if the path IS exactly /api or its subpaths are not /v1/*
+    const fullPath = (req as Request).originalUrl || (req as Request).url;
+    if (fullPath.startsWith('/api/v1') || fullPath.startsWith('/api/docs')) {
+      return next();
+    }
+    // Redirect /api/* → /api/v1/*
+    const suffix = fullPath.replace(/^\/api/, '');
+    const newPath = `/api/v1${suffix}`;
+    res.redirect(308, newPath);
+  });
 
   // ─── CORS ─────────────────────────────────────────────────────────────────
   app.enableCors({
@@ -29,9 +44,9 @@ async function bootstrap() {
 
   // ─── Swagger / OpenAPI Documentation ─────────────────────────────────────
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('HEXA Hub API')
+    .setTitle('HEXA Hub API v1')
     .setDescription(
-      '## HEXA Hub — Internal Collaboration Platform API\n\n' +
+      '## HEXA Hub — Internal Collaboration Platform API (v1)\n\n' +
       'Central gateway for the HEXA Hub platform. Provides REST endpoints for:\n\n' +
       '- **Authentication** — JWT-based login/register with refresh tokens\n' +
       '- **Users** — Profile management and user lookup\n' +
@@ -52,13 +67,13 @@ async function bootstrap() {
       'Most endpoints require a **Bearer JWT token** in the `Authorization` header.\n' +
       'Obtain a token via `POST /api/auth/login` or `POST /api/auth/register`.\n\n' +
       '### Base URL\n\n' +
-      'All endpoints are prefixed with `/api`.\n'
+      'All endpoints are prefixed with `/api/v1`.\n'
     )
-    .setVersion('2.0.0')
+    .setVersion('1.0')
     .setContact('HEXA Studio', 'https://hexastudio.net', 'devops@hexastudio.net')
     .setLicense('Proprietary', 'https://hexastudio.net')
-    .addServer('http://localhost:3000', 'Local Development')
-    .addServer('https://api.hexastudio.net', 'Production')
+    .addServer('http://localhost:3000/api/v1', 'Local Development')
+    .addServer('https://api.hexastudio.net/api/v1', 'Production')
     .addBearerAuth(
       {
         type: 'http',
@@ -97,7 +112,7 @@ async function bootstrap() {
       showRequestDuration: true,
       tryItOutEnabled: true,
     },
-    customSiteTitle: 'HEXA Hub API Docs',
+    customSiteTitle: 'HEXA Hub API v1 Docs',
     customfavIcon: 'https://hexastudio.net/favicon.ico',
     customCss: `
       .swagger-ui .topbar { display: none; }
@@ -109,8 +124,9 @@ async function bootstrap() {
   const port = process.env.PORT || 3000;
   await app.listen(port);
 
-  logger.log(`HEXA Hub API is running on: http://localhost:${port}/api`);
+  logger.log(`HEXA Hub API v1 is running on: http://localhost:${port}/api/v1`);
   logger.log(`Swagger docs available at: http://localhost:${port}/api/docs`);
+  logger.log(`Legacy /api requests will be redirected to /api/v1`);
 }
 
 bootstrap();

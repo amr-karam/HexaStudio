@@ -1,0 +1,639 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ===================================================================== -->
+    <!-- HEXA Studio — Full Accountant Chart of Accounts                        -->
+    <!-- Architecture & Design Firm CoA with proper parent-child hierarchy       -->
+    <!-- ===================================================================== -->
+    <data noupdate="1">
+
+        <!-- ============================================================ -->
+        <!-- 1. ASSETS (1xxxxx)                                            -->
+        <!-- ============================================================ -->
+
+        <!-- 100000 — Current Assets (View/Parent) -->
+        <record id="hexa_account_100000" model="account.account">
+            <field name="name">Current Assets</field>
+            <field name="code">100000</field>
+            <field name="user_type_id" ref="hexa_account_type_asset_current"/>
+            <field name="reconcile" eval="False"/>
+            <field name="note">All current assets with liquidity &lt; 1 year.</field>
+        </record>
+
+        <!-- 101000 — Cash & Bank -->
+        <record id="hexa_account_101000" model="account.account">
+            <field name="name">Cash &amp; Bank</field>
+            <field name="code">101000</field>
+            <field name="user_type_id" ref="hexa_account_type_asset_current"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_100000"/>
+        </record>
+
+        <record id="hexa_account_101100" model="account.account">
+            <field name="name">Main Bank Account</field>
+            <field name="code">101100</field>
+            <field name="user_type_id" ref="hexa_account_type_asset_current"/>
+            <field name="reconcile" eval="True"/>
+            <field name="parent_id" ref="hexa_account_101000"/>
+            <field name="note">Primary operating bank account. Reconciled monthly.</field>
+        </record>
+
+        <record id="hexa_account_101200" model="account.account">
+            <field name="name">Petty Cash</field>
+            <field name="code">101200</field>
+            <field name="user_type_id" ref="hexa_account_type_asset_current"/>
+            <field name="reconcile" eval="True"/>
+            <field name="parent_id" ref="hexa_account_101000"/>
+            <field name="note">Office petty cash float.</field>
+        </record>
+
+        <!-- 102000 — Accounts Receivable -->
+        <record id="hexa_account_102000" model="account.account">
+            <field name="name">Accounts Receivable</field>
+            <field name="code">102000</field>
+            <field name="user_type_id" ref="hexa_account_type_asset_current"/>
+            <field name="reconcile" eval="True"/>
+            <field name="parent_id" ref="hexa_account_100000"/>
+        </record>
+
+        <record id="hexa_account_102100" model="account.account">
+            <field name="name">Trade Receivables</field>
+            <field name="code">102100</field>
+            <field name="user_type_id" ref="hexa_account_type_asset_current"/>
+            <field name="reconcile" eval="True"/>
+            <field name="parent_id" ref="hexa_account_102000"/>
+            <field name="note">Amounts due from clients for design services rendered.</field>
+        </record>
+
+        <record id="hexa_account_102200" model="account.account">
+            <field name="name">Client Deposits</field>
+            <field name="code">102200</field>
+            <field name="user_type_id" ref="hexa_account_type_asset_current"/>
+            <field name="reconcile" eval="True"/>
+            <field name="parent_id" ref="hexa_account_102000"/>
+            <field name="note">Advance payments and deposits received from clients.</field>
+        </record>
+
+        <!-- 103000 — Other Current Assets -->
+        <record id="hexa_account_103000" model="account.account">
+            <field name="name">Other Current Assets</field>
+            <field name="code">103000</field>
+            <field name="user_type_id" ref="hexa_account_type_other_current"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_100000"/>
+        </record>
+
+        <record id="hexa_account_103100" model="account.account">
+            <field name="name">Prepaid Expenses</field>
+            <field name="code">103100</field>
+            <field name="user_type_id" ref="hexa_account_type_other_current"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_103000"/>
+            <field name="note">Prepayments for insurance, software licenses, rent, etc.</field>
+        </record>
+
+        <record id="hexa_account_103200" model="account.account">
+            <field name="name">VAT Receivable</field>
+            <field name="code">103200</field>
+            <field name="user_type_id" ref="hexa_account_type_other_current"/>
+            <field name="reconcile" eval="True"/>
+            <field name="parent_id" ref="hexa_account_103000"/>
+            <field name="note">Input VAT recoverable from tax authority.</field>
+        </record>
+
+        <!-- 110000 — Fixed Assets -->
+        <record id="hexa_account_110000" model="account.account">
+            <field name="name">Fixed Assets</field>
+            <field name="code">110000</field>
+            <field name="user_type_id" ref="hexa_account_type_asset_fixed"/>
+            <field name="reconcile" eval="False"/>
+            <field name="note">Long-term tangible assets with useful life &gt; 1 year.</field>
+        </record>
+
+        <record id="hexa_account_111000" model="account.account">
+            <field name="name">Office Equipment</field>
+            <field name="code">111000</field>
+            <field name="user_type_id" ref="hexa_account_type_asset_fixed"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_110000"/>
+            <field name="note">Desks, chairs, filing cabinets, conference room furniture.</field>
+        </record>
+
+        <record id="hexa_account_112000" model="account.account">
+            <field name="name">Computer Equipment</field>
+            <field name="code">112000</field>
+            <field name="user_type_id" ref="hexa_account_type_asset_fixed"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_110000"/>
+            <field name="note">Workstations, laptops, servers, networking hardware.</field>
+        </record>
+
+        <record id="hexa_account_113000" model="account.account">
+            <field name="name">Furniture &amp; Fixtures</field>
+            <field name="code">113000</field>
+            <field name="user_type_id" ref="hexa_account_type_asset_fixed"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_110000"/>
+            <field name="note">Built-in fixtures, lighting, display systems.</field>
+        </record>
+
+        <record id="hexa_account_114000" model="account.account">
+            <field name="name">Vehicles</field>
+            <field name="code">114000</field>
+            <field name="user_type_id" ref="hexa_account_type_asset_fixed"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_110000"/>
+            <field name="note">Company vehicles for site visits and client meetings.</field>
+        </record>
+
+        <record id="hexa_account_119000" model="account.account">
+            <field name="name">Accumulated Depreciation</field>
+            <field name="code">119000</field>
+            <field name="user_type_id" ref="hexa_account_type_asset_fixed"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_110000"/>
+            <field name="note">Contra-asset account for accumulated depreciation on fixed assets.</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- 2. LIABILITIES (2xxxxx)                                       -->
+        <!-- ============================================================ -->
+
+        <record id="hexa_account_200000" model="account.account">
+            <field name="name">Current Liabilities</field>
+            <field name="code">200000</field>
+            <field name="user_type_id" ref="hexa_account_type_liability_current"/>
+            <field name="reconcile" eval="False"/>
+            <field name="note">Obligations due within 12 months.</field>
+        </record>
+
+        <!-- 201000 — Accounts Payable -->
+        <record id="hexa_account_201000" model="account.account">
+            <field name="name">Accounts Payable</field>
+            <field name="code">201000</field>
+            <field name="user_type_id" ref="hexa_account_type_liability_current"/>
+            <field name="reconcile" eval="True"/>
+            <field name="parent_id" ref="hexa_account_200000"/>
+        </record>
+
+        <record id="hexa_account_201100" model="account.account">
+            <field name="name">Trade Payables</field>
+            <field name="code">201100</field>
+            <field name="user_type_id" ref="hexa_account_type_liability_current"/>
+            <field name="reconcile" eval="True"/>
+            <field name="parent_id" ref="hexa_account_201000"/>
+            <field name="note">Amounts owed to suppliers and vendors for materials and services.</field>
+        </record>
+
+        <record id="hexa_account_201200" model="account.account">
+            <field name="name">Subcontractor Payables</field>
+            <field name="code">201200</field>
+            <field name="user_type_id" ref="hexa_account_type_liability_current"/>
+            <field name="reconcile" eval="True"/>
+            <field name="parent_id" ref="hexa_account_201000"/>
+            <field name="note">Amounts due to subcontractors for project work.</field>
+        </record>
+
+        <!-- 202000 — Tax Liabilities -->
+        <record id="hexa_account_202000" model="account.account">
+            <field name="name">Tax Liabilities</field>
+            <field name="code">202000</field>
+            <field name="user_type_id" ref="hexa_account_type_liability_current"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_200000"/>
+        </record>
+
+        <record id="hexa_account_202100" model="account.account">
+            <field name="name">VAT Payable</field>
+            <field name="code">202100</field>
+            <field name="user_type_id" ref="hexa_account_type_liability_current"/>
+            <field name="reconcile" eval="True"/>
+            <field name="parent_id" ref="hexa_account_202000"/>
+            <field name="note">Output VAT collected on sales, payable to tax authority.</field>
+        </record>
+
+        <record id="hexa_account_202200" model="account.account">
+            <field name="name">Income Tax Payable</field>
+            <field name="code">202200</field>
+            <field name="user_type_id" ref="hexa_account_type_liability_current"/>
+            <field name="reconcile" eval="True"/>
+            <field name="parent_id" ref="hexa_account_202000"/>
+            <field name="note">Corporate income tax provision and payments.</field>
+        </record>
+
+        <record id="hexa_account_203000" model="account.account">
+            <field name="name">Accrued Expenses</field>
+            <field name="code">203000</field>
+            <field name="user_type_id" ref="hexa_account_type_liability_current"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_200000"/>
+            <field name="note">Expenses incurred but not yet invoiced (utilities, professional fees).</field>
+        </record>
+
+        <record id="hexa_account_204000" model="account.account">
+            <field name="name">Client Prepayments</field>
+            <field name="code">204000</field>
+            <field name="user_type_id" ref="hexa_account_type_liability_current"/>
+            <field name="reconcile" eval="True"/>
+            <field name="parent_id" ref="hexa_account_200000"/>
+            <field name="note">Advance payments received before service delivery.</field>
+        </record>
+
+        <!-- 210000 — Long-term Liabilities -->
+        <record id="hexa_account_210000" model="account.account">
+            <field name="name">Long-term Liabilities</field>
+            <field name="code">210000</field>
+            <field name="user_type_id" ref="hexa_account_type_liability_non_current"/>
+            <field name="reconcile" eval="False"/>
+            <field name="note">Obligations due beyond 12 months.</field>
+        </record>
+
+        <record id="hexa_account_211000" model="account.account">
+            <field name="name">Bank Loans</field>
+            <field name="code">211000</field>
+            <field name="user_type_id" ref="hexa_account_type_liability_non_current"/>
+            <field name="reconcile" eval="True"/>
+            <field name="parent_id" ref="hexa_account_210000"/>
+            <field name="note">Term loans and credit facilities from financial institutions.</field>
+        </record>
+
+        <record id="hexa_account_212000" model="account.account">
+            <field name="name">Equipment Financing</field>
+            <field name="code">212000</field>
+            <field name="user_type_id" ref="hexa_account_type_liability_non_current"/>
+            <field name="reconcile" eval="True"/>
+            <field name="parent_id" ref="hexa_account_210000"/>
+            <field name="note">Lease liabilities and equipment purchase financing.</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- 3. EQUITY (3xxxxx)                                             -->
+        <!-- ============================================================ -->
+
+        <record id="hexa_account_300000" model="account.account">
+            <field name="name">Owner's Equity</field>
+            <field name="code">300000</field>
+            <field name="user_type_id" ref="hexa_account_type_equity"/>
+            <field name="reconcile" eval="False"/>
+            <field name="note">Ownership interest in the firm.</field>
+        </record>
+
+        <record id="hexa_account_301000" model="account.account">
+            <field name="name">Share Capital</field>
+            <field name="code">301000</field>
+            <field name="user_type_id" ref="hexa_account_type_equity"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_300000"/>
+            <field name="note">Issued and paid-up share capital.</field>
+        </record>
+
+        <record id="hexa_account_302000" model="account.account">
+            <field name="name">Retained Earnings</field>
+            <field name="code">302000</field>
+            <field name="user_type_id" ref="hexa_account_type_equity"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_300000"/>
+            <field name="note">Accumulated profits from previous years not distributed.</field>
+        </record>
+
+        <record id="hexa_account_303000" model="account.account">
+            <field name="name">Current Year Earnings</field>
+            <field name="code">303000</field>
+            <field name="user_type_id" ref="hexa_account_type_equity"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_300000"/>
+            <field name="note">Net income for the current fiscal year before closing to retained earnings.</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- 4. INCOME (4xxxxx)                                             -->
+        <!-- ============================================================ -->
+
+        <record id="hexa_account_400000" model="account.account">
+            <field name="name">Operating Revenue</field>
+            <field name="code">400000</field>
+            <field name="user_type_id" ref="hexa_account_type_income_operating"/>
+            <field name="reconcile" eval="False"/>
+            <field name="note">Primary revenue from core business operations.</field>
+        </record>
+
+        <!-- 401000 — Design Services Revenue -->
+        <record id="hexa_account_401000" model="account.account">
+            <field name="name">Design Services Revenue</field>
+            <field name="code">401000</field>
+            <field name="user_type_id" ref="hexa_account_type_income_operating"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_400000"/>
+        </record>
+
+        <record id="hexa_account_401100" model="account.account">
+            <field name="name">Residential Design</field>
+            <field name="code">401100</field>
+            <field name="user_type_id" ref="hexa_account_type_income_operating"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_401000"/>
+            <field name="note">Revenue from residential architecture and design projects.</field>
+        </record>
+
+        <record id="hexa_account_401200" model="account.account">
+            <field name="name">Commercial Design</field>
+            <field name="code">401200</field>
+            <field name="user_type_id" ref="hexa_account_type_income_operating"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_401000"/>
+            <field name="note">Revenue from commercial, retail, and office design projects.</field>
+        </record>
+
+        <record id="hexa_account_401300" model="account.account">
+            <field name="name">Interior Design</field>
+            <field name="code">401300</field>
+            <field name="user_type_id" ref="hexa_account_type_income_operating"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_401000"/>
+            <field name="note">Revenue from interior design and space planning projects.</field>
+        </record>
+
+        <record id="hexa_account_401400" model="account.account">
+            <field name="name">Landscape Design</field>
+            <field name="code">401400</field>
+            <field name="user_type_id" ref="hexa_account_type_income_operating"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_401000"/>
+            <field name="note">Revenue from landscape architecture and outdoor design.</field>
+        </record>
+
+        <record id="hexa_account_401500" model="account.account">
+            <field name="name">Renovation Design</field>
+            <field name="code">401500</field>
+            <field name="user_type_id" ref="hexa_account_type_income_operating"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_401000"/>
+            <field name="note">Revenue from renovation and adaptive reuse projects.</field>
+        </record>
+
+        <!-- 402000 — Consulting Revenue -->
+        <record id="hexa_account_402000" model="account.account">
+            <field name="name">Consulting Revenue</field>
+            <field name="code">402000</field>
+            <field name="user_type_id" ref="hexa_account_type_income_operating"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_400000"/>
+        </record>
+
+        <record id="hexa_account_402100" model="account.account">
+            <field name="name">Feasibility Studies</field>
+            <field name="code">402100</field>
+            <field name="user_type_id" ref="hexa_account_type_income_operating"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_402000"/>
+            <field name="note">Revenue from site feasibility, zoning, and pre-design studies.</field>
+        </record>
+
+        <record id="hexa_account_402200" model="account.account">
+            <field name="name">Project Management</field>
+            <field name="code">402200</field>
+            <field name="user_type_id" ref="hexa_account_type_income_operating"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_402000"/>
+            <field name="note">Revenue from project management and owner's representation services.</field>
+        </record>
+
+        <record id="hexa_account_402300" model="account.account">
+            <field name="name">Site Supervision</field>
+            <field name="code">402300</field>
+            <field name="user_type_id" ref="hexa_account_type_income_operating"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_402000"/>
+            <field name="note">Revenue from construction administration and site observation.</field>
+        </record>
+
+        <!-- 403000 — Other Revenue -->
+        <record id="hexa_account_403000" model="account.account">
+            <field name="name">Other Revenue</field>
+            <field name="code">403000</field>
+            <field name="user_type_id" ref="hexa_account_type_income_other"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_400000"/>
+        </record>
+
+        <record id="hexa_account_403100" model="account.account">
+            <field name="name">3D Visualization Services</field>
+            <field name="code">403100</field>
+            <field name="user_type_id" ref="hexa_account_type_income_other"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_403000"/>
+            <field name="note">Revenue from standalone rendering, animation, and visualization work.</field>
+        </record>
+
+        <record id="hexa_account_403200" model="account.account">
+            <field name="name">Permit Processing</field>
+            <field name="code">403200</field>
+            <field name="user_type_id" ref="hexa_account_type_income_other"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_403000"/>
+            <field name="note">Revenue from building permit and entitlement processing services.</field>
+        </record>
+
+        <!-- 410000 — Other Income -->
+        <record id="hexa_account_410000" model="account.account">
+            <field name="name">Other Income</field>
+            <field name="code">410000</field>
+            <field name="user_type_id" ref="hexa_account_type_income_other"/>
+            <field name="reconcile" eval="False"/>
+            <field name="note">Non-operating and incidental income.</field>
+        </record>
+
+        <record id="hexa_account_411000" model="account.account">
+            <field name="name">Interest Income</field>
+            <field name="code">411000</field>
+            <field name="user_type_id" ref="hexa_account_type_income_other"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_410000"/>
+            <field name="note">Interest earned on bank deposits and investments.</field>
+        </record>
+
+        <record id="hexa_account_412000" model="account.account">
+            <field name="name">Miscellaneous Income</field>
+            <field name="code">412000</field>
+            <field name="user_type_id" ref="hexa_account_type_income_gain"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_410000"/>
+            <field name="note">Incidental income not classified elsewhere.</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- 5. EXPENSES (5xxxxx)                                          -->
+        <!-- ============================================================ -->
+
+        <!-- 500000 — Direct Project Costs -->
+        <record id="hexa_account_500000" model="account.account">
+            <field name="name">Direct Project Costs</field>
+            <field name="code">500000</field>
+            <field name="user_type_id" ref="hexa_account_type_expense_direct_cost"/>
+            <field name="reconcile" eval="False"/>
+            <field name="note">Costs directly attributable to specific client projects.</field>
+        </record>
+
+        <record id="hexa_account_501000" model="account.account">
+            <field name="name">Subcontractor Costs</field>
+            <field name="code">501000</field>
+            <field name="user_type_id" ref="hexa_account_type_expense_direct_cost"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_500000"/>
+            <field name="note">Fees paid to structural, MEP, civil, and specialty consultants.</field>
+        </record>
+
+        <record id="hexa_account_502000" model="account.account">
+            <field name="name">Materials &amp; Supplies</field>
+            <field name="code">502000</field>
+            <field name="user_type_id" ref="hexa_account_type_expense_direct_cost"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_500000"/>
+            <field name="note">Model materials, samples, presentation boards, and project supplies.</field>
+        </record>
+
+        <record id="hexa_account_503000" model="account.account">
+            <field name="name">Travel &amp; Site Visits</field>
+            <field name="code">503000</field>
+            <field name="user_type_id" ref="hexa_account_type_expense_direct_cost"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_500000"/>
+            <field name="note">Travel, accommodation, and per diem for project site visits.</field>
+        </record>
+
+        <record id="hexa_account_504000" model="account.account">
+            <field name="name">Printing &amp; Reproduction</field>
+            <field name="code">504000</field>
+            <field name="user_type_id" ref="hexa_account_type_expense_direct_cost"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_500000"/>
+            <field name="note">Large-format printing, plan reproduction, binding, and shipping.</field>
+        </record>
+
+        <!-- 510000 — Operating Expenses -->
+        <record id="hexa_account_510000" model="account.account">
+            <field name="name">Operating Expenses</field>
+            <field name="code">510000</field>
+            <field name="user_type_id" ref="hexa_account_type_expense"/>
+            <field name="reconcile" eval="False"/>
+            <field name="note">General operating and administrative expenses.</field>
+        </record>
+
+        <record id="hexa_account_511000" model="account.account">
+            <field name="name">Salaries &amp; Wages</field>
+            <field name="code">511000</field>
+            <field name="user_type_id" ref="hexa_account_type_expense_admin"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_510000"/>
+            <field name="note">Employee salaries, wages, bonuses, and payroll taxes.</field>
+        </record>
+
+        <record id="hexa_account_512000" model="account.account">
+            <field name="name">Office Rent</field>
+            <field name="code">512000</field>
+            <field name="user_type_id" ref="hexa_account_type_expense_admin"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_510000"/>
+            <field name="note">Office lease, common area maintenance, and parking.</field>
+        </record>
+
+        <record id="hexa_account_513000" model="account.account">
+            <field name="name">Utilities</field>
+            <field name="code">513000</field>
+            <field name="user_type_id" ref="hexa_account_type_expense_admin"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_510000"/>
+            <field name="note">Electricity, water, internet, and telephone.</field>
+        </record>
+
+        <record id="hexa_account_514000" model="account.account">
+            <field name="name">Software &amp; Licenses</field>
+            <field name="code">514000</field>
+            <field name="user_type_id" ref="hexa_account_type_expense_admin"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_510000"/>
+            <field name="note">CAD/BIM software, rendering tools, cloud services, SaaS subscriptions.</field>
+        </record>
+
+        <record id="hexa_account_515000" model="account.account">
+            <field name="name">Professional Fees</field>
+            <field name="code">515000</field>
+            <field name="user_type_id" ref="hexa_account_type_expense_admin"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_510000"/>
+            <field name="note">Legal, accounting, and consulting fees not related to projects.</field>
+        </record>
+
+        <record id="hexa_account_516000" model="account.account">
+            <field name="name">Marketing &amp; Advertising</field>
+            <field name="code">516000</field>
+            <field name="user_type_id" ref="hexa_account_type_expense_selling"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_510000"/>
+            <field name="note">Website, portfolio, social media, awards submissions, events.</field>
+        </record>
+
+        <record id="hexa_account_517000" model="account.account">
+            <field name="name">Insurance</field>
+            <field name="code">517000</field>
+            <field name="user_type_id" ref="hexa_account_type_expense_admin"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_510000"/>
+            <field name="note">Professional liability, general liability, property, and workers' comp.</field>
+        </record>
+
+        <record id="hexa_account_518000" model="account.account">
+            <field name="name">Office Supplies</field>
+            <field name="code">518000</field>
+            <field name="user_type_id" ref="hexa_account_type_expense_admin"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_510000"/>
+            <field name="note">Stationery, consumables, postage, and minor office equipment.</field>
+        </record>
+
+        <record id="hexa_account_519000" model="account.account">
+            <field name="name">Depreciation Expense</field>
+            <field name="code">519000</field>
+            <field name="user_type_id" ref="hexa_account_type_expense_depreciation"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_510000"/>
+            <field name="note">Systematic allocation of fixed asset costs over useful life.</field>
+        </record>
+
+        <!-- 520000 — Financial Expenses -->
+        <record id="hexa_account_520000" model="account.account">
+            <field name="name">Financial Expenses</field>
+            <field name="code">520000</field>
+            <field name="user_type_id" ref="hexa_account_type_expense"/>
+            <field name="reconcile" eval="False"/>
+            <field name="note">Costs related to financing and banking activities.</field>
+        </record>
+
+        <record id="hexa_account_521000" model="account.account">
+            <field name="name">Bank Charges</field>
+            <field name="code">521000</field>
+            <field name="user_type_id" ref="hexa_account_type_expense"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_520000"/>
+            <field name="note">Monthly account fees, wire transfer fees, and transaction charges.</field>
+        </record>
+
+        <record id="hexa_account_522000" model="account.account">
+            <field name="name">Interest Expense</field>
+            <field name="code">522000</field>
+            <field name="user_type_id" ref="hexa_account_type_expense"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_520000"/>
+            <field name="note">Interest on loans, credit lines, and equipment financing.</field>
+        </record>
+
+        <record id="hexa_account_523000" model="account.account">
+            <field name="name">Loan Processing Fees</field>
+            <field name="code">523000</field>
+            <field name="user_type_id" ref="hexa_account_type_expense_loss"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="hexa_account_520000"/>
+            <field name="note">Origination, arrangement, and processing fees for financing.</field>
+        </record>
+
+    </data>
+</odoo>

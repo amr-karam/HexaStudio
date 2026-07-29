@@ -149,6 +149,7 @@ export function XRSceneContent({
 
   // ─── Collaborator interpolation (separate root group) ──────────────────
   const collaborators = useXRStore((s) => s.collaborators);
+  const speakingPeers = useXRStore((s) => s.speakingPeers);
   const peerPositions = useRef<Map<string, { pos: Vector3; quat: Quaternion; lastSeen: number }>>(new Map());
 
   // Prune stale peers.
@@ -170,7 +171,11 @@ export function XRSceneContent({
       </group>
       <group ref={modelRootRef}>
         {Object.values(collaborators).map((peer) => (
-          <CollaboratorAvatar key={peer.id} peer={peer} />
+          <CollaboratorAvatar
+            key={peer.id}
+            peer={peer}
+            isSpeaking={speakingPeers.includes(peer.id)}
+          />
         ))}
       </group>
     </>

@@ -1,0 +1,212 @@
+# ─── HEXA Hub — Traefik Dynamic Configuration ───────────────────────────────
+# Dynamic routing rules for all HEXA Hub services.
+# HTTP routers, middlewares, and services with SSL enforcement.
+# ───────────────────────────────────────────────────────────────────────────
+
+http:
+  # ── Security Middlewares ──────────────────────────────────────────────────
+
+  middlewares:
+    # Rate limiting: 100 req/s per IP average, burst 50
+    rate-limit:
+      rateLimit:
+        average: 100
+        burst: 50
+
+    # Security headers for all responses
+    security-headers:
+      headers:
+        frameDeny: true
+        browserXssFilter: true
+        contentTypeNosniff: true
+        forceSTSHeader: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 31536000
+        customResponseHeaders:
+          X-Robots-Tag: "noindex, nofollow"
+
+    # Compress responses
+    compress:
+      compress:
+        excludedContentTypes:
+          - text/event-stream
+
+    # CORS for API
+    cors:
+      headers:
+        accessControlAllowMethods:
+          - GET
+          - POST
+          - PUT
+          - PATCH
+          - DELETE
+          - OPTIONS
+        accessControlAllowOriginList:
+          - "https://hexastudio.net"
+          - "https://hub.hexastudio.net"
+        accessControlMaxAge: 100
+        accessControlAllowCredentials: true
+        addVaryHeader: true
+
+  # ── Routers & Services ───────────────────────────────────────────────────
+
+  routers:
+    # ─ Frontend (Next.js Web App) ──────────────────────────────────────────
+    hub-web:
+      rule: "Host(`hub.hexastudio.net`) || Host(`hexastudio.net`)"
+      entryPoints:
+        - websecure
+      service: hub-web-svc
+      middlewares:
+        - security-headers
+        - compress
+      tls:
+        certResolver: cloudflare
+
+    hub-web-http:
+      rule: "Host(`hub.hexastudio.net`) || Host(`hexastudio.net`)"
+      entryPoints:
+        - web
+      service: hub-web-svc
+
+    # ─ API (NestJS Backend) ────────────────────────────────────────────────
+    hub-api:
+      rule: "Host(`api.hexastudio.net`)"
+      entryPoints:
+        - websecure
+      service: hub-api-svc
+      middlewares:
+        - security-headers
+        - rate-limit
+        - compress
+        - cors
+      tls:
+        certResolver: cloudflare
+
+    hub-api-http:
+      rule: "Host(`api.hexastudio.net`)"
+      entryPoints:
+        - web
+      service: hub-api-svc
+
+    # ─ WebSocket / Realtime ────────────────────────────────────────────────
+    hub-realtime:
+      rule: "Host(`realtime.hexastudio.net`)"
+      entryPoints:
+        - websecure
+      service: hub-realtime-svc
+      middlewares:
+        - cors
+      tls:
+        certResolver: cloudflare
+
+    # ─ CMS (Strapi 5) ─────────────────────────────────────────────────────
+    hub-cms:
+      rule: "Host(`cms.hexastudio.net`)"
+      entryPoints:
+        - websecure
+      service: hub-cms-svc
+      middlewares:
+        - security-headers
+        - compress
+      tls:
+        certResolver: cloudflare
+
+    # ─ Object Storage (MinIO Console) ──────────────────────────────────────
+    hub-minio-console:
+      rule: "Host(`minio.hexastudio.net`)"
+      entryPoints:
+        - websecure
+      service: hub-minio-console-svc
+      middlewares:
+        - security-headers
+      tls:
+        certResolver: cloudflare
+
+    # ─ MinIO S3 API ────────────────────────────────────────────────────────
+    hub-minio-api:
+      rule: "Host(`s3.hexastudio.net`)"
+      entryPoints:
+        - websecure
+      service: hub-minio-api-svc
+      tls:
+        certResolver: cloudflare
+
+    # ─ Grafana Monitoring ──────────────────────────────────────────────────
+    hub-grafana:
+      rule: "Host(`monitor.hexastudio.net`)"
+      entryPoints:
+        - websecure
+      service: hub-grafana-svc
+      middlewares:
+        - security-headers
+      tls:
+        certResolver: cloudflare
+
+  # ── Services (Backend Targets) ───────────────────────────────────────────
+
+  services:
+    hub-web-svc:
+      loadBalancer:
+        servers:
+          - url: "http://hub-web:3000"
+        healthCheck:
+          path: "/api/health"
+          interval: "30s"
+          timeout: "3s"
+
+    hub-api-svc:
+      loadBalancer:
+        servers:
+          - url: "http://hub-api:3000"
+        healthCheck:
+          path: "/health"
+          interval: "15s"
+          timeout: "3s"
+
+    hub-realtime-svc:
+      loadBalancer:
+        servers:
+          - url: "http://hub-realtime:4000"
+        sticky:
+          cookie:
+            name: "hexa_realtime"
+            httpOnly: true
+
+    hub-cms-svc:
+      loadBalancer:
+        servers:
+          - url: "http://hub-cms:1337"
+        healthCheck:
+          path: "/_health"
+          interval: "30s"
+          timeout: "3s"
+
+    hub-minio-console-svc:
+      loadBalancer:
+        servers:
+          - url: "http://hub-minio:9001"
+
+    hub-minio-api-svc:
+      loadBalancer:
+        servers:
+          - url: "http://hub-minio:9000"
+
+    hub-grafana-svc:
+      loadBalancer:
+        servers:
+          - url: "http://hub-grafana:3000"
+
+tls:
+  options:
+    default:
+      minVersion: VersionTLS12
+      cipherSuites:
+        - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+      curvePreferences:
+        - CurveP521
+        - CurveP384
+      sniStrict: true

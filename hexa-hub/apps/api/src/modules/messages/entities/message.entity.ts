@@ -25,6 +25,9 @@ export class Message {
   @Column({ nullable: true })
   fileUrl: string;
 
+  @Column({ nullable: true })
+  replyTo: string;
+
   @ManyToOne(() => User)
   sender: User;
 

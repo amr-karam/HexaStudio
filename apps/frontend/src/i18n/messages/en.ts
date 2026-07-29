@@ -184,6 +184,17 @@ export const en = {
     placeholder: 'Ask HEXA anything...',
     send: 'Send',
   },
+  aiStudio: {
+    title: 'AI Multimodal Studio',
+    subtitle: 'Leverage Gemini 3.5 Flash vision intelligence to audit architectural designs, 3D renders, and material textures.',
+    dropzone: 'Drop architectural render or floorplan',
+    analyze: 'Run Analysis',
+    analyzing: 'Analyzing via Gemini...',
+  },
+  agentStudio: {
+    title: 'Executive Agent Studio',
+    subtitle: 'Consult specialized autonomous AI personas for strategy, sales, delivery, and code review.',
+  },
   footer: {
     rights: 'All rights reserved.',
     privacy: 'Privacy Policy',

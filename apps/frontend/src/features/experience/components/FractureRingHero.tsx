@@ -81,9 +81,9 @@ export function FractureRingHero({
     }
 
     if (typeof requestIdleCallback !== 'undefined') {
-      idleId = requestIdleCallback(trigger, { timeout: 2000 });
+      idleId = requestIdleCallback(trigger, { timeout: 4000 });
     } else {
-      const timer = setTimeout(trigger, 2000);
+      const timer = setTimeout(trigger, 4000);
       idleId = timer as unknown as number;
     }
 

@@ -3,21 +3,9 @@ import { EmailJobPayload } from '@hexa-hub/types';
 import nodemailer from 'nodemailer';
 import { Logger } from '@nestjs/common';
 import { env } from '../config/env';
+import { renderTemplate } from '../templates/template-loader';
 
 const logger = new Logger('EmailProcessor');
-
-function renderTemplate(template: string, context: Record<string, unknown> = {}): string {
-  const rows = Object.entries(context)
-    .map(([key, value]) => `<li><strong>${key}</strong>: ${String(value)}</li>`)
-    .join('');
-
-  return [
-    '<div style="font-family: Arial, sans-serif; color: #1a1a1a;">',
-    `<h2>${template}</h2>`,
-    rows ? `<ul>${rows}</ul>` : '<p>You have a new notification.</p>',
-    '</div>',
-  ].join('\n');
-}
 
 export async function processEmailJob(job: Job<EmailJobPayload>): Promise<void> {
   const { to, subject, template, context } = job.data;
@@ -42,11 +30,15 @@ export async function processEmailJob(job: Job<EmailJobPayload>): Promise<void> 
 
     await job.progress(50);
 
+    // Render the HTML email from the template
+    const { html, text } = renderTemplate(template, context ?? {});
+
     await transporter.sendMail({
       from: env.smtp.from,
       to,
       subject,
-      html: renderTemplate(template, context),
+      html,
+      text,
     });
 
     await job.progress(90);

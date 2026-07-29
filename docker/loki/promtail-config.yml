@@ -38,8 +38,6 @@ scrape_configs:
       - timestamp:
           source: time
           format: RFC3339Nano
-      - drop:
-          - time
 
   - job_name: backend-logs
     static_configs:
@@ -48,7 +46,7 @@ scrape_configs:
         labels:
           job: backend
           app: hexastudio-backend
-        __path__: /var/log/backend/*.log
+          __path__: /var/log/backend/*.log
 
     pipeline_stages:
       - json:
@@ -71,7 +69,7 @@ scrape_configs:
         labels:
           job: frontend
           app: hexastudio-frontend
-        __path__: /var/log/frontend/*.log
+          __path__: /var/log/frontend/*.log
 
     pipeline_stages:
       - json:
@@ -95,7 +93,7 @@ scrape_configs:
         labels:
           job: nginx
           type: access
-        __path__: /var/log/nginx/access.log
+          __path__: /var/log/nginx/access.log
 
     pipeline_stages:
       - regex:
@@ -113,7 +111,7 @@ scrape_configs:
         labels:
           job: nginx
           type: error
-        __path__: /var/log/nginx/error.log
+          __path__: /var/log/nginx/error.log
 
     pipeline_stages:
       - regex:

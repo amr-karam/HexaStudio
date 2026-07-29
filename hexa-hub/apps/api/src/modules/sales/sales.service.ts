@@ -8,7 +8,6 @@ export class SalesService {
   constructor(private readonly odoo: OdooService) {}
 
   async getQuotations(query: { state?: string; partner_id?: number; search?: string; page?: number; limit?: number }) {
-    const domain: unknown[] = [];
     const filterDomain: unknown[] = [];
 
     if (query.state) filterDomain.push(['state', '=', query.state]);

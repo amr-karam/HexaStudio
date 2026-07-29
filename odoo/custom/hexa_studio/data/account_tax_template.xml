@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ============================================================ -->
+        <!-- VAT 15% — SALES                                               -->
+        <!-- ============================================================ -->
+        <record id="hexa_tax_vat_sales_15" model="account.tax">
+            <field name="name">VAT 15% (Sales)</field>
+            <field name="amount">15.0</field>
+            <field name="amount_type">percent</field>
+            <field name="type_tax_use">sale</field>
+            <field name="tax_group_id" ref="account.tax_group_taxes"/>
+            <field name="description">VAT-15%</field>
+            <field name="price_include" eval="False"/>
+            <field name="include_base_amount" eval="False"/>
+            <field name="is_base_affected" eval="True"/>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- VAT 15% — PURCHASES                                            -->
+        <!-- ============================================================ -->
+        <record id="hexa_tax_vat_purchase_15" model="account.tax">
+            <field name="name">VAT 15% (Purchases)</field>
+            <field name="amount">15.0</field>
+            <field name="amount_type">percent</field>
+            <field name="type_tax_use">purchase</field>
+            <field name="tax_group_id" ref="account.tax_group_taxes"/>
+            <field name="description">VAT-15%</field>
+            <field name="price_include" eval="False"/>
+            <field name="include_base_amount" eval="False"/>
+            <field name="is_base_affected" eval="True"/>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- VAT 0% — EXEMPT                                                -->
+        <!-- ============================================================ -->
+        <record id="hexa_tax_vat_exempt" model="account.tax">
+            <field name="name">VAT 0% (Exempt)</field>
+            <field name="amount">0.0</field>
+            <field name="amount_type">percent</field>
+            <field name="type_tax_use">none</field>
+            <field name="tax_group_id" ref="account.tax_group_taxes"/>
+            <field name="description">VAT-EXEMPT</field>
+            <field name="price_include" eval="False"/>
+            <field name="include_base_amount" eval="False"/>
+            <field name="is_base_affected" eval="True"/>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- VAT 0% — EXPORT                                                -->
+        <!-- ============================================================ -->
+        <record id="hexa_tax_vat_export" model="account.tax">
+            <field name="name">VAT 0% (Export)</field>
+            <field name="amount">0.0</field>
+            <field name="amount_type">percent</field>
+            <field name="type_tax_use">sale</field>
+            <field name="tax_group_id" ref="account.tax_group_taxes"/>
+            <field name="description">VAT-EXPORT</field>
+            <field name="price_include" eval="False"/>
+            <field name="include_base_amount" eval="False"/>
+            <field name="is_base_affected" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

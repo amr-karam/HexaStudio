@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useScroll } from 'framer-motion';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
@@ -65,10 +65,6 @@ export const HomeHero = () => {
   const containerRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
-
-  const { scrollYProgress } = useScroll();
-  const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.1], [1, 0.9]);
 
   // Phase 2B seam — 0→1 while the hero scrolls out of view.
   const { scrollYProgress: heroScrubProgress } = useScroll({
@@ -209,6 +205,23 @@ export const HomeHero = () => {
     };
   }, [finePointer, staticMode]);
 
+  /* ------------------------------------------------------------------ */
+  /*  Scroll-driven hero opacity (replaces framer-motion useTransform)  */
+  /* ------------------------------------------------------------------ */
+  useEffect(() => {
+    const el = contentRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const scrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const progress = Math.min(scrollY / (windowHeight * 0.1), 1);
+      el.style.opacity = String(1 - progress);
+      el.style.transform = `scale(${1 - progress * 0.1})`;
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
     <section
       ref={containerRef}
@@ -241,9 +254,8 @@ export const HomeHero = () => {
         <ChapterMarker index={1} title="Vision" />
       </div>
 
-      <motion.div
+      <div
         ref={contentRef}
-        style={{ opacity, scale }}
         className="relative z-10 text-center pointer-events-none"
       >
         <span
@@ -291,7 +303,7 @@ export const HomeHero = () => {
             </Magnetic>
           </span>
         </div>
-      </motion.div>
+      </div>
 
       {/* Scroll affordance — dismisses permanently after first scroll */}
       <ScrollCue delay={hasIntroCompleted() ? RETURN_VISIT_DELAY + 1 : 2} />

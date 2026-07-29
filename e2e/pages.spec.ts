@@ -38,7 +38,7 @@ test.describe("Home page", () => {
 
   test("displays key sections", async ({ page }) => {
     await expect(page.locator("footer")).toBeVisible();
-    await expect(page.locator("nav")).toBeVisible();
+    await expect(page.locator("nav").first()).toBeVisible();
   });
 });
 

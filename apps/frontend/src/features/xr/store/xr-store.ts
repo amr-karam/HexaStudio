@@ -18,6 +18,9 @@ interface XRActions {
   setCollabConnected: (connected: boolean) => void;
   upsertCollaborator: (peer: Collaborator) => void;
   removeCollaborator: (id: string) => void;
+  setAudioEnabled: (enabled: boolean) => void;
+  setMicMuted: (muted: boolean) => void;
+  setSpeakingPeers: (peers: string[]) => void;
   reset: () => void;
 }
 
@@ -37,6 +40,9 @@ const initialState: XRStoreState = {
   placementRotation: null,
   collaborators: {},
   collabConnected: false,
+  audioEnabled: false,
+  micMuted: false,
+  speakingPeers: [],
 };
 
 export const useXRStore = create<XRStore>((set) => ({
@@ -59,5 +65,8 @@ export const useXRStore = create<XRStore>((set) => ({
     delete next[id];
     return { collaborators: next };
   }),
+  setAudioEnabled: (audioEnabled) => set({ audioEnabled }),
+  setMicMuted: (micMuted) => set({ micMuted }),
+  setSpeakingPeers: (speakingPeers) => set({ speakingPeers }),
   reset: () => set(initialState),
 }));

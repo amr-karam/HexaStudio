@@ -39,7 +39,7 @@
       "favicon": "./assets/favicon.png"
     },
     "updates": {
-      "url": "https://u.expo.dev/00000000-0000-0000-0000-000000000000",
+      "url": "https://u.expo.dev/${EAS_PROJECT_ID}",
       "enabled": true,
       "fallbackToCacheTimeout": 30000,
       "checkAutomatically": "ON_LOAD"
@@ -67,8 +67,9 @@
       "apiUrl": "https://api.hexastudio.net",
       "cmsUrl": "https://cms.hexastudio.net",
       "eas": {
-        "projectId": "00000000-0000-0000-0000-000000000000"
+        "projectId": "${EAS_PROJECT_ID}"
       }
-    }
+    },
+    "description": "See scripts/eas-build-setup.md for EAS project setup, credential configuration, and CI/CD variable setup."
   }
 }

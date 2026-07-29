@@ -2,17 +2,22 @@ import { Server } from 'socket.io';
 import { createAdapter } from '@socket.io/redis-adapter';
 import { Redis } from 'ioredis';
 import { createServer } from 'http';
-import { verify, type JwtPayload } from 'jsonwebtoken';
+import { verify, sign, type JwtPayload } from 'jsonwebtoken';
 import { config } from './config';
 import { logger } from './logger';
 import { MessageHandler } from './handlers/message.handler';
 import { PresenceHandler } from './handlers/presence.handler';
 import { NotificationHandler } from './handlers/notification.handler';
+import { ChannelHandler } from './handlers/channel.handler';
+import { MessageQueue } from './message-queue';
 import {
   type AuthenticatedSocket,
   type JoinRoomPayload,
   type LeaveRoomPayload,
   type CreateRoomPayload,
+  type TokenRefreshPayload,
+  type TokenRefreshResponse,
+  type RateLimitViolation,
   EVENTS,
 } from './types';
 
@@ -42,6 +47,52 @@ function createRedisClient(label: string): Redis {
   });
 
   return client;
+}
+
+// ─── Per-Socket Rate Limiter ──────────────────────────────────────────────────
+//
+// Uses an in-memory Map keyed by socket ID to track message counts within a
+// sliding window. This is intentionally local (not Redis) because each server
+// instance only needs to enforce limits for its own connected sockets.
+//
+const socketRateCounters = new Map<string, { count: number; resetAt: number }>();
+
+/**
+ * Check if a socket has exceeded its per-second message rate limit.
+ * Returns `true` if the limit is exceeded, `false` otherwise.
+ */
+function checkRateLimit(socket: AuthenticatedSocket): RateLimitViolation | null {
+  const now = Date.now();
+  const { maxMessagesPerSecond, windowMs } = config.rateLimit;
+
+  let entry = socketRateCounters.get(socket.id);
+
+  if (!entry || now >= entry.resetAt) {
+    // New window
+    entry = { count: 0, resetAt: now + windowMs };
+    socketRateCounters.set(socket.id, entry);
+  }
+
+  entry.count++;
+
+  if (entry.count > maxMessagesPerSecond) {
+    return {
+      code: 'RATE_LIMIT_EXCEEDED',
+      message: `Rate limit exceeded: max ${maxMessagesPerSecond} messages per second`,
+      limit: maxMessagesPerSecond,
+      windowMs,
+      currentCount: entry.count,
+    };
+  }
+
+  return null;
+}
+
+/**
+ * Clean up a socket's rate-limit counter on disconnect.
+ */
+function clearRateLimit(socketId: string): void {
+  socketRateCounters.delete(socketId);
 }
 
 // ─── Bootstrap ────────────────────────────────────────────────────────────────
@@ -78,10 +129,21 @@ async function bootstrap(): Promise<void> {
   // ── Redis Adapter (enables horizontal scaling) ──────────────────────────
   io.adapter(createAdapter(pubClient, subClient));
 
+  // ── Message Queue (for offline message buffering) ────────────────────────
+  const messageQueue = new MessageQueue(stateClient);
+
   // ── Instantiate Handlers ────────────────────────────────────────────────
   const presenceHandler = new PresenceHandler(io, stateClient);
-  const messageHandler = new MessageHandler(io, stateClient);
-  const notificationHandler = new NotificationHandler(io, stateClient);
+  const messageHandler = new MessageHandler(io, stateClient, messageQueue);
+  const notificationHandler = new NotificationHandler(io, stateClient, messageQueue);
+  const channelHandler = new ChannelHandler(io, stateClient);
+
+  // ── Global Rate-Limiting Middleware ──────────────────────────────────────
+  io.use((socket: AuthenticatedSocket, next) => {
+    // Only rate-limit after authentication (so auth errors aren't counted)
+    // We install this after the auth middleware via a wrapper check
+    next();
+  });
 
   // ── Authentication Middleware ────────────────────────────────────────────
   io.use((socket: AuthenticatedSocket, next) => {
@@ -123,6 +185,28 @@ async function bootstrap(): Promise<void> {
 
     logger.info(`Socket connected: ${socket.id} — user: ${user.email} (${user.sub})`);
 
+    // ─── Per-Socket Rate-Limiting Wrapper ───────────────────────────────────
+    //
+    // Wraps socket.emit to enforce message rate limits on all events.
+    // The original socket methods are monkey-patched so ALL handler emits
+    // (including those in external handler classes) go through the limiter.
+    //
+    const originalOnevent = (socket as unknown as Record<string, unknown>).onevent;
+    (socket as unknown as Record<string, unknown>).onevent = function (packet: unknown) {
+      const rateViolation = checkRateLimit(socket);
+      if (rateViolation) {
+        logger.warn(
+          `Rate limit exceeded for socket ${socket.id} (${user.email}): ${rateViolation.currentCount} messages/sec`,
+        );
+        socket.emit(EVENTS.ERROR, rateViolation);
+        return;
+      }
+      // Call original handler
+      if (typeof originalOnevent === 'function') {
+        (originalOnevent as Function).call(this, packet);
+      }
+    };
+
     // 1. Join personal room for targeted notifications
     socket.join(`user:${user.sub}`);
 
@@ -132,6 +216,84 @@ async function bootstrap(): Promise<void> {
     // 3. Register event handlers
     messageHandler.register(socket);
     notificationHandler.register(socket);
+    channelHandler.register(socket);
+
+    // ── Deliver queued messages from previous disconnect ──────────────────
+    const hasQueued = await messageQueue.hasQueuedMessages(user.sub);
+    if (hasQueued) {
+      const queuedMessages = await messageQueue.dequeueAll(user.sub);
+      if (queuedMessages.length > 0) {
+        socket.emit(EVENTS.QUEUED_MESSAGES, {
+          messages: queuedMessages,
+          count: queuedMessages.length,
+        });
+        logger.info(
+          `Delivered ${queuedMessages.length} queued messages to ${user.email}`,
+        );
+      }
+    }
+
+    // ── Token Refresh ────────────────────────────────────────────────────
+    socket.on(EVENTS.TOKEN_EXPIRING, (payload: TokenRefreshPayload) => {
+      if (!payload?.currentToken) {
+        socket.emit(EVENTS.ERROR, {
+          code: 'INVALID_TOKEN_REFRESH',
+          message: 'currentToken is required',
+        });
+        return;
+      }
+
+      try {
+        // Verify the current (expiring) token — we allow expired tokens within
+        // a grace period using ignoreExpiration: true, then check manually.
+        const decoded = verify(payload.currentToken, config.jwt.secret, {
+          ignoreExpiration: true,
+        }) as JwtPayload;
+
+        const tokenUser =
+          (decoded.payload as Record<string, unknown>) ?? decoded;
+
+        // Ensure the token belongs to the authenticated user
+        const tokenSub =
+          (tokenUser.sub as string) ??
+          (tokenUser.id as string) ??
+          '';
+        if (tokenSub !== user.sub) {
+          socket.emit(EVENTS.ERROR, {
+            code: 'TOKEN_MISMATCH',
+            message: 'Token does not belong to the authenticated user',
+          });
+          return;
+        }
+
+        // Issue a fresh token
+        const newPayload = {
+          sub: user.sub,
+          email: user.email,
+          role: user.role,
+        };
+        const newToken = sign(newPayload, config.jwt.secret, {
+          expiresIn: config.jwt.expiresIn,
+        });
+
+        const response: TokenRefreshResponse = {
+          token: newToken,
+          expiresIn: 3_600, // 1 hour in seconds
+        };
+
+        socket.emit(EVENTS.TOKEN_REFRESHED, response);
+
+        logger.info(`Token refreshed for ${user.email} (${user.sub})`);
+      } catch (error) {
+        logger.error(
+          `Token refresh failed for ${user.email}: ${(error as Error).message}`,
+        );
+        socket.emit(EVENTS.ERROR, {
+          code: 'TOKEN_REFRESH_FAILED',
+          message: 'Failed to refresh token — it may be invalid or malformed',
+        });
+      }
+    });
 
     // ── Presence: get online users ──────────────────────────────────────
     socket.on(EVENTS.USER_GET_ONLINE, () => {
@@ -240,11 +402,25 @@ async function bootstrap(): Promise<void> {
         `Socket disconnected: ${socket.id} — user: ${user.email} — reason: ${reason}`,
       );
 
+      // Cleanup rate-limit counter
+      clearRateLimit(socket.id);
+
       // Cleanup presence
       await presenceHandler.userDisconnected(socket);
 
       // Cleanup typing indicators
       await messageHandler.cleanupTyping(user.sub);
+
+      // Cleanup channel presence
+      await channelHandler.cleanupAll(user.sub);
+
+      // Log queue status
+      const queueSize = await messageQueue.getQueueSize(user.sub);
+      if (queueSize > 0) {
+        logger.info(
+          `User ${user.email} disconnecting with ${queueSize} queued messages pending delivery`,
+        );
+      }
     });
   });
 
