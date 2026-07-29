@@ -11,17 +11,20 @@ import {
   EVENTS,
 } from '../types';
 import { logger } from '../logger';
+import type { MessageQueue } from '../message-queue';
 
 /**
  * Message Handler
  *
  * Handles all messaging events: send, read receipts, and typing indicators.
  * Emits events to conversation rooms and tracks unread counts in Redis.
+ * Queues messages for offline recipients for delivery on reconnect.
  */
 export class MessageHandler {
   constructor(
     private readonly io: Server,
     private readonly redis: Redis,
+    private readonly messageQueue: MessageQueue,
   ) {}
 
   register(socket: AuthenticatedSocket): void {
@@ -69,6 +72,7 @@ export class MessageHandler {
 
   /**
    * Handles `message:send` — validates, emits to conversation room, acks to sender.
+   * If the recipient is offline, the message is queued for delivery on reconnect.
    */
   private async handleSend(
     socket: AuthenticatedSocket,
@@ -105,6 +109,23 @@ export class MessageHandler {
     // Increment unread count for the recipient
     const unreadKey = REDIS_KEYS.UNREAD_COUNTS(payload.recipientId, payload.conversationId);
     await this.redis.incr(unreadKey);
+
+    // Check if recipient is online; if not, queue the message
+    const isRecipientOnline = await this.redis.sismember(
+      REDIS_KEYS.ONLINE_USERS,
+      payload.recipientId,
+    );
+
+    if (!isRecipientOnline) {
+      await this.messageQueue.enqueue(payload.recipientId, {
+        event: EVENTS.MESSAGE_RECEIVED,
+        payload: messageEvent,
+      });
+
+      logger.info(
+        `Message ${serverMessageId} queued for offline recipient ${payload.recipientId}`,
+      );
+    }
 
     // Acknowledge to the sender
     const ack: MessageAcknowledgement = {

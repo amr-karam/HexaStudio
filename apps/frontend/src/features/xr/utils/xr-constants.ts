@@ -27,4 +27,10 @@ export interface XRStoreState {
   placementRotation: { x: number; y: number; z: number; w: number } | null;
   collaborators: Record<string, Collaborator>;
   collabConnected: boolean;
+  /** WebRTC: whether the local microphone audio stream is active */
+  audioEnabled: boolean;
+  /** WebRTC: whether the local microphone is muted */
+  micMuted: boolean;
+  /** WebRTC: socket IDs of peers currently detected as speaking */
+  speakingPeers: string[];
 }

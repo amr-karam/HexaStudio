@@ -30,6 +30,39 @@ interface ApprovalEvent {
   userId: string;
 }
 
+/** Payload for relaying a WebRTC SDP offer. */
+interface WebRTCOfferPayload {
+  projectId: string;
+  sdp: RTCSessionDescriptionInit;
+  /** Optional — if omitted, the offer is broadcast to all peers in the room. */
+  targetPeerId?: string;
+}
+
+/** Payload for relaying a WebRTC SDP answer. */
+interface WebRTCAnswerPayload {
+  projectId: string;
+  sdp: RTCSessionDescriptionInit;
+  targetPeerId: string;
+}
+
+/** Payload for relaying an ICE candidate (trickle ICE). */
+interface WebRTCIceCandidatePayload {
+  projectId: string;
+  candidate: RTCIceCandidateInit;
+  targetPeerId: string;
+}
+
+/** Payload for signalling a peer wants to establish WebRTC media. */
+interface WebRTCPeerJoinPayload {
+  projectId: string;
+  mediaType: 'audio' | 'audio-video';
+}
+
+/** Payload for signalling a peer is leaving WebRTC media. */
+interface WebRTCPeerLeavePayload {
+  projectId: string;
+}
+
 @WebSocketGateway({
   cors: { origin: '*', credentials: true },
   namespace: '/realtime',
@@ -154,5 +187,143 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
     client.to(room).emit('collab:peer-left', { id: client.id });
     this.eventBus.emit('collab:leave', { projectId: payload.projectId, id: client.id });
     return { event: 'collab:left', data: { id: client.id } };
+  }
+
+  // ---------------------------------------------------------------------------
+  // WebRTC Signaling Handlers
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Relays a WebRTC SDP offer from one peer to another (or all peers) in the
+   * same project room.
+   *
+   * When `targetPeerId` is provided the offer is forwarded only to that
+   * specific peer.  Otherwise it is broadcast to every other peer in the room.
+   *
+   * Receiving clients will get a `webrtc:offer` event with
+   * `{ sdp: RTCSessionDescriptionInit, peerId: string }`.
+   */
+  @SubscribeMessage('webrtc:offer')
+  handleWebRTCOffer(client: Socket, payload: WebRTCOfferPayload): void {
+    const room = `project:${payload.projectId}`;
+    const offerData = { sdp: payload.sdp, peerId: client.id };
+
+    if (payload.targetPeerId) {
+      client.to(payload.targetPeerId).emit('webrtc:offer', offerData);
+      this.logger.debug(
+        `WebRTC offer relayed from ${client.id} to target ${payload.targetPeerId}`,
+      );
+    } else {
+      client.to(room).emit('webrtc:offer', offerData);
+      this.logger.debug(
+        `WebRTC offer broadcast from ${client.id} in room ${room}`,
+      );
+    }
+
+    this.eventBus.emit('webrtc:offer', {
+      projectId: payload.projectId,
+      peerId: client.id,
+      targetPeerId: payload.targetPeerId ?? null,
+    });
+  }
+
+  /**
+   * Relays a WebRTC SDP answer back to the offerer.
+   *
+   * The receiving client will get a `webrtc:answer` event with
+   * `{ sdp: RTCSessionDescriptionInit, peerId: string }`.
+   */
+  @SubscribeMessage('webrtc:answer')
+  handleWebRTCAnswer(client: Socket, payload: WebRTCAnswerPayload): void {
+    client.to(payload.targetPeerId).emit('webrtc:answer', {
+      sdp: payload.sdp,
+      peerId: client.id,
+    });
+
+    this.logger.debug(
+      `WebRTC answer relayed from ${client.id} to ${payload.targetPeerId}`,
+    );
+
+    this.eventBus.emit('webrtc:answer', {
+      projectId: payload.projectId,
+      peerId: client.id,
+      targetPeerId: payload.targetPeerId,
+    });
+  }
+
+  /**
+   * Relays an ICE candidate between peers (trickle ICE).
+   *
+   * The receiving client will get a `webrtc:ice-candidate` event with
+   * `{ candidate: RTCIceCandidateInit, peerId: string }`.
+   */
+  @SubscribeMessage('webrtc:ice-candidate')
+  handleWebRTCIceCandidate(client: Socket, payload: WebRTCIceCandidatePayload): void {
+    client.to(payload.targetPeerId).emit('webrtc:ice-candidate', {
+      candidate: payload.candidate,
+      peerId: client.id,
+    });
+
+    this.logger.debug(
+      `WebRTC ICE candidate relayed from ${client.id} to ${payload.targetPeerId}`,
+    );
+
+    this.eventBus.emit('webrtc:ice-candidate', {
+      projectId: payload.projectId,
+      peerId: client.id,
+      targetPeerId: payload.targetPeerId,
+    });
+  }
+
+  /**
+   * Signals that a peer wants to establish WebRTC media in the project room.
+   *
+   * Existing peers (excluding the sender) are notified so they can initiate
+   * or accept a peer connection.  Receiving clients get a `webrtc:peer-joined`
+   * event with `{ peerId: string, mediaType: 'audio' | 'audio-video' }`.
+   */
+  @SubscribeMessage('webrtc:peer-join')
+  handleWebRTCPeerJoin(client: Socket, payload: WebRTCPeerJoinPayload): void {
+    const room = `project:${payload.projectId}`;
+
+    client.to(room).emit('webrtc:peer-joined', {
+      peerId: client.id,
+      mediaType: payload.mediaType,
+    });
+
+    this.logger.debug(
+      `WebRTC peer ${client.id} joined (media: ${payload.mediaType}) in room ${room}`,
+    );
+
+    this.eventBus.emit('webrtc:peer-join', {
+      projectId: payload.projectId,
+      peerId: client.id,
+      mediaType: payload.mediaType,
+    });
+  }
+
+  /**
+   * Signals that a peer is disconnecting from WebRTC media.
+   *
+   * Remaining peers in the room (excluding the sender) are notified so they
+   * can clean up their RTCPeerConnection.  Receiving clients get a
+   * `webrtc:peer-left` event with `{ peerId: string }`.
+   */
+  @SubscribeMessage('webrtc:peer-leave')
+  handleWebRTCPeerLeave(client: Socket, payload: WebRTCPeerLeavePayload): void {
+    const room = `project:${payload.projectId}`;
+
+    client.to(room).emit('webrtc:peer-left', {
+      peerId: client.id,
+    });
+
+    this.logger.debug(
+      `WebRTC peer ${client.id} left media in room ${room}`,
+    );
+
+    this.eventBus.emit('webrtc:peer-leave', {
+      projectId: payload.projectId,
+      peerId: client.id,
+    });
   }
 }

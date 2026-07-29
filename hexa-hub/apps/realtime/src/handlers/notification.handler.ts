@@ -8,17 +8,21 @@ import {
   EVENTS,
 } from '../types';
 import { logger } from '../logger';
+import type { MessageQueue } from '../message-queue';
 
 /**
  * Notification Handler
  *
  * Manages real-time notification delivery and read-state tracking.
  * Uses Redis to maintain per-user notification counts.
+ * When the target user is offline, notifications are queued for delivery
+ * on their next connection.
  */
 export class NotificationHandler {
   constructor(
     private readonly io: Server,
     private readonly redis: Redis,
+    private readonly messageQueue: MessageQueue,
   ) {}
 
   register(socket: AuthenticatedSocket): void {
@@ -33,7 +37,7 @@ export class NotificationHandler {
 
   /**
    * Push a notification to a user's personal room.
-   * Called by external services or internal logic.
+   * If the user is offline, the notification is queued for delivery on reconnect.
    */
   async pushToUser(payload: NotificationPayload): Promise<void> {
     const { userId, type, title, body, data } = payload;
@@ -58,13 +62,29 @@ export class NotificationHandler {
     const countKey = REDIS_KEYS.NOTIFICATION_COUNTS(userId);
     const newCount = await this.redis.incr(countKey);
 
-    // Push to user's personal room
-    this.io.to(`user:${userId}`).emit(EVENTS.NOTIFICATION_PUSHED, {
+    const enrichedEvent = {
       ...notificationEvent,
       unreadCount: newCount,
-    });
+    };
 
-    logger.info(`Notification pushed to user:${userId} — type: ${type}, count: ${newCount}`);
+    // Check if the user is currently online
+    const isOnline = await this.redis.sismember(REDIS_KEYS.ONLINE_USERS, userId);
+
+    if (isOnline) {
+      // Push to user's personal room in real-time
+      this.io.to(`user:${userId}`).emit(EVENTS.NOTIFICATION_PUSHED, enrichedEvent);
+      logger.info(`Notification pushed to user:${userId} — type: ${type}, count: ${newCount}`);
+    } else {
+      // User is offline — queue the notification for delivery on reconnect
+      await this.messageQueue.enqueue(userId, {
+        event: EVENTS.NOTIFICATION_PUSHED,
+        payload: enrichedEvent,
+      });
+
+      logger.info(
+        `Notification queued for offline user:${userId} — type: ${type}, queue size: ${await this.messageQueue.getQueueSize(userId)}`,
+      );
+    }
   }
 
   /**

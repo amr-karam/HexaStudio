@@ -209,6 +209,23 @@ export class OdooService implements OnModuleInit {
     );
   }
 
+  /**
+   * Execute a `search_count` call on a model.
+   * Returns the total number of records matching the domain.
+   */
+  async searchCount(model: string, domain: unknown[] = []): Promise<number> {
+    return this.execute<number>(model, 'search_count', [domain]);
+  }
+
+  // ─── Timesheets ─────────────────────────────────────────────────────────
+
+  /**
+   * Search and read timesheet entries (account.analytic.line).
+   */
+  async getTimesheets(domain: unknown[] = [], fields: string[] = []): Promise<Record<string, unknown>[]> {
+    return this.searchRead('account.analytic.line', domain, fields);
+  }
+
   getCircuitState(): string {
     return this.circuitState;
   }

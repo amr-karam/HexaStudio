@@ -396,4 +396,59 @@ Return as JSON with: detectedElements[{type, count, confidence}], viewType, scal
       throw error;
     }
   }
+
+  /**
+   * Generate AI architectural project brief from parameters
+   */
+  async generateArchitecturalBrief(params: {
+    projectType: string;
+    squareFootage: number;
+    stylePreference: string;
+    sustainabilityGoals: string;
+    budgetRange: string;
+  }): Promise<{
+    executiveSummary: string;
+    spatialRequirements: Array<{ space: string; areaSqFt: number; notes: string }>;
+    recommendedMaterials: string[];
+    estimatedTimelineMonths: number;
+    sustainabilityScoreEstimate: number;
+  }> {
+    if (!this.client) {
+      throw new Error('Gemini API is unavailable');
+    }
+
+    try {
+      const response = await this.client.models.generateContent({
+        model: 'gemini-3.5-flash',
+        contents: [
+          {
+            role: 'user',
+            parts: [
+              {
+                text: `Generate a comprehensive architectural project brief for a project with these parameters:
+- Project Type: ${params.projectType}
+- Square Footage: ${params.squareFootage} sq ft
+- Style Preference: ${params.stylePreference}
+- Sustainability Goals: ${params.sustainabilityGoals}
+- Budget Range: ${params.budgetRange}
+
+Return as JSON with: executiveSummary, spatialRequirements[{space, areaSqFt, notes}], recommendedMaterials[], estimatedTimelineMonths, sustainabilityScoreEstimate (0-1)`
+              }
+            ]
+          }
+        ] as Content[],
+        config: {
+          temperature: 0.4,
+          maxOutputTokens: 1200,
+          responseMimeType: 'application/json'
+        }
+      });
+
+      const text = response.text ?? '';
+      return JSON.parse(text);
+    } catch (error) {
+      this.logger.error(`Architectural brief generation failed: ${error}`);
+      throw error;
+    }
+  }
 }

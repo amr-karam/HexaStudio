@@ -61,7 +61,9 @@ type IconName =
   | 'milestone'
   | 'box'
   | 'credit-card'
-  | 'kanban';
+  | 'kanban'
+  | 'camera'
+  | 'mic';
 
 interface IconProps {
   name: IconName;
@@ -383,6 +385,20 @@ const ICON_PATHS: Record<IconName, React.ReactNode> = {
       <rect x="3" y="3" width="5" height="18" rx="1" />
       <rect x="11" y="3" width="5" height="12" rx="1" />
       <rect x="19" y="3" width="2" height="6" rx="1" />
+    </>
+  ),
+  camera: (
+    <>
+      <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+      <circle cx="12" cy="13" r="3" />
+    </>
+  ),
+  mic: (
+    <>
+      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+      <line x1="12" y1="19" x2="12" y2="23" />
+      <line x1="8" y1="23" x2="16" y2="23" />
     </>
   ),
 };

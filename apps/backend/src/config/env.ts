@@ -66,6 +66,9 @@ const envSchema = z.object({
     .url()
     .default('https://open.er-api.com/v6/latest/USD'),
 
+  // Expo Push Notifications (optional — used without auth for lower rate limits)
+  EXPO_ACCESS_TOKEN: z.string().optional(),
+
   // Webhook Retry Queue
   WEBHOOK_RETRY_MAX_ATTEMPTS: z.coerce.number().default(5),
   WEBHOOK_RETRY_BACKOFF_MS: z.coerce.number().default(60_000),

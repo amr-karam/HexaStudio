@@ -89,9 +89,14 @@ export class CrmService {
     const totalRevenue = allLeads.reduce((sum, l) => sum + ((l.planned_revenue as number) || 0), 0);
 
     const bySource: Record<string, number> = {};
+    const byStage: Record<string, number> = {};
     for (const lead of allLeads) {
       const src = (lead.x_hexa_source as string) || 'unknown';
       bySource[src] = (bySource[src] || 0) + 1;
+
+      const stage = lead.stage_id as [number, string] | undefined | null;
+      const stageName = stage?.[1] || 'unknown';
+      byStage[stageName] = (byStage[stageName] || 0) + 1;
     }
 
     const wonLeads = allLeads.filter((l) => {
@@ -110,6 +115,7 @@ export class CrmService {
       conversion_rate: Math.round(conversionRate * 100) / 100,
       average_deal_size: Math.round(averageDealSize * 100) / 100,
       leads_by_source: bySource,
+      leads_by_stage: byStage,
     };
   }
 }

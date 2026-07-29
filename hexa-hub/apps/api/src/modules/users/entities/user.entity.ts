@@ -21,6 +21,12 @@ export class User {
   @Column({ default: true })
   isActive: boolean;
 
+  @Column({ type: 'varchar', nullable: true, select: false })
+  twoFactorSecret: string | null;
+
+  @Column({ type: 'boolean', default: false })
+  twoFactorEnabled: boolean;
+
   @CreateDateColumn()
   createdAt: Date;
 

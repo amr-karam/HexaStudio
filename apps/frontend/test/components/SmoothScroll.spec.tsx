@@ -83,7 +83,7 @@ describe('SmoothScroll', () => {
     expect(hoisted.lenisConstructed.count).toBe(0);
   });
 
-  it('initializes Lenis when animations are enabled', () => {
+  it('initializes Lenis when animations are enabled', async () => {
     hoisted.reducedMotion.value = false;
     hoisted.paused.value = false;
     render(
@@ -91,6 +91,8 @@ describe('SmoothScroll', () => {
         <p>Scroll content</p>
       </SmoothScroll>,
     );
-    expect(hoisted.lenisConstructed.count).toBe(1);
+    await vi.waitFor(() => {
+      expect(hoisted.lenisConstructed.count).toBe(1);
+    });
   });
 });

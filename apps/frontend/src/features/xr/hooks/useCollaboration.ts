@@ -84,5 +84,7 @@ export function useCollaboration(projectId: string | null, user: string, mode: '
     [projectId],
   );
 
-  return { sendCursor };
+  const getSocket = useCallback(() => socketRef.current, []);
+
+  return { sendCursor, getSocket };
 }

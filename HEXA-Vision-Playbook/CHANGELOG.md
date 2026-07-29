@@ -1,7 +1,38 @@
 # Playbook Changelog
 
 **Version:** 1.0.4  
-**Last Updated:** 2026-07-20
+**Last Updated:** 2026-07-29
+
+---
+
+## [1.9.0] - 2026-07-29
+
+### Sprint 20 — AI Multimodal & App Store Release
+
+Delivered the Gemini Multimodal integration (vision analysis, voice transcription, multimodal Portal Copilot), EAS Build configuration for iOS/Android app store submission with mobile CI/CD pipeline, WebRTC real-time audio signaling for multi-user VR collaboration, and the backend push notification service deferred from S-019.
+
+#### Added
+- Gemini Vision automated tagging pipeline (`auto-tag-vision.service.ts`)
+- MinIO upload → Gemini Vision analysis pipeline with Redis caching (`minio-vision.listener.ts`)
+- Voice transcription service (`voice.service.ts`)
+- Multimodal Portal Copilot with image upload (drag-drop preview) and Web Speech API voice input
+- `POST copilot/multimodal-query` backend endpoint + Next.js proxy route
+- EAS Build configuration for iOS (TestFlight) and Android (Internal Track) app store submission
+- Mobile CI/CD pipeline in GitLab (`mobile-typecheck`, `mobile-test`, `build-mobile`, `submit-mobile`)
+- EAS project setup guide (`scripts/eas-build-setup.md`)
+- WebRTC signaling (5 Socket.IO handlers) for multi-user VR audio
+- `useWebRTC` hook for P2P audio in VR collaboration
+- `MediaControls` floating mic/speaking/quality panel
+- Speaking peer indicator (pulsing ring on `CollaboratorAvatar`)
+- `MobilePushService` for Expo Push API delivery with domain helpers
+- Push error handling: `DeviceNotRegistered` token cleanup from Redis
+- `CopilotMessage` types extended with `imageUrl` and `isProcessing`
+
+#### Quality
+- Frontend typecheck: 0 errors · Backend typecheck: 0 errors · Mobile typecheck: 0 errors
+- Frontend lint: 0 errors · Backend lint: 0 errors · Mobile lint: 0 errors
+- Backend tests: 285/285 · Frontend tests: 176/176 · Mobile tests: 25/25
+- Production runtime vulnerabilities: 0 critical, 0 high ✅
 
 ---
 

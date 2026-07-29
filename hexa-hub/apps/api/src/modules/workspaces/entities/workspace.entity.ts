@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Task } from './task.entity';
+import { Channel } from '../../channels/entities/channel.entity';
 
 @Entity('workspaces')
 export class Workspace {
@@ -27,6 +28,9 @@ export class Workspace {
 
   @OneToMany(() => Task, (task) => task.workspace)
   tasks: Task[];
+
+  @OneToMany(() => Channel, (channel) => channel.workspace)
+  channels: Channel[];
 
   @CreateDateColumn()
   createdAt: Date;

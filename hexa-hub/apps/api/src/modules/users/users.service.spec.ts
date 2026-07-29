@@ -16,6 +16,8 @@ describe('UsersService', () => {
     fullName: 'Amr Mohamed',
     role: UserRole.EMPLOYEE,
     isActive: true,
+    twoFactorSecret: null,
+    twoFactorEnabled: false,
     createdAt: new Date('2026-01-01'),
     updatedAt: new Date('2026-01-01'),
   };

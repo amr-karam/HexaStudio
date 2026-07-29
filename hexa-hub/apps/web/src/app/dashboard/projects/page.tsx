@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import React, { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
@@ -17,7 +19,7 @@ import {
   Clock,
   Briefcase,
 } from 'lucide-react';
-import { OdooProject, ProjectType, ProjectStatus } from '@hexa-hub/types';
+import type { OdooProject, ProjectStatus } from '@hexa-hub/types';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -44,93 +46,42 @@ const TYPE_CONFIG: Record<
   string,
   { label: string; bg: string; text: string }
 > = {
-  [ProjectType.RESIDENTIAL]: {
-    label: 'Residential',
-    bg: 'bg-violet-500/10',
-    text: 'text-violet-400',
-  },
-  [ProjectType.COMMERCIAL]: {
-    label: 'Commercial',
-    bg: 'bg-blue-500/10',
-    text: 'text-blue-400',
-  },
-  [ProjectType.INTERIOR]: {
-    label: 'Interior',
-    bg: 'bg-amber-500/10',
-    text: 'text-amber-400',
-  },
-  [ProjectType.LANDSCAPE]: {
-    label: 'Landscape',
-    bg: 'bg-emerald-500/10',
-    text: 'text-emerald-400',
-  },
+  residential: { label: 'Residential', bg: 'bg-violet-500/10', text: 'text-violet-400' },
+  commercial: { label: 'Commercial', bg: 'bg-blue-500/10', text: 'text-blue-400' },
+  interior: { label: 'Interior', bg: 'bg-amber-500/10', text: 'text-amber-400' },
+  landscape: { label: 'Landscape', bg: 'bg-emerald-500/10', text: 'text-emerald-400' },
 };
 
 const STATUS_CONFIG: Record<
   string,
   { label: string; bg: string; text: string; dot: string }
 > = {
-  [ProjectStatus.INQUIRY]: {
-    label: 'Inquiry',
-    bg: 'bg-neutral-500/10',
-    text: 'text-neutral-400',
-    dot: 'bg-neutral-400',
-  },
-  [ProjectStatus.CONSULTATION]: {
-    label: 'Consultation',
-    bg: 'bg-blue-500/10',
-    text: 'text-blue-400',
-    dot: 'bg-blue-400',
-  },
-  [ProjectStatus.PROPOSAL]: {
-    label: 'Proposal',
-    bg: 'bg-[#D4A843]/10',
-    text: 'text-[#D4A843]',
-    dot: 'bg-[#D4A843]',
-  },
-  [ProjectStatus.ACTIVE]: {
-    label: 'Active',
-    bg: 'bg-emerald-500/10',
-    text: 'text-emerald-400',
-    dot: 'bg-emerald-400',
-  },
-  [ProjectStatus.ON_HOLD]: {
-    label: 'On Hold',
-    bg: 'bg-orange-500/10',
-    text: 'text-orange-400',
-    dot: 'bg-orange-400',
-  },
-  [ProjectStatus.COMPLETED]: {
-    label: 'Completed',
-    bg: 'bg-green-500/10',
-    text: 'text-green-400',
-    dot: 'bg-green-400',
-  },
-  [ProjectStatus.ARCHIVED]: {
-    label: 'Archived',
-    bg: 'bg-neutral-500/5',
-    text: 'text-neutral-600',
-    dot: 'bg-neutral-600',
-  },
+  inquiry: { label: 'Inquiry', bg: 'bg-neutral-500/10', text: 'text-neutral-400', dot: 'bg-neutral-400' },
+  consultation: { label: 'Consultation', bg: 'bg-blue-500/10', text: 'text-blue-400', dot: 'bg-blue-400' },
+  proposal: { label: 'Proposal', bg: 'bg-[#D4A843]/10', text: 'text-[#D4A843]', dot: 'bg-[#D4A843]' },
+  active: { label: 'Active', bg: 'bg-emerald-500/10', text: 'text-emerald-400', dot: 'bg-emerald-400' },
+  on_hold: { label: 'On Hold', bg: 'bg-amber-500/10', text: 'text-amber-400', dot: 'bg-amber-400' },
+  completed: { label: 'Completed', bg: 'bg-violet-500/10', text: 'text-violet-400', dot: 'bg-violet-400' },
+  archived: { label: 'Archived', bg: 'bg-neutral-800', text: 'text-neutral-500', dot: 'bg-neutral-600' },
 };
 
-const TYPE_OPTIONS: { value: ProjectType | ''; label: string }[] = [
+const TYPE_OPTIONS: { value: string; label: string }[] = [
   { value: '', label: 'All Types' },
-  { value: ProjectType.RESIDENTIAL, label: 'Residential' },
-  { value: ProjectType.COMMERCIAL, label: 'Commercial' },
-  { value: ProjectType.INTERIOR, label: 'Interior' },
-  { value: ProjectType.LANDSCAPE, label: 'Landscape' },
+  { value: 'residential', label: 'Residential' },
+  { value: 'commercial', label: 'Commercial' },
+  { value: 'interior', label: 'Interior' },
+  { value: 'landscape', label: 'Landscape' },
 ];
 
-const STATUS_OPTIONS: { value: ProjectStatus | ''; label: string }[] = [
+const STATUS_OPTIONS: { value: string; label: string }[] = [
   { value: '', label: 'All Statuses' },
-  { value: ProjectStatus.INQUIRY, label: 'Inquiry' },
-  { value: ProjectStatus.CONSULTATION, label: 'Consultation' },
-  { value: ProjectStatus.PROPOSAL, label: 'Proposal' },
-  { value: ProjectStatus.ACTIVE, label: 'Active' },
-  { value: ProjectStatus.ON_HOLD, label: 'On Hold' },
-  { value: ProjectStatus.COMPLETED, label: 'Completed' },
-  { value: ProjectStatus.ARCHIVED, label: 'Archived' },
+  { value: 'inquiry', label: 'Inquiry' },
+  { value: 'consultation', label: 'Consultation' },
+  { value: 'proposal', label: 'Proposal' },
+  { value: 'active', label: 'Active' },
+  { value: 'on_hold', label: 'On Hold' },
+  { value: 'completed', label: 'Completed' },
+  { value: 'archived', label: 'Archived' },
 ];
 
 const PAGE_SIZE = 12;

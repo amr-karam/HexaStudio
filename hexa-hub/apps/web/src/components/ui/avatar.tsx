@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
+import Image from 'next/image';
 import { cn } from './cn';
 
 export interface AvatarProps {
@@ -33,6 +34,14 @@ const statusSizeClasses: Record<NonNullable<AvatarProps['size']>, string> = {
   xl: 'h-4 w-4 ring-2',
 };
 
+/** Pixel dimensions mapped to Tailwind size classes for next/image */
+const imageDimensions: Record<NonNullable<AvatarProps['size']>, { width: number; height: number }> = {
+  sm: { width: 32, height: 32 },
+  md: { width: 40, height: 40 },
+  lg: { width: 48, height: 48 },
+  xl: { width: 64, height: 64 },
+};
+
 function getInitials(name: string): string {
   return name
     .split(/\s+/)
@@ -57,19 +66,22 @@ export function Avatar({
   );
 
   const [imageError, setImageError] = React.useState(false);
+  const dims = imageDimensions[size];
 
   return (
     <span className={cn('relative inline-flex shrink-0', className)}>
       {src && !imageError ? (
-        <img
-          src={src}
-          alt={alt}
-          onError={() => setImageError(true)}
-          className={cn(
-            'rounded-full object-cover border border-[#1F1F1F]',
-            sizeClasses[size],
-          )}
-        />
+        <span className={cn('relative block rounded-full overflow-hidden', sizeClasses[size])}>
+          <Image
+            src={src}
+            alt={alt}
+            width={dims.width}
+            height={dims.height}
+            onError={() => setImageError(true)}
+            className="rounded-full object-cover border border-[#1F1F1F]"
+            unoptimized={!src.startsWith('/')}
+          />
+        </span>
       ) : (
         <span
           className={cn(

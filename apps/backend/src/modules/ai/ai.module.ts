@@ -1,13 +1,18 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { EmbeddingService } from './embedding.service';
 import { AutoTagService } from './auto-tag.service';
+import { AutoTagVisionService } from './auto-tag-vision.service';
 import { LightingService } from './lighting.service';
 import { SummaryService } from './summary.service';
 import { AiChatService } from './ai-chat.service';
 import { MultimodalService } from './multimodal.service';
+import { MultimodalController } from './multimodal.controller';
 import { StructuredOutputService } from './structured-output.service';
 import { AiCacheService } from './ai-cache.service';
 import { TokenUsageService } from './token-usage.service';
+import { VoiceService } from './voice.service';
+import { MinIOVisionService } from './minio-vision.listener';
+import { StorageModule } from '../storage/storage.module';
 import { VectorModule } from '../vector/vector.module';
 
 /**
@@ -28,28 +33,35 @@ import { VectorModule } from '../vector/vector.module';
  * ════════════════════════════════════════════
  */
 @Module({
-  imports: [forwardRef(() => VectorModule)],
+  imports: [forwardRef(() => VectorModule), StorageModule],
+  controllers: [MultimodalController],
   providers: [
     AiChatService,
     EmbeddingService,
     AutoTagService,
+    AutoTagVisionService,
     LightingService,
     SummaryService,
     MultimodalService,
     StructuredOutputService,
     AiCacheService,
     TokenUsageService,
+    VoiceService,
+    MinIOVisionService,
   ],
   exports: [
     AiChatService,
     EmbeddingService,
     AutoTagService,
+    AutoTagVisionService,
     LightingService,
     SummaryService,
     MultimodalService,
     StructuredOutputService,
     AiCacheService,
     TokenUsageService,
+    VoiceService,
+    MinIOVisionService,
   ],
 })
 export class AIModule {}
