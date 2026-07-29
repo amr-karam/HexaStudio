@@ -4,8 +4,10 @@ import { Component, ReactNode, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { XRCanvas, XRView, XRUI, XRErrorFallback } from '@/features/xr';
 import { useCollaboration } from '@/features/xr/hooks/useCollaboration';
+import { useWebRTC } from '@/features/xr/hooks/useWebRTC';
 import { useXRStore } from '@/features/xr/store/xr-store';
 import { CollabPresence } from '@/features/xr/components/CollabPresence';
+import { MediaControls } from '@/features/xr/components/MediaControls';
 import { useAnalytics } from '@/lib/analytics';
 import { captureException } from '@sentry/nextjs';
 
@@ -32,7 +34,8 @@ function XRViewerInner() {
   const mode = useXRStore((s) => s.mode);
   const userName = searchParams.get('user') || 'Guest';
 
-  const { sendCursor } = useCollaboration(projectId, userName, mode);
+  const { sendCursor, getSocket } = useCollaboration(projectId, userName, mode);
+  const webrtc = useWebRTC(projectId, mode, getSocket);
 
   useEffect(() => {
     if (modelUrl) {
@@ -47,6 +50,7 @@ function XRViewerInner() {
       </XRCanvas>
       <XRUI onExit={() => { track('xr_viewer_exit'); router.back(); }} modelName={modelName} />
       {projectId && <CollabPresence />}
+      {projectId && <MediaControls webrtc={webrtc} />}
     </div>
   );
 }

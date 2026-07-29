@@ -11,6 +11,8 @@ import {
   User,
   AlertCircle,
 } from 'lucide-react';
+import { ExportButton } from '@/components/ExportButton';
+import type { ExportColumn } from '@/components/ExportButton';
 
 export default function ContactsPage() {
   const [tab, setTab] = useState<'all' | 'clients'>('all');
@@ -23,6 +25,21 @@ export default function ContactsPage() {
   const contacts = tab === 'clients' ? clients : allContacts;
   const isLoading = tab === 'clients' ? clientsLoading : allLoading;
   const displayTotal = tab === 'clients' ? (clients?.length ?? 0) : total;
+
+  // ─── Export Columns ─────────────────────────────────────────────────────
+  const contactExportColumns: ExportColumn[] = [
+    { header: 'Name', key: 'name', format: (val: unknown) => String(val ?? 'Unnamed') },
+    { header: 'Email', key: 'email', format: (val: unknown) => String(val ?? '—') },
+    { header: 'Phone', key: 'phone', format: (val: unknown) => String(val ?? '—') },
+    { header: 'Type', key: 'is_company', format: (val: unknown) =>
+      val ? 'Company' : 'Individual' },
+    { header: 'Street', key: 'street', format: (val: unknown) => String(val ?? '—') },
+    { header: 'City', key: 'city', format: (val: unknown) => String(val ?? '—') },
+    { header: 'Country', key: 'country_id', format: (val: unknown) => {
+      if (Array.isArray(val) && val.length > 1) return String(val[1]);
+      return String(val ?? '—');
+    }},
+  ];
 
   return (
     <div className="p-8 md:p-12">
@@ -72,14 +89,25 @@ export default function ContactsPage() {
 
       {/* Search */}
       <div className="relative mb-6">
-        <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-600" />
-        <input
-          type="text"
-          placeholder="Search contacts..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-11 pr-4 py-3 bg-surface border border-border rounded-xl text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-gold/30 focus:ring-1 focus:ring-gold/10 transition-all"
-        />
+        <div className="flex items-center gap-3">
+          <div className="relative flex-1">
+            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-600" />
+            <input
+              type="text"
+              placeholder="Search contacts..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-11 pr-4 py-3 bg-surface border border-border rounded-xl text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-gold/30 focus:ring-1 focus:ring-gold/10 transition-all"
+            />
+          </div>
+          <ExportButton
+            data={(contacts as unknown as Record<string, unknown>[]) ?? []}
+            columns={contactExportColumns}
+            filename="contacts-export"
+            format="csv"
+            label="Export"
+          />
+        </div>
       </div>
 
       {/* Contact List */}

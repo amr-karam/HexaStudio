@@ -183,7 +183,6 @@ export class OdooService {
   }
 
   async getLeadStageCounts(): Promise<unknown> {
-    const ids = await this.search('crm.lead', []);
     const leads = await this.searchRead('crm.lead', [], ['id', 'stage_id', 'planned_revenue', 'name', 'contact_name', 'email_from', 'phone', 'x_hexa_source', 'x_hexa_service', 'x_hexa_budget']);
     return leads;
   }
@@ -340,8 +339,8 @@ export class OdooService {
 
   // ─── Employees ──────────────────────────────────────────────────────────
 
-  async getEmployees(domain: unknown[] = [], fields: string[] = []): Promise<unknown[]> {
-    return this.searchRead('hr.employee', domain, fields);
+  async getEmployees(domain: unknown[] = [], fields: string[] = [], options: OdooSearchOptions = {}): Promise<unknown[]> {
+    return this.searchRead('hr.employee', domain, fields, options);
   }
 
   // ─── Documents ──────────────────────────────────────────────────────────
@@ -366,6 +365,58 @@ export class OdooService {
 
   async getKnowledgeArticles(domain: unknown[] = [], fields: string[] = [], options: OdooSearchOptions = {}): Promise<unknown[]> {
     return this.searchRead('knowledge.article', domain, fields, options);
+  }
+
+  // ─── Timesheets ─────────────────────────────────────────────────────────
+
+  async getTimesheets(domain: unknown[] = [], fields: string[] = [], options: OdooSearchOptions = {}): Promise<unknown[]> {
+    return this.searchRead('account.analytic.line', domain, fields, options);
+  }
+
+  // ─── Accounting ─────────────────────────────────────────────────────────
+
+  async getAccounts(domain: unknown[] = [], fields: string[] = [], options: OdooSearchOptions = {}): Promise<unknown[]> {
+    return this.searchRead('account.account', domain, fields, options);
+  }
+
+  async getAccount(id: number): Promise<unknown | null> {
+    const results = await this.read('account.account', [id]);
+    return results?.[0] || null;
+  }
+
+  async getAccountTree(): Promise<unknown[]> {
+    return this.searchRead('account.account', [],
+      ['id', 'name', 'code', 'account_type', 'parent_id', 'reconcile', 'deprecated', 'note', 'tag_ids', 'company_id'],
+      { order: 'code asc' },
+    );
+  }
+
+  async getJournals(domain: unknown[] = [], fields: string[] = []): Promise<unknown[]> {
+    return this.searchRead('account.journal', domain, fields);
+  }
+
+  async getTaxes(domain: unknown[] = [], fields: string[] = []): Promise<unknown[]> {
+    return this.searchRead('account.tax', domain, fields);
+  }
+
+  async getFiscalPositions(domain: unknown[] = [], fields: string[] = []): Promise<unknown[]> {
+    return this.searchRead('account.fiscal.position', domain, fields);
+  }
+
+  async getAccountMoves(domain: unknown[] = [], fields: string[] = [], options: OdooSearchOptions = {}): Promise<unknown[]> {
+    return this.searchRead('account.move', domain, fields, options);
+  }
+
+  async getAccountMoveLines(domain: unknown[] = [], fields: string[] = [], options: OdooSearchOptions = {}): Promise<unknown[]> {
+    return this.searchRead('account.move.line', domain, fields, options);
+  }
+
+  async getAccountGroups(domain: unknown[] = [], fields: string[] = []): Promise<unknown[]> {
+    return this.searchRead('account.group', domain, fields);
+  }
+
+  async getAccountTypes(): Promise<unknown[]> {
+    return this.searchRead('account.account.type', [], ['id', 'name', 'type', 'internal_group', 'include_initial_balance']);
   }
 
   // ─── Mail Messages ──────────────────────────────────────────────────────

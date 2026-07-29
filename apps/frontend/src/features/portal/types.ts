@@ -192,6 +192,10 @@ export interface CopilotMessage {
   role: 'user' | 'assistant';
   content: string;
   timestamp: string;
+  /** Base64 data URL of an attached image to display in the message bubble */
+  imageUrl?: string;
+  /** Whether this message is in a processing/streaming state */
+  isProcessing?: boolean;
   suggestedActions?: {
     label: string;
     action: string;

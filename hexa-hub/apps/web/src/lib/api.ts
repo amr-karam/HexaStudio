@@ -41,24 +41,39 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-// ─── Response Interceptor — Handle 401 Unauthorized ─────────────────────────
+// ─── Response Interceptor — Handle 401 Unauthorized + Error Notifications ──
 
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => response,
   (error) => {
-    if (
-      typeof window !== 'undefined' &&
-      error.response?.status === 401
-    ) {
-      // Clear auth state
-      localStorage.removeItem(TOKEN_KEY);
-      localStorage.removeItem('hub_user');
-      document.cookie =
-        'hub_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    if (typeof window !== 'undefined') {
+      // 401 — clear auth and redirect
+      if (error.response?.status === 401) {
+        localStorage.removeItem(TOKEN_KEY);
+        localStorage.removeItem('hub_user');
+        document.cookie = 'hub_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+        if (!window.location.pathname.startsWith(LOGIN_PATH)) {
+          window.location.href = LOGIN_PATH;
+        }
+        return Promise.reject(error);
+      }
 
-      // Only redirect if not already on the login page
-      if (!window.location.pathname.startsWith(LOGIN_PATH)) {
-        window.location.href = LOGIN_PATH;
+      // Dispatch error event for toast notifications (skip for 401, 404, validation errors)
+      const status = error.response?.status;
+      if (status && status !== 401 && status !== 404 && status !== 422) {
+        const message = error.response?.data?.message
+          || error.response?.data?.error
+          || `Request failed (${status})`;
+        window.dispatchEvent(
+          new CustomEvent('api:error', {
+            detail: {
+              message,
+              status,
+              url: error.config?.url || '',
+              timestamp: Date.now(),
+            },
+          }),
+        );
       }
     }
     return Promise.reject(error);

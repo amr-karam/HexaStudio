@@ -28,6 +28,24 @@ import { PortalCopilotService } from './portal-copilot.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import type { PortalDashboardData, PortalTask, PortalTeamMember, PortalProjectDetail } from './portal-dashboard.types';
 
+/**
+ * DTO for the multimodal copilot query endpoint.
+ */
+class MultimodalQueryDto {
+  /** The text query from the user */
+  query!: string;
+  /** Optional project name context (default: 'Horizon Villa') */
+  projectName?: string;
+  /** Base64-encoded image data for vision analysis */
+  imageData?: string;
+  /** MIME type of the image (required if imageData is provided) */
+  mimeType?: string;
+  /** Base64-encoded audio data for speech-to-text transcription */
+  audioData?: string;
+  /** MIME type of the audio (required if audioData is provided, e.g. 'audio/webm', 'audio/wav') */
+  audioMimeType?: string;
+}
+
 @ApiTags('Portal')
 @Controller({ path: 'portal', version: ['1', VERSION_NEUTRAL] })
 export class PortalController {
@@ -233,6 +251,11 @@ export class PortalController {
     return this.portalService.getNotificationPreferences(req.user.id);
   }
 
+  // --- Copilot Endpoints ---
+
+  /**
+   * Standard text-only copilot query.
+   */
   @Post('copilot/query')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -244,5 +267,47 @@ export class PortalController {
     @Body('projectName') projectName?: string,
   ) {
     return this.portalCopilot.processClientQuery(query, projectName);
+  }
+
+  /**
+   * Multimodal copilot query supporting image analysis and/or audio transcription.
+   *
+   * Accepts:
+   *   - `imageData` (base64) + `mimeType` for vision-based context
+   *   - `audioData` (base64) + `audioMimeType` for speech-to-text transcription
+   *   - Both, or neither (falls back to text-only query)
+   *
+   * Returns:
+   *   - `reply`: AI-generated response referencing any provided media
+   *   - `tags`: (optional) Array of vision-derived tags when imageData is provided
+   */
+  @Post('copilot/multimodal-query')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Query the HEXA Portal AI Copilot with multimodal support (image + voice)',
+    description: `Processes a query that may include image data (base64 + mimeType) for vision analysis 
+and/or audio data (base64 + audioMimeType) for speech-to-text transcription. 
+Returns an enriched response that references what was seen/heard, along with extracted tags.`,
+  })
+  @ApiResponse({ status: 200, description: 'Multimodal copilot response returned with optional tags.' })
+  @ApiResponse({ status: 400, description: 'Invalid request: missing required fields.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized – invalid or missing JWT.' })
+  @ApiBody({ type: MultimodalQueryDto })
+  async copilotMultimodalQuery(
+    @Body() dto: MultimodalQueryDto,
+  ): Promise<{ reply: string; tags?: Array<{ tag: string; confidence: number; category: string }> }> {
+    if (!dto.query) {
+      return { reply: 'Please provide a query to process.' };
+    }
+
+    return this.portalCopilot.processMultimodalQuery(
+      dto.query,
+      dto.projectName ?? 'Horizon Villa',
+      dto.imageData,
+      dto.mimeType,
+      dto.audioData,
+      dto.audioMimeType,
+    );
   }
 }

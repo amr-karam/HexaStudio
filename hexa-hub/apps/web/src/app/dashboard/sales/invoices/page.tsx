@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import React, { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
@@ -16,7 +18,9 @@ import {
   ArrowUpDown,
   AlertTriangle,
 } from 'lucide-react';
-import { OdooInvoice, InvoiceState } from '@hexa-hub/types';
+import { ExportButton } from '@/components/ExportButton';
+import type { ExportColumn } from '@/components/ExportButton';
+import type { OdooInvoice, InvoiceState } from '@hexa-hub/types';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -40,30 +44,10 @@ const STATUS_CONFIG: Record<
   string,
   { label: string; bg: string; text: string; dot: string }
 > = {
-  [InvoiceState.DRAFT]: {
-    label: 'Draft',
-    bg: 'bg-neutral-500/10',
-    text: 'text-neutral-400',
-    dot: 'bg-neutral-400',
-  },
-  [InvoiceState.posted]: {
-    label: 'Posted',
-    bg: 'bg-blue-500/10',
-    text: 'text-blue-400',
-    dot: 'bg-blue-400',
-  },
-  [InvoiceState.PAID]: {
-    label: 'Paid',
-    bg: 'bg-emerald-500/10',
-    text: 'text-emerald-400',
-    dot: 'bg-emerald-400',
-  },
-  [InvoiceState.CANCELLED]: {
-    label: 'Cancelled',
-    bg: 'bg-red-500/10',
-    text: 'text-red-400',
-    dot: 'bg-red-400',
-  },
+  draft: { label: 'Draft', bg: 'bg-neutral-500/10', text: 'text-neutral-400', dot: 'bg-neutral-400' },
+  posted: { label: 'Posted', bg: 'bg-blue-500/10', text: 'text-blue-400', dot: 'bg-blue-400' },
+  paid: { label: 'Paid', bg: 'bg-emerald-500/10', text: 'text-emerald-400', dot: 'bg-emerald-400' },
+  cancelled: { label: 'Cancelled', bg: 'bg-red-500/10', text: 'text-red-400', dot: 'bg-red-400' },
 };
 
 const PAYMENT_CONFIG: Record<
@@ -78,12 +62,12 @@ const PAYMENT_CONFIG: Record<
   in_payment: { label: 'In Payment', color: 'text-blue-400' },
 };
 
-const STATUS_OPTIONS: { value: InvoiceState | ''; label: string }[] = [
+const STATUS_OPTIONS: { value: string; label: string }[] = [
   { value: '', label: 'All Statuses' },
-  { value: InvoiceState.DRAFT, label: 'Draft' },
-  { value: InvoiceState.posted, label: 'Posted' },
-  { value: InvoiceState.PAID, label: 'Paid' },
-  { value: InvoiceState.CANCELLED, label: 'Cancelled' },
+  { value: 'draft', label: 'Draft' },
+  { value: 'posted', label: 'Posted' },
+  { value: 'paid', label: 'Paid' },
+  { value: 'cancelled', label: 'Cancelled' },
 ];
 
 const PAGE_SIZE = 15;
@@ -111,6 +95,29 @@ function isOverdue(invoice: OdooInvoice): boolean {
     return false;
   return new Date(invoice.invoice_date_due) < new Date();
 }
+
+// ─── Export Columns ─────────────────────────────────────────────────────────
+
+const invoiceExportColumns: ExportColumn[] = [
+  { header: 'Reference', key: 'name' },
+  { header: 'Client', key: 'partner_id', format: (val: unknown) => {
+    if (Array.isArray(val) && val.length > 1) return String(val[1]);
+    return String(val ?? '—');
+  }},
+  { header: 'Amount', key: 'amount_total', format: (val: unknown) =>
+    `$${Number(val ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}` },
+  { header: 'Due Date', key: 'invoice_date_due', format: (val: unknown) =>
+    val ? formatDate(String(val)) : '—' },
+  { header: 'Status', key: 'state', format: (val: unknown) => {
+    const cfg = STATUS_CONFIG[String(val ?? 'draft')] ?? STATUS_CONFIG.draft;
+    return (cfg as { label: string }).label;
+  }},
+  { header: 'Payment Status', key: 'payment_state', format: (val: unknown) => {
+    if (!val) return '—';
+    const cfg = PAYMENT_CONFIG[String(val)] ?? null;
+    return cfg ? cfg.label : String(val);
+  }},
+];
 
 // ─── Animation Variants ─────────────────────────────────────────────────────
 
@@ -258,6 +265,15 @@ export default function InvoicesPage() {
           </select>
           <ChevronDownIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-[#555] pointer-events-none" />
         </div>
+
+        {/* Export Button */}
+        <ExportButton
+          data={(invoices as unknown as Record<string, unknown>[]) ?? []}
+          columns={invoiceExportColumns}
+          filename="invoices-export"
+          format="csv"
+          label="Export"
+        />
       </motion.div>
 
       {/* Table */}

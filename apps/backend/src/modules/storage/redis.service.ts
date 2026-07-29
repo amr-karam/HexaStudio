@@ -130,6 +130,18 @@ export class RedisService {
     await this.client.zremrangebyscore(key, min, max);
   }
 
+  /**
+   * Scan Redis keys matching a pattern (non-blocking iteration).
+   *
+   * @param cursor  - Cursor to start from (use '0' to begin)
+   * @param pattern - Glob-style pattern (e.g. `mobile:push-token:*`)
+   * @param count   - Approximate number of keys to return per iteration
+   * @returns A tuple of [nextCursor, keys]
+   */
+  async scan(cursor: string, pattern: string, count = 100): Promise<[string, string[]]> {
+    return this.client.scan(cursor, 'MATCH', pattern, 'COUNT', count) as Promise<[string, string[]]>;
+  }
+
   async flush(): Promise<void> {
     await this.client.flushall();
   }

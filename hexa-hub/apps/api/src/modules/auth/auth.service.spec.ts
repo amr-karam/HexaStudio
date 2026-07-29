@@ -20,6 +20,8 @@ describe('AuthService', () => {
     fullName: 'Amr Mohamed',
     role: UserRole.SUPER_ADMIN,
     isActive: true,
+    twoFactorSecret: null,
+    twoFactorEnabled: false,
     createdAt: new Date('2026-01-01'),
     updatedAt: new Date('2026-01-01'),
   };
@@ -58,6 +60,7 @@ describe('AuthService', () => {
 
       const result = await service.login('amr@hexastudio.net', 'secret');
 
+      if ('requiresTwoFactor' in result) throw new Error('Unexpected 2FA response');
       expect(result.access_token).toBe('signed-jwt');
       expect(jwtService.sign).toHaveBeenCalledWith({
         sub: mockUser.id,

@@ -9,6 +9,7 @@ export const config = {
   },
   jwt: {
     secret: process.env.JWT_SECRET || 'hexa-hub-super-secret-key',
+    expiresIn: process.env.JWT_EXPIRES_IN || '1h',
   },
   heartbeat: {
     interval: Number(process.env.HEARTBEAT_INTERVAL) || 25_000,
@@ -16,5 +17,10 @@ export const config = {
   },
   cors: {
     origin: process.env.CORS_ORIGIN || '*',
+  },
+  rateLimit: {
+    maxMessagesPerSecond: Number(process.env.RATE_LIMIT_MAX_MSGS_PER_SEC) || 50,
+    windowMs: Number(process.env.RATE_LIMIT_WINDOW_MS) || 1_000,
+    maxConnectionsPerIp: Number(process.env.RATE_LIMIT_MAX_CONNS_PER_IP) || 10,
   },
 } as const;

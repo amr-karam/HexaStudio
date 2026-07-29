@@ -90,3 +90,49 @@ export {
   usePortalInvoice,
   usePortalSummary,
 } from './use-portal';
+
+export { useHelpdeskTickets, useHelpdeskTicket, useCreateTicket, useUpdateTicket } from './use-helpdesk';
+export { useCalendarEvents, useCalendarEvent, useCreateEvent, useUpdateEvent, useDeleteEvent } from './use-calendar';
+export { useEmployees, useEmployee } from './use-employees';
+export { useTimesheets, useCreateTimesheet, useTimesheetStats } from './use-timesheets';
+export { useKnowledgeArticles, useKnowledgeArticle } from './use-knowledge';
+export { useChartOfAccounts, useJournalEntries, useTrialBalance, useProfitAndLoss, useBalanceSheet } from './use-accounting';
+
+export { usePresence } from './use-presence';
+export type { UsePresenceReturn } from './use-presence';
+
+export { useTypingIndicator, useTypingUsers } from './use-typing';
+export { useThread, useSendThreadReply } from './use-threads';
+
+export {
+  useChannels,
+  useChannel,
+  useChannelMembers,
+  useChannelMessages,
+  useCreateChannel,
+  useUpdateChannel,
+  useDeleteChannel,
+  useAddChannelMember,
+  useSendChannelMessage,
+  useReplyToMessage,
+  CHANNELS_KEYS,
+} from './use-channels';
+export type {
+  Channel,
+  ChannelMember,
+  ChannelMessage,
+} from './use-channels';
+
+export {
+  useAiSummary,
+  useAiAssistant,
+} from './use-ai';
+export type {
+  AiSummaryRequest,
+  AiSummaryResponse,
+  AssistantMessage,
+  AiAssistRequest,
+  AiAssistResponse,
+  UseAiSummaryReturn,
+  UseAiAssistantReturn,
+} from './use-ai';

@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════════════
+         EMAIL TEMPLATES
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- Welcome Email Template -->
+    <record id="hexa_welcome_email" model="mail.template">
+        <field name="name">HEXA Studio — Welcome to Your Project</field>
+        <field name="model_id" ref="project.model_project_project"/>
+        <field name="email_from">hello@hexastudio.net</field>
+        <field name="subject">Welcome to HEXA Studio — Your Project "${object.name}" is Live</field>
+        <field name="body_html" type="html">
+<![CDATA[
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="color: #1a1a2e; font-size: 24px;">Welcome to HEXA Studio</h1>
+        <p style="color: #666; font-size: 16px;">Where vision meets precision</p>
+    </div>
+
+    <p>Dear ${object.partner_id.name},</p>
+
+    <p>We are thrilled to confirm the launch of your project <strong>${object.name}</strong>. Our team is already preparing the groundwork to bring your vision to life.</p>
+
+    <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin: 20px 0;">
+        <h3 style="color: #1a1a2e; margin-top: 0;">Project Details</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <td style="padding: 8px 0; color: #666;">Project Name</td>
+                <td style="padding: 8px 0; font-weight: bold;">${object.name}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; color: #666;">Start Date</td>
+                <td style="padding: 8px 0; font-weight: bold;">${object.date_start or 'Today'}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; color: #666;">Project Manager</td>
+                <td style="padding: 8px 0; font-weight: bold;">${object.user_id.name or 'Assigned shortly'}</td>
+            </tr>
+        </table>
+    </div>
+
+    <h3 style="color: #1a1a2e;">What Happens Next?</h3>
+    <ol style="color: #333; line-height: 1.8;">
+        <li><strong>Kickoff Meeting</strong> — Your project manager will schedule an introductory call within 48 hours.</li>
+        <li><strong>Discovery Phase</strong> — We'll gather detailed requirements and align on scope.</li>
+        <li><strong>First Deliverable</strong> — You'll receive the initial milestone deliverable on schedule.</li>
+    </ol>
+
+    <p>You can track your project progress at any time on the <a href="https://portal.hexastudio.net" style="color: #e94560;">HEXA Client Portal</a>.</p>
+
+    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #999; font-size: 12px;">
+        <p>HEXA Studio — Architectural Excellence, Digitally Delivered</p>
+        <p>hello@hexastudio.net | hexastudio.net</p>
+    </div>
+</div>
+]]>
+        </field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+
+    <!-- Milestone Completion Email Template -->
+    <record id="hexa_milestone_email" model="mail.template">
+        <field name="name">HEXA Studio — Milestone Completed</field>
+        <field name="model_id" ref="project.model_project_project"/>
+        <field name="email_from">hello@hexastudio.net</field>
+        <field name="subject">Milestone Update — Your Project "${object.name}" Has Reached a New Stage</field>
+        <field name="body_html" type="html">
+<![CDATA[
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="color: #1a1a2e; font-size: 24px;">Milestone Achieved</h1>
+        <p style="color: #666; font-size: 16px;">Excellence in motion</p>
+    </div>
+
+    <p>Dear ${object.partner_id.name},</p>
+
+    <p>Great news! A key milestone has been completed on your project <strong>${object.name}</strong>.</p>
+
+    <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin: 20px 0;">
+        <h3 style="color: #1a1a2e; margin-top: 0;">Project Progress</h3>
+        <div style="background: #e9ecef; border-radius: 4px; height: 12px; overflow: hidden;">
+            <div style="background: linear-gradient(90deg, #1a1a2e, #e94560); height: 100%; border-radius: 4px;"></div>
+        </div>
+        <p style="color: #666; margin-top: 10px;">Your project is progressing on schedule. Visit the portal for detailed updates.</p>
+    </div>
+
+    <p style="text-align: center; margin-top: 20px;">
+        <a href="https://portal.hexastudio.net" style="display: inline-block; background: #e94560; color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; font-weight: bold;">View Project on Portal</a>
+    </p>
+
+    <p style="margin-top: 20px;">If you have any questions, your Project Manager is available via the portal messaging system or at <a href="mailto:hello@hexastudio.net">hello@hexastudio.net</a>.</p>
+
+    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #999; font-size: 12px;">
+        <p>HEXA Studio — Architectural Excellence, Digitally Delivered</p>
+        <p>hello@hexastudio.net | hexastudio.net</p>
+    </div>
+</div>
+]]>
+        </field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+
+    <!-- Project Completed Email Template -->
+    <record id="hexa_project_completed_email" model="mail.template">
+        <field name="name">HEXA Studio — Project Completed</field>
+        <field name="model_id" ref="project.model_project_project"/>
+        <field name="email_from">hello@hexastudio.net</field>
+        <field name="subject">Congratulations — Your Project "${object.name}" is Complete!</field>
+        <field name="body_html" type="html">
+<![CDATA[
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="color: #1a1a2e; font-size: 24px;">Project Complete</h1>
+        <p style="color: #666; font-size: 16px;">Vision delivered</p>
+    </div>
+
+    <p>Dear ${object.partner_id.name},</p>
+
+    <p>We are proud to announce that your project <strong>${object.name}</strong> has been successfully completed. Every milestone has been delivered and signed off.</p>
+
+    <p>Thank you for trusting HEXA Studio with your vision. We'd love to hear your feedback.</p>
+
+    <p style="text-align: center; margin-top: 20px;">
+        <a href="https://portal.hexastudio.net" style="display: inline-block; background: #e94560; color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; font-weight: bold;">Leave Feedback</a>
+    </p>
+
+    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #999; font-size: 12px;">
+        <p>HEXA Studio — Architectural Excellence, Digitally Delivered</p>
+        <p>hello@hexastudio.net | hexastudio.net</p>
+    </div>
+</div>
+]]>
+        </field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         AUTOMATED ACTIONS
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <!--
+        ACTION 1: On Lead Won — Create Project, Milestones, Send Welcome Email,
+        and Schedule Kickoff Activity
+
+        Trigger: When crm.lead stage changes to "won"
+        This creates a full project pipeline automatically from a won lead.
+    -->
+    <record id="hexa_lead_won_create_project" model="ir.actions.server">
+        <field name="name">HEXA: Lead Won → Create Project</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="state">code</field>
+        <field name="code"><![CDATA[
+# ─── 1. Create project.project from won lead ───
+if record.stage_id and record.stage_id.is_won:
+    service_type = record.x_hexa_service or 'general'
+    partner = record.partner_id
+    if not partner:
+        raise UserError('Lead must have a linked contact before conversion.')
+
+    project_vals = {
+        'name': record.name or 'New Project',
+        'partner_id': partner.id,
+        'x_hexa_type': service_type,
+        'date_start': fields.Date.today(),
+        'user_id': record.user_id.id if record.user_id else env.uid,
+        'description': record.description or '',
+    }
+
+    # Also copy x_hexa_service and other custom fields if they exist
+    if hasattr(record, 'x_hexa_source'):
+        project_vals['x_hexa_source'] = record.x_hexa_source
+    if hasattr(record, 'x_hexa_budget'):
+        project_vals['x_hexa_budget'] = record.x_hexa_budget
+
+    project = env['project.project'].create(project_vals)
+
+    # ─── 2. Create default milestones based on project type ───
+    milestone_templates = {
+        'architectural_design': [
+            ('Discovery & Requirements', 1),
+            ('Concept Design', 2),
+            ('Schematic Design', 3),
+            ('Design Development', 4),
+            ('Final Delivery', 5),
+        ],
+        'interior_design': [
+            ('Space Planning', 1),
+            ('Mood Board & Concept', 2),
+            ('3D Visualization', 3),
+            ('Material Selection', 4),
+            ('Final Presentation', 5),
+        ],
+        '3d_visualization': [
+            ('Reference Collection', 1),
+            ('Blockout & Composition', 2),
+            ('Lighting & Materials', 3),
+            ('Final Renders', 4),
+            ('Post-Production & Delivery', 5),
+        ],
+        'branding': [
+            ('Brand Discovery', 1),
+            ('Logo & Identity Concepts', 2),
+            ('Design System & Guidelines', 3),
+            ('Collateral & Assets', 4),
+            ('Brand Launch Kit', 5),
+        ],
+        'general': [
+            ('Project Kickoff', 1),
+            ('Phase 1 — Research', 2),
+            ('Phase 2 — Execution', 3),
+            ('Phase 3 — Review', 4),
+            ('Final Delivery & Handover', 5),
+        ],
+    }
+
+    milestones = milestone_templates.get(service_type, milestone_templates['general'])
+    milestone_ids = []
+    for name, order in milestones:
+        milestone = env['project.milestone'].create({
+            'name': name,
+            'project_id': project.id,
+            'x_hexa_order': order,
+            'x_hexa_client_viewable': True,
+        })
+        milestone_ids.append(milestone.id)
+
+    # ─── 3. Send welcome email to client ───
+    welcome_template = env.ref('hexa_studio.hexa_welcome_email', raise_if_not_found=False)
+    if welcome_template and partner.email:
+        welcome_template.send_mail(project.id, force_send=True)
+
+    # ─── 4. Create mail.activity for PM to schedule kickoff meeting ───
+    activity_type = env['mail.activity.type'].search([('name', 'ilike', 'meeting')], limit=1)
+    if activity_type:
+        env['mail.activity'].create({
+            'res_model_id': env.ref('project.model_project_project').id,
+            'res_id': project.id,
+            'activity_type_id': activity_type.id,
+            'summary': 'Schedule Kickoff Meeting',
+            'note': (
+                f'New project "{record.name}" has been created from a won lead.\n'
+                f'Client: {partner.name}\n'
+                f'Email: {partner.email or "N/A"}\n'
+                f'Service: {service_type}\n\n'
+                f'Please schedule the kickoff meeting within 48 hours.'
+            ),
+            'user_id': record.user_id.id if record.user_id else env.uid,
+            'date_deadline': fields.Date.today() + datetime.timedelta(days=2),
+        })
+
+    # Link the lead to the project for traceability
+    record.write({'x_hexa_project_id': project.id})
+
+    action = {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+            'title': 'Project Created',
+            'message': f'Project "{project.name}" created with {len(milestones)} milestones.',
+            'type': 'success',
+            'sticky': False,
+        },
+    }
+]]></field>
+    </record>
+
+    <!-- Automation: Trigger on Lead stage change to "won" -->
+    <record id="hexa_lead_won_trigger" model="base.automation">
+        <field name="name">HEXA: On Lead Won → Create Project Pipeline</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="trigger">on_write</field>
+        <field name="filter_pre_domain">[('stage_id.is_won', '=', True)]</field>
+        <field name="filter_domain">[('stage_id.is_won', '=', True)]</field>
+        <field name="action_server_id" ref="hexa_lead_won_create_project"/>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!--
+        ACTION 2: On Milestone Completed — Update Project Status, Send Emails,
+        Generate Invoice
+
+        Trigger: When a project.milestone is marked complete
+        - If all milestones done → mark project complete, send completion email, create invoice
+        - Otherwise → send milestone update email
+    -->
+    <record id="hexa_milestone_completed_action" model="ir.actions.server">
+        <field name="name">HEXA: Milestone Completed → Update Project</field>
+        <field name="model_id" ref="project.model_project_milestone"/>
+        <field name="state">code</field>
+        <field name="code"><![CDATA[
+if not record.completed:
+    return  # Only act when milestone is completed
+
+project = record.project_id
+if not project:
+    return
+
+# Count remaining incomplete milestones
+incomplete = env['project.milestone'].search_count([
+    ('project_id', '=', project.id),
+    ('completed', '=', False),
+])
+
+# ─── Case: All milestones done ───
+if incomplete == 0:
+    # Mark project as completed
+    project.write({'stage_id': env.ref('project.project_project_stage_3', raise_if_not_found=False).id
+                              if env.ref('project.project_project_stage_3', raise_if_not_found=False)
+                              else False})
+
+    # Send project completion email
+    completed_template = env.ref('hexa_studio.hexa_project_completed_email', raise_if_not_found=False)
+    if completed_template and project.partner_id and project.partner_id.email:
+        completed_template.send_mail(project.id, force_send=True)
+
+    # Create final milestone invoice (account.move)
+    # Use the project's x_hexa_budget if available
+    invoice_amount = project.x_hexa_budget or 0.0
+    if invoice_amount > 0 and project.partner_id:
+        # Find default invoice journal
+        journal = env['account.journal'].search([('type', '=', 'sale')], limit=1)
+        if journal:
+            invoice_vals = {
+                'move_type': 'out_invoice',
+                'partner_id': project.partner_id.id,
+                'journal_id': journal.id,
+                'invoice_date': fields.Date.today(),
+                'invoice_line_ids': [(0, 0, {
+                    'name': f'Final Milestone Payment — {project.name}',
+                    'quantity': 1,
+                    'price_unit': invoice_amount,
+                })],
+                'ref': f'HEXA-{project.name[:20]}',
+            }
+            invoice = env['account.move'].create(invoice_vals)
+
+            # Post a message on the project
+            project.message_post(
+                body=f'Final invoice {invoice.name} created for amount {invoice_amount:,.2f}.',
+                message_type='comment',
+            )
+
+# ─── Case: Some milestones still incomplete (just a progress update) ───
+else:
+    milestone_template = env.ref('hexa_studio.hexa_milestone_email', raise_if_not_found=False)
+    if milestone_template and project.partner_id and project.partner_id.email:
+        milestone_template.send_mail(project.id, force_send=True)
+
+    # Update project progress
+    total = env['project.milestone'].search_count([('project_id', '=', project.id)])
+    completed_count = total - incomplete
+    # Log progress internally
+    project.message_post(
+        body=f'Milestone "{record.name}" completed. Progress: {completed_count}/{total} milestones.',
+        message_type='notification',
+    )
+]]></field>
+    </record>
+
+    <!-- Automation: Trigger on milestone write (when completed field changes) -->
+    <record id="hexa_milestone_completed_trigger" model="base.automation">
+        <field name="name">HEXA: On Milestone Completed → Update Project &amp; Notify</field>
+        <field name="model_id" ref="project.model_project_milestone"/>
+        <field name="trigger">on_write</field>
+        <field name="filter_pre_domain">[('completed', '=', True)]</field>
+        <field name="filter_domain">[('completed', '=', True)]</field>
+        <field name="action_server_id" ref="hexa_milestone_completed_action"/>
+        <field name="active" eval="True"/>
+    </record>
+
+</odoo>

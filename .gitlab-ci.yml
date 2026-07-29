@@ -15,6 +15,7 @@ stages:
   - build
   - image
   - validate
+  - mobile
   - deploy
 
 variables:
@@ -158,6 +159,23 @@ test:
       junit:
         - apps/backend/coverage/junit.xml
         - apps/frontend/coverage/junit.xml
+    expire_in: 30 days
+
+# ----- Mobile TypeScript & Tests -----
+mobile-typecheck:
+  extends: .typecheck_base
+  script:
+    - npm run typecheck --workspace=apps/mobile
+
+mobile-test:
+  extends: .typecheck_base
+  script:
+    - npm run test --workspace=apps/mobile
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - apps/mobile/coverage/junit.xml
     expire_in: 30 days
 
 # ----------------------------------------------------------------------------
@@ -405,7 +423,52 @@ container-scan:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 # ----------------------------------------------------------------------------
-# 5. DEPLOY STAGE
+# 5a. MOBILE BUILD STAGE (EAS Build & Submit)
+# ----------------------------------------------------------------------------
+#
+# Requires CI/CD variables:
+#   EXPO_TOKEN      — Expo personal access token (generate via expo.dev/accounts)
+#   EAS_PROJECT_ID  — UUID from `eas init` run in apps/mobile/
+#
+# Dependencies: needs typecheck and test from quality stage (not full build).
+# Production builds are manual on main branch only.
+# ----------------------------------------------------------------------------
+
+build-mobile:
+  stage: mobile
+  image: node:${NODE_VERSION}
+  needs:
+    - job: typecheck
+    - job: test
+    - job: mobile-typecheck
+    - job: mobile-test
+  before_script: *npm_setup
+  cache: *cache_npm
+  script:
+    - npx expo login --token $EXPO_TOKEN
+    - npx eas build --platform all --profile production --non-interactive
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
+      when: manual
+      allow_failure: false
+
+submit-mobile:
+  stage: mobile
+  image: node:${NODE_VERSION}
+  needs:
+    - build-mobile
+  before_script: *npm_setup
+  cache: *cache_npm
+  script:
+    - npx expo login --token $EXPO_TOKEN
+    - npx eas submit --platform all --profile production --non-interactive
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
+      when: manual
+      allow_failure: false
+
+# ----------------------------------------------------------------------------
+# 6. DEPLOY STAGE
 # ----------------------------------------------------------------------------
 
 # ----- Production deploy (main branch) -----

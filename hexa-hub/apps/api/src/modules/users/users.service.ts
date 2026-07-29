@@ -11,7 +11,12 @@ export class UsersService {
   ) {}
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.userRepository.findOne({ where: { email } });
+    return this.userRepository
+      .createQueryBuilder('user')
+      .where('user.email = :email', { email })
+      .addSelect('user.password')
+      .addSelect('user.twoFactorSecret')
+      .getOne();
   }
 
   async findById(id: string): Promise<User | null> {
@@ -21,5 +26,13 @@ export class UsersService {
   async create(userData: Partial<User>): Promise<User> {
     const user = this.userRepository.create(userData);
     return this.userRepository.save(user);
+  }
+
+  async save(user: User): Promise<User> {
+    return this.userRepository.save(user);
+  }
+
+  async update(id: string, data: Partial<User>): Promise<void> {
+    await this.userRepository.update(id, data);
   }
 }

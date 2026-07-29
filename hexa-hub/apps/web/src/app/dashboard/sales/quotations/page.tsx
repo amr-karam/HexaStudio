@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import React, { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
@@ -15,7 +17,9 @@ import {
   Filter,
   ArrowUpDown,
 } from 'lucide-react';
-import { OdooQuotation, QuotationState } from '@hexa-hub/types';
+import { ExportButton } from '@/components/ExportButton';
+import type { ExportColumn } from '@/components/ExportButton';
+import type { OdooQuotation, QuotationState } from '@hexa-hub/types';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -98,6 +102,23 @@ function formatDate(dateStr: string): string {
     day: 'numeric',
   });
 }
+
+// ─── Export Columns ─────────────────────────────────────────────────────────
+
+const quotationExportColumns: ExportColumn[] = [
+  { header: 'Reference', key: 'name' },
+  { header: 'Client', key: 'partner_id', format: (val: unknown) => {
+    if (Array.isArray(val) && val.length > 1) return String(val[1]);
+    return String(val ?? '—');
+  }},
+  { header: 'Amount', key: 'amount_total', format: (val: unknown) =>
+    `$${Number(val ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}` },
+  { header: 'Status', key: 'state', format: (val: unknown) => {
+    const cfg = STATUS_CONFIG[String(val ?? 'draft')] ?? STATUS_CONFIG.draft;
+    return (cfg as { label: string }).label;
+  }},
+  { header: 'Date', key: 'date_order', format: (val: unknown) => formatDate(String(val ?? '')) },
+];
 
 // ─── Animation Variants ─────────────────────────────────────────────────────
 
@@ -249,6 +270,15 @@ export default function QuotationsPage() {
           </select>
           <ChevronDownSmall className="absolute right-3 top-1/2 -translate-y-1/2 text-[#555] pointer-events-none" />
         </div>
+
+        {/* Export Button */}
+        <ExportButton
+          data={(quotations as unknown as Record<string, unknown>[]) ?? []}
+          columns={quotationExportColumns}
+          filename="quotations-export"
+          format="csv"
+          label="Export"
+        />
       </motion.div>
 
       {/* Table */}

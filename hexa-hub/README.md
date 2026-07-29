@@ -1,49 +1,124 @@
-# HEXA Hub — Enterprise Communication Platform
-Version 2.0
+# HEXA Hub — Enterprise Workspace Platform
 
-## Overview
-HEXA Hub is the unified communication and collaboration platform for the HEXA Studio ecosystem. It serves as the central workspace where clients, employees, AI Agents, the Website, and Odoo converge.
+The unified collaboration platform for HEXA Studio. Built on the ODOO-FIRST architecture with a premium dark luxury design.
 
-**HEXA Hub is NOT a chat application; it is the operational center of the company.**
+## Architecture
 
-## Platform Identity
-- **Platform Name:** HEXA Hub
-- **Primary Domain:** `https://hub.hexastudio.net`
-- **Brand:** HEXA Studio
+```
+┌─────────────────────────────────────────────────┐
+│                  Next.js 15                      │
+│  ┌──────────┐ ┌──────────┐ ┌────────────────┐  │
+│  │ Dashboard│ │  Client  │ │   Login Page   │  │
+│  │  24 pages│ │  Portal  │ │                │  │
+│  └──────────┘ └──────────┘ └────────────────┘  │
+│  ┌──────────────────────────────────────────┐   │
+│  │  17 UI Primitives + 23 React Query Hooks │   │
+│  └──────────────────────────────────────────┘   │
+└──────────────────────┬──────────────────────────┘
+                       │ REST
+┌──────────────────────┴──────────────────────────┐
+│                  NestJS BFF                       │
+│  ┌──────────────────────────────────────────┐   │
+│  │  24 Modules (17 Odoo + 7 Hub-native)     │   │
+│  │  120+ Endpoints with Swagger docs         │   │
+│  └──────────────────────────────────────────┘   │
+└──────────────────────┬──────────────────────────┘
+                       │ JSON-RPC
+┌──────────────────────┴──────────────────────────┐
+│                  Odoo ERP                         │
+│  ┌──────────────────────────────────────────┐   │
+│  │  CRM · Sales · Projects · Accounting     │   │
+│  │  Helpdesk · Calendar · HR · Knowledge    │   │
+│  │  hexa_studio custom module               │   │
+│  └──────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────┘
+         │              │              │
+    PostgreSQL       Redis          MinIO
+```
 
-## Core Objectives
-1. **Unified Experience:** A single point of entry for all stakeholders.
-2. **Centralized Communication:** Integrated inbox for email, web messages, internal chat, and AI.
-3. **Collaborative Workspaces:** Dedicated spaces for projects, including approvals, tasks, and documents.
-4. **AI-Driven Productivity:** Integrated AI assistants for summaries, action items, and knowledge retrieval.
-5. **Odoo Synergy:** Real-time synchronization with CRM, Projects, Sales, and Invoices.
+## Quick Start
 
-## System Architecture
-The platform follows a decoupled microservices-inspired architecture:
-- **Frontend (`apps/web`):** Next.js application.
-- **API Gateway (`apps/api`):** NestJS backend managing business logic and integrations.
-- **Realtime Server (`apps/realtime`):** Socket.IO server for instant communication.
-- **Worker (`apps/worker`):** Background processing for emails, notifications, and AI tasks.
+### Prerequisites
+- Node.js 20
+- Docker Desktop
+- Odoo instance (configured in .env)
+
+### Setup
+
+```bash
+# 1. Clone and install
+cd hexa-hub
+npm install --legacy-peer-deps
+
+# 2. Configure environment
+cp .env.example .env
+# Edit .env with your Odoo credentials
+
+# 3. Start infrastructure
+docker compose up -d
+
+# 4. Run database migrations and seed
+npm run seed --workspace=apps/api
+
+# 5. Start development servers
+npm run dev
+```
+
+### Access Points
+
+| Service | URL |
+|---------|-----|
+| Frontend | http://localhost:3001 |
+| API Swagger | http://localhost:3000/api/docs |
+| Realtime | http://localhost:3002 |
+| MinIO Console | http://localhost:9001 |
+
+### Seed Credentials
+
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | admin@hexastudio.net | admin123 |
+| Employee | employee@hexastudio.net | admin123 |
+| Client | client@hexastudio.net | admin123 |
 
 ## Tech Stack
-- **Frontend:** Next.js, React, TypeScript, TailwindCSS.
-- **Backend:** NestJS, PostgreSQL, Redis.
-- **Realtime:** Socket.IO, Redis Pub/Sub.
-- **Storage:** MinIO (S3 Compatible).
-- **Auth:** JWT, RBAC.
-- **DevOps:** Docker, Nginx, Prometheus, Grafana, Loki, Uptime Kuma.
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Next.js 15, TypeScript, TailwindCSS 3, Framer Motion |
+| UI | 17 custom primitives (dark luxury theme, gold #D4A843) |
+| Backend | NestJS, JWT, Swagger |
+| Real-time | Socket.IO + Redis |
+| Queue | BullMQ |
+| Database | PostgreSQL 16 (TypeORM) |
+| Cache | Redis 7 |
+| Storage | MinIO (S3-compatible) |
+| ERP | Odoo 18 (JSON-RPC) |
+| CI/CD | GitHub Actions |
+
+## Quality Gates
+
+```bash
+npm run lint        # ESLint
+npm run typecheck   # TypeScript
+npm run test        # Jest
+npm run build       # Production build
+```
 
 ## Project Structure
-\`\`\`
+
+```
 hexa-hub/
 ├── apps/
-│   ├── web/        # Next.js Frontend
-│   ├── api/        # NestJS Backend API
-│   ├── realtime/   # Socket.IO Realtime Server
-│   └── worker/     # Background Worker
-├── packages/       # Shared libraries (types, utils, ui)
-├── docs/           # Architecture and User Documentation
-├── docker/         # Docker configurations
-├── scripts/        # Utility scripts
-└── tests/          # E2E and Unit tests
-\`\`\`
+│   ├── api/        # NestJS backend (24 modules)
+│   ├── web/        # Next.js frontend (32 pages)
+│   ├── realtime/   # Socket.IO server
+│   └── worker/     # BullMQ background worker
+├── packages/
+│   └── types/      # Shared TypeScript types
+├── odoo/
+│   └── custom/
+│       └── hexa_studio/  # Odoo custom module
+├── docker-compose.yml    # 8-service dev stack
+└── .github/workflows/    # CI pipeline
+```

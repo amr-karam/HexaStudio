@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect } from 'react';
-import Lenis from 'lenis';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { useQualityTier } from '@/providers/quality-provider';
 
@@ -38,27 +37,31 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     let cancelled = false;
     let detachGsap: (() => void) | null = null;
     let fallbackRafId: number | null = null;
+    let lenis: import('lenis').default | undefined;
 
-    const lenis = new Lenis({
-      duration: 1.2,
-      // easeOutExpo-equivalent curve (see src/lib/motion/tokens.ts).
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      // Lower touch multiplier on fine pointers; on coarse we keep smooth
-      // scroll but at a reduced multiplier to avoid gesture conflicts.
-      touchMultiplier: finePointer ? 2 : 1.5,
-      // Smooth in-page anchor navigation (#hash links).
-      anchors: true,
-      infinite: false,
-    });
-    window.__lenis = lenis;
+    const initLenis = async () => {
+      const { default: LenisConstructor } = await import('lenis');
+      if (cancelled) return;
 
-    // Bridge Lenis into GSAP: one shared clock for scroll + animation.
-    // Loaded dynamically so GSAP stays out of the critical path.
-    const wireGsapBridge = async () => {
+      lenis = new LenisConstructor({
+        duration: 1.2,
+        // easeOutExpo-equivalent curve (see src/lib/motion/tokens.ts).
+        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: 'vertical',
+        gestureOrientation: 'vertical',
+        smoothWheel: true,
+        wheelMultiplier: 1,
+        // Lower touch multiplier on fine pointers; on coarse we keep smooth
+        // scroll but at a reduced multiplier to avoid gesture conflicts.
+        touchMultiplier: finePointer ? 2 : 1.5,
+        // Smooth in-page anchor navigation (#hash links).
+        anchors: true,
+        infinite: false,
+      });
+      window.__lenis = lenis;
+
+      // Bridge Lenis into GSAP: one shared clock for scroll + animation.
+      // Loaded dynamically so GSAP stays out of the critical path.
       try {
         const [gsapModule, scrollTriggerModule] = await Promise.all([
           import('gsap'),
@@ -71,28 +74,26 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
         gsap.registerPlugin(ScrollTrigger);
         gsap.ticker.lagSmoothing(0);
 
-        const raf = (time: number) => {
-          lenis.raf(time * 1000);
-        };
+        const raf = (time: number) => lenis!.raf(time * 1000);
         gsap.ticker.add(raf);
-        lenis.on('scroll', ScrollTrigger.update);
+        lenis!.on('scroll', ScrollTrigger.update);
 
         detachGsap = () => {
           gsap.ticker.remove(raf);
-          lenis.off('scroll', ScrollTrigger.update);
+          lenis!.off('scroll', ScrollTrigger.update);
         };
       } catch {
         // GSAP is an enhancement: if it fails to load, keep Lenis alive on a
         // plain rAF loop so smooth scroll still works.
         if (cancelled) return;
         const fallbackLoop = (time: number) => {
-          lenis.raf(time);
+          lenis!.raf(time);
           fallbackRafId = requestAnimationFrame(fallbackLoop);
         };
         fallbackRafId = requestAnimationFrame(fallbackLoop);
       }
     };
-    void wireGsapBridge();
+    void initLenis();
 
     return () => {
       cancelled = true;
@@ -100,8 +101,8 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       if (fallbackRafId !== null) {
         cancelAnimationFrame(fallbackRafId);
       }
-      lenis.destroy();
-      if (window.__lenis === lenis) {
+      if (lenis) lenis.destroy();
+      if (lenis && window.__lenis === lenis) {
         window.__lenis = undefined;
       }
     };

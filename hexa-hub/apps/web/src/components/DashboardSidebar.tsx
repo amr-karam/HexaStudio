@@ -13,13 +13,23 @@ import {
   CheckSquare,
   Folder,
   MessageSquare,
+  Hash,
   Bell,
   Settings,
+  ShieldCheck,
   TrendingUp,
   ChevronDown,
   LogOut,
   User,
   Activity,
+  HelpCircle,
+  Calendar,
+  Clock,
+  BookOpen,
+  Bot,
+  Sparkles,
+  Briefcase,
+  Search,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/providers/AuthProvider';
@@ -53,7 +63,15 @@ const navItems: NavItem[] = [
   { icon: FolderKanban, label: 'Projects', href: '/dashboard/projects' },
   { icon: CheckSquare, label: 'Tasks', href: '/dashboard/tasks' },
   { icon: Folder, label: 'Documents', href: '/dashboard/documents' },
+  { icon: BookOpen, label: 'Accounting', href: '/dashboard/accounting' },
+  { icon: HelpCircle, label: 'Helpdesk', href: '/dashboard/helpdesk' },
+  { icon: Calendar, label: 'Calendar', href: '/dashboard/calendar' },
+  { icon: Users, label: 'Employees', href: '/dashboard/employees' },
+  { icon: Clock, label: 'Timesheets', href: '/dashboard/timesheets' },
+  { icon: BookOpen, label: 'Knowledge', href: '/dashboard/knowledge' },
   { icon: MessageSquare, label: 'Messages', href: '/dashboard/messages' },
+  { icon: Hash, label: 'Channels', href: '/dashboard/channels' },
+  { icon: ShieldCheck, label: 'Approvals', href: '/dashboard/approvals' },
   { icon: Bell, label: 'Notifications', href: '/dashboard/notifications' },
   { icon: Settings, label: 'Settings', href: '/dashboard/settings' },
 ];
@@ -170,7 +188,11 @@ function SidebarNavItem({
   );
 }
 
-export function DashboardSidebar() {
+interface DashboardSidebarProps {
+  onSearchOpen?: () => void;
+}
+
+export function DashboardSidebar({ onSearchOpen }: DashboardSidebarProps) {
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(() => {
@@ -193,6 +215,20 @@ export function DashboardSidebar() {
         <h2 className="text-xl font-serif font-light tracking-tighter text-white">
           HEXA <span className="text-[#D4A843]">HUB</span>
         </h2>
+      </div>
+
+      {/* Search Button */}
+      <div className="px-3 mb-3">
+        <button
+          onClick={onSearchOpen}
+          className="flex items-center gap-2.5 w-full px-4 py-2.5 rounded-lg text-sm text-neutral-500 bg-white/[0.02] border border-[#1F1F1F]/50 hover:border-[#D4A843]/20 hover:text-neutral-300 hover:bg-white/[0.04] transition-all duration-300 group"
+        >
+          <Search size={16} className="text-[#555] group-hover:text-[#D4A843]/70 transition-colors shrink-0" />
+          <span className="font-light tracking-wide text-left flex-1">Search...</span>
+          <kbd className="hidden group-hover:inline-flex text-[10px] text-[#444] bg-[#1A1A1A] px-1.5 py-0.5 rounded font-mono border border-[#1F1F1F]/50">
+            ⌘K
+          </kbd>
+        </button>
       </div>
 
       {/* Navigation */}

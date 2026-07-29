@@ -1,0 +1,71 @@
+# ─── HEXA Hub — Traefik Static Configuration ────────────────────────────────
+# EntryPoints define how Traefik listens for incoming requests.
+# Providers configure where Traefik discovers routing rules.
+# ───────────────────────────────────────────────────────────────────────────
+
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
+
+  websecure:
+    address: ":443"
+    http:
+      tls:
+        certResolver: cloudflare
+        domains:
+          - main: "hexastudio.net"
+            sans:
+              - "*.hexastudio.net"
+              - "hub.hexastudio.net"
+              - "api.hexastudio.net"
+              - "cms.hexastudio.net"
+              - "minio.hexastudio.net"
+
+providers:
+  docker:
+    exposedByDefault: false
+    network: hexa-net
+
+  file:
+    filename: /etc/traefik/dynamic.yml
+    watch: true
+
+api:
+  dashboard: true
+  insecure: false
+
+log:
+  level: INFO
+  format: json
+
+accessLog:
+  format: json
+  bufferingSize: 100
+
+metrics:
+  prometheus:
+    addEntryPointsLabels: true
+    addServicesLabels: true
+    entryPoint: metrics
+    buckets:
+      - 0.1
+      - 0.3
+      - 1.2
+      - 5.0
+
+certificatesResolvers:
+  cloudflare:
+    acme:
+      email: admin@hexastudio.net
+      storage: /letsencrypt/acme.json
+      dnsChallenge:
+        provider: cloudflare
+        resolvers:
+          - "1.1.1.1:53"
+          - "1.0.0.1:53"
