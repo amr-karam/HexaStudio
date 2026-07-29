@@ -95,7 +95,12 @@ export class OdooService implements OnModuleInit {
   /** Lightweight health probe — calls xmlrpc/2/common version() instead of full auth. */
   async ping(): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
+      const timer = setTimeout(() => {
+        resolve(false);
+      }, 5000);
+
       this.client.methodCall('version', [], (error, value) => {
+        clearTimeout(timer);
         if (error || !value) {
           resolve(false);
         } else {
