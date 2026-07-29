@@ -6,7 +6,8 @@ WORKDIR /app
 # Stage 2: Dependencies (with full source for workspace resolution)
 FROM base AS deps
 COPY . .
-RUN npm install --no-audit --no-fund --legacy-peer-deps && npm install lightningcss-linux-x64-gnu --no-save --legacy-peer-deps
+# Delete lockfile to work around npm#4828 (cross-platform optional deps bug)
+RUN rm -rf node_modules package-lock.json && npm install --no-audit --no-fund --legacy-peer-deps
 
 # Stage 3: Builder
 FROM deps AS builder
