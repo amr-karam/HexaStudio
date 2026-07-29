@@ -92,6 +92,13 @@ http:
       service: status-service
       
 
+    # GitLab (TLS terminated at Cloudflare edge)
+    gitlab:
+      rule: "Host(`gitlab.hexastudio.net`)"
+      service: gitlab
+      entrypoints:
+        - web
+
   services:
     frontend:
       loadBalancer:
@@ -138,6 +145,10 @@ http:
     status-service:
       loadBalancer:
         servers: [{ url: "http://status-service:8080" }]
+
+    gitlab:
+      loadBalancer:
+        servers: [{ url: "http://hexa-gitlab:80" }]
 
   middlewares:
     traefik-auth:
