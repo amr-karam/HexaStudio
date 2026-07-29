@@ -6,7 +6,7 @@ WORKDIR /app
 # Stage 2: Dependencies (with full source for workspace resolution)
 FROM base AS deps
 COPY . .
-RUN npm install --no-audit --no-fund --legacy-peer-deps
+RUN npm install --no-audit --no-fund --legacy-peer-deps && npm install lightningcss-linux-x64-gnu --no-save --legacy-peer-deps
 
 # Stage 3: Builder
 FROM deps AS builder
