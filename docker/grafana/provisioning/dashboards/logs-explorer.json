@@ -1,0 +1,97 @@
+{
+  "dashboard": {
+    "title": "Logs Explorer",
+    "uid": "hexa-logs-explorer",
+    "tags": ["hexa", "logs", "loki"],
+    "timezone": "utc",
+    "schemaVersion": 16,
+    "version": 1,
+    "refresh": "30s",
+    "time": { "from": "now-15m", "to": "now" },
+    "panels": [
+      {
+        "title": "Log Volume by Service",
+        "type": "bargauge",
+        "gridPos": { "x": 0, "y": 0, "w": 12, "h": 6 },
+        "targets": [
+          {
+            "expr": "sum(count_over_time({compose_project=\"hexastudio\"}[5m])) by (container_name)",
+            "legendFormat": "{{container_name}}",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "orientation": "horizontal",
+          "displayMode": "gradient",
+          "showUnfilled": true
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "yellow", "value": 500 },
+                { "color": "red", "value": 2000 }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "title": "Error Logs (last 1h)",
+        "type": "logs",
+        "gridPos": { "x": 12, "y": 0, "w": 12, "h": 6 },
+        "targets": [
+          {
+            "expr": "{compose_project=\"hexastudio\"} |= `error` |= `err`",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "showLabels": true,
+          "showTime": true,
+          "wrapLogMessage": true,
+          "prettifyLogs": true,
+          "enableLogDetails": true,
+          "sortOrder": "Descending"
+        }
+      },
+      {
+        "title": "All Logs (Live Tail)",
+        "type": "logs",
+        "gridPos": { "x": 0, "y": 6, "w": 24, "h": 14 },
+        "targets": [
+          {
+            "expr": "{compose_project=\"hexastudio\"}",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "showLabels": true,
+          "showTime": true,
+          "wrapLogMessage": true,
+          "prettifyLogs": true,
+          "enableLogDetails": true,
+          "sortOrder": "Descending"
+        }
+      }
+    ],
+    "templating": {
+      "list": [
+        {
+          "name": "container",
+          "type": "query",
+          "datasource": "Loki",
+          "query": "label_values(container_name)",
+          "refresh": 1,
+          "includeAll": true,
+          "multi": true,
+          "sort": 1
+        }
+      ]
+    }
+  }
+}
