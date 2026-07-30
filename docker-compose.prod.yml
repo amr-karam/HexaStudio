@@ -398,6 +398,33 @@ services:
     networks:
       - internal
 
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    <<: *default-restart
+    logging: *default-logging
+    privileged: true
+    devices:
+      - /dev/kmsg:/dev/kmsg:rw
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    networks:
+      - internal
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.15.0
+    <<: *default-restart
+    logging: *default-logging
+    environment:
+      DATA_SOURCE_URI: postgres:5432/hexastudio?sslmode=disable
+      DATA_SOURCE_USER: hexastudio
+      DATA_SOURCE_PASS: ${POSTGRES_PASSWORD}
+    networks:
+      - internal
+
   # ---------------------------------------------------------------------------
   # Auto-updates & Backups
   # ---------------------------------------------------------------------------
