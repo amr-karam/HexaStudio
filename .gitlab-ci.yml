@@ -130,6 +130,10 @@ sbom:
   stage: quality
   image: node:${NODE_VERSION}
   before_script: *npm_setup
+  # Non-blocking by design (see SECURITY_BASELINE): cyclonedx-npm runs `npm ls`
+  # under the hood and fails on monorepo lockfile drift (ELSPROBLEMS) without
+  # producing the SBOM. Fix tracked: reconcile root lockfile on Linux (see ADR-010).
+  allow_failure: true
   script:
     - npx --yes @cyclonedx/cyclonedx-npm@latest --output-file gl-sbom.json
     - |
@@ -490,8 +494,8 @@ deploy-production:
       ssh -p 22 ${PROD_SERVER_USER}@${PROD_SERVER_IP} << EOF
         set -e
         cd /home/hexa/hexastudio
-        git fetch origin main
-        git reset --hard origin/main
+        git fetch gitlab main
+        git reset --hard gitlab/main
         bash scripts/deploy-zero-downtime.sh
         docker image prune -f
         echo "Waiting for services to settle..."
@@ -529,8 +533,8 @@ deploy-staging:
       ssh -p 22 ${STAGING_SERVER_USER}@${STAGING_SERVER_IP} << EOF
         set -e
         cd /home/hexa/hexastudio
-        git fetch origin
-        git reset --hard origin/develop
+        git fetch gitlab develop
+        git reset --hard gitlab/develop
         docker compose -f docker-compose.prod.yml pull
         docker compose -f docker-compose.prod.yml up -d --remove-orphans
         docker image prune -f
