@@ -47,6 +47,10 @@ scrape_configs:
       - targets: ["postgres-exporter:9187"]
 
   - job_name: minio
+    # MinIO does not serve Prometheus metrics at /metrics — the endpoint is
+    # /minio/v2/metrics/cluster. Requires MINIO_PROMETHEUS_AUTH_TYPE=public
+    # on the minio service (set in docker-compose.prod.yml).
+    metrics_path: /minio/v2/metrics/cluster
     static_configs:
       - targets: ["minio:9000"]
 

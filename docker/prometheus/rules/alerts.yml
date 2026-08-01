@@ -115,7 +115,12 @@ groups:
           description: "Redis has been down for 1 minute"
 
       - alert: RedisMemoryHigh
-        expr: redis_memory_used_bytes / redis_memory_max_bytes * 100 > 85
+        # Guard: when no maxmemory is configured (redis_memory_max_bytes=0),
+        # the ratio is +Inf and would always fire. Use peak-to-max only when
+        # max>0, otherwise fall back to absolute RSS threshold (1 GiB).
+        expr: |
+          (redis_memory_max_bytes > 0 and redis_memory_used_bytes / redis_memory_max_bytes * 100 > 85)
+          or (redis_memory_max_bytes == 0 and redis_memory_used_rss_bytes > 1073741824)
         for: 5m
         labels:
           severity: warning
