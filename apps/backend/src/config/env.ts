@@ -64,6 +64,8 @@ const envSchema = z.object({
     .url()
     .default('http://host.docker.internal:1234/v1'),
   LM_STUDIO_MODEL: z.string().default('google/gemma-4-e4b'),
+  // Fast/small model for simple queries (smart routing). Falls back to LM_STUDIO_MODEL.
+  LM_STUDIO_FAST_MODEL: z.string().optional(),
   AI_CHAT_PROVIDER: z.enum(['openai', 'freetheai', 'local']).default('local'),
 
   // Exchange Rate API

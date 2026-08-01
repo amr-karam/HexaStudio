@@ -26,13 +26,32 @@ interface QueryComplexity {
 
 interface ModelRecommendation {
   model: string;
-  provider: 'openai' | 'gemini' | 'freetheai';
+  provider: 'openai' | 'gemini' | 'freetheai' | 'local';
   confidence: number;
   reasoning: string;
 }
 
 // Model capabilities database
 const MODEL_CAPABILITIES: Record<string, ModelCapabilities> = {
+  // Local models — LM Studio self-hosted (free & unlimited, no API key).
+  'google/gemma-4-e4b': {
+    maxTokens: 8192,
+    reasoningAbility: 'medium',
+    speed: 'fast',
+    costPer1KTokens: 0,
+    supportsMultimodal: true,
+    supportsFunctionCalling: true,
+    supportsStructuredOutput: true,
+  },
+  'gemma-4-12b-it-qat': {
+    maxTokens: 8192,
+    reasoningAbility: 'high',
+    speed: 'slow',
+    costPer1KTokens: 0,
+    supportsMultimodal: true,
+    supportsFunctionCalling: true,
+    supportsStructuredOutput: true,
+  },
   // Gemini models
   'gemini-3.1-flash-lite-preview': {
     maxTokens: 65000,
@@ -223,7 +242,7 @@ export class ModelRouterService {
     requiresFunctionCalling?: boolean;
     requiresStructuredOutput?: boolean;
     requiresReasoning?: boolean;
-    preferredProvider?: 'openai' | 'gemini' | 'freetheai';
+    preferredProvider?: 'openai' | 'gemini' | 'freetheai' | 'local';
   } = {}): ModelRecommendation {
     const complexity = this.analyzeQuery(query, options);
 
@@ -289,9 +308,10 @@ export class ModelRouterService {
   /**
    * Infer provider from model name
    */
-  private inferProvider(model: string): 'openai' | 'gemini' | 'freetheai' {
+  private inferProvider(model: string): 'openai' | 'gemini' | 'freetheai' | 'local' {
     if (model.startsWith('gpt-')) return 'openai';
     if (model.startsWith('bbl/')) return 'freetheai';
+    if (model.startsWith('gemma-') || model.includes('gemma')) return 'local';
     return 'gemini';
   }
 
@@ -300,7 +320,7 @@ export class ModelRouterService {
    */
   private findAlternativeModel(
     currentModel: string,
-    preferredProvider: 'openai' | 'gemini' | 'freetheai',
+    preferredProvider: 'openai' | 'gemini' | 'freetheai' | 'local',
     complexity: QueryComplexity
   ): string | null {
     const currentCapabilities = MODEL_CAPABILITIES[currentModel];
@@ -346,7 +366,7 @@ export class ModelRouterService {
    */
   private findModelWithCapability(
     capability: keyof ModelCapabilities,
-    provider: 'openai' | 'gemini' | 'freetheai'
+    provider: 'openai' | 'gemini' | 'freetheai' | 'local'
   ): string | null {
     const models = Object.entries(MODEL_CAPABILITIES)
       .filter(([model, caps]) => {
@@ -534,7 +554,7 @@ export class ModelRouterService {
   /**
    * Get API key for provider
    */
-  private getProviderApiKey(provider: 'openai' | 'gemini' | 'freetheai'): string | null {
+  private getProviderApiKey(provider: 'openai' | 'gemini' | 'freetheai' | 'local'): string | null {
     switch (provider) {
       case 'openai':
         return this.configService.get('OPENAI_API_KEY') || null;
@@ -542,6 +562,8 @@ export class ModelRouterService {
         return this.configService.get('GEMINI_API_KEY') || null;
       case 'freetheai':
         return this.configService.get('FREETHEAI_API_KEY') || null;
+      case 'local':
+        return this.configService.get('LM_STUDIO_BASE_URL') || null;
       default:
         return null;
     }
@@ -555,7 +577,7 @@ export class ModelRouterService {
     routingRules: number;
     configuredProviders: string[];
   }> {
-    const providers = ['openai', 'gemini', 'freetheai'] as const;
+    const providers = ['openai', 'gemini', 'freetheai', 'local'] as const;
     const configuredProviders = providers.filter(provider => 
       this.getProviderApiKey(provider) !== null
     );

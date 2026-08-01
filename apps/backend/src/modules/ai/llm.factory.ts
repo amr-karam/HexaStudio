@@ -5,6 +5,8 @@ export interface ChatClient {
   client: OpenAI;
   model: string;
   provider: 'openai' | 'freetheai' | 'local';
+  /** Small/fast model for simple queries — only set for 'local' (LM Studio routing). */
+  fastModel?: string;
 }
 
 /**
@@ -28,6 +30,7 @@ export function createChatClient(env: Env): ChatClient | null {
         baseURL: env.LM_STUDIO_BASE_URL,
       }),
       model: env.LM_STUDIO_MODEL,
+      fastModel: env.LM_STUDIO_FAST_MODEL,
       provider: 'local',
     };
   }

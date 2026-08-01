@@ -193,6 +193,7 @@ services:
       AI_CHAT_PROVIDER: ${AI_CHAT_PROVIDER:-local}
       LM_STUDIO_BASE_URL: ${LM_STUDIO_BASE_URL:-http://host.docker.internal:1234/v1}
       LM_STUDIO_MODEL: ${LM_STUDIO_MODEL:-google/gemma-4-e4b}
+      LM_STUDIO_FAST_MODEL: ${LM_STUDIO_FAST_MODEL:-}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
