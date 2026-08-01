@@ -23,7 +23,7 @@ export class AiChatService {
   /** Effective model name for the active provider. */
   readonly model: string;
   /** Resolved provider identifier. */
-  readonly provider: 'openai' | 'freetheai';
+  readonly provider: 'openai' | 'freetheai' | 'local';
 
   constructor(configService: ConfigService<Env>) {
     const env = {
@@ -33,6 +33,8 @@ export class AiChatService {
       FREETHEAI_API_KEY: configService.get('FREETHEAI_API_KEY'),
       FREETHEAI_BASE_URL: configService.get('FREETHEAI_BASE_URL')!,
       FREETHEAI_MODEL: configService.get('FREETHEAI_MODEL')!,
+      LM_STUDIO_BASE_URL: configService.get('LM_STUDIO_BASE_URL')!,
+      LM_STUDIO_MODEL: configService.get('LM_STUDIO_MODEL')!,
     } as Env;
 
     const resolved = createChatClient(env);
@@ -47,7 +49,7 @@ export class AiChatService {
       this.client = null;
       this.model = 'gpt-4o-mini';
       this.provider = 'openai';
-      this.logger.warn('No chat LLM configured — set OPENAI_API_KEY or FREETHEAI_API_KEY');
+      this.logger.warn('No chat LLM configured — set AI_CHAT_PROVIDER (local/freetheai/openai)');
     }
   }
 

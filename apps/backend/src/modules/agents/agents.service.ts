@@ -24,9 +24,19 @@ export class AgentsService {
     private readonly toolRegistry: ToolRegistry,
     private configService: ConfigService<Env>,
   ) {
-    const apiKey = this.configService.get('OPENAI_API_KEY');
-    if (apiKey) {
-      this.openai = new OpenAI({ apiKey });
+    // Prefer local LM Studio (free & unlimited, tool-call capable).
+    // Falls back to OpenAI when AI_CHAT_PROVIDER != 'local' or a key is set.
+    const provider = this.configService.get('AI_CHAT_PROVIDER', 'local');
+    if (provider === 'local') {
+      this.openai = new OpenAI({
+        apiKey: 'lm-studio',
+        baseURL: this.configService.get('LM_STUDIO_BASE_URL', 'http://host.docker.internal:1234/v1'),
+      });
+    } else {
+      const apiKey = this.configService.get('OPENAI_API_KEY');
+      if (apiKey) {
+        this.openai = new OpenAI({ apiKey });
+      }
     }
   }
 
@@ -88,7 +98,10 @@ ${toolsDescription}`;
       })) as ChatCompletionTool[];
 
       const response = await this.openai!.chat.completions.create({
-        model: this.configService.get<string>('OPENAI_MODEL')!,
+        model:
+          this.configService.get('AI_CHAT_PROVIDER', 'local') === 'local'
+            ? this.configService.get('LM_STUDIO_MODEL', 'google/gemma-4-e4b')!
+            : this.configService.get<string>('OPENAI_MODEL')!,
         messages: messages as ChatCompletionMessageParam[],
         tools: openaiTools,
         tool_choice: 'auto',
