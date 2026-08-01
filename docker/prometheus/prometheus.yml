@@ -59,6 +59,9 @@ scrape_configs:
       - targets: ["cadvisor:8080"]
 
   # Blackbox — uptime probes of public endpoints (egress via web network)
+  # Note: gitlab.hexastudio.net was removed — TCP to its Cloudflare edge IP
+  # (188.114.96.6) times out from this network; gitlab health is covered by
+  # container healthchecks instead.
   - job_name: blackbox
     metrics_path: /probe
     params:
@@ -66,8 +69,7 @@ scrape_configs:
     static_configs:
       - targets:
           - https://hexastudio.net
-          - https://api.hexastudio.net
-          - https://gitlab.hexastudio.net
+          - https://api.hexastudio.net/api/health
           - https://grafana.hexastudio.net
     relabel_configs:
       - source_labels: [__address__]
