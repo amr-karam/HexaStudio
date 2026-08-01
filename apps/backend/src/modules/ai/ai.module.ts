@@ -5,6 +5,8 @@ import { AutoTagVisionService } from './auto-tag-vision.service';
 import { LightingService } from './lighting.service';
 import { SummaryService } from './summary.service';
 import { AiChatService } from './ai-chat.service';
+import { AiChatController } from './ai-chat.controller';
+import { ModelRouterService } from './model-router.service';
 import { MultimodalService } from './multimodal.service';
 import { MultimodalController } from './multimodal.controller';
 import { StructuredOutputService } from './structured-output.service';
@@ -34,9 +36,10 @@ import { VectorModule } from '../vector/vector.module';
  */
 @Module({
   imports: [forwardRef(() => VectorModule), StorageModule],
-  controllers: [MultimodalController],
+  controllers: [MultimodalController, AiChatController],
   providers: [
     AiChatService,
+    ModelRouterService,
     EmbeddingService,
     AutoTagService,
     AutoTagVisionService,
@@ -51,6 +54,7 @@ import { VectorModule } from '../vector/vector.module';
   ],
   exports: [
     AiChatService,
+    ModelRouterService,
     EmbeddingService,
     AutoTagService,
     AutoTagVisionService,
