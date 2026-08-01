@@ -356,6 +356,8 @@ services:
     logging: *default-logging
     command:
       - --config.file=/etc/blackbox/blackbox.yml
+    volumes:
+      - ./docker/blackbox/blackbox.yml:/etc/blackbox/blackbox.yml:ro
     networks:
       - web
       - internal
