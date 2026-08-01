@@ -3,7 +3,10 @@
 modules:
   http_2xx:
     prober: http
-    timeout: 5s
+    # 15s: the hairpin path (server -> Cloudflare edge -> tunnel -> origin)
+    # adds several seconds; internal latency is <1s. UptimeProbeSlow alerts
+    # when probe_duration_seconds > 3s for 5m.
+    timeout: 15s
     http:
       valid_status_codes: [200, 301, 302, 307, 308]
       follow_redirects: true
