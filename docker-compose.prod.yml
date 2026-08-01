@@ -345,6 +345,19 @@ services:
       - ./docker/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
       - alertmanager_data:/alertmanager
     networks:
+      - web
+      - internal
+
+  # Blackbox exporter — probes public endpoints (hexastudio.net, api, gitlab)
+  # from inside the cluster; Prometheus scrapes it on internal, egress via web.
+  blackbox:
+    image: prom/blackbox-exporter:v0.25.0
+    <<: *default-restart
+    logging: *default-logging
+    command:
+      - --config.file=/etc/blackbox/blackbox.yml
+    networks:
+      - web
       - internal
 
   grafana:
@@ -381,6 +394,24 @@ services:
       - ./docker/loki/rules:/loki/rules:ro
       - loki_data:/loki
     networks:
+      - internal
+
+  # Alertmanager webhook receiver — see HEXA-Vision-Playbook/13-DEVOPS/ALERTING.md
+  # On `web` + `internal`: reachable by alertmanager (internal), egress to
+  # Telegram/Discord (web). Optional env: TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID,
+  # DISCORD_WEBHOOK_URL.
+  webhook:
+    image: hexa-webhook:local
+    build:
+      context: ./docker/webhook
+    <<: *default-restart
+    logging: *default-logging
+    environment:
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
+      DISCORD_WEBHOOK_URL: ${DISCORD_WEBHOOK_URL:-}
+    networks:
+      - web
       - internal
 
   tempo:

@@ -50,6 +50,14 @@ http:
       service: prometheus
       
 
+    # Monitoring (Alertmanager UI — basic auth via traefik-auth)
+    alertmanager:
+      rule: "Host(`alertmanager.hexastudio.net`)"
+      service: alertmanager
+      middlewares:
+        - traefik-auth
+      
+
     # Uptime
     uptime:
       rule: "Host(`uptime.hexastudio.net`)"
@@ -124,6 +132,9 @@ http:
     prometheus:
       loadBalancer:
         servers: [{ url: "http://prometheus:9090" }]
+    alertmanager:
+      loadBalancer:
+        servers: [{ url: "http://alertmanager:9093" }]
     uptime-kuma:
       loadBalancer:
         servers: [{ url: "http://uptime-kuma:3001" }]
