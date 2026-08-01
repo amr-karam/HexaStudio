@@ -74,6 +74,18 @@ docker exec hexastudio-grafana-1 wget -qO- http://loki:3100/api/prom/rules      
 ### Known pitfalls
 - **Scraping raw service ports** (e.g. `redis:6379`) produces `up=0` false
   positives — always scrape through an exporter (`redis-exporter:9121`).
+- **MinIO metrics path**: MinIO does not serve `/metrics` — it serves
+  `/minio/v2/metrics/cluster` and requires `MINIO_PROMETHEUS_AUTH_TYPE=public`
+  on the service (2026-08-01: MinIODown fired while the container was healthy
+  because the scrape hit `/metrics` → 403).
+- **Redis maxmemory**: without `maxmemory` configured,
+  `redis_memory_max_bytes` = 0 and the naive `used/max*100 > 85` ratio is
+  +Inf → RedisMemoryHigh always fires. The rule now guards with
+  `max > 0` and falls back to RSS > 1 GiB (fixed 2026-08-01).
+- **Frontend/CMS scrapes**: `frontend:3000/_metrics` (404) and `cms:1337/metrics`
+  (no endpoint) are permanently `up=0`. No alert rules reference them — real
+  availability is covered by the blackbox probes. Do not add `up=0`-style
+  alerts for these jobs.
 - **Unsupported Alertmanager config fields** (e.g. `disable_keep_alives` in
   v0.27.0) cause a crash-loop: check `docker logs hexastudio-alertmanager-1`.
 - **Stale compose copies** — always run compose from `/home/hexa/hexastudio`
