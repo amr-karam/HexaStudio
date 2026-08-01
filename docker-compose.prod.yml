@@ -317,9 +317,23 @@ services:
       - --web.enable-lifecycle
     volumes:
       - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./docker/prometheus/rules:/etc/prometheus/rules:ro
       - prometheus_data:/prometheus
     networks:
       - web
+      - internal
+
+  alertmanager:
+    image: prom/alertmanager:v0.27.0
+    <<: *default-restart
+    logging: *default-logging
+    command:
+      - --config.file=/etc/alertmanager/alertmanager.yml
+      - --storage.path=/alertmanager
+    volumes:
+      - ./docker/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - alertmanager_data:/alertmanager
+    networks:
       - internal
 
   grafana:
@@ -353,6 +367,7 @@ services:
     command: -config.file=/etc/loki/loki-config.yml
     volumes:
       - ./docker/loki/loki-config.yml:/etc/loki/loki-config.yml:ro
+      - ./docker/loki/rules:/loki/rules:ro
       - loki_data:/loki
     networks:
       - internal
@@ -499,6 +514,7 @@ volumes:
   cms_uploads:
   traefik_certs:
   prometheus_data:
+  alertmanager_data:
   grafana_data:
   loki_data:
   tempo_data:

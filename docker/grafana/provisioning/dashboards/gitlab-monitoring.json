@@ -1,0 +1,218 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "GitLab CE - Comprehensive Monitoring",
+    "tags": ["gitlab", "monitoring", "hexastudio"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "GitLab Service Status",
+        "type": "row",
+        "gridPos": {"h": 1, "w": 24, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "System Health Overview",
+        "type": "stat",
+        "gridPos": {"h": 8, "w": 6, "x": 0, "y": 1},
+        "targets": [
+          {
+            "expr": "up{job=\"gitlab\"}",
+            "legendFormat": "GitLab Status"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"],
+            "fields": ""
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "Container Registry Status",
+        "type": "stat",
+        "gridPos": {"h": 8, "w": 6, "x": 6, "y": 1},
+        "targets": [
+          {
+            "expr": "up{job=\"gitlab-registry\"}",
+            "legendFormat": "Registry Status"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "GitLab Response Time",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 1},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job=\"gitlab\"}[5m]))",
+            "legendFormat": "95th Percentile"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Resource Utilization",
+        "type": "row",
+        "gridPos": {"h": 1, "w": 24, "x": 0, "y": 9}
+      },
+      {
+        "id": 6,
+        "title": "CPU Usage",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 10},
+        "targets": [
+          {
+            "expr": "rate(container_cpu_usage_seconds_total{name=\"hexa-gitlab-ce\"}[5m]) * 100",
+            "legendFormat": "GitLab CPU"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Memory Usage",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 10},
+        "targets": [
+          {
+            "expr": "container_memory_usage_bytes{name=\"hexa-gitlab-ce\"} / 1024 / 1024",
+            "legendFormat": "GitLab Memory (MB)"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Disk I/O",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 18},
+        "targets": [
+          {
+            "expr": "rate(container_fs_reads_total{name=\"hexa-gitlab-ce\"}[5m]) + rate(container_fs_writes_total{name=\"hexa-gitlab-ce\"}[5m])",
+            "legendFormat": "Disk I/O Operations"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Network Traffic",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 18},
+        "targets": [
+          {
+            "expr": "rate(container_network_receive_bytes_total{name=\"hexa-gitlab-ce\"}[5m]) + rate(container_network_transmit_bytes_total{name=\"hexa-gitlab-ce\"}[5m])",
+            "legendFormat": "Network Traffic (bytes/sec)"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "GitLab Services",
+        "type": "row",
+        "gridPos": {"h": 1, "w": 24, "x": 0, "y": 26}
+      },
+      {
+        "id": 11,
+        "title": "GitLab Service Components",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 27},
+        "targets": [
+          {
+            "expr": "gitlab_service_status{service=\"puma\"}",
+            "legendFormat": "Puma"
+          },
+          {
+            "expr": "gitlab_service_status{service=\"sidekiq\"}",
+            "legendFormat": "Sidekiq"
+          },
+          {
+            "expr": "gitlab_service_status{service=\"postgres\"}",
+            "legendFormat": "PostgreSQL"
+          },
+          {
+            "expr": "gitlab_service_status{service=\"redis\"}",
+            "legendFormat": "Redis"
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "title": "Background Jobs Queue",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 27},
+        "targets": [
+          {
+            "expr": "gitlab_sidekiq_queue_size{queue=\"default\"}",
+            "legendFormat": "Default Queue"
+          },
+          {
+            "expr": "gitlab_sidekiq_queue_size{queue=\"mailers\"}",
+            "legendFormat": "Mailers Queue"
+          },
+          {
+            "expr": "gitlab_sidekiq_queue_size{queue=\"system_hook\"}",
+            "legendFormat": "System Hook Queue"
+          }
+        ]
+      },
+      {
+        "id": 13,
+        "title": "Log Volume",
+        "type": "row",
+        "gridPos": {"h": 1, "w": 24, "x": 0, "y": 35}
+      },
+      {
+        "id": 14,
+        "title": "Log Entries by Level",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 36},
+        "targets": [
+          {
+            "expr": "sum(rate({job=\"gitlab\"} |~ \"level=error\" [5m])) by (level)",
+            "legendFormat": "Error Logs"
+          },
+          {
+            "expr": "sum(rate({job=\"gitlab\"} |~ \"level=warn\" [5m])) by (level)",
+            "legendFormat": "Warning Logs"
+          },
+          {
+            "expr": "sum(rate({job=\"gitlab\"} |~ \"level=info\" [5m])) by (level)",
+            "legendFormat": "Info Logs"
+          }
+        ]
+      },
+      {
+        "id": 15,
+        "title": "Recent Error Logs",
+        "type": "logs",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 36},
+        "targets": [
+          {
+            "expr": "{job=\"gitlab\"} |~ \"level=error\"",
+            "limit": 50
+          }
+        ]
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "templating": {
+      "list": []
+    },
+    "annotations": {
+      "list": []
+    },
+    "refresh": "30s",
+    "schemaVersion": 30,
+    "version": 1,
+    "links": []
+  },
+  "folderId": 0,
+  "overwrite": false
+}
