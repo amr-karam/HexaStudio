@@ -4,7 +4,6 @@ global:
 
 rule_files:
   - "rules/*.yml"
-  - "loki-alerts.yml"
 
 alerting:
   alertmanagers:

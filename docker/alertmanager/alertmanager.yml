@@ -1,0 +1,36 @@
+# ============================================================================
+# HEXA Studio — Alertmanager Configuration
+# Sends alerts to a webhook receiver (extend with email/Slack/Telegram as needed)
+# ============================================================================
+global:
+  resolve_timeout: 5m
+  # SMTP is not configured — add smtp_smarthost + auth here once credentials exist.
+  # smtp_smarthost: 'smtp.example.com:587'
+  # smtp_from: 'alerts@hexastudio.net'
+  # smtp_auth_username: 'user'
+  # smtp_auth_password: 'pass'
+
+route:
+  group_by: ['alertname', 'severity']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  receiver: 'webhook'
+  routes:
+    - matchers:
+        - severity = "critical"
+      receiver: 'webhook'
+      repeat_interval: 1h
+    - matchers:
+        - severity = "warning"
+      receiver: 'webhook'
+      repeat_interval: 4h
+
+receivers:
+  - name: 'webhook'
+    webhook_configs:
+      - url: 'http://webhook:9000/alert'
+        send_resolved: true
+        # Disable keep-alive so no stale connections to an absent receiver
+        http_config:
+          disable_keep_alives: true
