@@ -308,7 +308,7 @@ services:
   # Monitoring
   # ---------------------------------------------------------------------------
   redis-exporter:
-    image: oliver006/redis_exporter:v0.68.0
+    image: oliver006/redis_exporter:v1.88.0
     <<: *default-restart
     logging: *default-logging
     environment:
