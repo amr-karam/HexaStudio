@@ -64,6 +64,11 @@ scrape_configs:
   # container healthchecks instead.
   - job_name: blackbox
     metrics_path: /probe
+    # Probes via the Cloudflare hairpin (server -> edge -> tunnel -> origin)
+    # take ~8s; the global 10s scrape timeout would cut them off. Give the
+    # blackbox job its own window: scrape_timeout must be <= scrape_interval.
+    scrape_interval: 30s
+    scrape_timeout: 20s
     params:
       module: [http_2xx]
     static_configs:
