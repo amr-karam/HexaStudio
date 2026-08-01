@@ -31,6 +31,3 @@ receivers:
     webhook_configs:
       - url: 'http://webhook:9000/alert'
         send_resolved: true
-        # Disable keep-alive so no stale connections to an absent receiver
-        http_config:
-          disable_keep_alives: true
