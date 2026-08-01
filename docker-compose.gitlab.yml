@@ -37,6 +37,7 @@ services:
       - gitlab_data:/var/opt/gitlab
     networks:
       - gitlab-net
+      - hexastudio-web
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/-/health"]
       interval: 60s
@@ -59,3 +60,7 @@ networks:
   gitlab-net:
     name: hexa-gitlab-net
     driver: bridge
+  # Join the shared web network so Traefik can route gitlab.hexastudio.net
+  hexastudio-web:
+    name: hexastudio_web
+    external: true
