@@ -123,10 +123,13 @@ export class ExchangeRateSyncService implements OnModuleInit {
    * 1. If EXCHANGE_RATE_API_KEY is set, use OpenExchangeRates with the key.
    * 2. If EXCHANGE_RATE_API_URL is explicitly provided (non-default), use it as-is.
    * 3. Otherwise, use the default free open.er-api.com endpoint (no key required).
+   *
+   * NOTE: ConfigService reads process.env directly (no zod defaults applied),
+   * so the URL may be undefined when the var is unset — treat that as "use default".
    */
   private buildEndpoint(
     apiKey: string | undefined,
-    apiUrl: string,
+    apiUrl: string | undefined,
   ): { url: string; isOpenErApi: boolean } {
     const DEFAULT_ER_API = 'https://open.er-api.com/v6/latest/USD';
 
@@ -138,7 +141,7 @@ export class ExchangeRateSyncService implements OnModuleInit {
       };
     }
 
-    if (apiUrl !== DEFAULT_ER_API) {
+    if (apiUrl && apiUrl !== DEFAULT_ER_API) {
       // Custom URL was provided in env
       return { url: apiUrl, isOpenErApi: false };
     }
