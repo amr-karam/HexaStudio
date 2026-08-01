@@ -57,7 +57,14 @@ const envSchema = z.object({
   FREETHEAI_API_KEY: z.string().min(1).optional(),
   FREETHEAI_BASE_URL: z.string().url().default('https://api.freetheai.xyz/v1'),
   FREETHEAI_MODEL: z.string().default('bbl/gemini-3.5-flash'),
-  AI_CHAT_PROVIDER: z.enum(['openai', 'freetheai']).default('openai'),
+
+  // AI / Local (LM Studio — self-hosted, free & unlimited, no API key)
+  LM_STUDIO_BASE_URL: z
+    .string()
+    .url()
+    .default('http://host.docker.internal:1234/v1'),
+  LM_STUDIO_MODEL: z.string().default('google/gemma-4-e4b'),
+  AI_CHAT_PROVIDER: z.enum(['openai', 'freetheai', 'local']).default('local'),
 
   // Exchange Rate API
   EXCHANGE_RATE_API_KEY: z.string().optional(),

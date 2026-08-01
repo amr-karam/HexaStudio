@@ -189,6 +189,12 @@ services:
       ODOO_WEBHOOK_SECRET: ${ODOO_WEBHOOK_SECRET:?ODOO_WEBHOOK_SECRET is required}
       VECTOR_HOST: qdrant
       VECTOR_PORT: 6333
+      # AI / Chat provider — 'local' = LM Studio self-hosted (free, unlimited)
+      AI_CHAT_PROVIDER: ${AI_CHAT_PROVIDER:-local}
+      LM_STUDIO_BASE_URL: ${LM_STUDIO_BASE_URL:-http://host.docker.internal:1234/v1}
+      LM_STUDIO_MODEL: ${LM_STUDIO_MODEL:-google/gemma-4-e4b}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       postgres:
         condition: service_healthy
