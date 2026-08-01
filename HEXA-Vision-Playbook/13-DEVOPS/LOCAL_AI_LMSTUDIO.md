@@ -1,6 +1,6 @@
 # Local AI — LM Studio (Free & Unlimited)
 
-> **Status:** LIVE (deployed `1266eab0`, 2026-08-01)
+> **Status:** LIVE (deployed `1266eab0`, 2026-08-01; 12B upgrade 2026-08-01)
 > **Cost:** $0 — no API keys, no quotas, no rate limits. Data never leaves the server.
 
 ## Overview
@@ -9,10 +9,12 @@ The server runs a self-hosted, OpenAI-compatible LLM endpoint via **LM Studio** 
 All chat/vision/agent AI in the deployed backend uses it as the default provider.
 
 - Endpoint: `http://host.docker.internal:1234/v1` (from containers) / `127.0.0.1:1234` (host)
-- Model: `google/gemma-4-e4b` (multimodal — vision-capable, verified)
-- Secondary models: `nvidia/nemotron-3-nano-4b`, `text-embedding-nomic-embed-text-v1.5`
+- **Primary model: `gemma-4-12b-it-qat`** (12B, multimodal — vision-capable, verified; copied
+  from the dev workstation, MD5 `a676f49c…` on both sides). Env: `LM_STUDIO_MODEL` in server `.env`.
+- Secondary models: `google/gemma-4-e4b` (7.5B fallback), `nvidia/nemotron-3-nano-4b`,
+  `text-embedding-nomic-embed-text-v1.5`
 - Bind: `0.0.0.0:1234`, **firewalled to Docker subnets (172.16.0.0/12) + localhost only**
-- Storage: `~/.lmstudio/` (~8.6 GB models, 1.8 TB free disk)
+- Storage: `~/.lmstudio/` (~16.4 GB models, 1.8 TB free disk)
 
 ## Systemd Units (server)
 
@@ -68,8 +70,11 @@ c.chat.completions.create({model:'google/gemma-4-e4b',messages:[{role:'user',con
 
 ## Known Behaviors
 
-- **gemma-4-E4B is a reasoning model**: first ~150 tokens are internal reasoning.
-  `max_tokens` must be ≥ 300 for visible output; all production services use 800+.
+- **gemma-4 models are reasoning models**: first ~150-370 tokens are internal reasoning
+  (12B reasons longer than E4B). `max_tokens` must be ≥ 300 for visible output;
+  production services use 800+, verified with both models.
+- 12B is slower on CPU than E4B (~20-40 s first response incl. reasoning). Switch back with
+  `LM_STUDIO_MODEL=google/gemma-4-e4b` in server `.env` + backend recreate if latency matters.
 - Vision: verified working with base64 `data:` URLs (multimodal, 1-2 images per call).
 - Audio transcription (`voice.service.ts`) stays disabled locally — gemma-4 has no audio input.
   Set `GEMINI_API_KEY` if voice is needed (falls back gracefully).
@@ -77,6 +82,8 @@ c.chat.completions.create({model:'google/gemma-4-e4b',messages:[{role:'user',con
   LM Studio's nomic model is 768-dim vs the 1536-dim Qdrant collections — not swapped to avoid
   breaking semantic search.
 - Model stays loaded after first request (auto-load). First call after boot is slower (~10-30 s).
+- Model files (dev workstation → server, resumable): `sftp` with `put -a` (append) resumes
+  interrupted transfers; verify with `md5sum`.
 
 ## Fallback Strategy
 
