@@ -1,0 +1,12 @@
+# Blackbox exporter modules — probed by Prometheus `blackbox` job.
+# See docker/prometheus/prometheus.yml (job_name: blackbox).
+modules:
+  http_2xx:
+    prober: http
+    timeout: 5s
+    http:
+      valid_status_codes: [200, 301, 302, 307, 308]
+      follow_redirects: true
+      preferred_ip_protocol: ip4
+      tls_config:
+        insecure_skip_verify: false
