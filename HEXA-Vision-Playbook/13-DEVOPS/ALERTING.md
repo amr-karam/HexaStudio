@@ -43,6 +43,7 @@ Alertmanager, which groups, dedupes, and routes notifications.
 - Routes group by `alertname` + `severity`; `critical` repeats every 1h, `warning` 4h.
 - Single receiver `webhook` → `http://webhook:9000/alert`.
 - UI: https://alertmanager.hexastudio.net (Traefik + Cloudflare tunnel, basic auth).
+- Tunnel ingress includes `alertmanager.hexastudio.net` → `http://traefik:80` (added 2026-08-01 via CF API; Traefik router applies `traefik-auth`). If the UI returns 404, the hostname is missing from the tunnel's remote config (`docker logs hexastudio-cloudflared-1` shows the ingress list) — re-add via CF dashboard/API.
 
 ### 2.4 Webhook receiver (`webhook` service)
 - Tiny Node.js service, `docker/webhook/`, listening on `:9000`.
