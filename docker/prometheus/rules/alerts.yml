@@ -162,3 +162,25 @@ groups:
         annotations:
           summary: "SSL certificate expiring soon"
           description: "Certificate for {{ $labels.domain }} expires in {{ $value | printf \"%.0f\" }} days"
+
+  - name: hexa-uptime
+    interval: 30s
+    rules:
+      # Blackbox probes (hexastudio.net, api, gitlab, grafana)
+      - alert: UptimeProbeDown
+        expr: probe_success == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Probe failed: {{ $labels.instance }}"
+          description: "Blackbox HTTP probe for {{ $labels.instance }} has been failing for more than 2 minutes"
+
+      - alert: UptimeProbeSlow
+        expr: probe_duration_seconds > 3
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Probe slow: {{ $labels.instance }}"
+          description: "Blackbox probe for {{ $labels.instance }} took {{ $value | printf \"%.1f\" }}s (threshold: 3s)"
