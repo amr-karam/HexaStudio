@@ -23,7 +23,7 @@ import { VectorModule } from '../vector/vector.module';
  */
 @Global()
 @Module({
-  imports: [HttpModule, OdooModule, forwardRef(() => VectorModule)],
+  imports: [HttpModule, forwardRef(() => OdooModule), forwardRef(() => VectorModule)],
   controllers: [ProjectsController],
   providers: [ProjectsService],
   exports: [ProjectsService],
