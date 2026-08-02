@@ -33,8 +33,11 @@ export class ToolRegistryService implements OnModuleInit {
       const methodNames = Object.getOwnPropertyNames(prototype);
 
       for (const methodName of methodNames) {
-        const method = prototype[methodName];
-        if (typeof method !== 'function') continue;
+        const descriptor = Object.getOwnPropertyDescriptor(prototype, methodName);
+        // Skip accessors (getters/setters): reading them can trigger side effects
+        // (e.g. HttpAdapterHost's `listen$`) that are not safe during onModuleInit.
+        if (!descriptor || typeof descriptor.value !== 'function') continue;
+        const method = descriptor.value;
 
         const definition = this.reflector.get<ToolDefinitionOptions>(TOOL_DEFINITION_METADATA, method);
         const authorization = this.reflector.get<ToolAuthorizationOptions>(TOOL_AUTHORIZATION_METADATA, method);
