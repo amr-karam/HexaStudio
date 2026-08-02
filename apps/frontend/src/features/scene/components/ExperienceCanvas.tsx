@@ -16,6 +16,8 @@ import { Color } from 'three';
 import { useQualityTier } from '@/providers/quality-provider';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { ProjectHotspot } from '@hexastudio/types';
+import { useDesignerStore } from '../store/designer-store';
+import { LIGHTING_PRESETS } from '../config/lighting-presets';
 
 /* -------------------------------------------------------------------------- */
 /*  Types                                                                      */
@@ -55,6 +57,65 @@ function hasWebGL(): boolean {
   } catch {
     return false;
   }
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Lighting rig                                                               */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * SceneLightingRig renders the full light rig from the active designer-store
+ * lighting preset. Every light (ambient, key, fill, rim, spotlight) and the
+ * environment reflection intensity derive from `LIGHTING_PRESETS`, so switching
+ * presets in DesignerModeConfigurator is reflected live in the 3D scene.
+ *
+ * Accessibility: purely static — no animation is introduced, so the rig is
+ * safe under `prefers-reduced-motion` and the motion:disabled site policy.
+ */
+function SceneLightingRig() {
+  const activeLighting = useDesignerStore((state) => state.activeLighting);
+  const lighting = LIGHTING_PRESETS[activeLighting];
+  const { tier } = useQualityTier();
+
+  return (
+    <>
+      <Environment preset="warehouse" environmentIntensity={lighting.envIntensity} />
+
+      {/* Base ambient illumination from the preset. */}
+      <ambientLight intensity={lighting.ambientIntensity} color={lighting.ambientColor} />
+
+      {/* Key light — preset-driven, crisp, casts shadows. */}
+      <directionalLight
+        position={lighting.directionalPosition}
+        intensity={lighting.directionalIntensity}
+        color={lighting.directionalColor}
+        castShadow={tier.shadows}
+        shadow-mapSize={[tier.shadowMapSize, tier.shadowMapSize]}
+        shadow-bias={-0.0001}
+      />
+      {/* Warm gold fill from the opposite side — tinted by the preset. */}
+      <directionalLight
+        position={[-6, 4, -4]}
+        intensity={lighting.directionalIntensity * 0.25}
+        color={lighting.directionalColor}
+      />
+      {/* Cool rim light for separation — tinted by the preset. */}
+      <directionalLight
+        position={[0, 6, -8]}
+        intensity={lighting.directionalIntensity * 0.35}
+        color={lighting.directionalColor}
+      />
+      {/* Overhead spotlight — intensified for the gallery presentation preset. */}
+      <spotLight
+        position={[0, 15, 0]}
+        angle={0.4}
+        penumbra={1}
+        intensity={activeLighting === 'gallery' ? 1.6 : lighting.directionalIntensity * 0.35}
+        color={lighting.directionalColor}
+        castShadow={tier.shadows}
+      />
+    </>
+  );
 }
 
 /* -------------------------------------------------------------------------- */
@@ -182,31 +243,8 @@ export const ExperienceCanvas = ({
             <PerspectiveCamera makeDefault position={[5, 5, 5]} fov={45} />
             <CameraController />
 
-            <Environment preset="warehouse" />
+            <SceneLightingRig />
             <SceneContent projectModelUrl={projectModelUrl} hotspots={hotspots} status={status} milestones={milestones} />
-
-            {/* Key light — crisp white from upper right. */}
-            <directionalLight
-              position={[8, 12, 4]}
-              intensity={2}
-              color="#ffffff"
-              castShadow={tier.shadows}
-              shadow-mapSize={[tier.shadowMapSize, tier.shadowMapSize]}
-              shadow-bias={-0.0001}
-            />
-            {/* Warm gold fill from the opposite side. */}
-            <directionalLight position={[-6, 4, -4]} intensity={0.4} color="#D4AF37" />
-            {/* Cool blue rim light for separation. */}
-            <directionalLight position={[0, 6, -8]} intensity={0.6} color="#7BA7FF" />
-            {/* Overhead spotlight. */}
-            <spotLight
-              position={[0, 15, 0]}
-              angle={0.4}
-              penumbra={1}
-              intensity={0.5}
-              color="#ffffff"
-              castShadow={tier.shadows}
-            />
 
             <fog attach="fog" args={['#050505', 12, 35]} />
 

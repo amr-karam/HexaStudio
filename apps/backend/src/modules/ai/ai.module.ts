@@ -14,6 +14,8 @@ import { StructuredOutputService } from './structured-output.service';
 import { AiCacheService } from './ai-cache.service';
 import { TokenUsageService } from './token-usage.service';
 import { VoiceService } from './voice.service';
+import { SpatialSynthesisService } from './spatial-synthesis.service';
+import { SpatialSynthesisController } from './spatial-synthesis.controller';
 import { MinIOVisionService } from './minio-vision.listener';
 import { StorageModule } from '../storage/storage.module';
 import { VectorModule } from '../vector/vector.module';
@@ -37,7 +39,7 @@ import { VectorModule } from '../vector/vector.module';
  */
 @Module({
   imports: [forwardRef(() => VectorModule), StorageModule],
-  controllers: [MultimodalController, AiChatController],
+  controllers: [MultimodalController, AiChatController, SpatialSynthesisController],
   providers: [
     AiChatService,
     ModelRouterService,
@@ -52,6 +54,7 @@ import { VectorModule } from '../vector/vector.module';
     TokenUsageService,
     VoiceService,
     TransformReasoningService,
+    SpatialSynthesisService,
     MinIOVisionService,
   ],
   exports: [
@@ -68,6 +71,7 @@ import { VectorModule } from '../vector/vector.module';
     TokenUsageService,
     VoiceService,
     TransformReasoningService,
+    SpatialSynthesisService,
     MinIOVisionService,
   ],
 })
