@@ -48,7 +48,7 @@ Provide: 1. Qualification score (0-100) 2. Fit assessment 3. Recommended approac
 
       return JSON.parse(response.choices[0]?.message?.content || '{}');
     } catch (error) {
-      this.logger.error(`Sales qualification failed: ${(error as any).message}`);
+      this.logger.error(`Sales qualification failed: ${(error as Error).message}`);
       return this.fallbackQualification(company);
     }
   }
@@ -78,7 +78,7 @@ Provide: 1. Qualification score (0-100) 2. Fit assessment 3. Recommended approac
 
       return JSON.parse(response.choices[0]?.message?.content || '{}');
     } catch (error) {
-      this.logger.error(`Proposal generation failed: ${(error as any).message}`);
+      this.logger.error(`Proposal generation failed: ${(error as Error).message}`);
       return { content: 'Proposal generation failed', confidence: 0.3, actions: ['Manual creation required'] };
     }
   }

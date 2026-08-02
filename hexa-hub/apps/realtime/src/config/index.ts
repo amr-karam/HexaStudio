@@ -23,4 +23,11 @@ export const config = {
     windowMs: Number(process.env.RATE_LIMIT_WINDOW_MS) || 1_000,
     maxConnectionsPerIp: Number(process.env.RATE_LIMIT_MAX_CONNS_PER_IP) || 10,
   },
+  // ─── SENTRY CONFIGURATION ────────────────────────────────────────────────
+  sentry: {
+    dsn: process.env.SENTRY_DSN || '',
+    tracesSampleRate: Number(process.env.SENTRY_TRACES_SAMPLE_RATE) || 0.1,
+    profilesSampleRate: Number(process.env.SENTRY_PROFILES_SAMPLE_RATE) || 0.1,
+  },
+  nodeEnv: process.env.NODE_ENV || 'development',
 } as const;

@@ -126,7 +126,7 @@ export class TranslationService {
         this.mapEntry(item),
       );
     } catch (err) {
-      this.logger.warn(`Failed to fetch ${type} for ${locale}: ${(err as any).message}`);
+      this.logger.warn(`Failed to fetch ${type} for ${locale}: ${(err as Error).message}`);
       return [];
     }
   }
@@ -179,7 +179,7 @@ export class TranslationService {
         );
       }
     } catch (err) {
-      this.logger.error(`Failed to upsert ${type}/${entry.id} for ${locale}: ${(err as any).message}`);
+      this.logger.error(`Failed to upsert ${type}/${entry.id} for ${locale}: ${(err as Error).message}`);
     }
   }
 }

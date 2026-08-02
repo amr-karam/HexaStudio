@@ -73,6 +73,8 @@ const navItems: NavItem[] = [
   { icon: Hash, label: 'Channels', href: '/dashboard/channels' },
   { icon: ShieldCheck, label: 'Approvals', href: '/dashboard/approvals' },
   { icon: Bell, label: 'Notifications', href: '/dashboard/notifications' },
+  { icon: Bot, label: 'AI Assistant', href: '/dashboard/ai-assistant' },
+  { icon: Briefcase, label: 'Portal', href: '/dashboard/portal' },
   { icon: Settings, label: 'Settings', href: '/dashboard/settings' },
 ];
 

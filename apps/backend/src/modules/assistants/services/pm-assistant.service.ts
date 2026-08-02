@@ -42,7 +42,7 @@ export class PMAssistantService {
 
       return JSON.parse(response.choices[0]?.message?.content || '{}');
     } catch (error) {
-      this.logger.error(`Sprint planning failed: ${(error as any).message}`);
+      this.logger.error(`Sprint planning failed: ${(error as Error).message}`);
       return { content: 'Planning failed', confidence: 0.3, actions: ['Manual planning'] };
     }
   }
@@ -68,7 +68,7 @@ export class PMAssistantService {
 
       return JSON.parse(response.choices[0]?.message?.content || '{}');
     } catch (error) {
-      this.logger.error(`Risk prediction failed: ${(error as any).message}`);
+      this.logger.error(`Risk prediction failed: ${(error as Error).message}`);
       return { content: 'Risk prediction failed', confidence: 0.3, actions: ['Manual assessment'] };
     }
   }

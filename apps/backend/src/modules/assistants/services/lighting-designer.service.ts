@@ -58,7 +58,7 @@ Design a complete lighting preset.`,
 
       return JSON.parse(response.choices[0]?.message?.content || '{}');
     } catch (error) {
-      this.logger.error(`Lighting design failed: ${(error as any).message}`);
+      this.logger.error(`Lighting design failed: ${(error as Error).message}`);
       return this.fallbackDesign();
     }
   }
@@ -83,7 +83,7 @@ Design a complete lighting preset.`,
 
       return JSON.parse(response.choices[0]?.message?.content || '{}');
     } catch (error) {
-      this.logger.error(`Reference lighting failed: ${(error as any).message}`);
+      this.logger.error(`Reference lighting failed: ${(error as Error).message}`);
       return this.fallbackDesign();
     }
   }

@@ -27,7 +27,7 @@ export class OdooEventListener implements OnModuleInit {
       await this.redisService.del(`odoo:project:${p.id}`);
       this.logger.log(`Invalidated Odoo project cache for #${p.id}`);
     } catch (error) {
-      this.logger.warn(`Failed to invalidate Odoo project cache: ${(error as any).message}`);
+      this.logger.warn(`Failed to invalidate Odoo project cache: ${(error as Error).message}`);
     }
   }
 }

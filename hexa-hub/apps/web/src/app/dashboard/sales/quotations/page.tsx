@@ -43,45 +43,20 @@ const STATUS_CONFIG: Record<
   string,
   { label: string; bg: string; text: string; dot: string }
 > = {
-  [QuotationState.DRAFT]: {
-    label: 'Draft',
-    bg: 'bg-neutral-500/10',
-    text: 'text-neutral-400',
-    dot: 'bg-neutral-400',
-  },
-  [QuotationState.SENT]: {
-    label: 'Sent',
-    bg: 'bg-blue-500/10',
-    text: 'text-blue-400',
-    dot: 'bg-blue-400',
-  },
-  [QuotationState.ACCEPTED]: {
-    label: 'Accepted',
-    bg: 'bg-emerald-500/10',
-    text: 'text-emerald-400',
-    dot: 'bg-emerald-400',
-  },
-  [QuotationState.CANCELLED]: {
-    label: 'Cancelled',
-    bg: 'bg-red-500/10',
-    text: 'text-red-400',
-    dot: 'bg-red-400',
-  },
-  [QuotationState.SALES_ORDER]: {
-    label: 'Sales Order',
-    bg: 'bg-[#D4A843]/10',
-    text: 'text-[#D4A843]',
-    dot: 'bg-[#D4A843]',
-  },
+  draft: { label: 'Draft', bg: 'bg-neutral-500/10', text: 'text-neutral-400', dot: 'bg-neutral-400' },
+  sent: { label: 'Sent', bg: 'bg-blue-500/10', text: 'text-blue-400', dot: 'bg-blue-400' },
+  accepted: { label: 'Accepted', bg: 'bg-emerald-500/10', text: 'text-emerald-400', dot: 'bg-emerald-400' },
+  cancelled: { label: 'Cancelled', bg: 'bg-red-500/10', text: 'text-red-400', dot: 'bg-red-400' },
+  sales_order: { label: 'Sales Order', bg: 'bg-[#D4A843]/10', text: 'text-[#D4A843]', dot: 'bg-[#D4A843]' },
 };
 
-const STATUS_OPTIONS: { value: QuotationState | ''; label: string }[] = [
+const STATUS_OPTIONS: { value: string; label: string }[] = [
   { value: '', label: 'All Statuses' },
-  { value: QuotationState.DRAFT, label: 'Draft' },
-  { value: QuotationState.SENT, label: 'Sent' },
-  { value: QuotationState.ACCEPTED, label: 'Accepted' },
-  { value: QuotationState.CANCELLED, label: 'Cancelled' },
-  { value: QuotationState.SALES_ORDER, label: 'Sales Order' },
+  { value: 'draft', label: 'Draft' },
+  { value: 'sent', label: 'Sent' },
+  { value: 'accepted', label: 'Accepted' },
+  { value: 'cancelled', label: 'Cancelled' },
+  { value: 'sales_order', label: 'Sales Order' },
 ];
 
 const PAGE_SIZE = 15;

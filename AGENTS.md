@@ -1,122 +1,94 @@
 # 🚨 MANDATORY — READ FIRST — DO NOT SKIP
 
-**AGENTS.md** is the **binding legal operating manual** for every AI agent interacting with the HEXA Vision codebase.
+**AGENTS.md** is the **binding legal operating manual** for every AI agent interacting with the HEXA STUDIO codebase.
 
 **You MUST read this entire file — from beginning to end — before performing ANY action.**
 
-By proceeding past this point, you acknowledge and agree to comply with all rules, policies, and standards defined in this document. Any violation is a breach of protocol.
-
-Failure to read this file before writing, modifying, or reviewing code is a **critical protocol violation**.
+By proceeding past this point, you acknowledge and agree to comply with all rules, policies, and standards defined in this document. Any violation is a critical protocol breach.
 
 ---
 
-# HEXA Studio — AI Agent Instructions
+# HEXA STUDIO — AI Agent Operating Instructions
 
-## Mandatory Startup Procedure
+## 1. Mandatory Startup Procedure
 
 Before performing ANY task, read these documents in order:
 
-1. `HEXA-Vision-Playbook/00-GOVERNANCE/PROJECT_CONSTITUTION.md`
-2. `HEXA-Vision-Playbook/00-GOVERNANCE/ENTERPRISE_ARCHITECTURE_GOVERNANCE.md`
-3. `HEXA-Vision-Playbook/00-GOVERNANCE/PROJECT_OVERVIEW.md`
-4. `HEXA-Vision-Playbook/01-ARCHITECTURE/SYSTEM_ARCHITECTURE.md`
-5. `HEXA-Vision-Playbook/02-ROADMAP/PROJECT_ROADMAP.md`
-6. `HEXA-Vision-Playbook/02-ROADMAP/CURRENT_SPRINT.md`
-7. `HEXA-Vision-Playbook/02-ROADMAP/OPEN_TASKS.md`
-8. `HEXA-Vision-Playbook/06-STANDARDS/CODING_STANDARDS.md`
-9. `HEXA-Vision-Playbook/06-STANDARDS/SECURITY_STANDARDS.md`
-10. `HEXA-Vision-Playbook/04-AGENTS/AI_AGENT_GUIDE.md`
+1. `GOVERNANCE.md`
+2. `ARCHITECTURE.md`
+3. `PRODUCT.md`
+4. `DESIGN_SYSTEM.md`
+5. `ENGINEERING_STANDARDS.md`
+6. `SECURITY.md`
+7. `PERFORMANCE.md`
+8. `ACCESSIBILITY.md`
+9. `PROJECT_STATUS.md`
+10. Relevant `.ai/agents/` role definition file
 
 After reading them:
-- Summarize your understanding of the project.
-- Identify the current project phase and sprint.
-- List any risks or blockers you identified.
-- Wait for the user's assignment.
+- Summarize your understanding of the task and target files.
+- Identify the current project phase and active sprint.
+- List any architectural risks or blockers identified.
+- Execute the task systematically following the **Definition of Done**.
 
-## Rules
+---
 
-- **Never start coding before understanding the project.**
-- **Never change architecture without documenting the decision.**
-- **Never delete code without approval.**
-- **Always update documentation when making changes.**
-- **Always follow Coding Standards and Quality Gates.**
-- **Prefer long-term maintainability over short-term speed.**
-- **If documentation conflicts, stop and ask for clarification.**
+## 2. Non-Negotiable Agent Rules
 
-## Technical Implementation Guide (Agent Quickstart)
+### AI Agents MUST:
+1. Always inspect affected code before modifying it.
+2. Maintain strict TypeScript type-safety (0 `any` types permitted).
+3. Follow the 14-level **Governance Hierarchy** defined in `GOVERNANCE.md`.
+4. Ensure all single-package commands use workspace flags (e.g., `npm run test --workspace=apps/frontend`).
+5. Update `PROJECT_STATUS.md` and relevant documentation upon task completion.
+6. Verify quality gates before declaring any task complete.
 
-### Monorepo Structure
-- **Apps**: `apps/frontend` (Next.js 15, source in `src/`), `apps/backend` (NestJS), `apps/cms` (Strapi 5).
-- **Packages**: `packages/types`, `packages/ui`, `packages/utils` (shared source, consumed via workspaces).
-- **Orchestration**: Turbo (`turbo.json`) handles task dependencies.
+### AI Agents MUST NOT:
+- Change architecture silently without creating a formal **ADR**.
+- Introduce heavy third-party dependencies without explicit performance justification.
+- Delete working code or comment out failing assertions.
+- Disable TypeScript checks (`@ts-ignore`) or ESLint rules (`eslint-disable`).
+- Commit secrets, API keys, or private SSH keys.
+- Push directly to protected production branches (`main`/`master`).
+- Hide errors or claim completion without verified test execution.
 
-### Developer Commands & Gotchas
-- **Setup**: Ignore `npm run setup` (stale README). Use `bash .setup.sh`.
-- **Installation**: Use `npm install --legacy-peer-deps` to avoid dependency conflicts (verified in `ci.yml`).
-- **Node Version**: Ambiguous (20 vs 22). Use **Node 20** for best alignment with authoritative CI (`ci.yml`).
-- **Frontend Build/Typecheck**: Must set `SKIP_ENV_VALIDATION=true` and provide `NEXT_PUBLIC_*` env vars, otherwise they will fail.
-- **Quality Gate Sequence**: `npm run lint` $\rightarrow$ `npm run typecheck` $\rightarrow$ `npm run test`.
-- **Single-Package Tasks**: Use `--workspace` (e.g., `npm run test --workspace=apps/backend`).
-- **E2E Tests**: Run via `npm run test:e2e --workspace=apps/frontend`. Config is located at `e2e/playwright.config.ts`.
-- **CMS**: Strapi 5. No lint/typecheck scripts defined; skipped by global turbo tasks.
+---
 
-### Infrastructure & Deployment
-- **Local Dev**: `docker compose up -d` (uses `docker-compose.yml` with Nginx proxy).
-- **Production**: Uses Traefik + Cloudflared (defined in `docker-compose.prod.yml`).
-- **Deploy Scripts**: `deploy.py` is a raw SSH helper; `cd.yml` is the primary production pipeline.
+## 3. Technology Stack & Infrastructure Rules
 
-## Technology Stack
+| Layer | Technology | Infrastructure Rule |
+|-------|-----------|---------------------|
+| **Frontend** | Next.js 16 (App Router), TypeScript 5.8, TailwindCSS 4 | Turbopack build, Client Island dynamic imports for WebGL |
+| **3D Engine** | Three.js, React Three Fiber, @react-three/drei | Gated by `useMotionPolicy`, lazy loaded, fallback static cards |
+| **Backend** | NestJS 11, REST (Swagger), Socket.io, JWT | Microservices architecture, strict CORS & rate-limiting |
+| **CMS** | Strapi 5 (Headless) | PostgreSQL database, webhook triggers to Next.js revalidation |
+| **ERP** | Odoo 17.0 (Community/Enterprise) | JSON-RPC API client (`OdooApiService`), CRM leads & billing sync |
+| **Databases** | PostgreSQL 16, Redis 7, Qdrant | Internal network only; no public port exposure permitted |
+| **Storage** | MinIO (S3 Compatible) | Presigned URLs for client deliverable downloads |
+| **Proxy & Ingress** | Traefik v3 (with Cloudflared Tunnel) | Single ingress proxy; Nginx is NOT used |
+| **DevOps & CI/CD** | GitLab CE (Runner + Container Registry) | Primary DevOps source of truth; protected branches |
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | Next.js 15, TypeScript, TailwindCSS 4 |
-| 3D Engine | Three.js, React Three Fiber, @react-three/drei |
-| Animation | GSAP, Framer Motion |
-| Backend | NestJS, REST (Swagger), JWT |
-| CMS | Strapi 5 (Headless) |
-| Databases | PostgreSQL 16, Redis 7 |
-| Storage | MinIO (S3 Compatible) |
-| Proxy | Traefik v3 |
-| Edge | Cloudflare (CDN/WAF) |
-| Monitoring | Prometheus, Grafana, Loki, Promtail |
-| State | Zustand (Client), TanStack Query (Server) |
-| Observability | Sentry |
+---
 
-## GitHub Organization
+## 4. Quality Gate Sequence
 
-```
-HEXA-Studio/
-├── hexa-platform      ← Single Source of Truth (monorepo)
-├── hexa-website
-├── hexa-api
-├── hexa-odoo
-├── hexa-ai
-├── hexa-devops
-├── hexa-mobile        (Future)
-├── hexa-design-system (Optional)
-└── hexa-docs          (Optional)
+Before completing any task, execute the exact quality gate sequence across affected workspaces:
+
+```bash
+# Frontend Gate
+npm run lint --workspace=apps/frontend
+npm run typecheck --workspace=apps/frontend
+npm run test --workspace=apps/frontend
+
+# Backend Gate
+npm run lint --workspace=apps/backend
+npm run typecheck --workspace=apps/backend
+npm run test --workspace=apps/backend
+
+# Mobile Gate
+npm run lint --workspace=apps/mobile
+npm run typecheck --workspace=apps/mobile
+npm run test --workspace=apps/mobile
 ```
 
-## Creative Excellence Mode
-
-When working on the Frontend, agents must operate in **Creative Excellence Mode**. This means:
-- **Role Shift:** You are no longer just an engineer; you are an elite multidisciplinary design team (Creative Director, UX Director, Motion Expert, etc.).
-- **Objective:** Redesign for a premium, world-class digital experience. Every interaction must feel handcrafted and cinematic.
-- **Standard:** Any UI/UX element must score at least **9.5/10** on the Luxury and Performance scale.
-- **Mandate:** Challenge every design decision. If a solution is "average," redesign it.
-- **Framework:** Follow the guidelines in `HEXA-Vision-Playbook/07-DESIGN/UX_STRATEGY.md` and `HEXA-Vision-Playbook/06-STANDARDS/MOTION_SYSTEM.md`.
-
-## Playbook Structure
-
-All documentation lives inside `HEXA-Vision-Playbook/` and is organized by category:
-- `00-GOVERNANCE/`: Constitution, Overview, and Vision.
-- `01-ARCHITECTURE/`: System design and technical blueprints.
-- `02-ROADMAP/`: Milestones, Sprint status, and Backlog.
-- `03-BUSINESS/`: Workflows and Client journeys.
-- `04-AGENTS/`: Specific AI Agent guides.
-- `06-STANDARDS/`: Coding, UI/UX, and Security standards.
-- `07-DESIGN/`: Design system and Motion guidelines.
-- `08-API/`: API documentation and endpoints.
-- `09-ODOO/`: Odoo ERP integration.
-- `13-DEVOPS/`: Deployment and Infrastructure.
-- `15-QUALITY/`: Testing and QA gates.
+All 3 gates MUST pass with **0 Errors and 0 Warnings** (`--max-warnings=0`).

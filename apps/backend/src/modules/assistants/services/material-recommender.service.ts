@@ -49,7 +49,7 @@ Return JSON: materials[] (name, type, baseColor, roughness, metalness, normalMap
 
       return JSON.parse(response.choices[0]?.message?.content || '{}');
     } catch (error) {
-      this.logger.error(`Material recommendation failed: ${(error as any).message}`);
+      this.logger.error(`Material recommendation failed: ${(error as Error).message}`);
       return this.fallbackMaterials();
     }
   }
@@ -74,7 +74,7 @@ Return JSON: materials[] (name, type, baseColor, roughness, metalness, normalMap
 
       return JSON.parse(response.choices[0]?.message?.content || '{}');
     } catch (error) {
-      this.logger.error(`Material matching failed: ${(error as any).message}`);
+      this.logger.error(`Material matching failed: ${(error as Error).message}`);
       return this.fallbackMaterials();
     }
   }

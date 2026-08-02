@@ -46,7 +46,7 @@ export class GeoipService {
         return cached;
       }
     } catch (err: unknown) {
-      this.logger.warn(`Redis cache read failed for ${cacheKey}: ${(err as any).message}`);
+      this.logger.warn(`Redis cache read failed for ${cacheKey}: ${(err as Error).message}`);
     }
 
     // Call ip-api.com
@@ -63,12 +63,12 @@ export class GeoipService {
       try {
         await this.redisService.set(cacheKey, data, REDIS_TTL);
       } catch (err: unknown) {
-        this.logger.warn(`Redis cache write failed for ${cacheKey}: ${(err as any).message}`);
+        this.logger.warn(`Redis cache write failed for ${cacheKey}: ${(err as Error).message}`);
       }
 
       return data;
     } catch (err: unknown) {
-      this.logger.error(`GeoIP lookup failed for ${ip}: ${(err as any).message}`);
+      this.logger.error(`GeoIP lookup failed for ${ip}: ${(err as Error).message}`);
       // Return fallback (US)
       return this.fallbackResult(ip);
     }

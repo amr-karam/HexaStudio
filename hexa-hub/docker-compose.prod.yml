@@ -1,0 +1,295 @@
+version: '3.8'
+
+services:
+  # Database: PostgreSQL
+  hub-postgres:
+    image: postgres:16-alpine
+    container_name: hub-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-hub_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hub_password}
+      POSTGRES_DB: ${POSTGRES_DB:-hub_db}
+    volumes:
+      - hub-postgres-data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hub_user} -d ${POSTGRES_DB:-hub_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hexa-net
+
+  # Cache & Pub/Sub: Redis
+  hub-redis:
+    image: redis:7-alpine
+    container_name: hub-redis
+    restart: unless-stopped
+    command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"]
+    volumes:
+      - hub-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hexa-net
+
+  # Object Storage: MinIO
+  hub-minio:
+    image: minio/minio
+    container_name: hub-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      MINIO_DOMAIN: '${MINIO_DOMAIN:-minio.hexastudio.net}'
+    volumes:
+      - hub-minio-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - hexa-net
+
+  # Realtime Server: Socket.IO
+  hub-realtime:
+    build:
+      context: ..
+      dockerfile: apps/realtime/Dockerfile
+    container_name: hub-realtime
+    restart: unless-stopped
+    environment:
+      PORT: 3001
+      NODE_ENV: production
+      REDIS_URL: redis://hub-redis:6379
+      JWT_SECRET: ${JWT_SECRET}
+      LOG_LEVEL: info
+      CORS_ORIGIN: ${CORS_ORIGIN:-https://hexastudio.net,https://hub.hexastudio.net}
+    depends_on:
+      hub-redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    networks:
+      - hexa-net
+
+  # Backend API: NestJS
+  hub-api:
+    build:
+      context: ..
+      dockerfile: apps/api/Dockerfile
+    container_name: hub-api
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      DB_HOST: hub-postgres
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER:-hub_user}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-hub_password}
+      DB_NAME: ${POSTGRES_DB:-hub_db}
+      DB_SYNCHRONIZE: false
+      DB_LOGGING: false
+      JWT_SECRET: ${JWT_SECRET}
+      REDIS_URL: redis://hub-redis:6379
+      CORS_ORIGINS: ${CORS_ORIGINS:-https://hexastudio.net,https://hub.hexastudio.net}
+      ODOO_URL: ${ODOO_URL}
+      ODOO_DB: ${ODOO_DB}
+      ODOO_USERNAME: ${ODOO_USERNAME}
+      ODOO_PASSWORD: ${ODOO_PASSWORD}
+      MINIO_ENDPOINT: hub-minio
+      MINIO_PORT: 9000
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      MINIO_BUCKET: ${MINIO_BUCKET:-hub-files}
+      SENTRY_DSN: ${SENTRY_DSN}
+    depends_on:
+      hub-postgres:
+        condition: service_healthy
+      hub-redis:
+        condition: service_healthy
+      hub-minio:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    networks:
+      - hexa-net
+
+  # Frontend: Next.js
+  hub-web:
+    build:
+      context: ..
+      dockerfile: apps/web/Dockerfile
+    container_name: hub-web
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api.hexastudio.net}
+      NEXT_PUBLIC_REALTIME_URL: ${NEXT_PUBLIC_REALTIME_URL:-wss://realtime.hexastudio.net}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-https://hub.hexastudio.net}
+      SENTRY_DSN: ${SENTRY_DSN}
+      SENTRY_ENVIRONMENT: production
+    depends_on:
+      hub-api:
+        condition: service_healthy
+      hub-realtime:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    networks:
+      - hexa-net
+
+  # CMS: Strapi 5
+  hub-cms:
+    build:
+      context: ..
+      dockerfile: apps/cms/Dockerfile
+    container_name: hub-cms
+    restart: unless-stopped
+    environment:
+      DATABASE_CLIENT: postgres
+      DATABASE_NAME: ${POSTGRES_DB:-hub_db}
+      DATABASE_USERNAME: ${POSTGRES_USER:-hub_user}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-hub_password}
+      DATABASE_HOST: hub-postgres
+      DATABASE_PORT: 5432
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin@hexastudio.net}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
+      APP_KEYS: ${APP_KEYS}
+      TRANSFER_TOKENS: ${TRANSFER_TOKENS}
+      API_TOKEN_SALT: ${API_TOKEN_SALT}
+      ADMIN_URL: ${ADMIN_URL:-/admin}
+      HOST: 0.0.0.0
+      PORT: 1337
+      NODE_ENV: production
+    depends_on:
+      hub-postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:1337/_health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - hub-cms-data:/app/public/uploads
+    networks:
+      - hexa-net
+
+  # Monitoring: Prometheus
+  hub-prometheus:
+    image: prom/prometheus:latest
+    container_name: hub-prometheus
+    restart: unless-stopped
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--storage.tsdb.retention.time=15d'
+      - '--web.enable-lifecycle'
+    ports:
+      - "9090:9090"
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    networks:
+      - hexa-net
+
+  # Monitoring: Grafana
+  hub-grafana:
+    image: grafana/grafana:latest
+    container_name: hub-grafana
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER:-admin}
+      - ${GF_SECURITY_ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_USERS_ALLOW_ORG_CREATE=false
+      - GF_USERS_AUTO_ASSIGN_ORG=true
+      - GF_USERS_DEFAULT_ORG_ROLE=Viewer
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+      - GF_AUTH_ANONYMOUS_ENABLE_GUEST=false
+      - GF_SMTP_ENABLED=${GF_SMTP_ENABLED:-false}
+      - GF_SERVER_DOMAIN=${GF_SERVER_DOMAIN:-monitor.hexastudio.net}
+      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s:%(http_port)s/
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/hexahub.json
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      hub-prometheus:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/login"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    networks:
+      - hexa-net
+
+  # Logging: Loki
+  hub-loki:
+    image: grafana/loki:latest
+    container_name: hub-loki
+    restart: unless-stopped
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./monitoring/loki:/etc/loki
+      - loki-data:/loki
+    networks:
+      - hexa-net
+
+  # Logging: Promtail
+  hub-promtail:
+    image: grafana/promtail:latest
+    container_name: hub-promtail
+    restart: unless-stopped
+    volumes:
+      - /var/log:/var/log:ro
+      - ./monitoring/loki/config.yml:/etc/promtail/config.yml:ro
+      - hub-postgres-data:/var/lib/postgresql/data:ro
+      - hub-redis-data:/data:ro
+      - hub-minio-data:/data:ro
+    depends_on:
+      hub-loki:
+        condition: service_healthy
+    networks:
+      - hexa-net
+
+networks:
+  hexa-net:
+    driver: bridge
+
+volumes:
+  hub-postgres-data:
+  hub-redis-data:
+  hub-minio-data:
+  hub-cms-data:
+  prometheus-data:
+  grafana-data:
+  loki-data:

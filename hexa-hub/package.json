@@ -1,31 +1,47 @@
 {
-  "name": "hexa-hub",
-  "version": "0.1.0",
-  "private": true,
-  "packageManager": "npm@11.17.0",
-  "description": "HEXA Hub - Internal collaboration platform",
-  "workspaces": [
-    "apps/web",
-    "apps/api",
-    "apps/realtime",
-    "apps/worker",
-    "packages/types"
-  ],
+  "name": "opencode-mcp-bridge",
+  "version": "1.0.0",
+  "description": "MCP bridge for OpenCode ↔ ChatGPT Desktop integration with GitLab webhook support",
+  "main": "src/index.js",
+  "type": "module",
   "scripts": {
-    "dev": "turbo run dev",
-    "build": "turbo run build",
-    "lint": "turbo run lint",
-    "typecheck": "turbo run typecheck",
-    "test": "turbo run test"
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node src/index.js",
+    "mcp:stdio": "tsx src/mcp-stdio.ts",
+    "gateway": "tsx src/webhook-gateway.ts",
+    "docker": "node src/docker-entrypoint.js",
+    "test": "vitest",
+    "lint": "eslint src/"
+  },
+  "keywords": [
+    "mcp",
+    "opencode",
+    "chatgpt",
+    "bridge",
+    "ai",
+    "tools",
+    "gitlab",
+    "webhook",
+    "automation"
+  ],
+  "author": "HEXA Studio",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "node-fetch": "^3.3.2",
+    "uuid": "^9.0.0",
+    "winston": "^3.11.0"
   },
   "devDependencies": {
-    "turbo": "^2.10.4"
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.10.0",
+    "tsx": "^4.7.2",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2"
   },
-  "overrides": {
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0"
-  },
-  "dependencies": {
-    "@nestjs/swagger": "^8.1.1"
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

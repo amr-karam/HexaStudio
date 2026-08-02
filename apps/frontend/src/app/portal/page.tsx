@@ -22,7 +22,6 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { API_BASE_URL } from '@/config/constants';
 import { StatCard } from '@/features/portal/components/StatCard';
 import { HealthScore } from '@/features/portal/components/HealthScore';
 import { ActivityItem } from '@/features/portal/components/ActivityItem';

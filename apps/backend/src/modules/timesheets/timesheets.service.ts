@@ -109,7 +109,7 @@ export class TimesheetsService {
         uniqueProjects: projectIds.size,
       };
     } catch (error) {
-      this.logger.warn('Failed to compute timesheet stats', (error as any).message);
+      this.logger.warn('Failed to compute timesheet stats', (error as Error).message);
       return { totalEntries: 0, totalHours: 0, uniqueEmployees: 0, uniqueProjects: 0 };
     }
   }

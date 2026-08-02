@@ -3,10 +3,32 @@ import { AppModule } from './app.module';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import type { Request, Response, NextFunction } from 'express';
+import * as Sentry from '@sentry/node';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
+
+  // ─── SENTRY INITIALIZATION ────────────────────────────────────────────────
+  if (process.env.SENTRY_DSN) {
+    Sentry.init({
+      dsn: process.env.SENTRY_DSN,
+      environment: process.env.NODE_ENV || 'development',
+      tracesSampleRate: parseFloat(process.env.SENTRY_TRACES_SAMPLE_RATE || '0.1'),
+      profilesSampleRate: parseFloat(process.env.SENTRY_PROFILES_SAMPLE_RATE || '0.1'),
+      attachStacktrace: true,
+    });
+    
+    // Request handler to capture all requests and errors
+    app.use(Sentry.Handlers.requestHandler());
+    
+    // Error handler to capture unhandled exceptions
+    app.use(Sentry.Handlers.errorHandler());
+    
+    logger.log('Sentry error tracking initialized');
+  } else {
+    logger.log('Sentry DSN not provided - error tracking disabled');
+  }
 
   // ─── Global API Prefix — v1 ──────────────────────────────────────────────
   app.setGlobalPrefix('api/v1');
@@ -94,7 +116,7 @@ async function bootstrap() {
     .addTag('Notifications', 'User notification feed')
     .addTag('Odoo — CRM', 'CRM leads, pipeline, and stats (Odoo)')
     .addTag('Odoo — Projects', 'Project management and milestones (Odoo)')
-    .addTag('Odoo — Tasks', 'Task tracking synced with Odoo')
+    .addTag('Odeo — Tasks', 'Task tracking synced with Odoo')
     .addTag('Odoo — Contacts', 'Contact and client directory (Odoo)')
     .addTag('Odoo — Sales', 'Quotations, orders, and invoices (Odoo)')
     .addTag('Odoo — Activities', 'Activity logging and scheduling (Odoo)')

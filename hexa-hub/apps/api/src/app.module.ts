@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { AppThrottlerModule } from './common/throttler/throttler.module';
 import { AuditModule } from './common/audit/audit.module';
 import { EventsModule } from './common/events/events.module';
+import { CacheManagerModule } from './common/cache/cache.module';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { WorkspacesModule } from './modules/workspaces/workspaces.module';
@@ -40,6 +41,7 @@ import { typeOrmConfig } from './database/data-source';
     AppThrottlerModule,
     AuditModule,
     EventsModule,
+    CacheManagerModule,
     // Core
     UsersModule, AuthModule, WorkspacesModule, MessagesModule, AiModule, ChannelsModule,
     // Odoo Integration

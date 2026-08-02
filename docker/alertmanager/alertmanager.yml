@@ -1,33 +1,80 @@
 # ============================================================================
 # HEXA Studio — Alertmanager Configuration
-# Sends alerts to a webhook receiver (extend with email/Slack/Telegram as needed)
+# Sends alerts to email and webhook receivers
 # ============================================================================
 global:
   resolve_timeout: 5m
-  # SMTP is not configured — add smtp_smarthost + auth here once credentials exist.
-  # smtp_smarthost: 'smtp.example.com:587'
-  # smtp_from: 'alerts@hexastudio.net'
-  # smtp_auth_username: 'user'
-  # smtp_auth_password: 'pass'
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: 'alerts@hexastudio.net'
+  smtp_auth_username: 'alerts@hexastudio.net'
+  smtp_auth_password: '${SMTP_PASSWORD}'
+  smtp_require_tls: true
 
 route:
   group_by: ['alertname', 'severity']
   group_wait: 30s
   group_interval: 5m
   repeat_interval: 4h
-  receiver: 'webhook'
+  receiver: 'email'
   routes:
     - matchers:
         - severity = "critical"
-      receiver: 'webhook'
+      receiver: 'email'
       repeat_interval: 1h
     - matchers:
         - severity = "warning"
-      receiver: 'webhook'
+      receiver: 'email'
       repeat_interval: 4h
+    - matchers:
+        - severity = "info"
+      receiver: 'email'
+      repeat_interval: 12h
 
 receivers:
   - name: 'webhook'
     webhook_configs:
       - url: 'http://webhook:9000/alert'
         send_resolved: true
+
+  - name: 'email'
+    email_configs:
+      - to: 'devops@hexastudio.net'
+        send_resolved: true
+        headers:
+          subject: '[HEXA Alert] {{ .Status | toUpper }}: {{ .CommonLabels.alertname }}'
+        text: |-
+          {{ define "slack.color" }}
+            {{ if eq .Status "firing" }}
+              {{ if eq .CommonLabels.severity "critical" }}danger{{ else if eq .CommonLabels.severity "warning" }}warning{{ else }}good{{ end }}
+            {{ else }}good{{ end }}
+          {{ end }}
+          
+          {{ define "slack.title" }}
+            [{{ .Status | toUpper }}] {{ .CommonLabels.alertname }}
+          {{ end }}
+          
+          **Alert Status:** {{ .Status | toUpper }}
+          **Severity:** {{ .CommonLabels.severity | toUpper }}
+          **Alert Name:** {{ .CommonLabels.alertname }}
+          **Summary:** {{ .CommonAnnotations.summary }}
+          **Description:** {{ .CommonAnnotations.description }}
+          
+          **Starts At:** {{ .StartsAt.Format "2006-01-02 15:04:05 UTC" }}
+          {{ if gt (len .Alerts.Firing) 0 }}
+          **Firing Alerts:**
+            {{ range .Alerts.Firing }}  
+            - **Labels:** {{ .Labels.SortedPairs.Values | join ", " }}
+              **Annotations:** {{ .Annotations.SortedPairs.Values | join ", " }}
+              **Starts At:** {{ .StartsAt.Format "2006-01-02 15:04:05 UTC" }}
+            {{ end }}
+          {{ end }}
+          {{ if gt (len .Alerts.Resolved) 0 }}
+          **Resolved Alerts:**
+            {{ range .Alerts.Resolved }}  
+            - **Labels:** {{ .Labels.SortedPairs.Values | join ", " }}
+              **Starts At:** {{ .StartsAt.Format "2006-01-02 15:04:05 UTC" }}
+              **Ends At:** {{ .EndsAt.Format "2006-01-02 15:04:05 UTC" }}
+            {{ end }}
+          {{ end }}
+          
+          **Generator URL:** {{ .GeneratorURL }}

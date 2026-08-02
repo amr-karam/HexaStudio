@@ -40,7 +40,7 @@ Focus on: architecture style, materials, project type, location context, design 
       const tags = JSON.parse(content) as string[];
       return tags.filter(t => typeof t === 'string' && t.length > 0).slice(0, 10);
     } catch (error) {
-      this.logger.error(`Auto-tag generation failed: ${(error as any).message}`);
+      this.logger.error(`Auto-tag generation failed: ${(error as Error).message}`);
       return this.extractKeywords(project);
     }
   }

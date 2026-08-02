@@ -19,7 +19,7 @@ import {
   Clock,
   Briefcase,
 } from 'lucide-react';
-import type { OdooProject, ProjectStatus } from '@hexa-hub/types';
+import type { OdooProject, ProjectType, ProjectStatus } from '@hexa-hub/types';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 

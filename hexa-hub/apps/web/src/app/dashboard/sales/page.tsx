@@ -175,7 +175,7 @@ export default function SalesLandingPage() {
     };
 
     if (token) fetchData();
-  }, [token]);
+  }, [token, api]);
 
   return (
     <div className="p-8 md:p-10 lg:p-12 min-h-screen">

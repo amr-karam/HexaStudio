@@ -20,6 +20,8 @@ import {
   type RateLimitViolation,
   EVENTS,
 } from './types';
+// ─── SENTRY IMPORT ──────────────────────────────────────────────────────────────
+import * as Sentry from '@sentry/node';
 
 // ─── Redis Clients ────────────────────────────────────────────────────────────
 let pubClient: Redis | null = null;
@@ -97,6 +99,21 @@ function clearRateLimit(socketId: string): void {
 
 // ─── Bootstrap ────────────────────────────────────────────────────────────────
 async function bootstrap(): Promise<void> {
+  // ─── SENTRY INITIALIZATION ────────────────────────────────────────────────
+  if (config.sentry.dsn) {
+    Sentry.init({
+      dsn: config.sentry.dsn,
+      environment: config.nodeEnv,
+      tracesSampleRate: config.sentry.tracesSampleRate,
+      profilesSampleRate: config.sentry.profilesSampleRate,
+      attachStacktrace: true,
+    });
+    
+    logger.log('Sentry error tracking initialized');
+  } else {
+    logger.log('Sentry DSN not configured - error tracking disabled');
+  }
+
   // Create Redis clients for Socket.IO adapter
   pubClient = createRedisClient('pub');
   subClient = createRedisClient('sub');
@@ -201,10 +218,10 @@ async function bootstrap(): Promise<void> {
         socket.emit(EVENTS.ERROR, rateViolation);
         return;
       }
-      // Call original handler
-      if (typeof originalOnevent === 'function') {
-        (originalOnevent as Function).call(this, packet);
-      }
+// Call original handler
+       if (typeof originalOnevent === 'function') {
+         (originalOnevent as Function).call(this, packet);
+       }
     };
 
     // 1. Join personal room for targeted notifications

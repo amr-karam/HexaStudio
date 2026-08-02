@@ -136,7 +136,7 @@ ${toolsDescription}`;
         const result = await this.toolRegistry.execute(call.function.name, params, undefined);
         messages.push({
           role: 'tool',
-          content: result,
+          content: result as string,
           tool_call_id: call.id,
         });
       }
