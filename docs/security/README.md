@@ -1,19 +1,19 @@
 # Security — Docs Manifest
 
 Canonical sources:
-- `HEXA-Vision-Playbook/06-STANDARDS/SECURITY*.md`
-- `HEXA-Vision-Playbook/15-QUALITY/SECURITY_*.md`
-- `HEXA-Vision-Playbook/00-GOVERNANCE/ENTERPRISE_ARCHITECTURE_GOVERNANCE.md`
+- `docs/security/*.md`
+- `docs/quality/SECURITY_*.md`
+- `docs/product/ENTERPRISE_ARCHITECTURE_GOVERNANCE.md`
 
 ## Contents
 
 | Topic | Canonical Location |
 |-------|--------------------|
-| Security baseline | `HEXA-Vision-Playbook/06-STANDARDS/SECURITY_BASELINE.md` |
-| Security standards | `HEXA-Vision-Playbook/06-STANDARDS/SECURITY_STANDARDS.md` |
-| Security guide | `HEXA-Vision-Playbook/06-STANDARDS/SECURITY.md` |
-| Security audit | `HEXA-Vision-Playbook/15-QUALITY/SECURITY_AUDIT.md` |
-| Security report | `HEXA-Vision-Playbook/15-QUALITY/SECURITY_REPORT.md` |
-| Threat model & incident response | `HEXA-Vision-Playbook/13-DEVOPS/incident-response.md` |
+| Security baseline | `docs/security/SECURITY_BASELINE.md` |
+| Security standards | `docs/security/SECURITY_STANDARDS.md` |
+| Security guide | `docs/security/SECURITY.md` |
+| Security audit | `docs/quality/SECURITY_AUDIT.md` |
+| Security report | `docs/quality/SECURITY_REPORT.md` |
+| Threat model & incident response | `docs/devops/incident-response.md` |
 
 This manifest is governed by `GOVERNANCE.md` → **Security** section.

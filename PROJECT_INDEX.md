@@ -2,7 +2,7 @@
 
 > **Version:** 1.1 | **Last Updated:** 2026-07-27 | **Domain:** [hexastudio.net](https://hexastudio.net)
 
-> **Governance:** Project relationships and catalogs are controlled by `HEXA-Vision-Playbook/00-GOVERNANCE/ENTERPRISE_ARCHITECTURE_GOVERNANCE.md`. Significant changes require synchronized catalog, risk, health, ADR, and deployment evidence updates.
+> **Governance:** Project relationships and catalogs are controlled by `docs/product/ENTERPRISE_ARCHITECTURE_GOVERNANCE.md`. Significant changes require synchronized catalog, risk, health, ADR, and deployment evidence updates.
 
 ---
 
@@ -63,7 +63,7 @@ hexastudio.net/                          # Monorepo root
 ├── odoo/
 │   └── custom/hexa_studio/             # Odoo 17 custom addon
 ├── scripts/                             # DevOps & CI/CD helper scripts
-├── HEXA-Vision-Playbook/                # Full governance playbook (17 categories)
+├── docs/                # Full governance playbook (17 categories)
 ├── .gitlab-ci.yml                       # GitLab CI/CD pipeline
 ├── .env.example                         # Environment variable template
 ├── .env.gitlab.example                  # GitLab CE env template
@@ -734,7 +734,7 @@ tempo    ← backend (OpenTelemetry traces)
 
 ## Related Documentation
 
-All detailed documentation lives in `HEXA-Vision-Playbook/`:
+All detailed documentation lives in `docs/`:
 
 | Category | Path | Contents |
 |----------|------|----------|

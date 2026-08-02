@@ -1,7 +1,7 @@
 /**
  * HEXA Motion System — Single Source of Truth
  *
- * Derived from HEXA-Vision-Playbook/06-STANDARDS/MOTION_SYSTEM.md (v1.0.0).
+ * Derived from docs/engineering/MOTION_SYSTEM.md (v1.0.0).
  * Every animation in the frontend must source its easing, duration, and
  * stagger from this module to guarantee a handcrafted, cinematic feel and
  * absolute consistency across the entire experience.

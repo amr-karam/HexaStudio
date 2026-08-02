@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { DiscoveryService, Reflector } from '@nestjs/core';
 import { AgentsService } from '../../src/modules/agents/agents.service';
+import { AgentMemoryService } from '../../src/modules/agents/agent-memory.service';
 import { ToolRegistryService } from '../../src/modules/agents/tool-registry.service';
 import { GatekeeperService } from '../../src/modules/agents/gatekeeper.service';
 import { TOOL_DEFINITION_METADATA } from '../../src/modules/agents/decorators/constants';
@@ -41,11 +42,22 @@ describe('AgentsService', () => {
     execute: vi.fn(),
   };
 
+  const mockMemory = {
+    getHistory: vi.fn().mockResolvedValue([]),
+    append: vi.fn().mockResolvedValue(undefined),
+    appendMany: vi.fn().mockResolvedValue(undefined),
+    clear: vi.fn().mockResolvedValue(undefined),
+    remember: vi.fn().mockResolvedValue(undefined),
+    recall: vi.fn().mockResolvedValue(undefined),
+    forget: vi.fn().mockResolvedValue(undefined),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AgentsService,
         { provide: ToolRegistryService, useValue: mockToolRegistry },
+        { provide: AgentMemoryService, useValue: mockMemory },
         {
           provide: ConfigService,
           useValue: {

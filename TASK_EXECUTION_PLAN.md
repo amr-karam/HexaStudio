@@ -585,8 +585,8 @@ microk8s kubectl get svc -n hexastudio
 ## Task 10: Documentation
 
 ### Files to Update:
-1. `HEXA-Vision-Playbook/13-DEVOPS/DEPLOYMENT.md` - Add staging and blue-green deployment
-2. `HEXA-Vision-Playbook/13-DEVOPS/BACKUP.md` - Document new backup procedures
+1. `docs/devops/DEPLOYMENT.md` - Add staging and blue-green deployment
+2. `docs/devops/BACKUP.md` - Document new backup procedures
 3. Create new documentation files for:
    - Staging environment setup
    - Blue-green deployment workflow

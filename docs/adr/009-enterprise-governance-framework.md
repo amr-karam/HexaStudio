@@ -58,6 +58,6 @@ We will adopt a formal Enterprise Architecture Governance framework with mandato
 - `docs/ADR/` — Architecture Decision Records
 - `PROJECT_INDEX.md` — Master project index
 - `PROJECT_HEALTH.md` — Project health dashboard
-- `HEXA-Vision-Playbook/` — Full governance document set
-- `HEXA-Vision-Playbook/00-GOVERNANCE/PROJECT_CONSTITUTION.md` — Project constitution
-- `HEXA-Vision-Playbook/00-GOVERNANCE/ENTERPRISE_ARCHITECTURE_GOVERNANCE.md` — Governance framework
+- `docs/` — Full governance document set
+- `docs/product/PROJECT_CONSTITUTION.md` — Project constitution
+- `docs/product/ENTERPRISE_ARCHITECTURE_GOVERNANCE.md` — Governance framework

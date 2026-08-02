@@ -1,6 +1,6 @@
 // Odoo ↔ Application type mappings.
 // Mirror of the custom fields defined by the `hexa_studio` Odoo module.
-// See HEXA-Vision-Playbook/09-ODOO/data-models.md
+// See docs/odoo/data-models.md
 
 export type OdooIdName = [number, string] | false;
 

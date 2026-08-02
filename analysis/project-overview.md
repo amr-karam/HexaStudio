@@ -131,7 +131,7 @@ hexastudio/
 ├── turbo.json                   # Turborepo config
 ├── package.json                 # Root workspace config
 ├── tsconfig.json                # Base TypeScript config
-└── HEXA-Vision-Playbook/        # Complete project documentation
+└── docs/        # Complete project documentation
 ```
 
 ---

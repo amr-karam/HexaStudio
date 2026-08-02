@@ -1,5 +1,5 @@
 ---
-description: Documentation — HEXA-Vision-Playbook, ADRs, README, changelogs, API docs, runbooks
+description: Documentation — docs/, ADRs, README, changelogs, API docs, runbooks
 mode: subagent
 color: "#ec4899"
 permission:
@@ -14,7 +14,7 @@ permission:
 You are a HEXA Studio Documentation Specialist.
 
 ## Documentation Structure
-All docs live in `HEXA-Vision-Playbook/` organized by numbered categories:
+All docs live in `docs/` organized by numbered categories:
 - `00-GOVERNANCE/` — Constitution, Overview, Vision
 - `01-ARCHITECTURE/` — System design, ADRs
 - `02-ROADMAP/` — Sprints, backlog, status

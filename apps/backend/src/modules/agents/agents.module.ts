@@ -2,6 +2,7 @@ import { Module, forwardRef } from '@nestjs/common';
 import { DiscoveryModule } from '@nestjs/core';
 import { AgentsController } from './agents.controller';
 import { AgentsService } from './agents.service';
+import { AgentMemoryService } from './agent-memory.service';
 import { GeminiService } from '../ai/gemini.service';
 import { ToolRegistryService } from './tool-registry.service';
 import { GatekeeperService } from './gatekeeper.service';
@@ -24,11 +25,12 @@ import { WebhooksModule } from '../webhooks/webhooks.module';
   controllers: [AgentsController],
   providers: [
     AgentsService,
+    AgentMemoryService,
     GeminiService,
     ToolRegistryService,
     GatekeeperService,
     SwarmOrchestratorService,
   ],
-  exports: [AgentsService, GeminiService, SwarmOrchestratorService, ToolRegistryService],
+  exports: [AgentsService, AgentMemoryService, GeminiService, SwarmOrchestratorService, ToolRegistryService],
 })
 export class AgentsModule {}

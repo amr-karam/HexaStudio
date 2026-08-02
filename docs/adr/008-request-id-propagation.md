@@ -47,4 +47,4 @@ Implementation:
 ## References
 - `apps/frontend/src/middleware.ts` — Request ID generation (Next.js middleware)
 - `apps/backend/src/common/middleware/request-id.middleware.ts` — NestJS middleware
-- `HEXA-Vision-Playbook/13-DEVOPS/OBSERVABILITY.md` — Observability governance
+- `docs/devops/OBSERVABILITY.md` — Observability governance

@@ -76,7 +76,7 @@ All previously identified application P0 blockers (BLOCKING_ISSUES.md) are resol
 
 | Data Point | Source | Value |
 |-----------|--------|-------|
-| Documentation files | `HEXA-Vision-Playbook/` glob | 250+ MD files |
+| Documentation files | `docs/` glob | 250+ MD files |
 | ADRs | `01-ARCHITECTURE/ARCHITECTURE_DECISIONS/` | 9 formal ADRs |
 | Unit tests | UNIT_TESTS.md + spec file count | 415+ (176 frontend + 239 backend) |
 | E2E specs | `e2e/*.spec.ts` | 3 spec files |
