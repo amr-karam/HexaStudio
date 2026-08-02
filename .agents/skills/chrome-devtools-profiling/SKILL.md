@@ -231,7 +231,7 @@ For **TBT profiling specifically**: take the long-task list, group by source (us
 
 When this skill produces new measurements, record them in:
 
-`HEXA-Vision-Playbook/15-QUALITY/LIGHTHOUSE_AUDIT_<YYYY-MM-DD>.md`
+`docs/quality/LIGHTHOUSE_AUDIT_<YYYY-MM-DD>.md`
 
 Include the **3-run median**, the **baseline delta**, the **commit hash** at the time of the run, and the **toolchain** (Turbopack vs webpack, Node version, Chrome version). Format exactly as `LIGHTHOUSE_AUDIT_2026-07-22.md` — that file is the canonical reference template.
 

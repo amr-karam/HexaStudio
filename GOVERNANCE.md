@@ -1801,7 +1801,7 @@ Outdated documentation is technical debt.
 
 ### Documentation Manifest
 
-GOVERNANCE.md is the manifest for the documentation tree. Each governance section maps to a `docs/<area>/` folder containing a README manifest that points to the canonical playbook content:
+GOVERNANCE.md is the manifest for the documentation tree. Each governance section maps to a `docs/<area>/` folder containing a README manifest that indexes the canonical content, which lives directly in that `docs/<area>/` folder (migrated from the former `HEXA-Vision-Playbook/` per ADR-011):
 
 | Governance area | Manifest |
 |-----------------|----------|

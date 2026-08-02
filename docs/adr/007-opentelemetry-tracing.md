@@ -50,4 +50,4 @@ Implementation details:
 - `docker/tempo/tempo.yml` — Tempo config (OTLP HTTP on port 4318)
 - `docker/grafana/provisioning/datasources/datasources.yml` — Tempo datasource config
 - `docker-compose.prod.yml` — Tempo service definition
-- `HEXA-Vision-Playbook/13-DEVOPS/OBSERVABILITY.md` — Observability governance
+- `docs/devops/OBSERVABILITY.md` — Observability governance

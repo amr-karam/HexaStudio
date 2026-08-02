@@ -1,7 +1,7 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** August 2, 2026 — 08:05 UTC+3
-**Version:** 2.1.1
+**Last Updated:** August 2, 2026 — 12:10 UTC+3
+**Version:** 2.1.2
 **Authority Level:** 13 (Production)
 **Current Phase:** Production-Ready — Odoo-First Architecture + Workflow Automation (DEPLOYED)
 
@@ -25,7 +25,7 @@
 
 | Gate | Target | Status | Result |
 |---|---|---|---|
-| **Backend Tests** | 323 total | `323 / 323` | ✅ PASS |
+| **Backend Tests** | 330 total | `330 / 330` | ✅ PASS |
 | **Frontend Tests** | 179 total | `177 / 179` — 2 pre-existing failures from uncommitted `Navbar.tsx` WIP (renders no `role="dialog"` menu; unrelated to this milestone) | ⚠️ |
 | **Mobile Tests** | 10 passing | `10 / 10` | ✅ PASS |
 | **Frontend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
@@ -79,23 +79,18 @@ All keys from `C:\Users\amrmo\OneDrive\Desktop\API` have been populated in:
 
 ---
 
-## 5. Active Sprint: S-019 — Production Hardening
+## 5. Active Sprint: S-021 — Autonomous Agent Studio (v2.0.0)
 
-**Completed:**
-- [x] Traefik v3.0 image upgrade
-- [x] Gemini 2.5 Flash model upgrade
-- [x] Multi-provider AI key registration (7 providers)
-- [x] Production Health Dashboard (`/admin/health`)
-- [x] Arabic (RTL) Portal v3.0 localization
-- [x] WebRTC Live 3D Review Room
-- [x] Digital E-Signature (audit-trail hash)
-- [x] `articles.service.ts` TypeScript fix (content cast)
-- [x] `email.service.ts` confirmed present
-- [x] All env keys from Desktop API file populated
+**S-021 P0 — Redis Agent Memory + Autonomous Tool Execution (COMPLETE, Aug 2 2026):**
+- [x] `AgentMemoryService` — per-persona/session Redis conversation history (list, 40 msgs, 24h TTL) + long-term facts (hash, 7d TTL); `remember`/`recall`/`forget`/`clear` + `appendMany`
+- [x] `AgentsService.chat()` — history hydration, user/assistant/tool message persistence, resilient per-tool execution (one tool failure no longer aborts the loop), `sessionId` support
+- [x] `DELETE /agents/memory` endpoint + `sessionId`/`persona` on chat DTO
+- [x] Backend gates: lint 0/0, typecheck 0 errors, **330/330 tests**
+- [x] Docs migration (ADR-011): `HEXA-Vision-Playbook/` → `docs/<area>/` (370 renames, 12 new area manifests, all cross-refs rewritten, link integrity verified)
 
-**Pending:**
-- [ ] Run `python deploy.py` to push to `19.16.1.100`
-- [ ] Verify GitLab CI pipeline passes on merge
+**S-021 Roadmap:**
+- [ ] P1 — Voice-to-3D (Gemini audio → Three.js/R3F scene params)
+- [ ] P2 — Live Odoo sync to GitLab prod server (`19.16.1.100` — currently unreachable)
 
 ---
 

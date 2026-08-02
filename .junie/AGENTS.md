@@ -28,7 +28,7 @@ HEXA Studio is a world-class **3D Architecture Visualization platform** that bri
 - `packages/utils`: Shared utilities.
 - `hexa-hub`: Internal communication hub.
 - `odoo`: Odoo 17 custom addon.
-- `HEXA-Vision-Playbook/`: Full governance and standards documentation.
+- `docs/`: Full governance and standards documentation.
 
 ---
 
@@ -37,7 +37,7 @@ HEXA Studio is a world-class **3D Architecture Visualization platform** that bri
 ### 1. Mandatory Protocols
 - **Read First:** Start with this file and the root `AGENTS.md`.
 - **Think Twice:** For non-trivial changes, propose a plan and wait for approval.
-- **Gold Standard:** Adhere to `HEXA-Vision-Playbook/06-STANDARDS/CODING_STANDARDS.md`.
+- **Gold Standard:** Adhere to `docs/engineering/CODING_STANDARDS.md`.
 - **Creative Excellence:** When working on the frontend, aim for a 9.5/10 luxury and performance score.
 
 ### 2. Key Commands
@@ -58,4 +58,4 @@ HEXA Studio is a world-class **3D Architecture Visualization platform** that bri
 
 ---
 
-*For detailed governance, refer to the [HEXA-Vision-Playbook](HEXA-Vision-Playbook/00-GOVERNANCE/PROJECT_CONSTITUTION.md).*
+*For detailed governance, refer to the [docs/](docs/) documentation tree.*

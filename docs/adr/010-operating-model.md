@@ -9,7 +9,7 @@ Accepted
 ## Context
 HEXA Studio is governed by `GOVERNANCE.md` (v1.0.0, the "Engineering Operating System"). The governance document defines what must happen (architecture, security, quality gates) but does not formally define **who executes** — the human/AI-agent operating hierarchy that carries work from governance to production.
 
-Across the repository the agent roles had organically accumulated in multiple locations (`.ai/agents/`, `.opencode/prompts/`, `HEXA-Vision-Playbook/04-AGENTS/`) with inconsistent naming (e.g. `CHIEF_ARCHITECT.md` vs `chief-architect-agent.md` vs `architect.md`). The intended delivery pipeline — GOVERNANCE → ORCHESTRATOR → ARCHITECT/BUILDER/REVIEWER → GitLab Merge Request → CI/CD → Staging → Production — was only implicit and never formally recorded as the operating model.
+Across the repository the agent roles had organically accumulated in multiple locations (`.ai/agents/`, `.opencode/prompts/`, `docs/agents/`) with inconsistent naming (e.g. `CHIEF_ARCHITECT.md` vs `chief-architect-agent.md` vs `architect.md`). The intended delivery pipeline — GOVERNANCE → ORCHESTRATOR → ARCHITECT/BUILDER/REVIEWER → GitLab Merge Request → CI/CD → Staging → Production — was only implicit and never formally recorded as the operating model.
 
 ## Decision
 We adopt the following canonical operating model:
@@ -49,7 +49,7 @@ Roles and their canonical definitions:
 | Domain builders | `.ai/agents/frontend.md`, `backend.md`, `cms.md`, `threejs.md` | Feature implementation in each domain. |
 | Review specialists | `.ai/agents/qa.md`, `security.md`, `performance.md`, `seo.md` | Domain verification and audits. |
 
-Role files live in `.ai/agents/` (machine-consumable role definitions). Human-readable agent guides remain in `HEXA-Vision-Playbook/04-AGENTS/`. Orchestrator prompt(s) live in `.opencode/prompts/`.
+Role files live in `.ai/agents/` (machine-consumable role definitions). Human-readable agent guides remain in `docs/agents/`. Orchestrator prompt(s) live in `.opencode/prompts/`.
 
 The delivery pipeline is:
 1. GOVERNANCE sets the rules (architecture, security, engineering standards).
@@ -76,7 +76,7 @@ The delivery pipeline is:
 ## Consequences
 - `.ai/agents/builder.md` must be created to complete the BUILDER role definition.
 - Future agent roles should be added to `.ai/agents/` and referenced here.
-- `HEXA-Vision-Playbook/04-AGENTS/README.md` references should be reconciled to actual filenames.
+- `docs/agents/README.md` is the canonical agents area index.
 - GOVERNANCE.md should link each section to its `docs/<area>/` manifest.
 - New agent-driven decisions follow this pipeline; ADRs record decisions per ADR-009.
 
@@ -85,5 +85,5 @@ The delivery pipeline is:
 - `docs/adr/009-enterprise-governance-framework.md` — Governance framework (superset)
 - `.ai/agents/*.md` — Role definitions (ARCHITECT, BUILDER, REVIEWER, builders, specialists)
 - `.opencode/prompts/orchestrator.txt` — ORCHESTRATOR prompt
-- `HEXA-Vision-Playbook/04-AGENTS/` — Human-readable agent guides
+- `docs/agents/` — Human-readable agent guides
 - `docs/devops/README.md` — DevOps manifest (CI/CD, staging, production references)

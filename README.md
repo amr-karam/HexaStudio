@@ -136,12 +136,12 @@ Our project utilizes a professional CI/CD pipeline:
 ---
 
 ## 📖 Documentation
-Our a-priori operational framework is detailed in the **HEXA-Vision-Playbook**.
+Our a-priori operational framework is detailed in the **`docs/`** documentation tree (formerly `HEXA-Vision-Playbook/`).
 
-- [PROJECT CONSTITUTION](HEXA-Vision-Playbook/00-GOVERNANCE/PROJECT_CONSTITUTION.md) — The highest authority on quality.
-- [SYSTEM ARCHITECTURE](HEXA-Vision-Playbook/01-ARCHITECTURE/SYSTEM_ARCHITECTURE.md) — The technical blueprint.
-- [CODING STANDARDS](HEXA-Vision-Playbook/06-STANDARDS/CODING_STANDARDS.md) — The "Gold Standard" for development.
-- [AI AGENT GUIDE](HEXA-Vision-Playbook/04-AGENTS/AI_AGENT_GUIDE.md) — The manual for AI contributors.
+- [PROJECT CONSTITUTION](docs/product/PROJECT_CONSTITUTION.md) — The highest authority on quality.
+- [SYSTEM ARCHITECTURE](docs/architecture/SYSTEM_ARCHITECTURE.md) — The technical blueprint.
+- [CODING STANDARDS](docs/engineering/CODING_STANDARDS.md) — The "Gold Standard" for development.
+- [AI AGENT GUIDE](docs/agents/AI_AGENT_GUIDE.md) — The manual for AI contributors.
 
 ---
 

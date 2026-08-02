@@ -1,22 +1,22 @@
 # Performance — Docs Manifest
 
 Canonical sources:
-- `HEXA-Vision-Playbook/06-STANDARDS/PERFORMANCE*.md`
-- `HEXA-Vision-Playbook/15-QUALITY/PERFORMANCE_*.md`
-- `HEXA-Vision-Playbook/15-QUALITY/LIGHTHOUSE_AUDIT_*.md`
+- `docs/performance/*.md`
+- `docs/quality/PERFORMANCE_*.md`
+- `docs/quality/LIGHTHOUSE_AUDIT_*.md`
 
 ## Contents
 
 | Topic | Canonical Location |
 |-------|--------------------|
-| Performance standards | `HEXA-Vision-Playbook/06-STANDARDS/PERFORMANCE_STANDARDS.md` |
-| Performance checklist | `HEXA-Vision-Playbook/06-STANDARDS/PERFORMANCE_CHECKLIST.md` |
-| Performance guide | `HEXA-Vision-Playbook/06-STANDARDS/PERFORMANCE.md` |
-| Performance audit | `HEXA-Vision-Playbook/15-QUALITY/PERFORMANCE_AUDIT.md` |
-| Performance report | `HEXA-Vision-Playbook/15-QUALITY/PERFORMANCE_REPORT.md` |
-| Performance optimization plan | `HEXA-Vision-Playbook/15-QUALITY/PERFORMANCE_OPTIMIZATION_PLAN.md` |
-| Lighthouse audits (latest) | `HEXA-Vision-Playbook/15-QUALITY/LIGHTHOUSE_AUDIT_2026-07-29.md` |
-| Lighthouse guide | `HEXA-Vision-Playbook/15-QUALITY/LIGHTHOUSE.md` |
-| Web vitals RUM | `HEXA-Vision-Playbook/13-DEVOPS/WEB_VITALS_RUM.md` |
+| Performance standards | `docs/performance/PERFORMANCE_STANDARDS.md` |
+| Performance checklist | `docs/performance/PERFORMANCE_CHECKLIST.md` |
+| Performance guide | `docs/performance/PERFORMANCE.md` |
+| Performance audit | `docs/quality/PERFORMANCE_AUDIT.md` |
+| Performance report | `docs/quality/PERFORMANCE_REPORT.md` |
+| Performance optimization plan | `docs/quality/PERFORMANCE_OPTIMIZATION_PLAN.md` |
+| Lighthouse audits (latest) | `docs/quality/LIGHTHOUSE_AUDIT_2026-07-29.md` |
+| Lighthouse guide | `docs/quality/LIGHTHOUSE.md` |
+| Web vitals RUM | `docs/devops/WEB_VITALS_RUM.md` |
 
 This manifest is governed by `GOVERNANCE.md` → **Performance** section.
