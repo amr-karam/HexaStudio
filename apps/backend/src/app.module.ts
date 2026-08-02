@@ -1,8 +1,9 @@
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import { APP_GUARD } from "@nestjs/core";
+import { APP_FILTER, APP_GUARD } from "@nestjs/core";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { AppController } from "./app.controller";
+import { SecurityThrottlerFilter } from "./common/filters/security-throttler.filter";
 import {
   AccountingModule,
   AgentsModule,
@@ -39,8 +40,10 @@ import {
   WebhooksModule,
   TranslationsModule,
   GeoipModule,
+  WorkflowModule,
 } from "./modules/index";
 import { RequestIdMiddleware } from "./common/middleware/request-id.middleware";
+import { WorkflowWiringService } from "./modules/workflow/workflow-wiring.service";
 
 @Module({
   imports: [
@@ -87,9 +90,14 @@ import { RequestIdMiddleware } from "./common/middleware/request-id.middleware";
   TranslationsModule,
   MobileModule,
   GeoipModule,
+  WorkflowModule,
   ],
   controllers: [AppController],
-  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
+  providers: [
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
+    { provide: APP_FILTER, useClass: SecurityThrottlerFilter },
+    WorkflowWiringService,
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

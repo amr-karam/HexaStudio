@@ -6,7 +6,6 @@ import { Reflector } from '@nestjs/core';
 import request from 'supertest';
 import { OdooApiController } from '../src/modules/odoo/odoo-api.controller';
 import { OdooApiService } from '../src/modules/odoo/odoo-api.service';
-import { OdooSyncService } from '../src/modules/odoo/odoo-sync.service';
 import { OdooDocumentService } from '../src/modules/odoo/odoo-document.service';
 import { JwtAuthGuard } from '../src/modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../src/modules/auth/guards/roles.guard';
@@ -35,13 +34,6 @@ const mockOdooApiService = {
   getSalesOrders: vi.fn(),
   getInvoices: vi.fn(),
   getHealth: vi.fn(),
-};
-
-const mockOdooSyncService = {
-  getState: vi.fn(),
-  pullAll: vi.fn(),
-  handleWebhook: vi.fn(),
-  flushPendingLeads: vi.fn(),
 };
 
 const mockOdooDocumentService = {
@@ -91,11 +83,6 @@ const milestonesList = [
   { id: 2, name: 'Review', completed: false, x_hexa_order: 1 },
 ];
 
-const syncState = {
-  lastSync: 1_700_000_000_000,
-  counts: { leads: 10, projects: 3, invoices: 5 },
-};
-
 const healthStatus = { odoo: 'ok', circuit: 'CLOSED' };
 
 const uploadedDoc = {
@@ -131,7 +118,6 @@ describe('OdooApiController', () => {
       controllers: [OdooApiController],
       providers: [
         { provide: OdooApiService, useValue: mockOdooApiService },
-        { provide: OdooSyncService, useValue: mockOdooSyncService },
         { provide: OdooDocumentService, useValue: mockOdooDocumentService },
         // The RolesGuard needs a Reflector — we provide a real one since
         // the guard itself is overridden below, but Nest still resolves the
@@ -427,55 +413,7 @@ describe('OdooApiController', () => {
   });
 
   // ===========================================================================
-  // 11. GET /odoo/sync/state
-  // ===========================================================================
-  describe('GET /odoo/sync/state', () => {
-    it('returns current sync state', async () => {
-      mockOdooSyncService.getState.mockReturnValueOnce(syncState);
-
-      const res = await request(app.getHttpServer()).get('/odoo/sync/state');
-
-      expect(res.status).toBe(200);
-      expect(res.body).toEqual(syncState);
-      expect(mockOdooSyncService.getState).toHaveBeenCalledOnce();
-    });
-
-    it('propagates service errors', async () => {
-      mockOdooSyncService.getState.mockImplementationOnce(() => {
-        throw new Error('Redis unavailable');
-      });
-
-      const res = await request(app.getHttpServer()).get('/odoo/sync/state');
-
-      expect(res.status).toBe(500);
-    });
-  });
-
-  // ===========================================================================
-  // 12. POST /odoo/sync/trigger
-  // ===========================================================================
-  describe('POST /odoo/sync/trigger', () => {
-    it('triggers a manual sync and returns success', async () => {
-      mockOdooSyncService.pullAll.mockResolvedValueOnce(undefined);
-
-      const res = await request(app.getHttpServer()).post('/odoo/sync/trigger');
-
-      expect(res.status).toBe(201);
-      expect(res.body).toEqual({ success: true });
-      expect(mockOdooSyncService.pullAll).toHaveBeenCalledOnce();
-    });
-
-    it('propagates service errors', async () => {
-      mockOdooSyncService.pullAll.mockRejectedValueOnce(new Error('Odoo unreachable'));
-
-      const res = await request(app.getHttpServer()).post('/odoo/sync/trigger');
-
-      expect(res.status).toBe(500);
-    });
-  });
-
-  // ===========================================================================
-  // 13. GET /odoo/health
+  // 11. GET /odoo/health
   // ===========================================================================
   describe('GET /odoo/health', () => {
     it('returns health status when Odoo is reachable', async () => {
@@ -508,7 +446,7 @@ describe('OdooApiController', () => {
   });
 
   // ===========================================================================
-  // 14. POST /odoo/documents/:projectId (file upload)
+  // 12. POST /odoo/documents/:projectId (file upload)
   //
   // NOTE: We test the controller method directly rather than via HTTP because
   // the @FileInterceptor('file') decorator uses multer's default disk storage
@@ -521,7 +459,6 @@ describe('OdooApiController', () => {
     beforeEach(() => {
       controller = new OdooApiController(
         mockOdooApiService as unknown as OdooApiService,
-        mockOdooSyncService as unknown as OdooSyncService,
         mockOdooDocumentService as unknown as OdooDocumentService,
       );
     });
@@ -563,7 +500,7 @@ describe('OdooApiController', () => {
   });
 
   // ===========================================================================
-  // 15. GET /odoo/documents/:projectId
+  // 13. GET /odoo/documents/:projectId
   // ===========================================================================
   describe('GET /odoo/documents/:projectId', () => {
     it('lists project documents with download URLs', async () => {
@@ -595,7 +532,7 @@ describe('OdooApiController', () => {
   });
 
   // ===========================================================================
-  // 16. GET /odoo/documents/download/:id
+  // 14. GET /odoo/documents/download/:id
   // ===========================================================================
   describe('GET /odoo/documents/download/:id', () => {
     const signedUrl = 'http://minio:9000/uploads/odoo-documents/signed/report.pdf?token=abc';

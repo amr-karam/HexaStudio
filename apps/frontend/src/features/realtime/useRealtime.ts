@@ -115,5 +115,6 @@ export function useRealtime(projectId: string | null, handlers: EventHandlers = 
     sendApproval,
     announcePresence,
     isConnected: socketRef.current?.connected ?? false,
+    socket: socketRef.current,
   };
 }

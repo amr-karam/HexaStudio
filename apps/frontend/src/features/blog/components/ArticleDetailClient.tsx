@@ -14,11 +14,13 @@ import { getGsap } from '@/lib/gsap';
 import { onIdle } from '@/lib/idle';
 import { GSAP_EASING } from '@/lib/motion/tokens';
 
+import type { StrapiBlock } from '@/features/pages/types';
+
 interface Article {
   title: string;
   slug: string;
   excerpt?: string;
-  content?: unknown[];
+  content?: StrapiBlock[];
   coverImage?: string;
   readTime?: number;
   publishedAt?: string;
@@ -168,7 +170,7 @@ export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
               data-article-block
               className="flex flex-col gap-12 text-neutral-400 font-light leading-relaxed text-lg"
             >
-              <StrapiBlocks content={article.content || []} />
+              <StrapiBlocks content={article.content as StrapiBlock[] || []} />
             </div>
           </div>
         </div>

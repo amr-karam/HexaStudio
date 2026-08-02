@@ -1,12 +1,37 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject, forwardRef } from '@nestjs/common';
 import type { Project } from '@hexastudio/types';
 import { AiChatService } from './ai-chat.service';
+import { ProjectsService } from '../projects/projects.service';
+import { ToolDefinition } from '../agents/decorators/tool-definition.decorator';
+import { ToolAuthorization } from '../agents/decorators/tool-authorization.decorator';
 
 @Injectable()
 export class SummaryService {
   private readonly logger = new Logger(SummaryService.name);
 
-  constructor(private readonly aiChat: AiChatService) {}
+  constructor(
+    private readonly aiChat: AiChatService,
+    @Inject(forwardRef(() => ProjectsService))
+    private readonly projectsService: ProjectsService,
+  ) {}
+
+  @ToolDefinition({
+    name: 'generate_summary',
+    description: 'Generate an AI-written summary for a project',
+    parameters: {
+      type: 'object',
+      properties: {
+        slug: { type: 'string', description: 'Project slug' },
+      },
+      required: ['slug'],
+    },
+  })
+  @ToolAuthorization({ requiresAuth: true, requiresHitl: false })
+  async generateSummaryTool(params: { slug: string }) {
+    const project = await this.projectsService.getProjectBySlug(params.slug);
+    const summary = await this.generateSummary(project);
+    return { summary };
+  }
 
   async generateSummary(project: Project): Promise<string> {
     if (!this.aiChat.isAvailable) {
@@ -38,7 +63,7 @@ Write in a professional, evocative tone suitable for high-end architecture proje
       const content = response.choices[0]?.message?.content?.trim();
       return content || this.fallbackSummary(project);
     } catch (error) {
-      this.logger.error(`Summary generation failed: ${error}`);
+      this.logger.error(`Summary generation failed: ${(error as any).message}`);
       return this.fallbackSummary(project);
     }
   }

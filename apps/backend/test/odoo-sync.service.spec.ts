@@ -6,7 +6,14 @@ import { OdooService } from '../src/modules/odoo/odoo.service';
 import { RedisService } from '../src/modules/storage/redis.service';
 import { EventBus } from '../src/modules/realtime/event-bus.service';
 import { WebhookRetryService } from '../src/modules/odoo/webhook-retry.service';
-import type { OdooWebhookPayload } from '@hexastudio/types';
+import { ConflictResolutionService } from '../src/modules/odoo/conflict-resolution.service';
+import { DeltaSyncService } from '../src/modules/odoo/delta-sync.service';
+import type {
+  OdooWebhookPayload,
+  SyncConflict,
+  SyncOperationResult,
+  SyncStatusResponse,
+} from '@hexastudio/types';
 
 // ── Mock objects ──────────────────────────────────────────────────────────────
 
@@ -36,6 +43,25 @@ const mockWebhookRetryService = {
   enqueue: vi.fn().mockResolvedValue(undefined),
 };
 
+const mockConflictResolutionService = {
+  detectConflict: vi.fn(),
+  autoResolve: vi.fn(),
+  getUnresolvedConflicts: vi.fn().mockResolvedValue([]),
+  resolveConflict: vi.fn(),
+  getAllConflicts: vi.fn().mockResolvedValue([]),
+  getAuditLog: vi.fn().mockResolvedValue([]),
+};
+
+const mockDeltaSyncService = {
+  syncAll: vi.fn().mockResolvedValue([]),
+  syncEntityDelta: vi.fn(),
+  syncEntityFull: vi.fn(),
+  getCursor: vi.fn().mockResolvedValue(null),
+  getSyncStatus: vi.fn(),
+  getAllCursors: vi.fn().mockResolvedValue({}),
+  resetCursor: vi.fn().mockResolvedValue(undefined),
+};
+
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
 const makePayload = (overrides: Partial<OdooWebhookPayload> = {}): OdooWebhookPayload => ({
@@ -51,16 +77,39 @@ const invoicePayload  = makePayload({ model: 'account.move',  id: 13 });
 const syncPayload     = makePayload({ model: 'sync',          id: 0 });
 const unknownPayload  = makePayload({ model: 'unknown.model', id: 99 });
 
+const okResult = (entityType: string, recordsProcessed: number): SyncOperationResult => ({
+  entityType,
+  recordsProcessed,
+  conflictsDetected: 0,
+  durationMs: 10,
+  success: true,
+});
+
+const pendingConflict: SyncConflict = {
+  id: 'conflict-1',
+  entityType: 'crm.lead',
+  entityId: 7,
+  odooVersion: { name: 'Odoo lead' },
+  hexaVersion: { name: 'Hexa lead' },
+  detectedAt: '2026-01-02T00:00:00.000Z',
+  resolution: 'pending',
+  conflictingFields: ['name'],
+};
+
 // ── Suite ──────────────────────────────────────────────────────────────────────
 
 describe('OdooSyncService', () => {
   let service: OdooSyncService;
-  let redisService: RedisService;
-  let eventBus: EventBus;
-  let odooService: OdooService;
 
   beforeEach(async () => {
     vi.clearAllMocks();
+
+    // Re-establish stable defaults so one-time / persistent overrides can
+    // never leak between tests.
+    mockRedisService.llen.mockReset().mockResolvedValue(0);
+    mockRedisService.lrange.mockReset().mockResolvedValue([]);
+    mockDeltaSyncService.syncAll.mockReset().mockResolvedValue([]);
+    mockConflictResolutionService.getUnresolvedConflicts.mockReset().mockResolvedValue([]);
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -69,13 +118,16 @@ describe('OdooSyncService', () => {
         { provide: RedisService,  useValue: mockRedisService },
         { provide: EventBus,      useValue: mockEventBus },
         { provide: WebhookRetryService, useValue: mockWebhookRetryService },
+        { provide: ConflictResolutionService, useValue: mockConflictResolutionService },
+        { provide: DeltaSyncService, useValue: mockDeltaSyncService },
       ],
     }).compile();
 
-    service     = module.get<OdooSyncService>(OdooSyncService);
-    redisService = module.get<RedisService>(RedisService);
-    eventBus    = module.get<EventBus>(EventBus);
-    odooService = module.get<OdooService>(OdooService);
+    service = module.get<OdooSyncService>(OdooSyncService);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   // ──────────────────────────────────────────────────────────────────────────────
@@ -123,7 +175,10 @@ describe('OdooSyncService', () => {
       expect(mockOdooService.searchRead).toHaveBeenCalledWith(
         'project.project',
         [['id', '=', 42]],
-        ['name', 'stage_id', 'x_slug', 'x_hexa_status', 'x_hexa_type', 'x_hexa_client_portal_active'],
+        [
+          'name', 'stage_id', 'x_slug', 'x_hexa_status', 'x_hexa_type',
+          'x_hexa_client_portal_active', 'write_date', 'create_date',
+        ],
       );
 
       // 3. Enriched data cached with shorter TTL
@@ -155,6 +210,56 @@ describe('OdooSyncService', () => {
       // Event still emitted
       expect(mockEventBus.emit).toHaveBeenCalledWith('odoo:project', projectPayload);
     });
+
+    it('auto-resolves a conflict when a cached HEXA version differs', async () => {
+      const projectData = [
+        {
+          id: 42,
+          name: 'Seaside Villa',
+          stage_id: [3, 'In Progress'] as [number, string],
+          write_date: '2026-01-02T00:00:00Z',
+        },
+      ];
+      const hexaCached = { id: 42, name: 'Old Villa Name' };
+
+      mockOdooService.searchRead.mockResolvedValueOnce(projectData);
+      mockRedisService.get.mockResolvedValueOnce(hexaCached);
+      mockDeltaSyncService.getCursor.mockResolvedValueOnce({
+        entityType: 'project.project',
+        lastSyncAt: '2026-01-01T00:00:00.000Z',
+        lastSyncId: 0,
+        recordsSynced: 0,
+        errors: 0,
+      });
+      mockConflictResolutionService.detectConflict.mockResolvedValueOnce(pendingConflict);
+      mockConflictResolutionService.autoResolve.mockResolvedValueOnce({
+        ...pendingConflict,
+        resolution: 'odoo-wins',
+      });
+
+      await service.handleWebhook(projectPayload);
+
+      expect(mockConflictResolutionService.detectConflict).toHaveBeenCalledWith(
+        'project.project',
+        42,
+        projectData[0],
+        hexaCached,
+        '2026-01-01T00:00:00.000Z',
+      );
+      expect(mockConflictResolutionService.autoResolve).toHaveBeenCalledWith(pendingConflict);
+      // Odoo version is still cached as the source of truth.
+      expect(mockRedisService.set).toHaveBeenCalledWith('odoo:project:42', projectData[0], 900);
+      expect(mockEventBus.emit).toHaveBeenCalledWith('odoo:project', projectPayload);
+    });
+
+    it('enqueues a retry when the Odoo fetch fails', async () => {
+      mockOdooService.searchRead.mockRejectedValueOnce(new Error('Odoo down'));
+
+      await service.handleWebhook(projectPayload);
+
+      expect(mockWebhookRetryService.enqueue).toHaveBeenCalledWith(projectPayload, 'Odoo down');
+      expect(mockEventBus.emit).not.toHaveBeenCalled();
+    });
   });
 
   // ──────────────────────────────────────────────────────────────────────────────
@@ -162,7 +267,10 @@ describe('OdooSyncService', () => {
   // ──────────────────────────────────────────────────────────────────────────────
 
   describe('handleWebhook (crm.lead)', () => {
-    it('caches payload and emits lead event (no Odoo fetch)', async () => {
+    it('caches payload, fetches lead from Odoo, caches enriched data, emits event', async () => {
+      const leadData = [{ id: 7, name: 'New Lead', email_from: 'lead@test.com' }];
+      mockOdooService.searchRead.mockResolvedValueOnce(leadData);
+
       await service.handleWebhook(leadPayload);
 
       expect(mockRedisService.set).toHaveBeenCalledWith(
@@ -170,8 +278,19 @@ describe('OdooSyncService', () => {
         leadPayload,
         3600,
       );
+
+      expect(mockOdooService.searchRead).toHaveBeenCalledWith(
+        'crm.lead',
+        [['id', '=', 7]],
+        [
+          'id', 'name', 'stage_id', 'partner_id', 'email_from', 'phone',
+          'priority', 'write_date', 'create_date', 'x_hexa_source',
+          'x_hexa_service', 'x_hexa_budget', 'description',
+        ],
+      );
+
+      expect(mockRedisService.set).toHaveBeenCalledWith('odoo:lead:7', leadData[0], 900);
       expect(mockEventBus.emit).toHaveBeenCalledWith('odoo:lead', leadPayload);
-      expect(mockOdooService.searchRead).not.toHaveBeenCalled();
     });
   });
 
@@ -180,7 +299,7 @@ describe('OdooSyncService', () => {
   // ──────────────────────────────────────────────────────────────────────────────
 
   describe('handleWebhook (account.move)', () => {
-    it('caches payload and emits invoice event', async () => {
+    it('caches payload and emits invoice event (read-only, no Odoo fetch)', async () => {
       await service.handleWebhook(invoicePayload);
 
       expect(mockRedisService.set).toHaveBeenCalledWith(
@@ -241,7 +360,31 @@ describe('OdooSyncService', () => {
   });
 
   // ──────────────────────────────────────────────────────────────────────────────
-  //  7  getState()  (requirement: getSyncState returns current state)
+  //  7  processRetryWebhook — re-processing without recursive enqueue
+  // ──────────────────────────────────────────────────────────────────────────────
+
+  describe('processRetryWebhook', () => {
+    it('syncs a project and emits the event without enqueueing another retry', async () => {
+      const projectData = [
+        { id: 42, name: 'Retry Villa', stage_id: [3, 'In Progress'] as [number, string] },
+      ];
+      mockOdooService.searchRead.mockResolvedValueOnce(projectData);
+
+      await service.processRetryWebhook(projectPayload);
+
+      expect(mockRedisService.set).toHaveBeenCalledWith(
+        'odoo:sync:project.project:42',
+        projectPayload,
+        3600,
+      );
+      expect(mockRedisService.set).toHaveBeenCalledWith('odoo:project:42', projectData[0], 900);
+      expect(mockEventBus.emit).toHaveBeenCalledWith('odoo:project', projectPayload);
+      expect(mockWebhookRetryService.enqueue).not.toHaveBeenCalled();
+    });
+  });
+
+  // ──────────────────────────────────────────────────────────────────────────────
+  //  8  getState()  (legacy sync state snapshot)
   // ──────────────────────────────────────────────────────────────────────────────
 
   describe('getState', () => {
@@ -259,23 +402,22 @@ describe('OdooSyncService', () => {
       const frozenNow = 1_700_000_000_000;
       vi.setSystemTime(frozenNow);
 
-      mockOdooService.searchRead
-        .mockResolvedValueOnce([{ id: 1 }, { id: 2 }])           // crm.lead
-        .mockResolvedValueOnce([{ id: 10 }])                       // project.project
-        .mockResolvedValueOnce([]);                                // account.move
+      mockDeltaSyncService.syncAll.mockResolvedValueOnce([
+        okResult('crm.lead', 2),
+        okResult('project.project', 1),
+        okResult('account.move', 0),
+      ]);
 
       await service.pullAll();
 
       const state = service.getState();
       expect(state.lastSync).toBe(frozenNow);
-      expect(state.counts).toEqual({ leads: 2, projects: 1, invoices: 0 });
+      expect(state.counts).toEqual({ 'crm.lead': 2, 'project.project': 1, 'account.move': 0 });
       expect(state.lastError).toBeUndefined();
-
-      vi.useRealTimers();
     });
 
     it('records lastError on the state object when pullAll fails', async () => {
-      mockOdooService.searchRead.mockRejectedValueOnce(new Error('Odoo connection timeout'));
+      mockDeltaSyncService.syncAll.mockRejectedValueOnce(new Error('Odoo connection timeout'));
 
       await service.pullAll();
 
@@ -287,40 +429,30 @@ describe('OdooSyncService', () => {
   });
 
   // ──────────────────────────────────────────────────────────────────────────────
-  //  8  pullAll — full reconciliation cycle
+  //  9  pullAll — scheduled reconciliation via delta sync
   // ──────────────────────────────────────────────────────────────────────────────
 
   describe('pullAll (scheduled / manual reconciliation)', () => {
-    it('pulls all three models from Odoo and updates state counts', async () => {
-      mockOdooService.searchRead
-        .mockResolvedValueOnce([{ id: 1 }, { id: 2 }, { id: 3 }])   // leads
-        .mockResolvedValueOnce([{ id: 10 }, { id: 20 }])             // projects
-        .mockResolvedValueOnce([{ id: 100 }]);                       // invoices
+    it('delegates to the delta sync service and builds state counts', async () => {
+      mockDeltaSyncService.syncAll.mockResolvedValueOnce([
+        okResult('crm.lead', 3),
+        okResult('project.project', 2),
+        okResult('account.move', 1),
+      ]);
 
       await service.pullAll();
 
-      // Three distinct searchRead calls with correct arguments
-      expect(mockOdooService.searchRead).toHaveBeenCalledTimes(3);
-      expect(mockOdooService.searchRead).toHaveBeenCalledWith(
-        'crm.lead', [], ['id', 'stage_id'], false,
-      );
-      expect(mockOdooService.searchRead).toHaveBeenCalledWith(
-        'project.project', [], ['id', 'x_slug', 'stage_id'], false,
-      );
-      expect(mockOdooService.searchRead).toHaveBeenCalledWith(
-        'account.move', [['move_type', '=', 'out_invoice']], ['id'], false,
-      );
-
-      // State updated correctly
-      expect(service.getState().counts).toEqual({ leads: 3, projects: 2, invoices: 1 });
+      expect(mockDeltaSyncService.syncAll).toHaveBeenCalledWith(false);
+      expect(service.getState().counts).toEqual({
+        'crm.lead': 3,
+        'project.project': 2,
+        'account.move': 1,
+      });
     });
 
     it('flushes pending leads that were queued while Odoo was unavailable', async () => {
-      // Pull returns empty — focus on flush
-      mockOdooService.searchRead
-        .mockResolvedValueOnce([])
-        .mockResolvedValueOnce([])
-        .mockResolvedValueOnce([]);
+      // Delta sync returns empty — focus on the flush
+      mockDeltaSyncService.syncAll.mockResolvedValueOnce([]);
 
       // There are 2 pending leads in the Redis queue
       mockRedisService.llen.mockResolvedValueOnce(2);
@@ -347,10 +479,7 @@ describe('OdooSyncService', () => {
     });
 
     it('stops flushing on first Odoo create failure and preserves remaining queue', async () => {
-      mockOdooService.searchRead
-        .mockResolvedValueOnce([])
-        .mockResolvedValueOnce([])
-        .mockResolvedValueOnce([]);
+      mockDeltaSyncService.syncAll.mockResolvedValueOnce([]);
 
       mockRedisService.llen.mockResolvedValueOnce(3);
       mockRedisService.lrange.mockResolvedValueOnce([
@@ -377,7 +506,7 @@ describe('OdooSyncService', () => {
   });
 
   // ──────────────────────────────────────────────────────────────────────────────
-  //  9  flushPendingLeads — low-level queue drain
+  // 10  flushPendingLeads — low-level queue drain
   // ──────────────────────────────────────────────────────────────────────────────
 
   describe('flushPendingLeads', () => {
@@ -393,12 +522,167 @@ describe('OdooSyncService', () => {
   });
 
   // ──────────────────────────────────────────────────────────────────────────────
-  // 10  Error handling — resilience when Redis / Odoo are down
+  // 11  triggerSync — manual sync entry point
+  // ──────────────────────────────────────────────────────────────────────────────
+
+  describe('triggerSync', () => {
+    it('syncs all entities (delta) and flushes pending leads when no entityType is given', async () => {
+      const results = [okResult('crm.lead', 5), okResult('project.project', 2)];
+      mockDeltaSyncService.syncAll.mockResolvedValueOnce(results);
+      const flushSpy = vi.spyOn(service, 'flushPendingLeads').mockResolvedValue(undefined);
+
+      await expect(service.triggerSync({})).resolves.toEqual(results);
+
+      expect(mockDeltaSyncService.syncAll).toHaveBeenCalledWith(false);
+      expect(flushSpy).toHaveBeenCalledOnce();
+    });
+
+    it('syncs a single entity via delta when entityType is provided', async () => {
+      const result = okResult('crm.lead', 3);
+      mockDeltaSyncService.syncEntityDelta.mockResolvedValueOnce(result);
+
+      await expect(service.triggerSync({ entityType: 'crm.lead' })).resolves.toEqual([result]);
+
+      expect(mockDeltaSyncService.syncEntityDelta).toHaveBeenCalledWith('crm.lead');
+      expect(mockDeltaSyncService.syncAll).not.toHaveBeenCalled();
+    });
+
+    it('syncs a single entity via full sync when fullSync is set', async () => {
+      const result = okResult('project.project', 9);
+      mockDeltaSyncService.syncEntityFull.mockResolvedValueOnce(result);
+
+      await expect(
+        service.triggerSync({ entityType: 'project.project', fullSync: true }),
+      ).resolves.toEqual([result]);
+
+      expect(mockDeltaSyncService.syncEntityFull).toHaveBeenCalledWith('project.project');
+      expect(mockDeltaSyncService.syncEntityDelta).not.toHaveBeenCalled();
+    });
+
+    it('blocks the sync when the circuit breaker is OPEN', async () => {
+      mockDeltaSyncService.syncAll.mockReset().mockRejectedValue(new Error('Odoo unreachable'));
+
+      // Drive enough consecutive failures to trip the breaker
+      // (requires failureCount >= 5 AND totalRequests > 10).
+      for (let i = 0; i < 11; i++) {
+        await service.pullAll().catch(() => undefined);
+      }
+
+      await expect(service.triggerSync({})).rejects.toThrow('Circuit breaker is OPEN');
+    });
+  });
+
+  // ──────────────────────────────────────────────────────────────────────────────
+  // 12  getSyncStatus / getConflicts / resolveConflict / getMetrics
+  // ──────────────────────────────────────────────────────────────────────────────
+
+  describe('getSyncStatus', () => {
+    it('enriches the delta sync status with circuit state and conflict count', async () => {
+      const baseStatus: SyncStatusResponse = {
+        state: 'healthy',
+        lastFullSyncAt: '2026-01-01T00:00:00.000Z',
+        entities: [],
+        circuitBreaker: 'CLOSED',
+        pendingConflicts: 0,
+        generatedAt: '2026-01-01T00:00:00.000Z',
+      };
+      mockDeltaSyncService.getSyncStatus.mockResolvedValueOnce(baseStatus);
+      mockConflictResolutionService.getUnresolvedConflicts.mockResolvedValueOnce([
+        pendingConflict,
+      ]);
+
+      const out = await service.getSyncStatus();
+
+      expect(out.circuitBreaker).toBe('CLOSED');
+      expect(out.pendingConflicts).toBe(1);
+      expect(mockDeltaSyncService.getSyncStatus).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('getConflicts', () => {
+    it('returns unresolved conflicts from the conflict resolution service', async () => {
+      mockConflictResolutionService.getUnresolvedConflicts.mockResolvedValueOnce([
+        pendingConflict,
+      ]);
+
+      await expect(service.getConflicts()).resolves.toEqual([pendingConflict]);
+    });
+  });
+
+  describe('resolveConflict', () => {
+    it('delegates to the conflict resolution service with the requested strategy', async () => {
+      const resolved: SyncConflict = {
+        ...pendingConflict,
+        resolution: 'odoo-wins',
+        resolvedAt: '2026-01-02T00:00:00.000Z',
+        resolvedBy: 'user-1',
+      };
+      mockConflictResolutionService.resolveConflict.mockResolvedValueOnce(resolved);
+
+      await expect(service.resolveConflict('conflict-1', 'odoo-wins', 'user-1')).resolves.toEqual(
+        resolved,
+      );
+      expect(mockConflictResolutionService.resolveConflict).toHaveBeenCalledWith('conflict-1', {
+        strategy: 'odoo-wins',
+        resolvedBy: 'user-1',
+        mergedValues: undefined,
+      });
+    });
+  });
+
+  describe('getMetrics', () => {
+    it('reads recent metric entries from the Redis log list', async () => {
+      const entries = [
+        { operation: 'trigger-sync', success: true, durationMs: 42, timestamp: '2026-01-01T00:00:00.000Z' },
+      ];
+      mockRedisService.lrange.mockReset().mockResolvedValueOnce(entries);
+
+      await expect(service.getMetrics()).resolves.toEqual(entries);
+      expect(mockRedisService.lrange).toHaveBeenCalledWith('odoo:sync:metrics-log', 0, 49);
+    });
+  });
+
+  // ──────────────────────────────────────────────────────────────────────────────
+  // 13  retryWithBackoff — exponential back-off
+  // ──────────────────────────────────────────────────────────────────────────────
+
+  describe('retryWithBackoff', () => {
+    it('returns the operation result on the first attempt', async () => {
+      const op = vi.fn().mockResolvedValue('ok');
+
+      await expect(service.retryWithBackoff(op, 'test-op')).resolves.toBe('ok');
+      expect(op).toHaveBeenCalledTimes(1);
+    });
+
+    it('retries a flaky operation and resolves once it succeeds', async () => {
+      vi.useFakeTimers();
+      const op = vi.fn()
+        .mockRejectedValueOnce(new Error('flaky #1'))
+        .mockRejectedValueOnce(new Error('flaky #2'))
+        .mockResolvedValueOnce('recovered');
+
+      const promise = service.retryWithBackoff(op, 'test-op', 2);
+      await vi.advanceTimersByTimeAsync(10_000);
+
+      await expect(promise).resolves.toBe('recovered');
+      expect(op).toHaveBeenCalledTimes(3);
+    });
+
+    it('throws the last error once max retries are exhausted', async () => {
+      const op = vi.fn().mockRejectedValue(new Error('always fails'));
+
+      await expect(service.retryWithBackoff(op, 'test-op', 0)).rejects.toThrow('always fails');
+      expect(op).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  // ──────────────────────────────────────────────────────────────────────────────
+  // 14  Error handling — resilience when Redis / Odoo are down
   // ──────────────────────────────────────────────────────────────────────────────
 
   describe('error handling (Redis / Odoo failure resilience)', () => {
-    it('catches Odoo search failures in pullAll and logs a warning, does not crash', async () => {
-      mockOdooService.searchRead.mockRejectedValueOnce(new Error('ECONNREFUSED odoo:8069'));
+    it('catches delta sync failures in pullAll and logs a warning, does not crash', async () => {
+      mockDeltaSyncService.syncAll.mockRejectedValueOnce(new Error('ECONNREFUSED odoo:8069'));
 
       const warnSpy = vi.spyOn(Logger.prototype, 'warn');
 
@@ -412,10 +696,7 @@ describe('OdooSyncService', () => {
     });
 
     it('catches Redis queue read failures during flushPendingLeads inside pullAll', async () => {
-      mockOdooService.searchRead
-        .mockResolvedValueOnce([])
-        .mockResolvedValueOnce([])
-        .mockResolvedValueOnce([]);
+      mockDeltaSyncService.syncAll.mockResolvedValueOnce([]);
 
       // llen works, but lrange throws
       mockRedisService.llen.mockResolvedValueOnce(2);

@@ -50,8 +50,27 @@ const envSchema = z.object({
 
   // AI / Gemini
   GEMINI_API_KEY: z.string().min(1).optional(),
-  GEMINI_MODEL: z.string().default('gemini-3.5-flash'),
-  AI_PROVIDER: z.enum(['openai', 'gemini']).default('openai'),
+  GEMINI_MODEL: z.string().default('gemini-2.5-flash'),
+  AI_PROVIDER: z.enum(['openai', 'gemini']).default('gemini'),
+
+  // AI / Anthropic (Claude)
+  ANTHROPIC_API_KEY: z.string().min(1).optional(),
+  CLAUDE_API_KEY: z.string().min(1).optional(),
+
+  // AI / Grok (xAI)
+  GROK_API_KEY: z.string().min(1).optional(),
+
+  // AI / DeepSeek
+  DEEPSEEK_API_KEY: z.string().min(1).optional(),
+
+  // AI / Mistral
+  MISTRAL_API_KEY: z.string().min(1).optional(),
+
+  // AI / OpenRouter (multi-model gateway)
+  OPENROUTER_API_KEY: z.string().min(1).optional(),
+
+  // AI / Kimi (Moonshot)
+  KIMI_API_KEY: z.string().min(1).optional(),
 
   // AI / FreeTheAi (OpenAI-compatible gateway — chat only, no embeddings)
   FREETHEAI_API_KEY: z.string().min(1).optional(),
@@ -66,6 +85,8 @@ const envSchema = z.object({
   LM_STUDIO_MODEL: z.string().default('google/gemma-4-e4b'),
   // Fast/small model for simple queries (smart routing). Falls back to LM_STUDIO_MODEL.
   LM_STUDIO_FAST_MODEL: z.string().optional(),
+  // Local embedding model (OpenAI-compatible /embeddings endpoint). Nomic v1.5 = 768 dims.
+  LM_STUDIO_EMBEDDING_MODEL: z.string().default('text-embedding-nomic-embed-text-v1.5'),
   AI_CHAT_PROVIDER: z.enum(['openai', 'freetheai', 'local']).default('local'),
 
   // Exchange Rate API

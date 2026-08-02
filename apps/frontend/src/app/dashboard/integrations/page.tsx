@@ -195,6 +195,27 @@ function OdooPanel() {
   );
 }
 
+function WorkflowsPanel() {
+  return (
+    <a
+      href="/dashboard/workflows"
+      className="block rounded-xl border border-white/10 bg-white/[0.03] p-5 transition-colors hover:border-white/20"
+    >
+      <div className="mb-3 flex items-center gap-3">
+        <span className="text-xl">⚙️</span>
+        <div>
+          <h3 className="font-medium text-white">Workflow Engine</h3>
+          <p className="text-xs text-white/40">Automations across CRM, projects, helpdesk, and accounting</p>
+        </div>
+        <span className="ml-auto rounded-full bg-[#D4AF37]/20 px-2 py-0.5 text-[10px] text-[#D4AF37]">
+          Active
+        </span>
+      </div>
+      <p className="text-xs text-white/30">Create event, schedule, and manual workflows that react to Odoo operations.</p>
+    </a>
+  );
+}
+
 export default function IntegrationsPage() {
   const [webhooks, setWebhooks] = useState<WebhookConfig[]>([]);
   const [loading, setLoading] = useState(true);
@@ -320,6 +341,7 @@ export default function IntegrationsPage() {
       <h2 className="mt-12 mb-4 text-lg font-medium text-white">ERP & Tools</h2>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <OdooPanel />
+        <WorkflowsPanel />
       </div>
     </div>
   );

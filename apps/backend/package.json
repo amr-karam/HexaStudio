@@ -15,7 +15,7 @@
     "test:cov": "vitest run --coverage"
   },
   "dependencies": {
-    "@google/genai": "^2.3.0",
+    "@google/genai": "^2.12.0",
     "@hexastudio/types": "*",
     "@hexastudio/utils": "*",
     "@nestjs/axios": "^4.0.1",

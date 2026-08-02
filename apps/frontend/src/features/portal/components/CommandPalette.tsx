@@ -32,12 +32,12 @@ const COMMAND_ITEMS: CommandItem[] = [
   { id: 'upload-doc', category: 'documents', label: 'Upload Document', description: 'Upload a new document', href: '/portal/documents', icon: 'upload' },
 
   // Invoices
-  { id: 'invoices', category: 'invoices', label: 'View Invoices', description: 'Browse all invoices', href: '/portal/invoices', icon: 'receipt' },
-  { id: 'outstanding', category: 'invoices', label: 'Outstanding Invoices', description: 'View pending payments', href: '/portal/invoices', icon: 'dollar-sign' },
+  { id: 'invoices', category: 'invoices', label: 'View Invoices', description: 'Browse all invoices', href: '/portal/finance', icon: 'receipt' },
+  { id: 'outstanding', category: 'invoices', label: 'Outstanding Invoices', description: 'View pending payments', href: '/portal/finance', icon: 'dollar-sign' },
 
   // Messages
-  { id: 'messages', category: 'messages', label: 'View Messages', description: 'Read and send messages', href: '/portal/messages', icon: 'message-square' },
-  { id: 'new-message', category: 'messages', label: 'New Message', description: 'Compose a new message', href: '/portal/messages', icon: 'send' },
+  { id: 'messages', category: 'messages', label: 'View Messages', description: 'Read and send messages', href: '/portal/chat', icon: 'message-square' },
+  { id: 'new-message', category: 'messages', label: 'New Message', description: 'Compose a new message', href: '/portal/chat', icon: 'send' },
 
   // Settings
   { id: 'settings', category: 'settings', label: 'Settings', description: 'Manage your account settings', href: '/portal/settings', icon: 'settings' },

@@ -725,6 +725,16 @@ export function ProjectWorkspaceView({ projectId = 1 }: ProjectWorkspaceViewProp
                   <Icon name="user" size={13} className="text-neutral-500" />
                   <span>PM: <strong className="text-accent font-semibold">Marcus Vance</strong></span>
                 </div>
+                <div className="w-px h-3 bg-neutral-700" aria-hidden="true" />
+                <a
+                  href="/api/portal/reports/executive-brief"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs text-amber-400 hover:text-amber-300 font-semibold bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 px-3 py-1 rounded-full transition-all duration-200"
+                >
+                  <Icon name="file-text" size={12} className="text-amber-400" />
+                  <span>Executive Brief PDF</span>
+                </a>
               </div>
             </motion.div>
           </div>

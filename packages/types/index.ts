@@ -338,4 +338,12 @@ export interface PortalDocument {
   signedUrl?: string;
 }
 
+
+export interface Transform3D {
+  targetId: string;
+  position: { x: number; y: number; z: number };
+  rotation?: { x: number; y: number; z: number };
+}
+
 export * from './odoo';
+export * from './workflow';

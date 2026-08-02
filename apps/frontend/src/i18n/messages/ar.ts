@@ -22,6 +22,9 @@ export const ar = {
     getStarted: 'ابدأ الآن',
     contactUs: 'اتصل بنا',
     explore: 'استكشف',
+    send: 'إرسال',
+    download: 'تحميل',
+    anonymous: 'مجهول',
   },
   nav: {
     ...en.nav,
@@ -31,7 +34,7 @@ export const ar = {
     portfolio: 'مشاريعنا',
     blog: 'المدونة',
     contact: 'اتصل بنا',
-    portal: 'بوابة العميل',
+    portal: 'بوابة العميل الرقمية',
     admin: 'الإدارة',
   },
   home: {
@@ -57,10 +60,10 @@ export const ar = {
   },
   portal: {
     ...en.portal,
-    title: 'بوابة العميل',
-    login: 'تسجيل الدخول',
-    dashboard: 'لوحة المشاريع',
-    documents: 'الملفات',
+    title: 'بوابة العميل الرقمية',
+    login: 'تسجيل الدخول إلى البوابة',
+    dashboard: 'لوحة التحكم التنفيذية',
+    documents: 'مستودع المستندات',
     requests: 'تقديم طلب',
     timeline: {
       title: 'الجدول الزمني للمشروع',
@@ -72,7 +75,23 @@ export const ar = {
       today: 'اليوم',
       noMilestones: 'لم يتم تحديد مراحل رئيسية بعد.',
     },
-    approvals: 'الموافقات',
+    approvals: 'مركز الموافقات',
+    annotations: {
+      title: 'ملاحظات وتحديدات ثلاثية الأبعاد',
+      addAnnotation: '+ إضافة ملاحظة مكانية',
+      addNote: 'أدخل الملاحظة أو التوجيه المعماري...',
+      resolve: 'إكمال الملاحظة',
+    },
+    finance: {
+      title: 'المالية والفواتير',
+      totalPaid: 'إجمالي المدفوعات',
+      pendingInvoices: 'الفواتير المعلقة',
+      currency: 'العملة الحالية',
+    },
+    copilot: {
+      title: 'مساعد هكسا الذكي للمشروع',
+      placeholder: 'اسأل عن حالة المشروع أو المواعيد أو الفواتير...',
+    },
   },
   footer: {
     ...en.footer,

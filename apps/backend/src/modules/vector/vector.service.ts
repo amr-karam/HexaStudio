@@ -4,6 +4,8 @@ import { QdrantClient } from '@qdrant/js-client-rest';
 import { Env } from '../../config/env';
 import type { VectorEmbedding, SemanticSearchRequest, SemanticSearchResponse } from '@hexastudio/types';
 import { EmbeddingService } from '../ai/embedding.service';
+import { ToolDefinition } from '../agents/decorators/tool-definition.decorator';
+import { ToolAuthorization } from '../agents/decorators/tool-authorization.decorator';
 
 @Injectable()
 export class VectorService implements OnModuleInit {
@@ -20,6 +22,31 @@ export class VectorService implements OnModuleInit {
       port: this.configService.get('VECTOR_PORT'),
       apiKey: this.configService.get('VECTOR_API_KEY'),
     });
+  }
+
+  @ToolDefinition({
+    name: 'search_projects',
+    description: 'Search architecture projects by keyword query',
+    parameters: {
+      type: 'object',
+      properties: {
+        query: { type: 'string', description: 'Search query' },
+        limit: { type: 'number', description: 'Max results (default 5)' },
+      },
+      required: ['query'],
+    },
+  })
+  @ToolAuthorization({ requiresAuth: true, requiresHitl: false })
+  async searchProjectsTool(params: { query: string; limit?: number }) {
+    const result = await this.search('projects', {
+      query: params.query,
+      limit: params.limit ?? 5,
+    });
+    return result.results.map(r => ({
+      slug: r.payload?.slug,
+      title: r.payload?.title,
+      score: r.score,
+    }));
   }
 
   async onModuleInit() {

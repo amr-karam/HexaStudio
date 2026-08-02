@@ -16,11 +16,12 @@ import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { motion } from 'framer-motion';
 import { EASE, DURATION } from '@/lib/motion';
 
-interface PortalTopBarProps {
-  unreadCount?: number;
-}
+import { NotificationCenter } from '@/features/notifications/components/NotificationCenter';
+import { OdooSyncStatusWidget } from './OdooSyncStatusWidget';
+import { LocaleSwitcher } from '@/features/i18n/components/LocaleSwitcher';
+import { WebXRArButton } from '@/features/scene/components/WebXRArButton';
 
-export function PortalTopBar({ unreadCount = 0 }: PortalTopBarProps) {
+export function PortalTopBar() {
   const { user } = useAuth();
   const { toggleSidebar, setCommandPaletteOpen } = usePortalStore();
   const { theme, toggleTheme } = usePortalTheme();
@@ -37,7 +38,7 @@ export function PortalTopBar({ unreadCount = 0 }: PortalTopBarProps) {
       )}
       role="banner"
     >
-      {/* Left: hamburger (mobile) + search trigger */}
+      {/* Left: hamburger (mobile) + search trigger + Odoo Status */}
       <div className="flex items-center gap-3">
         {/* Mobile hamburger */}
         <button
@@ -71,18 +72,14 @@ export function PortalTopBar({ unreadCount = 0 }: PortalTopBarProps) {
           </kbd>
         </button>
 
-        {/* Mobile search icon */}
-        <button
-          onClick={() => setCommandPaletteOpen(true)}
-          className="sm:hidden flex items-center justify-center w-10 h-10 rounded-lg text-neutral-400 hover:text-foreground hover:bg-white/[0.03] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-          aria-label="Open search"
-        >
-          <Icon name="search" size={18} />
-        </button>
+        {/* Odoo Live Sync Status Widget */}
+        <div className="hidden xl:block">
+          <OdooSyncStatusWidget />
+        </div>
       </div>
 
       {/* Right: theme toggle, notifications, avatar */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
         {/* Theme toggle */}
         <button
           onClick={toggleTheme}
@@ -103,16 +100,16 @@ export function PortalTopBar({ unreadCount = 0 }: PortalTopBarProps) {
           )}
         </button>
 
-        {/* Notifications bell */}
-        <button
-          className="relative flex items-center justify-center w-10 h-10 rounded-lg text-neutral-400 hover:text-foreground hover:bg-white/[0.03] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-          aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ''}`}
-        >
-          <Icon name="bell" size={18} />
-          {unreadCount > 0 && (
-            <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-accent ring-2 ring-background" />
-          )}
-        </button>
+        {/* WebXR AR QuickLook Projection */}
+        <div className="hidden md:block">
+          <WebXRArButton />
+        </div>
+
+        {/* Luxury Language Switcher (EN/AR) */}
+        <LocaleSwitcher />
+
+        {/* Real-time Notification Center */}
+        <NotificationCenter />
 
         {/* User avatar */}
         {user && (

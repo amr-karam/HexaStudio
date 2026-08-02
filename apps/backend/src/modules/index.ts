@@ -33,3 +33,4 @@ export * from './employees/employees.module';
 export * from './timesheets/timesheets.module';
 export * from './knowledge/knowledge.module';
 export * from './documents/documents.module';
+export * from './workflow/workflow.module';

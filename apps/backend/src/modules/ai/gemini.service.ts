@@ -2,7 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GoogleGenAI } from '@google/genai';
 import { Env } from '../../config/env';
-import { ToolRegistry } from '../agents/tools';
+import { ToolRegistryService } from '../agents/tool-registry.service';
+import { ToolDefinitionOptions } from '../agents/decorators/tool-definition.decorator';
 
 @Injectable()
 export class GeminiService {
@@ -11,7 +12,7 @@ export class GeminiService {
   private readonly maxIterations = 8;
 
   constructor(
-    private readonly toolRegistry: ToolRegistry,
+    private readonly toolRegistry: ToolRegistryService,
     private configService: ConfigService<Env>,
   ) {
     const apiKey = this.configService.get('GEMINI_API_KEY');
@@ -27,7 +28,7 @@ export class GeminiService {
   private getTools() {
     const tools = this.toolRegistry.getDefinitions();
     return {
-      geminiTools: tools.map(t => ({
+      geminiTools: tools.map((t: ToolDefinitionOptions) => ({
         functionDeclarations: [
           {
             name: t.name,
@@ -102,7 +103,7 @@ Answer concisely and professionally. When citing projects, include their titles 
       const fnArgs = functionCallStep.arguments;
       const callId = functionCallStep.id;
 
-      const result = await this.toolRegistry.execute(fnName, fnArgs);
+      const result = await this.toolRegistry.execute(fnName, fnArgs, undefined);
 
       interaction = await call([
         {

@@ -64,7 +64,7 @@ Forecast timeline with milestones.`,
 
       return JSON.parse(response.choices[0]?.message?.content || '{}');
     } catch (error) {
-      this.logger.error(`Timeline forecast failed: ${error}`);
+      this.logger.error(`Timeline forecast failed: ${(error as any).message}`);
       return this.fallbackForecast();
     }
   }
@@ -105,7 +105,7 @@ Identify top 5 risks with mitigations.`,
 
       return JSON.parse(response.choices[0]?.message?.content || '{}');
     } catch (error) {
-      this.logger.error(`Risk assessment failed: ${error}`);
+      this.logger.error(`Risk assessment failed: ${(error as any).message}`);
       return { content: 'Risk assessment failed', confidence: 0.3, actions: ['Manual assessment'], risks: [] };
     }
   }
@@ -141,7 +141,7 @@ Optimize allocation.`,
 
       return JSON.parse(response.choices[0]?.message?.content || '{}');
     } catch (error) {
-      this.logger.error(`Resource optimization failed: ${error}`);
+      this.logger.error(`Resource optimization failed: ${(error as any).message}`);
       return { content: 'Optimization failed', confidence: 0.3, actions: ['Manual allocation'], allocation: {} };
     }
   }
@@ -181,7 +181,7 @@ Forecast budget.`,
 
       return JSON.parse(response.choices[0]?.message?.content || '{}');
     } catch (error) {
-      this.logger.error(`Budget forecast failed: ${error}`);
+      this.logger.error(`Budget forecast failed: ${(error as any).message}`);
       return { content: 'Budget forecast failed', confidence: 0.3, actions: ['Manual estimate'], estimate: 0, breakdown: {} };
     }
   }

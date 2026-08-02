@@ -1,4 +1,5 @@
 import { Module, forwardRef } from '@nestjs/common';
+import { TransformReasoningService } from './transform-reasoning.service';
 import { EmbeddingService } from './embedding.service';
 import { AutoTagService } from './auto-tag.service';
 import { AutoTagVisionService } from './auto-tag-vision.service';
@@ -50,6 +51,7 @@ import { VectorModule } from '../vector/vector.module';
     AiCacheService,
     TokenUsageService,
     VoiceService,
+    TransformReasoningService,
     MinIOVisionService,
   ],
   exports: [
@@ -65,6 +67,7 @@ import { VectorModule } from '../vector/vector.module';
     AiCacheService,
     TokenUsageService,
     VoiceService,
+    TransformReasoningService,
     MinIOVisionService,
   ],
 })

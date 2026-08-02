@@ -9,6 +9,9 @@ import { AnalyticsInit } from "@/lib/analytics";
 import { Suspense } from "react";
 import "./globals.css";
 import { AnimationDebugLoader } from "@/components/dev/AnimationDebugLoader";
+import { DesignerModeConfigurator, SpatialLayerToggle } from "@/features/scene";
+import { SpatialAnnotations } from "@/features/scene/components/SpatialAnnotations";
+import { SpatialAudioPlayer } from "@/features/scene/components/SpatialAudioPlayer";
 
 export const viewport: Viewport = {
   themeColor: [
@@ -19,16 +22,17 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "HexaStudio — 3D Architectural Visualization",
-    template: "%s | HexaStudio",
+    default: "Code Lens — 3D Architectural Visualization & Spatial Intelligence",
+    template: "%s | Code Lens",
   },
   description:
-    "Living Spaces. Visualized. Immersive 3D architectural experiences for the world's most ambitious projects.",
+    "Code Lens by HexaStudio. Living Spaces. Visualized. Immersive 3D architectural experiences and spatial intelligence for ambitious projects.",
   keywords: [
+    "Code Lens",
     "architecture",
     "visualization",
     "3D rendering",
-    "architectural design",
+    "spatial intelligence",
     "HexaStudio",
   ],
   alternates: {
@@ -39,7 +43,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "HexaStudio — Living Spaces. Visualized.",
+    title: "Code Lens — Living Spaces. Visualized.",
     description:
       "Living Spaces. Visualized. Immersive 3D architectural experiences for the world's most ambitious projects.",
     url: "https://hexastudio.net",
@@ -156,6 +160,10 @@ export default function RootLayout({
             Skip to content
           </a>
           <LayoutShell>{children}</LayoutShell>
+          <DesignerModeConfigurator />
+          <SpatialAnnotations />
+          <SpatialAudioPlayer />
+          <SpatialLayerToggle />
           <Suspense fallback={null}>
             <AnalyticsInit />
           </Suspense>

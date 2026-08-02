@@ -2,11 +2,14 @@ import { Controller, Get, Query, Post, Patch, Delete, Param, Body, UploadedFile,
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiQuery, ApiBearerAuth, ApiParam, ApiConsumes } from '@nestjs/swagger';
 import { OdooApiService } from './odoo-api.service';
-import { OdooSyncService } from './odoo-sync.service';
 import { OdooDocumentService } from './odoo-document.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { CreateLeadDto } from './dto/create-lead.dto';
+import { UpdateLeadDto } from './dto/update-lead.dto';
+import { CreateContactDto } from './dto/create-contact.dto';
+import { UpdateContactDto } from './dto/update-contact.dto';
 
 @ApiTags('Odoo')
 @ApiBearerAuth()
@@ -16,7 +19,6 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 export class OdooApiController {
   constructor(
     private readonly odooApi: OdooApiService,
-    private readonly odooSync: OdooSyncService,
     private readonly odooDocument: OdooDocumentService,
   ) {}
 
@@ -45,16 +47,16 @@ export class OdooApiController {
 
   @Post('crm/leads')
   @ApiOperation({ summary: 'Create a new CRM lead' })
-  async createLead(@Body() data: Record<string, unknown>) {
-    const id = await this.odooApi.createLead(data);
+  async createLead(@Body() data: CreateLeadDto) {
+    const id = await this.odooApi.createLead(data as unknown as Record<string, unknown>);
     return { id, success: true };
   }
 
   @Patch('crm/leads/:id')
   @ApiOperation({ summary: 'Update a CRM lead' })
   @ApiParam({ name: 'id', type: Number })
-  async updateLead(@Param('id') id: string, @Body() data: Record<string, unknown>) {
-    await this.odooApi.updateLead(parseInt(id, 10), data);
+  async updateLead(@Param('id') id: string, @Body() data: UpdateLeadDto) {
+    await this.odooApi.updateLead(parseInt(id, 10), data as unknown as Record<string, unknown>);
     return { success: true };
   }
 
@@ -90,16 +92,16 @@ export class OdooApiController {
 
   @Post('contacts')
   @ApiOperation({ summary: 'Create a new contact/partner' })
-  async createContact(@Body() data: Record<string, unknown>) {
-    const id = await this.odooApi.createPartner(data);
+  async createContact(@Body() data: CreateContactDto) {
+    const id = await this.odooApi.createPartner(data as unknown as Record<string, unknown>);
     return { id, success: true };
   }
 
   @Patch('contacts/:id')
   @ApiOperation({ summary: 'Update a contact/partner' })
   @ApiParam({ name: 'id', type: Number })
-  async updateContact(@Param('id') id: string, @Body() data: Record<string, unknown>) {
-    await this.odooApi.updatePartner(parseInt(id, 10), data);
+  async updateContact(@Param('id') id: string, @Body() data: UpdateContactDto) {
+    await this.odooApi.updatePartner(parseInt(id, 10), data as unknown as Record<string, unknown>);
     return { success: true };
   }
 
@@ -169,20 +171,7 @@ export class OdooApiController {
     return this.odooApi.getInvoices(limit ? parseInt(limit, 10) : 50, offset ? parseInt(offset, 10) : 0);
   }
 
-  // --- Sync & Health ---
-
-  @Get('sync/state')
-  @ApiOperation({ summary: 'Get Odoo sync state' })
-  async getSyncState() {
-    return this.odooSync.getState();
-  }
-
-  @Post('sync/trigger')
-  @ApiOperation({ summary: 'Trigger a manual Odoo pull' })
-  async triggerSync() {
-    await this.odooSync.pullAll();
-    return { success: true };
-  }
+  // --- Health ---
 
   @Get('health')
   @ApiOperation({ summary: 'Check Odoo connection health' })
@@ -521,6 +510,171 @@ export class OdooApiController {
   @ApiOperation({ summary: 'Post a mail message' })
   async postMailMessage(@Body() data: Record<string, unknown>) {
     const id = await this.odooApi.postMailMessage(data);
+    return { id, success: true };
+  }
+
+  // --- Sales Teams (crm.team) ---
+
+  @Get('sales-teams')
+  @ApiOperation({ summary: 'List sales teams with members and pipeline summary' })
+  @ApiQuery({ name: 'userId', required: false, type: String, description: 'Filter teams by user membership' })
+  async getSalesTeams(@Query('userId') userId?: string) {
+    return this.odooApi.getSalesTeams(userId);
+  }
+
+  @Get('sales-teams/:id')
+  @ApiOperation({ summary: 'Get detailed sales team view with recent activity' })
+  @ApiParam({ name: 'id', type: Number })
+  async getSalesTeamDetails(@Param('id') id: string) {
+    return this.odooApi.getSalesTeamDetails(parseInt(id, 10));
+  }
+
+  // --- HR Departments (hr.department) ---
+
+  @Get('departments')
+  @ApiOperation({ summary: 'List all HR departments with employee counts' })
+  async getDepartments() {
+    return this.odooApi.getDepartments();
+  }
+
+  @Get('departments/:id')
+  @ApiOperation({ summary: 'Get department details with employee roster' })
+  @ApiParam({ name: 'id', type: Number })
+  async getDepartmentDetails(@Param('id') id: string) {
+    return this.odooApi.getDepartmentDetails(parseInt(id, 10));
+  }
+
+  // --- Finance / Accounting (Read-Only) ---
+
+  @Get('accounting/journal-entries')
+  @ApiOperation({ summary: 'Fetch journal entries with optional date range' })
+  @ApiQuery({ name: 'dateFrom', required: false, type: String, description: 'Start date (YYYY-MM-DD)' })
+  @ApiQuery({ name: 'dateTo', required: false, type: String, description: 'End date (YYYY-MM-DD)' })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
+  async getAccountJournalEntries(
+    @Query('dateFrom') dateFrom?: string,
+    @Query('dateTo') dateTo?: string,
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+  ) {
+    return this.odooApi.getAccountJournalEntries(
+      dateFrom,
+      dateTo,
+      limit ? parseInt(limit, 10) : 50,
+      offset ? parseInt(offset, 10) : 0,
+    );
+  }
+
+  @Get('accounting/payments')
+  @ApiOperation({ summary: 'Fetch payments (customer/vendor) with optional date range' })
+  @ApiQuery({ name: 'dateFrom', required: false, type: String, description: 'Start date (YYYY-MM-DD)' })
+  @ApiQuery({ name: 'dateTo', required: false, type: String, description: 'End date (YYYY-MM-DD)' })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
+  async getAccountPayments(
+    @Query('dateFrom') dateFrom?: string,
+    @Query('dateTo') dateTo?: string,
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+  ) {
+    return this.odooApi.getAccountPayments(
+      dateFrom,
+      dateTo,
+      limit ? parseInt(limit, 10) : 50,
+      offset ? parseInt(offset, 10) : 0,
+    );
+  }
+
+  @Get('accounting/invoices')
+  @ApiOperation({ summary: 'List invoices (customer/vendor) with optional status filter' })
+  @ApiQuery({ name: 'status', required: false, type: String, description: 'Filter by state: draft, posted, cancelled' })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
+  async getAccountInvoices(
+    @Query('status') status?: string,
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+  ) {
+    return this.odooApi.getAccountInvoices(
+      status,
+      limit ? parseInt(limit, 10) : 50,
+      offset ? parseInt(offset, 10) : 0,
+    );
+  }
+
+  @Get('accounting/banks')
+  @ApiOperation({ summary: 'List bank accounts with balances' })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
+  async getAccountBanks(
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+  ) {
+    return this.odooApi.getAccountBanks(
+      limit ? parseInt(limit, 10) : 50,
+      offset ? parseInt(offset, 10) : 0,
+    );
+  }
+
+  // --- Knowledge Write Operations (knowledge.article) ---
+
+  @Post('knowledge')
+  @ApiOperation({ summary: 'Create a new knowledge article' })
+  async createKnowledgeArticle(@Body() data: { name: string; body?: string; category_id?: number }) {
+    const id = await this.odooApi.createKnowledgeArticle(data);
+    return { id, success: true };
+  }
+
+  @Patch('knowledge/:id')
+  @ApiOperation({ summary: 'Update a knowledge article' })
+  @ApiParam({ name: 'id', type: Number })
+  async updateKnowledgeArticle(
+    @Param('id') id: string,
+    @Body() data: { name?: string; body?: string; category_id?: number },
+  ) {
+    await this.odooApi.updateKnowledgeArticle(parseInt(id, 10), data);
+    return { success: true };
+  }
+
+  @Delete('knowledge/:id')
+  @ApiOperation({ summary: 'Archive (soft-delete) a knowledge article' })
+  @ApiParam({ name: 'id', type: Number })
+  async deleteKnowledgeArticle(@Param('id') id: string) {
+    await this.odooApi.deleteKnowledgeArticle(parseInt(id, 10));
+    return { success: true };
+  }
+
+  // --- Email Integration (mail.mail) ---
+
+  @Get('emails')
+  @ApiOperation({ summary: 'List emails with optional filter' })
+  @ApiQuery({ name: 'filter', required: false, type: String, description: 'Filter: inbox, sent, or all (default: all)' })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
+  async getEmails(
+    @Query('filter') filter?: string,
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+  ) {
+    return this.odooApi.getEmails(
+      (filter as 'inbox' | 'sent' | 'all') ?? 'all',
+      limit ? parseInt(limit, 10) : 50,
+      offset ? parseInt(offset, 10) : 0,
+    );
+  }
+
+  @Get('emails/:id')
+  @ApiOperation({ summary: 'Get email details with full body' })
+  @ApiParam({ name: 'id', type: Number })
+  async getEmailDetails(@Param('id') id: string) {
+    return this.odooApi.getEmailDetails(parseInt(id, 10));
+  }
+
+  @Post('emails')
+  @ApiOperation({ summary: 'Send an email via Odoo mail system' })
+  async sendEmail(@Body() data: { to: string; subject: string; body: string; partnerIds?: number[] }) {
+    const id = await this.odooApi.sendEmail(data);
     return { id, success: true };
   }
 
