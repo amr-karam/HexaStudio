@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import type { ContactMessage } from '@hexastudio/types';
 import { OdooService } from '../odoo/odoo.service';
 import { RedisService } from '../storage/redis.service';
+import { AiChatService } from '../ai/ai-chat.service';
 
 const PENDING_LEADS_KEY = 'odoo:pending-leads';
 
@@ -12,14 +13,16 @@ export class ContactService {
   constructor(
     private readonly odooService: OdooService,
     private readonly redisService: RedisService,
+    private readonly aiChat: AiChatService,
   ) {}
 
   async sendMessage(message: ContactMessage): Promise<{ success: boolean; message: string }> {
-    const leadData = this.buildLeadPayload(message);
+    const aiAssessment = await this.assessLeadWithAi(message);
+    const leadData = this.buildLeadPayload(message, aiAssessment);
 
     try {
       const leadId = await this.odooService.create('crm.lead', leadData);
-      this.logger.log(`Created Odoo CRM lead #${leadId} for ${message.email}`);
+      this.logger.log(`Created Odoo CRM lead #${leadId} with AI Qualification for ${message.email}`);
 
       return {
         success: true,
@@ -28,7 +31,6 @@ export class ContactService {
     } catch (error) {
       this.logger.warn(`Odoo unavailable, queueing lead for ${message.email}: ${(error as Error).message}`);
 
-      // Queue the lead in Redis for async reconciliation
       try {
         await this.redisService.lpush(PENDING_LEADS_KEY, leadData);
         this.logger.log(`Lead queued in Redis for ${message.email}`);
@@ -36,7 +38,6 @@ export class ContactService {
         this.logger.error(`Failed to queue lead in Redis: ${(queueError as Error).message}`);
       }
 
-      // Still return success — the lead is queued and will be reconciled
       return {
         success: true,
         message: 'Thank you for your message. We will get back to you within 24 hours.',
@@ -44,7 +45,37 @@ export class ContactService {
     }
   }
 
-  private buildLeadPayload(message: ContactMessage): Record<string, unknown> {
+  private async assessLeadWithAi(message: ContactMessage): Promise<string> {
+    try {
+      if (!this.aiChat.isAvailable) {
+        return 'AI Assessment unavailable (provider not configured).';
+      }
+
+      const prompt = `Analyze this architectural studio client inquiry and provide a brief 2-sentence executive summary rating client qualification tier (High/Medium/Low) and estimated project complexity.
+Name: ${message.name}
+Company: ${message.company || 'N/A'}
+Service: ${message.service || 'General'}
+Budget: ${message.budget || 'Unspecified'}
+Message: ${message.message}`;
+
+      const response = await this.aiChat.client!.chat.completions.create({
+        model: this.aiChat.model,
+        messages: [
+          { role: 'system', content: 'You are an expert CRM lead qualification analyst for high-end architecture.' },
+          { role: 'user', content: prompt },
+        ],
+        temperature: 0.3,
+        max_tokens: 150,
+      });
+
+      return response.choices[0]?.message?.content?.trim() || 'AI Assessment completed.';
+    } catch (err: any) {
+      this.logger.warn(`AI Lead assessment skipped: ${err?.message || err}`);
+      return 'AI Assessment unavailable at intake time.';
+    }
+  }
+
+  private buildLeadPayload(message: ContactMessage, aiAssessment: string): Record<string, unknown> {
     const name = this.escapeHtml(message.name);
     const email = this.escapeHtml(message.email);
     const company = message.company ? this.escapeHtml(message.company) : '';
@@ -64,8 +95,10 @@ export class ContactService {
 ${phone ? `<p><strong>Phone:</strong> ${phone}</p>` : ''}
 ${service ? `<p><strong>Service:</strong> ${service}</p>` : ''}
 ${budget ? `<p><strong>Budget:</strong> ${budget}</p>` : ''}
-<p><strong>Message:</strong></p><p>${body}</p>`,
-      // Custom HEXA fields
+<p><strong>Message:</strong></p><p>${body}</p>
+<hr />
+<p><strong>🤖 HEXA AI Lead Qualification Assessment:</strong></p>
+<p><em>${this.escapeHtml(aiAssessment)}</em></p>`,
       x_hexa_source: 'website',
       ...(message.service && { x_hexa_service: message.service }),
       ...(message.budget && { x_hexa_budget: message.budget }),

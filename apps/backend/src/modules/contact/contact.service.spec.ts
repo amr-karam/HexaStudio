@@ -13,6 +13,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ContactService } from './contact.service';
 import { OdooService } from '../odoo/odoo.service';
 import { RedisService } from '../storage/redis.service';
+import { AiChatService } from '../ai/ai-chat.service';
 
 const mockOdooService = {
   create: vi.fn(),
@@ -20,6 +21,14 @@ const mockOdooService = {
 
 const mockRedisService = {
   lpush: vi.fn(),
+};
+
+// `isAvailable` is false so the AI lead assessment short-circuits and the
+// lead flows straight through to Odoo / the Redis fallback queue.
+const mockAiChatService = {
+  client: null,
+  model: 'gpt-4o-mini',
+  isAvailable: false,
 };
 
 describe('ContactService', () => {
@@ -32,6 +41,7 @@ describe('ContactService', () => {
         ContactService,
         { provide: OdooService, useValue: mockOdooService },
         { provide: RedisService, useValue: mockRedisService },
+        { provide: AiChatService, useValue: mockAiChatService },
       ],
     }).compile();
 

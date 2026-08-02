@@ -96,7 +96,8 @@ export class ArticlesService {
       title: attrs.title as string,
       slug: attrs.slug as string,
       excerpt: attrs.excerpt as string,
-      content: (attrs.content as RichTextBlock[]) ?? [],
+      content: (Array.isArray(attrs.content) ? attrs.content : []) as RichTextBlock[],
+
       coverImage: mapMedia(attrs.coverImage as StrapiRelation) ?? '',
       category: mapCategory(attrs.category as StrapiRelation),
       author: attrs.author as string,

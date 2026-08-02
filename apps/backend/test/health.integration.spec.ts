@@ -13,6 +13,7 @@ import { RedisService } from '../src/modules/storage/redis.service';
 import { VectorSyncService } from '../src/modules/vector/vector-sync.service';
 import { VectorModule } from '../src/modules/vector/vector.module';
 import { EventBus } from '../src/modules/realtime/event-bus.service';
+import { TransformReasoningService } from '../src/modules/ai/transform-reasoning.service';
 import { RedisModule } from '../src/modules/storage/redis.module';
 
 const mockRedisService = {
@@ -95,6 +96,15 @@ describe('HealthModule', () => {
       .useValue(mockEventBus)
       .overrideProvider(VectorSyncService)
       .useValue(mockVectorSyncService)
+      // RealtimeGateway now depends on TransformReasoningService, which is not
+      // part of this test graph (AIModule is not imported). useMocker supplies
+      // the mock in the global core module so it resolves from RealtimeModule.
+      .useMocker((token) => {
+        if (token === TransformReasoningService) {
+          return { transformVoiceTo3D: vi.fn() };
+        }
+        return undefined;
+      })
       .compile();
 
     app = moduleFixture.createNestApplication();

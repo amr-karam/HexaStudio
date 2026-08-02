@@ -130,6 +130,10 @@ export class RedisService {
     await this.client.zremrangebyscore(key, min, max);
   }
 
+  async zrem(key: string, ...members: string[]): Promise<void> {
+    await this.client.zrem(key, ...members);
+  }
+
   /**
    * Scan Redis keys matching a pattern (non-blocking iteration).
    *

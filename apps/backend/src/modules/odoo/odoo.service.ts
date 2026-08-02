@@ -154,7 +154,17 @@ export class OdooService implements OnModuleInit {
           if (this.isAuthError(error)) {
             this.uid = null;
           }
-          reject(new InternalServerErrorException(`Odoo error: ${error}`));
+          const errMessage = (error as Error)?.message ?? String(error);
+          if (this.isPermissionError(errMessage)) {
+            this.logger.error(
+              `Odoo Permission/Access Error on model "${model}" method "${method}": ${errMessage}. ` +
+              `Please ensure the Odoo user (${env.ODOO_USER}) is assigned to the required security groups in Odoo ` +
+              `(e.g., Project Administrator/Manager 'project.group_project_manager' for project creation, CRM/Sales groups for leads/quotations).`
+            );
+          } else {
+            this.logger.error(`Odoo XML-RPC error on model "${model}" method "${method}": ${errMessage}`);
+          }
+          reject(new InternalServerErrorException(`Odoo error: ${errMessage}`));
         } else {
           this.recordSuccess();
           resolve(value as T);
@@ -204,11 +214,22 @@ export class OdooService implements OnModuleInit {
     return this.execute<boolean>(model, 'write', [ids, values]);
   }
 
+  private isPermissionError(message: string): boolean {
+    const msg = message.toLowerCase();
+    return (
+      msg.includes('not allowed') ||
+      msg.includes('access error') ||
+      msg.includes('access denied') ||
+      msg.includes('missing access right') ||
+      msg.includes('forbidden') ||
+      msg.includes('restricted')
+    );
+  }
+
   private isAuthError(error: unknown): boolean {
     const message = (error as Error)?.message?.toLowerCase() ?? '';
     return (
-      message.includes('access denied') ||
-      message.includes('access error') ||
+      this.isPermissionError(message) ||
       message.includes('authentication') ||
       message.includes('session expired')
     );

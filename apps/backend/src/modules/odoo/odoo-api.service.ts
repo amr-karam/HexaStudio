@@ -19,6 +19,14 @@ import {
   OdooMailMessage,
   OdooDocument,
   OdooHubExecutiveDashboard,
+  OdooSalesTeam,
+  OdooSalesTeamDetail,
+  OdooDepartment,
+  OdooDepartmentDetail,
+  OdooJournalEntry,
+  OdooPayment,
+  OdooBankAccount,
+  OdooSendEmailData,
 } from '@hexastudio/types';
 
 // OdooCompanySettings is now defined in @hexastudio/types as OdooCompany
@@ -539,6 +547,436 @@ export class OdooApiService {
 
   async postMailMessage(data: Record<string, unknown>): Promise<number> {
     return this.odooService.create('mail.message', data);
+  }
+
+  // --- Sales Teams (crm.team) ---
+
+  /**
+   * List all sales teams with member information and pipeline summary.
+   * Optionally filter by user membership.
+   *
+   * @param userId - When provided, only return teams where the user is a member
+   * @returns Array of sales teams enriched with lead count and expected revenue
+   */
+  async getSalesTeams(userId?: string): Promise<OdooSalesTeam[]> {
+    const domain: unknown[] = [];
+    if (userId) {
+      domain.push(['member_ids', '=', parseInt(userId, 10)]);
+    }
+
+    const teams = (await this.odooService.execute<Record<string, unknown>[]>(
+      'crm.team',
+      'search_read',
+      [
+        domain,
+        [
+          'name', 'user_id', 'member_ids', 'company_id',
+          'use_quotations', 'use_invoices', 'use_leads',
+          'resource_emoji', 'color',
+        ],
+        0,
+        100,
+        'name asc',
+      ],
+    )) as unknown as OdooSalesTeam[];
+
+    // Enrich each team with pipeline data (lead count + expected revenue)
+    const enriched: OdooSalesTeam[] = await Promise.all(
+      teams.map(async (team) => {
+        try {
+          const leadDomain: unknown[] = [['team_id', '=', team.id]];
+          const leads = (await this.odooService.execute<Record<string, unknown>[]>(
+            'crm.lead',
+            'search_read',
+            [leadDomain, ['expected_revenue']],
+          )) as unknown as Array<{ expected_revenue?: number }>;
+
+          return {
+            ...team,
+            leadCount: leads.length,
+            expectedRevenue: leads.reduce(
+              (sum, l) => sum + (l.expected_revenue ?? 0),
+              0,
+            ),
+          };
+        } catch {
+          return { ...team, leadCount: 0, expectedRevenue: 0 };
+        }
+      }),
+    );
+
+    return enriched;
+  }
+
+  /**
+   * Get detailed view of a single sales team including recent leads and quotations.
+   *
+   * @param teamId - The Odoo CRM team ID
+   * @returns Full team detail with recent activity
+   */
+  async getSalesTeamDetails(teamId: number): Promise<OdooSalesTeamDetail> {
+    const results = await this.odooService.execute<Record<string, unknown>[]>(
+      'crm.team',
+      'search_read',
+      [
+        [['id', '=', teamId]],
+        [
+          'name', 'user_id', 'member_ids', 'company_id',
+          'use_quotations', 'use_invoices', 'use_leads',
+          'resource_emoji', 'color',
+        ],
+      ],
+    );
+    if (!results.length) throw new Error(`Sales Team #${teamId} not found`);
+
+    const team = results[0] as unknown as OdooSalesTeamDetail;
+
+    // Fetch recent leads and quotations in parallel
+    const [recentLeads, recentQuotations] = await Promise.all([
+      this.odooService.execute<Record<string, unknown>[]>(
+        'crm.lead',
+        'search_read',
+        [
+          [['team_id', '=', teamId]],
+          ['name', 'partner_name', 'email_from', 'stage_id', 'priority', 'expected_revenue', 'create_date'],
+          0,
+          10,
+          'create_date desc',
+        ],
+      ).then((r) => r as unknown as OdooLead[]),
+      this.odooService.execute<Record<string, unknown>[]>(
+        'sale.order',
+        'search_read',
+        [
+          [['team_id', '=', teamId]],
+          ['name', 'partner_id', 'state', 'date_order', 'amount_total'],
+          0,
+          10,
+          'date_order desc',
+        ],
+      ).then((r) => r as unknown as OdooQuotation[]),
+    ]);
+
+    team.recentLeads = recentLeads;
+    team.recentQuotations = recentQuotations;
+
+    return team;
+  }
+
+  // --- HR Departments (hr.department) ---
+
+  /**
+   * List all HR departments with employee counts and manager info.
+   *
+   * @returns Array of departments enriched with employee head count
+   */
+  async getDepartments(): Promise<OdooDepartment[]> {
+    const departments = (await this.odooService.execute<Record<string, unknown>[]>(
+      'hr.department',
+      'search_read',
+      [
+        [],
+        ['name', 'complete_name', 'parent_id', 'child_ids', 'manager_id', 'company_id'],
+        0,
+        100,
+        'name asc',
+      ],
+    )) as unknown as OdooDepartment[];
+
+    // Enrich with employee counts
+    const enriched: OdooDepartment[] = await Promise.all(
+      departments.map(async (dept) => {
+        try {
+          const employeeCount = await this.odooService.searchCount(
+            'hr.employee',
+            [['department_id', '=', dept.id], ['active', '=', true]],
+          );
+          return { ...dept, employeeCount };
+        } catch {
+          return { ...dept, employeeCount: 0 };
+        }
+      }),
+    );
+
+    return enriched;
+  }
+
+  /**
+   * Get detailed department view including the employee list.
+   *
+   * @param deptId - The Odoo department ID
+   * @returns Full department detail with employee roster
+   */
+  async getDepartmentDetails(deptId: number): Promise<OdooDepartmentDetail> {
+    const results = await this.odooService.execute<Record<string, unknown>[]>(
+      'hr.department',
+      'search_read',
+      [
+        [['id', '=', deptId]],
+        ['name', 'complete_name', 'parent_id', 'child_ids', 'manager_id', 'company_id'],
+      ],
+    );
+    if (!results.length) throw new Error(`Department #${deptId} not found`);
+
+    const dept = results[0] as unknown as OdooDepartmentDetail;
+
+    // Fetch employees in this department
+    const employees = (await this.odooService.execute<Record<string, unknown>[]>(
+      'hr.employee',
+      'search_read',
+      [
+        [['department_id', '=', deptId], ['active', '=', true]],
+        ['name', 'work_email', 'work_phone', 'job_title', 'department_id', 'parent_id', 'user_id', 'active'],
+        0,
+        100,
+        'name asc',
+      ],
+    )) as unknown as OdooEmployee[];
+
+    dept.employees = employees;
+
+    return dept;
+  }
+
+  // --- Finance Integration (Read-Only) ---
+
+  /**
+   * Fetch journal entries (account.move) with optional date range filter.
+   *
+   * @param dateFrom - Start date in ISO format (YYYY-MM-DD), inclusive
+   * @param dateTo   - End date in ISO format (YYYY-MM-DD), inclusive
+   * @param limit    - Max records to return (default 50)
+   * @param offset   - Pagination offset (default 0)
+   * @returns Journal entries with optional line items
+   */
+  async getAccountJournalEntries(
+    dateFrom?: string,
+    dateTo?: string,
+    limit = 50,
+    offset = 0,
+  ): Promise<OdooJournalEntry[]> {
+    const domain: unknown[] = [['move_type', '=', 'entry']];
+    if (dateFrom) domain.push(['date', '>=', dateFrom]);
+    if (dateTo) domain.push(['date', '<=', dateTo]);
+
+    const entries = (await this.odooService.execute<Record<string, unknown>[]>(
+      'account.move',
+      'search_read',
+      [
+        domain,
+        ['name', 'date', 'ref', 'journal_id', 'company_id', 'state', 'move_type', 'currency_id', 'amount_total'],
+        offset,
+        limit,
+        'date desc',
+      ],
+    )) as unknown as OdooJournalEntry[];
+
+    return entries;
+  }
+
+  /**
+   * Fetch account payments (inbound, outbound, or transfers) with date range filter.
+   *
+   * @param dateFrom - Start date (YYYY-MM-DD)
+   * @param dateTo   - End date (YYYY-MM-DD)
+   * @param limit    - Max records (default 50)
+   * @param offset   - Pagination offset (default 0)
+   * @returns List of payment records
+   */
+  async getAccountPayments(
+    dateFrom?: string,
+    dateTo?: string,
+    limit = 50,
+    offset = 0,
+  ): Promise<OdooPayment[]> {
+    const domain: unknown[] = [];
+    if (dateFrom) domain.push(['date', '>=', dateFrom]);
+    if (dateTo) domain.push(['date', '<=', dateTo]);
+
+    return (await this.odooService.execute<Record<string, unknown>[]>(
+      'account.payment',
+      'search_read',
+      [
+        domain,
+        ['name', 'date', 'state', 'payment_type', 'partner_id', 'amount', 'currency_id', 'journal_id', 'payment_method_line_id', 'ref', 'move_id'],
+        offset,
+        limit,
+        'date desc',
+      ],
+    )) as unknown as OdooPayment[];
+  }
+
+  /**
+   * Fetch customer/vendor invoices with enhanced line items and optional status filter.
+   *
+   * @param status - Filter by state: draft, posted, cancelled (default: all posted)
+   * @param limit  - Max records (default 50)
+   * @param offset - Pagination offset (default 0)
+   * @returns Invoices with partner and amount data
+   */
+  async getAccountInvoices(status?: string, limit = 50, offset = 0): Promise<OdooInvoice[]> {
+    const domain: unknown[] = [['move_type', 'in', ['out_invoice', 'out_refund', 'in_invoice', 'in_refund']]];
+    if (status) domain.push(['state', '=', status]);
+
+    return (await this.odooService.execute<Record<string, unknown>[]>(
+      'account.move',
+      'search_read',
+      [
+        domain,
+        ['name', 'invoice_date', 'partner_id', 'amount_total', 'amount_residual', 'amount_untaxed', 'currency_id', 'state', 'move_type', 'payment_state'],
+        offset,
+        limit,
+        'invoice_date desc',
+      ],
+    )) as unknown as OdooInvoice[];
+  }
+
+  /**
+   * List bank accounts (account.account) with balances.
+   *
+   * @param limit  - Max records (default 50)
+   * @param offset - Pagination offset (default 0)
+   * @returns Bank account records
+   */
+  async getAccountBanks(limit = 50, offset = 0): Promise<OdooBankAccount[]> {
+    return (await this.odooService.execute<Record<string, unknown>[]>(
+      'account.account',
+      'search_read',
+      [
+        [['account_type', '=', 'asset_bank']],
+        ['name', 'account_type', 'code', 'currency_id', 'company_id'],
+        offset,
+        limit,
+        'name asc',
+      ],
+    )) as unknown as OdooBankAccount[];
+  }
+
+  // --- Knowledge Write Operations (knowledge.article) ---
+
+  /**
+   * Create a new knowledge article in Odoo.
+   *
+   * @param data - Article fields: name (required), body, category_id
+   * @returns The ID of the newly created article
+   */
+  async createKnowledgeArticle(data: { name: string; body?: string; category_id?: number }): Promise<number> {
+    return this.odooService.create('knowledge.article', data);
+  }
+
+  /**
+   * Update an existing knowledge article.
+   *
+   * @param articleId - The Odoo article ID
+   * @param data      - Fields to update (name, body, category_id)
+   * @returns True on success
+   */
+  async updateKnowledgeArticle(
+    articleId: number,
+    data: { name?: string; body?: string; category_id?: number },
+  ): Promise<boolean> {
+    return this.odooService.write('knowledge.article', [articleId], data);
+  }
+
+  /**
+   * Soft-delete (archive) a knowledge article by setting active=false.
+   *
+   * @param articleId - The Odoo article ID
+   * @returns True on success
+   */
+  async deleteKnowledgeArticle(articleId: number): Promise<boolean> {
+    return this.odooService.write('knowledge.article', [articleId], { active: false });
+  }
+
+  // --- Email Integration (mail.mail) ---
+
+  /**
+   * List emails with optional filter for inbox, sent, or all.
+   *
+   * @param filter - 'inbox', 'sent', or 'all' (default: all)
+   * @param limit  - Max records (default 50)
+   * @param offset - Pagination offset (default 0)
+   * @returns List of mail.mail records
+   */
+  async getEmails(filter: 'inbox' | 'sent' | 'all' = 'all', limit = 50, offset = 0): Promise<OdooMailMessage[]> {
+    const domain: unknown[] = [];
+
+    if (filter === 'inbox') {
+      // Incoming emails: message_type is notification or email, and has a body
+      domain.push(['message_type', '=', 'email']);
+      domain.push(['model', '=', false]); // standalone emails
+    } else if (filter === 'sent') {
+      // Sent by the system user
+      domain.push(['message_type', 'in', ['email', 'notification']]);
+    }
+
+    return (await this.odooService.execute<Record<string, unknown>[]>(
+      'mail.message',
+      'search_read',
+      [
+        domain,
+        ['subject', 'body', 'date', 'email_from', 'author_id', 'model', 'res_id', 'message_type'],
+        offset,
+        limit,
+        'date desc',
+      ],
+    )) as unknown as OdooMailMessage[];
+  }
+
+  /**
+   * Get full email details including the HTML body.
+   *
+   * @param mailId - The mail.message ID
+   * @returns Full email record with body content
+   */
+  async getEmailDetails(mailId: number): Promise<OdooMailMessage> {
+    const results = await this.odooService.execute<Record<string, unknown>[]>(
+      'mail.message',
+      'search_read',
+      [
+        [['id', '=', mailId]],
+        ['subject', 'body', 'date', 'email_from', 'author_id', 'model', 'res_id', 'message_type'],
+      ],
+    );
+    if (!results.length) throw new Error(`Email #${mailId} not found`);
+    return results[0] as unknown as OdooMailMessage;
+  }
+
+  /**
+   * Send an email via Odoo's mail system.
+   *
+   * @param data - Email payload with to, subject, body, and optional partnerIds
+   * @returns The ID of the created mail.message
+   */
+  async sendEmail(data: OdooSendEmailData): Promise<number> {
+    // Resolve partner IDs if email addresses are provided
+    let partnerIds: number[] = data.partnerIds ?? [];
+
+    if (data.to && partnerIds.length === 0) {
+      const partners = (await this.odooService.execute<Record<string, unknown>[]>(
+        'res.partner',
+        'search_read',
+        [[['email', '=', data.to]], ['id'], 0, 1],
+      )) as unknown as Array<{ id: number }>;
+
+      if (partners.length) {
+        partnerIds = [partners[0].id];
+      } else {
+        // Create the partner if not found
+        const newId = await this.odooService.create('res.partner', {
+          name: data.to.split('@')[0],
+          email: data.to,
+        });
+        partnerIds = [newId];
+      }
+    }
+
+    return this.odooService.create('mail.message', {
+      body: data.body,
+      subject: data.subject,
+      message_type: 'email',
+      partner_ids: partnerIds.map((id) => [4, id]), // link partners
+    });
   }
 
   // --- Executive Hub Dashboard Aggregator ---

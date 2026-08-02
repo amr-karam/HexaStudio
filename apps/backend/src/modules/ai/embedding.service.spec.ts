@@ -16,9 +16,10 @@ import { VectorService } from '../vector/vector.service';
 
 vi.mock('openai', () => ({
   default: class {
+    constructor(public options: Record<string, unknown>) {}
     embeddings = {
       create: vi.fn().mockResolvedValue({
-        data: [{ embedding: new Array(1536).fill(0.05) }],
+        data: [{ embedding: new Array(768).fill(0.05) }],
       }),
     };
   },
@@ -30,6 +31,9 @@ const mockConfigService = {
       VECTOR_HOST: 'localhost',
       VECTOR_PORT: '6333',
       VECTOR_API_KEY: 'test-key',
+      LM_STUDIO_BASE_URL: 'http://localhost:1234/v1',
+      LM_STUDIO_EMBEDDING_MODEL: 'text-embedding-nomic-embed-text-v1.5',
+      OPENAI_EMBEDDING_MODEL: 'text-embedding-3-small',
     };
     return env[key];
   }),
@@ -52,6 +56,7 @@ describe('EmbeddingService', () => {
     }).compile();
 
     service = module.get<EmbeddingService>(EmbeddingService);
+    await service.onModuleInit();
   });
 
   it('should be defined', () => {
@@ -59,11 +64,12 @@ describe('EmbeddingService', () => {
   });
 
   describe('generateEmbedding', () => {
-    it('should return an array of numbers', async () => {
+    it('should use local embeddings first (768-dim from LM Studio)', async () => {
       const vector = await service.generateEmbedding('test text');
       expect(Array.isArray(vector)).toBe(true);
-      expect(vector.length).toBe(1536);
+      expect(vector.length).toBe(768);
       expect(vector.every((v) => typeof v === 'number')).toBe(true);
+      expect(service.getDimensions()).toBe(768);
     });
   });
 });

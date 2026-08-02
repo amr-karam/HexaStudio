@@ -62,6 +62,16 @@ const MODEL_CAPABILITIES: Record<string, ModelCapabilities> = {
     supportsFunctionCalling: true,
     supportsStructuredOutput: true,
   },
+  'gemini-2.5-flash': {
+    maxTokens: 1048576,
+    reasoningAbility: 'high',
+    speed: 'fast',
+    costPer1KTokens: 0.0003,
+    supportsMultimodal: true,
+    supportsFunctionCalling: true,
+    supportsStructuredOutput: true,
+  },
+  // Keep legacy alias for backward compat
   'gemini-3.5-flash': {
     maxTokens: 1000000,
     reasoningAbility: 'medium',
@@ -71,6 +81,7 @@ const MODEL_CAPABILITIES: Record<string, ModelCapabilities> = {
     supportsFunctionCalling: true,
     supportsStructuredOutput: true,
   },
+
   'gemini-3.1-pro-preview': {
     maxTokens: 1000000,
     reasoningAbility: 'high',

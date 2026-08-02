@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { SummaryService } from '../../src/modules/ai/summary.service';
 import { AiChatService } from '../../src/modules/ai/ai-chat.service';
+import { ProjectsService } from '../../src/modules/projects/projects.service';
 import { Project } from '@hexastudio/types';
 
 const mockAiChat = {
@@ -10,6 +11,10 @@ const mockAiChat = {
   model: 'gpt-4o-mini',
   isAvailable: false,
   provider: 'openai' as const,
+};
+
+const mockProjectsService = {
+  getProjectBySlug: vi.fn(),
 };
 
 describe('SummaryService', () => {
@@ -20,6 +25,7 @@ describe('SummaryService', () => {
       providers: [
         SummaryService,
         { provide: AiChatService, useValue: mockAiChat },
+        { provide: ProjectsService, useValue: mockProjectsService },
         {
           provide: ConfigService,
           useValue: {

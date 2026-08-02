@@ -1,16 +1,16 @@
 import '../setup';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
+import { DiscoveryService, Reflector } from '@nestjs/core';
 import { AgentsService } from '../../src/modules/agents/agents.service';
-import { ToolRegistry } from '../../src/modules/agents/tools';
-import { ProjectsService } from '../../src/modules/projects/projects.service';
-import { VectorService } from '../../src/modules/vector/vector.service';
-import { SummaryService } from '../../src/modules/ai/summary.service';
-import { RecommendationService } from '../../src/modules/vector/recommendation.service';
+import { ToolRegistryService } from '../../src/modules/agents/tool-registry.service';
+import { GatekeeperService } from '../../src/modules/agents/gatekeeper.service';
+import { TOOL_DEFINITION_METADATA } from '../../src/modules/agents/decorators/constants';
+import { ToolDefinitionOptions } from '../../src/modules/agents/decorators/tool-definition.decorator';
 
 describe('AgentsService', () => {
   let service: AgentsService;
-  let toolRegistry: ToolRegistry;
+  let toolRegistry: ToolRegistryService;
 
   const mockToolRegistry = {
     getDefinitions: vi.fn().mockReturnValue([
@@ -45,7 +45,7 @@ describe('AgentsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AgentsService,
-        { provide: ToolRegistry, useValue: mockToolRegistry },
+        { provide: ToolRegistryService, useValue: mockToolRegistry },
         {
           provide: ConfigService,
           useValue: {
@@ -63,7 +63,7 @@ describe('AgentsService', () => {
     }).compile();
 
     service = module.get<AgentsService>(AgentsService);
-    toolRegistry = module.get<ToolRegistry>(ToolRegistry);
+    toolRegistry = module.get<ToolRegistryService>(ToolRegistryService);
   });
 
   it('should be defined', () => {
@@ -83,37 +83,126 @@ describe('AgentsService', () => {
   });
 });
 
-describe('ToolRegistry', () => {
-  let toolRegistry: ToolRegistry;
+describe('ToolRegistryService', () => {
+  let toolRegistry: ToolRegistryService;
 
-  const mockProjectsService = {
-    getProjectBySlug: vi.fn(),
+  // Mock host whose prototype methods are discovered by ToolRegistryService
+  // during onModuleInit — mirroring how tool methods are attached to real
+  // services (ProjectsService, VectorService, SummaryService, ...) via the
+  // @ToolDefinition decorator.
+  class MockToolHost {
+    async searchProjects(): Promise<Array<{ slug: string; title: string; score: number }>> {
+      return [
+        { slug: 'proj-1', title: 'Project One', score: 0.95 },
+        { slug: 'proj-2', title: 'Project Two', score: 0.85 },
+      ];
+    }
+
+    async getProject(params: { slug: string }): Promise<Record<string, unknown>> {
+      if (params.slug === 'missing') return { error: 'Project not found' };
+      return { slug: params.slug, title: 'Test Project', description: 'A test project' };
+    }
+
+    async getSimilarProjects(): Promise<
+      Array<{ slug: string; title: string; category: string; score: number }>
+    > {
+      return [
+        { slug: 'similar-1', title: 'Similar One', category: 'Residential', score: 0.9 },
+        { slug: 'similar-2', title: 'Similar Two', category: 'Commercial', score: 0.8 },
+      ];
+    }
+
+    async generateSummary(params: { slug: string }): Promise<Record<string, unknown>> {
+      if (params.slug === 'missing') return { error: 'Project not found' };
+      return { summary: 'This is a generated summary.' };
+    }
+  }
+
+  const toolDefinitions: Record<string, ToolDefinitionOptions> = {
+    searchProjects: {
+      name: 'search_projects',
+      description: 'Search architecture projects by keyword query',
+      parameters: {
+        type: 'object',
+        properties: {
+          query: { type: 'string', description: 'Search query' },
+          limit: { type: 'number', description: 'Max results (default 5)' },
+        },
+        required: ['query'],
+      },
+    },
+    getProject: {
+      name: 'get_project',
+      description: 'Get detailed information about a specific project by slug',
+      parameters: {
+        type: 'object',
+        properties: {
+          slug: { type: 'string', description: 'Project slug' },
+        },
+        required: ['slug'],
+      },
+    },
+    getSimilarProjects: {
+      name: 'get_similar_projects',
+      description: 'Get similar projects to a given project',
+      parameters: {
+        type: 'object',
+        properties: {
+          slug: { type: 'string', description: 'Project slug' },
+          limit: { type: 'number', description: 'Max results (default 5)' },
+        },
+        required: ['slug'],
+      },
+    },
+    generateSummary: {
+      name: 'generate_summary',
+      description: 'Generate an AI-written summary for a project',
+      parameters: {
+        type: 'object',
+        properties: {
+          slug: { type: 'string', description: 'Project slug' },
+        },
+        required: ['slug'],
+      },
+    },
   };
 
-  const mockVectorService = {
-    search: vi.fn(),
+  const mockDiscoveryService = {
+    getProviders: vi.fn(),
   };
 
-  const mockSummaryService = {
-    generateSummary: vi.fn(),
+  const mockReflector = {
+    get: vi.fn(),
   };
 
-  const mockRecommendationService = {
-    getSimilarProjects: vi.fn(),
+  const mockGatekeeperService = {
+    authorize: vi.fn().mockResolvedValue(true),
   };
 
   beforeEach(async () => {
+    vi.clearAllMocks();
+
+    mockDiscoveryService.getProviders.mockReturnValue([
+      { instance: new MockToolHost(), metatype: MockToolHost },
+    ]);
+    mockReflector.get.mockImplementation((metadataKey: string, target: Function) => {
+      if (metadataKey === TOOL_DEFINITION_METADATA) {
+        return toolDefinitions[(target as { name?: string }).name ?? ''];
+      }
+      return undefined;
+    });
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        ToolRegistry,
-        { provide: ProjectsService, useValue: mockProjectsService },
-        { provide: VectorService, useValue: mockVectorService },
-        { provide: SummaryService, useValue: mockSummaryService },
-        { provide: RecommendationService, useValue: mockRecommendationService },
+        ToolRegistryService,
+        { provide: DiscoveryService, useValue: mockDiscoveryService },
+        { provide: Reflector, useValue: mockReflector },
+        { provide: GatekeeperService, useValue: mockGatekeeperService },
       ],
     }).compile();
 
-    toolRegistry = module.get<ToolRegistry>(ToolRegistry);
+    toolRegistry = module.get<ToolRegistryService>(ToolRegistryService);
+    toolRegistry.onModuleInit();
   });
 
   it('should be defined', () => {
@@ -149,14 +238,7 @@ describe('ToolRegistry', () => {
 
   describe('execute', () => {
     it('search_projects returns formatted results', async () => {
-      mockVectorService.search.mockResolvedValue({
-        results: [
-          { payload: { slug: 'proj-1', title: 'Project One' }, score: 0.95 },
-          { payload: { slug: 'proj-2', title: 'Project Two' }, score: 0.85 },
-        ],
-      });
-
-      const result = await toolRegistry.execute('search_projects', { query: 'museum', limit: 5 });
+      const result = await toolRegistry.execute('search_projects', { query: 'museum', limit: 5 }, undefined);
 
       expect(typeof result).toBe('string');
       const parsed = JSON.parse(result);
@@ -168,17 +250,7 @@ describe('ToolRegistry', () => {
     });
 
     it('get_project returns project details', async () => {
-      mockProjectsService.getProjectBySlug.mockResolvedValue({
-        slug: 'test-project',
-        title: 'Test Project',
-        description: 'A test project',
-        category: { name: 'Commercial' },
-        services: ['Architecture'],
-        location: 'NYC',
-        area: '10000 sq ft',
-      });
-
-      const result = await toolRegistry.execute('get_project', { slug: 'test-project' });
+      const result = await toolRegistry.execute('get_project', { slug: 'test-project' }, undefined);
 
       const parsed = JSON.parse(result);
       expect(parsed).toHaveProperty('title', 'Test Project');
@@ -186,21 +258,14 @@ describe('ToolRegistry', () => {
     });
 
     it('get_project returns error for missing project', async () => {
-      mockProjectsService.getProjectBySlug.mockResolvedValue(null);
-
-      const result = await toolRegistry.execute('get_project', { slug: 'missing' });
+      const result = await toolRegistry.execute('get_project', { slug: 'missing' }, undefined);
 
       const parsed = JSON.parse(result);
       expect(parsed).toHaveProperty('error', 'Project not found');
     });
 
     it('get_similar_projects returns formatted results', async () => {
-      mockRecommendationService.getSimilarProjects.mockResolvedValue([
-        { slug: 'similar-1', title: 'Similar One', category: 'Residential', score: 0.9 },
-        { slug: 'similar-2', title: 'Similar Two', category: 'Commercial', score: 0.8 },
-      ]);
-
-      const result = await toolRegistry.execute('get_similar_projects', { slug: 'original', limit: 3 });
+      const result = await toolRegistry.execute('get_similar_projects', { slug: 'original', limit: 3 }, undefined);
 
       const parsed = JSON.parse(result);
       expect(Array.isArray(parsed)).toBe(true);
@@ -208,33 +273,23 @@ describe('ToolRegistry', () => {
     });
 
     it('generate_summary returns summary for valid project', async () => {
-      mockProjectsService.getProjectBySlug.mockResolvedValue({
-        slug: 'test-project',
-        title: 'Test Project',
-        description: 'Test description',
-      });
-      mockSummaryService.generateSummary.mockResolvedValue('This is a generated summary.');
-
-      const result = await toolRegistry.execute('generate_summary', { slug: 'test-project' });
+      const result = await toolRegistry.execute('generate_summary', { slug: 'test-project' }, undefined);
 
       const parsed = JSON.parse(result);
       expect(parsed).toHaveProperty('summary', 'This is a generated summary.');
     });
 
     it('generate_summary returns error for missing project', async () => {
-      mockProjectsService.getProjectBySlug.mockResolvedValue(null);
-
-      const result = await toolRegistry.execute('generate_summary', { slug: 'missing' });
+      const result = await toolRegistry.execute('generate_summary', { slug: 'missing' }, undefined);
 
       const parsed = JSON.parse(result);
       expect(parsed).toHaveProperty('error', 'Project not found');
     });
 
-    it('returns error for unknown tool', async () => {
-      const result = await toolRegistry.execute('unknown_tool', {});
-
-      const parsed = JSON.parse(result);
-      expect(parsed).toHaveProperty('error', 'Unknown tool: unknown_tool');
+    it('throws for unknown tool', async () => {
+      await expect(toolRegistry.execute('unknown_tool', {}, undefined)).rejects.toThrow(
+        'Tool unknown_tool not found',
+      );
     });
   });
 });

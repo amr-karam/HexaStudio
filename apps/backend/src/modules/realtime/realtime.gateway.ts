@@ -8,6 +8,7 @@ import {
 import { Injectable, Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { EventBus } from './event-bus.service';
+import { TransformReasoningService } from '../ai/transform-reasoning.service';
 
 interface AnnotationEvent {
   projectId: string;
@@ -72,7 +73,10 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
   private readonly logger = new Logger(RealtimeGateway.name);
   private clientRooms = new Map<string, Set<string>>();
 
-  constructor(private readonly eventBus: EventBus) {}
+  constructor(
+    private readonly eventBus: EventBus,
+    private readonly transformReasoningService: TransformReasoningService,
+  ) {}
 
   @WebSocketServer()
   server!: Server;
@@ -181,12 +185,25 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
     });
   }
 
-  @SubscribeMessage('collab:leave')
-  handleCollabLeave(client: Socket, payload: { projectId: string }) {
-    const room = `project:${payload.projectId}`;
-    client.to(room).emit('collab:peer-left', { id: client.id });
-    this.eventBus.emit('collab:leave', { projectId: payload.projectId, id: client.id });
-    return { event: 'collab:left', data: { id: client.id } };
+  @SubscribeMessage('voice-transform')
+  async handleVoiceTransform(
+    client: Socket,
+    payload: { projectId: string; audioData: string; mimeType: string },
+  ) {
+    try {
+      const transform = await this.transformReasoningService.transformVoiceTo3D(
+        payload.audioData,
+        payload.mimeType,
+        payload.projectId,
+      );
+
+      const room = `project:${payload.projectId}`;
+      client.to(room).emit('3D_TRANSFORM_UPDATE', transform);
+      return { event: '3D_TRANSFORM_UPDATE', data: transform };
+    } catch (error) {
+      this.logger.error(`Voice transform failed: ${(error as Error).message}`);
+      return { event: 'error', data: { message: 'Transform processing failed' } };
+    }
   }
 
   // ---------------------------------------------------------------------------

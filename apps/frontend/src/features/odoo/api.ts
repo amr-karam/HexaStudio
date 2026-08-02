@@ -12,6 +12,30 @@ import type {
   OdooCompany,
   OdooQuotation,
   OdooActivity,
+  OdooSalesTeam,
+  OdooSalesTeamDetail,
+  OdooDepartment,
+  OdooDepartmentDetail,
+  OdooJournalEntry,
+  OdooPayment,
+  OdooBankAccount,
+  OdooKnowledgeArticle,
+  OdooMailMessage,
+  OdooHubExecutiveDashboard,
+  OdooSendEmailData,
+  SyncStatusResponse,
+  SyncMetricEntry,
+  SyncConflict,
+  ConflictAuditEntry,
+  SyncCursor,
+  SyncOperationResult,
+  TriggerSyncDto,
+  ResolveConflictDto,
+  CreateWorkflowDto,
+  UpdateWorkflowDto,
+  ExecuteWorkflowDto,
+  WorkflowDefinition,
+  WorkflowExecution,
 } from '@hexastudio/types';
 
 export interface OdooSalesOrder {
@@ -202,6 +226,124 @@ export const odooApi = {
     if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
     return res.json() as Promise<OdooDocumentRecord>;
   },
+
+  // Sales Teams
+  getSalesTeams: (userId?: number) =>
+    request<OdooSalesTeam[]>(`/sales-teams${userId ? `?userId=${userId}` : ''}`),
+  getSalesTeamDetail: (id: number) =>
+    request<OdooSalesTeamDetail>(`/sales-teams/${id}`),
+
+  // HR Departments
+  getDepartments: () => request<OdooDepartment[]>('/departments'),
+  getDepartmentDetail: (id: number) =>
+    request<OdooDepartmentDetail>(`/departments/${id}`),
+
+  // Accounting (read-only)
+  getJournalEntries: (dateFrom?: string, dateTo?: string, limit = 50, offset = 0) =>
+    request<OdooJournalEntry[]>(`/accounting/journal-entries?limit=${limit}&offset=${offset}${dateFrom ? `&dateFrom=${encodeURIComponent(dateFrom)}` : ''}${dateTo ? `&dateTo=${encodeURIComponent(dateTo)}` : ''}`),
+  getPayments: (dateFrom?: string, dateTo?: string, limit = 50, offset = 0) =>
+    request<OdooPayment[]>(`/accounting/payments?limit=${limit}&offset=${offset}${dateFrom ? `&dateFrom=${encodeURIComponent(dateFrom)}` : ''}${dateTo ? `&dateTo=${encodeURIComponent(dateTo)}` : ''}`),
+  getBanks: (limit = 50, offset = 0) =>
+    request<OdooBankAccount[]>(`/accounting/banks?limit=${limit}&offset=${offset}`),
+
+  // Knowledge Articles (read + write)
+  getKnowledgeArticles: (limit = 50, offset = 0) =>
+    request<OdooKnowledgeArticle[]>(`/knowledge/articles?limit=${limit}&offset=${offset}`),
+  getKnowledgeArticleDetail: (id: number) =>
+    request<OdooKnowledgeArticle>(`/knowledge/articles/${id}`),
+  createKnowledgeArticle: (data: { name: string; body?: string; category_id?: number }) =>
+    mutate<{ id: number; success: boolean }>('/knowledge', 'POST', data),
+  updateKnowledgeArticle: (id: number, data: { name?: string; body?: string; category_id?: number }) =>
+    mutate<{ success: boolean }>(`/knowledge/${id}`, 'PATCH', data),
+  archiveKnowledgeArticle: (id: number) =>
+    mutate<{ success: boolean }>(`/knowledge/${id}`, 'DELETE'),
+
+  // Email Integration (mail.mail)
+  getEmails: (filter: 'inbox' | 'sent' | 'all' = 'all', limit = 50, offset = 0) =>
+    request<OdooMailMessage[]>(`/emails?filter=${filter}&limit=${limit}&offset=${offset}`),
+  getEmailDetail: (id: number) =>
+    request<OdooMailMessage>(`/emails/${id}`),
+  sendEmail: (data: OdooSendEmailData) =>
+    mutate<{ id: number; success: boolean }>('/emails', 'POST', data),
+
+  // Executive Dashboard (aggregated SOT payload)
+  getExecutiveDashboard: () =>
+    request<OdooHubExecutiveDashboard>('/dashboard/executive'),
+};
+
+// --- Odoo Sync Engine API (base /api/odoo/sync) ---
+export const odooSyncApi = {
+  // Trigger a sync (all entities, or a single one; optional full sync)
+  triggerSync: (dto: TriggerSyncDto) =>
+    mutate<{ success: boolean; results: SyncOperationResult[] }>('/sync/trigger', 'POST', dto),
+
+  // Status & metrics
+  getStatus: () => request<SyncStatusResponse>('/sync/status'),
+  getMetrics: (limit = 50) =>
+    request<SyncMetricEntry[]>(`/sync/metrics?limit=${limit}`),
+
+  // Conflicts
+  getConflicts: () => request<SyncConflict[]>('/sync/conflicts'),
+  getAllConflicts: (limit = 100) =>
+    request<SyncConflict[]>(`/sync/conflicts/all?limit=${limit}`),
+  getConflictAudit: (limit = 50) =>
+    request<ConflictAuditEntry[]>(`/sync/conflicts/audit?limit=${limit}`),
+  resolveConflict: (id: string, dto: ResolveConflictDto) =>
+    mutate<{ success: boolean; conflict: SyncConflict }>(`/sync/conflicts/${id}/resolve`, 'POST', dto),
+
+  // Delta sync cursors
+  getCursors: () => request<Record<string, SyncCursor>>('/sync/cursors'),
+  resetCursor: (entityType: string) =>
+    mutate<{ success: boolean; message: string }>(`/sync/cursors/${encodeURIComponent(entityType)}/reset`, 'POST'),
+};
+
+// --- Workflow Engine API (base /api/workflows) ---
+const WORKFLOW_BASE = `${API_BASE_URL}/api/workflows`;
+
+async function workflowRequest<T>(path: string): Promise<T> {
+  let res: Response;
+  try {
+    res = await fetch(`${WORKFLOW_BASE}${path}`, {
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+    });
+  } catch {
+    throw new Error(`Workflow API error: network failure`);
+  }
+  if (!res.ok) throw new Error(`Workflow API error: ${res.status}`);
+  return res.json() as Promise<T>;
+}
+
+async function workflowMutate<T>(path: string, method: string, body?: unknown): Promise<T> {
+  let res: Response;
+  try {
+    res = await fetch(`${WORKFLOW_BASE}${path}`, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  } catch {
+    throw new Error(`Workflow API error: network failure`);
+  }
+  if (!res.ok) throw new Error(`Workflow API error: ${res.status}`);
+  return res.json() as Promise<T>;
+}
+
+export const workflowApi = {
+  // Workflow definitions
+  list: () => workflowRequest<WorkflowDefinition[]>(''),
+  get: (id: string) => workflowRequest<WorkflowDefinition>(`/${id}`),
+  create: (dto: CreateWorkflowDto) => workflowMutate<WorkflowDefinition>('', 'POST', dto),
+  update: (id: string, dto: UpdateWorkflowDto) => workflowMutate<WorkflowDefinition>(`/${id}`, 'PUT', dto),
+  remove: (id: string) => workflowMutate<{ success: boolean }>(`/${id}`, 'DELETE'),
+
+  // Executions
+  execute: (id: string, dto: ExecuteWorkflowDto = {}) =>
+    workflowMutate<WorkflowExecution>(`/${id}/execute`, 'POST', dto),
+  listExecutions: (workflowId?: string, limit = 50) =>
+    workflowRequest<WorkflowExecution[]>(`/executions?limit=${limit}${workflowId ? `&workflowId=${workflowId}` : ''}`),
+  getExecution: (id: string) => workflowRequest<WorkflowExecution>(`/executions/${id}`),
 };
 
 // --- Client Portal Odoo API ---

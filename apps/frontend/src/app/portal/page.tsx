@@ -29,6 +29,7 @@ import { ActivityItem } from '@/features/portal/components/ActivityItem';
 import { QuickAction } from '@/features/portal/components/QuickAction';
 import { Icon } from '@/features/portal/components/PortalIcons';
 import { PortalAiCopilot } from '@/features/portal/components/PortalAiCopilot';
+import { portalApi } from '@/features/portal/api';
 import { useAuth } from '@/features/auth';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import {
@@ -87,17 +88,11 @@ const MOCK_FALLBACK_DASHBOARD: DashboardData = {
 /* -------------------------------------------------------------------------- */
 
 async function fetchDashboardData(): Promise<DashboardData> {
-  let res: Response | null = null;
   try {
-    res = await fetch(`${API_BASE_URL}/api/portal/dashboard`, {
-      credentials: 'include',
-    });
+    return await portalApi.getDashboard();
   } catch {
     return MOCK_FALLBACK_DASHBOARD;
   }
-
-  if (!res.ok) return MOCK_FALLBACK_DASHBOARD;
-  return res.json();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -622,7 +617,7 @@ export default function PortalDashboardPage() {
                   icon="milestone"
                   label="View Timeline"
                   description="Track milestones and phase progress"
-                  onClick={() => router.push('/portal/workspace')}
+                  onClick={() => router.push('/portal/projects')}
                 />
               </motion.div>
               <motion.div variants={fadeLift} custom={prefersReduced}>

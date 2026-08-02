@@ -101,7 +101,7 @@ export class VoiceService {
       this.logger.debug(`Audio transcribed successfully (${transcribed.length} chars)`);
       return transcribed;
     } catch (error) {
-      this.logger.error(`Audio transcription failed: ${(error as Error).message}`);
+      this.logger.error(`Audio transcription failed: ${(error as any).message}`);
       throw error;
     }
   }

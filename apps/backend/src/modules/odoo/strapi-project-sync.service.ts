@@ -216,7 +216,7 @@ export class StrapiProjectSyncService implements OnModuleInit {
       });
       this.logger.debug(`Emitted ${action} for project ${slug}`);
     } catch (error) {
-      this.logger.warn(`Failed to emit project:sync for ${slug}: ${(error as Error).message}`);
+      this.logger.warn(`Failed to emit project:sync for ${slug}: ${(error as any).message}`);
     }
   }
 
@@ -227,7 +227,7 @@ export class StrapiProjectSyncService implements OnModuleInit {
     try {
       await this.backfill();
     } catch (error) {
-      this.logger.error(`Initial backfill failed: ${(error as Error).message}`);
+      this.logger.error(`Initial backfill failed: ${(error as any).message}`);
     }
   }
 
@@ -267,13 +267,13 @@ export class StrapiProjectSyncService implements OnModuleInit {
             this.logger.log(`Created Odoo project #${odooId} for slug "${slug}"`);
           }
         } catch (error) {
-          const msg = `Failed to create Odoo project for slug "${slug}": ${(error as Error).message}`;
+          const msg = `Failed to create Odoo project for slug "${slug}": ${(error as any).message}`;
           errors.push(msg);
           this.logger.warn(msg);
         }
       }
     } catch (error) {
-      const msg = `Backfill fetch failed: ${(error as Error).message}`;
+      const msg = `Backfill fetch failed: ${(error as any).message}`;
       errors.push(msg);
       this.logger.error(msg);
     }
@@ -323,19 +323,44 @@ export class StrapiProjectSyncService implements OnModuleInit {
       try {
         partnerId = await this._odooApiService.getOrCreatePartner(entry.client);
       } catch (error) {
-        this.logger.warn(`Could not resolve partner for "${entry.client}": ${(error as Error).message}`);
+        this.logger.warn(`Could not resolve partner for "${entry.client}": ${(error as any).message}`);
       }
     }
 
     const projectData = this.buildOdooProjectData(entry, partnerId);
 
     if (existing) {
-      await this._odooApiService.updateProject(existing.id, projectData);
-      odooId = existing.id;
-      this.logger.log(`Updated Odoo project #${odooId} for slug "${slug}"`);
+      try {
+        await this._odooApiService.updateProject(existing.id, projectData);
+        odooId = existing.id;
+        this.logger.log(`Updated Odoo project #${odooId} for slug "${slug}"`);
+      } catch (error) {
+        this.logger.warn(`Failed to update Odoo project #${existing.id}: ${(error as any).message}. Continuing with local cache.`);
+        odooId = existing.id;
+      }
     } else {
-      odooId = await this._odooApiService.createProject(projectData);
-      this.logger.log(`Created Odoo project #${odooId} for slug "${slug}"`);
+      try {
+        odooId = await this._odooApiService.createProject(projectData);
+        this.logger.log(`Created Odoo project #${odooId} for slug "${slug}"`);
+      } catch (error) {
+        const errMessage = (error as any).message;
+        this.logger.warn(
+          `Failed to create Odoo project for slug "${slug}": ${errMessage}. ` +
+          `Graceful fallback: caching locally in Redis. Remediation: Verify Odoo credentials and ensure ODOO_USER has Project Administrator/Manager (project.group_project_manager) permissions.`
+        );
+        await this.cacheProjectData(slug, {
+          slug,
+          strapiId: entry.id,
+          odooId: null,
+          title: entry.title,
+          description: entry.description ?? '',
+          client: entry.client ?? null,
+          syncStatus: 'odoo-create-failed-cached-locally',
+          error: errMessage,
+          syncedAt: new Date().toISOString(),
+        });
+        return null;
+      }
     }
 
     // Mark the Odoo project as recently synced so its webhook is skipped
@@ -477,7 +502,7 @@ export class StrapiProjectSyncService implements OnModuleInit {
             created++;
             this.logger.log(`[Recon] Created Odoo project #${odooId} for slug "${slug}"`);
           } catch (error) {
-            const msg = `[Recon] Failed to create Odoo project for slug "${slug}": ${(error as Error).message}`;
+            const msg = `[Recon] Failed to create Odoo project for slug "${slug}": ${(error as any).message}`;
             errors.push(msg);
             this.logger.warn(msg);
           }
@@ -493,7 +518,7 @@ export class StrapiProjectSyncService implements OnModuleInit {
             updated++;
             this.logger.log(`[Recon] Created Strapi portfolio #${entryId} for slug "${slug}"`);
           } catch (error) {
-            const msg = `[Recon] Failed to create Strapi entry for slug "${slug}": ${(error as Error).message}`;
+            const msg = `[Recon] Failed to create Strapi entry for slug "${slug}": ${(error as any).message}`;
             errors.push(msg);
             this.logger.warn(msg);
           }
@@ -532,7 +557,7 @@ export class StrapiProjectSyncService implements OnModuleInit {
               });
               this.logger.log(`[Recon] Strapi→Odoo update #${odooProject.id} for slug "${slug}" (Strapi newer)`);
             } catch (error) {
-              const msg = `[Recon] Failed to update Odoo project #${odooProject.id}: ${(error as Error).message}`;
+              const msg = `[Recon] Failed to update Odoo project #${odooProject.id}: ${(error as any).message}`;
               errors.push(msg);
               this.logger.warn(msg);
             }
@@ -555,7 +580,7 @@ export class StrapiProjectSyncService implements OnModuleInit {
                 this.logger.log(`[Recon] Odoo→Strapi update #${existingEntry.id} for slug "${slug}" (Odoo newer)`);
               }
             } catch (error) {
-              const msg = `[Recon] Failed to update Strapi entry for slug "${slug}": ${(error as Error).message}`;
+              const msg = `[Recon] Failed to update Strapi entry for slug "${slug}": ${(error as any).message}`;
               errors.push(msg);
               this.logger.warn(msg);
             }
@@ -564,7 +589,7 @@ export class StrapiProjectSyncService implements OnModuleInit {
         // If timestamps are equal, no action needed
       }
     } catch (error) {
-      const msg = `Reconciliation fetch failed: ${(error as Error).message}`;
+      const msg = `Reconciliation fetch failed: ${(error as any).message}`;
       errors.push(msg);
       this.logger.error(msg);
     }
@@ -609,20 +634,41 @@ export class StrapiProjectSyncService implements OnModuleInit {
     client?: string;
     services?: string[];
   }): Promise<number | null> {
-    let partnerId: number | undefined;
-    if (entry.client) {
-      try {
-        partnerId = await this._odooApiService.getOrCreatePartner(entry.client);
-      } catch (error) {
-        this.logger.warn(
-          `Could not resolve partner for "${entry.client}": ${(error as Error).message}`,
-        );
+    try {
+      let partnerId: number | undefined;
+      if (entry.client) {
+        try {
+          partnerId = await this._odooApiService.getOrCreatePartner(entry.client);
+        } catch (error) {
+          this.logger.warn(
+            `Could not resolve partner for "${entry.client}": ${(error as any).message}`,
+          );
+        }
       }
+      const data = this.buildOdooProjectData(entry, partnerId);
+      const odooId = await this._odooApiService.createProject(data);
+      await this.markSynced('strapi', String(odooId));
+      return odooId;
+    } catch (error) {
+      const errMessage = (error as any).message;
+      this.logger.warn(
+        `Odoo project sync/creation failed for slug "${entry.slug}": ${errMessage}. ` +
+        `Graceful fallback: caching project data locally in Redis. ` +
+        `Remediation: Verify Odoo credentials and ensure the Odoo user has Project Administrator/Manager (project.group_project_manager) permissions.`
+      );
+      await this.cacheProjectData(entry.slug, {
+        slug: entry.slug,
+        strapiId: entry.id,
+        odooId: null,
+        title: entry.title,
+        description: entry.description ?? '',
+        client: entry.client ?? null,
+        syncStatus: 'odoo-sync-failed-permission-or-offline',
+        error: errMessage,
+        syncedAt: new Date().toISOString(),
+      });
+      return null;
     }
-    const data = this.buildOdooProjectData(entry, partnerId);
-    const odooId = await this._odooApiService.createProject(data);
-    await this.markSynced('strapi', String(odooId));
-    return odooId;
   }
 
   // ── Strapi API helpers ────────────────────────────────────

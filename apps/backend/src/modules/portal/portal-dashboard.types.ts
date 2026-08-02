@@ -165,3 +165,28 @@ export interface PortalDashboardData {
   pendingApprovals: PendingApproval[];
   notifications: NotificationsSummary;
 }
+
+// ── Executive Brief ──────────────────────────────────────────────────
+
+export interface ExecutiveBrief {
+  projectName: string;
+  projectType: string;
+  status: string;
+  progress: number;
+  startDate: string;
+  endDate: string;
+  milestones: Array<{ name: string; date: string; completed: boolean }>;
+  budgetSummary?: { total: number; invoiced: number; remaining: number };
+  team: Array<{ name: string; role: string }>;
+  generatedAt: string;
+}
+
+// ── Generated Contract ───────────────────────────────────────────────
+
+export interface GeneratedContract {
+  contractId: string;
+  quotationRef: string;
+  agreementText: string;
+  status: 'draft';
+  createdAt: string;
+}

@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import { screen } from '@testing-library/dom';
 import { StrapiBlocks } from '@/components/ui/StrapiBlocks';
+import type { StrapiBlock } from '@/features/pages/types';
 
 // Mock next/image
 vi.mock('next/image', () => ({
@@ -18,12 +19,12 @@ describe('StrapiBlocks', () => {
   });
 
   it('returns null for non-array content', () => {
-    const { container } = render(<StrapiBlocks content={'not-array' as unknown as unknown[]} />);
+    const { container } = render(<StrapiBlocks content={'not-array' as unknown as StrapiBlock[]} />);
     expect(container.firstChild).toBeNull();
   });
 
   it('renders paragraph block', () => {
-    const content = [
+    const content: StrapiBlock[] = [
       {
         type: 'paragraph',
         children: [{ type: 'text', text: 'Hello paragraph' }],
@@ -34,7 +35,7 @@ describe('StrapiBlocks', () => {
   });
 
   it('renders heading block with correct level', () => {
-    const content = [
+    const content: StrapiBlock[] = [
       {
         type: 'heading',
         level: 2,
@@ -47,7 +48,7 @@ describe('StrapiBlocks', () => {
   });
 
   it('renders heading level 3', () => {
-    const content = [
+    const content: StrapiBlock[] = [
       {
         type: 'heading',
         level: 3,
@@ -59,7 +60,7 @@ describe('StrapiBlocks', () => {
   });
 
   it('renders bold text', () => {
-    const content = [
+    const content: StrapiBlock[] = [
       {
         type: 'paragraph',
         children: [{ type: 'text', text: 'Bold text', bold: true }],
@@ -71,7 +72,7 @@ describe('StrapiBlocks', () => {
   });
 
   it('renders italic text', () => {
-    const content = [
+    const content: StrapiBlock[] = [
       {
         type: 'paragraph',
         children: [{ type: 'text', text: 'Italic text', italic: true }],
@@ -82,7 +83,7 @@ describe('StrapiBlocks', () => {
   });
 
   it('renders code inline', () => {
-    const content = [
+    const content: StrapiBlock[] = [
       {
         type: 'paragraph',
         children: [{ type: 'text', text: 'const x = 1', code: true }],
@@ -93,7 +94,7 @@ describe('StrapiBlocks', () => {
   });
 
   it('renders quote block', () => {
-    const content = [
+    const content: StrapiBlock[] = [
       {
         type: 'quote',
         children: [{ type: 'text', text: 'A wise quote' }],
@@ -104,7 +105,7 @@ describe('StrapiBlocks', () => {
   });
 
   it('renders code block', () => {
-    const content = [
+    const content: StrapiBlock[] = [
       {
         type: 'code',
         children: [{ type: 'text', text: 'console.log("hi")' }],
@@ -115,7 +116,7 @@ describe('StrapiBlocks', () => {
   });
 
   it('renders image block', () => {
-    const content = [
+    const content: StrapiBlock[] = [
       {
         type: 'image',
         url: 'https://example.com/image.jpg',
@@ -130,7 +131,7 @@ describe('StrapiBlocks', () => {
   });
 
   it('renders image without caption', () => {
-    const content = [
+    const content: StrapiBlock[] = [
       {
         type: 'image',
         url: 'https://example.com/image.jpg',
@@ -143,7 +144,7 @@ describe('StrapiBlocks', () => {
   });
 
   it('renders link block', () => {
-    const content = [
+    const content: StrapiBlock[] = [
       {
         type: 'link',
         url: 'https://example.com',
@@ -157,7 +158,7 @@ describe('StrapiBlocks', () => {
   });
 
   it('renders unordered list', () => {
-    const content = [
+    const content: StrapiBlock[] = [
       {
         type: 'list',
         format: 'unordered',
@@ -179,7 +180,7 @@ describe('StrapiBlocks', () => {
   });
 
   it('renders ordered list', () => {
-    const content = [
+    const content: StrapiBlock[] = [
       {
         type: 'list',
         format: 'ordered',
@@ -196,13 +197,13 @@ describe('StrapiBlocks', () => {
   });
 
   it('renders plain string content', () => {
-    const content = ['Just a plain string'];
+    const content: StrapiBlock[] = ['Just a plain string' as unknown as StrapiBlock];
     render(<StrapiBlocks content={content} />);
     expect(screen.getByText('Just a plain string')).toBeInTheDocument();
   });
 
   it('applies custom className', () => {
-    const content = [
+    const content: StrapiBlock[] = [
       {
         type: 'paragraph',
         children: [{ type: 'text', text: 'Test' }],

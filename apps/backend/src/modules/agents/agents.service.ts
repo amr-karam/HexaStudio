@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import { ChatCompletionMessageParam, ChatCompletionTool } from 'openai/resources/chat/completions';
-import { ToolRegistry } from './tools';
+import { ToolRegistryService } from './tool-registry.service';
 import { Env } from '../../config/env';
 
 interface ChatMessage {
@@ -21,7 +21,7 @@ export class AgentsService {
   private readonly maxIterations = 8;
 
   constructor(
-    private readonly toolRegistry: ToolRegistry,
+    private readonly toolRegistry: ToolRegistryService,
     private configService: ConfigService<Env>,
   ) {
     // Prefer local LM Studio (free & unlimited, tool-call capable).
@@ -102,7 +102,7 @@ ${toolsDescription}`;
           this.configService.get('AI_CHAT_PROVIDER', 'local') === 'local'
             ? this.configService.get('LM_STUDIO_MODEL', 'google/gemma-4-e4b')!
             : this.configService.get<string>('OPENAI_MODEL')!,
-        messages: messages as ChatCompletionMessageParam[],
+        messages: messages as unknown as ChatCompletionMessageParam[],
         tools: openaiTools,
         tool_choice: 'auto',
         temperature: 0.3,
@@ -133,7 +133,7 @@ ${toolsDescription}`;
           params = {};
         }
 
-        const result = await this.toolRegistry.execute(call.function.name, params);
+        const result = await this.toolRegistry.execute(call.function.name, params, undefined);
         messages.push({
           role: 'tool',
           content: result,

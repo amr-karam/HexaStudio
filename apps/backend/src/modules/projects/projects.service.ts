@@ -5,6 +5,8 @@ import type { Project, ProjectResponse, Category, ProjectLiveStatus } from '@hex
 import { getEnv } from '../../config/env';
 import { OdooService } from '../odoo/odoo.service';
 import { RedisService } from '../storage/redis.service';
+import { ToolDefinition } from '../agents/decorators/tool-definition.decorator';
+import { ToolAuthorization } from '../agents/decorators/tool-authorization.decorator';
 
 interface StrapiRelation {
   id?: number;
@@ -74,6 +76,30 @@ export class ProjectsService {
     private readonly odooService: OdooService,
     private readonly redisService: RedisService,
   ) {}
+
+  @ToolDefinition({
+    name: 'get_project',
+    description: 'Get detailed information about a specific project by slug',
+    parameters: {
+      type: 'object',
+      properties: {
+        slug: { type: 'string', description: 'Project slug' },
+      },
+      required: ['slug'],
+    },
+  })
+  @ToolAuthorization({ requiresAuth: true, requiresHitl: false })
+  async getProjectTool(params: { slug: string }) {
+    const project = await this.getProjectBySlug(params.slug);
+    return {
+      title: project.title,
+      description: project.description,
+      category: project.category?.name,
+      services: project.services,
+      location: project.location,
+      area: project.area,
+    };
+  }
 
   private get cmsUrl(): string {
     return getEnv().CMS_URL;
@@ -156,7 +182,7 @@ export class ProjectsService {
       }
     } catch (error) {
       const msg = 'Failed to batch-enrich projects with Odoo data';
-      this.logger.warn({ msg, error: (error as Error).message });
+      this.logger.warn({ msg, error: (error as any).message });
       enrichmentError = msg;
     }
 
@@ -216,7 +242,7 @@ export class ProjectsService {
       const cached = await this.redisService.get<OdooEnrichment>(cacheKey);
       if (cached) return { enrichment: cached };
     } catch (error) {
-      this.logger.debug(`Live-status cache read failed for ${slug}: ${(error as Error).message}`);
+      this.logger.debug(`Live-status cache read failed for ${slug}: ${(error as any).message}`);
     }
 
     let timer: ReturnType<typeof setTimeout> | undefined;
@@ -237,13 +263,13 @@ export class ProjectsService {
       try {
         await this.redisService.set(cacheKey, enrichment, LIVE_STATUS_CACHE_TTL);
       } catch (error) {
-        this.logger.debug(`Live-status cache write failed for ${slug}: ${(error as Error).message}`);
+        this.logger.debug(`Live-status cache write failed for ${slug}: ${(error as any).message}`);
       }
 
       return { enrichment };
     } catch (error) {
       const msg = `Failed to enrich project ${slug} with Odoo data`;
-      this.logger.warn({ msg, slug, error: (error as Error).message });
+      this.logger.warn({ msg, slug, error: (error as any).message });
       return { enrichment: null, error: msg };
     } finally {
       if (timer) clearTimeout(timer);

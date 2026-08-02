@@ -1,0 +1,38 @@
+export type Locale = 'en' | 'ar';
+
+export const TRANSLATIONS: Record<Locale, Record<string, string>> = {
+  en: {
+    brand_tagline: '3D Architectural Visualization & Spatial Intelligence',
+    designer_mode: 'Designer Mode',
+    client_portal: 'Client Portal HQ',
+    executive_brief: 'Executive Brief PDF',
+    projects: 'Projects',
+    services: 'Services',
+    journal: 'Journal',
+    contact: 'Contact Us',
+    ai_assistant: 'AI Spatial Assistant',
+    notifications: 'Notifications',
+    odoo_sync: 'Odoo ERP Synced',
+    lighting_preset: 'Lighting Presets',
+    materials_preset: 'PBR Materials',
+    spatial_audio: 'Spatial Audio',
+    ar_view: 'AR Room View',
+  },
+  ar: {
+    brand_tagline: 'التصور المعماري ثلاثي الأبعاد والذكاء المكاني',
+    designer_mode: 'وضع المصمم',
+    client_portal: 'بوابة العملاء',
+    executive_brief: 'التقرير التنفيذي PDF',
+    projects: 'المشاريع',
+    services: 'الخدمات',
+    journal: 'المجلة المعمارية',
+    contact: 'تواصل معنا',
+    ai_assistant: 'المساعد الذكي المكاني',
+    notifications: 'الإشعارات',
+    odoo_sync: 'متزامن مع أودو ERP',
+    lighting_preset: 'إعدادات الإضاءة',
+    materials_preset: 'المواد والخامات',
+    spatial_audio: 'الصوت المكاني',
+    ar_view: 'عرض الواقع المعزز',
+  },
+};

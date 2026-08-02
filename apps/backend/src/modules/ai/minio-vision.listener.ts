@@ -129,7 +129,7 @@ export class MinIOVisionService {
 
       return result;
     } catch (error) {
-      this.logger.error(`Failed to process file ${objectName} for vision analysis: ${(error as Error).message}`);
+      this.logger.error(`Failed to process file ${objectName} for vision analysis: ${(error as any).message}`);
       return null;
     }
   }
@@ -172,14 +172,14 @@ export class MinIOVisionService {
       try {
         tags = await this.autoTagVisionService.generateVisionTags(base64Data, mimeType, projectContext);
       } catch (error) {
-        this.logger.warn(`AutoTagVisionService failed, falling back: ${(error as Error).message}`);
+        this.logger.warn(`AutoTagVisionService failed, falling back: ${(error as any).message}`);
       }
 
       try {
         const archAnalysis = await this.multimodalService.analyzeArchitecturalImage(base64Data, mimeType);
         rawAnalysis = archAnalysis as unknown as Record<string, unknown>;
       } catch (error) {
-        this.logger.warn(`Detailed architectural analysis unavailable: ${(error as Error).message}`);
+        this.logger.warn(`Detailed architectural analysis unavailable: ${(error as any).message}`);
         rawAnalysis = { note: 'Detailed architectural analysis failed' };
       }
     } else if (this.multimodalService.isAvailable) {
@@ -189,7 +189,7 @@ export class MinIOVisionService {
         rawAnalysis = archAnalysis as unknown as Record<string, unknown>;
         tags = this.mapAnalysisToTags(archAnalysis);
       } catch (error) {
-        this.logger.warn(`MultimodalService analysis failed: ${(error as Error).message}`);
+        this.logger.warn(`MultimodalService analysis failed: ${(error as any).message}`);
         return null;
       }
     }

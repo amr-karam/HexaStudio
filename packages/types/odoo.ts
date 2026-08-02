@@ -304,3 +304,277 @@ export interface OdooHubExecutiveDashboard {
   };
   timestamp: string;
 }
+
+// ─── Sales Teams (crm.team) ─────────────────────────────────────────────────
+
+export interface OdooSalesTeam {
+  id: number;
+  name: string;
+  user_id?: OdooIdName;
+  member_ids?: OdooIdName[];
+  company_id?: OdooIdName;
+  use_quotations?: boolean;
+  use_invoices?: boolean;
+  use_leads?: boolean;
+  resource_emoji?: string;
+  color?: number;
+  /** Pipeline lead count computed from crm.lead */
+  leadCount?: number;
+  /** Expected revenue computed from crm.lead */
+  expectedRevenue?: number;
+}
+
+export interface OdooSalesTeamDetail extends OdooSalesTeam {
+  /** Recent leads associated with this team */
+  recentLeads?: OdooLead[];
+  /** Recent quotations associated with this team */
+  recentQuotations?: OdooQuotation[];
+}
+
+// ─── HR Departments (hr.department) ─────────────────────────────────────────
+
+export interface OdooDepartment {
+  id: number;
+  name: string;
+  complete_name?: string;
+  parent_id?: OdooIdName;
+  child_ids?: OdooIdName[];
+  manager_id?: OdooIdName;
+  company_id?: OdooIdName;
+  /** Number of active employees in the department */
+  employeeCount?: number;
+  /** Total planned budget */
+  budget?: number;
+}
+
+export interface OdooDepartmentDetail extends OdooDepartment {
+  /** Employees belonging to this department */
+  employees?: OdooEmployee[];
+}
+
+// ─── Finance / Accounting (account.move, account.payment, account.journal) ──
+
+export interface OdooJournalEntry {
+  id: number;
+  name: string;
+  date: string;
+  ref?: string;
+  journal_id?: OdooIdName;
+  company_id?: OdooIdName;
+  state?: string;
+  move_type?: string;
+  currency_id?: OdooIdName;
+  amount_total?: number;
+  line_ids?: OdooJournalItem[];
+}
+
+export interface OdooJournalItem {
+  id: number;
+  name?: string;
+  account_id?: OdooIdName;
+  debit?: number;
+  credit?: number;
+  balance?: number;
+  partner_id?: OdooIdName;
+  currency_id?: OdooIdName;
+  amount_currency?: number;
+}
+
+export interface OdooPayment {
+  id: number;
+  name: string;
+  date: string;
+  state?: string;
+  payment_type?: 'inbound' | 'outbound' | 'transfer';
+  partner_id?: OdooIdName;
+  amount?: number;
+  currency_id?: OdooIdName;
+  journal_id?: OdooIdName;
+  payment_method_line_id?: OdooIdName;
+  ref?: string;
+  move_id?: OdooIdName;
+}
+
+export interface OdooBankAccount {
+  id: number;
+  name: string;
+  account_number?: string;
+  bank_id?: OdooIdName;
+  account_id?: OdooIdName;
+  company_id?: OdooIdName;
+  currency_id?: OdooIdName;
+  balance?: number;
+  /** Account code if available */
+  code?: string;
+}
+
+export interface OdooSendEmailData {
+  to: string;
+  subject: string;
+  body: string;
+  partnerIds?: number[];
+}
+
+// ─── Sync Engine Types ──────────────────────────────────────────────────────
+
+/** Supported conflict resolution strategies. */
+export type ConflictResolutionStrategy =
+  | 'last-write-wins'
+  | 'odoo-wins'
+  | 'hexa-wins'
+  | 'manual';
+
+/** Final disposition of a conflict after resolution. */
+export type ConflictResolution =
+  | 'odoo-wins'
+  | 'hexa-wins'
+  | 'merged'
+  | 'pending';
+
+/** An entity type that the sync engine manages. */
+export type SyncEntityType =
+  | 'crm.lead'
+  | 'project.project'
+  | 'account.move'
+  | 'project.task'
+  | 'res.partner';
+
+/**
+ * A detected sync conflict between Odoo and HEXA Hub.
+ *
+ * Conflicts arise when both sides modify the same record between sync cycles.
+ * Each conflict records both versions so a resolution strategy can be applied.
+ */
+export interface SyncConflict {
+  /** UUID of the conflict record. */
+  id: string;
+  /** Odoo model name (e.g. `crm.lead`). */
+  entityType: SyncEntityType | string;
+  /** Odoo record ID. */
+  entityId: number;
+  /** The record as fetched from Odoo. */
+  odooVersion: Record<string, unknown>;
+  /** The record as cached in HEXA Hub. */
+  hexaVersion: Record<string, unknown>;
+  /** ISO 8601 timestamp when the conflict was detected. */
+  detectedAt: string;
+  /** Current resolution status — `pending` until resolved. */
+  resolution: ConflictResolution;
+  /** ISO 8601 timestamp when the conflict was resolved (if resolved). */
+  resolvedAt?: string;
+  /** User ID or `'system'` of whoever resolved the conflict. */
+  resolvedBy?: string;
+  /** Fields that differ between the two versions. */
+  conflictingFields?: string[];
+}
+
+/**
+ * Sync cursor persisted per entity type in Redis.
+ *
+ * Tracks the last successful delta sync so we can fetch only modified
+ * records in subsequent cycles.
+ */
+export interface SyncCursor {
+  /** Odoo model name. */
+  entityType: string;
+  /** ISO 8601 timestamp of the last successful sync run. */
+  lastSyncAt: string;
+  /** Highest Odoo record ID processed in the last sync. */
+  lastSyncId: number;
+  /** Number of records synced in the last run. */
+  recordsSynced: number;
+  /** Number of errors encountered in the last run. */
+  errors: number;
+}
+
+/** Aggregated metrics for a single entity type. */
+export interface SyncEntityMetrics {
+  entityType: string;
+  /** Total records synced across all runs. */
+  totalSynced: number;
+  /** Total errors across all runs. */
+  totalErrors: number;
+  /** Average sync duration in ms (rolling). */
+  avgDurationMs: number;
+  /** Number of conflicts detected for this entity. */
+  conflictsDetected: number;
+  /** Number of conflicts resolved for this entity. */
+  conflictsResolved: number;
+}
+
+/** High-level sync status returned by the status endpoint. */
+export interface SyncStatusResponse {
+  /** Overall system state. */
+  state: 'healthy' | 'degraded' | 'error';
+  /** ISO 8601 timestamp of the last successful full sync. */
+  lastFullSyncAt: string | null;
+  /** Per-entity metrics. */
+  entities: SyncEntityMetrics[];
+  /** Circuit breaker state. */
+  circuitBreaker: string;
+  /** Number of unresolved conflicts. */
+  pendingConflicts: number;
+  /** ISO 8601 timestamp of when this status was generated. */
+  generatedAt: string;
+}
+
+/** Result of a single sync operation. */
+export interface SyncOperationResult {
+  entityType: string;
+  recordsProcessed: number;
+  conflictsDetected: number;
+  durationMs: number;
+  success: boolean;
+  error?: string;
+}
+
+/** Manual conflict resolution request body. */
+export interface ResolveConflictDto {
+  strategy: 'odoo-wins' | 'hexa-wins' | 'merged';
+  /** Required only for `'merged'` — the merged field values. */
+  mergedValues?: Record<string, unknown>;
+  /** User who is resolving the conflict. */
+  resolvedBy: string;
+}
+
+/** Manual sync trigger request body. */
+export interface TriggerSyncDto {
+  /** Specific entity type to sync. If omitted, syncs all. */
+  entityType?: SyncEntityType | string;
+  /** Force a full sync instead of delta. Defaults to `false`. */
+  fullSync?: boolean;
+}
+
+/** Per-operation sync metric entry logged after each sync run. */
+export interface SyncMetricEntry {
+  /** Operation identifier (e.g. `delta-sync:crm.lead`). */
+  operation: string;
+  /** Whether the operation succeeded. */
+  success: boolean;
+  /** Duration of the operation in milliseconds. */
+  durationMs: number;
+  /** ISO 8601 timestamp of when the operation ran. */
+  timestamp: string;
+  /** Error message if the operation failed. */
+  error?: string;
+}
+
+/** Audit entry recorded for every conflict resolution. */
+export interface ConflictAuditEntry {
+  /** UUID of the resolved conflict. */
+  conflictId: string;
+  /** Odoo model name (e.g. `crm.lead`). */
+  entityType: string;
+  /** Odoo record ID. */
+  entityId: number;
+  /** Resolution strategy that was applied. */
+  strategy: ConflictResolutionStrategy | 'merged';
+  /** Final disposition of the conflict. */
+  resolution: ConflictResolution;
+  /** User ID or `system` who resolved the conflict. */
+  resolvedBy: string;
+  /** ISO 8601 timestamp when the conflict was resolved. */
+  resolvedAt: string;
+  /** Fields that were in conflict. */
+  conflictingFields: string[];
+}
