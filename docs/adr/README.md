@@ -20,7 +20,7 @@ This directory contains Architecture Decision Records for HEXA Vision.
 
 ## Creating New ADRs
 
-1. Copy the template from `TEMPLATE.md`
+1. Copy the template from `docs/templates/ADR_TEMPLATE.md`
 2. Name the file `NNN-decision-name.md`
 3. Update this index
 4. Submit a PR for review

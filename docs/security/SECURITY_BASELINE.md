@@ -9,63 +9,7 @@
 
 ## 1. Threat Model
 
-### 1.1 Digital Assets
-
-| Asset | Location | Classification | Owner |
-|-------|----------|---------------|-------|
-| Source code (monorepo) | GitLab (`HEXA-Studio/hexa-platform`) | Confidential | Engineering |
-| PostgreSQL database | Docker internal network (`hexastudio_internal`) | Restricted | Backend |
-| Redis session cache | Docker internal network (`hexastudio_internal`) | Internal | Backend |
-| MinIO object storage | Docker network (`hexastudio_web`) | Restricted | Backend |
-| User credentials (hashed) | PostgreSQL `users` table | Critical | Backend |
-| JWT signing keys | Environment variables (server host) | Critical | DevOps |
-| SSL/TLS certificates | Traefik ACME storage / Cloudflare | Critical | DevOps |
-| API keys (Strapi, Odoo) | Environment variables | Critical | DevOps |
-| Hostinger DNS API key | `.env` on production server | Critical | DevOps |
-| GitLab CI/CD variables | GitLab UI (masked) | Critical | DevOps |
-| SSH private keys | GitLab CI/CD variables | Critical | DevOps |
-| Container images | GitLab Container Registry | Confidential | DevOps |
-| Sentry DSN | Environment variables | Internal | Backend |
-| Prometheus/Grafana config | Docker volumes | Internal | DevOps |
-| Business data (leads, projects, invoices) | PostgreSQL + Odoo DB | Restricted | Odoo |
-| PII (names, emails, phone numbers) | PostgreSQL + Odoo DB | Critical | Platform |
-
-### 1.2 Attack Surface
-
-| Entry Point | Protocol | Exposure | Authentication | Notes |
-|-------------|----------|----------|---------------|-------|
-| `hexastudio.net` (Next.js) | HTTPS :443 | Public | Optional (public pages) | WAF-protected, static rendering |
-| `api.hexastudio.net` (NestJS BFF) | HTTPS :443 | Public | JWT Bearer + API Keys | Rate-limited, all inputs validated |
-| `cms.hexastudio.net` (Strapi 5) | HTTPS :443 | Public (read) / Admin (write) | JWT (Strapi users) | Behind Traefik; admin panel restricted |
-| `auth.hexastudio.net` (Auth service) | HTTPS :443 | Public | JWT | Login/register/refresh endpoints |
-| `odoo.hexastudio.net` (Odoo ERP) | HTTPS :443 | Internal + VPN-only | Odoo session auth | **Not publicly accessible** — routed via Traefik, IP-restricted |
-| `files.hexastudio.net` (MinIO) | HTTPS :443 | Internal only | Presigned URLs | No public bucket access |
-| `monitor.hexastudio.net` (Grafana) | HTTPS :443 | Internal + VPN-only | Grafana auth | **Not publicly accessible** |
-| `status.hexastudio.net` (Status page) | HTTPS :443 | Public | None (read-only) | Pushed from Uptime Kuma |
-| GitLab (self-hosted) | HTTPS | VPN-only | GitLab auth | SSH + HTTPS for git operations |
-| SSH (server) | TCP :22 | IP-restricted | SSH key | Only Cloudflare IPs + office IP |
-| Docker socket | Unix socket | Local only | Root | Never exposed over network |
-| Internal Docker network | TCP/UDP | Isolated bridge | Network isolation | `hexastudio_internal` has no external egress |
-| PostgreSQL :5432 | TCP | `hexastudio_internal` only | Password | SSL required for connections |
-| Redis :6379 | TCP | `hexastudio_internal` only | Password `requirepass` | No persistence (cache only) |
-| Qdrant :6333 | TCP | `hexastudio_internal` only | API Key | Vector store |
-| Prometheus :9090 | TCP | `hexastudio_internal` only | None | Metrics only |
-| Weblate (translations) | HTTPS | VPN-only | Weblate auth | Self-hosted, restricted |
-
-### 1.3 OWASP Top 10 (2021) Coverage
-
-| # | Risk | Mitigation | Status |
-|---|------|-----------|--------|
-| A01 | Broken Access Control | RBAC guards (`@Roles()` decorator), row-level ownership checks, scope-based API keys | ✅ |
-| A02 | Cryptographic Failures | TLS 1.3 everywhere, bcrypt (cost 12) for passwords, AES-256-GCM for PII at rest | ✅ |
-| A03 | Injection | Parameterized queries via Prisma ORM, `class-validator` with whitelist, DOMPurify for HTML | ✅ |
-| A04 | Insecure Design | Defense in depth network model, zero-trust internal network, security review in CI | ✅ |
-| A05 | Security Misconfiguration | Traefik as centralized TLS terminator, HSTS/CSP/X-Frame-Options headers, no default creds | ✅ |
-| A06 | Vulnerable Components | Trivy container scanning (CI gate), npm audit, Renovate bot, CycloneDX SBOM | ✅ |
-| A07 | Auth Failures | JWT RS256 (15min TTL), refresh rotation (7 day TTL), rate-limited login, MFA for admins | ✅ |
-| A08 | Data Integrity Failures | SBOM generation per build, signed commits, `package-lock.json` enforcement | ✅ |
-| A09 | Logging Failures | Sentry error tracking, Loki log aggregation, Prometheus metrics, structured JSON logs | ⚠️ Partial (no SIEM) |
-| A10 | SSRF | Internal network isolation (`hexastudio_internal`), no user-supplied URLs fetched server-side | ✅ |
+See `docs/security/THREAT_MODEL.md` (canonical threat model).
 
 ---
 
@@ -446,109 +390,7 @@ http:
 
 ## 8. Incident Response
 
-### 8.1 Severity Levels
-
-| Level | Label | Definition | Response Time | Notification |
-|-------|-------|-----------|---------------|-------------|
-| **SEV-1** | Critical | Production down, data breach, active exploitation, data loss | 15 minutes | PagerDuty + Slack `#incidents` + Phone tree |
-| **SEV-2** | High | Degraded performance, partial outage, non-critical data exposure | 1 hour | Slack `#incidents` + Email |
-| **SEV-3** | Medium | Minor issue, non-critical bug, dependency vulnerability | 24 hours | GitHub/GitLab issue + Slack `#tech` |
-| **SEV-4** | Low | Question, enhancement request, documentation gap | 48 hours | GitHub/GitLab issue |
-
-### 8.2 Incident Response Lifecycle
-
-```
-DETECT ──► TRIAGE ──► CONTAIN ──► ERADICATE ──► RECOVER ──► POSTMORTEM
-  │            │           │            │            │            │
-  ▼            ▼           ▼            ▼            ▼            ▼
-Alert      Assess      Isolate      Remove       Restore     Root cause
-Sentry     severity    Rollback     Patch        Verify      doc
-Prometheus Notify      Block IP     Update       Monitor     Action items
-User       team        Revoke       config       health      Retro
-report     Escalate    keys         Deploy       check       Follow-up
-```
-
-### 8.3 Detailed Response Procedures
-
-#### SEV-1: Production Down / Data Breach
-
-| Step | Action | Responsible | Time |
-|------|--------|-------------|------|
-| 1 | **Detect**: Confirm alert from Sentry/Prometheus or user report | On-call engineer | < 5 min |
-| 2 | **Assess**: Determine scope (which services, which users affected) | On-call engineer | < 5 min |
-| 3 | **Notify**: Declare SEV-1 in Slack `#incidents`, notify security lead | On-call engineer | < 5 min |
-| 4 | **Contain**: If security incident, rotate all affected keys/secrets immediately | Security lead | < 15 min |
-| 5 | **Contain**: If deployment issue, rollback to last known-good version | DevOps | < 15 min |
-| 6 | **Contain**: If DDoS/attack, enable Cloudflare "Under Attack" mode | DevOps | < 5 min |
-| 7 | **Eradicate**: Apply hotfix, patch, or configuration change | Engineering | < 2 hours |
-| 8 | **Recover**: Deploy fix, verify health endpoint, confirm metrics recovering | DevOps | < 30 min |
-| 9 | **Monitor**: Watch error rates, latency, and user reports for 1 hour | On-call engineer | 1 hour |
-| 10 | **Postmortem**: Schedule within 24 hours, write RCA, assign action items | Tech lead | < 48 hours |
-
-#### SEV-2: Degraded Performance
-
-| Step | Action | Responsible | Time |
-|------|--------|-------------|------|
-| 1 | Confirm alert from Prometheus (high latency, error rate > 1%) | On-call engineer | < 10 min |
-| 2 | Check Grafana dashboards for CPU/memory/connection bottlenecks | On-call engineer | < 15 min |
-| 3 | Scale horizontally (increase container replicas) or vertically (increase resources) | DevOps | < 30 min |
-| 4 | If database-related, check PG connection pool, slow queries | Backend engineer | < 1 hour |
-| 5 | Apply optimization (query index, cache, connection pool config) | Backend engineer | < 2 hours |
-| 6 | Verify recovery, update status page | On-call engineer | < 30 min |
-
-#### SEV-3: Minor Issue (e.g., dependency vulnerability)
-
-| Step | Action | Responsible | Time |
-|------|--------|-------------|------|
-| 1 | File issue from Trivy/npm audit report | DevOps / Engineer | < 4 hours |
-| 2 | Assess exploitability (is it reachable in our code?) | Security lead | < 24 hours |
-| 3 | Apply patch (npm update, base image rebuild) | Engineer | < 1 week |
-| 4 | Deploy fix in next regular release | DevOps | Next release cycle |
-
-### 8.4 Communication Templates
-
-**Slack `#incidents` — SEV-1 Declaration:**
-```
-🚨 SEV-1 INCIDENT DECLARED
-Time: 2026-07-26T14:30:00Z
-Service: [backend/frontend/cms]
-Impact: [describe user-facing impact]
-Detected by: [Sentry/Prometheus/User report]
-Lead: @oncall-engineer
-Status: Investigating
-Slack channel: #incidents-PPP-NNN
-```
-
-**Post-Incident Review Template:**
-```markdown
-## PIR: [INCIDENT TITLE]
-- Date: YYYY-MM-DD
-- Duration: X hours Y minutes
-- Severity: SEV-[1-4]
-- Lead: @person
-
-### Timeline
-- HH:MM — Detected via [Sentry/Prometheus/report]
-- HH:MM — Triage complete
-- HH:MM — Containment action
-- HH:MM — Fix deployed
-- HH:MM — Verified healthy
-
-### Root Cause
-[One paragraph describing the root cause]
-
-### Impact
-- Users affected: [count]
-- Downtime: [duration]
-- Data loss: [none / describe]
-
-### Action Items
-- [ ] [Action] (Assignee, Due date)
-- [ ] [Action] (Assignee, Due date)
-
-### Prevention
-[How will we prevent this in the future?]
-```
+See `docs/security/INCIDENT_RESPONSE.md` (canonical incident response).
 
 ---
 
@@ -674,19 +516,21 @@ Any deviation from this baseline must be documented here.
 
 | Document | Location |
 |----------|----------|
-| Security Standards (detailed) | `06-STANDARDS/SECURITY.md` |
-| Security Standards (reference) | `06-STANDARDS/SECURITY_STANDARDS.md` |
-| Security Checklist | `17-CHECKLISTS/SECURITY_CHECKLIST.md` |
-| Authentication API | `08-API/AUTHENTICATION.md` |
-| Authorization (RBAC) | `08-API/AUTHORIZATION.md` |
-| Network Architecture | `01-ARCHITECTURE/NETWORK_ARCHITECTURE.md` |
-| Docker Compose Configuration | `13-DEVOPS/DOCKER_COMPOSE.md` |
-| Deployment Pipeline | `13-DEVOPS/DEPLOYMENT.md` |
-| Monitoring & Observability | `13-DEVOPS/MONITORING.md` |
-| Disaster Recovery | `13-DEVOPS/DISASTER_RECOVERY.md` |
+| Threat model | `docs/security/THREAT_MODEL.md` |
+| Incident response | `docs/security/INCIDENT_RESPONSE.md` |
+| Security Standards (detailed) | `docs/security/SECURITY.md` |
+| Security Standards (reference) | `docs/security/SECURITY_STANDARDS.md` |
+| Security Checklist | `docs/checklists/SECURITY_CHECKLIST.md` |
+| Authentication API | `docs/api/AUTHENTICATION.md` |
+| Authorization (RBAC) | `docs/api/AUTHORIZATION.md` |
+| Network Architecture | `docs/architecture/NETWORK_ARCHITECTURE.md` |
+| Docker Compose Configuration | `docs/devops/DOCKER_COMPOSE.md` |
+| Deployment Pipeline | `docs/devops/DEPLOYMENT.md` |
+| Monitoring & Observability | `docs/devops/MONITORING.md` |
+| Disaster Recovery | `docs/devops/DISASTER_RECOVERY.md` |
 | CI/CD Pipeline | `.gitlab-ci.yml` |
 | Security CI Jobs | `.gitlab/security.yml` |
-| Incident Response (external) | `13-DEVOPS/INCIDENT_RESPONSE.md` |
+| Incident Response (external) | `docs/devops/incident-response.md` |
 
 ---
 

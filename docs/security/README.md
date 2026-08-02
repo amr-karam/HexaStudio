@@ -14,6 +14,6 @@ Canonical sources:
 | Security guide | `docs/security/SECURITY.md` |
 | Security audit | `docs/quality/SECURITY_AUDIT.md` |
 | Security report | `docs/quality/SECURITY_REPORT.md` |
-| Threat model & incident response | `docs/devops/incident-response.md` |
+| Threat model & incident response | `docs/security/THREAT_MODEL.md`, `docs/security/INCIDENT_RESPONSE.md` |
 
 This manifest is governed by `GOVERNANCE.md` → **Security** section.

@@ -60,7 +60,7 @@ Every important decision requires an ADR containing business impact, technical i
 
 Repository audits must detect and track duplicate components, APIs, models, and business logic; dead code and unused packages, images, and environment variables; circular dependencies and architecture boundary violations; large components and performance bottlenecks; security, accessibility, and operational risks; and documentation-to-code drift.
 
-Findings must be recorded in `15-QUALITY/TECH_DEBT.md`, `15-QUALITY/DEPENDENCY_CATALOG.md`, `docs/RISK_REGISTER.md`, or a scoped audit report. Findings are not silently accepted.
+Findings must be recorded in `docs/quality/TECH_DEBT.md`, `docs/quality/DEPENDENCY_CATALOG.md`, `docs/RISK_REGISTER.md`, or a scoped audit report. Findings are not silently accepted.
 
 ## 6. Documentation Synchronization Contract
 
@@ -74,17 +74,17 @@ Documentation and implementation form one release unit.
 |-----------------|------------------|
 | Automatic project map | `/PROJECT_INDEX.md` |
 | Project health dashboard | `/PROJECT_HEALTH.md` |
-| Architecture decisions | `01-ARCHITECTURE/ARCHITECTURE_DECISIONS/` |
-| Services | `01-ARCHITECTURE/SERVICE_CATALOG.md` |
-| Databases | `01-ARCHITECTURE/DATABASE_CATALOG.md` |
-| APIs | `08-API/API_CATALOG.md` |
-| Odoo models | `09-ODOO/ODOO_MODEL_CATALOG.md` |
-| Infrastructure and domains | `13-DEVOPS/INFRASTRUCTURE_GOVERNANCE.md` |
-| CI/CD | `13-DEVOPS/CI_CD_GOVERNANCE.md` |
-| Security baseline | `06-STANDARDS/SECURITY_BASELINE.md` |
-| Observability | `13-DEVOPS/OBSERVABILITY.md` |
-| Dependency governance | `15-QUALITY/DEPENDENCY_CATALOG.md` |
-| Technical debt | `15-QUALITY/TECH_DEBT.md` |
+| Architecture decisions | `docs/adr/README.md` |
+| Services | `docs/architecture/SERVICE_CATALOG.md` |
+| Databases | `docs/architecture/DATABASE_CATALOG.md` |
+| APIs | `docs/api/API_CATALOG.md` |
+| Odoo models | `docs/odoo/ODOO_MODEL_CATALOG.md` |
+| Infrastructure and domains | `docs/devops/INFRASTRUCTURE_GOVERNANCE.md` |
+| CI/CD | `docs/devops/CI_CD_GOVERNANCE.md` |
+| Security baseline | `docs/security/SECURITY_BASELINE.md` |
+| Observability | `docs/devops/OBSERVABILITY.md` |
+| Dependency governance | `docs/quality/DEPENDENCY_CATALOG.md` |
+| Technical debt | `docs/quality/TECH_DEBT.md` |
 | Risk register | `/docs/RISK_REGISTER.md` |
 
 ## 8. Knowledge Graph
