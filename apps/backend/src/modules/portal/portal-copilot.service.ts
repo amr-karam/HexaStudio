@@ -43,7 +43,7 @@ User Query: "${query}"`;
       }
       throw new Error('No AI chat client available');
     } catch (error) {
-      this.logger.warn(`AI Copilot generation fallback: ${(error as any).message}`);
+      this.logger.warn(`AI Copilot generation fallback: ${(error as Error).message}`);
       return {
         reply: `Project **${projectName}** is currently on schedule in Phase 2 (3D Renderings & Lighting). All active deliverables are moving according to the agreed milestone timeline.`,
       };
@@ -87,7 +87,7 @@ User Query: "${query}"`;
         transcribedText = await this.voiceService.transcribeAudio(audioData, audioMimeType);
         this.logger.log(`Audio transcribed (${transcribedText.length} chars)`);
       } catch (error) {
-        this.logger.warn(`Audio transcription failed, continuing without it: ${(error as any).message}`);
+        this.logger.warn(`Audio transcription failed, continuing without it: ${(error as Error).message}`);
       }
     }
 
@@ -114,7 +114,7 @@ User Query: "${query}"`;
           ].join('\n');
         }
       } catch (error) {
-        this.logger.warn(`Image analysis failed, continuing without vision context: ${(error as any).message}`);
+        this.logger.warn(`Image analysis failed, continuing without vision context: ${(error as Error).message}`);
       }
     }
 
@@ -174,7 +174,7 @@ User Query: "${effectiveQuery}"`;
       }
       throw new Error('No AI chat client available');
     } catch (error) {
-      this.logger.warn(`Multimodal Copilot generation fallback: ${(error as any).message}`);
+      this.logger.warn(`Multimodal Copilot generation fallback: ${(error as Error).message}`);
 
       // Build a sensible fallback that still references vision context
       let fallbackReply = `Project **${projectName}** is currently on schedule in Phase 2 (3D Renderings & Lighting).`;

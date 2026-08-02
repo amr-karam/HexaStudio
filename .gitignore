@@ -18,6 +18,9 @@ out/
 .env.local
 .env.*.local
 !.env.example
+# Local-only env files carrying real credentials — never commit
+.env.gitlab
+.env.gitlab.*
 
 # Logs
 logs/
@@ -135,3 +138,12 @@ apps/frontend/public/models/.gitkeep
 # Note: .env.example is explicitly allowed above (line 20). All other .env* patterns
 # are already covered by .env, .env.local, .env.*.local rules on lines 17-19.
 pnpm-workspace.yaml
+
+# Stray deployment scratch (web-root copies, typo dirs, deploy logs)
+var/
+hexa-hab/
+deploy_log.txt
+
+# SSH private keys (never commit)
+*.key
+hexastudio_key

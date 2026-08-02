@@ -182,7 +182,7 @@ export class ProjectsService {
       }
     } catch (error) {
       const msg = 'Failed to batch-enrich projects with Odoo data';
-      this.logger.warn({ msg, error: (error as any).message });
+      this.logger.warn({ msg, error: (error as Error).message });
       enrichmentError = msg;
     }
 
@@ -242,7 +242,7 @@ export class ProjectsService {
       const cached = await this.redisService.get<OdooEnrichment>(cacheKey);
       if (cached) return { enrichment: cached };
     } catch (error) {
-      this.logger.debug(`Live-status cache read failed for ${slug}: ${(error as any).message}`);
+      this.logger.debug(`Live-status cache read failed for ${slug}: ${(error as Error).message}`);
     }
 
     let timer: ReturnType<typeof setTimeout> | undefined;
@@ -263,13 +263,13 @@ export class ProjectsService {
       try {
         await this.redisService.set(cacheKey, enrichment, LIVE_STATUS_CACHE_TTL);
       } catch (error) {
-        this.logger.debug(`Live-status cache write failed for ${slug}: ${(error as any).message}`);
+        this.logger.debug(`Live-status cache write failed for ${slug}: ${(error as Error).message}`);
       }
 
       return { enrichment };
     } catch (error) {
       const msg = `Failed to enrich project ${slug} with Odoo data`;
-      this.logger.warn({ msg, slug, error: (error as any).message });
+      this.logger.warn({ msg, slug, error: (error as Error).message });
       return { enrichment: null, error: msg };
     } finally {
       if (timer) clearTimeout(timer);

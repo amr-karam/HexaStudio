@@ -148,7 +148,7 @@ Include up to 12 tags, sorted by confidence descending. Only return valid JSON.`
 
       return validTags;
     } catch (error) {
-      this.logger.error(`Vision tag generation failed: ${(error as any).message}`);
+      this.logger.error(`Vision tag generation failed: ${(error as Error).message}`);
       return this.extractContextTags(context);
     }
   }
@@ -175,7 +175,7 @@ Include up to 12 tags, sorted by confidence descending. Only return valid JSON.`
         category: 'color' as const,
       }));
     } catch (error) {
-      this.logger.error(`Color palette extraction failed: ${(error as any).message}`);
+      this.logger.error(`Color palette extraction failed: ${(error as Error).message}`);
       return [];
     }
   }

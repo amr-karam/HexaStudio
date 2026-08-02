@@ -6,5 +6,8 @@
   "types": "index.ts",
   "scripts": {
     "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "shiki": "^4.4.1"
   }
 }

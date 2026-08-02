@@ -1,0 +1,152 @@
+# ============================================================================
+# Traefik Dynamic Configuration - Blue-Green Deployment
+# Weight-based routing for zero-downtime deployments
+# ============================================================================
+
+http:
+  # ---------------------------------------------------------------------------
+  # Middlewares
+  # ---------------------------------------------------------------------------
+  middlewares:
+    # Weight-based routing for frontend
+    weight-frontend:
+      weightedRoundRobin:
+        services:
+          - name: frontend-blue
+            weight: 90
+          - name: frontend-green
+            weight: 10
+    
+    # Weight-based routing for backend
+    weight-backend:
+      weightedRoundRobin:
+        services:
+          - name: backend-blue
+            weight: 90
+          - name: backend-green
+            weight: 10
+    
+    # Weight-based routing for CMS
+    weight-cms:
+      weightedRoundRobin:
+        services:
+          - name: cms-blue
+            weight: 90
+          - name: cms-green
+            weight: 10
+    
+    # Authentication for Traefik dashboard
+    traefik-auth:
+      basicAuth:
+        users:
+          - "${TRAEFIK_AUTH_USER:-admin}:${TRAEFIK_AUTH_HASH}"
+
+  # ---------------------------------------------------------------------------
+  # Routers
+  # ---------------------------------------------------------------------------
+  routers:
+    # Frontend router with weight-based routing
+    frontend-router:
+      rule: Host(`hexastudio.net`, `www.hexastudio.net`)
+      entryPoints:
+        - "web"
+        - "websecure"
+      middlewares:
+        - weight-frontend
+      service: frontend-blue
+      tls:
+        certResolver: letsencrypt
+    
+    # Backend router with weight-based routing
+    backend-router:
+      rule: Host(`api.hexastudio.net`)
+      entryPoints:
+        - "web"
+        - "websecure"
+      middlewares:
+        - weight-backend
+      service: backend-blue
+      tls:
+        certResolver: letsencrypt
+    
+    # CMS router with weight-based routing
+    cms-router:
+      rule: Host(`cms.hexastudio.net`)
+      entryPoints:
+        - "web"
+        - "websecure"
+      middlewares:
+        - weight-cms
+      service: cms-blue
+      tls:
+        certResolver: letsencrypt
+    
+    # Traefik dashboard router
+    traefik-dashboard:
+      rule: Host(`${TRAEFIK_DASHBOARD_HOST:-traefik.hexastudio.net}`)
+      entryPoints:
+        - "web"
+      middlewares:
+        - traefik-auth
+      service: api@internal
+      tls:
+        certResolver: letsencrypt
+
+  # ---------------------------------------------------------------------------
+  # Services
+  # ---------------------------------------------------------------------------
+  services:
+    # Blue services (current production)
+    frontend-blue:
+      loadBalancer:
+        servers:
+          - url: "http://hexa-frontend-blue:3000"
+    
+    backend-blue:
+      loadBalancer:
+        servers:
+          - url: "http://hexa-backend-blue:4000"
+    
+    cms-blue:
+      loadBalancer:
+        servers:
+          - url: "http://hexa-cms-blue:1337"
+    
+    # Green services (new deployment)
+    frontend-green:
+      loadBalancer:
+        servers:
+          - url: "http://hexa-frontend-green:3000"
+      weighted:
+        services:
+          - name: frontend-green
+            weight: 10
+    
+    backend-green:
+      loadBalancer:
+        servers:
+          - url: "http://hexa-backend-green:4000"
+      weighted:
+        services:
+          - name: backend-green
+            weight: 10
+    
+    cms-green:
+      loadBalancer:
+        servers:
+          - url: "http://hexa-cms-green:1337"
+      weighted:
+        services:
+          - name: cms-green
+            weight: 10
+
+# ---------------------------------------------------------------------------
+# TCP/UDP Configuration (if needed)
+# ---------------------------------------------------------------------------
+tcp:
+  routers: {}
+  services: {}
+
+udp:
+  routers: {}
+  services: {}

@@ -63,7 +63,7 @@ Write in a professional, evocative tone suitable for high-end architecture proje
       const content = response.choices[0]?.message?.content?.trim();
       return content || this.fallbackSummary(project);
     } catch (error) {
-      this.logger.error(`Summary generation failed: ${(error as any).message}`);
+      this.logger.error(`Summary generation failed: ${(error as Error).message}`);
       return this.fallbackSummary(project);
     }
   }

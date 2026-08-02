@@ -333,7 +333,7 @@ visual-regression:
   script:
     - npx playwright install --with-deps chromium
     - npm run build --workspace=apps/frontend
-    - npx playwright test --config=e2e/playwright.config.ts --project=visual-regression --update-snapshots
+    - npx playwright test --config=e2e/playwright.config.ts --project=visual-regression
   artifacts:
     when: on_failure
     paths:
@@ -342,6 +342,20 @@ visual-regression:
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
     - if: $CI_COMMIT_BRANCH == "develop"
+
+# ----- Update Visual Snapshots (manual) -----
+update-visual-snapshots:
+  stage: validate
+  image: mcr.microsoft.com/playwright:v1.49.0-noble
+  needs: ["build"]
+  before_script: *npm_setup
+  script:
+    - npx playwright install --with-deps chromium
+    - npm run build --workspace=apps/frontend
+    - npx playwright test --config=e2e/playwright.config.ts --project=visual-regression --update-snapshots
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: manual
 
 # ----- Lighthouse CI -----
 lighthouse:
@@ -359,6 +373,7 @@ lighthouse:
     paths:
       - .lighthouseci/
     expire_in: 7 days
+  allow_failure: false
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
     - if: $CI_COMMIT_BRANCH == "develop"

@@ -74,4 +74,5 @@ export function applyDocumentDirection(locale?: SupportedLocale): void {
   document.documentElement.lang = locale ?? getCurrentLocale();
 }
 
-export default { useTranslation };
+const i18n = { useTranslation };
+export default i18n;

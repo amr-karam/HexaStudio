@@ -7,8 +7,8 @@ import { ToolAuthorizationOptions } from './decorators/tool-authorization.decora
 import type { User } from '@hexastudio/types';
 
 interface ToolMetadata {
-  instance: any;
-  method: (params: any) => Promise<any>;
+  instance: unknown;
+  method: (params: unknown) => Promise<unknown>;
   definition: ToolDefinitionOptions;
   authorization?: ToolAuthorizationOptions;
 }
@@ -52,7 +52,7 @@ export class ToolRegistryService implements OnModuleInit {
     }
   }
 
-  async execute(name: string, params: any, user: User | undefined): Promise<any> {
+  async execute(name: string, params: unknown, user: User | undefined): Promise<unknown> {
     const tool = this.tools.get(name);
     if (!tool) throw new Error(`Tool ${name} not found`);
 

@@ -96,10 +96,12 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   );
 
   // Cleanup all timers on unmount
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     return () => {
-      timersRef.current.forEach((timer) => clearTimeout(timer));
-      timersRef.current.clear();
+      const currentTimers = timersRef.current;
+      currentTimers.forEach((timer) => clearTimeout(timer));
+      currentTimers.clear();
     };
   }, []);
 

@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  gitlab:
+    image: gitlab/gitlab-ce:latest
+    container_name: gitlab-ce
+    restart: unless-stopped
+    hostname: gitlab.hexastudio.net
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        # GitLab configuration
+        external_url 'https://gitlab.hexastudio.net'
+        
+        # Let's Encrypt configuration
+        letsencrypt['enable'] = true
+        letsencrypt['contact_emails'] = ['admin@hexastudio.net']
+        letsencrypt['auto_renew'] = true
+        letsencrypt['auto_renew_hour'] = 0
+        letsencrypt['auto_renew_minute'] = 30
+        letsencrypt['auto_renew_day_of_month'] = "*/7"
+        
+        # SMTP Configuration for email notifications
+        gitlab_rails['smtp_enable'] = true
+        gitlab_rails['smtp_address'] = "smtp.gmail.com"
+        gitlab_rails['smtp_port'] = 587
+        gitlab_rails['smtp_user_name'] = "gitlab@hexastudio.net"
+        gitlab_rails['smtp_password'] = "your-gmail-app-password-here"
+        gitlab_rails['smtp_domain'] = "hexastudio.net"
+        gitlab_rails['smtp_authentication'] = "login"
+        gitlab_rails['smtp_enable_starttls_auto'] = true
+        gitlab_rails['smtp_tls_version'] = "TLSv1.2"
+        
+        # GitLab email settings
+        gitlab_rails['gitlab_email_from'] = 'gitlab@hexastudio.net'
+        gitlab_rails['gitlab_email_reply_to'] = 'noreply@hexastudio.net'
+        
+        # Timezone
+        gitlab_rails['time_zone'] = 'UTC'
+        
+        # Backup configuration
+        gitlab_rails['backup_keep_time'] = 604800
+        
+        # Registry configuration
+        registry['enable'] = true
+        registry_external_url 'https://registry.gitlab.hexastudio.net'
+        
+        # GitLab Pages
+        pages_external_url 'https://pages.gitlab.hexastudio.net'
+        gitlab_pages['enable'] = false
+        
+        # Memory and process limits
+        unicorn['worker_processes'] = 2
+        sidekiq['max_concurrency'] = 10
+        
+        # Monitoring
+        prometheus_monitoring['enable'] = true
+        
+    ports:
+      - "80:80"
+      - "443:443"
+      - "22:22"
+      - "5050:5050"  # Container registry
+      - "8090:8090"  # GitLab Pages (if enabled)
+    volumes:
+      - gitlab_config:/etc/gitlab
+      - gitlab_logs:/var/log/gitlab
+      - gitlab_data:/var/opt/gitlab
+    networks:
+      - gitlab_network
+    shm_size: '256m'
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+
+volumes:
+  gitlab_config:
+    driver: local
+  gitlab_logs:
+    driver: local
+  gitlab_data:
+    driver: local
+
+networks:
+  gitlab_network:
+    driver: bridge

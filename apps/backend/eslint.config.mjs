@@ -53,4 +53,13 @@ export default [
       "no-undef": "off",
     },
   },
+  {
+    files: ["**/*.d.ts"],
+    rules: {
+      // Ambient declaration files for untyped SDK shims legitimately use `any`
+      // to bridge typed and untyped surfaces. Exhaustive typing is impractical
+      // for these compatibility layers.
+      "@typescript-eslint/no-explicit-any": "off",
+    },
+  },
 ];

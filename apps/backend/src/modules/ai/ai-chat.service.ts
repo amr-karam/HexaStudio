@@ -185,7 +185,7 @@ export class AiChatService {
         stream: true,
       });
     } catch (error) {
-      this.logger.error(`Stream start failed: ${(error as any).message}`);
+      this.logger.error(`Stream start failed: ${(error as Error).message}`);
       yield {
         type: 'error',
         message: error instanceof Error ? error.message : String(error),
@@ -218,7 +218,7 @@ export class AiChatService {
         }
       }
     } catch (error) {
-      this.logger.error(`Stream interrupted: ${(error as any).message}`);
+      this.logger.error(`Stream interrupted: ${(error as Error).message}`);
       yield {
         type: 'error',
         message: error instanceof Error ? error.message : String(error),

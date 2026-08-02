@@ -69,8 +69,8 @@ Message: ${message.message}`;
       });
 
       return response.choices[0]?.message?.content?.trim() || 'AI Assessment completed.';
-    } catch (err: any) {
-      this.logger.warn(`AI Lead assessment skipped: ${err?.message || err}`);
+    } catch (err: unknown) {
+      this.logger.warn(`AI Lead assessment skipped: ${(err as Error).message || err}`);
       return 'AI Assessment unavailable at intake time.';
     }
   }

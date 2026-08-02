@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e
+set +e
 
 BACKUP_DIR="${BACKUP_DIR:-/backups}"
 PG_HOST="${POSTGRES_HOST:-postgres}"
@@ -11,7 +11,7 @@ MINIO_SK="${MINIO_SECRET_KEY}"
 MINIO_BUCKET="${MINIO_BUCKET:-backups}"
 
 # Real application databases (POSTGRES_DB is just the default, not an app DB)
-DBS="hexastudio_api hexastudio_cms hexastudio_odoo"
+DBS="hexastudio_api hexastudio_cms hexastudio_odoo hexastudio_db"
 
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 

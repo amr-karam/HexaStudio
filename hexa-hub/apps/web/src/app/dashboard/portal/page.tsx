@@ -128,7 +128,7 @@ export default function PortalPage() {
       }
     };
     if (token) fetchData();
-  }, [token]);
+  }, [token, api]);
 
   return (
     <div className="p-4 md:p-8 lg:p-10 min-h-screen">

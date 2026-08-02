@@ -54,11 +54,11 @@ export default function ApprovalsPage() {
 
   const api = useCallback(() => axios.create({ baseURL: API_URL, headers: { Authorization: `Bearer ${token}` } }), [token]);
 
-  const fetchApprovals = async () => {
+  const fetchApprovals = useCallback(async () => {
     try { const r = await api().get('/approvals'); setApprovals(r.data); } catch {} finally { setIsLoading(false); }
-  };
+  }, [api]);
 
-  useEffect(() => { if (token) fetchApprovals(); }, [token]);
+  useEffect(() => { if (token) fetchApprovals(); }, [token, fetchApprovals]);
 
   const handleApprove = async (id: string) => {
     await api().put(`/approvals/${id}/approve`);

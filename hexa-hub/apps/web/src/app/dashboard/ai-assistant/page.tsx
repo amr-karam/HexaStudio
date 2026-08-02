@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Bot, User as UserIcon, Sparkles, Loader2, Settings, History, Star } from 'lucide-react';
 import ChatMessage from '@/components/ChatMessage';
 import TypingDots from '@/components/TypingDots';
+import apiClient from '@/lib/api';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -21,7 +22,7 @@ interface AiResponse {
   usage?: { promptTokens: number; completionTokens: number };
 }
 
-// ─── Mock Data ──────────────────────────────────────────────────────────────
+// ─── Suggested Prompts ──────────────────────────────────────────────────────
 
 const SUGGESTED_PROMPTS = [
   'Summarize my active projects',
@@ -32,17 +33,10 @@ const SUGGESTED_PROMPTS = [
   'Generate project timeline',
 ];
 
-const MOCK_HISTORY: Message[] = [
-  { id: '1', role: 'user', content: 'What\'s the status of Project Alpha?', timestamp: '2026-07-28T10:30:00Z' },
-  { id: '2', role: 'assistant', content: 'Project Alpha is currently in progress. Design phase is 75% complete, and development has started. The next milestone is the client review scheduled for August 5th.', timestamp: '2026-07-28T10:30:05Z' },
-  { id: '3', role: 'user', content: 'Summarize the recent activity', timestamp: '2026-07-28T11:15:00Z' },
-  { id: '4', role: 'assistant', content: 'Here are the 5 most recent activities:\n\n1. Invoice #INV-2024-089 was paid ($12,400)\n2. Lead "TechCorp" was converted to client\n3. Task "API Integration" completed by Sarah Chen\n4. Milestone "Design Phase" reached for Project Alpha\n5. New document uploaded: Brand Guidelines v2', timestamp: '2026-07-28T11:15:03Z' },
-];
-
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export default function AiAssistantPage() {
-  const [messages, setMessages] = useState<Message[]>(MOCK_HISTORY);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
@@ -67,7 +61,7 @@ export default function AiAssistantPage() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = useCallback(async () => {
     if (!inputValue.trim() || isSending) return;
 
     const userMessage: Message = {
@@ -81,20 +75,33 @@ export default function AiAssistantPage() {
     setInputValue('');
     setIsSending(true);
 
-    // Simulate AI response
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      // Build conversation context (last 12 messages for the local model)
+      const history = [...messages, userMessage].slice(-12);
+      const { data } = await apiClient.post<{ response: string }>('/ai/chat', {
+        messages: history.map(m => ({ role: m.role, content: m.content })),
+      });
 
-    const aiResponse: Message = {
-      id: (Date.now() + 1).toString(),
-      role: 'assistant',
-      content: `I've processed your request: "${userMessage.content}". Here's what I found...`,
-      timestamp: new Date().toISOString(),
-    };
-
-    setMessages(prev => [...prev, aiResponse]);
-    setIsSending(false);
-    inputRef.current?.focus();
-  };
+      const aiResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: data.response,
+        timestamp: new Date().toISOString(),
+      };
+      setMessages(prev => [...prev, aiResponse]);
+    } catch (error) {
+      const aiResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: `I hit an error reaching the AI service: ${(error as Error).message || 'unknown error'}. Please try again.`,
+        timestamp: new Date().toISOString(),
+      };
+      setMessages(prev => [...prev, aiResponse]);
+    } finally {
+      setIsSending(false);
+      inputRef.current?.focus();
+    }
+  }, [inputValue, isSending, messages]);
 
   const handleSuggestedPrompt = (prompt: string) => {
     setInputValue(prompt);
@@ -106,7 +113,7 @@ export default function AiAssistantPage() {
       e.preventDefault();
       handleSendMessage();
     }
-  }, [inputValue, isSending]);
+  }, [handleSendMessage]);
 
   return (
     <div className="flex flex-col h-full">
@@ -258,7 +265,7 @@ export default function AiAssistantPage() {
               <h2 className="text-sm font-medium text-white">Recent Chats</h2>
             </div>
             <div className="overflow-y-auto">
-              {MOCK_HISTORY.slice().reverse().map((msg, i) => {
+              {messages.slice().reverse().map((msg, i) => {
                 if (msg.role !== 'user') return null;
                 return (
                   <motion.button

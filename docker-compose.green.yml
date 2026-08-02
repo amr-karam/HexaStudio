@@ -1,0 +1,627 @@
+name: hexastudio-green
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+x-restart: &default-restart
+  restart: unless-stopped
+
+services:
+  # ---------------------------------------------------------------------------
+  # Reverse Proxy
+  # ---------------------------------------------------------------------------
+  traefik-green:
+    image: traefik:v2.11-green
+    <<: *default-restart
+    logging: *default-logging
+    command:
+      - --configFile=/etc/traefik/traefik.yml
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      CLOUDFLARE_EMAIL: ${CLOUDFLARE_EMAIL:?CLOUDFLARE_EMAIL is required}
+      CLOUDFLARE_API_KEY: ${CLOUDFLARE_API_KEY:?CLOUDFLARE_API_KEY is required}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./docker/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./docker/traefik/dynamic-green.yml:/etc/traefik/dynamic.yml:ro
+      - traefik_certs:/letsencrypt
+    networks:
+      - web
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.traefik-dashboard.rule=Host(`${TRAEFIK_DASHBOARD_HOST:-traefik.hexastudio.net}`)
+      - traefik.http.routers.traefik-dashboard.service=api@internal
+      - traefik.http.routers.traefik-dashboard.entrypoints=web
+      - traefik.http.routers.traefik-dashboard.middlewares=traefik-auth@file
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8080/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # ---------------------------------------------------------------------------
+  # Cloudflare Tunnel (no public IP required)
+  # ---------------------------------------------------------------------------
+  cloudflared-green:
+    image: cloudflare/cloudflared:latest-green
+    <<: *default-restart
+    logging: *default-logging
+    command: tunnel run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:?CLOUDFLARE_TUNNEL_TOKEN is required}
+    networks:
+      - web
+      - internal
+    healthcheck:
+      test: ["CMD", "pgrep", "cloudflared"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ---------------------------------------------------------------------------
+  # Data Stores (internal network only — no public ports)
+  # ---------------------------------------------------------------------------
+  postgres-green:
+    image: postgres:16-alpine-green
+    <<: *default-restart
+    logging: *default-logging
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-hexastudio}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:-hexastudio}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hexastudio} -d ${POSTGRES_DB:-hexastudio}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-green:
+    image: redis:7-alpine-green
+    <<: *default-restart
+    logging: *default-logging
+    command: redis-server --requirepass ${REDIS_PASSWORD:?REDIS_PASSWORD is required} --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
+  # Object Storage
+  # ---------------------------------------------------------------------------
+  minio-green:
+    image: minio/minio:latest-green
+    <<: *default-restart
+    logging: *default-logging
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-hexastudio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?MINIO_ROOT_PASSWORD is required}
+    volumes:
+      - minio_data:/data
+    networks:
+      - web
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "echo > /dev/tcp/localhost/9000 && exit 0 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    labels:
+      - traefik.enable=true
+      - com.centurylinklabs.watchtower.enable=true
+
+  # ---------------------------------------------------------------------------
+  # Vector Store (Qdrant)
+  # ---------------------------------------------------------------------------
+  qdrant-green:
+    image: qdrant/qdrant:latest-green
+    <<: *default-restart
+    logging: *default-logging
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - internal
+    expose:
+      - "6333"
+      - "6334"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # ---------------------------------------------------------------------------
+  # Applications
+  # ---------------------------------------------------------------------------
+  backend-green:
+    container_name: hexa-backend-green
+    image: hexastudio-backend:green
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    <<: *default-restart
+    logging: *default-logging
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: ${BACKEND_PORT:-4000}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-hexastudio}:${POSTGRES_PASSWORD}@postgres-green:5432/hexastudio_api
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis-green:6379
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,https://hexastudio.net}
+      RATE_LIMIT_TTL: ${RATE_LIMIT_TTL:-60}
+      RATE_LIMIT_MAX: ${RATE_LIMIT_MAX:-100}
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      MINIO_ENDPOINT: minio-green
+      MINIO_PORT: 9000
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-hexastudio}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+      MINIO_USE_SSL: "false"
+      CMS_URL: ${CMS_URL:-http://cms-green:1337}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_HOST: redis-green
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-hexastudio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      ODOO_HOST: ${ODOO_HOST:-odoo-green}
+      ODOO_PORT: ${ODOO_PORT:-8069}
+      ODOO_DB: ${ODOO_DB:-hexastudio_odoo}
+      ODOO_USER: ${ODOO_USER:-admin}
+      ODOO_PASSWORD: ${ODOO_PASSWORD:?ODOO_PASSWORD is required}
+      ODOO_WEBHOOK_SECRET: ${ODOO_WEBHOOK_SECRET:?ODOO_WEBHOOK_SECRET is required}
+      VECTOR_HOST: qdrant-green
+      VECTOR_PORT: 6333
+      # AI / Chat provider — 'local' = LM Studio self-hosted (free, unlimited)
+      AI_CHAT_PROVIDER: ${AI_CHAT_PROVIDER:-local}
+      LM_STUDIO_BASE_URL: ${LM_STUDIO_BASE_URL:-http://host.docker.internal:1234/v1}
+      LM_STUDIO_MODEL: ${LM_STUDIO_MODEL:-google/gemma-4-e4b}
+      LM_STUDIO_FAST_MODEL: ${LM_STUDIO_FAST_MODEL:-}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      postgres-green:
+        condition: service_healthy
+      redis-green:
+        condition: service_healthy
+    networks:
+      - web
+      - internal
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:4000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  frontend-green:
+    container_name: hexa-frontend-green
+    image: hexastudio-frontend:green
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api.hexastudio.net}
+        NEXT_PUBLIC_CMS_URL: ${NEXT_PUBLIC_CMS_URL:-https://cms.hexastudio.net}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://hexastudio.net}
+        NEXT_PUBLIC_SENTRY_DSN: ${NEXT_PUBLIC_SENTRY_DSN:-}
+    <<: *default-restart
+    logging: *default-logging
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      REVALIDATE_SECRET: ${REVALIDATE_SECRET:-}
+      PREVIEW_SECRET: ${PREVIEW_SECRET:-}
+    depends_on:
+      - backend-green
+    networks:
+      - web
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  cms-green:
+    container_name: hexa-cms-green
+    image: hexastudio-cms:green
+    build:
+      context: .
+      dockerfile: apps/cms/Dockerfile
+    <<: *default-restart
+    logging: *default-logging
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      HOST: 0.0.0.0
+      PORT: ${STRAPI_PORT:-1337}
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: postgres-green
+      DATABASE_PORT: 5432
+      DATABASE_NAME: hexastudio_cms
+      DATABASE_USERNAME: ${POSTGRES_USER:-hexastudio}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+      DATABASE_SSL: "false"
+      CMS_URL: ${CMS_URL:-http://cms-green:1337}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_HOST: redis-green
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-hexastudio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-hexastudio}:${POSTGRES_PASSWORD}@postgres-green:5432/hexastudio_cms
+      APP_KEYS: ${STRAPI_APP_KEYS:?STRAPI_APP_KEYS is required}
+      API_TOKEN_SALT: ${STRAPI_API_TOKEN_SALT:?STRAPI_API_TOKEN_SALT is required}
+      ADMIN_JWT_SECRET: ${STRAPI_ADMIN_JWT_SECRET:?STRAPI_ADMIN_JWT_SECRET is required}
+      TRANSFER_TOKEN_SALT: ${STRAPI_TRANSFER_TOKEN_SALT:?STRAPI_TRANSFER_TOKEN_SALT is required}
+      JWT_SECRET: ${STRAPI_JWT_SECRET:?STRAPI_JWT_SECRET is required}
+      CLIENT_URL: ${CLIENT_URL:-https://hexastudio.net}
+      PREVIEW_SECRET: ${PREVIEW_SECRET:-}
+    depends_on:
+      postgres-green:
+        condition: service_healthy
+    volumes:
+      - cms_uploads:/opt/app/public/uploads
+    networks:
+      - web
+      - internal
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:1337/_health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ---------------------------------------------------------------------------
+  # Odoo ERP
+  # ---------------------------------------------------------------------------
+  odoo-green:
+    image: odoo:17.0-green
+    <<: *default-restart
+    logging: *default-logging
+    depends_on:
+      postgres-green:
+        condition: service_healthy
+    environment:
+      HOST: postgres-green
+      PORT: 5432
+      USER: ${POSTGRES_USER:-hexastudio}
+      PASSWORD: ${POSTGRES_PASSWORD}
+      DBNAME: ${ODOO_DB:-hexastudio_odoo}
+      ODOO_MASTER_PASSWORD: ${ODOO_MASTER_PASSWORD:?ODOO_MASTER_PASSWORD must be set}
+    volumes:
+      - odoo_data:/var/lib/odoo
+      - ./docker/odoo/odoo.conf:/etc/odoo/odoo.conf:ro
+      - ./docker/odoo/addons:/mnt/extra-addons:ro
+      - ./docker/odoo/entrypoint.sh:/entrypoint.d/hexa-entrypoint.sh:ro
+    entrypoint: ["/bin/bash", "/entrypoint.d/hexa-entrypoint.sh"]
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+    networks:
+      - web
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c \"import urllib.request; urllib.request.urlopen('http://localhost:8069/web/health')\""]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  # ---------------------------------------------------------------------------
+  # Monitoring
+  # ---------------------------------------------------------------------------
+  redis-exporter-green:
+    image: oliver006/redis_exporter:v1.88.0-green
+    <<: *default-restart
+    logging: *default-logging
+    environment:
+      REDIS_ADDR: redis-green:6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?REDIS_PASSWORD is required}
+      REDIS_EXPORTER_WEB_LISTEN_ADDRESS: ":9121"
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9121/metrics"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  prometheus-green:
+    image: prom/prometheus:v2.54.1-green
+    <<: *default-restart
+    logging: *default-logging
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.enable-lifecycle
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./docker/prometheus/rules:/etc/prometheus/rules:ro
+      - prometheus_data:/prometheus
+    networks:
+      - web
+      - internal
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  alertmanager-green:
+    image: prom/alertmanager:v0.27.0-green
+    <<: *default-restart
+    logging: *default-logging
+    command:
+      - --config.file=/etc/alertmanager/alertmanager.yml
+      - --storage.path=/alertmanager
+    volumes:
+      - ./docker/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - alertmanager_data:/alertmanager
+    networks:
+      - web
+      - internal
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9093/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  blackbox-green:
+    image: prom/blackbox-exporter:v0.25.0-green
+    <<: *default-restart
+    logging: *default-logging
+    command:
+      - --config.file=/etc/blackbox/blackbox.yml
+    volumes:
+      - ./docker/blackbox/blackbox.yml:/etc/blackbox/blackbox.yml:ro
+    networks:
+      - web
+      - internal
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9115/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  grafana-green:
+    image: grafana/grafana:11.3.0-green
+    <<: *default-restart
+    logging: *default-logging
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?GRAFANA_ADMIN_PASSWORD is required}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      CMS_URL: ${CMS_URL:-http://cms-green:1337}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_HOST: redis-green
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-hexastudio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      GF_SERVER_ROOT_URL: https://${GRAFANA_HOST:-grafana.hexastudio.net}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      - prometheus-green
+      - loki-green
+    networks:
+      - web
+      - internal
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  loki-green:
+    image: grafana/loki:3.2.1-green
+    <<: *default-restart
+    logging: *default-logging
+    command: -config.file=/etc/loki/loki-config.yml
+    volumes:
+      - ./docker/loki/loki-config.yml:/etc/loki/loki-config.yml:ro
+      - ./docker/loki/rules:/loki/rules:ro
+      - loki_data:/loki
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3100/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  webhook-green:
+    image: hexa-webhook:green
+    build:
+      context: ./docker/webhook
+    <<: *default-restart
+    logging: *default-logging
+    environment:
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
+      DISCORD_WEBHOOK_URL: ${DISCORD_WEBHOOK_URL:-}
+    networks:
+      - web
+      - internal
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  tempo-green:
+    image: grafana/tempo:2.6.1-green
+    <<: *default-restart
+    logging: *default-logging
+    command:
+      - -config.file=/etc/tempo/tempo.yml
+    volumes:
+      - ./docker/tempo/tempo.yml:/etc/tempo/tempo.yml:ro
+      - tempo_data:/tmp/tempo
+    ports:
+      - "4318:4318"  # OTLP HTTP receiver
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3200/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  promtail-green:
+    image: grafana/promtail:3.2.1-green
+    <<: *default-restart
+    logging: *default-logging
+    command: -config.file=/etc/promtail/promtail-config.yml
+    volumes:
+      - ./docker/loki/promtail-config.yml:/etc/promtail/promtail-config.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - loki-green
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9080/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  node-exporter-green:
+    image: prom/node-exporter:v1.8.2-green
+    <<: *default-restart
+    logging: *default-logging
+    command:
+      - --path.procfs=/host/proc
+      - --path.sysfs=/host/sys
+      - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9100/metrics"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  cadvisor-green:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1-green
+    <<: *default-restart
+    logging: *default-logging
+    privileged: true
+    devices:
+      - /dev/kmsg:/dev/kmsg:rw
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/metrics"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  postgres-exporter-green:
+    image: prometheuscommunity/postgres-exporter:v0.15.0-green
+    <<: *default-restart
+    logging: *default-logging
+    environment:
+      DATA_SOURCE_URI: postgres-green:5432/hexastudio?sslmode=disable
+      DATA_SOURCE_USER: hexastudio
+      DATA_SOURCE_PASS: ${POSTGRES_PASSWORD}
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9187/metrics"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ---------------------------------------------------------------------------
+  # Auto-updates & Backups
+  # ---------------------------------------------------------------------------
+  watchtower-green:
+    image: containrrr/watchtower:latest-green
+    <<: *default-restart
+    logging: *default-logging
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      WATCHTOWER_CLEANUP: "true"
+      WATCHTOWER_SCHEDULE: "0 0 6 * * *"
+      WATCHTOWER_LABEL_ENABLE: "true"
+      DOCKER_API_VERSION: "1.40"
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+    healthcheck:
+      test: ["CMD", "pgrep", "watchtower"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  backup-green:
+    image: postgres:16-alpine-green
+    <<: *default-restart
+    logging: *default-logging
+    entrypoint: /bin/sh
+    command: /scripts/backup.sh
+    environment:
+      POSTGRES_HOST: postgres-green
+      POSTGRES_USER: ${POSTGRES_USER:-hexastudio}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-hexastudio}
+      MINIO_ENDPOINT: minio-green
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-hexastudio}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+      BACKUP_DIR: /backups
+    depends_on:
+      postgres-green:
+        condition: service_healthy
+    volumes:
+      - ./docker/backup/backup.sh:/scripts/backup.sh:ro
+      - backup_data:/backups
+    networks:
+      - web
+      - internal
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "/scripts/backup.sh"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+networks:
+  web:
+    name: hexastudio_web
+  internal:
+    name: hexastudio_internal
+    internal: true
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+  cms_uploads:
+  traefik_certs:
+  prometheus_data:
+  alertmanager_data:
+  grafana_data:
+  loki_data:
+  tempo_data:
+  odoo_data:
+  backup_data:
+  qdrant_data:

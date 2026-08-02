@@ -1,52 +1,28 @@
-# Security Policy
+# 🛡️ HEXA STUDIO — SECURITY GOVERNANCE & ZERO-TRUST POLICY
 
-## Reporting a Vulnerability
+**Version:** 1.0.0  
+**Authority Level:** 6  
+**Scope:** Authentication, Authorization, Database Privacy, Rate Limiting, & Secret Management  
 
-If you discover a security vulnerability within HEXA Studio, please send an email to security@hexastudio.net. All security vulnerabilities will be promptly addressed.
+---
 
-**Please do not report security vulnerabilities through public GitHub issues.**
+## 1. CORE SECURITY DIRECTIVES
 
-## Security Practices
+1. **Never Commit Secrets**: Private keys, database passwords, JWT secrets, or API keys MUST NEVER be committed to Git. All secrets MUST be injected via environment variables (`.env.local` / Docker secrets).
+2. **Internal Network Isolation**: PostgreSQL, Redis, and Qdrant MUST remain strictly on internal Docker networks (`hexastudio_internal`) with 0 public port exposure.
+3. **Server-Side Authorization**: Authentication and role-based access control (`JwtAuthGuard`, `RolesGuard`) MUST be enforced on the NestJS backend. Never rely solely on client UI checks.
+4. **Input Sanitization**: All user inputs on forms and API endpoints MUST be sanitized and validated using Zod / Class-Validator to prevent XSS and SQL/NoSQL injection.
 
-### Authentication & Authorization
-- JWT-based authentication with secure token storage
-- Role-based access control (RBAC) for admin and client portals
-- Session management with automatic expiration
+---
 
-### Data Protection
-- All data encrypted in transit (TLS 1.3)
-- Sensitive data encrypted at rest
-- Environment variables for all secrets and API keys
-- No secrets committed to version control
+## 2. INGRESS & PROXY SECURITY (TRAEFIK V3)
 
-### Infrastructure
-- Automated security scanning in CI/CD
-- Regular dependency updates
-- Docker image scanning
-- Network isolation between services
+- **SSL/TLS Termination**: Traefik v3 handles HTTPS certificate generation via Let's Encrypt / Cloudflare API.
+- **Security Headers**: HSTS (`stsSeconds: 63072000`), `frameDeny: true`, `contentTypeNosniff: true`, and strict CSP policy enforced at edge.
+- **Rate Limiting**: NestJS `ThrottlerGuard` and Traefik `rate-limit` middleware limit requests to 100 req/min per IP.
 
-### API Security
-- Rate limiting on all endpoints
-- Input validation with Zod schemas
-- CORS configuration
-- SQL injection prevention via parameterized queries
+---
 
-## Supported Versions
+## 3. AUDIT & LOGGING
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 1.0.x   | :white_check_mark: |
-| < 1.0   | :x:                |
-
-## Security Updates
-
-Security updates will be released as soon as possible after a vulnerability is confirmed. Updates will be published to the `main` branch and tagged for release.
-
-## Best Practices for Contributors
-
-1. Never commit secrets, API keys, or credentials
-2. Use environment variables for sensitive configuration
-3. Follow secure coding practices
-4. Validate all user inputs
-5. Use parameterized queries for database operations
-6. Keep dependencies up to date
+- Security-relevant events (failed logins, approval changes, administrative updates) MUST emit structured audit logs to Loki / Grafana.

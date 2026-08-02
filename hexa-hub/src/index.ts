@@ -1,0 +1,1 @@
+export { McpBridge } from './src/bridge';

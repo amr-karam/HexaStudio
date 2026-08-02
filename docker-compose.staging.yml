@@ -1,0 +1,551 @@
+name: hexastudio-staging
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+x-restart: &default-restart
+  restart: unless-stopped
+
+services:
+  # ---------------------------------------------------------------------------
+  # Reverse Proxy
+  # ---------------------------------------------------------------------------
+  traefik:
+    image: traefik:v2.11
+    <<: *default-restart
+    logging: *default-logging
+    command:
+      - --configFile=/etc/traefik/traefik.yml
+    ports:
+      - "10080:80"
+      - "10443:443"
+    environment:
+      CLOUDFLARE_EMAIL: ${CLOUDFLARE_EMAIL:?CLOUDFLARE_EMAIL is required}
+      CLOUDFLARE_API_KEY: ${CLOUDFLARE_API_KEY:?CLOUDFLARE_API_KEY is required}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./docker/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./docker/traefik/dynamic-staging.yml:/etc/traefik/dynamic.yml:ro
+      - traefik_certs_staging:/letsencrypt
+    networks:
+      - staging-web
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.traefik-dashboard.rule=Host(`${TRAEFIK_DASHBOARD_HOST:-traefik-staging.hexastudio.net}`)
+      - traefik.http.routers.traefik-dashboard.service=api@internal
+      - traefik.http.routers.traefik-dashboard.entrypoints=web
+      - traefik.http.routers.traefik-dashboard.middlewares=traefik-auth@file
+
+  # ---------------------------------------------------------------------------
+  # Cloudflare Tunnel (no public IP required)
+  # ---------------------------------------------------------------------------
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    <<: *default-restart
+    logging: *default-logging
+    command: tunnel run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN_STAGING:?CLOUDFLARE_TUNNEL_TOKEN_STAGING is required}
+    networks:
+      - staging-web
+      - staging-internal
+
+  # ---------------------------------------------------------------------------
+  # Data Stores (internal network only — no public ports)
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    <<: *default-restart
+    logging: *default-logging
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-hexastudio}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:-hexastudio}
+    volumes:
+      - postgres_data_staging:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - staging-internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hexastudio} -d ${POSTGRES_DB:-hexastudio}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    <<: *default-restart
+    logging: *default-logging
+    command: redis-server --requirepass ${REDIS_PASSWORD:?REDIS_PASSWORD is required} --appendonly yes
+    volumes:
+      - redis_data_staging:/data
+    networks:
+      - staging-internal
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
+  # Object Storage
+  # ---------------------------------------------------------------------------
+  minio:
+    image: minio/minio:latest
+    <<: *default-restart
+    logging: *default-logging
+    command: server /data --console-address ":19001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-hexastudio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?MINIO_ROOT_PASSWORD is required}
+    volumes:
+      - minio_data_staging:/data
+    networks:
+      - staging-web
+      - staging-internal
+    healthcheck:
+      test: ["CMD-SHELL", "echo > /dev/tcp/localhost/9000 && exit 0 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    labels:
+      - traefik.enable=true
+      - com.centurylinklabs.watchtower.enable=true
+
+  minio-init:
+    image: minio/mc:latest
+    depends_on:
+      minio:
+        condition: service_healthy
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-hexastudio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?MINIO_ROOT_PASSWORD is required}
+    entrypoint: /bin/sh
+    command: /scripts/init-buckets.sh
+    volumes:
+      - ./docker/minio/init-buckets.sh:/scripts/init-buckets.sh:ro
+    networks:
+      - staging-internal
+    restart: "no"
+
+  # ---------------------------------------------------------------------------
+  # Vector Store (Qdrant)
+  # ---------------------------------------------------------------------------
+  qdrant:
+    image: qdrant/qdrant:latest
+    <<: *default-restart
+    logging: *default-logging
+    volumes:
+      - qdrant_data_staging:/qdrant/storage
+    networks:
+      - staging-internal
+    expose:
+      - "6333"
+      - "6334"
+
+  # ---------------------------------------------------------------------------
+  # Applications
+  # ---------------------------------------------------------------------------
+  backend:
+    container_name: hexa-backend-staging
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    <<: *default-restart
+    logging: *default-logging
+    environment:
+      NODE_ENV: ${NODE_ENV:-staging}
+      PORT: ${BACKEND_PORT:-14000}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-hexastudio}:${POSTGRES_PASSWORD}@postgres:5432/hexastudio_api
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:13000,https://staging.hexastudio.net}
+      RATE_LIMIT_TTL: ${RATE_LIMIT_TTL:-60}
+      RATE_LIMIT_MAX: ${RATE_LIMIT_MAX:-100}
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: 9000
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-hexastudio}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+      MINIO_USE_SSL: "false"
+      CMS_URL: ${CMS_URL:-http://cms:11337}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_HOST: redis
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-hexastudio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      ODOO_HOST: ${ODOO_HOST:-odoo}
+      ODOO_PORT: ${ODOO_PORT:-18069}
+      ODOO_DB: ${ODOO_DB:-hexastudio_odoo}
+      ODOO_USER: ${ODOO_USER:-admin}
+      ODOO_PASSWORD: ${ODOO_PASSWORD:?ODOO_PASSWORD is required}
+      ODOO_WEBHOOK_SECRET: ${ODOO_WEBHOOK_SECRET:?ODOO_WEBHOOK_SECRET is required}
+      VECTOR_HOST: qdrant
+      VECTOR_PORT: 6333
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - staging-web
+      - staging-internal
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:14000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  frontend:
+    container_name: hexa-frontend-staging
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://api-staging.hexastudio.net}
+        NEXT_PUBLIC_CMS_URL: ${NEXT_PUBLIC_CMS_URL:-http://cms-staging.hexastudio.net}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://staging.hexastudio.net}
+        NEXT_PUBLIC_SENTRY_DSN: ${NEXT_PUBLIC_SENTRY_DSN:-}
+    <<: *default-restart
+    logging: *default-logging
+    environment:
+      NODE_ENV: ${NODE_ENV:-staging}
+      # Sprint 15 P9: on-demand ISR revalidation secret (must match host env)
+      REVALIDATE_SECRET: ${REVALIDATE_SECRET:-}
+      PREVIEW_SECRET: ${PREVIEW_SECRET:-}
+    depends_on:
+      - backend
+    networks:
+      - staging-web
+    ports:
+      - "13000:3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  cms:
+    container_name: hexa-cms-staging
+    build:
+      context: .
+      dockerfile: apps/cms/Dockerfile
+    <<: *default-restart
+    logging: *default-logging
+    environment:
+      NODE_ENV: ${NODE_ENV:-staging}
+      HOST: 0.0.0.0
+      PORT: ${STRAPI_PORT:-11337}
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: hexastudio_cms
+      DATABASE_USERNAME: ${POSTGRES_USER:-hexastudio}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+      DATABASE_SSL: "false"
+      CMS_URL: ${CMS_URL:-http://cms:11337}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_HOST: redis
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-hexastudio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-hexastudio}:${POSTGRES_PASSWORD}@postgres:5432/hexastudio_cms
+      APP_KEYS: ${STRAPI_APP_KEYS:?STRAPI_APP_KEYS is required}
+      API_TOKEN_SALT: ${STRAPI_API_TOKEN_SALT:?STRAPI_API_TOKEN_SALT is required}
+      ADMIN_JWT_SECRET: ${STRAPI_ADMIN_JWT_SECRET:?STRAPI_ADMIN_JWT_SECRET is required}
+      TRANSFER_TOKEN_SALT: ${STRAPI_TRANSFER_TOKEN_SALT:?STRAPI_TRANSFER_TOKEN_SALT is required}
+      JWT_SECRET: ${STRAPI_JWT_SECRET:?STRAPI_JWT_SECRET is required}
+      CLIENT_URL: ${CLIENT_URL:-https://staging.hexastudio.net}
+      PREVIEW_SECRET: ${PREVIEW_SECRET:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - cms_uploads_staging:/opt/app/public/uploads
+    networks:
+      - staging-web
+      - staging-internal
+    ports:
+      - "11337:1337"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:11337/_health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ---------------------------------------------------------------------------
+  # Odoo ERP
+  # ---------------------------------------------------------------------------
+  odoo:
+    image: odoo:17.0
+    <<: *default-restart
+    logging: *default-logging
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      HOST: postgres
+      PORT: 5432
+      USER: ${POSTGRES_USER:-hexastudio}
+      PASSWORD: ${POSTGRES_PASSWORD}
+      DBNAME: ${ODOO_DB:-hexastudio_odoo}
+      ODOO_MASTER_PASSWORD: ${ODOO_MASTER_PASSWORD:?ODOO_MASTER_PASSWORD must be set}
+    volumes:
+      - odoo_data_staging:/var/lib/odoo
+      - ./docker/odoo/odoo.conf:/etc/odoo/odoo.conf:ro
+      - ./docker/odoo/addons:/mnt/extra-addons:ro
+      - ./docker/odoo/entrypoint.sh:/entrypoint.d/hexa-entrypoint.sh:ro
+    entrypoint: ["/bin/bash", "/entrypoint.d/hexa-entrypoint.sh"]
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+    networks:
+      - staging-web
+      - staging-internal
+    ports:
+      - "18069:8069"
+
+  # ---------------------------------------------------------------------------
+  # Monitoring
+  # ---------------------------------------------------------------------------
+  redis-exporter:
+    image: oliver006/redis_exporter:v1.88.0
+    <<: *default-restart
+    logging: *default-logging
+    environment:
+      REDIS_ADDR: redis:6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?REDIS_PASSWORD is required}
+      REDIS_EXPORTER_WEB_LISTEN_ADDRESS: ":9121"
+    networks:
+      - staging-internal
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    <<: *default-restart
+    logging: *default-logging
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.enable-lifecycle
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./docker/prometheus/rules:/etc/prometheus/rules:ro
+      - prometheus_data_staging:/prometheus
+    networks:
+      - staging-web
+      - staging-internal
+
+  alertmanager:
+    image: prom/alertmanager:v0.27.0
+    <<: *default-restart
+    logging: *default-logging
+    command:
+      - --config.file=/etc/alertmanager/alertmanager.yml
+      - --storage.path=/alertmanager
+    volumes:
+      - ./docker/alertmanager/alertmanager-staging.yml:/etc/alertmanager/alertmanager.yml:ro
+      - alertmanager_data_staging:/alertmanager
+    networks:
+      - staging-web
+      - staging-internal
+
+  blackbox:
+    image: prom/blackbox-exporter:v0.25.0
+    <<: *default-restart
+    logging: *default-logging
+    command:
+      - --config.file=/etc/blackbox/blackbox.yml
+    volumes:
+      - ./docker/blackbox/blackbox.yml:/etc/blackbox/blackbox.yml:ro
+    networks:
+      - staging-web
+      - staging-internal
+
+  grafana:
+    image: grafana/grafana:11.3.0
+    <<: *default-restart
+    logging: *default-logging
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?GRAFANA_ADMIN_PASSWORD is required}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      CMS_URL: ${CMS_URL:-http://cms:11337}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_HOST: redis
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-hexastudio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      GF_SERVER_ROOT_URL: https://${GRAFANA_HOST:-grafana-staging.hexastudio.net}
+    volumes:
+      - grafana_data_staging:/var/lib/grafana
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      - prometheus
+      - loki
+    networks:
+      - staging-web
+      - staging-internal
+    ports:
+      - "13001:3000"
+
+  loki:
+    image: grafana/loki:3.2.1
+    <<: *default-restart
+    logging: *default-logging
+    command: -config.file=/etc/loki/loki-config.yml
+    volumes:
+      - ./docker/loki/loki-config.yml:/etc/loki/loki-config.yml:ro
+      - ./docker/loki/rules:/loki/rules:ro
+      - loki_data_staging:/loki
+    networks:
+      - staging-internal
+
+  webhook:
+    image: hexa-webhook:local
+    build:
+      context: ./docker/webhook
+    <<: *default-restart
+    logging: *default-logging
+    environment:
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
+      DISCORD_WEBHOOK_URL: ${DISCORD_WEBHOOK_URL:-}
+    networks:
+      - staging-web
+      - staging-internal
+
+  tempo:
+    image: grafana/tempo:2.6.1
+    <<: *default-restart
+    logging: *default-logging
+    command:
+      - -config.file=/etc/tempo/tempo.yml
+    volumes:
+      - ./docker/tempo/tempo.yml:/etc/tempo/tempo.yml:ro
+      - tempo_data_staging:/tmp/tempo
+    ports:
+      - "14318:4318"  # OTLP HTTP receiver
+    networks:
+      - staging-internal
+
+  promtail:
+    image: grafana/promtail:3.2.1
+    <<: *default-restart
+    logging: *default-logging
+    command: -config.file=/etc/promtail/promtail-config.yml
+    volumes:
+      - ./docker/loki/promtail-config.yml:/etc/promtail/promtail-config.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - loki
+    networks:
+      - staging-internal
+
+  node-exporter:
+    image: prom/node-exporter:v1.8.2
+    <<: *default-restart
+    logging: *default-logging
+    command:
+      - --path.procfs=/host/proc
+      - --path.sysfs=/host/sys
+      - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+    networks:
+      - staging-internal
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    <<: *default-restart
+    logging: *default-logging
+    privileged: true
+    devices:
+      - /dev/kmsg:/dev/kmsg:rw
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    networks:
+      - staging-internal
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.15.0
+    <<: *default-restart
+    logging: *default-logging
+    environment:
+      DATA_SOURCE_URI: postgres:5432/hexastudio?sslmode=disable
+      DATA_SOURCE_USER: hexastudio
+      DATA_SOURCE_PASS: ${POSTGRES_PASSWORD}
+    networks:
+      - staging-internal
+
+  # ---------------------------------------------------------------------------
+  # Auto-updates & Backups
+  # ---------------------------------------------------------------------------
+  watchtower:
+    image: containrrr/watchtower:latest
+    <<: *default-restart
+    logging: *default-logging
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      WATCHTOWER_CLEANUP: "true"
+      WATCHTOWER_SCHEDULE: "0 0 6 * * *"
+      WATCHTOWER_LABEL_ENABLE: "true"
+      DOCKER_API_VERSION: "1.40"
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+
+  backup:
+    image: postgres:16-alpine
+    <<: *default-restart
+    logging: *default-logging
+    entrypoint: /bin/sh
+    command: /scripts/backup.sh
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: ${POSTGRES_USER:-hexastudio}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-hexastudio}
+      MINIO_ENDPOINT: minio
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-hexastudio}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+      BACKUP_DIR: /backups
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./docker/backup/backup.sh:/scripts/backup.sh:ro
+      - backup_data_staging:/backups
+    networks:
+      - staging-web
+      - staging-internal
+
+networks:
+  staging-web:
+    name: hexa-staging-net
+  staging-internal:
+    name: hexa-staging-internal
+    internal: true
+
+volumes:
+  postgres_data_staging:
+  redis_data_staging:
+  minio_data_staging:
+  cms_uploads_staging:
+  traefik_certs_staging:
+  prometheus_data_staging:
+  alertmanager_data_staging:
+  grafana_data_staging:
+  loki_data_staging:
+  tempo_data_staging:
+  odoo_data_staging:
+  backup_data_staging:
+  qdrant_data_staging:
