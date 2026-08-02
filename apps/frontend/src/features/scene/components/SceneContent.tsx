@@ -6,6 +6,8 @@ import { BoxGeometry, Color, CylinderGeometry, InstancedMesh, Matrix4, MeshPhysi
 import { ArchitecturalModel } from './ArchitecturalModel';
 import { Hotspot } from './Hotspot';
 import { ProjectHotspot } from '@hexastudio/types';
+import { useDesignerStore } from '../store/designer-store';
+import { MATERIAL_PRESETS, MaterialPresetConfig } from '../config/material-presets';
 
 interface SceneContentProps {
   projectModelUrl?: string;
@@ -51,7 +53,7 @@ const GLASS_PANELS: Array<[number, number, number]> = [
   [-1.2, 1.4, -0.6],
 ];
 
-function ProceduralArchitecture({ accent }: { accent: string }) {
+function ProceduralArchitecture({ accent, materialPreset }: { accent: string; materialPreset: MaterialPresetConfig }) {
   // Optimization: Use InstancedMesh for repetitive elements to reduce draw calls.
   // Each instanced mesh is a single draw call regardless of instance count.
 
@@ -197,7 +199,7 @@ function ProceduralArchitecture({ accent }: { accent: string }) {
           />
         </mesh>
 
-        {/* Main volume — beveled dark-metal pavilion body. */}
+        {/* Main volume — beveled pavilion body (designer material preset). */}
         <RoundedBox
           args={[3, 2, 2]}
           radius={0.08}
@@ -209,16 +211,16 @@ function ProceduralArchitecture({ accent }: { accent: string }) {
           position={[0, 1.4, 0]}
         >
           <meshPhysicalMaterial
-            color="#0f0f1a"
-            roughness={0.15}
-            metalness={0.9}
-            clearcoat={1}
+            color={materialPreset.color}
+            roughness={materialPreset.roughness}
+            metalness={materialPreset.metalness}
+            clearcoat={materialPreset.clearcoat}
             clearcoatRoughness={0.1}
-            envMapIntensity={1.2}
+            envMapIntensity={materialPreset.envMapIntensity}
           />
         </RoundedBox>
 
-        {/* Floating cantilever element — offset, hovering above. */}
+        {/* Floating cantilever element — offset, hovering above (designer material preset). */}
         <RoundedBox
           args={[2.6, 0.2, 1.8]}
           radius={0.05}
@@ -230,12 +232,12 @@ function ProceduralArchitecture({ accent }: { accent: string }) {
           position={[-0.8, 3.05, 0.4]}
         >
           <meshPhysicalMaterial
-            color="#0f0f1a"
-            roughness={0.15}
-            metalness={0.9}
-            clearcoat={1}
+            color={materialPreset.color}
+            roughness={materialPreset.roughness}
+            metalness={materialPreset.metalness}
+            clearcoat={materialPreset.clearcoat}
             clearcoatRoughness={0.1}
-            envMapIntensity={1.4}
+            envMapIntensity={materialPreset.envMapIntensity}
           />
         </RoundedBox>
 
@@ -272,13 +274,15 @@ export const SceneContent = ({
   const progress = milestones && milestones.total > 0
     ? Math.round((milestones.completed / milestones.total) * 100)
     : null;
+  const activeMaterial = useDesignerStore((state) => state.activeMaterial);
+  const materialPreset = MATERIAL_PRESETS[activeMaterial];
 
   return (
     <group>
       {projectModelUrl ? (
-        <ArchitecturalModel url={projectModelUrl} />
+        <ArchitecturalModel url={projectModelUrl} materialPreset={materialPreset} />
       ) : (
-        <ProceduralArchitecture accent={accent} />
+        <ProceduralArchitecture accent={accent} materialPreset={materialPreset} />
       )}
 
       {hotspots.map((hotspot) => (

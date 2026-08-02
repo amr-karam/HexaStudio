@@ -8,6 +8,7 @@ import { useAssetLoader } from '@/features/scene/hooks/useAssetLoader';
 import { useCameraStore } from '../store/camera-store';
 import { useQualityTier, QualityLevel } from '@/providers/quality-provider';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { MATERIAL_PRESETS, MaterialPresetConfig } from '../config/material-presets';
 
 /* -------------------------------------------------------------------------- */
 /*  Constants                                                                  */
@@ -24,20 +25,48 @@ const LOD_FAR = 20;
 const LOD_MID = 10;
 
 /* -------------------------------------------------------------------------- */
-/*  Material presets per quality level                                         */
+/*  LOD factors — layered on top of the designer material preset               */
 /* -------------------------------------------------------------------------- */
 
-interface MaterialPreset {
+/**
+ * Quality/distance multipliers applied to the active material preset
+ * (color + metalness stay fixed; surface response degrades with distance).
+ * Lower tiers sacrifice reflections/clearcoat fidelity and raise roughness to
+ * hide LOD pop-in, while high tier preserves the full preset appearance.
+ */
+interface LODFactors {
   clearcoat: number;
   roughness: number;
   envMapIntensity: number;
 }
 
-const LOD_PRESETS: Record<QualityLevel, MaterialPreset> = {
-  low: { clearcoat: 0, roughness: 0.5, envMapIntensity: 0.5 },
-  medium: { clearcoat: 0.5, roughness: 0.3, envMapIntensity: 1.0 },
-  high: { clearcoat: 1, roughness: 0.1, envMapIntensity: 1.5 },
+const LOD_FACTORS: Record<QualityLevel, LODFactors> = {
+  low: { clearcoat: 0, roughness: 1.8, envMapIntensity: 0.4 },
+  medium: { clearcoat: 0.5, roughness: 1.2, envMapIntensity: 0.8 },
+  high: { clearcoat: 1, roughness: 1, envMapIntensity: 1.1 },
 };
+
+/** Distance fallbacks (applied when the camera pulls back). */
+const FAR_FACTORS: LODFactors = { clearcoat: 0, roughness: 1.8, envMapIntensity: 0.3 };
+const MID_FACTORS: LODFactors = { clearcoat: 0.4, roughness: 1.4, envMapIntensity: 0.6 };
+
+/**
+ * Applies the designer material preset to a physical material, scaled by the
+ * active LOD factors. `color` and `metalness` are preset-fixed; the surface
+ * response fields blend preset base values with the LOD multipliers.
+ */
+function applyLODMaterial(
+  material: MeshPhysicalMaterial,
+  preset: MaterialPresetConfig,
+  factors: LODFactors,
+): void {
+  material.color.set(preset.color);
+  material.metalness = preset.metalness;
+  material.roughness = Math.min(1, Math.max(0, preset.roughness * factors.roughness));
+  material.clearcoat = Math.min(1, Math.max(0, preset.clearcoat * factors.clearcoat));
+  material.envMapIntensity = preset.envMapIntensity * factors.envMapIntensity;
+  material.needsUpdate = true;
+}
 
 /* -------------------------------------------------------------------------- */
 /*  Props                                                                      */
@@ -48,6 +77,8 @@ interface ModelProps {
   position?: [number, number, number];
   scale?: number;
   paused?: boolean;
+  /** Designer-mode material preset; falls back to obsidian marble. */
+  materialPreset?: MaterialPresetConfig;
 }
 
 /**
@@ -61,7 +92,7 @@ interface ModelProps {
  * 4. All per-frame rotation uses delta time.
  * 5. Reduced motion: immediate final state, no entrance animation.
  */
-export const ArchitecturalModel = ({ url, position = [0, 0, 0], scale = 1, paused = false }: ModelProps) => {
+export const ArchitecturalModel = ({ url, position = [0, 0, 0], scale = 1, paused = false, materialPreset }: ModelProps) => {
   const { model, animations } = useAssetLoader(url);
   const groupRef = useRef<Group>(null);
   const { isTransitioning } = useCameraStore();
@@ -73,6 +104,10 @@ export const ArchitecturalModel = ({ url, position = [0, 0, 0], scale = 1, pause
   const ctxRef = useRef<gsap.Context | null>(null);
   const mixerRef = useRef<AnimationMixer | null>(null);
   const actionRef = useRef<AnimationAction | null>(null);
+
+  // Designer material preset — falls back to the default surface when used
+  // standalone (outside SceneContent). Identity-stable record reference.
+  const preset = materialPreset ?? MATERIAL_PRESETS.obsidian_marble;
 
   // ─── AnimationMixer setup ───────────────────────────────────────────────
   useEffect(() => {
@@ -146,19 +181,21 @@ export const ArchitecturalModel = ({ url, position = [0, 0, 0], scale = 1, pause
     };
   }, [model, scale, reducedMotion]); // NOT level — quality changes don't re-trigger entrance
 
-  // ─── Quality-based material adjustments (no disposal) ───────────────────
+  // ─── Designer material preset + quality-based LOD adjustments ──────────
+  // Preset switches and quality changes both re-apply the surface response.
+  // The distance guard is reset so the per-frame pass re-evaluates instantly
+  // after a change instead of waiting for the camera to move.
   useEffect(() => {
     if (!model) return;
 
-    const preset = LOD_PRESETS[level];
+    const factors = LOD_FACTORS[level];
+    lastDistanceRef.current = 0;
     model.traverse((child: Object3D) => {
       if (child instanceof Mesh && child.material instanceof MeshPhysicalMaterial) {
-        child.material.clearcoat = preset.clearcoat;
-        child.material.roughness = preset.roughness;
-        child.material.envMapIntensity = preset.envMapIntensity;
+        applyLODMaterial(child.material, preset, factors);
       }
     });
-  }, [model, level]);
+  }, [model, level, preset]);
 
   // ─── Per-frame rotation (delta-based) + distance LOD + mixer update ─────
   useFrame((_, delta) => {
@@ -181,23 +218,15 @@ export const ArchitecturalModel = ({ url, position = [0, 0, 0], scale = 1, pause
     if (Math.abs(distance - lastDistanceRef.current) < 2) return; // Avoid frequent updates.
     lastDistanceRef.current = distance;
 
-    const farPreset = LOD_PRESETS.low;
-    const midPreset = LOD_PRESETS.medium;
-    const closePreset = LOD_PRESETS[level];
-
-    const preset = distance > LOD_FAR
-      ? farPreset
+    const factors = distance > LOD_FAR
+      ? FAR_FACTORS
       : distance > LOD_MID
-        ? midPreset
-        : closePreset;
+        ? MID_FACTORS
+        : LOD_FACTORS[level];
 
     model.traverse((child: Object3D) => {
       if (child instanceof Mesh && child.material instanceof MeshPhysicalMaterial) {
-        const mat = child.material;
-        mat.clearcoat = preset.clearcoat;
-        mat.roughness = preset.roughness;
-        mat.envMapIntensity = preset.envMapIntensity;
-        mat.needsUpdate = true;
+        applyLODMaterial(child.material, preset, factors);
       }
     });
   });

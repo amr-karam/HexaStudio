@@ -81,15 +81,23 @@ All keys from `C:\Users\amrmo\OneDrive\Desktop\API` have been populated in:
 
 ## 5. Active Sprint: S-021 — Autonomous Agent Studio (v2.0.0)
 
-**S-021 P0 — Redis Agent Memory + Autonomous Tool Execution (COMPLETE, Aug 2 2026):**
-- [x] `AgentMemoryService` — per-persona/session Redis conversation history (list, 40 msgs, 24h TTL) + long-term facts (hash, 7d TTL); `remember`/`recall`/`forget`/`clear` + `appendMany`
+**S-021 P0 — Redis Agent Memory + Autonomous Tool Execution (COMPLETE, Aug 2 2026):**- [x] `AgentMemoryService` — per-persona/session Redis conversation history (list, 40 msgs, 24h TTL) + long-term facts (hash, 7d TTL); `remember`/`recall`/`forget`/`clear` + `appendMany`
 - [x] `AgentsService.chat()` — history hydration, user/assistant/tool message persistence, resilient per-tool execution (one tool failure no longer aborts the loop), `sessionId` support
 - [x] `DELETE /agents/memory` endpoint + `sessionId`/`persona` on chat DTO
 - [x] Backend gates: lint 0/0, typecheck 0 errors, **330/330 tests**
 - [x] Docs migration (ADR-011): `HEXA-Vision-Playbook/` → `docs/<area>/` (370 renames, 12 new area manifests, all cross-refs rewritten, link integrity verified)
 
+**S-021 P1 — Voice-to-3D (COMPLETE, Aug 2 2026):**
+- [x] Backend `SpatialSynthesisService` + `SpatialBriefSchema` (zod): text prompt → brief `{atmosphere, recommendedLighting, recommendedMaterial, colorPalette, designRationale}` via `StructuredOutputService`; voice path transcribes via `VoiceService` then synthesizes
+- [x] `POST /api/v1/ai/spatial-synthesis` (text) + `POST /api/v1/ai/spatial-synthesis/voice` (audio → `{transcription, brief}`) — JWT-guarded, class-validator DTOs, Swagger; wired into `AIModule` (previously the frontend proxy target did NOT exist and silently fell back to keyword heuristics)
+- [x] Frontend `lighting-presets.ts` + `material-presets.ts` config (single source of truth for all 4 lighting + 4 material presets) + unit tests (22 tests)
+- [x] R3F scene now consumes store presets: `SceneLightingRig` in `ExperienceCanvas` (ambient/key/fill/rim lights + Environment from preset), `SceneContent` applies material preset to procedural architecture, `ArchitecturalModel` merges preset into LOD factor pipeline — preset changes render live
+- [x] Voice recorder in `DesignerModeConfigurator` AI tab (MediaRecorder → webm base64, ARIA-correct, mic released on stop/cancel/unmount) + Next proxy `voice/route.ts` (validates, forwards, 502 degrade)
+- [x] Backend gates: lint 0/0, typecheck 0, **335/335 tests**; Frontend gates: lint 0/0, typecheck 0, **205/207** (2 pre-existing `Navbar.spec.tsx` mobile-menu failures, untouched)
+
+**Known gap (pre-existing, documented):** all frontend BFF proxies (`/api/...` Next routes) call JWT-guarded NestJS AI endpoints without an `Authorization` header — so the live AI synthesis path currently 401s and degrades to the local keyword fallback. Consistent with every existing AI proxy (copilot, multimodal, agents). Wiring real auth in the proxies is a follow-up (sprint debt).
+
 **S-021 Roadmap:**
-- [ ] P1 — Voice-to-3D (Gemini audio → Three.js/R3F scene params)
 - [ ] P2 — Live Odoo sync to GitLab prod server (`19.16.1.100` — currently unreachable)
 
 ---
