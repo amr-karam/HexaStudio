@@ -15,6 +15,7 @@ This directory contains Architecture Decision Records for HEXA Vision.
 | [ADR-007](007-opentelemetry-tracing.md) | OpenTelemetry + Grafana Tempo for Distributed Tracing | Accepted |
 | [ADR-008](008-request-id-propagation.md) | Request ID Propagation for End-to-End Traceability | Accepted |
 | [ADR-009](009-enterprise-governance-framework.md) | Enterprise Architecture Governance Framework | Accepted |
+| [ADR-010](010-operating-model.md) | AI-Agent Operating Model (GOVERNANCE → ORCHESTRATOR → ARCHITECT/BUILDER/REVIEWER → GitLab → CI/CD → Staging → Production) | Accepted |
 
 ## Creating New ADRs
 
