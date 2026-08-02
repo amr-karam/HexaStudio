@@ -86,7 +86,7 @@ services:
     image: getmeili/meilisearch:v1.12
     container_name: hexa-meilisearch
     environment:
-      MEILI_MASTER_KEY: ${MEILISEARCH_MASTER_KEY:-masterKey}
+      MEILI_MASTER_KEY: ${MEILISEARCH_MASTER_KEY:?MEILISEARCH_MASTER_KEY is required}
       MEILI_ENV: development
     volumes:
       - meilisearch_data:/meili_data
@@ -254,7 +254,7 @@ services:
     image: grafana/grafana:latest
     container_name: hexa-grafana
     environment:
-      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:?GRAFANA_PASSWORD is required}
     volumes:
       - grafana_data:/var/lib/grafana
     networks:
