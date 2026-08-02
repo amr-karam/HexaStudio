@@ -1,9 +1,9 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** August 2, 2026 — 04:45 UTC+3
-**Version:** 2.1.0
+**Last Updated:** August 2, 2026 — 08:05 UTC+3
+**Version:** 2.1.1
 **Authority Level:** 13 (Production)
-**Current Phase:** Production-Ready — Odoo-First Architecture + Workflow Automation
+**Current Phase:** Production-Ready — Odoo-First Architecture + Workflow Automation (DEPLOYED)
 
 ---
 
@@ -153,3 +153,35 @@ All keys from `C:\Users\amrmo\OneDrive\Desktop\API` have been populated in:
 ### Remaining Pre-existing Debt (not introduced by this milestone)
 - Backend `src/**` lint: 78 pre-existing `no-explicit-any` errors in untouched files
 - Frontend: 2 Navbar tests failing due to uncommitted `Navbar.tsx` / `NavbarMobileMenu.tsx` WIP in the working tree (mobile menu no longer renders `role="dialog"`)
+
+---
+
+## 7. Production Deployment — Odoo-First Milestone (August 2, 2026) ✅ LIVE
+
+**Deployed to `19.16.1.100`** (live dir `/home/hexa/hexastudio`, `SOT=blue`, server HEAD `21f7247`)
+
+### Incident: Backend bootstrap crash (2 sequential root causes, both fixed)
+
+1. **DI crash (commit `6283893c`)** — `RealtimeModule` did not import `AIModule`, so `RealtimeGateway` could not resolve `TransformReasoningService`.
+   - Fixed: `realtime.module.ts` imports `forwardRef(() => AIModule)`; `projects.module.ts` ↔ `odoo.module.ts` ↔ `realtime.module.ts` edges of the new 5-module cycle (`Realtime→AI→Vector→Projects→Odoo→Realtime`) forwardRef'd, consistent with the existing 3-way cycle.
+
+2. **ToolRegistry `HttpAdapterHost.listen$` getter crash (commit `21f7247e`)** — surfaced only after fix #1 let the app boot further. `ToolRegistryService.onModuleInit` read `prototype[methodName]` for **every own property** of every provider; Nest's internal `HttpAdapterHost` exposes a `listen$` **getter** that throws (`this._listen$` undefined) when touched during init.
+   - Fixed: use `Object.getOwnPropertyDescriptor(prototype, methodName)` and skip non-function **data** descriptors — accessors (getters/setters) are never invoked.
+
+### Verification (production, live)
+| Check | Result |
+|---|---|
+| `hexa-backend-blue` | `Up (healthy)`, `Restarts=0` |
+| `GET /api/health` | ✅ `200` — `{"status":"ok","dependencies":{"odoo":"ok"}}` |
+| `GET /api/v1/health`, `/api/v1/projects` | ✅ `200` |
+| `GET /api/workflows` | ✅ `401` (JWT guard active — expected) |
+| Public `https://api.hexastudio.net/api/health` | ✅ `200` via Traefik |
+| Public `https://hexastudio.net` | ✅ `200` |
+| Odoo reachability from backend (`odoo:8069`) | ✅ `200` |
+| Local backend suite | ✅ `323/323` tests, `tsc --noEmit` 0 errors, `nest build` clean |
+
+### Known non-blocking infra/data items (graceful fallbacks, not crashes)
+- Odoo `project.task` lacks `planned_hours` field → `DeltaSyncService` logs `Invalid field 'planned_hours'` and continues (batch sync: 6 records / 5 entities, 1 error)
+- `it@hexastudio.net` lacks Odoo `project.project` create permission → `StrapiProjectSyncService` logs permission error, degrades gracefully
+- `WorkflowSeeder` Redis `ERR invalid expire time in 'set'` — seeder fails, workflows still registered via `WorkflowEngineService`
+- Server `docker-compose.staging.yml` was stale (pre-staging names); backed up to `/tmp/docker-compose.staging.yml.server-bak`, replaced by committed `fef36f7` staging variant
