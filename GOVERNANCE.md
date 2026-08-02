@@ -313,6 +313,32 @@ Agent task instructions
 
 Higher-level rules override lower-level instructions.
 
+### Operating Model
+
+Work flows through the AI-agent operating hierarchy (see `docs/adr/010-operating-model.md`):
+
+```text
+GOVERNANCE.md
+        ↓
+ORCHESTRATOR
+        ↓
+ARCHITECT | BUILDER | REVIEWER
+        ↓
+GitLab Merge Request
+        ↓
+CI/CD
+        ↓
+Staging
+        ↓
+Production
+```
+
+- **ORCHESTRATOR** coordinates: decompose → parallel dispatch → sequential chains → quality gate → consolidate.
+- **ARCHITECT** owns architecture integrity and ADRs.
+- **BUILDER** leads implementation across Frontend / Backend / CMS / Three.js.
+- **REVIEWER** gates on QA / Security / Performance / SEO before merge.
+- Role definitions live in `.ai/agents/`; orchestration prompts in `.opencode/prompts/`.
+
 If a conflict is discovered:
 
 1. Do not silently choose.
@@ -326,6 +352,8 @@ If a conflict is discovered:
 - Architecture Decision Records
 - ISO/IEC/IEEE 42010
 - GitLab Code Review / Merge Request practices
+- `docs/adr/010-operating-model.md` — AI-Agent Operating Model
+- `.ai/agents/*.md` — Agent role definitions
 
 ---
 
@@ -1771,11 +1799,29 @@ Documentation must be:
 
 Outdated documentation is technical debt.
 
+### Documentation Manifest
+
+GOVERNANCE.md is the manifest for the documentation tree. Each governance section maps to a `docs/<area>/` folder containing a README manifest that points to the canonical playbook content:
+
+| Governance area | Manifest |
+|-----------------|----------|
+| Architecture | `docs/architecture/README.md` |
+| Decisions (ADR) | `docs/adr/README.md` |
+| Product | `docs/product/README.md` |
+| Design | `docs/design/README.md` |
+| Engineering | `docs/engineering/README.md` |
+| Security | `docs/security/README.md` |
+| Performance | `docs/performance/README.md` |
+| Accessibility | `docs/accessibility/README.md` |
+| SEO | `docs/seo/README.md` |
+| DevOps | `docs/devops/README.md` |
+
 ### References
 
 - GitLab Documentation
 - ISO/IEC/IEEE 12207
 - Architecture Decision Records
+- `docs/<area>/README.md` — documentation manifests
 
 ---
 

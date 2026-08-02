@@ -6,6 +6,12 @@
 
 Elevate the HEXA Studio platform into an autonomous studio operating system. Expand the Multi-Agent Executive Studio (`/portal/agents`) with advanced tool execution (Database queries, MinIO asset generation, Odoo CRM sync), introduce voice-to-3D architectural model prompting, and establish automated performance & visual regression testing in CI/CD.
 
+### S-021 Foundation Commit (2026-08-02)
+- **Commit:** `fef36f7f` — 195 files, 25939 insertions
+- **Quality gates:** Backend ✅ (lint 0, typecheck 0, 323/323 tests), Frontend ✅ (lint 0, typecheck 0, 177/179 tests — 2 pre-existing Navbar failures)
+- **Key deliverables committed:** Workflow engine, ToolRegistryService, GatekeeperService, SecurityThrottlerFilter, Odoo sync expansion (ConflictResolutionService, DeltaSyncService, OdooSyncController), agent tool registry with decorators, portal API refactor
+- **Fixes applied:** Frontend api.ts duplicate fragment (syntax error), backend `as any` → `as Error` batch fix, tool-registry `any` → `unknown`, contact.service.ts catch typing, `.d.ts` eslint override for ambient declarations
+
 ---
 
 # PREVIOUS SPRINT: S-020 — AI MULTIMODAL & APP STORE RELEASE
