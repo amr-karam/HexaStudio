@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { OdooService } from './odoo.service';
@@ -20,7 +20,7 @@ import { StrapiWebhookController } from './strapi-webhook.controller';
 import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  imports: [ConfigModule, ScheduleModule.forRoot(), RealtimeModule, StorageModule, HttpModule],
+  imports: [ConfigModule, ScheduleModule.forRoot(), forwardRef(() => RealtimeModule), StorageModule, HttpModule],
   controllers: [
     OdooWebhookController,
     OdooApiController,
