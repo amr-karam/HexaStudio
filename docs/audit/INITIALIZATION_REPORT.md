@@ -68,7 +68,7 @@ No findings fabricated; all version claims re-checked from source files.
 
 ### PHASE 10 — SECURITY (✅ PASS)
 - `docs/security/` = `docs/security/SECURITY_BASELINE.md` (restored §1/§8 → pointers), new canonical `docs/security/THREAT_MODEL.md` + `docs/security/INCIDENT_RESPONSE.md` (consolidated, no duplication), `docs/security/SECURITY_STANDARDS.md`, `docs/security/SECURITY.md`.
-- Actionable finding documented: Grafana default password fallback (`gitlab-docker-compose.full.yml:211`).
+- **Hardcoded default secrets remediated:** 5 fallbacks removed (`GF_SECURITY_ADMIN_PASSWORD:-admin@2024`, `SENTRY_DB_PASSWORD:-sentry_password`, `SENTRY_REDIS_PASSWORD:-sentry_redis_password` in `gitlab-docker-compose.full.yml`; `MEILI_MASTER_KEY:-masterKey`, `GRAFANA_PASSWORD:-admin` in `docker-compose.yml`) → required-variable form; `.env.example` updated; YAML validity re-verified.
 - Secret scan on S-021 diff: clean.
 
 ### PHASE 11 — PERFORMANCE (✅ PASS)
@@ -110,7 +110,7 @@ Re-run this pass (workspace flags per AGENTS.md):
 
 ## Open Items (from this pass)
 
-1. **HIGH:** `gitlab-docker-compose.full.yml:211` — remove `:-admin@2024` fallback (Grafana admin). 
+1. **MEDIUM:** rotate Grafana/Sentry/Meilisearch credentials on the prod server if images ever ran with the now-removed defaults.
 2. **MEDIUM:** automated PostgreSQL/MinIO backup job + scheduled restore drill.
 3. **MEDIUM:** verify live Traefik CSP/HSTS/TLS min-version headers.
 4. **MEDIUM:** root artifact hygiene (`*.log`, `*.zip`, `*.rar`, deploy scripts → `ops/` or `scripts/`).

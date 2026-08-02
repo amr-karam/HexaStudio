@@ -116,7 +116,7 @@ All keys from `C:\Users\amrmo\OneDrive\Desktop\API` have been populated in:
 - **Kept:** `docs/engineering/DEPENDENCY_MANAGEMENT.md` (accurate override analysis, matches root `package.json`), the 5 audit files (corrected).
 
 ### Security finding (actionable)
-- [ ] `gitlab-docker-compose.full.yml:211` — remove hardcoded fallback `GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin@2024}` (HIGH, documented in `docs/audit/SECURITY_AUDIT.md`).
+- [x] `gitlab-docker-compose.full.yml` + `docker-compose.yml` — **5 hardcoded default secrets removed** (Grafana ×2, Sentry DB, Sentry Redis, Meilisearch) → required-variable form; `.env.example` updated; YAML validity verified (Aug 2, 2026).
 
 ---
 

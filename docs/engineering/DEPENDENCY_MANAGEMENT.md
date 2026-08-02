@@ -1,7 +1,7 @@
 # Dependency Management - HEXA STUDIO
 
 ## Dependency Overrides
-The root `package.json` currently contains a significant number of dependency overrides:
+The root `package.json` currently contains the following dependency overrides:
 
 ```json
 "overrides": {
@@ -16,6 +16,8 @@ The root `package.json` currently contains a significant number of dependency ov
   "js-yaml": "^5.2.2"
 }
 ```
+
+> **Note:** `framer-motion ^11.18.2` and `cookie ^0.7.2` overrides are required for build stability and the CVE-2024-47764 fix respectively — do not remove without a full frontend build + test verification (see Reduction Strategy below).
 
 ## Impact & Risks
 - **Maintenance Debt:** Overrides mask underlying dependency conflicts and can prevent necessary updates.
