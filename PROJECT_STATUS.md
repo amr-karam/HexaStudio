@@ -131,7 +131,7 @@ All keys from `C:\Users\amrmo\OneDrive\Desktop\API` have been populated in:
 - [x] Added `backup-verify-scheduled` service (profile `scheduled`) + `docker/backup/verify-loop.sh` for daily self-verification; manual `--profile verify` behavior unchanged.
 - [x] `docs/devops/DISASTER_RECOVERY.md` stale DB names/scripts/RPO fixed (minimal edits).
 - [x] `docker-compose.prod.yml` validated with `docker compose config` (parses cleanly).
-- [ ] **Gap:** no MinIO object-store mirror job; offsite copy is the same-host MinIO `backups` bucket only.
+- [x] **Gap closed (Aug 3, 2026):** added `docker/backup/minio-backup.sh` (24h `mc mirror --overwrite` loop of `uploads/models/textures/videos/hdr` → `/backups/minio/<bucket>/` on `backup_data`, 30-day prune) + `docker/backup/minio-verify.sh` (one-shot mirror check) + `minio-backup` (default) and `minio-backup-verify` (profile `verify-minio`) services in `docker-compose.prod.yml`; `docs/devops/BACKUP.md` §8 gap marked CLOSED. Remaining gaps: same-host offsite, 24h RPO, no alerting on verification failure.
 
 ---
 
