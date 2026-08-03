@@ -111,10 +111,26 @@ If a service crash-loops or MinIO uploads never appear, check these first:
 3. **A plain `docker compose restart` keeps old in-memory config.** After editing the
    compose file, use `up -d --force-recreate` (or `up -d`) so changed environment /
    build config is actually applied.
+4. **Bind-mounted scripts have no executable bit (Windows checkouts).** The verifier
+   services (`backup-verify-scheduled`, `minio-backup-verify`) mount `docker/backup/*.sh`
+   read-only from the repo. `verify-loop.sh` calls `verify-backup.sh` **via `sh`**
+   (`sh /scripts/verify-backup.sh`) precisely because a direct exec fails with
+   `Permission denied` when the checkout lacks the exec bit. Keep using `sh` for any
+   nested script invocation.
+5. **Empty MinIO source buckets are NOT a verification failure.** `mc mirror` does not
+   create a target directory for an empty source, so `minio-backup.sh` records each
+   bucket's source object count into `<BACKUP_DIR>/minio/.state/<bucket>.count` every
+   cycle. `minio-verify.sh` reads that state: a bucket with 0 source objects is `[SKIP]`,
+   while a bucket with content MUST have a non-empty local mirror (real missing-mirror
+   detection preserved). Without this, freshly-created empty buckets
+   (models/textures/videos/hdr) caused a false `[FAIL]`.
 
 Verified live on prod 2026-08-03: `hexa-backup` LogQL alerts healthy (13 rules,
 `health: ok`); DB dumps confirmed in MinIO `backups/` bucket; asset mirror confirmed
 in `/backups/minio/uploads/` (30 objects); both services `healthy` after 24h-loop start.
+`backup-verify-scheduled` (profile `scheduled`) deployed and running healthy — daily
+self-verification gives `BackupVerificationFailed` its live `[verify-loop]` log source.
+One-shot `backup-verify` and `minio-backup-verify` both PASS on the live dumps/mirror.
 
 ## 4. Verification
 
