@@ -25,11 +25,12 @@
 
 | Gate | Target | Status | Result |
 |---|---|---|---|
-| **Backend Tests** | 330 total | `330 / 330` | ✅ PASS |
-| **Frontend Tests** | 179 total | `177 / 179` — 2 pre-existing failures from uncommitted `Navbar.tsx` WIP (renders no `role="dialog"` menu; unrelated to this milestone) | ⚠️ |
-| **Mobile Tests** | 10 passing | `10 / 10` | ✅ PASS |
+| **Backend Tests** | 330 total | `339 / 339` | ✅ PASS |
+| **Frontend Tests** | 207 total | `207 / 207` | ✅ PASS |
+| **Mobile Tests** | 25 passing | `25 / 25` | ✅ PASS |
 | **Frontend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **Backend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
+| **Mobile Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **ESLint (all)** | 0 warnings | `0 errors, 0 warnings` (touched files) | ⚠️ 78 pre-existing errors in untouched src/ |
 | **Governance** | 61/61 Sections | `100% Active` | ✅ PASS |
 
@@ -189,7 +190,8 @@ All keys from `C:\Users\amrmo\OneDrive\Desktop\API` have been populated in:
 
 ### Remaining Pre-existing Debt (not introduced by this milestone)
 - Backend `src/**` lint: 78 pre-existing `no-explicit-any` errors in untouched files
-- Frontend: 2 Navbar tests failing due to uncommitted `Navbar.tsx` / `NavbarMobileMenu.tsx` WIP in the working tree (mobile menu no longer renders `role="dialog"`)
+- ~~Frontend Navbar mobile-menu tests~~ — fixed (`fb03d6f3`): 2 tests awaited the lazy-loaded `NavbarMobileMenu`; full suite 207/207
+- ~~Mobile typecheck~~ — fixed: NTFS-corrupted `node_modules` (expo-router, expo-notifications, @react-navigation/* missing `.d.ts`) restored via `npm pack` + re-extract; full mobile gate green (typecheck 0, lint 0, tests 25/25)
 
 ---
 
