@@ -63,7 +63,8 @@ type IconName =
   | 'credit-card'
   | 'kanban'
   | 'camera'
-  | 'mic';
+  | 'mic'
+  | 'loader';
 
 interface IconProps {
   name: IconName;
@@ -399,6 +400,11 @@ const ICON_PATHS: Record<IconName, React.ReactNode> = {
       <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
       <line x1="12" y1="19" x2="12" y2="23" />
       <line x1="8" y1="23" x2="16" y2="23" />
+    </>
+  ),
+  loader: (
+    <>
+      <path d="M21 12a9 9 0 1 1-6.219-8.56" />
     </>
   ),
 };
