@@ -10,6 +10,23 @@ import dynamic from 'next/dynamic';
 import { Magnetic } from '@/components/ui/Magnetic';
 import { useHEXAMotion } from '@/hooks/useHEXAMotion';
 
+const Sparkle = ({ size = 16 }: { size?: number }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={1.5}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M12 3l1.9 4.1L18 9l-4.1 1.9L12 15l-1.9-4.1L6 9l4.1-1.9z" />
+  </svg>
+);
+
 const CurrencySelector = dynamic(() => import('@/features/currency/CurrencySelector').then((m) => ({ default: m.CurrencySelector })), { ssr: false });
 const NavbarMobileMenu = dynamic(() => import('./NavbarMobileMenu').then((m) => ({ default: m.NavbarMobileMenu })), { ssr: false });
 
@@ -18,20 +35,30 @@ interface NavItemProps {
   href: string;
   active?: boolean;
   onClick?: () => void;
+  isPremium?: boolean;
+  badgeCount?: number;
+  icon?: React.ReactNode;
 }
 
-const NavItem = ({ label, href, active, onClick }: NavItemProps) => (
+const NavItem = ({ label, href, active, onClick, isPremium, badgeCount, icon }: NavItemProps) => (
   <Magnetic>
     <Link
       href={href}
       onClick={onClick}
       aria-current={active ? 'page' : undefined}
       className={cn(
-        'group relative block py-2 text-xs uppercase tracking-[0.3em] transition-colors duration-500',
-        active ? 'text-accent' : 'text-neutral-500 hover:text-foreground'
+        'group relative flex items-center gap-1.5 py-2 text-xs uppercase tracking-[0.3em] transition-colors duration-500',
+        active ? 'text-accent' : 'text-neutral-500 hover:text-foreground',
+        isPremium && 'premium-feature'
       )}
     >
+      {icon && <span className="text-accent">{icon}</span>}
       {label}
+      {badgeCount && badgeCount > 0 && (
+        <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-xs font-bold text-background">
+          {badgeCount}
+        </span>
+      )}
       {!active && (
         <span
           aria-hidden="true"
@@ -55,6 +82,7 @@ export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const [unreadPremiumCount] = useState(3); // This would typically come from a context or state management
   const lastScrollY = useRef(0);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const { reduced } = useHEXAMotion();
@@ -160,6 +188,13 @@ export const Navbar = () => {
     { label: t('navbar.blog'), href: '/blog' },
     { label: t('navbar.studio'), href: '/about' },
     { label: t('navbar.contact'), href: '/contact' },
+    {
+      label: t('navbar.premiumChat'),
+      href: '/premium-chat',
+      isPremium: true,
+      badgeCount: unreadPremiumCount,
+      icon: <Sparkle size={16} />,
+    },
   ];
 
   return (
@@ -199,9 +234,7 @@ export const Navbar = () => {
               key={item.href}
               {...item}
               active={
-                item.href === '/'
-                  ? pathname === '/'
-                  : pathname.startsWith(item.href)
+                item.href === '/' ? pathname === '/' : pathname.startsWith(item.href)
               }
             />
           ))}
@@ -240,6 +273,22 @@ export const Navbar = () => {
           </button>
         </Magnetic>
       </nav>
+
+      <style jsx global>{`
+        .premium-feature {
+          position: relative;
+        }
+        .premium-feature::after {
+          content: '';
+          position: absolute;
+          bottom: -2px;
+          left: 0;
+          right: 0;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, #FFD700, transparent);
+          opacity: 0.7;
+        }
+      `}</style>
 
       <NavbarMobileMenu
         isOpen={isMenuOpen}
