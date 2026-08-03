@@ -118,9 +118,9 @@
 
 ```
 📚 Deployment Guides (100+ pages total)
-├── DNS-CONFIGURATION-GUIDE.md (10 pages)
+├── docs/devops/DNS-CONFIGURATION-GUIDE.md (10 pages)
 ├── PRODUCTION-DEPLOYMENT-CHECKLIST.md (50+ pages)
-├── HEXA-HUB-AI-PIPELINE-STATUS.md (30+ pages)
+├── docs/ai/HEXA-HUB-AI-PIPELINE-STATUS.md (30+ pages)
 ├── GITLAB_DEPLOYMENT_GUIDE.md (100+ pages)
 └── FINAL-DEPLOYMENT-STATUS.md (This file)
 
@@ -528,9 +528,9 @@ npm run start:prod
 - Phone: +1 (XXX) XXX-XXXX
 
 **Documentation:**
-- DNS-CONFIGURATION-GUIDE.md
+- docs/devops/DNS-CONFIGURATION-GUIDE.md
 - PRODUCTION-DEPLOYMENT-CHECKLIST.md
-- HEXA-HUB-AI-PIPELINE-STATUS.md
+- docs/ai/HEXA-HUB-AI-PIPELINE-STATUS.md
 - GITLAB_DEPLOYMENT_GUIDE.md
 - FINAL-DEPLOYMENT-STATUS.md
 
@@ -569,7 +569,7 @@ npm run start:prod
 
 1. **Configure DNS records** (15-30 minutes)
    - Add 3 A records pointing to 19.16.1.100
-   - See `DNS-CONFIGURATION-GUIDE.md` for instructions
+   - See `docs/devops/DNS-CONFIGURATION-GUIDE.md` for instructions
 
 2. **Then run:**
    ```powershell

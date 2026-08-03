@@ -604,7 +604,7 @@ npm run migration:revert
 ## 📚 ADDITIONAL RESOURCES
 
 ### **Documentation**
-- 📖 HEXA-HUB-AI-PIPELINE-STATUS.md (30+ pages)
+- 📖 docs/ai/HEXA-HUB-AI-PIPELINE-STATUS.md (30+ pages)
 - 📖 GITLAB_DEPLOYMENT_GUIDE.md (100+ pages)
 - 📖 PRODUCTION-DEPLOYMENT-CHECKLIST.md (This file)
 - 📖 docker-compose.yml (Infrastructure)
