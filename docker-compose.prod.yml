@@ -512,7 +512,9 @@ services:
       - com.centurylinklabs.watchtower.enable=true
 
   backup:
-    image: postgres:16-alpine
+    build:
+      context: ./docker/backup
+      dockerfile: minio-backup.Dockerfile
     <<: *default-restart
     logging: *default-logging
     entrypoint: /bin/sh
