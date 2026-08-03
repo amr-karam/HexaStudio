@@ -1,9 +1,13 @@
 # Backup Restore Drill Procedure
 
 ## Overview
-Monthly drill to verify backup integrity and recovery capability. RTO: <1 hour, RPO: <15 minutes.
+
+Monthly drill to verify backup integrity and recovery capability against the **current**
+implementation (`docker/backup/backup.sh` sleep-loop + `docker/backup/verify-backup.sh`).
+**RTO: < 1 hour, RPO: 24 hours** (daily dump loop).
 
 ## Drill Schedule
+
 - **Frequency**: Monthly (first Monday of month, 02:00 UTC)
 - **Duration**: ~45 minutes
 - **Owner**: DevOps Lead
@@ -13,136 +17,162 @@ Monthly drill to verify backup integrity and recovery capability. RTO: <1 hour, 
 
 - [ ] Schedule in team calendar
 - [ ] Notify team via `#deployments` Slack
-- [ ] Verify backup storage accessible (S3 + local)
-- [ ] Confirm test environment available (staging server)
-- [ ] Document current production state (DB size, MinIO usage)
+- [ ] Confirm `backup` service is running: `docker compose -f docker-compose.prod.yml ps backup`
+- [ ] Run the manual verification (see below) to confirm dumps are intact
+- [ ] Note current production DB sizes: `docker compose exec postgres psql -U hexastudio -d hexastudio_api -c "\l+"`
+- [ ] Confirm the internal MinIO `backups` bucket is reachable
+
+## Verification (run first)
+
+```bash
+docker compose -f docker-compose.prod.yml --profile verify run --rm backup-verify
+```
+
+Exit `0` = the latest `hexastudio_api` and `hexastudio_cms` dumps pass `pg_restore --list`
+and are within the 25h age window. Exit `1` = missing or corrupt dump — **do not proceed**
+with the restore drill until this is resolved.
 
 ## Drill Types
 
-### Type A: PostgreSQL Point-in-Time Recovery (Monthly)
-**Objective**: Restore `hexa_frontend` database to specific timestamp
+### Type A: PostgreSQL Restore (Monthly)
+
+**Objective:** Restore `hexastudio_api` from the latest dump into a throwaway database
+and confirm data integrity.
 
 #### Steps
+
 ```bash
-# 1. Identify backup to restore
-aws s3 ls s3://hexa-backups/postgres/ --recursive | grep hexa_frontend | tail -5
+# 1. Identify the latest dump
+docker run --rm -v hexastudio_backup_data:/backups postgres:16-alpine ls -lt /backups/hexastudio_api_*.dump
 
-# 2. Download latest backup
-BACKUP_FILE="hexa_frontend_20260701_020000.dump.gpg"
-aws s3 cp s3://hexa-backups/postgres/$BACKUP_FILE /tmp/
+# 2. Create a throwaway test database
+docker compose exec -T postgres psql -U "${POSTGRES_USER:-hexastudio}" -c "DROP DATABASE IF EXISTS hexastudio_drill_verify;"
+docker compose exec -T postgres psql -U "${POSTGRES_USER:-hexastudio}" -c "CREATE DATABASE hexastudio_drill_verify;"
 
-# 3. Decrypt
-gpg --decrypt --batch --passphrase "$BACKUP_ENCRYPTION_KEY" \
-  --output /tmp/hexa_frontend.dump \
-  /tmp/$BACKUP_FILE
+# 3. Restore into it
+docker run --rm \
+  --network hexastudio_internal \
+  -v hexastudio_backup_data:/backups:ro \
+  -e PGPASSWORD="${POSTGRES_PASSWORD}" \
+  postgres:16-alpine \
+  pg_restore -h postgres -U "${POSTGRES_USER:-hexastudio}" \
+    -d hexastudio_drill_verify \
+    --no-owner --no-privileges \
+    /backups/hexastudio_api_<YYYYmmdd-HHMMSS>.dump
 
-# 4. Create test database
-docker exec postgres psql -U hexastudio -c "CREATE DATABASE hexa_frontend_restore;"
-
-# 5. Restore
-docker exec -i postgres pg_restore \
-  -U hexastudio \
-  -d hexa_frontend_restore \
-  --clean \
-  --if-exists \
-  --no-owner \
-  --no-privileges \
-  /tmp/hexa_frontend.dump
-
-# 6. Verify data integrity
-docker exec postgres psql -U hexastudio -d hexa_frontend_restore -c "
-  SELECT count(*) as projects FROM projects;
-  SELECT count(*) as users FROM users;
-  SELECT max(created_at) as latest_project FROM projects;
+# 4. Verify row counts against a known table
+docker compose exec -T postgres psql -U "${POSTGRES_USER:-hexastudio}" -d hexastudio_drill_verify -c "
+  SELECT count(*) AS projects FROM projects;
+  SELECT count(*) AS users FROM users;
+  SELECT max(created_at) AS latest_project FROM projects;
 "
 
-# 7. Cleanup
-docker exec postgres psql -U hexastudio -c "DROP DATABASE hexa_frontend_restore;"
-rm /tmp/hexa_frontend.dump /tmp/$BACKUP_FILE
+# 5. Cleanup
+docker compose exec -T postgres psql -U "${POSTGRES_USER:-hexastudio}" -c "DROP DATABASE hexastudio_drill_verify;"
 ```
 
-**Success Criteria**:
+> Replace `projects`/`users` with tables that actually exist in `hexastudio_api`
+> (adjust to the current schema if these names differ).
+
+**Success Criteria:**
+
 - [ ] Restore completes without errors
 - [ ] Row counts match production (±1%)
-- [ ] Latest data timestamp within RPO (15 min)
+- [ ] Latest data timestamp within RPO (24 hours)
 - [ ] Restore time < 30 minutes
 
-### Type B: MinIO Data Restore (Monthly)
-**Objective**: Restore MinIO bucket to verify asset recovery
+### Type B: Offsite Download Drill (Monthly)
+
+**Objective:** Prove the MinIO `backups` bucket copy is downloadable and readable.
+
+> There is **no** MinIO object-store mirror job, so this drill validates the offsite
+> **DB dump** copy instead of an `mc mirror` of buckets.
 
 #### Steps
+
 ```bash
-# 1. Identify backup
-aws s3 ls s3://hexa-backups/minio/ --recursive | tail -3
+# 1. List dumps in MinIO
+docker run --rm \
+  --network hexastudio_internal \
+  -e MINIO_ROOT_USER="${MINIO_ROOT_USER:-hexastudio}" \
+  -e MINIO_ROOT_PASSWORD="${MINIO_ROOT_PASSWORD}" \
+  minio/mc:latest \
+  sh -c 'mc alias set hexabackup http://minio:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD" && mc ls hexabackup/backups/ | sort -k5,6 | tail -5'
 
-# 2. Restore to test bucket
-BACKUP_PATH="minio/20260701_020000"
-docker exec minio mc mirror --overwrite \
-  s3/hexa-backups/$BACKUP_PATH \
-  local/hexa-studio-test
+# 2. Download the latest dump to the local backup volume
+docker run --rm \
+  --network hexastudio_internal \
+  -v hexastudio_backup_data:/out \
+  -e MINIO_ROOT_USER="${MINIO_ROOT_USER:-hexastudio}" \
+  -e MINIO_ROOT_PASSWORD="${MINIO_ROOT_PASSWORD}" \
+  minio/mc:latest \
+  sh -c 'mc alias set hexabackup http://minio:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD" && mc cp "hexabackup/backups/hexastudio_api_<YYYYmmdd-HHMMSS>.dump" /out/'
 
-# 3. Verify asset count and integrity
-docker exec minio mc stat local/hexa-studio-test/projects/hero-image.webp
-docker exec minio mc stat local/hexa-studio-test/projects/model.glb
+# 3. Verify integrity with pg_restore --list
+docker run --rm -v hexastudio_backup_data:/backups:ro postgres:16-alpine \
+  pg_restore --list /backups/hexastudio_api_<YYYYmmdd-HHMMSS>.dump | head -20
 
-# 4. Compare object counts
-PROD_COUNT=$(docker exec minio mc ls local/hexa-studio --recursive | wc -l)
-TEST_COUNT=$(docker exec minio mc ls local/hexa-studio-test --recursive | wc -l)
-echo "Prod: $PROD_COUNT, Test: $TEST_COUNT"
-
-# 5. Cleanup
-docker exec minio mc rm --recursive --force local/hexa-studio-test
+# 4. Cleanup the downloaded copy
+docker run --rm -v hexastudio_backup_data:/backups postgres:16-alpine \
+  sh -c 'rm -f /backups/hexastudio_api_<YYYYmmdd-HHMMSS>.dump'
 ```
 
-**Success Criteria**:
-- [ ] Object counts match (±1%)
-- [ ] Sample assets accessible and valid
-- [ ] Restore time < 15 minutes
+**Success Criteria:**
+
+- [ ] Latest dump downloadable from MinIO
+- [ ] `pg_restore --list` succeeds on the downloaded file
+- [ ] File size matches the local copy
+- [ ] Download + verify time < 15 minutes
 
 ### Type C: Full Stack Recovery (Quarterly)
-**Objective**: Simulate complete server failure and recovery
+
+**Objective:** Simulate complete server failure and recovery.
 
 #### Prerequisites
+
 - Staging server with same specs as production
 - DNS access to point test domain
-- All backup files accessible
+- Access to the `backup_data` volume or MinIO `backups` bucket
 
 #### Steps
+
 ```bash
 # 1. Provision test server (or use staging)
 # 2. Deploy infrastructure
-git clone ssh://git@19.16.1.100:2222/hexa/hexa-studio.git /opt/hexa-test
+git clone git@gitlab.hexastudio.net:hexa/hexa-studio.git /opt/hexa-test
 cd /opt/hexa-test
+cp .env.example .env   # fill real secrets from the password manager
 
-# 3. Restore databases
-./scripts/restore-db.sh hexa_frontend /backups/latest/hexa_frontend.dump.gpg
-./scripts/restore-db.sh hexa_cms /backups/latest/hexa_cms.dump.gpg
+# 3. Restore databases from the latest dumps (one per DB)
+docker run --rm \
+  --network hexastudio_internal \
+  -v hexastudio_backup_data:/backups:ro \
+  -e PGPASSWORD="${POSTGRES_PASSWORD}" \
+  postgres:16-alpine \
+  pg_restore -h postgres -U hexastudio -d hexastudio_api \
+    --clean --if-exists --no-owner --no-privileges \
+    /backups/hexastudio_api_<YYYYmmdd-HHMMSS>.dump
+# ... repeat for hexastudio_cms, hexastudio_odoo, hexastudio_db
 
-# 3. Restore MinIO
-docker exec minio mc mirror /backups/minio/latest local/hexa-studio
-
-# 4. Configure environment
-cp .env.example .env
-# Update with restored passwords
-
-# 5. Start services
+# 4. Start services
 docker compose -f docker-compose.prod.yml up -d
 
-# 6. Wait for health checks
+# 5. Wait for health checks
 timeout 300 bash -c 'until curl -sf https://test.hexastudio.net/api/health; do sleep 5; done'
 
-# 7. Run smoke tests
+# 6. Run smoke tests
 npm run test:e2e -- --config=e2e/playwright.smoke.config.ts
 
-# 8. Verify data
+# 7. Verify data
 curl https://test.hexastudio.net/api/projects | jq '.data | length'
 curl https://test.hexastudio.net/api/health
 
-# 9. Cleanup
+# 8. Cleanup
 docker compose -f docker-compose.prod.yml down -v
 ```
 
-**Success Criteria**:
+**Success Criteria:**
+
 - [ ] Full stack operational in < 1 hour
 - [ ] All health checks pass
 - [ ] E2E smoke tests pass
@@ -166,17 +196,16 @@ docker compose -f docker-compose.prod.yml down -v
 ## Results
 
 ### PostgreSQL Restore
-- Backup file: `hexa_frontend_20260701_020000.dump.gpg`
+- Backup file: `hexastudio_api_YYYYmmdd-HHMMSS.dump`
 - Restore time: XX minutes
 - Row count match: ✅/❌ (Prod: X, Restored: Y)
-- Data freshness: XX minutes old (RPO: 15 min)
+- Data freshness: XX hours old (RPO: 24h)
 - Errors: None / List errors
 
-### MinIO Restore
-- Backup path: `minio/20260701_020000`
-- Restore time: XX minutes
-- Object count match: ✅/❌ (Prod: X, Restored: Y)
-- Sample verification: ✅/❌
+### Offsite Download (MinIO backups bucket)
+- Backup file: `hexastudio_api_YYYYmmdd-HHMMSS.dump`
+- Download + verify time: XX minutes
+- `pg_restore --list`: ✅/❌
 
 ### Full Stack (if Type C)
 - Provision time: XX minutes
@@ -193,7 +222,7 @@ docker compose -f docker-compose.prod.yml down -v
 ## Action Items
 - [ ] Fix backup size anomaly
 - [ ] Increase pg_restore parallel jobs to 4
-- [ ] Update RUNBOOK.md with new timings
+- [ ] Update this runbook with new timings
 
 ## Sign-off
 DevOps Lead: _________________ Date: _______
@@ -202,47 +231,31 @@ Backend Lead: _________________ Date: _______
 
 ## Automation
 
-### GitHub Action for Automated Verification (Weekly)
-```yaml
-# .github/workflows/backup-verify.yml
-name: Backup Verification
-on:
-  schedule:
-    - cron: '0 3 * * 0'  # Weekly Sunday 03:00 UTC
-  workflow_dispatch:
+### Scheduled daily verification (no manual intervention)
 
-jobs:
-  verify-backups:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Verify PostgreSQL backup
-        run: |
-          aws s3 cp s3://hexa-backups/postgres/latest.dump.gpg /tmp/
-          gpg --decrypt --batch --passphrase ${{ secrets.BACKUP_KEY }} \
-            -o /tmp/test.dump /tmp/latest.dump.gpg
-          # Quick schema verification
-          pg_restore --list /tmp/test.dump | head -20
-          
-      - name: Verify MinIO backup
-        run: |
-          aws s3 ls s3://hexa-backups/minio/ --recursive | tail -1
-          
-      - name: Report status
-        if: always()
-        run: |
-          curl -X POST ${{ secrets.SLACK_WEBHOOK }} \
-            -d "{\"text\":\"Backup verification ${{ job.status }}\"}"
+```bash
+docker compose -f docker-compose.prod.yml --profile scheduled up -d backup-verify-scheduled
 ```
 
+`backup-verify-scheduled` runs `verify-backup.sh` every 24 hours and stays alive. Check results:
+
+```bash
+docker compose -f docker-compose.prod.yml logs --tail=50 backup-verify-scheduled
+```
+
+> There is no cloud (GitHub Actions) verification job because the dumps live on the
+> production server / internal MinIO, not in S3. The scheduled container is the
+> verification mechanism. Recommended follow-up: a Loki alert on the
+> `[verify-loop] Verification FAILED` log line.
+
 ## Emergency Contacts
+
 - **DevOps Lead**: @devops-lead (Slack/Phone)
-- **Backend Lead**: @backend-lead (Slack/Phone)  
-- **AWS Support**: Business tier
+- **Backend Lead**: @backend-lead (Slack/Phone)
 - **Hetzner Support**: 24/7
 
 ## Related Documents
+
 - `BACKUP.md` - Backup procedures
 - `DISASTER_RECOVERY.md` - Full DR plan
 - `INFRASTRUCTURE.md` - Server specs
