@@ -65,6 +65,7 @@ if [ $? -ne 0 ]; then
 fi
 
 mkdir -p "${BACKUP_DIR}/minio"
+mkdir -p "${BACKUP_DIR}/minio/.state"
 
 while true; do
   echo "[$(date)] Starting MinIO asset mirror cycle (buckets: ${ASSET_BUCKETS})..."
@@ -76,6 +77,17 @@ while true; do
     echo "[$(date)] Mirroring hexalocal/${bucket} -> ${dest} ..."
     # Ensure the bucket exists (idempotent; same as init-buckets.sh / backup.sh).
     mc mb --ignore-existing "hexalocal/${bucket}" >/dev/null 2>&1
+    # Record how many objects the SOURCE bucket holds. The verifier uses this as
+    # the source of truth: an empty source bucket (no content yet) is a valid
+    # state and must NOT fail verification, while a non-empty source requires a
+    # non-empty local mirror. Counting via `mc ls` (one line per object).
+    SRC_COUNT=$(mc ls --recursive "hexalocal/${bucket}" 2>/dev/null | wc -l | tr -d ' ')
+    echo "${SRC_COUNT}" > "${BACKUP_DIR}/minio/.state/${bucket}.count"
+    if [ "${SRC_COUNT}" -eq 0 ]; then
+      echo "[$(date)] OK: hexalocal/${bucket} has 0 objects — nothing to mirror (state recorded)"
+      SUCCESS=$((SUCCESS + 1))
+      continue
+    fi
     if mc mirror --quiet --overwrite "hexalocal/${bucket}" "${dest}"; then
       echo "[$(date)] OK: hexalocal/${bucket} mirrored (${dest})"
       SUCCESS=$((SUCCESS + 1))
