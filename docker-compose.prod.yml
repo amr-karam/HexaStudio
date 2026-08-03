@@ -582,6 +582,54 @@ services:
       timeout: 5s
       retries: 3
 
+  # Mirrors MinIO asset buckets (uploads/models/textures/videos/hdr) into the
+  # shared backup volume every 24h, closing the gap where 3D assets / client
+  # deliverables were never backed up. Asset mirrors and DB dumps both live on
+  # the persistent backup_data volume. postgres:16-alpine is used (not
+  # minio/mc:latest) because it ships pgrep/wget and minio-backup.sh downloads
+  # the static mc binary on first start — same pattern as the `backup` service.
+  minio-backup:
+    image: postgres:16-alpine
+    <<: *default-restart
+    logging: *default-logging
+    entrypoint: /bin/sh
+    command: /scripts/minio-backup.sh
+    environment:
+      MINIO_ENDPOINT: minio
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-hexastudio}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:?MINIO_ROOT_PASSWORD is required}
+      BACKUP_DIR: /backups
+    depends_on:
+      minio:
+        condition: service_healthy
+    volumes:
+      - ./docker/backup/minio-backup.sh:/scripts/minio-backup.sh:ro
+      - backup_data:/backups
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "/scripts/minio-backup.sh"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # One-shot MinIO asset-mirror verification (manual).
+  # Run: docker compose -f docker-compose.prod.yml --profile verify-minio run --rm minio-backup-verify
+  minio-backup-verify:
+    image: postgres:16-alpine
+    logging: *default-logging
+    profiles:
+      - verify-minio
+    entrypoint: /bin/sh
+    command: /scripts/minio-verify.sh
+    environment:
+      BACKUP_DIR: /backups
+    volumes:
+      - ./docker/backup/minio-verify.sh:/scripts/minio-verify.sh:ro
+      - backup_data:/backups:ro
+    networks:
+      - internal
+
 networks:
   web:
     name: hexastudio_web
