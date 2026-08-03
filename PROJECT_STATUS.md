@@ -145,7 +145,7 @@ All keys from `C:\Users\amrmo\OneDrive\Desktop\API` have been populated in:
 ### Delivered
 
 **A. Documentation (Governance-backed)**
-- [x] `ADR/0006-odoo-first-architecture.md` — formal ADR (Odoo = SSOT for business entities)
+- [x] `docs/adr/archive/0006-odoo-first-architecture.md` — formal ADR (Odoo = SSOT for business entities)
 - [x] `ARCHITECTURE.md` §3 — Odoo-First Architecture (mandatory principle)
 - [x] `docs/ODOO-INTEGRATION-MATRIX.md` — module-by-module sync matrix
 - [x] `docs/SYNC-ENGINE-REQUIREMENTS.md` — bidirectional sync + conflict spec

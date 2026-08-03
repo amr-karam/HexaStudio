@@ -19,8 +19,8 @@ HEXA Studio had accumulated significant technical assets (20+ Docker services, 1
 ## Decision
 We will adopt a formal Enterprise Architecture Governance framework with mandatory documentation spanning 12 domains:
 
-1. **PROJECT_INDEX.md** — Complete project index (folder tree, tech stack, services, routes, env vars, contracts)
-2. **PROJECT_HEALTH.md** — Automated health scoreboard across 10+ dimensions with scores and priorities
+1. **PROJECT_INDEX.md** (`docs/product/`) — Complete project index (folder tree, tech stack, services, routes, env vars, contracts)
+2. **PROJECT_HEALTH.md** (`docs/product/`) — Automated health scoreboard across 10+ dimensions with scores and priorities
 3. **SECURITY_BASELINE.md** — Threat model, OWASP Top 10 mapping, incident response runbook, compliance framework
 4. **SERVICE_CATALOG.md** — All 20 Docker services with purpose, dependencies, health checks, backup/DR
 5. **DATABASE_CATALOG.md** — All databases (PostgreSQL, Redis, MinIO, Qdrant) with schemas, indexes, backup policies
@@ -55,9 +55,9 @@ We will adopt a formal Enterprise Architecture Governance framework with mandato
 - Onboarding new developers is significantly faster with indexed documentation
 
 ## References
-- `docs/ADR/` — Architecture Decision Records
-- `PROJECT_INDEX.md` — Master project index
-- `PROJECT_HEALTH.md` — Project health dashboard
+- `docs/adr/` — Architecture Decision Records
+- `docs/product/PROJECT_INDEX.md` — Master project index
+- `docs/product/PROJECT_HEALTH.md` — Project health dashboard
 - `docs/` — Full governance document set
 - `docs/product/PROJECT_CONSTITUTION.md` — Project constitution
 - `docs/product/ENTERPRISE_ARCHITECTURE_GOVERNANCE.md` — Governance framework

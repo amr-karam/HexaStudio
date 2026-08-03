@@ -300,7 +300,7 @@ ACCESSIBILITY.md
         ↓
 SEO.md
         ↓
-DELIVERY.md
+docs/product/DELIVERY.md
         ↓
 ROADMAP.md
         ↓

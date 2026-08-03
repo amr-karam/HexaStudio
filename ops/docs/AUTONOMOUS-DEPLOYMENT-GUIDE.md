@@ -327,9 +327,9 @@ All components are production-ready and waiting for deployment.
 C:\Users\amrmo\OneDrive\Desktop\hexastudio.net\
 ├── AUTONOMOUS-DEPLOYMENT-GUIDE.md        ← This guide (20 pages)
 ├── FINAL-DEPLOYMENT-STATUS.md            ← Complete status (20 pages)
-├── DNS-CONFIGURATION-GUIDE.md            ← DNS setup (10 pages)
+├── docs/devops/DNS-CONFIGURATION-GUIDE.md            ← DNS setup (10 pages)
 ├── PRODUCTION-DEPLOYMENT-CHECKLIST.md    ← Deployment guide (50+ pages)
-├── HEXA-HUB-AI-PIPELINE-STATUS.md        ← AI documentation (30+ pages)
+├── docs/ai/HEXA-HUB-AI-PIPELINE-STATUS.md        ← AI documentation (30+ pages)
 ├── GITLAB_DEPLOYMENT_GUIDE.md            ← GitLab guide (100+ pages)
 ├── configure-dns-cloudflare.ps1          ← Cloudflare DNS script
 ├── test-ai-pipeline.ps1                  ← Integration test
