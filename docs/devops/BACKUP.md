@@ -91,6 +91,31 @@ cycle will silently produce no usable backups. The `minio-backup` service is str
 compose refuses to create it without `MINIO_ROOT_PASSWORD` (`${MINIO_ROOT_PASSWORD:?}`)
 and `minio-backup.sh` **exits non-zero** when `MINIO_SECRET_KEY` is empty.
 
+### 3.3 Known issues fixed (2026-08-03)
+
+Both `backup` and `minio-backup` were **silently broken in prod** until these were fixed.
+If a service crash-loops or MinIO uploads never appear, check these first:
+
+1. **`MINIO_ENDPOINT` must include the port (`minio:9000`).** The shell scripts build
+   `http://${MINIO_ENDPOINT}` for `mc alias set`, so a bare `minio` resolved to port 80
+   (connection refused). `backup.sh` hides this with `|| true` (DB dumps worked locally,
+   but the offsite MinIO upload never happened); `minio-backup.sh` crash-looped on the
+   auth failure. The backend service uses a separate `MINIO_PORT` var and is unaffected.
+2. **`mc` must not be downloaded at startup.** Both scripts downloaded the static binary
+   from `dl.min.io`, which 302-redirects to GitHub release assets at **~76 KB/s on the
+   prod server**, so the download timed out leaving a corrupt binary. Both services now
+   build from `docker/backup/minio-backup.Dockerfile`, which copies `/usr/bin/mc` from
+   the already-pulled `minio/mc:latest` image into `postgres:16-alpine` — fully offline.
+   If you replace this with a plain `postgres:16-alpine` image, the download failure
+   returns. Build the image with `docker compose -f docker-compose.prod.yml build backup minio-backup`.
+3. **A plain `docker compose restart` keeps old in-memory config.** After editing the
+   compose file, use `up -d --force-recreate` (or `up -d`) so changed environment /
+   build config is actually applied.
+
+Verified live on prod 2026-08-03: `hexa-backup` LogQL alerts healthy (13 rules,
+`health: ok`); DB dumps confirmed in MinIO `backups/` bucket; asset mirror confirmed
+in `/backups/minio/uploads/` (30 objects); both services `healthy` after 24h-loop start.
+
 ## 4. Verification
 
 ### 4.1 Manual (existing behavior)
