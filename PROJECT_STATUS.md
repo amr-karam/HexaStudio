@@ -31,7 +31,7 @@
 | **Frontend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **Backend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **Mobile Typecheck** | 0 errors | `0 errors` | ✅ PASS |
-| **ESLint (all)** | 0 warnings | `0 errors, 0 warnings` (touched files) | ⚠️ 78 pre-existing errors in untouched src/ |
+| **ESLint (all)** | 0 errors, 0 warnings | `0 errors, 0 warnings` (frontend, backend, mobile full `src` + `test`) | ✅ PASS |
 | **Governance** | 61/61 Sections | `100% Active` | ✅ PASS |
 
 ---
@@ -189,7 +189,7 @@ All keys from `C:\Users\amrmo\OneDrive\Desktop\API` have been populated in:
 | Frontend production build | ✅ `next build` clean, `/dashboard/workflows` emitted |
 
 ### Remaining Pre-existing Debt (not introduced by this milestone)
-- Backend `src/**` lint: 78 pre-existing `no-explicit-any` errors in untouched files
+- ~~Backend `src/**` lint: 78 pre-existing `no-explicit-any` errors~~ — claim was stale: `eslint.config.mjs` intentionally disables `no-explicit-any` in `test/**` and `**/*.d.ts`; full lint (frontend + backend + mobile) is clean 0 errors / 0 warnings (verified Aug 3, 2026)
 - ~~Frontend Navbar mobile-menu tests~~ — fixed (`fb03d6f3`): 2 tests awaited the lazy-loaded `NavbarMobileMenu`; full suite 207/207
 - ~~Mobile typecheck~~ — fixed: NTFS-corrupted `node_modules` (expo-router, expo-notifications, @react-navigation/* missing `.d.ts`) restored via `npm pack` + re-extract; full mobile gate green (typecheck 0, lint 0, tests 25/25)
 
