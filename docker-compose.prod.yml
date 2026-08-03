@@ -554,6 +554,34 @@ services:
     networks:
       - internal
 
+  # Daily self-verification daemon (no manual intervention).
+  # Start: docker compose -f docker-compose.prod.yml --profile scheduled up -d backup-verify-scheduled
+  backup-verify-scheduled:
+    image: postgres:16-alpine
+    <<: *default-restart
+    logging: *default-logging
+    profiles:
+      - scheduled
+    entrypoint: /bin/sh
+    command: /scripts/verify-loop.sh
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: ${POSTGRES_USER:-hexastudio}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      BACKUP_DIR: /backups
+      VERIFY_INTERVAL: ${BACKUP_VERIFY_INTERVAL:-86400}
+    volumes:
+      - ./docker/backup/verify-backup.sh:/scripts/verify-backup.sh:ro
+      - ./docker/backup/verify-loop.sh:/scripts/verify-loop.sh:ro
+      - backup_data:/backups:ro
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "/scripts/verify-loop.sh"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
 networks:
   web:
     name: hexastudio_web

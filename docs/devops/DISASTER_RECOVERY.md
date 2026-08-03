@@ -9,7 +9,7 @@
 | Metric | Target |
 |--------|--------|
 | RTO (Recovery Time Objective) | < 1 hour |
-| RPO (Recovery Point Objective) | < 15 minutes |
+| RPO (Recovery Point Objective) | 24 hours (daily dump loop) |
 | Maximum downtime tolerated | 4 hours |
 
 ---
@@ -55,7 +55,13 @@ docker compose up -d <service>:<previous-tag>
 # 3. SSH into new server
 # 4. Git pull latest code
 # 5. Restore latest database backup
-./scripts/restore.sh --latest
+# Follow the restore procedure in BACKUP.md (pg_restore -Fc per DB)
+docker run --rm -v hexastudio_backup_data:/backups:ro \
+  --network hexastudio_internal -e PGPASSWORD="${POSTGRES_PASSWORD}" \
+  postgres:16-alpine pg_restore -h postgres -U hexastudio \
+  -d hexastudio_api --clean --if-exists --no-owner \
+  /backups/hexastudio_api_<YYYYmmdd-HHMMSS>.dump
+# ... repeat for hexastudio_cms, hexastudio_odoo, hexastudio_db
 # 6. Start all services
 docker compose -f docker-compose.prod.yml up -d
 # 7. Verify health
@@ -79,10 +85,14 @@ docker compose stop backend cms odoo
 ls -la /backups/
 
 # 3. Restore specific database
-docker exec -i postgres psql -U hexa -d hexa_frontend < /backups/20260708_120000/frontend.sql
+docker run --rm -v hexastudio_backup_data:/backups:ro \
+  --network hexastudio_internal -e PGPASSWORD="${POSTGRES_PASSWORD}" \
+  postgres:16-alpine pg_restore -h postgres -U hexastudio \
+  -d hexastudio_api --clean --if-exists --no-owner \
+  /backups/hexastudio_api_<YYYYmmdd-HHMMSS>.dump
 
 # 4. Verify data integrity
-docker exec postgres psql -U hexa -d hexa_frontend -c "SELECT count(*) FROM users;"
+docker compose exec -T postgres psql -U hexastudio -d hexastudio_api -c "SELECT count(*) FROM users;"
 
 # 5. Restart services
 docker compose start backend cms odoo
@@ -114,8 +124,8 @@ docker compose start backend cms odoo
 
 | Test | Frequency | Action |
 |------|-----------|--------|
-| Automated backup run | Every 6 hours | Verify backup files exist |
-| Backup integrity check | Daily | Restore to test environment |
+| Automated backup run | Every 24 hours | `backup` service dumps all 4 DBs + uploads to MinIO |
+| Backup integrity check | Daily | `backup-verify-scheduled` runs `pg_restore --list` + age check on latest dumps |
 | Full DR drill | Monthly | Simulate complete recovery |
 | RTO/RPO validation | Quarterly | Measure actual recovery time |
 
