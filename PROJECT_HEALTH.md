@@ -12,11 +12,11 @@
 | Code Quality | 8.5/10 | GOOD | TypeScript strict mode across all apps, ESLint with `--max-warnings=0` (zero tolerance), 31 coding standards files, CI-enforced typecheck + lint gates. Some unused deps and pre-existing type noise |
 | Documentation Coverage | 9.0/10 | EXCELLENT | 250+ Markdown files across 18 playbook categories, 9 formal ADRs, 14 API docs, 29 DevOps runbooks, 38 quality reports, 31 standards guides, 19 business SOPs, 14 template files, 15 checklists |
 | Test Coverage | 7.5/10 | ADEQUATE | 415+ unit tests (176 frontend + 239 backend per UNIT_TESTS.md), 3 Playwright E2E specs, visual regression testing in CI. Coverage target 80%+ but actual coverage not yet enforced as blocking gate |
-| Security Maturity | 8.5/10 | GOOD | Trivy container scanning (CRITICAL gate), npm audit in CI, optional Snyk SCA/SAST, CSP headers via Traefik + Helmet, JWT auth, rate limiting, Cloudflare WAF, SBOM generation. 31 vulns remain (all in mobile Expo deps only) |
+| Security Maturity | 9.0/10 | GOOD | Trivy container scanning (CRITICAL gate), npm audit in CI, optional Snyk SCA/SAST, CSP headers via Traefik + Helmet, JWT auth, rate limiting, Cloudflare WAF, SBOM generation. `npm audit` = **0 vulnerabilities** (clean Aug 3, 2026) |
 | Performance Score | 8.5/10 | GOOD | Lighthouse score 95/100 (measured 2026-07-24), all Core Web Vitals passing (LCP 1.3s, TBT 30ms, CLS 0.001), bundle budgets enforced (200KB first-load), lazy-loading of 5 below-fold components, adaptive 3D quality system |
 | Accessibility Score | 8.0/10 | GOOD | WCAG 2.1 AA target, extensive ARIA usage (100+ aria-label/role attributes across components), `useReducedMotion` hook used in 40+ components, skip-to-content link, focus-visible styles, keyboard navigation, axe-core audit available |
 | Technical Debt | 7.0/10 | MONITOR | All P0 blockers resolved per BLOCKING_ISSUES.md, 25 debt items tracked in TECH_DEBT.md (many in progress), some unused packages (JWT/passport in backend, zustand in frontend), missing `clsx`/`tailwind-merge` deps |
-| Dependency Health | 7.0/10 | MONITOR | 31 npm audit vulnerabilities (30 high, 1 moderate) — all confined to `apps/mobile` (Expo/React Native) and test infra, none in production apps. Production-critical advisories (sharp, js-yaml, cookie, tmp, @nestjs/core) all patched via overrides |
+| Dependency Health | 9.0/10 | GOOD | `npm audit` = **0 vulnerabilities** (Aug 3, 2026 — final brace-expansion DoS GHSA-mh99-v99m-4gvg patched). Production-critical advisories (sharp, js-yaml, cookie, tmp, @nestjs/core) all patched via overrides |
 | Observability | 8.5/10 | GOOD | Prometheus + Grafana (pinned v2.54.1 / v11.3.0), Loki + Promtail log aggregation, Tempo distributed tracing, Sentry error tracking (frontend + backend), health checks on all Docker services, Prometheus alerting rules |
 | DevOps Maturity | 9.0/10 | EXCELLENT | GitLab CI/CD with 5 stages (quality/build/image/validate/deploy), Docker Compose with 14 services, blue/green zero-downtime deploy script, health-check verification post-deploy, Cloudflare Tunnel edge, automated backups, DR plan with drill |
 | Production Readiness | 8.5/10 | GOOD | Health checks on all containers, full monitoring stack, alerting configured, rollback via GitLab CI manual deployment, production deploy script with service health verification, TLS via Let's Encrypt DNS-01, Traefik dashboard secured |
@@ -39,7 +39,7 @@ Note: The 8.9 score from QUALITY_SCORECARD.md (2026-07-09) used a different rubr
 
 1. **Fix pre-existing TypeScript errors and unused dependency warnings** — streamline the type-check gate (1-2d effort)
 2. **Enforce 80% coverage as a blocking CI gate** — currently a target but not enforced; add `--coverage` thresholds to vitest config (1d effort)
-3. **Resolve 31 npm audit vulnerabilities in mobile workspace** — investigate Expo/RN upgrade path to reduce the vulnerability surface (3d effort)
+3. **Keep dependency audit clean in CI** — `npm audit` now reports 0 vulns; ensure the GitLab quality stage keeps failing on new high/critical findings (1d effort to add audit as blocking gate if not already)
 4. **Formalize SLOs for all production services** — define latency/availability targets and configure Service Level Indicators in Prometheus (1d effort)
 5. **Pin MinIO `:latest` tag** — replace with a specific version in `docker-compose.prod.yml` to prevent breaking changes (0.5d effort)
 6. **Add `clsx` and `tailwind-merge` to frontend dependencies** — these are used in source but missing from `package.json` (0.5d effort)
