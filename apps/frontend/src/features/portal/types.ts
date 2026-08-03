@@ -276,3 +276,37 @@ export interface PortalProjectDetail {
     remaining: number;
   };
 }
+
+/* -------------------------------------------------------------------------- */
+/*  Communication Center v3.0                                                  */
+/* -------------------------------------------------------------------------- */
+
+export interface ChatMessage {
+  id: string;
+  conversationId: string;
+  sender: string;
+  role: 'client' | 'team' | 'ai';
+  content: string;
+  timestamp: string;
+  read: boolean;
+}
+
+export interface Conversation {
+  id: string;
+  projectName: string;
+  participants: string[];
+  lastMessage: string;
+  lastTimestamp: string;
+  unread: number;
+  type: 'project' | 'direct';
+}
+
+export interface MeetingNote {
+  id: string;
+  title: string;
+  date: string;
+  attendees: string[];
+  summary: string;
+  actionItems: string[];
+  transcript?: string;
+}

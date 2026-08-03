@@ -260,8 +260,14 @@ const PORTAL_BASE = `${API_BASE_URL}/api/portal`;
 export const portalApi = {
   /* -------- Dashboard -------- */
 
-  getDashboard: (): Promise<DashboardData> =>
-    authFetch<DashboardData>(`${PORTAL_BASE}/dashboard`, {}, 'Failed to load dashboard data'),
+  getDashboard: async (): Promise<DashboardData> => {
+    const raw = await authFetch<PortalDashboardData>(
+      `${PORTAL_BASE}/dashboard`,
+      {},
+      'Failed to load dashboard data',
+    );
+    return mapDashboardResponse(raw);
+  },
 
   /* -------- Projects -------- */
 

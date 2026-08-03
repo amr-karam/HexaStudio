@@ -5,6 +5,7 @@ import {
   Put,
   Delete,
   Param,
+  Query,
   Req,
   UseGuards,
   UseInterceptors,
@@ -249,6 +250,44 @@ export class PortalController {
   @ApiOperation({ summary: 'Get notification preferences for the authenticated user' })
   async getNotificationPreferences(@Req() req: { user: { id: string } }) {
     return this.portalService.getNotificationPreferences(req.user.id);
+  }
+
+  // --- Reports & Contracts ---
+
+  @Get('reports/executive-brief')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Generate an executive brief report for a project',
+    description: 'Returns a structured executive brief with project details, milestones, budget summary, and team information.',
+  })
+  @ApiResponse({ status: 200, description: 'Executive brief generated successfully.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized – invalid or missing JWT.' })
+  @ApiResponse({ status: 404, description: 'Project not found.' })
+  async getExecutiveBrief(
+    @Req() req: { user: { email: string } },
+    @Query('projectId') projectId: string,
+  ) {
+    return this.portalService.getExecutiveBrief(
+      parseInt(projectId, 10),
+      req.user.email,
+    );
+  }
+
+  @Post('contracts/generate')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Generate a contract / change order document',
+    description: 'Creates a draft contract with a unique contract ID and quotation reference.',
+  })
+  @ApiResponse({ status: 200, description: 'Contract generated successfully.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized – invalid or missing JWT.' })
+  async generateContract(
+    @Req() req: { user: { email: string } },
+    @Body() body: { title: string; impactAmount: string; description: string },
+  ) {
+    return this.portalService.generateContract(req.user.email, body);
   }
 
   // --- Copilot Endpoints ---
