@@ -248,9 +248,17 @@ Repeat for `models`, `textures`, `videos`, `hdr`. The mirror is same-host (see
 - **RPO is 24 hours.** Both `backup` and `minio-backup` sleep-loop on a 24h cadence.
   Reducing RPO requires running the cycles more frequently (shorter sleep / cron wrapper)
   or adding WAL archiving — neither is currently implemented.
-- **No alerting on verification failure.** `backup-verify-scheduled` logs failures but
-  does not page anyone. Wire the `[verify-loop] Verification FAILED` log line into the
-  monitoring stack (Loki alert) as a follow-up.
+- **CLOSED — Alerting on backup verification failure.** `backup-verify-scheduled` and
+  `minio-backup` failures are now wired into the monitoring stack as Loki LogQL alert rules
+  in `docker/loki/rules/fake/loki-alerts.yml` (group `hexa-backup`, evaluated every 30s):
+  `BackupVerificationFailed` (critical) fires on the `[verify-loop] Verification FAILED`
+  line, `MinioBackupCycleFailed` (warning) fires on a per-bucket `FAIL:` mirror-failure line
+  (the `... 0 failed.` summary never matches), and `MinioBackupFatal` (critical) fires on
+  `FATAL:` fail-fast exits (missing `MINIO_SECRET_KEY` / `mc` unavailable / MinIO
+  unreachable). All route through Alertmanager (email + webhook). **Verify in Grafana:**
+  Explore → data source `Loki` with `{job="containerlogs", container=~".*backup-verify-scheduled.*"}`
+  or `{job="containerlogs", container=~".*minio-backup.*"}`; or Alerting → Alert rules
+  (group `hexa-backup`); or `GET http://loki:3100/api/prom/rules`.
 - **ACME certs not in backups.** `traefik_certs` is re-issuable via ACME, but Cloudflare
   DNS credentials must be available after a restore.
 

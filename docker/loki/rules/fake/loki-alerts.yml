@@ -111,3 +111,55 @@ groups:
         annotations:
           summary: "Health check failures in logs"
           description: "Health check failures detected"
+
+  # ---------------------------------------------------------------------------
+  # Backup & MinIO mirror alerting — closes the "no alerting on verification
+  # failure" gap (docs/devops/BACKUP.md §8). Selectors target the promtail
+  # `container` label (docker container_name, e.g. hexastudio-backup-verify-scheduled-1).
+  # LogQL `=~` regexes are anchored full-match, so the `.*` prefix is required.
+  # Tokens are unique to failure paths in docker/backup/*.sh — no false
+  # positives on "Verification PASSED", "[FAIL]" (minio-verify), or the
+  # "... 0 failed." summary line.
+  # ---------------------------------------------------------------------------
+  - name: hexa-backup
+    interval: 30s
+    rules:
+      # Daily scheduled backup verification FAILED (docker/backup/verify-loop.sh,
+      # container backup-verify-scheduled). Fires on a single failure line and
+      # auto-resolves ~5m later; re-fires on the next failed 24h run.
+      - alert: BackupVerificationFailed
+        expr: |
+          count_over_time({job="containerlogs", container=~".*backup-verify-scheduled.*"} |= "Verification FAILED" [5m]) > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Backup verification FAILED"
+          description: "Scheduled backup verification failed in container {{ $labels.container }} — inspect the verify-backup.sh output above; next attempt in 24h."
+
+      # At least one MinIO asset-bucket mirror failed this cycle
+      # (docker/backup/minio-backup.sh, container minio-backup). Only the exact
+      # per-bucket "FAIL:" line matches — the summary line ("N bucket(s) OK, M
+      # failed.") is deliberately NOT matched, so "0 failed" never fires.
+      - alert: MinioBackupCycleFailed
+        expr: |
+          count_over_time({job="containerlogs", container=~".*minio-backup.*"} |= "FAIL:" [1h]) > 0
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "MinIO asset mirror cycle reported failures"
+          description: "minio-backup logged one or more 'FAIL:' lines in the last hour (container {{ $labels.container }}) — a bucket was not mirrored this cycle and will be retried in 24h."
+
+      # MinIO backup container hit a fail-fast FATAL: missing MINIO_SECRET_KEY,
+      # 'mc' client unavailable, or MinIO unreachable (docker/backup/minio-backup.sh
+      # exits 1 on these, so the container stops/restarts and the logs persist).
+      - alert: MinioBackupFatal
+        expr: |
+          count_over_time({job="containerlogs", container=~".*minio-backup.*"} |= "FATAL:" [15m]) > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "MinIO backup service FATAL error"
+          description: "minio-backup logged a FATAL error (container {{ $labels.container }}) — missing MINIO_SECRET_KEY, 'mc' unavailable, or MinIO unreachable. The service exited non-zero and will restart."
