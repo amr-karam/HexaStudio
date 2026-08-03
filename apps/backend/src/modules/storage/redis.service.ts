@@ -30,7 +30,13 @@ export class RedisService {
   }
 
   async set(key: string, value: unknown, ttl = 3600): Promise<void> {
-    await this.client.set(key, JSON.stringify(value), 'EX', ttl);
+    const serialized = JSON.stringify(value);
+    if (ttl > 0) {
+      await this.client.set(key, serialized, 'EX', ttl);
+    } else {
+      // ttl <= 0 means no expiry (Redis requires EX > 0; omit EX for persistent keys)
+      await this.client.set(key, serialized);
+    }
   }
 
   async del(key: string): Promise<void> {

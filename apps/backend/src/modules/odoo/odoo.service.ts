@@ -196,6 +196,28 @@ export class OdooService implements OnModuleInit {
 
       return data;
     } catch (error) {
+      const errMessage = (error as Error)?.message ?? String(error);
+      const invalidFieldMatch = errMessage.match(/Invalid field '([^']+)' on model '[^']+'/);
+      if (invalidFieldMatch) {
+        const invalidField = invalidFieldMatch[1];
+        const cleanedFields = fields.filter((f) => f !== invalidField);
+        if (cleanedFields.length > 0 && cleanedFields.length < fields.length) {
+          this.logger.warn(
+            `Odoo field "${invalidField}" not found on "${model}" — retrying without it`,
+          );
+          const ids = await this.execute<number[]>(model, 'search', [domain]);
+          if (!ids || ids.length === 0) return [];
+          const data = await this.execute<Record<string, unknown>[]>(model, 'read', [
+            ids,
+            cleanedFields,
+          ]);
+          if (useCache) {
+            await this.redisService.set(cacheKey, data, 900);
+          }
+          return data;
+        }
+      }
+
       // Fallback to cache if available, even if circuit is open
       const cached = await this.redisService.get<Record<string, unknown>[]>(cacheKey);
       if (cached) {

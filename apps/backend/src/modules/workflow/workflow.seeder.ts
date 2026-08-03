@@ -145,8 +145,16 @@ export class WorkflowSeeder implements OnModuleInit {
         await this.engine.createWorkflow(seed);
         this.logger.log(`Seeded workflow: "${seed.name}"`);
       } catch (error) {
+        const err = error as Error;
+        const isRedisError = err.message.includes('ERR invalid expire time');
+        if (isRedisError) {
+          this.logger.error(
+            `Redis error while seeding workflow "${seed.name}": ${err.message} — skipping Redis-related workflow seed and continuing`,
+          );
+          continue;
+        }
         this.logger.error(
-          `Failed to seed workflow "${seed.name}": ${(error as Error).message}`,
+          `Failed to seed workflow "${seed.name}": ${err.message}`,
         );
       }
     }
