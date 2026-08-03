@@ -37,6 +37,16 @@ Alertmanager, which groups, dedupes, and routes notifications.
 - Mounted into the Loki container at `/loki/rules` (read-only).
 - `ruler.alertmanager_url: http://alertmanager:9093` in `loki-config.yml`.
 - Verify loaded rules: `GET http://loki:3100/api/prom/rules`.
+- **`rule_path` MUST be a writable scratch dir, NOT the read-only rules mount**
+  (grafana/loki #13027): the local ruler maps rule files into `rule_path`, so
+  pointing it at `/loki/rules` (bound `:ro`) spams
+  `unable to map rule files ... read-only file system` every 30s and breaks
+  rule loading. We use `rule_path: /tmp/loki/scratch`; the read-only rules dir
+  is referenced by `storage.local.directory: /loki/rules`. Verified fixed in
+  prod 2026-08-03: 0 mapping errors, all 13 rules `health: ok`.
+- Config is bind-mounted from `docker/loki/loki-config.yml` — after editing,
+  **recreate** the container (`docker compose up -d --force-recreate loki`);
+  a plain `restart` keeps the old in-memory config.
 
 ### 2.3 Alertmanager (`prom/alertmanager:v0.27.0`)
 - Config: `docker/alertmanager/alertmanager.yml` → `/etc/alertmanager/alertmanager.yml`.
