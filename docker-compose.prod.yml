@@ -585,11 +585,14 @@ services:
   # Mirrors MinIO asset buckets (uploads/models/textures/videos/hdr) into the
   # shared backup volume every 24h, closing the gap where 3D assets / client
   # deliverables were never backed up. Asset mirrors and DB dumps both live on
-  # the persistent backup_data volume. postgres:16-alpine is used (not
-  # minio/mc:latest) because it ships pgrep/wget and minio-backup.sh downloads
-  # the static mc binary on first start — same pattern as the `backup` service.
+  # the persistent backup_data volume. Built from docker/backup/minio-backup.Dockerfile:
+  # postgres:16-alpine base (sh/find/pgrep/wget/sleep) + vendored `mc` from
+  # minio/mc:latest — no external dl.min.io download at startup (that URL is
+  # ~76 KB/s on prod and produced corrupt binaries, see Dockerfile header).
   minio-backup:
-    image: postgres:16-alpine
+    build:
+      context: ./docker/backup
+      dockerfile: minio-backup.Dockerfile
     <<: *default-restart
     logging: *default-logging
     entrypoint: /bin/sh
