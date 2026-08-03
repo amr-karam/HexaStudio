@@ -18,6 +18,8 @@ import { StorageModule } from '../storage/storage.module';
 import { StrapiProjectSyncService } from './strapi-project-sync.service';
 import { StrapiWebhookController } from './strapi-webhook.controller';
 import { HttpModule } from '@nestjs/axios';
+import { OdooPermissionService } from './odoo-permission.service';
+import { OdooPermissionController } from './odoo-permission.controller';
 
 @Module({
   imports: [ConfigModule, ScheduleModule.forRoot(), forwardRef(() => RealtimeModule), StorageModule, HttpModule],
@@ -26,6 +28,7 @@ import { HttpModule } from '@nestjs/axios';
     OdooApiController,
     OdooSyncController,
     StrapiWebhookController,
+    OdooPermissionController,
   ],
   providers: [
     OdooService,
@@ -37,6 +40,7 @@ import { HttpModule } from '@nestjs/axios';
     ConflictResolutionService,
     DeltaSyncService,
     StrapiProjectSyncService,
+    OdooPermissionService,
   ],
   exports: [
     OdooService,
@@ -47,6 +51,7 @@ import { HttpModule } from '@nestjs/axios';
     ConflictResolutionService,
     DeltaSyncService,
     StrapiProjectSyncService,
+    OdooPermissionService,
   ],
 })
 export class OdooModule {}

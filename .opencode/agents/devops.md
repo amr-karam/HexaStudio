@@ -33,7 +33,7 @@ You are a HEXA Studio DevOps Specialist.
 ## Key Files
 - `docker-compose.yml` — local dev
 - `docker-compose.prod.yml` — production (Traefik + Cloudflared)
-- `deploy.py` — raw SSH deploy helper
+- `deploy.py` — raw SSH deploy helper (in `ops/scripts/`)
 - `.github/workflows/cd.yml` — primary production pipeline
 
 ## Standards

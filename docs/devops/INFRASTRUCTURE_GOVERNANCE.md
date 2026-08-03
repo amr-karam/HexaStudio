@@ -102,9 +102,9 @@ Two strict network boundaries:
 
 | Volume | Path | Size | Backup | Purpose |
 |--------|------|------|--------|---------|
-| `postgres_data` | `/data/postgres` | 100 GB | Yes (pg_dump + WAL) | Database files |
+| `postgres_data` | `/data/postgres` | 100 GB | Yes (`pg_dump -Fc` via `backup` service) | Database files |
 | `redis_data` | `/data/redis` | 1 GB | No (ephemeral) | Cache data |
-| `minio_data` | `/data/minio` | 500 GB | Yes (mc mirror) | Object storage |
+| `minio_data` | `/data/minio` | 500 GB | No (not backed up — see [BACKUP.md](./BACKUP.md)) | Object storage |
 | `loki_data` | `/data/loki` | 50 GB | No (retention policy) | Log storage |
 | `prometheus_data` | `/data/prometheus` | 20 GB | No (retention policy) | Metrics |
 | `tempo_data` | `/data/tempo` | 10 GB | No | Traces |
@@ -338,9 +338,9 @@ admin-whitelist:
 
 | Backup Type | Frequency | Retention | Storage | Encryption |
 |-------------|-----------|-----------|---------|------------|
-| Full pg_dump (custom format) | Every 6 hours | 30 days | Local + S3 | GPG (AES256) |
-| WAL archiving | Continuous | 7 days | Local | - |
-| Point-in-time recovery | Continuous | 7 days | WAL archive | - |
+| Full pg_dump (custom format, `pg_dump -Fc`) | Every 24h (sleep-loop service) | 30 days | Local `backup_data` volume + MinIO `backups` bucket | None |
+| WAL archiving | Not implemented | - | - | - |
+| Point-in-time recovery | Not implemented | - | - | - |
 
 ### 7.3 Replication
 
@@ -425,7 +425,7 @@ hexa-studio/
 | Bucket | Public Access | Presigned URLs | Versioning | Lifecycle |
 |--------|--------------|----------------|------------|-----------|
 | `hexa-studio` | No | Yes (1h expiry) | Disabled | 30-day cleanup for `temp/` |
-| `hexa-backups` | No | No | Enabled | None |
+| `backups` | DB dump offsite copy (written by `docker/backup/backup.sh`) | No | - | None |
 
 ### 9.3 Access Control
 
@@ -438,7 +438,7 @@ hexa-studio/
 
 | Frequency | Method | Retention | Destination |
 |-----------|--------|-----------|-------------|
-| Daily | `mc mirror` | 7 days | Local + S3-compatible offsite |
+| - | **Not backed up** — MinIO object store has no mirror job (GAP, see [BACKUP.md](./BACKUP.md)) | - | - |
 | Per-project completion | Manual archive | Indefinite | Cold storage |
 
 ---
@@ -605,10 +605,10 @@ Grafana Tempo data source configured with:
 
 | Backup | Frequency | Retention | Method | Verification |
 |--------|-----------|-----------|--------|-------------|
-| PostgreSQL (all DBs) | Every 6 hours | 30 days | pg_dump (custom, comp 9) + GPG encrypt | Weekly restore test |
-| PostgreSQL WAL | Continuous | 7 days | WAL archiving | Included in PITR |
-| MinIO data | Daily | 7 days | `mc mirror` | Monthly restore drill |
-| MinIO offsite | Daily | 30 days | rclone to S3 | Monthly restore drill |
+| PostgreSQL (all DBs) | Every 24h (sleep-loop service) | 30 days | `pg_dump -Fc` via `docker/backup/backup.sh`; upload to MinIO `backups` bucket via `mc` | Daily scheduled `verify-backup.sh` |
+| PostgreSQL WAL | Not implemented | - | - | - |
+| MinIO data | Not backed up | - | - | GAP (see [BACKUP.md](./BACKUP.md)) |
+| MinIO offsite | Not backed up | - | - | GAP (see [BACKUP.md](./BACKUP.md)) |
 | GitLab data | Daily | 7 days | `gitlab-rake backup:create` | Monthly restore drill |
 | SSL certificates | Auto-renewal | Active | Traefik ACME | Daily uptime check |
 
@@ -616,17 +616,17 @@ Grafana Tempo data source configured with:
 
 | Script | Path | Purpose |
 |--------|------|---------|
-| Database backup | `scripts/backup-db.sh` | pg_dump all databases, encrypt, upload |
-| MinIO backup | `scripts/backup-minio.sh` | mc mirror to local + offsite |
-| Restore database | `scripts/restore-db.sh` | Decrypt + pg_restore single DB |
-| Restore MinIO | `scripts/restore-minio.sh` | mc mirror from backup |
-| Backup verify | `docker compose --profile verify run backup-verify` | PITR testing |
+| Database backup | `docker/backup/backup.sh` | Infinite-loop `pg_dump -Fc` of `hexastudio_api`/`hexastudio_cms`/`hexastudio_odoo`/`hexastudio_db`, 30-day prune, optional MinIO `backups` upload |
+| Backup verify | `docker/backup/verify-backup.sh` | `pg_restore --list` integrity + 25h age check (exit 0/1) |
+| Verification daemon | `docker/backup/verify-loop.sh` | 24h loop wrapper for scheduled self-verification |
+| Restore database | `pg_restore -Fc -d <db> <dump>` | Restore a single DB from a dump (see [BACKUP.md](./BACKUP.md) §5) |
+| Backup verify (compose) | `docker compose -f docker-compose.prod.yml --profile verify run --rm backup-verify` | One-shot verification service |
 
 ### 14.3 Encryption
 
-- All offsite backups encrypted with GPG (AES256 symmetric)
-- Encryption key stored in password manager (rotated annually)
-- Backup verification includes decryption test
+- Backups are **not** GPG-encrypted (the retired encryption scheme is gone)
+- Offsite dumps are uploaded to the internal MinIO `backups` bucket via `mc` (internal network only)
+- Verification uses `pg_restore --list` integrity + 25h age check — no decryption involved
 
 ### 14.4 Monitoring
 
@@ -635,7 +635,7 @@ Grafana Tempo data source configured with:
 | Last backup timestamp | `backup_last_success_timestamp_seconds` | > 24h since success |
 | Backup exit code | `backup_job_failed_total` | > 0 in 1h |
 | Backup file size | Non-empty check | Zero-size file |
-| Encryption integrity | Decrypt test on random sample | Weekly |
+| Backup verification | `verify-backup.sh` exit code (`pg_restore --list` + 25h age) | Daily (scheduled daemon) |
 
 ---
 
@@ -646,7 +646,7 @@ Grafana Tempo data source configured with:
 | Metric | Target |
 |--------|--------|
 | RTO (Recovery Time Objective) | < 1 hour |
-| RPO (Recovery Point Objective) | < 15 minutes |
+| RPO (Recovery Point Objective) | 24 hours (daily dump loop) |
 | Maximum downtime tolerated | 4 hours |
 
 ### 15.2 Recovery Scenarios
@@ -666,7 +666,11 @@ docker compose up -d <service>:<previous-tag>
 # 2. Update DNS to new IP
 # 3. SSH in, git pull latest
 # 4. Restore latest database backup
-./scripts/restore-db.sh --latest
+docker run --rm -v hexastudio_backup_data:/backups:ro postgres:16-alpine \
+  pg_restore -h postgres -U "${POSTGRES_USER:-hexastudio}" -d hexastudio_api \
+  --clean --if-exists --no-owner --no-privileges \
+  /backups/hexastudio_api_<YYYYmmdd-HHMMSS>.dump
+# ... repeat for hexastudio_cms, hexastudio_odoo, hexastudio_db (see BACKUP.md §5)
 # 5. Start services
 docker compose -f docker-compose.prod.yml up -d
 # 6. Verify health
@@ -677,9 +681,12 @@ curl https://hexastudio.net/api/health
 ```bash
 docker compose stop backend cms odoo
 # Identify backup
-ls -la /backups/postgres/
+docker run --rm -v hexastudio_backup_data:/backups postgres:16-alpine ls -lt /backups
 # Restore specific database
-./scripts/restore-db.sh hexa_frontend /backups/postgres/20260726_120000.dump.gpg
+docker run --rm -v hexastudio_backup_data:/backups:ro postgres:16-alpine \
+  pg_restore -h postgres -U "${POSTGRES_USER:-hexastudio}" -d hexastudio_api \
+  --clean --if-exists --no-owner --no-privileges \
+  /backups/hexastudio_api_<YYYYmmdd-HHMMSS>.dump
 # Verify
 docker compose start backend cms odoo
 ```
@@ -709,7 +716,7 @@ docker compose start backend cms odoo
 | Database restore test | Weekly | Restore to test environment, verify queries |
 | Full DR simulation | Monthly | Complete recovery from bare metal |
 | RTO/RPO validation | Quarterly | Measure actual recovery time |
-| Backup encryption test | Weekly | Decrypt a backup file successfully |
+| Backup verification | Weekly | Run `verify-backup.sh` and validate dumps |
 
 ---
 
@@ -765,7 +772,6 @@ docker compose start backend cms odoo
 | SSH keys | Every 365 days | Generate new, deploy to servers | DevOps |
 | SMTP credentials | Every 180 days | Update env vars | DevOps |
 | Cloudflare API token | Every 180 days | Cloudflare dashboard | DevOps |
-| Backup encryption key | Every 365 days | Password manager | DevOps Lead |
 | Sentry auth token | Every 180 days | Sentry dashboard | DevOps |
 
 ### 17.2 Rotation Procedure

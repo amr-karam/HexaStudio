@@ -245,37 +245,27 @@ docker compose up -d --no-recreate <previous-tag>
 
 | Data | Frequency | Retention | Method |
 |------|-----------|-----------|--------|
-| PostgreSQL (all DBs) | Every 6 hours | 30 days | pg_dump with WAL archiving |
-| MinIO (media) | Daily | 7 days | mc mirror |
+| PostgreSQL (all DBs) | Every 24h (sleep-loop service) | 30 days | `pg_dump -Fc` via `docker/backup/backup.sh` |
+| MinIO (media) | Not backed up | — | GAP (see [BACKUP.md](./BACKUP.md)) |
 | Redis (cache) | Not backed up | — | Ephemeral (rebuildable) |
 | Application config | Per deploy | 10 releases | Version control |
 | SSL certs | Auto-renewal | — | Traefik + Let's Encrypt |
 
 ### Backup Script
 
+Backups are produced by the compose `backup` service (24h sleep-loop), not a cron script:
+
 ```bash
-#!/bin/bash
-# scripts/backup.sh
-TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-BACKUP_DIR="/backups/$TIMESTAMP"
+# docker/backup/backup.sh        — infinite-loop pg_dump -Fc of hexastudio_api/cms/odoo/db,
+#                                  30-day prune, optional MinIO `backups` bucket upload via `mc`
+# docker/backup/verify-backup.sh  — pg_restore --list integrity + 25h age check (exit 0/1)
+# docker/backup/verify-loop.sh    — 24h scheduled verification daemon
 
-mkdir -p $BACKUP_DIR
+# Backup service (always-on in docker-compose.prod.yml)
+docker compose -f docker-compose.prod.yml up -d backup
 
-# Database backup
-docker exec postgres pg_dump -U hexa hexa_frontend > $BACKUP_DIR/frontend.sql
-docker exec postgres pg_dump -U hexa hexa_cms > $BACKUP_DIR/cms.sql
-docker exec postgres pg_dump -U hexa hexa_odoo > $BACKUP_DIR/odoo.sql
-
-# Encrypt backups
-gpg --encrypt --recipient admin@hexastudio.net $BACKUP_DIR/frontend.sql
-gpg --encrypt --recipient admin@hexastudio.net $BACKUP_DIR/cms.sql
-gpg --encrypt --recipient admin@hexastudio.net $BACKUP_DIR/odoo.sql
-
-# Upload to offsite storage
-rclone copy $BACKUP_DIR s3:hexa-backups/
-
-# Clean up old backups (keep 30 days)
-find /backups -type d -mtime +30 -exec rm -rf {} \;
+# Scheduled daily backup verification daemon
+docker compose -f docker-compose.prod.yml --profile scheduled up -d backup-verify-scheduled
 ```
 
 ---
