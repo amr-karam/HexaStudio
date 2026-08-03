@@ -716,7 +716,7 @@ Elevating `apps/frontend` to HEXA Creative Excellence standard. All gates green
 ### Quality gate outcome
 - Frontend typecheck ✅ · Frontend lint (`--max-warnings=0`) ✅
 - Backend typecheck ✅ · Backend lint ✅
-- Remaining known issues (carried forward): 24 npm vulns (postcss XSS → defer to Next.js 16.3+), `_corrupted_node_modules_stubs/` (needs `chkdsk /f`), 7 pre-existing backend test failures (Redis/auth).
+- Remaining known issues (carried forward): ~~24 npm vulns~~ → **0 vulnerabilities** (`npm audit` clean Aug 3, 2026 — final brace-expansion DoS GHSA-mh99-v99m-4gvg patched via `npm audit fix`, see commit `3c2af82a`); `_corrupted_node_modules_stubs/` (needs `chkdsk /f`); 7 pre-existing backend test failures (Redis/auth) — since resolved (339/339).
 
 > **NTFS node_modules corruption recovery (proven Aug 3, 2026):** partial file loss in
 > `node_modules` (missing `*.d.ts` while `.d.ts.map` survives → TS7016 "could not find a
