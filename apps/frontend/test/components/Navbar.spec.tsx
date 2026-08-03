@@ -63,18 +63,20 @@ describe('Navbar', () => {
     expect(trigger).toHaveAttribute('aria-controls', 'mobile-menu');
   });
 
-  it('opens mobile menu on trigger click', () => {
+  it('opens mobile menu on trigger click', async () => {
     render(<Navbar />);
     const trigger = screen.getByRole('button', { name: 'Open menu' });
     fireEvent.click(trigger);
-    expect(screen.getByRole('dialog', { name: 'Mobile navigation' })).toBeInTheDocument();
+    // NavbarMobileMenu is lazy-loaded (dynamic, ssr:false) — await the async chunk.
+    expect(await screen.findByRole('dialog', { name: 'Mobile navigation' })).toBeInTheDocument();
   });
 
   it('closes mobile menu on Escape', async () => {
     render(<Navbar />);
     const trigger = screen.getByRole('button', { name: 'Open menu' });
     fireEvent.click(trigger);
-    expect(screen.getByRole('dialog', { name: 'Mobile navigation' })).toBeInTheDocument();
+    // NavbarMobileMenu is lazy-loaded (dynamic, ssr:false) — await the async chunk.
+    expect(await screen.findByRole('dialog', { name: 'Mobile navigation' })).toBeInTheDocument();
 
     fireEvent.keyDown(document, { key: 'Escape' });
 
