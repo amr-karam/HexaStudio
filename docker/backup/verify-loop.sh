@@ -18,7 +18,10 @@ INTERVAL="${VERIFY_INTERVAL:-86400}"
 
 while true; do
   echo "[verify-loop] Running backup verification at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-  if /scripts/verify-backup.sh; then
+  # Invoke via `sh` explicitly: scripts are bind-mounted from the repo host and
+  # may not carry the executable bit (e.g. Windows checkouts), so direct exec
+  # would fail with "Permission denied".
+  if sh /scripts/verify-backup.sh; then
     echo "[verify-loop] Verification PASSED"
   else
     echo "[verify-loop] Verification FAILED — inspect logs above; next attempt in ${INTERVAL}s"
