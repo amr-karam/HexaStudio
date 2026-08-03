@@ -718,6 +718,15 @@ Elevating `apps/frontend` to HEXA Creative Excellence standard. All gates green
 - Backend typecheck ✅ · Backend lint ✅
 - Remaining known issues (carried forward): 24 npm vulns (postcss XSS → defer to Next.js 16.3+), `_corrupted_node_modules_stubs/` (needs `chkdsk /f`), 7 pre-existing backend test failures (Redis/auth).
 
+> **NTFS node_modules corruption recovery (proven Aug 3, 2026):** partial file loss in
+> `node_modules` (missing `*.d.ts` while `.d.ts.map` survives → TS7016 "could not find a
+> declaration file for module 'expo-*' / '@react-navigation/*'" or implicit-`any` inference
+> collapse). `npm install` may fail silently at `placeDep` on the OneDrive-synced path.
+> Working fix: `npm pack <pkg>@<exact-lockfile-version>` then `tar -xzf` into a temp dir and
+> copy `package/*` back into `node_modules/<pkg>/` (registry tarballs are intact). Restored
+> this way: `expo-router@4.0.22`, `expo-notifications@57.0.7`, `@react-navigation/{bottom-tabs,elements,core,native}`.
+> Verified by re-running `npm run typecheck --workspace=apps/mobile` (0 errors).
+
 ---
 
 
