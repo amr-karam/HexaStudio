@@ -245,8 +245,10 @@ docker compose -f docker-compose.prod.yml logs --tail=50 backup-verify-scheduled
 
 > There is no cloud (GitHub Actions) verification job because the dumps live on the
 > production server / internal MinIO, not in S3. The scheduled container is the
-> verification mechanism. Recommended follow-up: a Loki alert on the
-> `[verify-loop] Verification FAILED` log line.
+> verification mechanism. **Implemented:** `BackupVerificationFailed` and related
+> backup alerts in `docker/loki/rules/fake/loki-alerts.yml` (group `hexa-backup`)
+> fire on the `[verify-loop] Verification FAILED` / `FAIL:` / `FATAL:` log lines
+> and route through Alertmanager — see `docs/devops/BACKUP.md` §8.
 
 ## Emergency Contacts
 

@@ -18,7 +18,7 @@ Alertmanager, which groups, dedupes, and routes notifications.
 | Engine | Rule format | Files | Evaluated |
 |--------|------------|-------|-----------|
 | Prometheus | PromQL | `docker/prometheus/rules/alerts.yml` (17 rules) | every 15s |
-| Loki Ruler | LogQL | `docker/loki/rules/fake/loki-alerts.yml` (10 rules) | every 30s |
+| Loki Ruler | LogQL | `docker/loki/rules/fake/loki-alerts.yml` (13 rules) | every 30s |
 
 ---
 
