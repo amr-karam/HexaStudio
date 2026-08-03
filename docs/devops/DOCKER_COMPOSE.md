@@ -62,8 +62,9 @@ environment:
 
 Beyond core applications, Compose manages key utility containers:
 - **`minio-init`**: Runs `/scripts/init-buckets.sh` to initialize MinIO buckets upon startup.
-- **`backup`**: Executes automated GPG-encrypted PostgreSQL dumps every 6 hours.
-- **`backup-verify`**: Profiles-gated container (`--profile verify`) for testing Point-in-Time Recovery (PITR).
+- **`backup`**: Runs `docker/backup/backup.sh` — infinite-loop `pg_dump -Fc` of `hexastudio_api`, `hexastudio_cms`, `hexastudio_odoo`, `hexastudio_db` every 24h, 30-day prune, optional MinIO `backups` bucket upload via `mc`.
+- **`backup-verify`**: Profiles-gated container (`--profile verify`) running `docker/backup/verify-backup.sh` (`pg_restore --list` integrity + 25h age check, exit 0/1).
+- **`backup-verify-scheduled`**: Profiles-gated daemon (`--profile scheduled`) running `docker/backup/verify-loop.sh` (24h verification loop).
 - **`watchtower`**: Scheduled updates for authorized third-party base images.
 
 ---
@@ -82,6 +83,9 @@ docker compose -f docker-compose.prod.yml config
 
 # Run backup verification drill
 docker compose -f docker-compose.prod.yml --profile verify run --rm backup-verify
+
+# Enable scheduled daily backup verification daemon
+docker compose -f docker-compose.prod.yml --profile scheduled up -d backup-verify-scheduled
 ```
 
 ---

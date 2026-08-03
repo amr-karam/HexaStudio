@@ -32,7 +32,7 @@ PostgreSQL 16 is the primary relational database, shared across three applicatio
 
 ### 1.2 Databases
 
-#### 1.2.1 `hexa_backend` — NestJS Application Database
+#### 1.2.1 `hexastudio_api` — NestJS Application Database
 
 **Purpose**: Primary application database for the NestJS BFF. Stores users, authentication, contacts, application state, and cache.
 
@@ -63,7 +63,7 @@ PostgreSQL 16 is the primary relational database, shared across three applicatio
 | `audit_log` | `idx_audit_log_created_at` | B-tree | Time-based queries |
 | `sync_state` | `idx_sync_state_model` | UNIQUE B-tree | Per-model sync tracking |
 
-#### 1.2.2 `hexa_cms` — Strapi CMS Database
+#### 1.2.2 `hexastudio_cms` — Strapi CMS Database
 
 **Purpose**: Stores all marketing content for the Strapi 5 headless CMS.
 
@@ -92,7 +92,7 @@ PostgreSQL 16 is the primary relational database, shared across three applicatio
 | `articles` | `idx_articles_published_at` | B-tree | Date-ordered queries |
 | `services` | `idx_services_slug` | UNIQUE B-tree | URL slug lookup |
 
-#### 1.2.3 `hexa_odoo` — Odoo ERP Database
+#### 1.2.3 `hexastudio_odoo` — Odoo ERP Database
 
 **Purpose**: Odoo 18 ERP database containing all business operations data.
 
@@ -160,32 +160,34 @@ There is **no direct foreign key** between PostgreSQL databases. Cross-database 
 
 | Aspect | Configuration |
 |--------|---------------|
-| Tool | `pg_dump` (custom format, compression level 9) |
-| Frequency | Every 6 hours |
-| Retention | 30 days |
-| Encryption | GPG AES256 symmetric |
-| Storage | Local (`/backups/postgres/`) + S3-compatible offsite |
-| Verification | Weekly restore to test environment |
-| WAL archiving | Continuous, 7-day retention |
-| PITR capability | Yes — base backup + WAL archive |
+| Tool | `pg_dump -Fc` (custom format) via `docker/backup/backup.sh` |
+| Frequency | Every 24h (sleep-loop service) |
+| Retention | 30 days (local prune) |
+| Encryption | None (GPG retired) |
+| Storage | Local `backup_data` volume (`/backups`) + MinIO `backups` bucket |
+| Verification | Daily scheduled `verify-backup.sh` (`pg_restore --list` + 25h age check) |
+| WAL archiving | Not implemented |
+| PITR capability | Not implemented — restore to latest dump (RPO 24h) |
 
 ### 1.6 Point-in-Time Recovery
 
+Not implemented — WAL archiving is not configured. Recovery is limited to the latest
+`pg_dump -Fc` dump (RPO 24 hours). See `docs/devops/BACKUP.md` §5 for the restore procedure:
+
 ```bash
-# 1. Restore base backup
-pg_restore -U hexa -d hexa_backend --clean /backups/postgres/latest_base.dump
-
-# 2. Configure recovery.conf
-echo "restore_command = 'cp /wal_archive/%f %p'" > recovery.conf
-echo "recovery_target_time = '2026-07-26 14:30:00 UTC'" >> recovery.conf
-
-# 3. Start PostgreSQL in recovery mode
-pg_ctl start -D /var/lib/postgresql/data
-
-# 4. Verify data at target time
-# 5. Promote to primary when satisfied
-pg_ctl promote -D /var/lib/postgresql/data
+# Restore a single database from the latest dump
+docker run --rm \
+  --network hexastudio_internal \
+  -v hexastudio_backup_data:/backups:ro \
+  -e PGPASSWORD="${POSTGRES_PASSWORD}" \
+  postgres:16-alpine \
+  pg_restore -h postgres -U "${POSTGRES_USER:-hexastudio}" \
+    -d hexastudio_api \
+    --clean --if-exists --no-owner --no-privileges \
+    /backups/hexastudio_api_<YYYYmmdd-HHMMSS>.dump
 ```
+
+Repeat for `hexastudio_cms`, `hexastudio_odoo`, `hexastudio_db`.
 
 ### 1.7 Performance Notes
 
@@ -271,7 +273,7 @@ pg_ctl promote -D /var/lib/postgresql/data
 | Bucket | Purpose | Access | Versioning |
 |--------|---------|--------|------------|
 | `hexa-studio` | Main application storage | Private (signed URLs) | No |
-| `hexa-backups` | Backup storage for offsite replication | Private | Yes |
+| `backups` | DB dump offsite copy (written by `docker/backup/backup.sh`) | Private | - |
 
 ### 3.3 Object Hierarchy
 
@@ -331,7 +333,7 @@ hexa-studio/
 
 | Frequency | Method | Retention | Destination |
 |-----------|--------|-----------|-------------|
-| Daily | `mc mirror --overwrite` | 7 days local, 30 days offsite | S3-compatible |
+| — | **Not backed up** — no `mc mirror` job exists (GAP, see `docs/devops/BACKUP.md`) | — | — |
 
 ---
 
@@ -403,10 +405,9 @@ Query → EmbeddingService → Qdrant search → Return top-k results
 │  │  └──────┬──────┘   └─────────────┘   └──────────────┘ │ │
 │  │         │                                               │ │
 │  │  ┌──────┴──────────────────────────────────────────┐   │ │
-│  │  │         ┌──────────┐  ┌──────────┐  ┌────────┐  │   │ │
-│  │  │         │ hexa_    │  │ hexa_    │  │ hexa_  │  │   │ │
-│  │  │         │ backend  │  │ cms      │  │ odoo   │  │   │ │
-│  │  │         └──────────┘  └──────────┘  └────────┘  │   │ │
+│  │  │         ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  │   │ │
+│  │  │         │ hexastudio_api  │  │ hexastudio_cms  │  │ hexastudio_odoo │  │   │ │
+│  │  │         └─────────────────┘  └─────────────────┘  └─────────────────┘  │   │ │
 │  │  └──────────────────────────────────────────────────┘   │ │
 │  │                                                         │ │
 │  │  ┌────────────────────┐                                 │ │
@@ -428,9 +429,9 @@ All databases are accessed via internal Docker service names:
 
 | Database | Service Name | Connection String Pattern |
 |----------|-------------|--------------------------|
-| PostgreSQL (backend) | `postgres` | `postgresql://hexa:${PASSWORD}@postgres:5432/hexa_backend` |
-| PostgreSQL (cms) | `postgres` | `postgresql://hexa:${PASSWORD}@postgres:5432/hexa_cms` |
-| PostgreSQL (odoo) | `postgres` | `postgresql://hexa:${PASSWORD}@postgres:5432/hexa_odoo` |
+| PostgreSQL (api) | `postgres` | `postgresql://hexastudio:${PASSWORD}@postgres:5432/hexastudio_api` |
+| PostgreSQL (cms) | `postgres` | `postgresql://hexastudio:${PASSWORD}@postgres:5432/hexastudio_cms` |
+| PostgreSQL (odoo) | `postgres` | `postgresql://hexastudio:${PASSWORD}@postgres:5432/hexastudio_odoo` |
 | Redis | `redis` | `redis://:${PASSWORD}@redis:6379/0` |
 | MinIO | `minio` | `http://minio:9000` (API) |
 | Qdrant | `qdrant` | `http://qdrant:6333` |
@@ -439,9 +440,9 @@ All databases are accessed via internal Docker service names:
 
 | Database | Method | Frequency | Retention | RPO | RTO |
 |----------|--------|-----------|-----------|-----|-----|
-| PostgreSQL | pg_dump (custom) + WAL | Every 6h + continuous | 30 days | < 15 min | < 1h |
+| PostgreSQL | pg_dump -Fc (sleep-loop service) | Every 24h | 30 days | 24h | < 1h |
 | Redis | RDB snapshots | Every 5 min | 24h | < 5 min | < 5 min |
-| MinIO | mc mirror | Daily | 7 days local, 30 days offsite | < 1 day | < 2h |
+| MinIO | Not backed up (GAP) | — | — | — | — |
 | Qdrant | Snapshot API | Daily | 7 days | < 1 day | < 1h |
 
 ---

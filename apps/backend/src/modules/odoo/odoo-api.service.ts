@@ -31,11 +31,35 @@ import {
 
 // OdooCompanySettings is now defined in @hexastudio/types as OdooCompany
 
+/**
+ * Thin JSON-RPC-style client bound to the configured Odoo server.
+ *
+ * Mirrors Odoo's `execute_kw` call with the connection credentials
+ * pre-bound — callers only provide `(model, method, args)`.
+ */
+export interface OdooRpcClient {
+  execute_kw<T = unknown>(model: string, method: string, args: unknown[]): Promise<T>;
+}
+
 @Injectable()
 export class OdooApiService {
   private readonly logger = new Logger(OdooApiService.name);
 
   constructor(private readonly odooService: OdooService) {}
+
+  /**
+   * Create a thin RPC client bound to the configured Odoo database.
+   *
+   * The returned client exposes `execute_kw(model, method, args)` which
+   * delegates to the underlying `OdooService` (including authentication and
+   * circuit-breaker handling).
+   */
+  async connect(): Promise<OdooRpcClient> {
+    return {
+      execute_kw: <T>(model: string, method: string, args: unknown[]): Promise<T> =>
+        this.odooService.execute<T>(model, method, args),
+    };
+  }
 
   async getCrmPipeline(): Promise<OdooPipelineSummary> {
     const leads = (await this.odooService.searchRead(

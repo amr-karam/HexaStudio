@@ -12,30 +12,29 @@ To ensure zero data loss for the platform's critical databases (PostgreSQL) and 
 
 ## Prerequisites
 
-- Backup scripts configured and running (`scripts/backup-db.sh`).
-- S3-compatible storage (MinIO) available.
-- Encryption keys securely stored in password manager.
+- Backup service configured and running (`docker/backup/backup.sh` via the compose `backup` service).
+- Internal MinIO available (`backups` bucket receives the offsite dumps).
+- DB / MinIO credentials stored in the server `.env` and password manager.
 
 ## Step-by-Step Process
 
 ### 1. Regular Backup (Automated)
-- **Full Dump:** `pg_dump` runs every 6 hours for all DBs.
-- **WAL Archiving:** Continuous archiving of Write-Ahead Logs (WAL) to ensure point-in-time recovery.
-- **Encryption:** All backups are encrypted with AES-256 before upload.
-- **Offsite Storage:** Backups are mirrored to a secondary S3 bucket in a different region.
+- **Full Dump:** `pg_dump -Fc` runs every 24h via the `backup` sleep-loop service for all four application DBs (`hexastudio_api`, `hexastudio_cms`, `hexastudio_odoo`, `hexastudio_db`).
+- **WAL Archiving:** Not implemented — point-in-time recovery is not available (see `docs/devops/BACKUP.md`).
+- **Encryption:** Not used — GPG encryption was retired. Dumps are uploaded to the internal MinIO `backups` bucket via `mc` (internal network only).
+- **Offsite Storage:** Dumps are uploaded to the MinIO `backups` bucket on the same host — see `docs/devops/BACKUP.md` for the offsite gap.
 
 ### 2. Recovery Procedure (Manual)
 - **Preparation:** Stop all application services (`docker compose stop backend cms odoo`).
-- **Fetch:** Download the latest valid dump from S3.
-- **Decrypt:** Decrypt the file using the master key.
-- **Restore:** Use `pg_restore` to overwrite the database.
+- **Fetch:** Take the latest dump from the local `backup_data` volume, or download from MinIO: `mc cp hexabackup/backups/<file> /backups/` (see `docs/devops/BACKUP.md` §5.2).
+- **Decrypt:** Not required — dumps are not encrypted.
+- **Restore:** Use `pg_restore -Fc -d <db> --clean --if-exists --no-owner --no-privileges <dump>` for each application DB (`hexastudio_api`, `hexastudio_cms`, `hexastudio_odoo`, `hexastudio_db`).
 - **Verify:** Run basic data integrity checks (count records, check latest timestamps).
 - **Restart:** Start services and verify health.
 
 ### 3. Point-in-Time Recovery (PITR)
-- **Replay:** Restore the last full dump.
-- **Apply WAL:** Replay WAL logs up to the specific timestamp before the corruption occurred.
-- **Validate:** Check that the data state is correct.
+- **Not available** — WAL archiving is not configured. Recovery is limited to the latest `pg_dump -Fc` dump (RPO 24 hours).
+- **Restore:** Restore the latest dump per database (see `docs/devops/BACKUP.md` §5) and validate data freshness within the 24h RPO.
 
 ## Verification
 
@@ -48,7 +47,7 @@ To ensure zero data loss for the platform's critical databases (PostgreSQL) and 
 | Issue | Action |
 |-------|---------|
 | Backup file corrupted | Use the previous backup (accept RPO loss) |
-| Encryption key lost | Restore from physical backup keys (Escrow) |
+| Encryption key lost | Not applicable — dumps are not encrypted (retired scheme) |
 | Restore takes too long | Scale up DB resources temporarily for restore |
 
 ## Related Docs

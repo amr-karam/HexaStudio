@@ -5,7 +5,10 @@ import os
 
 host = "19.16.1.100"
 user = "root"
-key_path = os.path.abspath("hexastudio_key")
+# Key lives in the user SSH dir (never commit it). Falls back to repo-root copy
+# only if the canonical location is absent.
+home_key = os.path.expanduser("~/.ssh/hexastudio_key")
+key_path = home_key if os.path.exists(home_key) else os.path.abspath("hexastudio_key")
 
 print(f"Connecting to {user}@{host} using SSH Key: {key_path}...")
 

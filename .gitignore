@@ -153,3 +153,8 @@ docker.tar.gz
 # SSH private keys (never commit)
 *.key
 hexastudio_key
+
+# Personal/editor scratch (Obsidian vault, OneDrive path spills, daily notes)
+.obsidian/
+CUsers/
+Daily Notes/
