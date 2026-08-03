@@ -606,6 +606,11 @@ services:
       - ./docker/backup/minio-backup.sh:/scripts/minio-backup.sh:ro
       - backup_data:/backups
     networks:
+      # `web` (egress) is required so minio-backup.sh can download the static `mc`
+      # binary on first start — the `internal` network is `internal: true` (no
+      # internet). Same dual-network wiring as the `backup` service. MinIO is
+      # reached via `internal`.
+      - web
       - internal
     healthcheck:
       test: ["CMD", "pgrep", "-f", "/scripts/minio-backup.sh"]
