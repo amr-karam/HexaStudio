@@ -26,7 +26,25 @@ export function ContractGeneratorView() {
       if (res.ok) {
         const data = await res.json();
         setContractData(data);
+      } else {
+        // Backend route not yet available — generate a local draft
+        const contractId = `CTR-${Date.now()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
+        const quotationRef = `QUO-${Date.now()}`;
+        setContractData({
+          contractId,
+          quotationRef,
+          agreementText: `**${title}**\n\nImpact: ${impactAmount}\n\n${description}\n\n---\n*This is a draft contract generated locally. The backend contract service will be available soon.*`,
+        });
       }
+    } catch {
+      // Network error — generate a local draft
+      const contractId = `CTR-${Date.now()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
+      const quotationRef = `QUO-${Date.now()}`;
+      setContractData({
+        contractId,
+        quotationRef,
+        agreementText: `**${title}**\n\nImpact: ${impactAmount}\n\n${description}\n\n---\n*This is a draft contract generated locally. The backend contract service will be available soon.*`,
+      });
     } finally {
       setIsGenerating(false);
     }
