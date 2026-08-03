@@ -63,11 +63,11 @@ git push -u origin "$BRANCH" 2>/dev/null && ok "Branch pushed to origin." || tru
 echo ""
 
 # ── Run setup in new worktree ────────────────────────────────────────────────
-if [ -f "$WORKTREE_PATH/.setup.sh" ]; then
+if [ -f "$WORKTREE_PATH/ops/scripts/.setup.sh" ]; then
   info "Running worktree setup..."
-  (cd "$WORKTREE_PATH" && bash .setup.sh)
+  (cd "$WORKTREE_PATH" && bash ops/scripts/.setup.sh)
 else
-  info "No .setup.sh found; running minimal setup..."
+  info "No ops/scripts/.setup.sh found; running minimal setup..."
   (cd "$WORKTREE_PATH" && npm install --no-audit --no-fund && npm run build 2>/dev/null || true)
 fi
 

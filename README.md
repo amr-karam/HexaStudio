@@ -59,7 +59,7 @@ git clone ssh://git@19.16.1.100:2222/hexa/hexa-studio.git
 cd hexa-studio
 
 # Automated preparation (installs deps, builds, validates)
-bash .setup.sh
+bash ops/scripts/.setup.sh
 # Or: npm run setup
 
 # Launch the ecosystem
@@ -116,7 +116,7 @@ npm run worktree:add -- feature/my-branch
 
 # Or manually then setup
 git worktree add -b feature/my-branch ../worktrees/my-branch
-bash .setup.sh
+bash ops/scripts/.setup.sh
 ```
 
 ### 6. Access Points

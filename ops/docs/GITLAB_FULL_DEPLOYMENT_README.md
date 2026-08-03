@@ -26,7 +26,7 @@ cp .env.gitlab.example .env.gitlab
 # Edit .env.gitlab and add SMTP credentials
 
 # 4. Deploy GitLab CE
-./deploy-gitlab-full.ps1
+./ops/scripts/deploy-gitlab-full.ps1
 
 # 5. Wait for deployment (10-30 minutes)
 # 6. Access GitLab at: https://gitlab.hexastudio.net
@@ -40,7 +40,7 @@ cp .env.gitlab.example .env.gitlab
 .gitlab-full-deployment/
 ├── gitlab-docker-compose.full.yml    # Main docker-compose file
 ├── .env.gitlab                       # Environment variables
-├── deploy-gitlab-full.ps1            # Deployment script
+├── ops/scripts/deploy-gitlab-full.ps1            # Deployment script
 ├── GITLAB_FULL_DEPLOYMENT_README.md  # This guide
 ├── docker/
 │   ├── grafana/
@@ -177,7 +177,7 @@ notepad .env.gitlab
 ```powershell
 # Run deployment script
 .
-\deploy-gitlab-full.ps1
+\ops/scripts/deploy-gitlab-full.ps1
 ```
 
 **Deployment Process:**

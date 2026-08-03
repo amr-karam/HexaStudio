@@ -2,6 +2,8 @@
 
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
 echo "🚀 Starting Local Staging Deployment for HEXA Vision..."
 
 # 1. Environment Setup
@@ -19,7 +21,7 @@ docker compose up -d
 
 # 3. Health Check
 echo "🔍 Running health checks..."
-./healthcheck.sh
+"$SCRIPT_DIR/healthcheck.sh"
 
 if [ $? -eq 0 ]; then
     echo "🎉 Deployment Successful! Application accessible at http://localhost"

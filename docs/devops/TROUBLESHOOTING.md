@@ -36,10 +36,10 @@ Ensure the `.env` variables match exactly in `docker-compose.yml`.
 - Check nginx logs: `docker compose logs nginx`
 
 ### 4. Permissions Issues
-**Symptom:** `deploy-local.sh` fails with `Permission denied`.
+**Symptom:** `ops/scripts/deploy-local.sh` fails with `Permission denied`.
 **Fix:** Ensure scripts are executable:
 ```bash
-chmod +x deploy-local.sh healthcheck.sh
+chmod +x ops/scripts/deploy-local.sh ops/scripts/healthcheck.sh
 ```
 
 ### 5. Memory Exhaustion

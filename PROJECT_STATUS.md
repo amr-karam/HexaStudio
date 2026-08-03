@@ -17,7 +17,7 @@
 | **GitLab CE** | `https://gitlab.hexastudio.net` |
 | **Container Registry** | `registry.gitlab.hexastudio.net` |
 | **Edge Proxy** | Traefik v3 + Cloudflare Tunnel |
-| **Deploy Script** | `python deploy.py root C:\Users\amrmo\.ssh\hexastudio_key "..."` |
+| **Deploy Script** | `python ops/scripts/deploy.py root C:\Users\amrmo\.ssh\hexastudio_key "..."` |
 
 ---
 
@@ -125,6 +125,13 @@ All keys from `C:\Users\amrmo\OneDrive\Desktop\API` have been populated in:
 
 ### Security finding (actionable)
 - [x] `gitlab-docker-compose.full.yml` + `docker-compose.yml` — **5 hardcoded default secrets removed** (Grafana ×2, Sentry DB, Sentry Redis, Meilisearch) → required-variable form; `.env.example` updated; YAML validity verified (Aug 2, 2026).
+
+### Backup documentation reconciliation + scheduled verification (Aug 2, 2026)
+- [x] `docs/devops/BACKUP.md` and `docs/devops/BACKUP_RESTORE_DRILL.md` rewritten to match the **actual** implementation (`docker/backup/backup.sh` sleep-loop service; 4 DBs `hexastudio_api|cms|odoo|db`; 30-day retention; `pg_dump -Fc`; local `backup_data` volume + MinIO `backups` bucket; RPO **24h**); legacy S3/GPG/`rclone`/`hexa_*` scheme marked retired.
+- [x] Added `backup-verify-scheduled` service (profile `scheduled`) + `docker/backup/verify-loop.sh` for daily self-verification; manual `--profile verify` behavior unchanged.
+- [x] `docs/devops/DISASTER_RECOVERY.md` stale DB names/scripts/RPO fixed (minimal edits).
+- [x] `docker-compose.prod.yml` validated with `docker compose config` (parses cleanly).
+- [ ] **Gap:** no MinIO object-store mirror job; offsite copy is the same-host MinIO `backups` bucket only.
 
 ---
 

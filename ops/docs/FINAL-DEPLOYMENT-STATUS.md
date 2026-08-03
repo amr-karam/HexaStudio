@@ -93,7 +93,7 @@
 
 🔧 GitLab CE Deployment Package
 ├── gitlab-docker-compose.yml (Production-ready)
-├── deploy-gitlab.ps1 (Automated script)
+├── ops/scripts/deploy-gitlab.ps1 (Automated script)
 ├── GITLAB_DEPLOYMENT_GUIDE.md (100+ pages)
 └── DEPLOYMENT_SUMMARY.md (Quick reference)
 
@@ -201,7 +201,7 @@
 |-----------|--------|---------|------------|
 | **DNS Configuration** | ⏳ **PENDING** | 3 A records to configure | DNS provider access |
 | **GitLab CE Server** | ✅ **ACCESSIBLE** | 19.16.1.100 all ports open | DNS configured |
-| **GitLab CE Deployment** | ✅ **SCRIPT READY** | deploy-gitlab.ps1 | DNS configured |
+| **GitLab CE Deployment** | ✅ **SCRIPT READY** | ops/scripts/deploy-gitlab.ps1 | DNS configured |
 | **API Server Code** | ✅ **COMPLETE** | All endpoints, services, modules | GitLab running |
 | **Frontend Code** | ✅ **COMPLETE** | PortalAiCopilot, SocketProvider | API running |
 | **Monitoring Stack** | ✅ **COMPLETE** | Prometheus, Grafana, Loki, Sentry | Containers start |
@@ -248,7 +248,7 @@ nslookup gitlab.hexastudio.net
 **Command:**
 ```powershell
 cd C:\Users\amrmo\OneDrive\Desktop\hexastudio.net
-."\deploy-gitlab.ps1"
+."\ops/scripts/deploy-gitlab.ps1"
 ```
 
 **What it does:**
@@ -429,7 +429,7 @@ npm run lighthouse
 - [ ] Test DNS resolution
 
 ### **GitLab CE Deployment**
-- [ ] Run deploy-gitlab.ps1
+- [ ] Run ops/scripts/deploy-gitlab.ps1
 - [ ] Verify container status
 - [ ] Access GitLab web interface
 - [ ] Configure GitLab (admin, projects, runners)
@@ -554,7 +554,7 @@ npm run start:prod
 - DNS Configuration: Configure 3 A records (15-30 minutes)
 
 ### **🚀 READY TO DEPLOY**
-- GitLab CE deployment script: `."\deploy-gitlab.ps1"`
+- GitLab CE deployment script: `."\ops/scripts/deploy-gitlab.ps1"`
 - API deployment scripts: Ready
 - Frontend deployment scripts: Ready
 - Monitoring scripts: Ready
@@ -574,7 +574,7 @@ npm run start:prod
 2. **Then run:**
    ```powershell
    cd C:\Users\amrmo\OneDrive\Desktop\hexastudio.net
-   ."\deploy-gitlab.ps1"
+   ."\ops/scripts/deploy-gitlab.ps1"
    ```
 
 3. **Everything else is automated!** 🚀

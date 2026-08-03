@@ -30,14 +30,14 @@ nano .env # Update passwords and secrets
 
 ### 4. Deploy
 ```bash
-chmod +x deploy-local.sh healthcheck.sh
-./deploy-local.sh
+chmod +x ops/scripts/deploy-local.sh ops/scripts/healthcheck.sh
+./ops/scripts/deploy-local.sh
 ```
 
 ## Verification
 Run the health check manually:
 ```bash
-./healthcheck.sh
+./ops/scripts/healthcheck.sh
 ```
 
 ## Access
