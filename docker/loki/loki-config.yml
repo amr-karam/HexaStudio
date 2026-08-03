@@ -45,11 +45,16 @@ query_scheduler:
   max_outstanding_requests_per_tenant: 100
 
 # Ruler for log-based alerts
+# NOTE: storage.local.directory is the rule-file SOURCE (mounted :ro from the
+# repo — safe). rule_path is the ruler's WRITABLE scratch dir where the rule
+# mapper stages mapped rules; it MUST differ from the read-only source, or the
+# mapper fails with "unable to map rule files ... read-only file system" every
+# evaluation interval (see grafana/loki issue #13027). /tmp is writable.
 ruler:
   storage:
     type: local
     local:
       directory: /loki/rules
-  rule_path: /loki/rules
+  rule_path: /tmp/loki/scratch
   alertmanager_url: http://alertmanager:9093
   enable_api: true
