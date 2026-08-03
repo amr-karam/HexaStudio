@@ -12,7 +12,8 @@ ok()    { echo -e "${GREEN}[setup]${NC} $*"; }
 warn()  { echo -e "${YELLOW}[setup]${NC} $*"; }
 err()   { echo -e "${RED}[setup]${NC} $*" >&2; }
 
-ROOT="$(cd "$(dirname "$0")" && pwd)"
+# ops/scripts/.setup.sh -> walk up two levels to the repository root
+ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
 
 info "HEXA Studio — Worktree Setup"

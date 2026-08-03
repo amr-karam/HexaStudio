@@ -6,8 +6,11 @@
 ├── .env                     # Environment secrets
 ├── docker-compose.yml       # Orchestration
 ├── .dockerignore            # Docker exclusion list
-├── deploy-local.sh          # Automation script
-├── healthcheck.sh           # Verification script
+├── ops/
+│   ├── scripts/             # Deploy & operational scripts
+│   │   ├── deploy-local.sh  # Automation script
+│   │   └── healthcheck.sh   # Verification script
+│   └── archive/             # Archived operational artifacts (gitignored)
 ├── docker/
 │   ├── nginx/               # Reverse proxy config
 │   │   └── nginx.conf

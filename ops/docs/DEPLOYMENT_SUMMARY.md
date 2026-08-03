@@ -48,7 +48,7 @@
 ```
 ├── gitlab-docker-compose.full.yml (12.9 KB)
 ├── .env.gitlab (4.0 KB)
-├── deploy-gitlab-full.ps1 (19.5 KB)
+├── ops/scripts/deploy-gitlab-full.ps1 (19.5 KB)
 └── DEPLOYMENT_SUMMARY.md (This file)
 ```
 

@@ -128,6 +128,7 @@ HEXA-Vision-Playbook/**/lighthouse-*.json
 *.max
 *.rar
 *.zip
+*.tar.gz
 *.7z
 *.fbx
 *.obj
@@ -143,6 +144,11 @@ pnpm-workspace.yaml
 var/
 hexa-hab/
 deploy_log.txt
+
+# Archived operational artifacts (dead scripts, logs, bundles, one-off fixes)
+# Root should hold only manifests — see ops/ for the archive inventory.
+ops/archive/
+docker.tar.gz
 
 # SSH private keys (never commit)
 *.key

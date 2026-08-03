@@ -20,10 +20,10 @@ HEAD=$(git rev-parse --short HEAD 2>/dev/null || echo "unborn")
 # In a linked worktree (created by `git worktree add`), $ROOT/.git is a file
 # pointing at the real gitdir; in the main checkout/clone it is a directory.
 # Worktrees are often short-lived, so skip the heavy install/build here and let
-# the developer run `bash .setup.sh` on demand. Clones/main checkouts still set up.
+# the developer run `bash ops/scripts/.setup.sh` on demand. Clones/main checkouts still set up.
 if [ -f "$ROOT/.git" ]; then
   echo "  Linked worktree detected — skipping automatic setup."
-  echo "  Run 'bash .setup.sh' inside the worktree if you need dependencies."
+  echo "  Run 'bash ops/scripts/.setup.sh' inside the worktree if you need dependencies."
   exit 0
 fi
 
@@ -36,8 +36,8 @@ if [ ! -d "node_modules" ]; then
   echo "────────────────────────────────────────────────────────────────────"
   echo ""
 
-  if [ -f ".setup.sh" ]; then
-    bash .setup.sh
+  if [ -f "ops/scripts/.setup.sh" ]; then
+    bash ops/scripts/.setup.sh
   else
     # Match the documented install/build contract (AGENTS.md / ci.yml).
     npm install --legacy-peer-deps --no-audit --no-fund && \

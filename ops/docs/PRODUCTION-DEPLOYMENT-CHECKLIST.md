@@ -69,7 +69,7 @@ TXT     | hexastudio.net                | "v=spf1 include:_spf.google.com ~all" 
 
 **Files Ready:**
 - ✅ `gitlab-docker-compose.yml` (production-ready)
-- ✅ `deploy-gitlab.ps1` (automated script)
+- ✅ `ops/scripts/deploy-gitlab.ps1` (automated script)
 - ✅ `GITLAB_DEPLOYMENT_GUIDE.md` (100+ page guide)
 
 **Deployment Steps:**
@@ -87,7 +87,7 @@ docker compose version
 # Expected: Docker Compose version v2.23.0 or later
 
 # 4. Run deployment script
-."\deploy-gitlab.ps1"
+."\ops/scripts/deploy-gitlab.ps1"
 
 # 5. Follow interactive prompts
 #    - Confirm DNS is configured
@@ -611,7 +611,7 @@ npm run migration:revert
 - 📖 docker-compose.monitoring.yml (Monitoring)
 
 ### **Scripts**
-- 📜 deploy-gitlab.ps1 (GitLab deployment)
+- 📜 ops/scripts/deploy-gitlab.ps1 (GitLab deployment)
 - 📜 test-ai-pipeline.ps1 (Integration test)
 - 📜 backup-database.sh (Backup script)
 - 📜 restore-database.sh (Restore script)

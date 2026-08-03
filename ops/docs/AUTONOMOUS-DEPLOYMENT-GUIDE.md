@@ -70,7 +70,7 @@ DNS Records Configured:
 DNS propagation will take 15-30 minutes
 You can verify with: nslookup gitlab.hexastudio.net
 
-Next step: Run deploy-gitlab.ps1
+Next step: Run ops/scripts/deploy-gitlab.ps1
 ==========================================
 ```
 
@@ -89,7 +89,7 @@ nslookup gitlab.hexastudio.net
 cd C:\Users\amrmo\OneDrive\Desktop\hexastudio.net
 
 # Run the deployment script
-."\deploy-gitlab.ps1"
+."\ops/scripts/deploy-gitlab.ps1"
 ```
 
 **What the script does automatically:**
@@ -289,7 +289,7 @@ npm run lighthouse
 ```
 Time 0:00  → Configure DNS via Cloudflare API (2 minutes)
 Time 0:02  → DNS propagation (15-30 minutes)
-Time 0:30  → Run deploy-gitlab.ps1 (45-90 minutes)
+Time 0:30  → Run ops/scripts/deploy-gitlab.ps1 (45-90 minutes)
 Time 2:00  → Deploy API server (15 minutes)
 Time 2:15  → Deploy frontend (15 minutes)
 Time 2:30  → Start monitoring (15 minutes)
@@ -333,7 +333,7 @@ C:\Users\amrmo\OneDrive\Desktop\hexastudio.net\
 ├── GITLAB_DEPLOYMENT_GUIDE.md            ← GitLab guide (100+ pages)
 ├── configure-dns-cloudflare.ps1          ← Cloudflare DNS script
 ├── test-ai-pipeline.ps1                  ← Integration test
-├── deploy-gitlab.ps1                     ← GitLab deployment script
+├── ops/scripts/deploy-gitlab.ps1                     ← GitLab deployment script
 ├── gitlab-docker-compose.yml             ← GitLab config
 └── docker-compose.monitoring.yml        ← Monitoring config
 ```
@@ -405,7 +405,7 @@ $env:CLOUDFLARE_API_KEY = "cfk_CsOmAm6voORiPLSjRvH3J2H9iNMYjlwJv5zHVysZ7b22cd39"
 pwsh -ExecutionPolicy Bypass -File .\configure-dns-cloudflare.ps1
 
 # Step 2: Deploy GitLab CE (45-90 minutes)
-."\deploy-gitlab.ps1"
+."\ops/scripts/deploy-gitlab.ps1"
 
 # Step 3: Deploy API & Frontend (30 minutes)
 cd hexa-hub\apps\api && npm install && npm run start:prod
