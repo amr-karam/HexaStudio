@@ -27,8 +27,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 2G
-          cpus: '2'
+          memory: 8G
+          cpus: '4'
 
 volumes:
   gitlab_runner_config:
