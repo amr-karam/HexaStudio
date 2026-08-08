@@ -1,3 +1,4 @@
+import { timingSafeEqual } from 'crypto';
 import { EventEmitter } from 'events';
 import { spawn, ChildProcess, execSync } from 'child_process';
 import { promises as fs } from 'fs';
@@ -136,7 +137,7 @@ export class McpBridge extends EventEmitter {
     this.webhookApp.post('/webhook/gitlab', async (req, res) => {
       try {
         const token = req.headers['x-gitlab-token'];
-        if (this.config.webhookSecret && token !== this.config.webhookSecret) {
+        if (this.config.webhookSecret && !this.isValidWebhookToken(token, this.config.webhookSecret)) {
           this.logger.warn('Invalid webhook token');
           return res.status(401).json({ error: 'Unauthorized' });
         }
@@ -164,6 +165,16 @@ export class McpBridge extends EventEmitter {
         });
       });
     }
+  }
+
+  private isValidWebhookToken(token: string | string[] | undefined, secret: string): boolean {
+    if (typeof token !== 'string') {
+      return false;
+    }
+
+    const tokenBuffer = Buffer.from(token);
+    const secretBuffer = Buffer.from(secret);
+    return tokenBuffer.length === secretBuffer.length && timingSafeEqual(tokenBuffer, secretBuffer);
   }
 
   private async handleGitLabWebhook(payload: any): Promise<void> {
@@ -450,7 +461,7 @@ Please analyze this issue and implement the necessary changes.
 
     try {
       const fetch = (await import('node-fetch')).default;
-      const url = `${this.config.gitlabUrl || 'http://19.16.1.100:8929'}/api/v4/projects/${projectId}/merge_requests`;
+      const url = `${this.config.gitlabUrl || process.env.GITLAB_URL || 'http://gitlab:8929'}/api/v4/projects/${projectId}/merge_requests`;
 
       const response = await fetch(url, {
         method: 'POST',
