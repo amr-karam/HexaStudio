@@ -1,3 +1,11 @@
+# ⚠️ EXPERIMENTAL ALTERNATIVE — NOT the canonical pipeline.
+# Canonical source of truth: .gitlab-ci.yml (see docs/devops/CI_CD_GOVERNANCE.md;
+# GitLab CE is the DevOps source of truth per GOVERNANCE.md §13).
+# Key differences vs the canonical pipeline:
+#   - Different stage set/ordering (validate → quality → build → image → test → deploy)
+#   - NO `mobile` stage (canonical stages: quality → build → image → validate → mobile → deploy)
+# This file is intentionally retained for evaluation but MUST NOT be treated as
+# canonical. It is excluded from scripts/validate-gitlab-ci.js by design.
 # ============================================================================
 # HEXA Studio — Optimized GitLab CI/CD Pipeline
 # ============================================================================

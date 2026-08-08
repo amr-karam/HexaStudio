@@ -1,6 +1,6 @@
 # 🚨 MANDATORY — READ FIRST — DO NOT SKIP
 
-**AGENTS.md** is the **binding legal operating manual** for every AI agent interacting with the HEXA Vision codebase.
+**AGENTS.md** is the **binding legal operating manual** for every AI agent interacting with the HEXA STUDIO codebase.
 
 **You MUST read this entire file — from beginning to end — before performing ANY action.**
 
@@ -10,30 +10,30 @@ Failure to read this file before writing, modifying, or reviewing code is a **cr
 
 ---
 
-# HEXA Studio — AI Agent Instructions
+# HEXA STUDIO — AI Agent Operating Instructions
 
-## Mandatory Startup Procedure
+## 1. Mandatory Startup Procedure
 
 Before performing ANY task, read these documents in order:
 
-1. `docs/product/PROJECT_CONSTITUTION.md`
-2. `docs/product/ENTERPRISE_ARCHITECTURE_GOVERNANCE.md`
-3. `docs/product/PROJECT_OVERVIEW.md`
-4. `docs/architecture/SYSTEM_ARCHITECTURE.md`
-5. `docs/product/PROJECT_ROADMAP.md`
-6. `docs/product/CURRENT_SPRINT.md`
-7. `docs/product/OPEN_TASKS.md`
-8. `docs/engineering/CODING_STANDARDS.md`
-9. `docs/security/SECURITY_STANDARDS.md`
-10. `docs/agents/AI_AGENT_GUIDE.md`
+1. `GOVERNANCE.md`
+2. `ARCHITECTURE.md`
+3. `PRODUCT.md`
+4. `DESIGN_SYSTEM.md`
+5. `ENGINEERING_STANDARDS.md`
+6. `SECURITY.md`
+7. `PERFORMANCE.md`
+8. `ACCESSIBILITY.md`
+9. `PROJECT_STATUS.md`
+10. Relevant `.ai/agents/` role definition file
 
 After reading them:
-- Summarize your understanding of the project.
-- Identify the current project phase and sprint.
-- List any risks or blockers you identified.
-- Wait for the user's assignment.
+- Summarize your understanding of the task and target files.
+- Identify the current project phase and active sprint.
+- List any architectural risks or blockers identified.
+- Execute the task systematically following the **Definition of Done**.
 
-## Rules
+## 2. Rules
 
 - **Never start coding before understanding the project.**
 - **Never change architecture without documenting the decision.**
@@ -43,7 +43,7 @@ After reading them:
 - **Prefer long-term maintainability over short-term speed.**
 - **If documentation conflicts, stop and ask for clarification.**
 
-## Technology Stack
+## 3. Technology Stack
 
 | Layer | Technology |
 |-------|-----------|
@@ -60,7 +60,7 @@ After reading them:
 | State | Zustand (Client), TanStack Query (Server) |
 | Observability | Sentry |
 
-## GitHub Organization
+## 4. GitHub Organization
 
 ```
 HEXA-Studio/
@@ -75,7 +75,7 @@ HEXA-Studio/
 └── hexa-docs          (Optional)
 ```
 
-## Creative Excellence Mode
+## 5. Creative Excellence Mode
 
 When working on the Frontend, agents must operate in **Creative Excellence Mode**. This means:
 - **Role Shift:** You are no longer just an engineer; you are an elite multidisciplinary design team (Creative Director, UX Director, Motion Expert, etc.).
@@ -84,7 +84,7 @@ When working on the Frontend, agents must operate in **Creative Excellence Mode*
 - **Mandate:** Challenge every design decision. If a solution is "average," redesign it.
 - **Framework:** Follow the guidelines in `docs/design/UX_STRATEGY.md` and `docs/engineering/MOTION_SYSTEM.md`.
 
-## Playbook Structure
+## 6. Playbook Structure
 
 All documentation lives inside `docs/`, organized by governance area (see `GOVERNANCE.md` §46 Documentation Manifest):
 
