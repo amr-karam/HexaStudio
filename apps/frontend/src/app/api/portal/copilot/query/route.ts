@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+import { authenticatedFetch } from '@/lib/api-client';
+import { API_BASE_URL } from '@/config/constants';
 
 export async function POST(request: Request) {
   try {
@@ -11,9 +11,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Query is required' }, { status: 400 });
     }
 
-    // Attempt calling NestJS BFF portal copilot endpoint
+    // Attempt calling NestJS BFF portal copilot endpoint with authentication
     try {
-      const response = await fetch(`${BACKEND_URL}/api/v1/portal/copilot/query`, {
+      const response = await authenticatedFetch(`${API_BASE_URL}/api/v1/portal/copilot/query`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, projectName }),
@@ -23,8 +23,9 @@ export async function POST(request: Request) {
         const data = await response.json();
         return NextResponse.json(data);
       }
-    } catch {
-      // Degrade gracefully if backend is offline
+    } catch (error) {
+      // Degrade gracefully if backend is offline or auth fails
+      console.warn('Backend copilot service unavailable, using fallback:', error);
     }
 
     // Intelligent context-aware fallbacks
