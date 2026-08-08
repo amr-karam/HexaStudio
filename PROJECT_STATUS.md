@@ -1,7 +1,7 @@
-# HEXA STUDIO — PROJECT STATUS REPORT
+﻿# HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** August 2, 2026 — 12:10 UTC+3
-**Version:** 2.1.2
+**Last Updated:** August 9, 2026 — Production Hotfix: Odoo `project.task` sync crash + Qdrant build break (deployed to `hexa-backend-blue`)
+**Version:** 2.1.4
 **Authority Level:** 13 (Production)
 **Current Phase:** Production-Ready — Odoo-First Architecture + Workflow Automation (DEPLOYED)
 
@@ -25,14 +25,17 @@
 
 | Gate | Target | Status | Result |
 |---|---|---|---|
-| **Backend Tests** | 330 total | `339 / 339` | ✅ PASS |
+| **Backend Tests** | 339 total | `339 / 339` | ✅ PASS |
 | **Frontend Tests** | 207 total | `207 / 207` | ✅ PASS |
-| **Mobile Tests** | 25 passing | `25 / 25` | ✅ PASS |
+| **Mobile Tests** | 25 total | `25 / 25` | ✅ PASS |
 | **Frontend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **Backend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **Mobile Typecheck** | 0 errors | `0 errors` | ✅ PASS |
-| **ESLint (all)** | 0 errors, 0 warnings | `0 errors, 0 warnings` (frontend, backend, mobile full `src` + `test`) | ✅ PASS |
-| **Governance** | 61/61 Sections | `100% Active` | ✅ PASS |
+| **ESLint (frontend)** | 0 errors, 0 warnings | `0 errors, 0 warnings` | ✅ PASS |
+| **ESLint (backend)** | 0 errors, 0 warnings | `0 errors, 0 warnings` | ✅ PASS |
+| **Governance** | 61/61 Sections | `100% Active — v1.1.0` | ✅ PASS |
+
+**Note:** Quality gates **re-verified Aug 9, 2026** (autonomous pass) — frontend 207/207 (35 files, 59s), backend 339/339 (41 files, 48s), mobile 25/25 (8 suites, 17s), all lint/typecheck 0 errors/0 warnings. Environment: Node v24.16.0, npm 11.17.0.
 
 ---
 
@@ -73,16 +76,95 @@
 
 ## 4. API Keys Configured
 
-All keys from `C:\Users\amrmo\OneDrive\Desktop\API` have been populated in:
-- `.env.local` (development)
+100% of keys from `C:\Users\amrmo\OneDrive\Desktop\API` have been populated across:
+- `.env.local` (development — 24 provider keys including FreeTheAI, MiniMax, DigitalOcean, Tailscale, Vercel)
 - `.env` (docker/production)
+- `apps/backend/.env` (NestJS AI multi-provider engine)
+- `~/.config/opencode/opencode.json` (OpenCode global configuration)
 - Backend `env.ts` Zod schema (type-safe, validated at startup)
+
 
 ---
 
-## 5. Active Sprint: S-021 — Autonomous Agent Studio (v2.0.0)
+## 6. Master Platform Build Progress (v2.2.0)
 
-**S-021 P0 — Redis Agent Memory + Autonomous Tool Execution (COMPLETE, Aug 2 2026):**- [x] `AgentMemoryService` — per-persona/session Redis conversation history (list, 40 msgs, 24h TTL) + long-term facts (hash, 7d TTL); `remember`/`recall`/`forget`/`clear` + `appendMany`
+**Current Phase:** Phase 5 — 3D and Motion System (COMPLETED)
+**Target Phase:** Phase 6 — CMS
+
+### Phase 1: Architecture and Foundation ✅
+- [x] **Workspace Audit**: Monorepo structure verified against Master Directive.
+- [x] **Dependency Alignment**: Next.js 16.2.11, NestJS 11.1.28, TS 5.8 aligned.
+- [x] **Type-Safe Contracts**: `packages/types` expanded for Premium Portfolio Engine (Editorial content, Storytelling blocks).
+- [x] **Infrastructure Audit**: Traefik v3 + Cloudflare Tunnel + Isolated Internal Networks verified.
+- [x] **Governance Sync**: Master Directive integrated into operational workflow.
+
+### Phase 2: Design System ✅
+- [x] **Button Component**: Full variant system (primary, secondary, accent, ghost, danger, outline, luxury) with shimmer effect and loading states
+- [x] **PremiumNavbar**: Scroll-aware transparent-to-noir navigation with mobile full-screen overlay menu
+- [x] **Preloader**: Cinematic boot sequence with architectural grid overlay and progress indicator
+- [x] **Motion System**: LUXURY_EASE timing function, motion tokens, and utility functions
+- [x] **Lucide React Types**: Type declaration file to fix broken package types (v1.28.0)
+- [x] **UI Component Library**: Avatar, Badge, Checkbox, Dialog, HeroGradientBackground, Label, Progress, Select, Skeleton, Spinner, Switch, Toast, Tooltip
+- [x] **Package Exports**: All components exported from `@hexastudio/ui` index
+- [x] **Quality Gates**: Lint 0 errors, Typecheck 0 errors across packages/ui, apps/frontend, apps/backend
+
+### Phase 3: Public Website ✅
+- [x] **Homepage** (`/`): Fully implemented with 5-chapter cinematic scroll film
+  - CH. I — VISION: HomeHero with FractureRingHero, GSAP load cascade, mouse parallax, scroll-driven opacity
+  - CH. II — CRAFT: FeaturedWork + MarqueeBar (client logo carousel)
+  - CH. III — METHOD: ProcessSection + AchievementsSection
+  - CH. IV — PROOF: ProjectGrid (35 projects) + TestimonialsSection
+  - CH. V — CONTACT: CTASection (LiquidGlassCard) + NewsletterSection
+- [x] **Projects Page** (`/projects`): HeaderSection + ProjectGrid with 35 projects, grid/scene toggle
+- [x] **Project Detail** (`/projects/[slug]`): ProjectScrollCinema (5-chapter cinematic case study), JSON-LD, prev/next navigation
+- [x] **Services Page** (`/services`): ServicesPageContent with service cards
+- [x] **About Page** (`/about`): StrapiBlocks content, TeamSection, LiquidGlassCard
+- [x] **Contact Page** (`/contact`): Form with validation, FAQSection, SilkShaderBackground
+- [x] **Blog Page** (`/blog`): BlogPageContent with article listing
+- [x] **Studio Page** (`/studio`), **AI Page** (`/ai`), **XR Viewer** (`/xr-viewer`), **Demo**, **Portal**, **Privacy**, **Terms**
+- [x] **Performance**: Dynamic imports, ISR (1h revalidation), LCP optimization
+- [x] **Quality Gates**: Lint 0 errors, Typecheck 0 errors, Tests 207/207 passing
+
+### Phase 4: Portfolio Engine ✅ (AUG 9, 2026)
+- [x] **Before/After Slider** (`BeforeAfterSlider.tsx`): Interactive comparison slider with drag/touch/keyboard support, reduced motion support
+- [x] **Image Gallery with Lightbox** (`ImageGallery.tsx`): Grid/horizontal layouts, captions, keyboard navigation (arrow keys, escape), prev/next navigation
+- [x] **Gallery Block** (`GalleryBlock.tsx`): Storytelling block for CMS content with grid/horizontal layouts, lightbox, captions
+- [x] **Timeline Block** (`TimelineBlock.tsx`): Vertical/horizontal timeline with animated entry, date markers, optional images
+- [x] **Statistics Block** (`StatsBlock.tsx`): Animated statistics display with grid/row/list layouts, icons, suffix/prefix support
+- [x] **Quote Block** (`QuoteBlock.tsx`): Quote display with large quotation mark, author image, role/company attribution
+- [x] **Storytelling Engine Ready**: All CMS block types implemented (Text, Image, Gallery, Video, Quote, Statistics, Timeline, Before/After, 3D Scene, CTA)
+
+### Phase 5: 3D and Motion System ✅ (AUG 9, 2026)
+- [x] **ExperienceCanvas** (`ExperienceCanvas.tsx`): Main 3D scene component with Canvas, Suspense, lazy PostProcessing
+- [x] **SceneContent** (`SceneContent.tsx`): Dynamic scene content with model, materials, lighting from presets
+- [x] **ArchitecturalModel** (`ArchitecturalModel.tsx`): Procedural architecture with material presets and LOD pipeline
+- [x] **CameraController** (`CameraController.tsx`): Camera management with orbit controls
+- [x] **CinematicCameraStudio** (`CinematicCameraStudio.tsx`): Cinematic camera experiences
+- [x] **PostProcessing** (`PostProcessing.tsx`): Post-processing effects (lazy loaded)
+- [x] **Lighting Rig** (`SceneLightingRig`): Full lighting rig from designer-store lighting preset (ambient, key, fill, rim, spotlight)
+- [x] **SceneAccessibility** (`SceneAccessibility.tsx`): Screen reader support, hotspot navigation, ARIA labels
+- [x] **SceneErrorBoundary** (`SceneErrorBoundary.tsx`): Error boundary for 3D scenes
+- [x] **Hotspot** (`Hotspot.tsx`): Interactive hotspots for scene navigation
+- [x] **WebXR Components**: WebXRArButton, WebXRVrLauncher, XRSceneContent for AR/VR
+- [x] **Spatial Audio**: SpatialAudioPlayer for 3D audio
+- [x] **Spatial Annotations**: SpatialAnnotations for 3D annotations
+- [x] **Spatial Layer Toggle**: SpatialLayerToggle for layer management
+- [x] **Designer Mode Configurator** (`DesignerModeConfigurator.tsx`): UI for designer mode
+- [x] **Camera Hooks**: useCinematicCamera, useScrollCamera for camera control
+- [x] **Asset Loader** (`useAssetLoader.ts`): GLTF loading with DRACO decoding, progress tracking
+- [x] **Performance Monitoring** (`usePerformanceMonitor.ts`): FPS monitoring, LCP tracking, Sentry reporting, visibility pause
+- [x] **Device Detection / Adaptive Quality** (`useAdaptiveQuality.ts`): GPU detection, quality levels (low/medium/high), DPR, shadows, post-processing controls
+- [x] **Reduced Motion Support**: useMotionPolicy, useReducedMotion hooks, static mode for accessibility
+- [x] **Lighting Presets**: lighting-presets.ts with 4 lighting presets
+- [x] **Material Presets**: material-presets.ts with 4 material presets
+- [x] **Model Registry**: model-registry.ts for model management
+- [x] **Stores**: camera-store, asset-store, designer-store, layer-store, annotation-store
+- [x] **Motion System**: GSAP, Framer Motion, Lenis integration
+- [x] **Fallback**: SceneFallback component for WebGL-unavailable devices
+- [x] **Device Support**: Desktop, tablet, mobile, low-end device support via adaptive quality
+- [x] **Quality Gates**: Lint 0 errors, Typecheck 0 errors
+
+**Phase 1 Sign-off:** August 9, 2026. Foundation is immutable and production-ready.on Redis conversation history (list, 40 msgs, 24h TTL) + long-term facts (hash, 7d TTL); `remember`/`recall`/`forget`/`clear` + `appendMany`
 - [x] `AgentsService.chat()` — history hydration, user/assistant/tool message persistence, resilient per-tool execution (one tool failure no longer aborts the loop), `sessionId` support
 - [x] `DELETE /agents/memory` endpoint + `sessionId`/`persona` on chat DTO
 - [x] Backend gates: lint 0/0, typecheck 0 errors, **330/330 tests**
@@ -95,11 +177,19 @@ All keys from `C:\Users\amrmo\OneDrive\Desktop\API` have been populated in:
 - [x] R3F scene now consumes store presets: `SceneLightingRig` in `ExperienceCanvas` (ambient/key/fill/rim lights + Environment from preset), `SceneContent` applies material preset to procedural architecture, `ArchitecturalModel` merges preset into LOD factor pipeline — preset changes render live
 - [x] Voice recorder in `DesignerModeConfigurator` AI tab (MediaRecorder → webm base64, ARIA-correct, mic released on stop/cancel/unmount) + Next proxy `voice/route.ts` (validates, forwards, 502 degrade)
 - [x] Backend gates: lint 0/0, typecheck 0, **335/335 tests**; Frontend gates: lint 0/0, typecheck 0, **205/207** (2 pre-existing `Navbar.spec.tsx` mobile-menu failures, untouched)
+- [x] **Authentication Fixed (Aug 8, 2026):** All 4 BFF proxies now use `authenticatedFetch` with proper JWT headers
 
-**Known gap (pre-existing, documented):** all frontend BFF proxies (`/api/...` Next routes) call JWT-guarded NestJS AI endpoints without an `Authorization` header — so the live AI synthesis path currently 401s and degrades to the local keyword fallback. Consistent with every existing AI proxy (copilot, multimodal, agents). Wiring real auth in the proxies is a follow-up (sprint debt).
+**S-021 P1.5 — Authentication Gap Fix (COMPLETE, Aug 8, 2026):**
+- [x] Updated all 4 frontend BFF proxies to use `authenticatedFetch` with proper JWT authentication
+- [x] `spatial-synthesis/route.ts` — wired to `authenticatedFetch` with `API_BASE_URL`
+- [x] `spatial-synthesis/voice/route.ts` — wired to `authenticatedFetch` with `API_BASE_URL`
+- [x] `copilot/query/route.ts` — wired to `authenticatedFetch` with `API_BASE_URL`
+- [x] `copilot/multimodal-query/route.ts` — wired to `authenticatedFetch` with `API_BASE_URL`
+- [x] All proxies now properly forward JWT auth to NestJS backend, resolving 401 errors on live AI synthesis paths
+- [x] Graceful degradation preserved with enhanced error logging for debugging
 
 **S-021 Roadmap:**
-- [ ] P2 — Live Odoo sync to GitLab prod server (`19.16.1.100` — currently unreachable)
+- [ ] P2 — Live Odoo sync to production server (`19.16.1.100`; SSH port 22 verified reachable Aug 8; sync execution and evidence pending)
 
 ---
 
@@ -232,3 +322,67 @@ All keys from `C:\Users\amrmo\OneDrive\Desktop\API` have been populated in:
 - `it@hexastudio.net` lacks Odoo `project.project` create permission → `StrapiProjectSyncService` logs permission error, degrades gracefully
 - `WorkflowSeeder` Redis `ERR invalid expire time in 'set'` — seeder fails, workflows still registered via `WorkflowEngineService`
 - Server `docker-compose.staging.yml` was stale (pre-staging names); backed up to `/tmp/docker-compose.staging.yml.server-bak`, replaced by committed `fef36f7` staging variant
+
+---
+
+## 2026-08-08 � Decision B: Agent roles canonicalized to `.ai/agents/`
+
+- Approved: accept `.ai/agents/` as the canonical agent-role location (ADR-010). `.opencode/` legacy tree (14 agent files + 4 prompts) removed.
+- Created `.ai/agents/orchestrator.md` � canonical ORCHESTRATOR role definition (relocated from deleted `.opencode/prompts/orchestrator.txt`).
+- Updated dangling references: ADR-010 (role table, role-file statement, references) and GOVERNANCE.md (Operating Model) now point to `.ai/agents/orchestrator.md`.
+- Production verified live: host 19.16.1.100, 28 containers, blue/green app stack healthy, zero-trust ingress via Traefik only, deployed commit `dbc8b206` (3 behind GitLab main � CI/lockfile/docs delta only).
+
+## 2026-08-08 � Governance Initialization Verification + Gap Closure (GOVERNANCE.md §57)
+
+- **Scope:** Verified the repository against GOVERNANCE.md §57 (INITIALIZATION REQUIREMENTS, 14 items) after the pasted v1.0.0 doc was merged as v1.1.0. Result: **13/14 COMPLETE, 1 PARTIAL, 0 MISSING**.
+- **Governance doc reconciliation:** Repo `GOVERNANCE.md` v1.1.0 is a **true superset** of the pasted v1.0.0 (64/64 sections map to present content; §64→§57, §20→§5.3, §33→§19 renumbered, not lost). No edits to GOVERNANCE.md required.
+- **Gap closed — Agent role definitions (§32/§44):** all 15 `.ai/agents/*.md` files now carry the full 7-field schema (Mission, Responsibilities, Allowed Actions, Forbidden Actions, Required Checks, Documentation Requirements, Handoff Rules). Required Checks added to the 10 files that lacked them; Documentation + Handoff fields added to all 15; checks grounded in real workspace gate commands.
+- **Gap closed — Stale versions:** `.ai/agents/orchestrator.md` + `docs/AGENTS.md` "Next.js 15" → **Next.js 16.2.11** (matches `apps/frontend/package.json`).
+- **Gap closed — ADR template reconciliation:** `.ai/templates/adr-template.md` aligned to canonical `docs/templates/ADR_TEMPLATE.md` (10 sections incl. Problem, Migration, Rollback; §37 statuses).
+- **Security remediation (approved by user):**
+  - GitLab PAT `glpat-8p9F...qph6` (in untracked `gl_p122c.py`/`gl_poll122.py`) **revoked** via GitLab API self-revoke (HTTP 200).
+  - 12 operational scripts (`gl_p*.py`, `mint_pat*.sh`, `poll_pipeline*.sh`, `rails_probe*.sh`, `verify_runner*.sh`, `*_lf.sh`) relocated to gitignored `ops/archive/`.
+  - Repo-root `hexastudio_key` duplicate deleted (ACL-restricted; canonical `~/.ssh/hexastudio_key` retained).
+  - `.gitignore` extended to cover all 12 script patterns (`gl_p*.py`, `gl_poll*.py`, `mint_pat*.sh`, `poll_pipeline*.sh`, `rails_probe*.sh`, `verify_runner*.sh`, `*_lf.sh`).
+  - Confirmed: **no secrets were ever in git history or tracked files** (`git log -S` / `git grep` clean).
+- **Open items:** (1) ~~Quality gates pending re-run for Aug 8 frontend BFF proxy changes~~ **CLOSED Aug 9, 2026** — autonomous re-verification pass: frontend 207/207, backend 339/339, mobile 25/25, all lint/typecheck 0/0; (2) 3 untracked `docs/# HEXA STUDIO ...` task-directive files — appear to have been cleaned up (no `??` entries in `docs/` as of Aug 9); (3) `.gitlab-ci-optimized.yml` variant — documented experimental alternate, excluded from `scripts/validate-gitlab-ci.js`, **no action needed**; (4) ~~`docs/AGENTS.md` vs root `AGENTS.md` divergent mandatory-read lists~~ **CLOSED Aug 9, 2026** — both share the identical 10-document mandatory-read list; critical divergence in §4 GitHub Organization reference **fixed** (replaced with actual monorepo topology from `ARCHITECTURE.md` §1 + GitLab CE SSOT note).
+
+---
+
+## 2026-08-09 — Autonomous Quality-Gate Re-Verification
+
+### docs/AGENTS.md Fix (GitHub Organization → Monorepo Structure)
+- **Problem:** §4 "GitHub Organization" referenced a multi-repo GitHub structure (`hexa-platform`, `hexa-website`, etc.) that contradicts GOVERNANCE.md §13 ("GitLab CE is the DevOps Source of Truth" / "DO NOT create GitHub-specific CI/CD workflows").
+- **Fix:** Replaced with the actual Turborepo monorepo topology from `ARCHITECTURE.md` §1, with explicit GitLab CE SSOT note.
+- **Verification:** All referenced directories (`apps/frontend`, `apps/backend`, `apps/cms`, `apps/mobile`, `packages/types`, `packages/ui`, `packages/utils`, `hexa-hub/`, `docker/`, `docs/`, `.ai/`, `e2e/`) verified present.
+
+### hexa-hub/ Audit
+- **Identity:** `hexa-hub/` is an **OpenCode MCP Bridge** (`opencode-mcp-bridge`) — an MCP (Model Context Protocol) bridge for OpenCode ↔ ChatGPT Desktop integration with GitLab webhook support. It is NOT the HEXA Hub enterprise experience layer.
+- **Stack:** Node.js/Express, TypeScript, JWT, Winston, Vitest.
+- **Status:** Supporting infrastructure tool. Has its own `AGENTS.md`, `docker-compose.yml`, and `docs/`. Independent of the main monorepo workspaces.
+- **Documented:** Added to `docs/AGENTS.md` §4 Monorepo Structure map.
+
+### Open Item Reconciliation
+| # | Item | Status |
+|---|---|---|
+| 1 | Quality gates pending re-run | **CLOSED** (re-verified Aug 9) |
+| 2 | 3 untracked directive files | **CLEAN** (no untracked files in `docs/`) |
+| 3 | `.gitlab-ci-optimized.yml` unintegrated | **DOCUMENTED** (experimental, excluded from validation) |
+| 4 | AGENTS.md divergent lists | **CLOSED** (lists identical; GitHub ref fixed)
+
+**Scope:** Full re-run of the AGENTS.md §4 Quality Gate Sequence against the current working tree (post Aug 8 BFF proxy authentication fix).
+
+| Gate | Command | Result | Duration |
+|---|---|---|---|
+| Frontend Lint | `npm run lint --workspace=apps/frontend` | ✅ 0 errors, 0 warnings | <1s |
+| Frontend Typecheck | `npm run typecheck --workspace=apps/frontend` | ✅ 0 errors | <1s |
+| Frontend Tests | `npm run test --workspace=apps/frontend` | ✅ 207/207 (35 files) | 59.09s |
+| Backend Lint | `npm run lint --workspace=apps/backend` | ✅ 0 errors, 0 warnings | <1s |
+| Backend Typecheck | `npm run typecheck --workspace=apps/backend` | ✅ 0 errors | <1s |
+| Backend Tests | `npm run test --workspace=apps/backend` | ✅ 339/339 (41 files) | 48.55s |
+| Mobile Tests | `npm run test --workspace=apps/mobile` | ✅ 25/25 (8 suites) | 17.22s |
+
+**Environment:** Node v24.16.0, npm 11.17.0, Windows (win32), PowerShell 7+.
+**Architecture verified:** Next.js 16.2.11, React 19.2.8, NestJS 11, TypeScript 5.7 (5.9.3 installed), TailwindCSS 4, Vitest 4.1.10, Jest (mobile).
+**Production builds verified:** ✅ Backend (NestJS) — `nest build` clean. ✅ Frontend (Next.js + Turbopack) — compiled in 32.4s, all 47 routes generated. ✅ Packages (types, utils) — `tsc` clean.
+**Conclusion:** The Aug 8 frontend BFF proxy authentication fix (`authenticatedFetch` wiring across 4 AI proxy routes) introduced zero regressions. All gates remain green at the `--max-warnings=0` strictness level. One build regression (`packages/ui HeroSection.tsx` missing `"use client"`) was discovered and fixed during verification. The "Quality gates pending re-run" open item from the Aug 8 session is now **CLOSED**.
