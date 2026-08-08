@@ -175,3 +175,6 @@ Daily Notes/
 
 # Workflow tool artifacts
 .workflow/
+
+# Local npm auth config (never commit)
+*.npmrc
