@@ -47,7 +47,7 @@ After reading them:
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | Next.js 15, TypeScript, TailwindCSS 4 |
+| Frontend | Next.js 16.2.11, TypeScript, TailwindCSS 4 |
 | 3D Engine | Three.js, React Three Fiber, @react-three/drei |
 | Animation | GSAP, Framer Motion |
 | Backend | NestJS, REST (Swagger), JWT |

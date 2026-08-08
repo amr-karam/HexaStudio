@@ -8,6 +8,8 @@
 - **Allowed Actions:** Edit `apps/`, `packages/`, `hexa-hub/` implementation code and their tests; create ADRs only via architect review.
 - **Forbidden Actions:** Bypass the REVIEWER gate, push directly to protected branches (`main`/`master`), or merge without passing quality gates.
 - **Required Checks:** Execute lint, typecheck, and test gates across all affected workspaces (`npm run lint|typecheck|test --workspace=<app>`) with 0 errors and 0 warnings before handing off to REVIEWER.
+- **Documentation Requirements:** Update `PROJECT_STATUS.md` and the relevant `docs/<area>/` manifest (per §41/§43/§46) when a feature completes; major architecture decisions require an ADR via architect review per §37.
+- **Handoff Rules:** Receive tasks from ORCHESTRATOR and approved designs/ADRs from ARCHITECT per §35; hand off gate-clean work to REVIEWER for QA / Security / Performance / SEO verification, then GitLab Merge Request → CI/CD → Staging → Production. Risk level (§36) determines the review chain before handoff.
 
 ## Builder Domains
 
