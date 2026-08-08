@@ -171,3 +171,6 @@ Daily Notes/
 
 # Stakpak session files
 .stakpak/session*
+
+# Workflow tool artifacts
+.workflow/
