@@ -1,7 +1,7 @@
-# HEXA STUDIO — PROJECT STATUS REPORT
+﻿# HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** August 2, 2026 — 12:10 UTC+3
-**Version:** 2.1.2
+**Last Updated:** August 8, 2026 — Governance Gap Closure + Security Hardening + Full Quality-Gate Verification
+**Version:** 2.1.3
 **Authority Level:** 13 (Production)
 **Current Phase:** Production-Ready — Odoo-First Architecture + Workflow Automation (DEPLOYED)
 
@@ -25,7 +25,7 @@
 
 | Gate | Target | Status | Result |
 |---|---|---|---|
-| **Backend Tests** | 330 total | `339 / 339` | ✅ PASS |
+| **Backend Tests** | 339 total | `339 / 339` | ✅ PASS |
 | **Frontend Tests** | 207 total | `207 / 207` | ✅ PASS |
 | **Mobile Tests** | 25 passing | `25 / 25` | ✅ PASS |
 | **Frontend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
@@ -33,6 +33,8 @@
 | **Mobile Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **ESLint (all)** | 0 errors, 0 warnings | `0 errors, 0 warnings` (frontend, backend, mobile full `src` + `test`) | ✅ PASS |
 | **Governance** | 61/61 Sections | `100% Active — v1.1.0` | ✅ PASS |
+
+**Note:** Quality gates **fully re-verified Aug 8, 2026** — frontend 207/207, backend 339/339, mobile 25/25, all lint/typecheck 0 errors/0 warnings (after repairing corrupted/incomplete npm installs: rolldown binding, @sentry/core, @google/genai, @nestjs/mapped-types, react-navigation .d.ts; unified React 19.2.8 + Next 16.2.11 tree-wide; typed mobile `_layout.tsx` tab params).
 
 ---
 
@@ -85,6 +87,12 @@
 
 ## 5. Active Sprint: S-021 — Autonomous Agent Studio (v2.0.0)
 
+**Recent Progress (Aug 8, 2026):**
+- [x] **Authentication Gap Resolution:** Fixed all 4 frontend BFF proxies to use proper JWT authentication with `authenticatedFetch`
+- [x] **Files Modified:** `spatial-synthesis/route.ts`, `spatial-synthesis/voice/route.ts`, `copilot/query/route.ts`, `copilot/multimodal-query/route.ts`
+- [x] **Impact:** Resolves 401 errors on live AI synthesis paths; AI services now properly authenticate with NestJS backend
+- [x] **Enhanced Error Logging:** Added structured error logging for debugging when backend services are unavailable
+
 **S-021 P0 — Redis Agent Memory + Autonomous Tool Execution (COMPLETE, Aug 2 2026):**- [x] `AgentMemoryService` — per-persona/session Redis conversation history (list, 40 msgs, 24h TTL) + long-term facts (hash, 7d TTL); `remember`/`recall`/`forget`/`clear` + `appendMany`
 - [x] `AgentsService.chat()` — history hydration, user/assistant/tool message persistence, resilient per-tool execution (one tool failure no longer aborts the loop), `sessionId` support
 - [x] `DELETE /agents/memory` endpoint + `sessionId`/`persona` on chat DTO
@@ -98,11 +106,19 @@
 - [x] R3F scene now consumes store presets: `SceneLightingRig` in `ExperienceCanvas` (ambient/key/fill/rim lights + Environment from preset), `SceneContent` applies material preset to procedural architecture, `ArchitecturalModel` merges preset into LOD factor pipeline — preset changes render live
 - [x] Voice recorder in `DesignerModeConfigurator` AI tab (MediaRecorder → webm base64, ARIA-correct, mic released on stop/cancel/unmount) + Next proxy `voice/route.ts` (validates, forwards, 502 degrade)
 - [x] Backend gates: lint 0/0, typecheck 0, **335/335 tests**; Frontend gates: lint 0/0, typecheck 0, **205/207** (2 pre-existing `Navbar.spec.tsx` mobile-menu failures, untouched)
+- [x] **Authentication Fixed (Aug 8, 2026):** All 4 BFF proxies now use `authenticatedFetch` with proper JWT headers
 
-**Known gap (pre-existing, documented):** all frontend BFF proxies (`/api/...` Next routes) call JWT-guarded NestJS AI endpoints without an `Authorization` header — so the live AI synthesis path currently 401s and degrades to the local keyword fallback. Consistent with every existing AI proxy (copilot, multimodal, agents). Wiring real auth in the proxies is a follow-up (sprint debt).
+**S-021 P1.5 — Authentication Gap Fix (COMPLETE, Aug 8, 2026):**
+- [x] Updated all 4 frontend BFF proxies to use `authenticatedFetch` with proper JWT authentication
+- [x] `spatial-synthesis/route.ts` — wired to `authenticatedFetch` with `API_BASE_URL`
+- [x] `spatial-synthesis/voice/route.ts` — wired to `authenticatedFetch` with `API_BASE_URL`
+- [x] `copilot/query/route.ts` — wired to `authenticatedFetch` with `API_BASE_URL`
+- [x] `copilot/multimodal-query/route.ts` — wired to `authenticatedFetch` with `API_BASE_URL`
+- [x] All proxies now properly forward JWT auth to NestJS backend, resolving 401 errors on live AI synthesis paths
+- [x] Graceful degradation preserved with enhanced error logging for debugging
 
 **S-021 Roadmap:**
-- [ ] P2 — Live Odoo sync to GitLab prod server (`19.16.1.100` — currently unreachable)
+- [ ] P2 — Live Odoo sync to production server (`19.16.1.100`; SSH port 22 verified reachable Aug 8; sync execution and evidence pending)
 
 ---
 
