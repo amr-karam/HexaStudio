@@ -1,6 +1,6 @@
 # HEXA STUDIO — ENGINEERING GOVERNANCE
 
-**Version:** 1.0.0  
+**Version:** 1.1.0  
 **Status:** Active  
 **Authority:** Highest project-level authority  
 **Repository:** HEXA STUDIO  
@@ -428,6 +428,21 @@ Use for:
 
 - TypeScript Handbook
 - TypeScript TSConfig Reference
+
+### Reference Priority
+
+When researching technical implementation:
+
+1. Repository implementation
+2. Repository documentation
+3. Accepted ADRs
+4. Official documentation for the installed version
+5. Official specifications / standards
+6. Primary technical sources
+7. Trusted secondary sources
+8. General web sources
+
+Never allow a random blog post to override official documentation or an accepted ADR.
 
 ---
 
@@ -1087,62 +1102,267 @@ These sources exist for visual research.
 
 They are not implementation authorities.
 
-They may be used to study:
+HEXA STUDIO maintains a curated collection of high-quality design references.
+
+These websites are inspiration and benchmarking sources, **NOT templates to copy**.
+
+AI agents may study them to understand:
 
 - Art direction
 - Typography
-- Layout
+- Layout composition
 - Grid systems
-- Editorial composition
-- Navigation
+- Editorial design
+- Navigation patterns
+- Portfolio presentation
 - Project storytelling
-- Motion
-- Interaction
-- Media treatment
-- 3D experiences
+- Motion design
+- Interaction design
+- Micro-interactions
+- Page transitions
+- Image treatment
+- Video presentation
+- 3D/WebGL experiences
 - Responsive behavior
+- Creative development techniques
+
+The objective is to learn design principles and patterns, then create an original HEXA STUDIO experience.
 
 ### Web Design
 
-- Awwwards
-- CSS Design Awards
-- SiteInspire
-- Godly
-- Minimal Gallery
-- Land-book
-- One Page Love
+**A. Awwwards**
 
-### Architecture
+Award-winning web design, creative direction, interaction design, motion, experimental layouts, studio websites, digital experiences.
 
-- ArchDaily
-- Dezeen
-- Divisare
-- Architizer
+Focus on the highest-quality agency, architecture, creative studio, and portfolio experiences.
 
-### Architectural Visualization
+**B. CSS Design Awards**
 
-- DBOX
-- Brick Visual
-- MIR
-- Beauty and the Bit
-- TMRW
+Creative websites, UI inspiration, motion, interaction, experimental web layouts, frontend creativity.
 
-### Creative Technology
+**C. SiteInspire**
 
-- Locomotive
-- Active Theory
-- Resn
-- Hello Monday / DEPT®
+Editorial layouts, typography, minimal websites, portfolio structures, navigation, grid systems, visual hierarchy.
 
-### Typography
+**D. Godly**
 
-- Typewolf
-- Fonts In Use
+Modern digital experiences, creative interactions, typography, experimental layouts, contemporary web design.
 
-### Creative Development
+**E. Minimal Gallery**
 
-- Codrops
-- Three.js Examples
+Minimalism, typography, white space, editorial composition, navigation, visual hierarchy.
+
+**F. Land-book**
+
+Landing page composition, branding, layout systems, typography, modern web patterns.
+
+**G. One Page Love**
+
+Landing page structures, hero sections, CTA patterns, content hierarchy, simple interaction patterns.
+
+### Architecture / Architectural Visualization References
+
+These sources are particularly relevant to HEXA STUDIO's visual identity.
+
+**H. ArchDaily**
+
+Architectural presentation, project storytelling, photography, project metadata, architectural editorial structure, project categorization.
+
+Do not copy editorial content.
+
+**I. Dezeen**
+
+Architecture editorial design, typography, image-driven storytelling, architectural presentation, project discovery.
+
+**J. Divisare**
+
+Architecture-focused visual presentation, image grids, project archives, minimal editorial interfaces.
+
+**K. Architizer**
+
+Architecture project discovery, project metadata, portfolio structures, architectural categorization.
+
+### Architecture Visualization / CGI References
+
+Use as benchmarks for the visual quality and presentation standards of architectural visualization.
+
+**L. DBOX**
+
+- Architectural visualization
+- Cinematic presentation
+- Art direction
+- Image sequencing
+- Luxury presentation
+
+**M. Brick Visual**
+
+- Architectural CGI
+- Visual storytelling
+- Project presentation
+- Cinematic imagery
+- Portfolio organization
+
+**N. MIR**
+
+- Architectural visualization
+- Art direction
+- Image composition
+- Atmosphere
+- Cinematic storytelling
+
+**O. Beauty and the Bit**
+
+- Architectural visualization
+- Art direction
+- Cinematic imagery
+- Portfolio presentation
+- Visual storytelling
+
+**P. TMRW**
+
+- Architectural visualization
+- Digital art direction
+- Cinematic presentation
+- Contemporary portfolio design
+
+### Creative Digital Studios
+
+Use to study how premium creative studios present themselves digitally.
+
+**Q. Locomotive**
+
+- Motion
+- Interaction
+- Page transitions
+- Creative development
+- Storytelling
+
+**R. Active Theory**
+
+- WebGL
+- 3D
+- Interactive experiences
+- Experimental interaction
+- Creative technology
+
+**S. Resn**
+
+- Experimental digital experiences
+- WebGL
+- Art direction
+- Motion
+- Interaction
+
+**T. Hello Monday / DEPT®**
+
+- Digital art direction
+- Storytelling
+- Motion
+- Typography
+- Interactive experiences
+
+### Typography & Design System Inspiration
+
+**U. Typewolf**
+
+- Typography
+- Font pairing
+- Type hierarchy
+- Editorial typography
+
+**V. Fonts In Use**
+
+- Real-world typography references
+- Editorial systems
+- Brand typography
+- Font combinations
+
+### Creative Development / WebGL
+
+**W. Codrops**
+
+- Experimental interaction
+- CSS techniques
+- WebGL
+- Motion
+- Creative frontend experiments
+
+Use as a technical inspiration source, not for blindly copying implementations.
+
+**X. Three.js Examples**
+
+- WebGL capabilities
+- Rendering techniques
+- Materials
+- Lighting
+- Post-processing
+- Interaction
+
+### Design Research Rules
+
+When researching design inspiration, the agent should:
+
+1. Identify the design problem.
+2. Review multiple references.
+3. Identify recurring successful patterns.
+4. Explain why the pattern works.
+5. Determine whether it fits HEXA STUDIO.
+6. Adapt the underlying principle.
+7. Create an original implementation.
+8. Document major design decisions when appropriate.
+
+Never select a design simply because it looks impressive.
+
+Evaluate:
+
+- Usability
+- Performance
+- Accessibility
+- Brand fit
+- Content hierarchy
+- Responsiveness
+- Maintainability
+
+### Design Reference Matrix
+
+Evaluate inspiration across:
+
+| Category | Study |
+|---|---|
+| Art Direction | Visual identity and atmosphere |
+| Typography | Type scale and hierarchy |
+| Layout | Grid and composition |
+| Navigation | IA and interaction |
+| Motion | Timing and easing |
+| Portfolio | Project discovery |
+| Storytelling | Narrative structure |
+| 3D | WebGL and interaction |
+| Media | Image/video treatment |
+| UX | User flow |
+| Responsive | Mobile/tablet behavior |
+| Accessibility | Inclusive interaction |
+| Performance | Asset/rendering strategy |
+
+### HEXA STUDIO Design Principle
+
+References are inputs, not destinations.
+
+The final HEXA STUDIO design must be:
+
+- Original
+- Architectural
+- Cinematic
+- Minimal
+- Premium
+- Editorial
+- Technically sophisticated
+- Fast
+- Accessible
+- Responsive
+
+The agent must never attempt to make HEXA STUDIO look like one specific reference website.
+
+Instead, combine validated principles from multiple references into a unique visual language.
 
 ### References
 
@@ -1189,8 +1409,9 @@ Copy
 Never copy:
 
 - Source code
-- HTML
+- HTML structure
 - CSS
+- Assets
 - Images
 - Videos
 - Logos
@@ -1227,6 +1448,32 @@ Before approving a major visual direction, the Design Agent must answer:
 8. How does it behave with reduced motion?
 9. Is it accessible?
 10. Is it maintainable?
+
+The final design must stand on its own without depending on the reference websites.
+
+### Design Research Rule
+
+When visual uncertainty exists:
+
+```text
+Define Design Problem
+      ↓
+Review Multiple References
+      ↓
+Extract Principles
+      ↓
+Evaluate Brand Fit
+      ↓
+Evaluate UX
+      ↓
+Evaluate Accessibility
+      ↓
+Evaluate Performance
+      ↓
+Create Original Direction
+```
+
+Do not copy individual websites.
 
 ### References
 
@@ -2248,6 +2495,15 @@ However:
 **Documentation must remain truthful.**
 
 **Production must never be treated as an experiment.**
+
+---
+
+# GOVERNANCE CHANGE LOG
+
+| Version | Date | Summary |
+|---|---|---|
+| 1.1.0 | 2026-08-08 | Merged governance draft v1.0.0 (64-section revision) into the active 61-section document. Added: Reference Priority (§5), full design-inspiration catalog A–X with per-source guidance (§27), Design Research Rules + Design Reference Matrix + HEXA STUDIO Design Principle (§27), aligned never-copy list (§28), Design Review closing requirement (§29). All existing top-level sections and references retained. |
+| 1.0.0 | — | Initial governance system. |
 
 ---
 
