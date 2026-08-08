@@ -337,7 +337,7 @@ Production
 - **ARCHITECT** owns architecture integrity and ADRs.
 - **BUILDER** leads implementation across Frontend / Backend / CMS / Three.js.
 - **REVIEWER** gates on QA / Security / Performance / SEO before merge.
-- Role definitions live in `.ai/agents/`; orchestration prompts in `.opencode/prompts/`.
+- Role definitions live in `.ai/agents/` (including `.ai/agents/orchestrator.md`).
 
 If a conflict is discovered:
 
