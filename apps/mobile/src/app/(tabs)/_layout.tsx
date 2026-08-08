@@ -1,6 +1,11 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import type { BottomTabNavigationOptions } from '@react-navigation/bottom-tabs';
+import type { ParamListBase } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
 import { useTheme } from '@/components/ThemeProvider';
+
+type TabParamList = ParamListBase;
 
 const TAB_ICONS: Record<string, { focused: keyof typeof Ionicons.glyphMap; unfocused: keyof typeof Ionicons.glyphMap; label: string }> = {
   index: { focused: 'home', unfocused: 'home-outline', label: 'Dashboard' },
@@ -9,12 +14,22 @@ const TAB_ICONS: Record<string, { focused: keyof typeof Ionicons.glyphMap; unfoc
   profile: { focused: 'person-circle', unfocused: 'person-circle-outline', label: 'Profile' },
 };
 
+interface ScreenOptionsProps {
+  route: RouteProp<TabParamList, string>;
+}
+
+interface TabBarIconProps {
+  focused: boolean;
+  color: string;
+  size: number;
+}
+
 export default function TabsLayout() {
   const { colors, typography } = useTheme();
 
   return (
     <Tabs
-      screenOptions={({ route }) => {
+      screenOptions={({ route }: ScreenOptionsProps): BottomTabNavigationOptions => {
         const config = TAB_ICONS[route.name];
         return {
           headerShown: false,
@@ -34,7 +49,7 @@ export default function TabsLayout() {
           },
           tabBarActiveTintColor: colors.accent,
           tabBarInactiveTintColor: colors.muted,
-          tabBarIcon: ({ focused, size: _size }) => {
+          tabBarIcon: ({ focused, size: _size }: TabBarIconProps) => {
             if (!config) return null;
             return (
               <Ionicons
