@@ -168,3 +168,6 @@ hexastudio_key
 .obsidian/
 CUsers/
 Daily Notes/
+
+# Stakpak session files
+.stakpak/session*

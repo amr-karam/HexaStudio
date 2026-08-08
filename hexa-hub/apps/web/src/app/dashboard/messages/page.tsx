@@ -422,6 +422,7 @@ export default function MessagesPage() {
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [selectedChannel, setSelectedChannel] = useState<ChannelItem | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [channelMessages, setChannelMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<InboxTab>('all');
@@ -540,31 +541,71 @@ export default function MessagesPage() {
     [token, API_URL],
   );
 
+  const fetchChannelMessages = useCallback(
+    async (channelId: string) => {
+      if (!token) return;
+      try {
+        const res = await axios.get(`${API_URL}/channels/${channelId}/messages`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = Array.isArray(res.data) ? res.data : res.data?.data ?? [];
+        setChannelMessages(data);
+      } catch {
+        setChannelMessages([]);
+      }
+    },
+    [token, API_URL],
+  );
+
+  const selectChannel = useCallback(
+    (ch: ChannelItem) => {
+      setSelectedChannel(ch);
+      setSelectedContact(null);
+      setActiveThread(null);
+      fetchChannelMessages(ch.id);
+      if (socket) {
+        socket.emit('join:channel', { channelId: ch.id });
+      }
+    },
+    [fetchChannelMessages, socket],
+  );
+
   // ── Send message ──────────────────────────────────────────────────────────
 
   const sendMsg = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
       const trimmed = input.trim();
-      if (!trimmed || !selectedContact || isSending) return;
+      if (!trimmed || isSending) return;
+      if (!selectedContact && !selectedChannel) return;
 
       setIsSending(true);
       try {
-        await axios.post(
-          `${API_URL}/messages/send`,
-          { receiverId: selectedContact.id, content: trimmed },
-          { headers: { Authorization: `Bearer ${token}` } },
-        );
-        setInput('');
-        stopTyping();
-        await fetchMessages(selectedContact.id);
+        if (selectedContact) {
+          await axios.post(
+            `${API_URL}/messages/send`,
+            { receiverId: selectedContact.id, content: trimmed },
+            { headers: { Authorization: `Bearer ${token}` } },
+          );
+          setInput('');
+          stopTyping();
+          await fetchMessages(selectedContact.id);
+        } else if (selectedChannel) {
+          await axios.post(
+            `${API_URL}/channels/${selectedChannel.id}/messages`,
+            { content: trimmed },
+            { headers: { Authorization: `Bearer ${token}` } },
+          );
+          setInput('');
+          await fetchChannelMessages(selectedChannel.id);
+        }
       } catch {
         // Silently fail, user can retry
       } finally {
         setIsSending(false);
       }
     },
-    [input, selectedContact, isSending, token, API_URL, stopTyping, fetchMessages],
+    [input, selectedContact, selectedChannel, isSending, token, API_URL, stopTyping, fetchMessages, fetchChannelMessages],
   );
 
   // ── Handle typing signal ──────────────────────────────────────────────────
@@ -694,11 +735,7 @@ export default function MessagesPage() {
                 key={ch.id}
                 channel={ch}
                 isSelected={selectedChannel?.id === ch.id}
-                onClick={() => {
-                  setSelectedChannel(ch);
-                  setSelectedContact(null);
-                  setActiveThread(null);
-                }}
+                onClick={() => selectChannel(ch)}
               />
             ))}
           </>
@@ -861,28 +898,101 @@ export default function MessagesPage() {
             </AnimatePresence>
           </>
         ) : selectedChannel ? (
-          /* Channel View (read-only preview) */
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center">
-              <Hash size={48} className="text-[#333] mx-auto mb-4" />
-              <h2 className="text-xl font-serif font-light text-white mb-2">
-                #{selectedChannel.name}
-              </h2>
-              <p className="text-[#555] text-sm">
-                {selectedChannel.memberCount} members
-              </p>
-              <p className="text-[#444] text-xs mt-4">
-                Open in{' '}
-                <a
-                  href="/dashboard/channels"
-                  className="text-[#D4A843] hover:underline"
-                >
-                  Channels
-                </a>{' '}
-                for full messaging
-              </p>
+          <>
+            {/* Channel Header */}
+            <div className="px-5 py-3.5 border-b border-[#1F1F1F] flex items-center justify-between bg-[#0A0A0A]/20 shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-[#D4A843]/10 text-[#D4A843] flex items-center justify-center">
+                  <Hash size={18} />
+                </div>
+                <div>
+                  <h3 className="text-sm font-serif font-light text-white">
+                    #{selectedChannel.name}
+                  </h3>
+                  <p className="text-[11px] text-[#555]">
+                    {selectedChannel.description || `${selectedChannel.memberCount} members`}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1">
+                <Tooltip content="Channel Members">
+                  <button className="p-2 rounded-lg text-[#555] hover:text-white hover:bg-white/[0.05] transition-colors flex items-center gap-1.5 text-xs">
+                    <Users size={15} />
+                    <span>{selectedChannel.memberCount}</span>
+                  </button>
+                </Tooltip>
+              </div>
             </div>
-          </div>
+
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
+              {channelMessages.length === 0 ? (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex items-center justify-center h-full"
+                >
+                  <div className="text-center">
+                    <div className="w-14 h-14 rounded-full bg-[#1A1A1A] flex items-center justify-center mx-auto mb-3">
+                      <Hash size={22} className="text-[#444]" />
+                    </div>
+                    <p className="text-sm text-[#555] font-light">
+                      Welcome to #{selectedChannel.name}! Start the conversation.
+                    </p>
+                  </div>
+                </motion.div>
+              ) : (
+                channelMessages.map((m, i) => (
+                  <MessageBubble
+                    key={m.id || i}
+                    message={m}
+                    isOwn={m.senderId === user?.id}
+                    onReply={setActiveThread}
+                  />
+                ))
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Message Input */}
+            <form
+              onSubmit={sendMsg}
+              className="px-4 py-3 border-t border-[#1F1F1F] flex items-end gap-2.5 relative bg-[#0A0A0A]/10"
+            >
+              <button
+                type="button"
+                className="p-2 rounded-lg text-[#555] hover:text-[#888] transition-colors"
+              >
+                <Paperclip size={17} />
+              </button>
+              <div className="flex-1 relative">
+                <input
+                  ref={inputRef}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder={`Message #${selectedChannel.name}...`}
+                  className="w-full bg-[#1A1A1A] border border-[#1F1F1F] rounded-xl pl-4 pr-10 py-2.5 text-sm text-white placeholder-[#555] outline-none focus:border-[#D4A843]/50 transition-all font-light"
+                  disabled={isSending}
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={!input.trim() || isSending}
+                className={cn(
+                  'p-2.5 rounded-xl transition-all duration-200 shrink-0',
+                  input.trim() && !isSending
+                    ? 'bg-[#D4A843] text-[#0A0A0A] hover:bg-[#D4A843]/90'
+                    : 'bg-[#1A1A1A] text-[#444]',
+                )}
+              >
+                {isSending ? (
+                  <Loader2 size={16} className="animate-spin" />
+                ) : (
+                  <Send size={16} />
+                )}
+              </button>
+            </form>
+          </>
         ) : (
           <EmptyChatView />
         )}
