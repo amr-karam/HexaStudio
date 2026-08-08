@@ -42,14 +42,14 @@ Roles and their canonical definitions:
 
 | Role | Definition file | Responsibility |
 |------|-----------------|----------------|
-| ORCHESTRATOR | `.opencode/prompts/orchestrator.txt` | Decompose → parallel dispatch → sequential chains → quality gate → consolidate. ASKs before editing/running bash. |
+| ORCHESTRATOR | `.ai/agents/orchestrator.md` | Decompose → parallel dispatch → sequential chains → quality gate → consolidate. ASKs before editing/running bash. |
 | ARCHITECT | `.ai/agents/architect.md` | System architecture integrity, ADR authorship, package boundaries, microservice patterns. |
 | BUILDER | `.ai/agents/builder.md` (new) | Implementation lead — coordinates domain builders (Frontend, Backend, CMS, Three.js). |
 | REVIEWER | `.ai/agents/reviewer.md` | Gatekeeper — QA, Security, Performance, SEO verification before merge. |
 | Domain builders | `.ai/agents/frontend.md`, `backend.md`, `cms.md`, `threejs.md` | Feature implementation in each domain. |
 | Review specialists | `.ai/agents/qa.md`, `security.md`, `performance.md`, `seo.md` | Domain verification and audits. |
 
-Role files live in `.ai/agents/` (machine-consumable role definitions). Human-readable agent guides remain in `docs/agents/`. Orchestrator prompt(s) live in `.opencode/prompts/`.
+Role files live in `.ai/agents/` (machine-consumable role definitions). Human-readable agent guides remain in `docs/agents/`. Orchestrator definition lives in `.ai/agents/orchestrator.md`.
 
 The delivery pipeline is:
 1. GOVERNANCE sets the rules (architecture, security, engineering standards).
@@ -84,6 +84,6 @@ The delivery pipeline is:
 - `GOVERNANCE.md` — Engineering Governance (operating manual)
 - `docs/adr/009-enterprise-governance-framework.md` — Governance framework (superset)
 - `.ai/agents/*.md` — Role definitions (ARCHITECT, BUILDER, REVIEWER, builders, specialists)
-- `.opencode/prompts/orchestrator.txt` — ORCHESTRATOR prompt
+- `.ai/agents/orchestrator.md` — ORCHESTRATOR role definition
 - `docs/agents/` — Human-readable agent guides
 - `docs/devops/README.md` — DevOps manifest (CI/CD, staging, production references)

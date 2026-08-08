@@ -73,10 +73,13 @@
 
 ## 4. API Keys Configured
 
-All keys from `C:\Users\amrmo\OneDrive\Desktop\API` have been populated in:
-- `.env.local` (development)
+100% of keys from `C:\Users\amrmo\OneDrive\Desktop\API` have been populated across:
+- `.env.local` (development â€” 24 provider keys including FreeTheAI, MiniMax, DigitalOcean, Tailscale, Vercel)
 - `.env` (docker/production)
+- `apps/backend/.env` (NestJS AI multi-provider engine)
+- `~/.config/opencode/opencode.json` (OpenCode global configuration)
 - Backend `env.ts` Zod schema (type-safe, validated at startup)
+
 
 ---
 
@@ -232,3 +235,12 @@ All keys from `C:\Users\amrmo\OneDrive\Desktop\API` have been populated in:
 - `it@hexastudio.net` lacks Odoo `project.project` create permission â†’ `StrapiProjectSyncService` logs permission error, degrades gracefully
 - `WorkflowSeeder` Redis `ERR invalid expire time in 'set'` â€” seeder fails, workflows still registered via `WorkflowEngineService`
 - Server `docker-compose.staging.yml` was stale (pre-staging names); backed up to `/tmp/docker-compose.staging.yml.server-bak`, replaced by committed `fef36f7` staging variant
+
+---
+
+## 2026-08-08 — Decision B: Agent roles canonicalized to `.ai/agents/`
+
+- Approved: accept `.ai/agents/` as the canonical agent-role location (ADR-010). `.opencode/` legacy tree (14 agent files + 4 prompts) removed.
+- Created `.ai/agents/orchestrator.md` — canonical ORCHESTRATOR role definition (relocated from deleted `.opencode/prompts/orchestrator.txt`).
+- Updated dangling references: ADR-010 (role table, role-file statement, references) and GOVERNANCE.md (Operating Model) now point to `.ai/agents/orchestrator.md`.
+- Production verified live: host 19.16.1.100, 28 containers, blue/green app stack healthy, zero-trust ingress via Traefik only, deployed commit `dbc8b206` (3 behind GitLab main — CI/lockfile/docs delta only).
