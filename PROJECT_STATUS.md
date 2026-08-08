@@ -32,7 +32,7 @@
 | **Backend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **Mobile Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **ESLint (all)** | 0 errors, 0 warnings | `0 errors, 0 warnings` (frontend, backend, mobile full `src` + `test`) | ✅ PASS |
-| **Governance** | 61/61 Sections | `100% Active` | ✅ PASS |
+| **Governance** | 61/61 Sections | `100% Active — v1.1.0` | ✅ PASS |
 
 ---
 
