@@ -13,6 +13,9 @@ const fs = require('fs');
 const path = require('path');
 
 const PROJECT_ROOT = path.resolve(__dirname, '..');
+// NOTE: Only the canonical `.gitlab-ci.yml` is validated here, by design.
+// `.gitlab-ci-optimized.yml` is an experimental, non-canonical variant and is
+// intentionally excluded from validation (see docs/devops/CI_CD_GOVERNANCE.md).
 const CI_FILE = path.join(PROJECT_ROOT, '.gitlab-ci.yml');
 
 if (!fs.existsSync(CI_FILE)) {
