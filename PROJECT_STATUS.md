@@ -88,8 +88,8 @@
 
 ## 6. Master Platform Build Progress (v2.2.0)
 
-**Current Phase:** Phase 2 — Design System (COMPLETED)
-**Target Phase:** Phase 3 — Public Website
+**Current Phase:** Phase 3 — Public Website (COMPLETED)
+**Target Phase:** Phase 4 — Portfolio Engine
 
 ### Phase 1: Architecture and Foundation ✅
 - [x] **Workspace Audit**: Monorepo structure verified against Master Directive.
@@ -107,6 +107,24 @@
 - [x] **UI Component Library**: Avatar, Badge, Checkbox, Dialog, HeroGradientBackground, Label, Progress, Select, Skeleton, Spinner, Switch, Toast, Tooltip
 - [x] **Package Exports**: All components exported from `@hexastudio/ui` index
 - [x] **Quality Gates**: Lint 0 errors, Typecheck 0 errors across packages/ui, apps/frontend, apps/backend
+
+### Phase 3: Public Website ✅
+- [x] **Homepage** (`/`): Fully implemented with 5-chapter cinematic scroll film
+  - CH. I — VISION: HomeHero with FractureRingHero, GSAP load cascade, mouse parallax, scroll-driven opacity
+  - CH. II — CRAFT: FeaturedWork + MarqueeBar (client logo carousel)
+  - CH. III — METHOD: ProcessSection + AchievementsSection
+  - CH. IV — PROOF: ProjectGrid (35 projects) + TestimonialsSection
+  - CH. V — CONTACT: CTASection (LiquidGlassCard) + NewsletterSection
+- [x] **Projects Page** (`/projects`): HeaderSection + ProjectGrid with 35 projects, grid/scene toggle
+- [x] **Project Detail** (`/projects/[slug]`): ProjectScrollCinema (5-chapter cinematic case study), JSON-LD, prev/next navigation
+- [x] **Services Page** (`/services`): ServicesPageContent with service cards
+- [x] **About Page** (`/about`): StrapiBlocks content, TeamSection, LiquidGlassCard
+- [x] **Contact Page** (`/contact`): Form with validation, FAQSection, SilkShaderBackground
+- [x] **Blog Page** (`/blog`): BlogPageContent with article listing
+- [x] **Studio Page** (`/studio`): Implemented
+- [x] **Additional Pages**: AI, XR Viewer, Demo, Portal, Privacy, Terms all implemented
+- [x] **Performance**: Dynamic imports for below-fold components, ISR (1h revalidation), LCP optimization
+- [x] **Quality Gates**: Lint 0 errors, Typecheck 0 errors, Tests 207/207 passing
 
 **Phase 1 Sign-off:** August 9, 2026. Foundation is immutable and production-ready.on Redis conversation history (list, 40 msgs, 24h TTL) + long-term facts (hash, 7d TTL); `remember`/`recall`/`forget`/`clear` + `appendMany`
 - [x] `AgentsService.chat()` — history hydration, user/assistant/tool message persistence, resilient per-tool execution (one tool failure no longer aborts the loop), `sessionId` support
