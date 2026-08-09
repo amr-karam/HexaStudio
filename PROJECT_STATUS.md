@@ -64,7 +64,9 @@
 ### Infrastructure
 - **Traefik v3** — Edge reverse proxy (upgraded from v2.11 in `docker-compose.prod.yml`)
 - **Cloudflare Tunnel** — Zero-trust edge ingress
-- **GitLab CE CI/CD** — 6-stage pipeline (`quality → build → image → validate → mobile → deploy`)
+- **GitLab CE CI/CD** — 7-stage pipeline (`quality → build → image → validate → mobile → publish → deploy`)
+- **npm Package Registry** — `@hexastudio/ui` publish job (`publish-ui`) using `CI_JOB_TOKEN`
+- **Design System Docs** — Storybook static site (`docs.hexastudio.net`) served by `docs-service:8080`
 - **Prometheus + Grafana** — Metrics at `/metrics` endpoint
 - **Sentry** — Error tracking (`SENTRY_AUTH_TOKEN` configured)
 
