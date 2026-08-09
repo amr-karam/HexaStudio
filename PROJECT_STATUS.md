@@ -88,8 +88,8 @@
 
 ## 6. Master Platform Build Progress (v2.2.0)
 
-**Current Phase:** Phase 6 — CMS (COMPLETED)
-**Target Phase:** Phase 7 — NestJS API
+**Current Phase:** Phase 7 — NestJS API (COMPLETED)
+**Target Phase:** Phase 8 — Authentication and Client Portal
 
 ### Phase 1: Architecture and Foundation ✅
 - [x] **Workspace Audit**: Monorepo structure verified against Master Directive.
@@ -188,6 +188,24 @@
 - [x] **CMS Architecture Docs**: Content modeling, API architecture, media architecture, localization, validation
 - [x] **CMS API Documentation**: REST API, GraphQL, authentication, authorization, rate limiting
 - [x] **Quality Gates**: Lint 0 errors, Typecheck 0 errors
+
+### Phase 7: NestJS API ✅ (AUG 9, 2026)
+- [x] **Modular Architecture**: 29+ feature modules (auth, contact, projects, pod, users, storage, email, ai, odoo, portal, realtime, webhooks, etc.)
+- [x] **DTO Validation**: class-validator with whitelist, forbidNonWhitelisted, transform options
+- [x] **Authentication**: JWT-based auth with Guards, JWT strategy, authenticatedFetch utility
+- [x] **Authorization**: Roles-based access control (RBAC) with RolesGuard and @Roles() decorator
+- [x] **JWT**: @nestjs/jwt with 15-minute access tokens, JTI for revocation, secure signing
+- [x] **Refresh Tokens**: Family-based token tracking with reuse detection, rotation on use, revocation on logout/password change, 30-day TTL with Redis storage
+- [x] **RBAC**: Admin, Editor, Author, Contributor, Public roles with fine-grained permissions
+- [x] **Rate Limiting**: @nestjs/throttler with ThrottlerGuard + SecurityThrottlerFilter for logging, configurable limits
+- [x] **Logging**: NestJS Logger throughout, structured logging in filters, security event logging (rate limits, auth failures)
+- [x] **Error Handling**: GlobalExceptionFilter with structured error responses, HttpExceptions, custom exceptions
+- [x] **API Versioning**: URI versioning (/api/v1/* and /api/* for backward compatibility), controllers declare version: ['1', VERSION_NEUTRAL]
+- [x] **Health Checks**: /health endpoint with status, dependencies, uptime
+- [x] **Swagger/OpenAPI**: /api/docs in development with JWT bearer auth
+- [x] **Security**: helmet(), CORS with credentials, CSRF protection, input validation, JWT authentication
+- [x] **Observability**: OpenTelemetry tracing, Sentry integration, request ID propagation
+- [x] **Quality Gates**: Lint 0 errors, Typecheck 0 errors, Tests 339/339 passing
 
 **Phase 1 Sign-off:** August 9, 2026. Foundation is immutable and production-ready.on Redis conversation history (list, 40 msgs, 24h TTL) + long-term facts (hash, 7d TTL); `remember`/`recall`/`forget`/`clear` + `appendMany`
 - [x] `AgentsService.chat()` — history hydration, user/assistant/tool message persistence, resilient per-tool execution (one tool failure no longer aborts the loop), `sessionId` support
