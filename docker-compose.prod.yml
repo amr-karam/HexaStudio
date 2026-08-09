@@ -243,7 +243,7 @@ services:
   # Serves packages/ui/storybook-static/ at docs.hexastudio.net.
   # Traefik router already declared in docker/traefik/dynamic.yml:
   #   Host(`docs.hexastudio.net`) -> docs-service:8080
-  docs:
+  docs-service:
     image: ${DOCS_IMAGE:-registry.gitlab.hexastudio.net/root/hexa-platform/docs:latest}
     container_name: hexa-docs-${SOT:-blue}
     <<: *default-restart
