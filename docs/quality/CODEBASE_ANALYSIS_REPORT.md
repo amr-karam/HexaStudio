@@ -25,7 +25,7 @@ HEXA Vision is a premium digital architectural experience platform that bridges 
 
 | Layer | Technology | Status |
 |-------|-----------|--------|
-| **Frontend** | Next.js 15, TypeScript, TailwindCSS 4 | ✅ Current |
+| **Frontend** | Next.js 16.2.11, TypeScript, TailwindCSS 4 | ✅ Current |
 | **3D Engine** | Three.js, React Three Fiber, @react-three/drei | ✅ Current |
 | **Animation** | GSAP, Framer Motion | ✅ Current |
 | **Backend** | NestJS, REST (Swagger), JWT | ✅ Current |

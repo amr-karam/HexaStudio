@@ -725,7 +725,7 @@ The application must support:
 
 ### Minimum expectation
 
-Target WCAG 2.2 AA where practical.
+Target WCAG 2.1 AAA where practical.
 
 ### References
 
@@ -1500,7 +1500,7 @@ Example:
 
 ```text
 Project:
-Next.js 15.x
+Next.js 16.2.11.x
 
 Do not automatically implement:
 Next.js 16.x behavior

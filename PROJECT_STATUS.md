@@ -1,4 +1,4 @@
-﻿# HEXA STUDIO — PROJECT STATUS REPORT
+# HEXA STUDIO — PROJECT STATUS REPORT
 
 **Last Updated:** August 9, 2026 — Quality-Gate Re-verification (Autonomous Pass) + Status Reconciliation
 **Version:** 2.1.4
@@ -362,7 +362,7 @@
 - **Scope:** Verified the repository against GOVERNANCE.md §57 (INITIALIZATION REQUIREMENTS, 14 items) after the pasted v1.0.0 doc was merged as v1.1.0. Result: **13/14 COMPLETE, 1 PARTIAL, 0 MISSING**.
 - **Governance doc reconciliation:** Repo `GOVERNANCE.md` v1.1.0 is a **true superset** of the pasted v1.0.0 (64/64 sections map to present content; §64→§57, §20→§5.3, §33→§19 renumbered, not lost). No edits to GOVERNANCE.md required.
 - **Gap closed — Agent role definitions (§32/§44):** all 15 `.ai/agents/*.md` files now carry the full 7-field schema (Mission, Responsibilities, Allowed Actions, Forbidden Actions, Required Checks, Documentation Requirements, Handoff Rules). Required Checks added to the 10 files that lacked them; Documentation + Handoff fields added to all 15; checks grounded in real workspace gate commands.
-- **Gap closed — Stale versions:** `.ai/agents/orchestrator.md` + `docs/AGENTS.md` "Next.js 15" → **Next.js 16.2.11** (matches `apps/frontend/package.json`).
+- **Gap closed — Stale versions:** `.ai/agents/orchestrator.md` + `docs/AGENTS.md` "Next.js 16.2.11" → **Next.js 16.2.11** (matches `apps/frontend/package.json`).
 - **Gap closed — ADR template reconciliation:** `.ai/templates/adr-template.md` aligned to canonical `docs/templates/ADR_TEMPLATE.md` (10 sections incl. Problem, Migration, Rollback; §37 statuses).
 - **Security remediation (approved by user):**
   - GitLab PAT `glpat-8p9F...qph6` (in untracked `gl_p122c.py`/`gl_poll122.py`) **revoked** via GitLab API self-revoke (HTTP 200).

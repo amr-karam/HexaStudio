@@ -1085,7 +1085,7 @@ export default function AccessibilityAudit() {
         recommendations: [
           'All interactive elements have proper ARIA labels',
           'Keyboard navigation fully functional',
-          'Color contrast meets WCAG 2.2 AA standards',
+          'Color contrast meets WCAG 2.1 AAA standards',
           'Screen reader support implemented',
           'Reduced motion preferences respected',
         ],
@@ -1235,7 +1235,7 @@ import AccessibilityAudit from './AccessibilityAudit';
 - ✅ 60fps sustained animations
 
 ### Accessibility
-- ✅ WCAG 2.2 AA compliant
+- ✅ WCAG 2.1 AAA compliant
 - ✅ Keyboard navigation fully functional
 - ✅ Screen reader support implemented
 - ✅ Color contrast verified (4.5:1 minimum)

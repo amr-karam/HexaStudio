@@ -112,7 +112,7 @@ export async function generateMetadata({ params }): Promise<Metadata> {
 
 ## 7. Stack Advantage
 
-Next.js 15 provides SSR, ISR, Metadata API, and sitemap generation — a significant SEO advantage over a Vite SPA that would require additional tooling (react-helmet-async, prerendering service).
+Next.js 16.2.11 provides SSR, ISR, Metadata API, and sitemap generation — a significant SEO advantage over a Vite SPA that would require additional tooling (react-helmet-async, prerendering service).
 
 ---
 

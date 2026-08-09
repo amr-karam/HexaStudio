@@ -8,7 +8,7 @@
 ---
 
 ## Task Overview
-Redesign PortalAiCopilot.tsx to luxury premium standard (9.5/10) with glass morphism, premium animations, and WCAG 2.2 AA compliance.
+Redesign PortalAiCopilot.tsx to luxury premium standard (9.5/10) with glass morphism, premium animations, and WCAG 2.1 AAA compliance.
 
 ## 📋 Detailed Requirements
 
@@ -38,7 +38,7 @@ Redesign PortalAiCopilot.tsx to luxury premium standard (9.5/10) with glass morp
 - Smooth scroll animations using GSAP ScrollTrigger
 - Mobile-first responsive with hamburger menu
 - Sticky positioning with shadow elevation
-- WCAG 2.2 AA compliant keyboard navigation
+- WCAG 2.1 AAA compliant keyboard navigation
 
 **Deliverables:**
 - Navbar component with glass morphism
@@ -166,7 +166,7 @@ gsap.from(messageRef.current, {
 
 ---
 
-## ♿ Accessibility Implementation (WCAG 2.2 AA)
+## ♿ Accessibility Implementation (WCAG 2.1 AAA)
 
 ### Keyboard Navigation
 - All interactive elements must be keyboard accessible
@@ -556,7 +556,7 @@ export { gsap, ScrollTrigger };
 - [ ] GSAP ScrollTrigger for smooth scrolling
 - [ ] Framer Motion for React animations
 
-### Accessibility (WCAG 2.2 AA)
+### Accessibility (WCAG 2.1 AAA)
 - [ ] Keyboard navigation fully functional
 - [ ] Focus states visible and meet contrast requirements
 - [ ] Screen reader support with proper ARIA attributes
@@ -686,7 +686,7 @@ export { gsap, ScrollTrigger };
 
 1. ✅ Enhanced PortalAiCopilot.tsx with premium design
 2. ✅ Animation performance metrics dashboard
-3. ✅ Accessibility audit report (WCAG 2.2 AA compliant)
+3. ✅ Accessibility audit report (WCAG 2.1 AAA compliant)
 4. ✅ Before/after visual comparisons
 5. ✅ Performance budget compliance verification
 6. ✅ Comprehensive documentation

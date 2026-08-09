@@ -1,7 +1,7 @@
 # CODEBASE CONTEXT & ARCHITECTURE SUMMARY
 
 ## Stack Summary
-- **Frontend:** Next.js 15 (App Router), TailwindCSS 4, Three.js, R3F, GSAP, Framer Motion, Zustand.
+- **Frontend:** Next.js 16.2.11 (App Router), TailwindCSS 4, Three.js, R3F, GSAP, Framer Motion, Zustand.
 - **Backend:** NestJS 10 (TypeScript), REST, WebSockets, Odoo 16 RPC Service.
 - **CMS:** Strapi 5.
 - **Packages:** `@hexastudio/types`, `@hexastudio/ui`, `@hexastudio/utils`.

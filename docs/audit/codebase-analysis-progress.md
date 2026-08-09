@@ -56,7 +56,7 @@ This analysis follows a 3-phase approach:
 
 **Key Findings:**
 1. **Monorepo Structure:** 3 apps (frontend, backend, cms) + 3 shared packages (types, ui, utils)
-2. **Tech Stack:** Next.js 15, NestJS, Strapi 5, R3F, PostgreSQL 16, Redis 7, MinIO, Traefik v3
+2. **Tech Stack:** Next.js 16.2.11, NestJS, Strapi 5, R3F, PostgreSQL 16, Redis 7, MinIO, Traefik v3
 3. **BFF Pattern:** NestJS strictly between Next.js and Strapi
 4. **3D Pipeline:** GLB upload → MinIO → Draco optimization → Scene Manifest → R3F async load
 5. **Sprint Status:** 32/40 story points complete, ~55% code coverage, bundle budgets met

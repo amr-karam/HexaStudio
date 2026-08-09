@@ -17,7 +17,7 @@ HEXA Studio is a premium **3D Architecture Visualization Platform** built as a f
 ### Frontend
 | Component | Technology | Version |
 |-----------|-----------|---------|
-| Framework | Next.js 15 | ^15.1.0 |
+| Framework | Next.js 16.2.11 | ^15.1.0 |
 | Language | TypeScript | ^5.7.0 |
 | Styling | Tailwind CSS 4 | ^4.0.0 |
 | 3D Engine | React Three Fiber | ^9.0.0 |
@@ -71,7 +71,7 @@ HEXA Studio is a premium **3D Architecture Visualization Platform** built as a f
 ```
 hexastudio/
 ├── apps/
-│   ├── frontend/          # Next.js 15 app (port 3000)
+│   ├── frontend/          # Next.js 16.2.11 app (port 3000)
 │   │   ├── src/
 │   │   │   ├── app/       # App Router pages
 │   │   │   ├── features/  # Feature-based modules

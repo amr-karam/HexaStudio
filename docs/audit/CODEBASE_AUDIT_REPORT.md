@@ -18,7 +18,7 @@ A comprehensive audit of the HEXA Studio codebase was performed to identify stru
 The project follows a Turborepo monorepo structure with:
 
 **Main Applications:**
-- `apps/frontend` - Next.js 15 frontend (React 19, TypeScript, TailwindCSS 4)
+- `apps/frontend` - Next.js 16.2.11 frontend (React 19, TypeScript, TailwindCSS 4)
 - `apps/backend` - NestJS backend API
 - `apps/cms` - Strapi 5 headless CMS
 
@@ -100,7 +100,7 @@ The project follows a Turborepo monorepo structure with:
 - ✅ `docker-compose.prod.yml` - Production Docker configuration
 
 ### ✅ Application Configuration
-- ✅ `apps/frontend/package.json` - Valid Next.js 15 configuration
+- ✅ `apps/frontend/package.json` - Valid Next.js 16.2.11 configuration
 - ✅ `apps/backend/package.json` - Valid NestJS configuration
 - ✅ `apps/cms/package.json` - Valid Strapi 5 configuration
 - ✅ `packages/types/package.json` - Valid shared types package
@@ -119,7 +119,7 @@ The project follows a Turborepo monorepo structure with:
 ## Dependency Analysis
 
 ### ✅ Main Dependencies
-- **Frontend:** React 19, Next.js 15, Three.js, Framer Motion, GSAP, Zustand
+- **Frontend:** React 19, Next.js 16.2.11, Three.js, Framer Motion, GSAP, Zustand
 - **Backend:** NestJS 10, TypeORM, Passport JWT, Redis, MinIO
 - **CMS:** Strapi 5, PostgreSQL, React 18
 - **Shared:** TypeScript 5.7, Zod validation
@@ -258,7 +258,7 @@ Docker configuration includes:
 ## Performance Considerations
 
 ### ✅ Current Performance Optimizations
-- Next.js 15 with App Router
+- Next.js 16.2.11 with App Router
 - React 19 with concurrent features
 - Code splitting configured
 - Image optimization with Next.js Image

@@ -75,7 +75,7 @@ No findings fabricated; all version claims re-checked from source files.
 - `docs/performance/` = 4 files; filled empty `PERFORMANCE.md` placeholder (LCP < 2.5s, INP < 200ms, CLS < 0.1; RSC, lazy-loading, bundle budgets, Three.js LOD guidance).
 
 ### PHASE 12 — ACCESSIBILITY (✅ PASS)
-- `docs/accessibility/` = 3 files; filled empty `ACCESSIBILITY.md` placeholder (WCAG 2.2 AA, keyboard, focus, semantic HTML, reduced motion).
+- `docs/accessibility/` = 3 files; filled empty `ACCESSIBILITY.md` placeholder (WCAG 2.1 AAA, keyboard, focus, semantic HTML, reduced motion).
 
 ### PHASE 13 — SEO (✅ PASS)
 - `docs/seo/` = 3 files; filled empty `SEO.md` placeholder (Metadata API, JSON-LD, sitemap/robots, GSC monitoring).

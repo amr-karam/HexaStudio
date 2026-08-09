@@ -29,7 +29,7 @@
 
 | Aspect | User Brief | Implemented | Recommendation |
 |--------|-----------|-------------|----------------|
-| Bundler | Vite | Next.js 15 | **Retain Next.js** |
+| Bundler | Vite | Next.js 16.2.11 | **Retain Next.js** |
 | Routing | React Router | App Router | Retain App Router |
 | SSR/SEO | Client SPA | SSR/ISR capable | Next.js advantage for SEO |
 | Deployment | Static + nginx | Standalone Node | Already configured |
