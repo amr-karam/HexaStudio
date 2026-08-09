@@ -179,3 +179,9 @@ Daily Notes/
 
 # Local npm auth config (never commit)
 *.npmrc
+
+# Git rewrite directories
+.git-rewrite/
+
+# Secret scrubbing scripts
+scrub_secret.py
