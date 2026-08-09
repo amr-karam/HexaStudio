@@ -96,8 +96,8 @@ body {
 }
 
 ::selection {
-  background-color: rgba(201, 169, 110, 0.3);
-  color: #f4f4f5;
+  background-color: color-mix(in srgb, var(--color-accent) 30%, transparent);
+  color: var(--color-foreground);
 }
 
 ::-webkit-scrollbar {
@@ -173,6 +173,21 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
+
+/* Premium nav feature — gold gradient underline (token-sourced, was inline in Navbar) */
+.premium-feature {
+  position: relative;
+}
+.premium-feature::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-gold-light, #E5C76B), transparent);
+  opacity: 0.7;
+}
 /* Cinematic gradient overlay */
 .gradient-radial-gold {
   background: radial-gradient(circle at center, rgba(212, 175, 55, 0.08) 0%, transparent 60%);
@@ -248,4 +263,222 @@ body {
    shrink to fit its content in these contexts, breaking text layout. */
 [class*="max-w-"] {
   width: 100%;
+}
+
+/* ========================================================================== */
+/*  STORYBOOK HOMEPAGE — Book-page aesthetic utilities                          */
+/* ========================================================================== */
+
+/* Paper-textured background for book chapters */
+.storybook-paper {
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 50%, rgba(212, 175, 55, 0.02) 0%, transparent 50%),
+    linear-gradient(180deg, rgba(26, 22, 18, 0.3) 0%, rgba(15, 13, 10, 0.5) 100%);
+}
+
+/* Decorative border frame for book pages */
+.storybook-border {
+  position: relative;
+}
+
+.storybook-border::before {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(212, 175, 55, 0.1);
+  border-radius: 1px;
+  pointer-events: none;
+}
+
+.storybook-border::after {
+  content: '';
+  position: absolute;
+  inset: 14px;
+  border: 1px solid rgba(212, 175, 55, 0.05);
+  border-radius: 0.5px;
+  pointer-events: none;
+}
+
+/* Ornamental rule — horizontal divider with centered diamond */
+.storybook-ornament {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(212, 175, 55, 0.4);
+  margin: 2rem 0;
+}
+
+.storybook-ornament::before,
+.storybook-ornament::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+}
+
+.storybook-ornament::before {
+  background: linear-gradient(90deg, transparent, currentColor);
+}
+
+.storybook-ornament::after {
+  background: linear-gradient(90deg, currentColor, transparent);
+}
+
+/* Chapter numeral — large decorative number */
+.chapter-numeral {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 400;
+  line-height: 1;
+  color: rgba(212, 175, 55, 0.15);
+  display: block;
+  letter-spacing: -0.02em;
+}
+
+/* Chapter title — book-style running header */
+.chapter-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(0.65rem, 1.4vw, 0.85rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(212, 175, 55, 0.3);
+  line-height: 1.5;
+  text-align: right;
+}
+
+/* Drop cap first letter */
+.drop-cap::first-letter {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 400;
+  line-height: 0.8;
+  float: left;
+  margin-right: 0.12em;
+  margin-top: 0.06em;
+  color: rgba(212, 175, 55, 0.8);
+  text-shadow: 0 2px 8px rgba(212, 175, 55, 0.12);
+  font-style: italic;
+}
+
+/* Narrative body text — enhanced readability for storybook sections */
+.storybook-body {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: clamp(1rem, 1.4vw, 1.125rem);
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.75);
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* Storybook section heading */
+.storybook-heading {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 400;
+  line-height: 1.2;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: -0.01em;
+}
+
+/* Storybook sub-heading */
+.storybook-subheading {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1rem, 1.8vw, 1.25rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.4;
+  color: rgba(212, 175, 55, 0.6);
+  letter-spacing: 0.01em;
+}
+
+/* Narrative accent word */
+.storybook-accent {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  color: rgba(212, 175, 55, 0.85);
+}
+
+/* Bookmark-style reading progress */
+.bookmark-progress {
+  position: fixed;
+  right: clamp(16px, 3vw, 40px);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 50;
+  pointer-events: none;
+}
+
+/* Page shadow effect for depth */
+.page-shadow {
+  box-shadow:
+    4px 0 40px rgba(0, 0, 0, 0.25),
+    inset 0 0 60px rgba(212, 175, 55, 0.015);
+}
+
+/* Corner flourish positions */
+.corner-flourish-tl {
+  position: absolute;
+  top: clamp(32px, 5vw, 48px);
+  left: clamp(32px, 5vw, 48px);
+}
+
+.corner-flourish-tr {
+  position: absolute;
+  top: clamp(32px, 5vw, 48px);
+  right: clamp(32px, 5vw, 48px);
+}
+
+/* Storybook page margin */
+.storybook-page-padding {
+  padding: clamp(40px, 7vw, 96px);
+}
+
+/* Decorative diamond bullet */
+.diamond-bullet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 6px;
+  height: 6px;
+  border-radius: 1px;
+  background: rgba(212, 175, 55, 0.3);
+  margin: 0 0.5em;
+  vertical-align: middle;
+}
+
+/* Storybook section spacing */
+.storybook-section-gap {
+  margin-top: clamp(3rem, 6vw, 6rem);
+}
+
+/* Narrative paragraph styling */
+.storybook-paragraph {
+  margin-bottom: 1.25em;
+  text-indent: 0;
+}
+
+.storybook-paragraph + .storybook-paragraph {
+  text-indent: 1.5em;
+}
+
+/* Drop cap styles */
+.drop-cap-lg {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+}
+
+.drop-cap-first {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 400;
+  line-height: 0.8;
+  float: left;
+  margin-right: 0.1em;
+  margin-top: 0.05em;
+  color: rgba(212, 175, 55, 0.85);
+  text-shadow: 0 2px 8px rgba(212, 175, 55, 0.15);
+  font-style: italic;
 }

@@ -1,8 +1,11 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { ReactNode } from 'react';
 import type { Project } from '@hexastudio/types';
 import { SectionReveal } from '@/components/scroll/SectionReveal';
+import { StorybookChapter } from '@/components/storybook/StorybookChapter';
+import { BookProgress } from '@/components/storybook/BookProgress';
 
 // S-019: below-the-fold homepage sections are hydrated on the client only.
 // This keeps the critical / page bundle (hero + rail) lean and pushes the
@@ -46,31 +49,77 @@ interface HomePageDynamicProps {
   projects: Project[];
 }
 
+/**
+ * Wraps a section's content in the storybook chapter aesthetic.
+ * Placed inside SectionReveal so the scroll mechanics stay intact.
+ */
+function StorybookWrappedSection({
+  chapterNumber,
+  chapterTitle,
+  children,
+  id,
+}: {
+  chapterNumber: number;
+  chapterTitle: string;
+  children: ReactNode;
+  id: string;
+}) {
+  return (
+    <StorybookChapter chapterNumber={chapterNumber} chapterTitle={chapterTitle} id={id}>
+      {children}
+    </StorybookChapter>
+  );
+}
+
 export function HomePageDynamic({ featuredProject, projects }: HomePageDynamicProps) {
   return (
     <>
       <MarqueeBar />
+
+      {/* CH. II — CRAFT */}
       <SectionReveal>
-        <div id="ch-craft">
+        <StorybookWrappedSection
+          chapterNumber={2}
+          chapterTitle="Craft"
+          id="ch-craft"
+        >
           <FeaturedWork project={featuredProject} />
-        </div>
+        </StorybookWrappedSection>
       </SectionReveal>
+
+      {/* CH. III — METHOD */}
       <SectionReveal>
-        <div id="ch-method">
+        <StorybookWrappedSection
+          chapterNumber={3}
+          chapterTitle="Method"
+          id="ch-method"
+        >
           <ProcessSection />
           <AchievementsSection />
-        </div>
+        </StorybookWrappedSection>
       </SectionReveal>
+
+      {/* CH. IV — PROOF */}
       <SectionReveal>
-        <div id="ch-proof">
+        <StorybookWrappedSection
+          chapterNumber={4}
+          chapterTitle="Proof"
+          id="ch-proof"
+        >
           <ProjectGrid projects={projects} />
           <TestimonialsSection />
-        </div>
+        </StorybookWrappedSection>
       </SectionReveal>
+
+      {/* CH. V — CONTACT */}
       <div id="ch-contact">
-        <CTASection />
-        <NewsletterSection />
+        <StorybookChapter chapterNumber={5} chapterTitle="Contact" id="ch-contact">
+          <CTASection />
+          <NewsletterSection />
+        </StorybookChapter>
       </div>
+
+      <BookProgress />
     </>
   );
 }
