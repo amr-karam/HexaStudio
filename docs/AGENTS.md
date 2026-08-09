@@ -60,20 +60,32 @@ After reading them:
 | State | Zustand (Client), TanStack Query (Server) |
 | Observability | Sentry |
 
-## 4. GitHub Organization
+## 4. Monorepo Structure
+
+HEXA STUDIO is a **single Turborepo monorepo** (`hexa-platform`), not a multi-repo
+organization. GitLab CE (`gitlab.hexastudio.net`) is the DevOps source of truth
+(GOVERNANCE.md §13). The GitHub mirror (`origin`) is read-only for disaster recovery.
 
 ```
-HEXA-Studio/
-├── hexa-platform      ← Single Source of Truth (monorepo)
-├── hexa-website
-├── hexa-api
-├── hexa-odoo
-├── hexa-ai
-├── hexa-devops
-├── hexa-mobile        (Future)
-├── hexa-design-system (Optional)
-└── hexa-docs          (Optional)
+hexa-platform/                    ← Single Source of Truth (Turborepo monorepo)
+├── apps/
+│   ├── frontend/                 ← Next.js 16 App Router (Client Portal & Web Showcase)
+│   ├── backend/                  ← NestJS 11 BFF API Gateway & Microservices
+│   ├── cms/                      ← Strapi 5 Headless CMS Engine
+│   └── mobile/                   ← Expo / React Native Client Companion
+├── packages/
+│   ├── types/                    ← Shared TypeScript Interfaces (@hexastudio/types)
+│   ├── ui/                       ← Shared Design System Components (@hexastudio/ui)
+│   └── utils/                    ← Shared Helper Utilities (@hexastudio/utils)
+├── docker/                       ← Traefik v3, Postgres, Redis, MinIO, Odoo configs
+├── hexa-hub/                     ← OpenCode MCP Bridge (independent tool)
+├── docs/                         ← Categorized documentation tree (see §6 below)
+├── .ai/                          ← AI Agent Governance, Workflows, & Checklists
+└── e2e/                          ← Playwright end-to-end tests
 ```
+
+**Reference:** `ARCHITECTURE.md` §1 (Monorepo Topology & Packages),
+`GOVERNANCE.md` §13 (GitLab CE & DevOps).
 
 ## 5. Creative Excellence Mode
 
