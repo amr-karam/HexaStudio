@@ -84,6 +84,28 @@
 - Backend `env.ts` Zod schema (type-safe, validated at startup)
 
 
+
+## 5. Production Secret Rotation (Aug 9, 2026)
+
+**Status:** ✅ COMPLETE — All service credentials rotated to 64-char cryptographically-random hex (generated on-server via `openssl rand -hex 32`, never transiting the shell). Rollback preserved via `.env.bak.20260809_114540` + SHA256.
+
+### Rotated Secrets (all applied live + verified)
+- **PostgreSQL / Redis** — rotated live via `ALTER ROLE` / `CONFIG SET`, verified with new password before app restart.
+- **MinIO, Odoo (user/db/master), Grafana** — rotated in `.env`, containers recreated in dependency order.
+- **JWT_SECRET, ODOO_WEBHOOK_SECRET, REVALIDATE_SECRET, Strapi secrets** (JWT, API salt, APP_KEYS, transfer salt) — rotated; **JWT rotation invalidates existing sessions** (users must re-login, expected).
+- **Cloudflare Tunnel Token** — fresh token minted via Cloudflare API for the same tunnel (`hexastudio-tunnel`); verified with a test cloudflared instance before swap; 4 connections re-registered.
+- **Cloudflare API Key** — Global Key (account-wide) **replaced with least-privilege zone-scoped DNS:Edit token** (`cfut_...`) limited to `hexastudio.net`. ⚠️ *Owner must revoke the old Global API Key in the Cloudflare dashboard.*
+
+### Incidents Found & Fixed During Rotation
+1. **Compose file mismatch** — bare `docker compose` auto-loaded the dev `docker-compose.override.yml`, placing DBs on the wrong network. Corrected: always use `-f docker-compose.prod.yml`. Backends now resolve `postgres`/`redis` on `hexastudio_internal`.
+2. **Traefik v3.0 Docker-provider incompatibility** — v3.0 client pins Docker API 1.24; daemon requires MinAPI 1.40 → Docker provider dead. Fixed: pinned **`traefik:v3.7.10`** + `DOCKER_API_VERSION=1.40` in compose (now committed to repo).
+3. **cloudflared QUIC instability** — connections dropped (`QUIC stream: timeout`), causing 15s TTFB. Fixed: **`--protocol http2`** in compose (now committed to repo). Direct-to-Traefik latency 18ms; public TTFB < 1s after fix.
+
+### Final State
+- Public `https://hexastudio.net` → 200, `api.hexastudio.net/api/health` → 200.
+- 0 occurrences of `***REDACTED***` in `.env`; `.env` perms `600`; compose config valid.
+- Temp secret files removed from server.
+
 ---
 
 ## 6. Master Platform Build Progress (v2.2.0)

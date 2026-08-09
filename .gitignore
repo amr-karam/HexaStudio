@@ -185,3 +185,6 @@ Daily Notes/
 
 # Secret scrubbing scripts
 scrub_secret.py
+
+# Backup files
+*.bak

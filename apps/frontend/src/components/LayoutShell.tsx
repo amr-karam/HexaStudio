@@ -12,8 +12,8 @@ import { GrainOverlay } from '@/components/animation';
 
 const FULLSCREEN_ROUTES = ['/xr-viewer'];
 
-/** Marketing routes that benefit from the ambient WebGL background. */
-const AMBIENT_ROUTES = ['/', '/about', '/services', '/projects', '/blog', '/contact'];
+/** Routes that benefit from the ambient WebGL background. */
+const AMBIENT_ROUTES = ['/studio', '/about', '/services', '/projects', '/blog', '/contact'];
 
 /** Dynamic import — AmbientScene and its R3F/Three deps only load on marketing routes. */
 const AmbientScene = dynamic(
