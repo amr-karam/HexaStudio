@@ -18,7 +18,7 @@ export class LeadsService {
         expected_revenue: lead.criteria.budget,
       };
 
-      const odooId = await this.odooService.create("crm.lead", odooPayload);
+      const odooId = await this.odooService.createLead(odooPayload);
       
       return {
         success: true,
