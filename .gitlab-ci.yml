@@ -80,7 +80,9 @@ workflow:
 
 .typecheck_base:
   stage: quality
-  image: node:${NODE_VERSION}
+  image:
+    name: node:${NODE_VERSION}
+    pull_policy: if-not-present
   before_script: *npm_setup
   cache: *cache_npm
 
@@ -136,7 +138,9 @@ security-scan:
 # ----- SBOM (Software Bill of Materials) -----
 sbom:
   stage: quality
-  image: node:${NODE_VERSION}
+  image:
+  name: node:${NODE_VERSION}
+  pull_policy: if-not-present
   before_script: *npm_setup
   # Non-blocking by design (see SECURITY_BASELINE): cyclonedx-npm runs `npm ls`
   # under the hood and fails on monorepo lockfile drift (ELSPROBLEMS) without
@@ -197,7 +201,9 @@ mobile-test:
 # ----- Build all apps/packages -----
 build:
   stage: build
-  image: node:${NODE_VERSION}
+  image:
+  name: node:${NODE_VERSION}
+  pull_policy: if-not-present
   before_script: *npm_setup
   cache: *cache_npm
   script:
@@ -220,7 +226,9 @@ build:
 # ----- Build & push backend image -----
 build-image-backend:
   stage: image
-  image: docker:24
+  image:
+  name: docker:24
+  pull_policy: if-not-present
   services:
     - docker:24-dind
   variables:
@@ -249,7 +257,9 @@ build-image-backend:
 # ----- Build & push frontend image -----
 build-image-frontend:
   stage: image
-  image: docker:24
+  image:
+  name: docker:24
+  pull_policy: if-not-present
   services:
     - docker:24-dind
   variables:
@@ -282,7 +292,9 @@ build-image-frontend:
 # ----- Build & push CMS image -----
 build-image-cms:
   stage: image
-  image: docker:24
+  image:
+  name: docker:24
+  pull_policy: if-not-present
   services:
     - docker:24-dind
   variables:
@@ -315,7 +327,9 @@ build-image-cms:
 # ----- E2E Tests (Playwright) -----
 e2e:
   stage: validate
-  image: mcr.microsoft.com/playwright:v1.49.0-noble
+  image:
+  name: mcr.microsoft.com/playwright:v1.49.0-noble
+  pull_policy: if-not-present
   needs: ["build"]
   before_script: *npm_setup
   script:
@@ -335,7 +349,9 @@ e2e:
 # ----- Visual Regression -----
 visual-regression:
   stage: validate
-  image: mcr.microsoft.com/playwright:v1.49.0-noble
+  image:
+  name: mcr.microsoft.com/playwright:v1.49.0-noble
+  pull_policy: if-not-present
   needs: ["build"]
   before_script: *npm_setup
   script:
@@ -354,7 +370,9 @@ visual-regression:
 # ----- Update Visual Snapshots (manual) -----
 update-visual-snapshots:
   stage: validate
-  image: mcr.microsoft.com/playwright:v1.49.0-noble
+  image:
+  name: mcr.microsoft.com/playwright:v1.49.0-noble
+  pull_policy: if-not-present
   needs: ["build"]
   before_script: *npm_setup
   script:
@@ -368,7 +386,9 @@ update-visual-snapshots:
 # ----- Lighthouse CI -----
 lighthouse:
   stage: validate
-  image: node:${NODE_VERSION}
+  image:
+  name: node:${NODE_VERSION}
+  pull_policy: if-not-present
   needs: ["build"]
   before_script: *npm_setup
   script:
@@ -394,7 +414,9 @@ lighthouse:
 # Exits 1 (fail build) if any threshold is exceeded.
 bundle-analysis:
   stage: validate
-  image: node:${NODE_VERSION}
+  image:
+  name: node:${NODE_VERSION}
+  pull_policy: if-not-present
   needs: ["build"]
   before_script: *npm_setup
   script:
@@ -414,7 +436,9 @@ bundle-analysis:
 # Gate policy: CRITICAL fails the pipeline; HIGH/MEDIUM reported as artifacts.
 container-scan:
   stage: validate
-  image: aquasec/trivy:latest
+  image:
+  name: aquasec/trivy:latest
+  pull_policy: if-not-present
   needs:
     - build-image-backend
     - build-image-frontend
@@ -463,7 +487,9 @@ container-scan:
 
 build-mobile:
   stage: mobile
-  image: node:${NODE_VERSION}
+  image:
+  name: node:${NODE_VERSION}
+  pull_policy: if-not-present
   needs:
     - job: typecheck
     - job: test
@@ -481,7 +507,9 @@ build-mobile:
 
 submit-mobile:
   stage: mobile
-  image: node:${NODE_VERSION}
+  image:
+  name: node:${NODE_VERSION}
+  pull_policy: if-not-present
   needs:
     - build-mobile
   before_script: *npm_setup
@@ -504,7 +532,9 @@ submit-mobile:
 # consumable by external consumers and CI jobs on other runners.
 publish-ui:
   stage: publish
-  image: node:${NODE_VERSION}
+  image:
+  name: node:${NODE_VERSION}
+  pull_policy: if-not-present
   before_script: *npm_setup
   cache: *cache_npm
   script:
@@ -525,7 +555,9 @@ publish-ui:
 # ----- Build Storybook static site & push docs-service image -----
 build-storybook:
   stage: publish
-  image: node:${NODE_VERSION}
+  image:
+  name: node:${NODE_VERSION}
+  pull_policy: if-not-present
   before_script: *npm_setup
   cache: *cache_npm
   script:
@@ -542,7 +574,9 @@ build-storybook:
 # ----- Push docs-service container image (serves Storybook static build) -----
 build-image-docs:
   stage: publish
-  image: docker:24
+  image:
+  name: docker:24
+  pull_policy: if-not-present
   services:
     - docker:24-dind
   variables:
@@ -575,7 +609,9 @@ build-image-docs:
 # ----- Production deploy (main branch) -----
 deploy-production:
   stage: deploy
-  image: alpine:latest
+  image:
+  name: alpine:latest
+  pull_policy: if-not-present
   needs:
     - build-image-backend
     - build-image-frontend
@@ -617,7 +653,9 @@ deploy-production:
 # ----- Staging deploy (develop branch) -----
 deploy-staging:
   stage: deploy
-  image: alpine:latest
+  image:
+  name: alpine:latest
+  pull_policy: if-not-present
   needs:
     - build-image-backend
     - build-image-frontend
@@ -646,3 +684,5 @@ deploy-staging:
     url: https://staging.hexastudio.net
   rules:
     - if: $CI_COMMIT_BRANCH == "develop" && $CI_PIPELINE_SOURCE == "push"
+
+
