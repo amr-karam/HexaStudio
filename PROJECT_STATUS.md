@@ -380,7 +380,6 @@ The final product feels like a premium global Architecture Visualization Studio 
 - [x] **Device Support**: Desktop, tablet, mobile, low-end device support via adaptive quality
 - [x] **Quality Gates**: Lint 0 errors, Typecheck 0 errors
 
-<<<<<<< HEAD
 ### Phase 6: CMS ✅ (AUG 9, 2026)
 - [x] **Strapi CMS Application** (`apps/cms/`): Full Strapi 5 CMS with 10+ content types
 - [x] **Content Types**: Project, Service, Article, Category, Achievement, FAQ, Page, Portfolio, Team Member, Testimonial
