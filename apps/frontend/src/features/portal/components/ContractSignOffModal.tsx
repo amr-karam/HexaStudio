@@ -158,7 +158,7 @@ export function ContractSignOffModal({
           <button
             onClick={handleSign}
             disabled={!typedName.trim() || !agreed || isSubmitting}
-            className="rounded-lg bg-[#D4AF37] px-5 py-2 text-xs font-bold text-black disabled:opacity-40 hover:bg-[#E5C76B] transition-colors"
+            className="rounded-lg bg-accent px-5 py-2 text-xs font-bold text-black disabled:opacity-40 hover:bg-accent-light transition-colors"
           >
             {isSubmitting ? 'Signing & Stamping...' : 'Confirm Digital Signature'}
           </button>

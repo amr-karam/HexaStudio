@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/inputs/Input';
 import TextCharReveal from '@/components/effects/TextCharReveal';
 import { isValidEmail } from '@hexastudio/utils';
 import { cn } from '@/lib/utils';
+import { EASE } from '@/lib/motion';
 import { FAQSection } from '@/features/faq/components/FAQSection';
 import { API_BASE_URL } from '@/config/constants';
 import type { FAQ } from '@hexastudio/types';
@@ -77,7 +78,7 @@ export function ContactPageContent({ faqs }: ContactPageContentProps) {
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.6, ease: EASE.entrance }}
             className="text-xs uppercase tracking-[0.5em] text-neutral-400 mb-6 block font-mono"
           >
             Connect
@@ -98,7 +99,7 @@ export function ContactPageContent({ faqs }: ContactPageContentProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.8, delay: 0.2, ease: EASE.entrance }}
               className="relative z-10 w-full max-w-5xl bg-surface/30 backdrop-blur-2xl border border-border/50 p-8 md:p-16 rounded-sm shadow-2xl"
             >
               <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">

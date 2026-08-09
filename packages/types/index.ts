@@ -347,3 +347,4 @@ export interface Transform3D {
 
 export * from './odoo';
 export * from './workflow';
+export * from './lead-qualification';

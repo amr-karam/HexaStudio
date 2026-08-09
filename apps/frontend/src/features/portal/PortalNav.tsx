@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/features/auth';
 import { useLocale } from '@/i18n/LocaleProvider';
 import { cn } from '@/lib/utils';
+import { EASE } from '@/lib/motion';
 import { CurrencySelector } from '@/features/currency';
 
 const NAV_ITEMS = [
@@ -137,7 +138,7 @@ export function PortalNav() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.3, ease: EASE.entrance }}
             className="md:hidden border-t border-border/30 bg-background/95 backdrop-blur-2xl overflow-hidden"
           >
             <div className="px-6 py-6 space-y-4">

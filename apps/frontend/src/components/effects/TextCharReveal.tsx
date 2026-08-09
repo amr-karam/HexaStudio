@@ -1,4 +1,5 @@
 'use client';
+import { EASE } from '@/lib/motion';
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
@@ -49,7 +50,7 @@ export default function TextCharReveal({
       filter: 'blur(0px)',
       transition: {
         duration,
-        ease: [0.25, 0.1, 0.25, 1],
+        ease: EASE.transition,
       },
     },
   };

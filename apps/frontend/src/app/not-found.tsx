@@ -1,4 +1,5 @@
 'use client';
+import { EASE } from '@/lib/motion';
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -18,7 +19,7 @@ export default function NotFound() {
         <motion.span
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.6, ease: EASE.entrance }}
           className="text-xs uppercase tracking-[0.5em] text-neutral-500 font-mono"
         >
           Error 404
@@ -32,7 +33,7 @@ export default function NotFound() {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8, delay: 0.2, ease: EASE.entrance }}
             className="text-3xl md:text-5xl font-serif font-light tracking-tight text-foreground"
           >
             Space <span className="italic text-accent">Not Found</span>
@@ -42,7 +43,7 @@ export default function NotFound() {
         <motion.p
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.8, delay: 0.3, ease: EASE.entrance }}
           className="text-neutral-500 text-sm max-w-md leading-relaxed font-light"
         >
           The page you&apos;re looking for doesn&apos;t exist or has been moved to a different location.
@@ -51,7 +52,7 @@ export default function NotFound() {
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.8, delay: 0.4, ease: EASE.entrance }}
           className="flex flex-col sm:flex-row gap-4 mt-4"
         >
           <Link href="/">

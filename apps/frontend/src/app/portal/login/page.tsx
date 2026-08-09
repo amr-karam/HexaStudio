@@ -1,4 +1,5 @@
 'use client';
+import { EASE } from '@/lib/motion';
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -43,7 +44,7 @@ export default function LoginPage() {
       <motion.div 
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.8, ease: EASE.entrance }}
         className="w-full max-w-md bg-surface border border-border/50 p-8 md:p-16 rounded-sm shadow-2xl"
       >
         <div className="text-center mb-12">

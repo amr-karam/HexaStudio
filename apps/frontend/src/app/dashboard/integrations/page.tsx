@@ -27,7 +27,7 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
         </p>
       <button
         onClick={onAdd}
-        className="rounded-lg bg-[#D4AF37] px-5 py-2 text-sm font-medium text-black transition-colors hover:bg-[#C49A2F]"
+        className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-black transition-colors hover:bg-accent-dark"
       >
         Add Webhook
       </button>
@@ -58,7 +58,7 @@ function WebhookCard({
         <div className="flex items-center gap-3">
           <button
             onClick={onToggle}
-            className={`relative h-5 w-9 rounded-full transition-colors ${webhook.active ? 'bg-[#D4AF37]' : 'bg-white/20'}`}
+            className={`relative h-5 w-9 rounded-full transition-colors ${webhook.active ? 'bg-accent' : 'bg-white/20'}`}
           >
             <span className={`absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-black transition-transform ${webhook.active ? 'translate-x-4' : ''}`} />
           </button>
@@ -165,7 +165,7 @@ function WebhookForm({
         <button
           type="submit"
           disabled={saving || !name.trim() || !url.trim() || events.length === 0}
-          className="rounded-lg bg-[#D4AF37] px-5 py-2 text-sm font-medium text-black transition-colors hover:bg-[#C49A2F] disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-black transition-colors hover:bg-accent-dark disabled:cursor-not-allowed disabled:opacity-50"
         >
           {saving ? 'Saving...' : initial ? 'Update' : 'Create'}
         </button>
@@ -207,7 +207,7 @@ function WorkflowsPanel() {
           <h3 className="font-medium text-white">Workflow Engine</h3>
           <p className="text-xs text-white/40">Automations across CRM, projects, helpdesk, and accounting</p>
         </div>
-        <span className="ml-auto rounded-full bg-[#D4AF37]/20 px-2 py-0.5 text-[10px] text-[#D4AF37]">
+        <span className="ml-auto rounded-full bg-accent/20 px-2 py-0.5 text-[10px] text-[#D4AF37]">
           Active
         </span>
       </div>
@@ -294,7 +294,7 @@ export default function IntegrationsPage() {
         </div>
         <button
           onClick={() => { setShowForm(true); setEditing(null); }}
-          className="rounded-lg bg-[#D4AF37] px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-[#C49A2F]"
+          className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-accent-dark"
         >
           Add Webhook
         </button>

@@ -19,7 +19,7 @@ export function RealtimePresence({ users, isConnected }: RealtimePresenceProps) 
           {unique.slice(0, 5).map((user, i) => (
             <div
               key={i}
-              className="flex h-5 w-5 items-center justify-center rounded-full bg-[#D4AF37]/20 text-[9px] font-medium text-[#D4AF37] ring-1 ring-black"
+              className="flex h-5 w-5 items-center justify-center rounded-full bg-accent/20 text-[9px] font-medium text-accent ring-1 ring-black"
               title={user}
             >
               {user.charAt(0).toUpperCase()}

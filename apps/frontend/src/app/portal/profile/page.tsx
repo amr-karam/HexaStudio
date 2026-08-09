@@ -30,6 +30,7 @@ import { Icon } from '@/features/portal/components/PortalIcons';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { portalApi } from '@/features/portal/api';
 import { cn } from '@/lib/utils';
+import { EASE } from '@/lib/motion';
 import { toast } from 'sonner';
 
 /* -------------------------------------------------------------------------- */
@@ -160,7 +161,7 @@ function AccessGatewayPrompt() {
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.6, ease: EASE.entrance }}
           className="text-neutral-500 mb-8 uppercase tracking-widest font-mono text-xs"
         >
           Authentication required
@@ -168,7 +169,7 @@ function AccessGatewayPrompt() {
         <motion.button
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ delay: 0.15, duration: 0.6, ease: EASE.entrance }}
           onClick={() => router.push('/portal/login')}
           className={cn(
             'inline-flex items-center gap-2 px-6 py-3 rounded-sm text-sm font-bold',
@@ -322,7 +323,7 @@ export default function ProfilePage() {
             <motion.span
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.6, ease: EASE.entrance }}
               className="text-[10px] uppercase tracking-[0.5em] text-neutral-500 block font-mono"
             >
               Profile
@@ -331,7 +332,7 @@ export default function ProfilePage() {
               <motion.span
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.3, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ delay: 0.3, duration: 0.4, ease: EASE.entrance }}
                 className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20"
               >
                 Demo
@@ -344,7 +345,7 @@ export default function ProfilePage() {
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ delay: 0.25, duration: 0.6, ease: EASE.entrance }}
             className="mt-4 text-sm text-neutral-500 font-light leading-relaxed"
           >
             Manage your account, security, and personal preferences.
@@ -357,7 +358,7 @@ export default function ProfilePage() {
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ delay: 0.15, duration: 0.7, ease: EASE.entrance }}
           className="bg-surface border border-border/50 rounded-sm overflow-hidden"
           aria-label="Account information"
         >
@@ -436,7 +437,7 @@ export default function ProfilePage() {
                 <motion.div
                   initial={prefersReduced ? {} : { opacity: 0, x: -8 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{ duration: 0.3, ease: EASE.entrance }}
                 >
                   <input
                     id="profile-username"
@@ -524,7 +525,7 @@ export default function ProfilePage() {
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ delay: 0.3, duration: 0.7, ease: EASE.entrance }}
           className="bg-surface border border-border/50 rounded-sm overflow-hidden mt-8"
           aria-label="Security settings"
         >
@@ -608,7 +609,7 @@ export default function ProfilePage() {
                         className={cn('h-full rounded-full transition-colors', strength.barColor)}
                         initial={{ width: '0%' }}
                         animate={{ width: strength.width }}
-                        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                        transition={{ duration: 0.3, ease: EASE.entrance }}
                       />
                     </div>
                     <p className={cn('text-[11px] font-mono', strength.textColor)}>
@@ -707,7 +708,7 @@ export default function ProfilePage() {
                   transition={{
                     delay: 0.4 + idx * 0.08,
                     duration: 0.5,
-                    ease: [0.16, 1, 0.3, 1],
+                    ease: EASE.entrance,
                   }}
                   className={cn(
                     'flex items-center justify-between gap-4 p-4 rounded-sm',
@@ -789,7 +790,7 @@ export default function ProfilePage() {
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.45, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ delay: 0.45, duration: 0.7, ease: EASE.entrance }}
           className="bg-surface border border-border/50 rounded-sm overflow-hidden mt-8"
           aria-label="Notification settings"
         >

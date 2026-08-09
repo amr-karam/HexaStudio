@@ -106,7 +106,7 @@ export default function HealthDashboardPage() {
           <button
             onClick={runChecks}
             disabled={isRunning}
-            className="flex items-center space-x-2 rounded-lg bg-[#D4AF37] px-5 py-2.5 text-xs font-bold text-black disabled:opacity-50 hover:bg-[#E5C76B] transition-colors"
+            className="flex items-center space-x-2 rounded-lg bg-accent px-5 py-2.5 text-xs font-bold text-black disabled:opacity-50 hover:bg-accent-light transition-colors"
           >
             <span>{isRunning ? '⟳ Checking…' : '↺ Re-check All'}</span>
           </button>

@@ -18,6 +18,7 @@ import {
   staggerContainer,
   makeTransition,
   REDUCED_TRANSITION,
+  EASE,
 } from '@/lib/motion';
 
 /* -------------------------------------------------------------------------- */
@@ -179,7 +180,7 @@ const barFillVariant = (percentage: number, reduced: boolean) => ({
     ? { width: `${percentage}%`, transition: REDUCED_TRANSITION }
     : {
         width: `${percentage}%`,
-        transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] as const, delay: 0.3 },
+        transition: { duration: 1.2, ease: EASE.entrance, delay: 0.3 },
       },
 });
 
@@ -190,7 +191,7 @@ const lineDrawVariant = (reduced: boolean) => ({
     : {
         pathLength: 1,
         opacity: 1,
-        transition: { duration: 2, ease: [0.16, 1, 0.3, 1] as const, delay: 0.4 },
+        transition: { duration: 2, ease: EASE.entrance, delay: 0.4 },
       },
 });
 
@@ -285,7 +286,7 @@ function KpiCard({ kpi, index, reduced }: { kpi: KpiData; index: number; reduced
       }}
       initial="hidden"
       animate="visible"
-      whileHover={reduced ? undefined : { y: -3, transition: { duration: 0.25, ease: [0.34, 1.56, 0.64, 1] } }}
+      whileHover={reduced ? undefined : { y: -3, transition: { duration: 0.25, ease: EASE.interaction } }}
       className={cn(
         'relative p-5 rounded-xl group cursor-default',
         'bg-surface border border-border/30',
@@ -666,7 +667,7 @@ function ResponseTimeChart({ reduced }: { reduced: boolean }) {
                 : {
                     opacity: 1,
                     scale: 1,
-                    transition: { delay: 0.8 + i * 0.1, duration: 0.3, ease: [0.16, 1, 0.3, 1] },
+                    transition: { delay: 0.8 + i * 0.1, duration: 0.3, ease: EASE.entrance },
                   }}
             />
           ))}
@@ -723,7 +724,7 @@ function FilesCard({ reduced }: { reduced: boolean }) {
                   height: maxUpload > 0 ? (count / maxUpload) * 100 : 0,
                   transition: {
                     duration: 0.6,
-                    ease: [0.16, 1, 0.3, 1],
+                    ease: EASE.entrance,
                     delay: 0.4 + i * 0.03,
                   },
                 }}
@@ -833,7 +834,7 @@ function BudgetDonut({ reduced }: { reduced: boolean }) {
                 ? { strokeDashoffset: circumference - paidArc }
                 : {
                     strokeDashoffset: circumference - paidArc,
-                    transition: { duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.3 },
+                    transition: { duration: 1.4, ease: EASE.entrance, delay: 0.3 },
                   }}
             />
 
@@ -853,7 +854,7 @@ function BudgetDonut({ reduced }: { reduced: boolean }) {
                 ? { strokeDashoffset: -paidArc }
                 : {
                     strokeDashoffset: -paidArc,
-                    transition: { duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.6 },
+                    transition: { duration: 1.4, ease: EASE.entrance, delay: 0.6 },
                   }}
             />
           </svg>

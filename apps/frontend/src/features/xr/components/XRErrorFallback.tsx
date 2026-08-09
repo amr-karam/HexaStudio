@@ -77,7 +77,7 @@ export function XRErrorFallback({
         <div className="flex flex-col items-center gap-3">
           <button
             onClick={handleReload}
-            className="rounded-lg bg-[#D4AF37] px-6 py-3 text-sm font-medium text-black transition-colors hover:bg-[#C49A2F] active:scale-95"
+            className="rounded-lg bg-accent px-6 py-3 text-sm font-medium text-black transition-colors hover:bg-accent-dark active:scale-95"
           >
             Try Again
           </button>

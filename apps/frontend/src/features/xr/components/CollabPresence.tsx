@@ -19,7 +19,7 @@ export function CollabPresence() {
           {peers.slice(0, 4).map((peer) => (
             <div
               key={peer.id}
-              className="flex h-5 w-5 items-center justify-center rounded-full bg-[#D4AF37]/20 text-[9px] font-medium text-[#D4AF37] ring-1 ring-black"
+              className="flex h-5 w-5 items-center justify-center rounded-full bg-accent/20 text-[9px] font-medium text-accent ring-1 ring-black"
               title={peer.user}
             >
               {peer.user.charAt(0).toUpperCase()}

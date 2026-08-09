@@ -108,6 +108,20 @@
 
 ---
 
+## 5.1 Design-Compliance Fixes (Frontend, Aug 9 2026)
+
+**Status:** ✅ Applied — Full Creative Excellence audit remediation, quality gates verified.
+
+- **C1 (Color tokens)** — Replaced 25× unofficial gold-hover `#C49A2F` + `bg-[#D4AF37]` arbitrary classes with token utilities (`bg-accent` / `hover:bg-accent-dark`) across 8 files (dashboard ×4, PhaseApprovalCard, XRUI, XRErrorFallback, SceneErrorBoundary). Bonus: 7 more files with `bg-[#D4AF37]` (XRLoadingScreen, CollabPresence, AnnotationOverlay, ContractSignOffModal, RealtimePresence, admin/health, portal/review) migrated to `bg-accent`/`text-accent`/`hover:bg-accent-light`. Hotspot 3D marker color `#c9a96e` → gold-light `#E5C76B`.
+- **C2 (Navbar)** — Removed `<style jsx global>` from `Navbar.tsx`; migrated `.premium-feature` (with hardcoded `#FFD700`) to `globals.css` using `var(--color-gold-light)`.
+- **M1 (Motion tokens)** — Eliminated all raw `cubic-bezier()` literals outside canonical sources (ToggleSwitch, TeamCard, FAQSection, artisan-tokens dup easing aliased to `--hexa-ease-*`). Migrated ~57 inline `ease: [0.16,1,0.3,1]` arrays → `EASE.entrance`/`EASE.transition`/`EASE.interaction` across 15 files (AnalyticsView, ProjectScrollCinema, portal profile/settings/projects, not-found, contact, blog, admin telemetry, portal nav/login/timeline, HeaderSection, TextCharReveal, ProgressiveReveal, StorybookChapter).
+- **M1c (Storybook repair)** — Fixed pre-existing broken untracked WIP (`storybook/`): removed `@emotion/react` dep, corrected `quality-provider` import + `.tier.level` API, null-safe refs, removed dead `cancelled` flag, fixed double `export default`. These were breaking lint+typecheck.
+- **M2 (Reduced motion)** — Added `prefers-reduced-motion: reduce` guard to `artisan-tokens.css`. Guarded all `repeat: Infinity` spinners in `portal/settings` (3) with `REDUCED_TRANSITION`; verified DocumentUpload uses `staticMode` correctly.
+- **m1/m5 (Fonts & selection)** — `executive-brief` route: `Helvetica Neue` → Inter stack. `::selection` tokenized via `color-mix` + `--color-foreground`.
+- **m4 (Cleanup)** — Removed empty `atoms/` placeholder dirs.
+- **M3 (Policy)** — Documented 3D scene colors as a separate rendering domain in `docs/design/COLORS.md` §6.
+- **Verification:** frontend lint 0/0, typecheck 0 errors, **208/208 tests** passed.
+
 ## 6. Master Platform Build Progress (v2.2.0)
 
 **Current Phase:** Phase 20 — Production Release

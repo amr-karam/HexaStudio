@@ -27,7 +27,7 @@ function PipelineView({ data }: { data: OdooPipelineSummary }) {
         <div key={stage.id} className="flex items-center gap-4">
           <div className="w-40 shrink-0 truncate text-sm text-white/60">{stage.name}</div>
           <div className="h-3 flex-1 overflow-hidden rounded-full bg-white/5">
-            <div className="h-full rounded-full bg-[#D4AF37]" style={{ width: `${(stage.leadCount / max) * 100}%` }} />
+            <div className="h-full rounded-full bg-accent" style={{ width: `${(stage.leadCount / max) * 100}%` }} />
           </div>
           <div className="w-28 shrink-0 text-right text-sm text-white/50">
             {stage.leadCount} lead{stage.leadCount === 1 ? '' : 's'}
@@ -104,7 +104,7 @@ function LeadFormModal({ open, onClose, initial }: { open: boolean; onClose: () 
         </div>
         <div className="mt-6 flex justify-end gap-3">
           <button onClick={onClose} className="rounded-lg border border-white/10 px-4 py-2 text-sm text-white/60 hover:bg-white/5">Cancel</button>
-          <button onClick={() => mutation.mutate()} disabled={mutation.isPending || !form.name} className="rounded-lg bg-[#D4AF37] px-5 py-2 text-sm font-medium text-black hover:bg-[#C49A2F] disabled:opacity-50">
+          <button onClick={() => mutation.mutate()} disabled={mutation.isPending || !form.name} className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-black hover:bg-accent-dark disabled:opacity-50">
             {mutation.isPending ? 'Saving...' : 'Save'}
           </button>
         </div>
@@ -141,7 +141,7 @@ function ContactFormModal({ open, onClose }: { open: boolean; onClose: () => voi
         </div>
         <div className="mt-6 flex justify-end gap-3">
           <button onClick={onClose} className="rounded-lg border border-white/10 px-4 py-2 text-sm text-white/60 hover:bg-white/5">Cancel</button>
-          <button onClick={() => mutation.mutate()} disabled={mutation.isPending || !form.name} className="rounded-lg bg-[#D4AF37] px-5 py-2 text-sm font-medium text-black hover:bg-[#C49A2F] disabled:opacity-50">
+          <button onClick={() => mutation.mutate()} disabled={mutation.isPending || !form.name} className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-black hover:bg-accent-dark disabled:opacity-50">
             {mutation.isPending ? 'Creating...' : 'Create'}
           </button>
         </div>
@@ -189,7 +189,7 @@ function KnowledgeFormModal({ open, onClose, initial }: { open: boolean; onClose
         </div>
         <div className="mt-6 flex justify-end gap-3">
           <button onClick={onClose} className="rounded-lg border border-white/10 px-4 py-2 text-sm text-white/60 hover:bg-white/5">Cancel</button>
-          <button onClick={() => mutation.mutate()} disabled={mutation.isPending || !form.name} className="rounded-lg bg-[#D4AF37] px-5 py-2 text-sm font-medium text-black hover:bg-[#C49A2F] disabled:opacity-50">
+          <button onClick={() => mutation.mutate()} disabled={mutation.isPending || !form.name} className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-black hover:bg-accent-dark disabled:opacity-50">
             {mutation.isPending ? 'Saving...' : 'Save'}
           </button>
         </div>
@@ -226,7 +226,7 @@ function EmailSendModal({ open, onClose }: { open: boolean; onClose: () => void 
         </div>
         <div className="mt-6 flex justify-end gap-3">
           <button onClick={onClose} className="rounded-lg border border-white/10 px-4 py-2 text-sm text-white/60 hover:bg-white/5">Cancel</button>
-          <button onClick={() => mutation.mutate()} disabled={mutation.isPending || !form.to || !form.subject} className="rounded-lg bg-[#D4AF37] px-5 py-2 text-sm font-medium text-black hover:bg-[#C49A2F] disabled:opacity-50">
+          <button onClick={() => mutation.mutate()} disabled={mutation.isPending || !form.to || !form.subject} className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-black hover:bg-accent-dark disabled:opacity-50">
             {mutation.isPending ? 'Sending...' : 'Send'}
           </button>
         </div>
@@ -373,7 +373,7 @@ export default function OdooDashboardPage() {
           <h1 className="text-2xl font-semibold text-white">Odoo ERP</h1>
           <p className="mt-1 text-sm text-white/40">Live business operations — CRM, sales, projects, and invoicing.</p>
         </div>
-        <button onClick={() => runSync(false)} disabled={syncing} className="rounded-lg bg-[#D4AF37] px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-[#C49A2F] disabled:opacity-50">
+        <button onClick={() => runSync(false)} disabled={syncing} className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-accent-dark disabled:opacity-50">
           {syncing ? 'Syncing...' : 'Trigger Sync'}
         </button>
       </div>
@@ -388,7 +388,7 @@ export default function OdooDashboardPage() {
       {/* Tabs */}
       <div className="mb-6 flex gap-1 overflow-x-auto rounded-xl border border-white/10 bg-white/[0.02] p-1">
         {TABS.map((t) => (
-          <button key={t.key} onClick={() => setTab(t.key)} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${tab === t.key ? 'bg-[#D4AF37] text-black' : 'text-white/50 hover:text-white/80'}`}>
+          <button key={t.key} onClick={() => setTab(t.key)} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${tab === t.key ? 'bg-accent text-black' : 'text-white/50 hover:text-white/80'}`}>
             {t.label}
           </button>
         ))}
@@ -408,7 +408,7 @@ export default function OdooDashboardPage() {
         <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-medium text-white">CRM Leads</h2>
-            <button onClick={() => setLeadModalOpen(true)} className="rounded-lg bg-[#D4AF37] px-4 py-2 text-sm font-medium text-black hover:bg-[#C49A2F]">+ New Lead</button>
+            <button onClick={() => setLeadModalOpen(true)} className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black hover:bg-accent-dark">+ New Lead</button>
           </div>
           {leads.isLoading && <p className="text-sm text-white/40">Loading...</p>}
           {leads.data && leads.data.length === 0 && <p className="text-sm text-white/30">No leads in Odoo.</p>}
@@ -443,7 +443,7 @@ export default function OdooDashboardPage() {
             <h2 className="text-lg font-medium text-white">Contacts</h2>
             <div className="flex gap-3">
               <input placeholder="Search..." aria-label="Search contacts" value={contactSearch} onChange={(e) => setContactSearch(e.target.value)} className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50" />
-              <button onClick={() => setContactModalOpen(true)} className="rounded-lg bg-[#D4AF37] px-4 py-2 text-sm font-medium text-black hover:bg-[#C49A2F]">+ New Contact</button>
+              <button onClick={() => setContactModalOpen(true)} className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black hover:bg-accent-dark">+ New Contact</button>
             </div>
           </div>
           {contacts.isLoading && <p className="text-sm text-white/40">Loading...</p>}
@@ -460,7 +460,7 @@ export default function OdooDashboardPage() {
                       <td className="py-2 font-medium text-white">{c.name}</td>
                       <td className="py-2 text-white/50">{c.email ?? '—'}</td>
                       <td className="py-2 text-white/50">{c.phone ?? '—'}</td>
-                      <td className="py-2">{c.x_hexa_client ? <span className="rounded bg-[#D4AF37]/20 px-2 py-0.5 text-xs text-[#D4AF37]">Client</span> : <span className="text-white/30">—</span>}</td>
+                      <td className="py-2">{c.x_hexa_client ? <span className="rounded bg-accent/20 px-2 py-0.5 text-xs text-[#D4AF37]">Client</span> : <span className="text-white/30">—</span>}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -525,7 +525,7 @@ export default function OdooDashboardPage() {
             <>
               {/* Upload button */}
               <div className="mb-4">
-                <label className="cursor-pointer rounded-lg bg-[#D4AF37] px-4 py-2 text-sm font-medium text-black hover:bg-[#C49A2F]">
+                <label className="cursor-pointer rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black hover:bg-accent-dark">
                   Upload File
                   <input
                     type="file"
@@ -740,7 +740,7 @@ export default function OdooDashboardPage() {
                 { key: 'payments', label: 'Payments' },
                 { key: 'banks', label: 'Banks' },
               ] as const).map((k) => (
-                <button key={k.key} onClick={() => setAccountingTab(k.key)} className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${accountingTab === k.key ? 'bg-[#D4AF37] text-black' : 'text-white/50 hover:text-white/80'}`}>
+                <button key={k.key} onClick={() => setAccountingTab(k.key)} className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${accountingTab === k.key ? 'bg-accent text-black' : 'text-white/50 hover:text-white/80'}`}>
                   {k.label}
                 </button>
               ))}
@@ -828,7 +828,7 @@ export default function OdooDashboardPage() {
         <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-medium text-white">Knowledge Base</h2>
-            <button onClick={() => { setEditingArticle(null); setKnowledgeModalOpen(true); }} className="rounded-lg bg-[#D4AF37] px-4 py-2 text-sm font-medium text-black hover:bg-[#C49A2F]">+ New Article</button>
+            <button onClick={() => { setEditingArticle(null); setKnowledgeModalOpen(true); }} className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black hover:bg-accent-dark">+ New Article</button>
           </div>
           {knowledge.isLoading && <p className="text-sm text-white/40">Loading...</p>}
           {knowledge.data && knowledge.data.length === 0 && <p className="text-sm text-white/30">No articles in Odoo.</p>}
@@ -863,7 +863,7 @@ export default function OdooDashboardPage() {
                 <option value="inbox">Inbox</option>
                 <option value="sent">Sent</option>
               </select>
-              <button onClick={() => setEmailModalOpen(true)} className="rounded-lg bg-[#D4AF37] px-4 py-2 text-sm font-medium text-black hover:bg-[#C49A2F]">+ Send Email</button>
+              <button onClick={() => setEmailModalOpen(true)} className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black hover:bg-accent-dark">+ Send Email</button>
             </div>
           </div>
           {emails.isLoading && <p className="text-sm text-white/40">Loading...</p>}
@@ -894,10 +894,10 @@ export default function OdooDashboardPage() {
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-lg font-medium text-white">Sync Engine</h2>
             <div className="flex gap-3">
-              <button onClick={() => runSync(false)} disabled={syncing} className="rounded-lg bg-[#D4AF37] px-4 py-2 text-sm font-medium text-black hover:bg-[#C49A2F] disabled:opacity-50">
+              <button onClick={() => runSync(false)} disabled={syncing} className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black hover:bg-accent-dark disabled:opacity-50">
                 {syncing ? 'Syncing...' : 'Run Delta Sync'}
               </button>
-              <button onClick={() => runSync(true)} disabled={syncing} className="rounded-lg border border-[#D4AF37]/40 px-4 py-2 text-sm font-medium text-[#D4AF37] hover:bg-[#D4AF37]/10 disabled:opacity-50">
+              <button onClick={() => runSync(true)} disabled={syncing} className="rounded-lg border border-[#D4AF37]/40 px-4 py-2 text-sm font-medium text-[#D4AF37] hover:bg-accent/10 disabled:opacity-50">
                 {syncing ? 'Syncing...' : 'Run Full Sync'}
               </button>
             </div>
@@ -970,7 +970,7 @@ export default function OdooDashboardPage() {
                             <option value="odoo-wins">Odoo wins</option>
                             <option value="hexa-wins">HEXA wins</option>
                           </select>
-                          <button onClick={() => resolveConflictMutation.mutate({ id: c.id, strategy: resolveStrategies[c.id] ?? 'odoo-wins' })} disabled={resolveConflictMutation.isPending} className="rounded-lg bg-[#D4AF37] px-3 py-1 text-xs font-medium text-black hover:bg-[#C49A2F] disabled:opacity-50">Resolve</button>
+                          <button onClick={() => resolveConflictMutation.mutate({ id: c.id, strategy: resolveStrategies[c.id] ?? 'odoo-wins' })} disabled={resolveConflictMutation.isPending} className="rounded-lg bg-accent px-3 py-1 text-xs font-medium text-black hover:bg-accent-dark disabled:opacity-50">Resolve</button>
                         </div>
                       </td>
                     </tr>

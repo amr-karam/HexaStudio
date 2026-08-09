@@ -30,7 +30,7 @@ export function TeamCard({
           className={cn(
             'absolute bottom-3 start-3 end-3',
             'translate-y-2 opacity-0 transition-all duration-500',
-            'ease-[cubic-bezier(0.6,0,0.2,1)]',
+            'ease-[var(--hexa-ease-transition)]',
             'group-hover:translate-y-0 group-hover:opacity-100',
             overlayClassName,
           )}

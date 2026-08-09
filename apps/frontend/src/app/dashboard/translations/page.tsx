@@ -28,7 +28,7 @@ function StatusBar({ locale, total, translated }: { locale: string; total: numbe
         </span>
       </div>
       <div className="mb-3 h-1.5 overflow-hidden rounded-full bg-white/10">
-        <div className={`h-full rounded-full transition-all ${pct === 100 ? 'bg-green-500' : 'bg-[#D4AF37]'}`} style={{ width: `${pct}%` }} />
+        <div className={`h-full rounded-full transition-all ${pct === 100 ? 'bg-green-500' : 'bg-accent'}`} style={{ width: `${pct}%` }} />
       </div>
       <div className="flex flex-wrap gap-2 text-xs text-white/40">
         {Object.entries(CONTENT_TYPE_LABELS).map(([key, label]) => (
@@ -89,7 +89,7 @@ function ExportImportPanel({ locale }: { locale: string }) {
             <button
               onClick={handleImport}
               disabled={importing}
-              className="rounded-lg bg-[#D4AF37] px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-[#C49A2F] disabled:opacity-50"
+              className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-accent-dark disabled:opacity-50"
             >
               {importing ? 'Importing...' : 'Import'}
             </button>

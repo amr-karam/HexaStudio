@@ -48,17 +48,17 @@ export const Hotspot = ({ hotspot }: HotspotProps) => {
   const materials = useMemo(
     () => ({
       ringOuter: new MeshBasicMaterial({
-        color: '#c9a96e',
+        color: '#E5C76B',
         transparent: true,
         opacity: 0.4,
       }),
       ringOuterHover: new MeshBasicMaterial({
-        color: '#c9a96e',
+        color: '#E5C76B',
         transparent: true,
         opacity: 1,
       }),
       ringActive: new MeshBasicMaterial({
-        color: '#c9a96e',
+        color: '#E5C76B',
         transparent: true,
         opacity: 0.8,
       }),
@@ -68,8 +68,8 @@ export const Hotspot = ({ hotspot }: HotspotProps) => {
         emissiveIntensity: 2,
       }),
       sphereHover: new MeshStandardMaterial({
-        color: '#c9a96e',
-        emissive: '#c9a96e',
+        color: '#E5C76B',
+        emissive: '#E5C76B',
         emissiveIntensity: 2,
       }),
       // Invisible material for touch target.

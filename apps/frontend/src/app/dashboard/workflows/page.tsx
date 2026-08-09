@@ -49,7 +49,7 @@ function StatusBadge({ status }: { status: WorkflowExecutionStatus }) {
       : status === 'failed'
         ? 'bg-red-500/20 text-red-400'
         : status === 'running'
-          ? 'bg-[#D4AF37]/20 text-[#D4AF37]'
+          ? 'bg-accent/20 text-[#D4AF37]'
           : 'bg-white/10 text-white/50';
   return <span className={`rounded-full px-2 py-0.5 text-[10px] ${classes}`}>{status}</span>;
 }
@@ -116,7 +116,7 @@ function WorkflowFormModal({ open, onClose, initial }: { open: boolean; onClose:
                 { key: 'schedule', label: 'Schedule' },
                 { key: 'manual', label: 'Manual' },
               ] as const).map((t) => (
-                <button key={t.key} onClick={() => setTriggerType(t.key)} className={`flex-1 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${triggerType === t.key ? 'bg-[#D4AF37] text-black' : 'text-white/50 hover:text-white/80'}`}>
+                <button key={t.key} onClick={() => setTriggerType(t.key)} className={`flex-1 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${triggerType === t.key ? 'bg-accent text-black' : 'text-white/50 hover:text-white/80'}`}>
                   {t.label}
                 </button>
               ))}
@@ -145,7 +145,7 @@ function WorkflowFormModal({ open, onClose, initial }: { open: boolean; onClose:
             </div>
             <div>
               <label className="mb-1.5 block text-sm text-white/60">Enabled</label>
-              <button onClick={() => setEnabled(!enabled)} className={`relative h-5 w-9 rounded-full transition-colors ${enabled ? 'bg-[#D4AF37]' : 'bg-white/20'}`} aria-label="Toggle enabled">
+              <button onClick={() => setEnabled(!enabled)} className={`relative h-5 w-9 rounded-full transition-colors ${enabled ? 'bg-accent' : 'bg-white/20'}`} aria-label="Toggle enabled">
                 <span className={`absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-black transition-transform ${enabled ? 'translate-x-4' : ''}`} />
               </button>
             </div>
@@ -153,7 +153,7 @@ function WorkflowFormModal({ open, onClose, initial }: { open: boolean; onClose:
         </div>
         <div className="mt-6 flex justify-end gap-3">
           <button onClick={onClose} className="rounded-lg border border-white/10 px-4 py-2 text-sm text-white/60 hover:bg-white/5">Cancel</button>
-          <button onClick={() => mutation.mutate()} disabled={mutation.isPending || !name} className="rounded-lg bg-[#D4AF37] px-5 py-2 text-sm font-medium text-black hover:bg-[#C49A2F] disabled:opacity-50">
+          <button onClick={() => mutation.mutate()} disabled={mutation.isPending || !name} className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-black hover:bg-accent-dark disabled:opacity-50">
             {mutation.isPending ? 'Saving...' : 'Save'}
           </button>
         </div>
@@ -214,7 +214,7 @@ export default function WorkflowsPage() {
           <h1 className="text-2xl font-semibold text-white">Workflows</h1>
           <p className="mt-1 text-sm text-white/40">Automate Odoo operations — triggers, steps, and execution history.</p>
         </div>
-        <button onClick={() => { setEditing(null); setModalOpen(true); }} className="rounded-lg bg-[#D4AF37] px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-[#C49A2F]">+ New Workflow</button>
+        <button onClick={() => { setEditing(null); setModalOpen(true); }} className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-accent-dark">+ New Workflow</button>
       </div>
 
       {workflows.isLoading && <p className="text-sm text-white/40">Loading...</p>}
@@ -226,7 +226,7 @@ export default function WorkflowsPage() {
           <p className="mb-6 max-w-sm text-center text-sm text-white/40">
             Create an automation to react to Odoo events, run on a schedule, or trigger manually.
           </p>
-          <button onClick={() => { setEditing(null); setModalOpen(true); }} className="rounded-lg bg-[#D4AF37] px-5 py-2 text-sm font-medium text-black transition-colors hover:bg-[#C49A2F]">Add Workflow</button>
+          <button onClick={() => { setEditing(null); setModalOpen(true); }} className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-black transition-colors hover:bg-accent-dark">Add Workflow</button>
         </div>
       )}
 
@@ -241,7 +241,7 @@ export default function WorkflowsPage() {
                 </div>
                 <button
                   onClick={() => toggleMutation.mutate(wf)}
-                  className={`relative h-5 w-9 rounded-full transition-colors ${wf.enabled ? 'bg-[#D4AF37]' : 'bg-white/20'}`}
+                  className={`relative h-5 w-9 rounded-full transition-colors ${wf.enabled ? 'bg-accent' : 'bg-white/20'}`}
                   aria-label={wf.enabled ? 'Disable workflow' : 'Enable workflow'}
                 >
                   <span className={`absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-black transition-transform ${wf.enabled ? 'translate-x-4' : ''}`} />
@@ -256,7 +256,7 @@ export default function WorkflowsPage() {
               </div>
 
               <div className="flex gap-3 text-xs">
-                <button onClick={() => runMutation.mutate(wf.id)} disabled={runMutation.isPending} className="rounded-lg bg-[#D4AF37] px-3 py-1.5 font-medium text-black transition-colors hover:bg-[#C49A2F] disabled:opacity-50">Run now</button>
+                <button onClick={() => runMutation.mutate(wf.id)} disabled={runMutation.isPending} className="rounded-lg bg-accent px-3 py-1.5 font-medium text-black transition-colors hover:bg-accent-dark disabled:opacity-50">Run now</button>
                 <button onClick={() => { setEditing(wf); setModalOpen(true); }} className="text-white/40 transition-colors hover:text-white/70">Edit</button>
                 <button onClick={() => { if (confirm(`Delete workflow "${wf.name}"?`)) deleteMutation.mutate(wf.id); }} className="text-red-400/60 transition-colors hover:text-red-400">Delete</button>
               </div>

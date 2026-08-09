@@ -1,4 +1,5 @@
 'use client';
+import { EASE } from '@/lib/motion';
 
 import { useRef, useEffect } from 'react';
 import { motion, useInView, useAnimation } from 'framer-motion';
@@ -94,7 +95,7 @@ export default function ProgressiveReveal({
             WebkitMaskImage: maskImage(1),
             maskImage: maskImage(1),
             opacity: 1,
-            transition: { delay, duration, ease: [0.7, 0, 0.3, 1] },
+            transition: { delay, duration, ease: EASE.transition },
           },
         }}
       >

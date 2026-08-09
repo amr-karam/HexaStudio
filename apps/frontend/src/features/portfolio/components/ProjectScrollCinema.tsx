@@ -11,6 +11,7 @@ import { AnimatedCounter } from '@/components/animation/AnimatedCounter';
 import { LazyProjectSceneWrapper } from '@/features/portfolio/components/LazyProjectSceneWrapper';
 import { ProjectChapterRail } from '@/features/portfolio/components/ProjectChapterRail';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
+import { EASE } from '@/lib/motion';
 import { getGsap } from '@/lib/gsap';
 import { onIdle } from '@/lib/idle';
 
@@ -84,7 +85,7 @@ function ChapterHero({ project }: { project: Project }) {
         <motion.span
           initial={staticMode ? { opacity: 1 } : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.8, ease: EASE.entrance }}
           className="text-xs uppercase tracking-[0.5em] text-accent mb-6 block font-mono"
         >
           {project.category?.name}
@@ -92,7 +93,7 @@ function ChapterHero({ project }: { project: Project }) {
         <motion.h1
           initial={staticMode ? { opacity: 1 } : { opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1, delay: 0.2, ease: EASE.entrance }}
           className="text-6xl md:text-9xl font-serif font-light tracking-tighter text-foreground leading-tight"
         >
           {project.title}
@@ -139,7 +140,7 @@ function ChapterBrief({ project }: { project: Project }) {
           <motion.div
             initial={staticMode ? { opacity: 1 } : { opacity: 0, x: -40 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8, ease: EASE.entrance }}
             className="font-serif text-[120px] md:text-[200px] leading-none text-accent/10 font-light select-none pointer-events-none"
             aria-hidden="true"
           >
@@ -149,7 +150,7 @@ function ChapterBrief({ project }: { project: Project }) {
           <motion.p
             initial={staticMode ? { opacity: 1 } : { opacity: 0, y: 30 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8, delay: 0.2, ease: EASE.entrance }}
             className="text-xl md:text-2xl text-neutral-400 font-light leading-relaxed max-w-2xl"
           >
             {project.description}
@@ -171,7 +172,7 @@ function ChapterBrief({ project }: { project: Project }) {
                   transition={{
                     duration: 0.6,
                     delay: 0.3 + i * 0.08, // 80ms stagger per row
-                    ease: [0.16, 1, 0.3, 1],
+                    ease: EASE.entrance,
                   }}
                   className="flex justify-between items-baseline border-b border-border/30 pb-4 last:border-0"
                 >
@@ -320,7 +321,7 @@ function ChapterDetails({ project }: { project: Project }) {
         <motion.div
           initial={staticMode ? { opacity: 1 } : { opacity: 0, x: -40 }}
           animate={inView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.8, ease: EASE.entrance }}
           className="font-serif text-[120px] md:text-[200px] leading-none text-accent/10 font-light select-none pointer-events-none mb-16"
           aria-hidden="true"
         >
@@ -337,7 +338,7 @@ function ChapterDetails({ project }: { project: Project }) {
               transition={{
                 duration: 0.6,
                 delay: 0.2 + i * 0.08,
-                ease: [0.16, 1, 0.3, 1],
+                ease: EASE.entrance,
               }}
               className="text-center"
             >
@@ -356,7 +357,7 @@ function ChapterDetails({ project }: { project: Project }) {
           <motion.div
             initial={staticMode ? { opacity: 1 } : { opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8, delay: 0.5, ease: EASE.entrance }}
             className="bg-surface border border-border/50 p-8 rounded-sm max-w-2xl"
           >
             <h3 className="text-xs uppercase tracking-widest text-neutral-500 mb-4 font-mono">
@@ -405,7 +406,7 @@ function ChapterNext({ project: _project, nextProject }: { project: Project; nex
           <motion.div
             initial={staticMode ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8, ease: EASE.entrance }}
             className="space-y-8"
           >
             <span className="text-xs uppercase tracking-[0.5em] text-neutral-500 font-mono block">
@@ -441,7 +442,7 @@ function ChapterNext({ project: _project, nextProject }: { project: Project; nex
             <motion.div
               initial={staticMode ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
               animate={inView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.8, delay: 0.3, ease: EASE.entrance }}
             >
               <Link
                 href={`/projects/${nextProject.slug}`}

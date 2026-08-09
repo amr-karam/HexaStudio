@@ -123,7 +123,7 @@ export function XRUI({ onExit, modelName }: XRUIProps) {
               <button
                 onClick={handleEnterAR}
                 disabled={entering === 'ar' || !modelLoaded}
-                className="rounded-lg bg-[#D4AF37] px-6 py-3 text-sm font-medium text-black shadow-lg transition-all hover:bg-[#C49A2F] active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-lg bg-accent px-6 py-3 text-sm font-medium text-black shadow-lg transition-all hover:bg-accent-dark active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {entering === 'ar' ? 'Starting AR...' : 'View in AR'}
               </button>
@@ -151,7 +151,7 @@ export function XRUI({ onExit, modelName }: XRUIProps) {
               <p className="rounded-full bg-black/50 px-4 py-2 text-sm text-white/80 backdrop-blur-sm">
                 {hasSurface ? (
                   <span className="flex items-center gap-2">
-                    <span className="inline-block h-2 w-2 rounded-full bg-[#D4AF37] animate-pulse" />
+                    <span className="inline-block h-2 w-2 rounded-full bg-accent animate-pulse" />
                     Surface found — tap to place
                   </span>
                 ) : (
@@ -180,7 +180,7 @@ export function XRUI({ onExit, modelName }: XRUIProps) {
             </button>
             <button
               onClick={handleConfirmPlacement}
-              className="rounded-lg bg-[#D4AF37] px-6 py-3 text-sm font-medium text-black shadow-lg transition-all hover:bg-[#C49A2F] active:scale-95"
+              className="rounded-lg bg-accent px-6 py-3 text-sm font-medium text-black shadow-lg transition-all hover:bg-accent-dark active:scale-95"
             >
               Confirm Placement
             </button>

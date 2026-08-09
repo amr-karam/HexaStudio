@@ -10,6 +10,7 @@ import { LiquidGlassCard } from '@/components/ui/LiquidGlassCard';
 import TextCharReveal from '@/components/effects/TextCharReveal';
 import { isValidEmail } from '@hexastudio/utils';
 import { cn } from '@/lib/utils';
+import { EASE } from '@/lib/motion';
 import { useServices } from '@/features/services/hooks/useServices';
 import { FAQSection } from '@/features/faq/components/FAQSection';
 import { API_BASE_URL } from '@/config/constants';
@@ -232,13 +233,13 @@ export default function ContactPage() {
                       <motion.path
                         initial={{ pathLength: 0 }}
                         animate={{ pathLength: 1 }}
-                        transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                        transition={{ duration: 0.6, delay: 0.3, ease: EASE.entrance }}
                         d="M22 11.08V12a10 10 0 1 1-20 0v-0.92"
                       />
                       <motion.polyline
                         initial={{ pathLength: 0 }}
                         animate={{ pathLength: 1 }}
-                        transition={{ duration: 0.4, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                        transition={{ duration: 0.4, delay: 0.7, ease: EASE.entrance }}
                         points="22 4 12 14.01 9 11.01"
                       />
                     </svg>

@@ -55,7 +55,7 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
 
             <button
               onClick={() => setIsSignModalOpen(true)}
-              className="rounded-lg bg-[#D4AF37] px-4 py-2 text-xs font-bold text-black hover:bg-[#E5C76B] transition-colors"
+              className="rounded-lg bg-accent px-4 py-2 text-xs font-bold text-black hover:bg-accent-light transition-colors"
             >
               ✍️ Sign Off Deliverable
             </button>

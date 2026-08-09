@@ -59,3 +59,26 @@ A page is "Color-Done" only when:
 - [ ] The gold accent is used surgically, not excessively.
 
 *“Luxury is the absence of noise. Use color to create silence, not clutter.”*
+
+
+---
+
+## 6. 3D SCENE COLORS (Separate Rendering Domain)
+
+Three.js / React Three Fiber material and lighting colors (e.g., scene presets,
+hotspot markers, shader uniforms, status lights) are a **separate rendering
+domain** from the UI palette. They are deliberately allowed to use physical
+lighting values (emissive tones, material albedo, fog color) that extend beyond
+the 2D UI tokens.
+
+**Policy:**
+- UI-facing classes/styles MUST use tokens (never `bg-[#hex]` arbitrary values).
+- 3D material/lighting hex values in scene configs (`lighting-presets.ts`,
+  `material-presets.ts`, Three.js `color` props) are exempt but SHOULD prefer
+  the gold family (`#D4AF37` / `#E5C76B`) for accent/CTAs.
+- Status semantics in 3D (e.g., `#7BA7FF` blue = in-review, `#9B8CFF` violet =
+  early pipeline) are intentional and documented in the scene layer.
+
+*Audit note (Aug 9 2026): UI-token compliance was enforced across all
+dashboard/portal/XR surfaces; 3D scene presets retain intentional lighting
+values by design.*
