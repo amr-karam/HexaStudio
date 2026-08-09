@@ -138,6 +138,6 @@ Event Bus → Background Jobs → Persistence
 
 ## Related Documentation
 
-- [Backend Architecture](backend-architecture.md))
-- [Integration Architecture](INTEGRATION_ARCHITECTURE.md))
-- [System Architecture](SYSTEM_ARCHITECTURE.md))
+- [Backend Architecture](backend-architecture.md)
+- [Integration Architecture](INTEGRATION_ARCHITECTURE.md)
+- [System Architecture](SYSTEM_ARCHITECTURE.md)

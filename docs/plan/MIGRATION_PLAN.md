@@ -42,6 +42,6 @@ Migration procedures are fully documented and tested.
 
 ## 5. REFERENCES
 
-- [EXECUTION_PLAN.md](EXECUTION_PLAN.md))
-- [MILESTONES.md](MILESTONES.md))
+- [EXECUTION_PLAN.md](EXECUTION_PLAN.md)
+- [MILESTONES.md](MILESTONES.md)
 - [../../ARCHITECTURE.md](../../ARCHITECTURE.md)

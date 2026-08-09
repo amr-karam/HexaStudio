@@ -21,4 +21,4 @@ Dictionary of core metric formulas across financial, operational, and performanc
 
 ## 3. RELATED DOCUMENTATION
 
-- [EXECUTIVE_DASHBOARD.md](EXECUTIVE_DASHBOARD.md)) — Executive reporting.
+- [EXECUTIVE_DASHBOARD.md](EXECUTIVE_DASHBOARD.md) — Executive reporting.

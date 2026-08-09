@@ -3,7 +3,7 @@
 **Version:** 1.0.0
 **Last Updated:** 2026-07-19
 **Scope:** OpenCode configuration, model selection, HEXA Studio agent workflow
-**Related:** [AI_ARCHITECTURE.md](AI_ARCHITECTURE.md)) · [AI_AGENT_GUIDE.md](../agents/AI_AGENT_GUIDE.md)
+**Related:** [AI_ARCHITECTURE.md](AI_ARCHITECTURE.md) · [AI_AGENT_GUIDE.md](../agents/AI_AGENT_GUIDE.md)
 
 ---
 
@@ -220,7 +220,7 @@ OPENAI_MODEL=gpt-4o-mini
 
 ### 4.1 Where FreeTheAi sits
 
-Per [AI_ARCHITECTURE.md](AI_ARCHITECTURE.md)), HEXA uses a hybrid AI approach. FreeTheAi is the **zero-cost chat tier**:
+Per [AI_ARCHITECTURE.md](AI_ARCHITECTURE.md), HEXA uses a hybrid AI approach. FreeTheAi is the **zero-cost chat tier**:
 
 ```
 [OpenCode Agents]              [NestJS Assistants]

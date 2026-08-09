@@ -75,7 +75,7 @@ All errors use consistent HTTP status codes:
 - Scope-based permissions
 - Token expiration and refresh strategy
 
-See: [Authentication Flow](authentication-flow.md))
+See: [Authentication Flow](authentication-flow.md)
 
 ---
 

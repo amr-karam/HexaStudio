@@ -89,6 +89,6 @@ bash scripts/deploy-zero-downtime.sh
 
 ## 6. RELATED DOCUMENTATION
 
-- [NGINX.md](NGINX.md)) — Reverse proxy settings.
-- [DEPLOYMENT.md](DEPLOYMENT.md)) — Deployment scripts.
-- [CLOUDFLARE_CACHE.md](CLOUDFLARE_CACHE.md)) — Edge caching rules.
+- [NGINX.md](NGINX.md) — Reverse proxy settings.
+- [DEPLOYMENT.md](DEPLOYMENT.md) — Deployment scripts.
+- [CLOUDFLARE_CACHE.md](CLOUDFLARE_CACHE.md) — Edge caching rules.

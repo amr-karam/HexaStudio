@@ -619,7 +619,7 @@ Grafana Tempo data source configured with:
 | Database backup | `docker/backup/backup.sh` | Infinite-loop `pg_dump -Fc` of `hexastudio_api`/`hexastudio_cms`/`hexastudio_odoo`/`hexastudio_db`, 30-day prune, optional MinIO `backups` upload |
 | Backup verify | `docker/backup/verify-backup.sh` | `pg_restore --list` integrity + 25h age check (exit 0/1) |
 | Verification daemon | `docker/backup/verify-loop.sh` | 24h loop wrapper for scheduled self-verification |
-| Restore database | `pg_restore -Fc -d <db> <dump>` | Restore a single DB from a dump (see [BACKUP.md](BACKUP.md)) §5) |
+| Restore database | `pg_restore -Fc -d <db> <dump>` | Restore a single DB from a dump (see [BACKUP.md](BACKUP.md) §5) |
 | Backup verify (compose) | `docker compose -f docker-compose.prod.yml --profile verify run --rm backup-verify` | One-shot verification service |
 
 ### 14.3 Encryption
@@ -820,13 +820,13 @@ Triggered when:
 
 ## Related Documents
 
-- [Infrastructure Overview](infrastructure.md)) — Base infrastructure topology
-- [Backup & Restore](BACKUP.md)) — Detailed backup procedures
-- [Disaster Recovery](DISASTER_RECOVERY.md)) — DR plan and runbooks
-- [Deployment Strategy](DEPLOYMENT_STRATEGY.md)) — Zero-downtime pipeline
-- [Observability](OBSERVABILITY.md)) — Monitoring, logging, tracing
-- [Docker Standards](DOCKER.md)) — Dockerfile and containerization
-- [Docker Compose](DOCKER_COMPOSE.md)) — Service composition
-- [GitLab Operations](GITLAB_OPERATIONS.md)) — CI/CD pipeline maintenance
-- [Incident Response](incident-response.md)) — Incident runbook
-- [Password Rotation](PASSWORD_ROTATION.md)) — Credential management
+- [Infrastructure Overview](infrastructure.md) — Base infrastructure topology
+- [Backup & Restore](BACKUP.md) — Detailed backup procedures
+- [Disaster Recovery](DISASTER_RECOVERY.md) — DR plan and runbooks
+- [Deployment Strategy](DEPLOYMENT_STRATEGY.md) — Zero-downtime pipeline
+- [Observability](OBSERVABILITY.md) — Monitoring, logging, tracing
+- [Docker Standards](DOCKER.md) — Dockerfile and containerization
+- [Docker Compose](DOCKER_COMPOSE.md) — Service composition
+- [GitLab Operations](GITLAB_OPERATIONS.md) — CI/CD pipeline maintenance
+- [Incident Response](incident-response.md) — Incident runbook
+- [Password Rotation](PASSWORD_ROTATION.md) — Credential management

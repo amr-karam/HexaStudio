@@ -106,6 +106,6 @@ bash scripts/deploy-zero-downtime.sh
 
 ## 7. RELATED DOCUMENTATION
 
-- [DOCKER_COMPOSE.md](DOCKER_COMPOSE.md)) — Service composition & stack configurations.
-- [SYSTEM_ARCHITECTURE.md](../architecture/SYSTEM_ARCHITECTURE.md)) — System topology & network architecture.
-- [DEPLOYMENT.md](DEPLOYMENT.md)) — Production deployment pipelines.
+- [DOCKER_COMPOSE.md](DOCKER_COMPOSE.md) — Service composition & stack configurations.
+- [SYSTEM_ARCHITECTURE.md](../architecture/SYSTEM_ARCHITECTURE.md) — System topology & network architecture.
+- [DEPLOYMENT.md](DEPLOYMENT.md) — Production deployment pipelines.

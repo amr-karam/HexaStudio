@@ -28,5 +28,5 @@ POST /api/v1/assistants/email/draft — Generate structured HTML/text email body
 
 ## 4. RELATED DOCUMENTATION
 
-- [EMAIL.md](../odoo/EMAIL.md)) — Odoo email integration.
-- [NOTIFICATIONS.md](../client-portal/NOTIFICATIONS.md)) — Notification systems.
+- [EMAIL.md](../odoo/EMAIL.md) — Odoo email integration.
+- [NOTIFICATIONS.md](../client-portal/NOTIFICATIONS.md) — Notification systems.

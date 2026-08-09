@@ -101,6 +101,6 @@ logcli query '{container_name="hexa-backend-blue"} |= "ERROR"' --tail
 
 ## 7. RELATED DOCUMENTATION
 
-- [MONITORING_SPEC.md](MONITORING_SPEC.md)) — Grafana panel specifications.
-- [SENTRY_ERROR_BUDGETS.md](SENTRY_ERROR_BUDGETS.md)) — Error budget tracking.
-- [WEB_VITALS_RUM.md](WEB_VITALS_RUM.md)) — RUM setup.
+- [MONITORING_SPEC.md](MONITORING_SPEC.md) — Grafana panel specifications.
+- [SENTRY_ERROR_BUDGETS.md](SENTRY_ERROR_BUDGETS.md) — Error budget tracking.
+- [WEB_VITALS_RUM.md](WEB_VITALS_RUM.md) — RUM setup.

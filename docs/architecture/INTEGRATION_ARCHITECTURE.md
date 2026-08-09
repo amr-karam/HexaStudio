@@ -106,5 +106,5 @@ Event → Queue → Worker → Persistence
 ## Related Documentation
 
 - [Odoo Integration](../odoo/architecture.md)
-- [Backend Architecture](backend-architecture.md))
-- [API Architecture](API_ARCHITECTURE.md))
+- [Backend Architecture](backend-architecture.md)
+- [API Architecture](API_ARCHITECTURE.md)

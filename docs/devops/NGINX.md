@@ -126,6 +126,6 @@ touch docker/traefik/dynamic.yml
 
 ## 7. RELATED DOCUMENTATION
 
-- [SSL.md](SSL.md)) — TLS certificate management.
-- [LOAD_BALANCING.md](LOAD_BALANCING.md)) — Traffic distribution rules.
-- [CLOUDFLARE_CACHE.md](CLOUDFLARE_CACHE.md)) — Edge caching policies.
+- [SSL.md](SSL.md) — TLS certificate management.
+- [LOAD_BALANCING.md](LOAD_BALANCING.md) — Traffic distribution rules.
+- [CLOUDFLARE_CACHE.md](CLOUDFLARE_CACHE.md) — Edge caching policies.

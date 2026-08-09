@@ -31,5 +31,5 @@ POST /api/v1/assistants/ceo/brief      — Generate PDF/Markdown strategic brief
 
 ## 4. RELATED DOCUMENTATION
 
-- [AI_ARCHITECTURE.md](AI_ARCHITECTURE.md)) — AI framework.
-- [EXECUTIVE_DASHBOARD.md](../analytics/EXECUTIVE_DASHBOARD.md)) — BI metrics.
+- [AI_ARCHITECTURE.md](AI_ARCHITECTURE.md) — AI framework.
+- [EXECUTIVE_DASHBOARD.md](../analytics/EXECUTIVE_DASHBOARD.md) — BI metrics.

@@ -24,6 +24,6 @@ This document defines the functional and non-functional requirements of the HEXA
 ## 4. FINAL READINESS VERDICT: READY FOR PRODUCTION
 
 ## 5. REFERENCES
-- [/docs/spec/SYSTEM_SPECIFICATION.md](SYSTEM_SPECIFICATION.md))
+- [/docs/spec/SYSTEM_SPECIFICATION.md](SYSTEM_SPECIFICATION.md)
 - [/docs/performance/PERFORMANCE.md](../performance/PERFORMANCE.md)
 - [/docs/accessibility/ACCESSIBILITY.md](../accessibility/ACCESSIBILITY.md)

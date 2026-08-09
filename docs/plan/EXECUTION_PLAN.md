@@ -44,7 +44,7 @@ This document defines the overarching execution plan for the HEXA STUDIO platfor
 
 ## 3. MILESTONES & DELIVERABLES DECOMPOSITION
 
-For detailed milestone deliverables and completion criteria, see [MILESTONES.md](MILESTONES.md)).
+For detailed milestone deliverables and completion criteria, see [MILESTONES.md](MILESTONES.md).
 
 ---
 
@@ -85,7 +85,7 @@ All major architectural and planning decisions are governed by numbered ADRs in 
 
 ## 6. RISK MANAGEMENT
 
-For detailed risk scores and mitigations, see [RISK_REGISTER.md](RISK_REGISTER.md)).
+For detailed risk scores and mitigations, see [RISK_REGISTER.md](RISK_REGISTER.md).
 
 ---
 
@@ -98,9 +98,9 @@ The system is fully planned, orchestrated, and deployed in production. All quali
 
 ## 8. REFERENCES
 
-- [MILESTONES.md](MILESTONES.md))
-- [RISK_REGISTER.md](RISK_REGISTER.md))
-- [MIGRATION_PLAN.md](MIGRATION_PLAN.md))
+- [MILESTONES.md](MILESTONES.md)
+- [RISK_REGISTER.md](RISK_REGISTER.md)
+- [MIGRATION_PLAN.md](MIGRATION_PLAN.md)
 - [../adr/README.md](../adr/README.md)
 - [../../ARCHITECTURE.md](../../ARCHITECTURE.md)
 - [../../PROJECT_STATUS.md](../../PROJECT_STATUS.md)

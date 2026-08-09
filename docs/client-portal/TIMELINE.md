@@ -21,5 +21,5 @@ Clients can click on specific milestone nodes to:
 
 ## 3. RELATED DOCUMENTATION
 
-- [PROJECT_TRACKING.md](PROJECT_TRACKING.md)) — Project tracking.
-- [CLIENT_PORTAL.md](CLIENT_PORTAL.md)) — Portal architecture.
+- [PROJECT_TRACKING.md](PROJECT_TRACKING.md) — Project tracking.
+- [CLIENT_PORTAL.md](CLIENT_PORTAL.md) — Portal architecture.

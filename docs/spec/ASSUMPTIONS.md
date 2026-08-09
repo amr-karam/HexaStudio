@@ -22,5 +22,5 @@ This document lists the critical operational and environmental assumptions under
 ## 4. FINAL READINESS VERDICT: READY FOR PRODUCTION
 
 ## 5. REFERENCES
-- [/docs/spec/SYSTEM_SPECIFICATION.md](SYSTEM_SPECIFICATION.md))
+- [/docs/spec/SYSTEM_SPECIFICATION.md](SYSTEM_SPECIFICATION.md)
 - [/PROJECT_STATUS.md](../../PROJECT_STATUS.md)

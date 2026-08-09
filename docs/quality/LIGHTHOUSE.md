@@ -68,6 +68,6 @@ npx @lhci/cli autorun
 
 ## 5. RELATED DOCUMENTATION
 
-- [LIGHTHOUSE_AUDIT_2026-07-24.md](LIGHTHOUSE_AUDIT_2026-07-24.md)) — Active Lighthouse report.
-- [PERFORMANCE_AUDIT.md](PERFORMANCE_AUDIT.md)) — CDP profiling guide.
-- [WEB_VITALS_RUM.md](../devops/WEB_VITALS_RUM.md)) — Real user monitoring.
+- [LIGHTHOUSE_AUDIT_2026-07-24.md](LIGHTHOUSE_AUDIT_2026-07-24.md) — Active Lighthouse report.
+- [PERFORMANCE_AUDIT.md](PERFORMANCE_AUDIT.md) — CDP profiling guide.
+- [WEB_VITALS_RUM.md](../devops/WEB_VITALS_RUM.md) — Real user monitoring.

@@ -92,6 +92,6 @@ docker compose -f docker-compose.prod.yml --profile scheduled up -d backup-verif
 
 ## 7. RELATED DOCUMENTATION
 
-- [DOCKER.md](DOCKER.md)) — Base Dockerfile standards & resource limits.
-- [DEPLOYMENT.md](DEPLOYMENT.md)) — Zero-downtime deployment script execution.
-- [DISASTER_RECOVERY.md](DISASTER_RECOVERY.md)) — Backup and restore procedures.
+- [DOCKER.md](DOCKER.md) — Base Dockerfile standards & resource limits.
+- [DEPLOYMENT.md](DEPLOYMENT.md) — Zero-downtime deployment script execution.
+- [DISASTER_RECOVERY.md](DISASTER_RECOVERY.md) — Backup and restore procedures.

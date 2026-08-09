@@ -137,6 +137,6 @@ CREATE TABLE audit_logs (
 
 ## Related Documentation
 
-- [API Standards](API_STANDARDS.md))
+- [API Standards](API_STANDARDS.md)
 - [BACKUP.md](../devops/BACKUP.md)
 - [DISASTER_RECOVERY.md](../devops/DISASTER_RECOVERY.md)

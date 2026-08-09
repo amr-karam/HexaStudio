@@ -30,5 +30,5 @@ POST /api/v1/assistants/sales/proposal    — Draft proposal content
 
 ## 4. RELATED DOCUMENTATION
 
-- [CRM.md](../odoo/CRM.md)) — Odoo CRM integration.
-- [AI_ARCHITECTURE.md](AI_ARCHITECTURE.md)) — AI framework.
+- [CRM.md](../odoo/CRM.md) — Odoo CRM integration.
+- [AI_ARCHITECTURE.md](AI_ARCHITECTURE.md) — AI framework.

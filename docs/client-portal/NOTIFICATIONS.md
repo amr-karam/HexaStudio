@@ -23,5 +23,5 @@ Clients can customize notification frequency in portal settings (`/portal/settin
 
 ## 3. RELATED DOCUMENTATION
 
-- [CLIENT_PORTAL.md](CLIENT_PORTAL.md)) — Portal architecture.
-- [EMAIL_ASSISTANT.md](../ai/EMAIL_ASSISTANT.md)) — Email assistant.
+- [CLIENT_PORTAL.md](CLIENT_PORTAL.md) — Portal architecture.
+- [EMAIL_ASSISTANT.md](../ai/EMAIL_ASSISTANT.md) — Email assistant.

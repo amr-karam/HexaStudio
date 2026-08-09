@@ -20,5 +20,5 @@ The Business Intelligence pipeline extracts transactional data from PostgreSQL, 
 
 ## 3. RELATED DOCUMENTATION
 
-- [EXECUTIVE_DASHBOARD.md](EXECUTIVE_DASHBOARD.md)) — Executive reporting.
-- [EVENTS.md](EVENTS.md)) — Event schema.
+- [EXECUTIVE_DASHBOARD.md](EXECUTIVE_DASHBOARD.md) — Executive reporting.
+- [EVENTS.md](EVENTS.md) — Event schema.

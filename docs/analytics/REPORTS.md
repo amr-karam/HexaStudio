@@ -20,4 +20,4 @@ Automated reporting definitions for weekly project delivery reports, monthly exe
 
 ## 3. RELATED DOCUMENTATION
 
-- [BI.md](BI.md)) — Business intelligence.
+- [BI.md](BI.md) — Business intelligence.

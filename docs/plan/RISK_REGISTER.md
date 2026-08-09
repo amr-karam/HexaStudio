@@ -34,7 +34,7 @@ All identified high-severity risks have been actively mitigated and verified in 
 
 ## 4. REFERENCES
 
-- [EXECUTION_PLAN.md](EXECUTION_PLAN.md))
-- [MILESTONES.md](MILESTONES.md))
+- [EXECUTION_PLAN.md](EXECUTION_PLAN.md)
+- [MILESTONES.md](MILESTONES.md)
 - [../../SECURITY.md](../../SECURITY.md)
 - [../../PERFORMANCE.md](../../PERFORMANCE.md)
