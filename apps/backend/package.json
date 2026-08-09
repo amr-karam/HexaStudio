@@ -40,7 +40,7 @@
     "@opentelemetry/sdk-node": "^0.221.0",
     "@opentelemetry/sdk-trace-node": "^2.10.0",
     "@opentelemetry/semantic-conventions": "^1.43.0",
-    "@qdrant/js-client-rest": "^1.18.0",
+    "@qdrant/js-client-rest": "1.18.0",
     "@sentry/node": "^10.65.0",
     "@willsoto/nestjs-prometheus": "^5.5.1",
     "axios": "^1.18.1",

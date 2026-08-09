@@ -53,7 +53,11 @@ const SYNC_ENTITIES: Record<string, { model: string; fields: string[]; domain: u
     fields: [
       'id', 'name', 'project_id', 'milestone_id', 'stage_id', 'state',
       'user_ids', 'date_deadline', 'date_assign', 'date_end', 'write_date',
-      'create_date', 'planned_hours', 'effective_hours', 'remaining_hours',
+      'create_date',
+      // planned_hours / effective_hours / remaining_hours are computed
+      // fields in Odoo 17 that trigger a full Python traceback during
+      // XML-RPC batch read (project_task.py:864 read override). Remove
+      // from delta sync; they remain available via the task detail API.
       'description',
     ],
     domain: [],
