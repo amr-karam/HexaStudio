@@ -16,6 +16,7 @@ stages:
   - image
   - validate
   - mobile
+  - publish
   - deploy
 
 variables:
@@ -68,6 +69,13 @@ workflow:
     - npm install --global "npm@${NPM_VERSION}"
     - node --version
     - npm --version
+    # Harden npm against intermittent registry connectivity failures
+    # (ECONNRESET/ETIMEDOUT flakes on the CI runner). Longer, more
+    # aggressive retries reduce the flake rate without masking real errors.
+    - npm config set fetch-retries 5
+    - npm config set fetch-retry-mintimeout 20000
+    - npm config set fetch-retry-maxtimeout 120000
+    - npm config set fetch-timeout 300000
     - npm ci --legacy-peer-deps
 
 .typecheck_base:
@@ -214,9 +222,11 @@ build-image-backend:
   stage: image
   image: docker:24
   services:
-    - docker:24-dind
+    - name: docker:24-dind
+      command: ["--insecure-registry=19.16.1.100:5050"]
   variables:
-    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: tcp://docker:2375
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
@@ -243,9 +253,11 @@ build-image-frontend:
   stage: image
   image: docker:24
   services:
-    - docker:24-dind
+    - name: docker:24-dind
+      command: ["--insecure-registry=19.16.1.100:5050"]
   variables:
-    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: tcp://docker:2375
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
@@ -276,9 +288,11 @@ build-image-cms:
   stage: image
   image: docker:24
   services:
-    - docker:24-dind
+    - name: docker:24-dind
+      command: ["--insecure-registry=19.16.1.100:5050"]
   variables:
-    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: tcp://docker:2375
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
@@ -487,7 +501,83 @@ submit-mobile:
       allow_failure: false
 
 # ----------------------------------------------------------------------------
-# 6. DEPLOY STAGE
+# 6. PUBLISH STAGE
+# ----------------------------------------------------------------------------
+
+# ----- Publish @hexastudio/ui to the GitLab npm Package Registry -----
+# Uses CI_JOB_TOKEN (scoped to the pipeline's project) — no manual secrets needed.
+# The package is consumed by workspaces in-repo, but publishing makes it
+# consumable by external consumers and CI jobs on other runners.
+publish-ui:
+  stage: publish
+  image: node:${NODE_VERSION}
+  before_script: *npm_setup
+  cache: *cache_npm
+  script:
+    - npm run typecheck --workspace=packages/ui
+    - npm run lint --workspace=packages/ui
+    - npm run build --workspace=packages/ui
+    # Configure the GitLab npm registry for this job. CI_JOB_TOKEN is scoped
+    # to this project and authorized for the Package Registry (api scope).
+    - npm config set "@hexastudio:registry" "${CI_SERVER_URL}/api/v4/packages/npm/"
+    - npm config set "//${CI_SERVER_HOST}/api/v4/packages/npm/:_authToken" "${CI_JOB_TOKEN}"
+    - npm config set "//${CI_SERVER_HOST}/api/v4/packages/npm/:always-auth" "true"
+    - npm publish --workspace=packages/ui
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
+      when: manual
+      allow_failure: false
+
+# ----- Build Storybook static site & push docs-service image -----
+build-storybook:
+  stage: publish
+  image: node:${NODE_VERSION}
+  before_script: *npm_setup
+  cache: *cache_npm
+  script:
+    - npm run build-storybook --workspace=packages/ui
+  artifacts:
+    when: always
+    paths:
+      - packages/ui/storybook-static/
+    expire_in: 7 days
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
+    - if: $CI_COMMIT_BRANCH == "develop" && $CI_PIPELINE_SOURCE == "push"
+
+# ----- Push docs-service container image (serves Storybook static build) -----
+build-image-docs:
+  stage: publish
+  image: docker:24
+  services:
+    - name: docker:24-dind
+      command: ["--insecure-registry=19.16.1.100:5050"]
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: tcp://docker:2375
+    DOCS_IMAGE: $CI_REGISTRY_IMAGE/docs
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker buildx create --use
+    - |
+      docker buildx build
+        --cache-from type=registry,ref=$DOCS_IMAGE:buildcache
+        --cache-to type=registry,ref=$DOCS_IMAGE:buildcache,mode=max
+        --tag $DOCS_IMAGE:$IMAGE_TAG_SHA
+        --tag $DOCS_IMAGE:$IMAGE_TAG_BRANCH
+        --tag $DOCS_IMAGE:latest
+        --file packages/ui/Dockerfile
+        --push
+        .
+  needs:
+    - build-storybook
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
+    - if: $CI_COMMIT_BRANCH == "develop" && $CI_PIPELINE_SOURCE == "push"
+
+# ----------------------------------------------------------------------------
+# 7. DEPLOY STAGE
 # ----------------------------------------------------------------------------
 
 # ----- Production deploy (main branch) -----
@@ -498,6 +588,7 @@ deploy-production:
     - build-image-backend
     - build-image-frontend
     - build-image-cms
+    - build-image-docs
   before_script:
     - apk add --no-cache openssh-client bash
     - eval "$(ssh-agent -s)"
@@ -518,7 +609,9 @@ deploy-production:
         docker ps --filter "health=healthy" --format "{{.Names}}" | grep -q "hexa-backend" || { echo "Backend unhealthy"; exit 1; }
         docker ps --filter "health=healthy" --format "{{.Names}}" | grep -q "hexa-frontend" || { echo "Frontend unhealthy"; exit 1; }
         docker ps --filter "health=healthy" --format "{{.Names}}" | grep -q "hexa-cms" || { echo "CMS unhealthy"; exit 1; }
+        docker ps --filter "health=healthy" --format "{{.Names}}" | grep -q "hexa-docs" || { echo "Docs unhealthy"; exit 1; }
         curl -sf http://localhost:4000/api/health || { echo "API health endpoint unreachable"; exit 1; }
+        curl -sf http://localhost:8080/ || { echo "Docs endpoint unreachable"; exit 1; }
         echo "Deployment verified successfully."
       EOF
   environment:
@@ -537,6 +630,7 @@ deploy-staging:
     - build-image-backend
     - build-image-frontend
     - build-image-cms
+    - build-image-docs
   before_script:
     - apk add --no-cache openssh-client bash
     - eval "$(ssh-agent -s)"
@@ -553,9 +647,12 @@ deploy-staging:
         docker compose -f docker-compose.prod.yml pull
         docker compose -f docker-compose.prod.yml up -d --remove-orphans
         docker image prune -f
+        docker ps --filter "name=hexa-docs" --format "{{.Names}}" | grep -q "hexa-docs" || { echo "Docs not running"; exit 1; }
       EOF
   environment:
     name: staging
     url: https://staging.hexastudio.net
   rules:
     - if: $CI_COMMIT_BRANCH == "develop" && $CI_PIPELINE_SOURCE == "push"
+
+
