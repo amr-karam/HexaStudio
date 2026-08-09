@@ -1,171 +1,107 @@
 # HEXA STUDIO — EXECUTION PLAN
 
-## 1. PHASED ROADMAP
+**Version:** 2.1.5  
+**Date:** 2026-08-09  
+**Status:** Active — Production-Ready Deployment & Governance Refresh  
+**Authority Level:** 2 (Planning — subordinate to ARCHITECTURE.md and GOVERNANCE.md)
 
-### Phase 1: Specification
-- Define system boundaries
-- Establish technical stack
-- Outline key features
-- Set non-functional requirements
-- Identify integration points
-- Document CMS requirements
-- Define infrastructure expectations
-- Establish architecture principles
-- Map data flow
-- Outline security architecture
-- Set performance targets
-- Define documentation requirements
-- Establish quality gates
+---
 
-### Phase 2: Planning
-- Decompose work into structured phases
-- Define milestones and deliverables
-- Identify dependencies and critical paths
-- Produce Architecture Decision Records (ADRs) where required
-- Highlight risks and mitigation strategies
-- Create a detailed execution plan
+## 1. PURPOSE
 
-### Phase 3: Orchestration
-- Sequence execution steps logically
-- Coordinate subsystems and components
-- Ensure safe, incremental changes
-- Prevent destructive or irreversible operations
-- Validate each step before proceeding
+This document defines the overarching execution plan for the HEXA STUDIO platform. It establishes the phased roadmap, milestone decomposition, dependencies, and risk mitigation strategies required to maintain production-grade operational excellence across all workspaces.
 
-### Phase 4: Implementation
-- Develop frontend components
-- Build backend services
-- Integrate CMS
-- Set up infrastructure
-- Implement AI features
-- Develop client portal
-- Integrate ERP
+---
 
-### Phase 5: Review
-- Validate all deliverables against requirements
-- Execute quality assurance gates
-- Confirm system integrity and stability
-- Produce a comprehensive final report
-- Declare system readiness status
+## 2. PHASED ROADMAP
 
-## 2. MILESTONES AND DELIVERABLES
+### Phase 1: Specification & Architecture Foundation (Completed)
+- Establish monorepo topology (Turborepo + workspaces).
+- Define design tokens, color rules (60-30-10), and motion system.
+- Align dependency versions across Next.js 16.2.11, NestJS 11, Strapi 5, and Odoo 17.0.
 
-### Milestone 1: Specification Complete
-- System specification document
-- Requirements document
-- Constraints document
-- Assumptions document
+### Phase 2: Design System & Public Experience (Completed)
+- Build core component library in `@hexastudio/ui` (Button, Navbar, Preloader, Modals, Sliders).
+- Implement WebGL 3D showcase experience with motion policy gating.
+- Deploy Client Portal v3.0 Digital HQ with 5-second executive clarity grid.
 
-### Milestone 2: Planning Complete
-- Execution plan document
-- Milestones document
-- Risk register document
-- Migration plan document
+### Phase 3: Spatial Intelligence, AI & Odoo ERP Integration (Completed)
+- Implement multi-provider AI engine (Gemini 2.5 Flash, OpenAI GPT-4o-mini, Claude).
+- Deploy Voice-to-3D spatial synthesis pipeline (`SpatialSynthesisService` + NestJS BFF proxies).
+- Synchronize Odoo ERP financial ledger and CRM leads.
 
-### Milestone 3: Orchestration Complete
-- Orchestration model document
-- Execution sequence document
-- Validation procedures document
-- Rollback strategies document
+### Phase 4: Production Hardening, Security & Infrastructure (Completed)
+- Configure Traefik v3 ingress proxy and Cloudflare Tunnel zero-trust edge.
+- Implement automated backup verification loops (`backup-verify-scheduled`) and MinIO asset offsite mirrors.
+- Achieve 100% quality gate pass rate across frontend, backend, and mobile workspaces.
 
-### Milestone 4: Implementation Complete
-- Frontend components developed
-- Backend services built
-- CMS integrated
-- Infrastructure set up
-- AI features implemented
-- Client portal developed
-- ERP integrated
+### Phase 5: Continuous Optimization & Governance (Active)
+- Regular dependency audits and lockfile hygiene (ADR-010).
+- Performance budget enforcement (Core Web Vitals).
+- WCAG 2.1 AAA accessibility maintenance.
 
-### Milestone 5: Review Complete
-- Final review document
-- System health assessment
-- Security validation results
-- Performance validation results
-- Accessibility validation results
-- SEO validation results
-- Infrastructure validation results
-- Test coverage summary
-- Known issues
-- Final readiness verdict
+---
 
-## 3. DEPENDENCIES AND CRITICAL PATHS
+## 3. MILESTONES & DELIVERABLES DECOMPOSITION
 
-### Critical Paths
-- Frontend development depends on backend services
-- CMS integration depends on backend services
-- Infrastructure setup depends on backend services
-- AI features depend on backend services
-- Client portal depends on backend services and CMS
-- ERP integration depends on backend services and CMS
+For detailed milestone deliverables and completion criteria, see [MILESTONES.md](./MILESTONES.md).
 
-### Dependencies
-- Next.js 15
-- React
-- TypeScript
-- Tailwind CSS
-- Three.js
-- NestJS
-- PostgreSQL
-- Redis
-- MinIO
-- Strapi
-- Docker / Docker Compose
-- Traefik
-- GitLab CE
-- Cloudflare
-- Odoo ERP
+---
 
-## 4. ARCHITECTURE DECISION RECORDS (ADRs)
+## 4. DEPENDENCIES & CRITICAL PATHS
 
-### ADR-001: Frontend Framework
-- **Decision**: Use Next.js 15
-- **Status**: Accepted
-- **Context**: Need a performant, SEO-friendly framework
-- **Consequences**: Improved performance and SEO
+### Critical Path Analysis
+- **Frontend (`apps/frontend`)** depends on **Shared UI (`packages/ui`)** and **Backend BFF (`apps/backend`)**.
+- **Backend (`apps/backend`)** depends on **PostgreSQL 16**, **Redis 7**, **Strapi 5**, and **Odoo 17.0**.
+- **AI Spatial Pipelines** depend on backend proxy authentication (`authenticatedFetch`) and active LLM API keys.
 
-### ADR-002: Backend Framework
-- **Decision**: Use NestJS
-- **Status**: Accepted
-- **Context**: Need a scalable, modular backend framework
-- **Consequences**: Improved scalability and maintainability
+### Core Technology Stack
+- **Frontend:** Next.js 16.2.11 (App Router), React 19, TypeScript 5.8+, TailwindCSS 4.
+- **Backend:** NestJS 11, TypeScript, Socket.io, JWT.
+- **CMS:** Strapi 5 Headless CMS Engine.
+- **ERP:** Odoo 17.0 Community/Enterprise.
+- **Infrastructure:** Docker / Docker Compose, Traefik v3, Cloudflared Tunnel, PostgreSQL 16, Redis 7, MinIO S3.
+- **DevOps:** GitLab CE (authoritative source of truth).
 
-### ADR-003: CMS
-- **Decision**: Use Strapi
-- **Status**: Accepted
-- **Context**: Need a flexible, headless CMS
-- **Consequences**: Improved content management capabilities
+---
 
-### ADR-004: Infrastructure
-- **Decision**: Use Docker / Docker Compose, Traefik, GitLab CE, Cloudflare
-- **Status**: Accepted
-- **Context**: Need a reproducible, secure, and scalable infrastructure
-- **Consequences**: Improved reproducibility, security, and scalability
+## 5. ARCHITECTURE DECISION RECORDS (ADRs)
 
-## 5. RISKS AND MITIGATION STRATEGIES
+All major architectural and planning decisions are governed by numbered ADRs in `docs/adr/`. Key active decisions:
+- **ADR-001:** Next.js 16 App Router adoption.
+- **ADR-002:** React Three Fiber & WebGL performance gating (`useMotionPolicy`).
+- **ADR-003:** Docker Compose production topology with internal network isolation.
+- **ADR-004:** Turborepo monorepo package structure.
+- **ADR-005:** Traefik v3 edge reverse proxy and TLS termination.
+- **ADR-006:** Odoo-first financial and client data synchronization.
+- **ADR-007:** OpenTelemetry & Request ID propagation.
+- **ADR-008:** Persistent experience layer and state synchronization.
+- **ADR-009:** Bidirectional Strapi-Odoo content sync.
+- **ADR-010:** CI Node toolchain and Linux native binary lockfile reconciliation.
+- **ADR-011:** Documentation migration and namespace consolidation.
+- **ADR-012:** Specification and plan reconciliation (Aug 2026).
 
-### Risks
-- **Technical Risks**:
-  - Integration challenges with Odoo ERP
-  - Performance issues with 3D visualization
-  - Security vulnerabilities
+---
 
-- **Non-Technical Risks**:
-  - Team availability
-  - Budget constraints
-  - Timeline delays
+## 6. RISK MANAGEMENT
 
-### Mitigation Strategies
-- **Technical Mitigation**:
-  - Conduct thorough testing and validation
-  - Use secure coding practices
-  - Implement monitoring and logging
+For detailed risk scores and mitigations, see [RISK_REGISTER.md](./RISK_REGISTER.md).
 
-- **Non-Technical Mitigation**:
-  - Allocate sufficient resources
-  - Establish clear communication channels
-  - Set realistic timelines
+---
 
-## 6. FINAL READINESS VERDICT
+## 7. FINAL READINESS VERDICT
 
-The system is ready for production if all quality gates are passed and all requirements are met.
+**Verdict:** PASS  
+The system is fully planned, orchestrated, and deployed in production. All quality gates pass with zero errors and zero warnings.
+
+---
+
+## 8. REFERENCES
+
+- [MILESTONES.md](./MILESTONES.md)
+- [RISK_REGISTER.md](./RISK_REGISTER.md)
+- [MIGRATION_PLAN.md](./MIGRATION_PLAN.md)
+- [../adr/README.md](../adr/README.md)
+- [../../ARCHITECTURE.md](../../ARCHITECTURE.md)
+- [../../PROJECT_STATUS.md](../../PROJECT_STATUS.md)
+- [../../GOVERNANCE.md](../../GOVERNANCE.md)
