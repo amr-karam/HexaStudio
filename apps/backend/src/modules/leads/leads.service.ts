@@ -9,16 +9,16 @@ export class LeadsService {
   async qualifyLead(lead: QualifiedLead): Promise<LeadQualificationResponse> {
     try {
       const odooPayload = {
-        name: `[AI QUALIFIED] ${lead.company ?? ''}`,
+        name: `[AI QUALIFIED] ${lead.company || lead.contactName}`,
         contact_name: lead.contactName,
         email_from: lead.email,
         phone: lead.phone,
         priority: lead.priority,
-        description: `AI Summary:\n\nBudget: ${lead.criteria.budget}\nScale: ${lead.criteria.projectScale}\nTimeline: ${lead.criteria.timeline}\nScore: ${lead.leadScore}/100`,
+        description: `AI Summary: ${lead.aiSummary}\n\nBudget: $${lead.criteria.budget}\nScale: ${lead.criteria.projectScale}\nTimeline: ${lead.criteria.timeline}\nScore: ${lead.leadScore}/100`,
         expected_revenue: lead.criteria.budget,
       };
 
-      const odooId = await this.odooService.createLead(odooPayload);
+      const odooId = await this.odooService.create("crm.lead", odooPayload);
       
       return {
         success: true,
