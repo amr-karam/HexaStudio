@@ -5,6 +5,21 @@ All notable changes to the HEXA Vision platform are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased] — 2026-08-09
+
+### Design System Publish & Storybook Docs Deployment
+
+#### Added
+- **`@hexastudio/ui` npm Package Publishing**: Removed `private` flag, added `publishConfig` targeting the GitLab npm Package Registry, and added the `publish-ui` CI job (authenticates via `CI_JOB_TOKEN`, no manual secrets).
+- **Storybook Documentation Site**: Scaffolded Storybook 8 (react-vite) for `packages/ui` with 30 stories across Button, Card, Input, Badge, and HeroSection. Added `packages/ui/Dockerfile` + `docker/docs/nginx.conf` serving the static build on port 8080.
+- **`docs-service` container**: Added to `docker-compose.yml` and `docker-compose.prod.yml`, matching the existing Traefik router (`docs.hexastudio.net` → `docs-service:8080`).
+- **CI publish stage**: New `publish` stage with `publish-ui`, `build-storybook`, and `build-image-docs` jobs; wired `build-image-docs` into production/staging deploys with health verification.
+
+#### Fixed
+- **Cross-platform CI lockfile bug**: Moved `@rolldown/binding-win32-x64-msvc` to `optionalDependencies` so `npm ci` no longer fails with `EBADPLATFORM` on Linux runners (npm#4828).
+- **jest-axe Vitest typecheck**: Added `test/jest-axe.d.ts` augmenting the `vitest` module interfaces so `toHaveNoViolations()` typechecks under Vitest.
+- **Corrupted ADR index**: Restored `docs/adr/README.md` from a 546KB escaped-`\n` corruption back to the clean 12-ADR index.
+
 ## [1.8.0] — 2026-07-27
 
 ### Sprint 19 — Mobile & Web Performance (IN PROGRESS)
