@@ -1,128 +1,71 @@
-'use client';
-
 import * as React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import * as ModalPrimitive from '@radix-ui/react-dialog';
+import { X } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
-export interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title: string;
-  children?: React.ReactNode;
-  variant?: 'centered' | 'full-screen' | 'side-panel';
-  className?: string;
-}
+const Modal = ModalPrimitive.Root;
+const ModalTrigger = ModalPrimitive.Trigger;
+const ModalClose = ModalPrimitive.Close;
+const ModalPortal = ModalPrimitive.Portal;
 
-const Modal = ({ isOpen, onClose, title, children, variant = 'centered', className }: ModalProps) => {
-  const panelRef = React.useRef<HTMLDivElement>(null);
+const ModalOverlay = React.forwardRef<
+  React.ElementRef<typeof ModalPrimitive.Overlay>,
+  React.ComponentPropsWithoutRef<typeof ModalPrimitive.Overlay>
+>(({ className, ...props }, ref) => (
+  <ModalPrimitive.Overlay
+    ref={ref}
+    className={cn(
+      'fixed inset-0 z-50 bg-black/50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+      className
+    )}
+    {...props}
+  />
+));
+ModalOverlay.displayName = ModalPrimitive.Overlay.displayName;
 
-  // Close on Escape + lock body scroll while the modal is open.
-  React.useEffect(() => {
-    if (!isOpen) return;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    document.addEventListener('keydown', onKeyDown);
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.removeEventListener('keydown', onKeyDown);
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [isOpen, onClose]);
-
-  // Focus management: focus the panel on open and trap Tab within it.
-  React.useEffect(() => {
-    if (!isOpen) return;
-    const panel = panelRef.current;
-    if (!panel) return;
-
-    // Move focus into the dialog so screen-reader + keyboard users land inside.
-    const focusables = panel.querySelectorAll<HTMLElement>(
-      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
-    );
-    if (focusables.length > 0) {
-      focusables[0].focus();
-    } else {
-      panel.focus();
-    }
-
-    const onKeydown = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return;
-      const items = panel.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
-      );
-      if (items.length === 0) return;
-      const first = items[0];
-      const last = items[items.length - 1];
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    };
-    panel.addEventListener('keydown', onKeydown);
-    return () => panel.removeEventListener('keydown', onKeydown);
-  }, [isOpen]);
-
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-obsidian/80 backdrop-blur-xl p-4"
-          onClick={onClose}
-        >
-          <motion.div
-            ref={panelRef}
-            role="dialog"
-            aria-modal="true"
-            aria-label={title}
-            tabIndex={-1}
-            initial={{ opacity: 0, scale: 0.96, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.97, y: 5 }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            onClick={(e) => e.stopPropagation()}
-            className={cn(
-              'bg-white/[0.03] border border-white/10 backdrop-blur-2xl rounded-3xl p-8 shadow-2xl relative outline-none',
-              variant === 'centered' && 'max-w-lg w-full',
-              variant === 'full-screen' && 'fixed inset-0 m-0 rounded-none p-12',
-              variant === 'side-panel' &&
-                'fixed right-0 top-0 h-full w-full max-w-md rounded-l-3xl rounded-tr-3xl p-8',
-              className
-            )}
-          >
-            <button
-              onClick={onClose}
-              aria-label="Close"
-              className="group absolute top-6 right-6 w-8 h-8 flex items-center justify-center text-white/40 hover:text-accent transition-colors duration-300"
-            >
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 14 14"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1"
-              >
-                <path d="M1 1L13 13M13 1L1 13" />
-              </svg>
-            </button>
-            <div className="flex justify-between items-center mb-6 pr-10">
-              <h2 className="text-2xl font-serif">{title}</h2>
-            </div>
-            {children}
-          </motion.div>
-        </motion.div>
+const ModalContent = React.forwardRef<
+  React.ElementRef<typeof ModalPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof ModalPrimitive.Content>
+>(({ className, children, ...props }, ref) => (
+  <ModalPortal>
+    <ModalOverlay />
+    <ModalPrimitive.Content
+      ref={ref}
+      className={cn(
+        'fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-xl',
+        className
       )}
-    </AnimatePresence>
-  );
-};
+      {...props}
+    >
+      {children}
+      <ModalPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-500)] focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-[var(--color-surface)] data-[state=open]:text-[var(--color-text-muted)]">
+        <X className="h-4 w-4" />
+        <span className="sr-only">Close</span>
+      </ModalPrimitive.Close>
+    </ModalPrimitive.Content>
+  </ModalPortal>
+));
+ModalContent.displayName = ModalPrimitive.Content.displayName;
 
-export { Modal };
+const ModalHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  <div className={cn('flex flex-col space-y-1.5 text-center sm:text-left', className)} {...props} />
+);
+ModalHeader.displayName = 'ModalHeader';
+
+const ModalTitle = React.forwardRef<
+  React.ElementRef<typeof ModalPrimitive.Title>,
+  React.ComponentPropsWithoutRef<typeof ModalPrimitive.Title>
+>(({ className, ...props }, ref) => (
+  <ModalPrimitive.Title ref={ref} className={cn('text-lg font-semibold leading-none tracking-tight', className)} {...props} />
+));
+ModalTitle.displayName = ModalPrimitive.Title.displayName;
+
+const ModalDescription = React.forwardRef<
+  React.ElementRef<typeof ModalPrimitive.Description>,
+  React.ComponentPropsWithoutRef<typeof ModalPrimitive.Description>
+>(({ className, ...props }, ref) => (
+  <ModalPrimitive.Description ref={ref} className={cn('text-sm text-[var(--color-text-muted)]', className)} {...props} />
+));
+ModalDescription.displayName = ModalPrimitive.Description.displayName;
+
+export { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription, ModalClose, ModalPortal };
