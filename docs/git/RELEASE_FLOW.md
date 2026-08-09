@@ -49,6 +49,6 @@ git push origin v1.1.0
 
 ## 5. RELATED DOCUMENTATION
 
-- [TAGGING.md](docs/git/TAGGING.md) — Git tagging rules.
+- [TAGGING.md](TAGGING.md) — Git tagging rules.
 - [CHANGELOG.md](./CHANGELOG.md) — Release changelog.
-- [DEPLOYMENT.md](docs/devops/DEPLOYMENT.md) — Production CD execution.
+- [DEPLOYMENT.md](../devops/DEPLOYMENT.md) — Production CD execution.

@@ -29,5 +29,5 @@ POST /api/v1/assistants/crm/sync          — Trigger instant Odoo CRM sync
 
 ## 4. RELATED DOCUMENTATION
 
-- [CRM.md](.docs/odoo/CRM.md) — Odoo CRM architecture.
-- [SALES_ASSISTANT.md](.docs/ai/SALES_ASSISTANT.md) — Sales assistant.
+- [CRM.md](../odoo/CRM.md)) — Odoo CRM architecture.
+- [SALES_ASSISTANT.md](SALES_ASSISTANT.md)) — Sales assistant.

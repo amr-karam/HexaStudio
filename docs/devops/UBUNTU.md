@@ -109,6 +109,6 @@ sudo unattended-upgrade --dry-run --debug
 
 ## 7. RELATED DOCUMENTATION
 
-- [DOCKER.md](docs/devops/DOCKER.md) — Docker service limits.
-- [PASSWORD_ROTATION.md](docs/devops/PASSWORD_ROTATION.md) — SSH key rotation procedures.
-- [DISASTER_RECOVERY.md](docs/devops/DISASTER_RECOVERY.md) — System restoration runbook.
+- [DOCKER.md](DOCKER.md)) — Docker service limits.
+- [PASSWORD_ROTATION.md](PASSWORD_ROTATION.md)) — SSH key rotation procedures.
+- [DISASTER_RECOVERY.md](DISASTER_RECOVERY.md)) — System restoration runbook.

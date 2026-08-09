@@ -67,6 +67,6 @@ docker compose -f docker-compose.yml exec backend npm run test:e2e
 
 ## 5. RELATED DOCUMENTATION
 
-- [UNIT_TESTS.md](docs/quality/UNIT_TESTS.md) — Unit testing.
-- [API_DOCUMENTATION.md](docs/api/API_DOCUMENTATION.md) — Endpoint specifications.
-- [SECURITY_STANDARDS.md](docs/security/SECURITY_STANDARDS.md) — API security rules.
+- [UNIT_TESTS.md](UNIT_TESTS.md)) — Unit testing.
+- [API_DOCUMENTATION.md](../api/API_DOCUMENTATION.md)) — Endpoint specifications.
+- [SECURITY_STANDARDS.md](../security/SECURITY_STANDARDS.md)) — API security rules.

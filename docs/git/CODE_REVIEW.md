@@ -43,6 +43,6 @@ Review comments use explicit prefix tags to communicate severity:
 
 ## 4. RELATED DOCUMENTATION
 
-- [PULL_REQUESTS.md](docs/git/PULL_REQUESTS.md) — PR lifecycle.
-- [CODING_STANDARDS.md](docs/engineering/CODING_STANDARDS.md) — Coding standards.
-- [QUALITY_GATES.md](docs/quality/QUALITY_GATES.md) — Review gates.
+- [PULL_REQUESTS.md](PULL_REQUESTS.md)) — PR lifecycle.
+- [CODING_STANDARDS.md](../engineering/CODING_STANDARDS.md)) — Coding standards.
+- [QUALITY_GATES.md](../quality/QUALITY_GATES.md)) — Review gates.

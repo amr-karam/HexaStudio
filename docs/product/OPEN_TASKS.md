@@ -92,7 +92,7 @@
 |---------|-------------|----------|
 | **S19-P2-001** | E2E smoke tests — 18 test cases covering portal login, dashboard, approvals, documents, finance, support, analytics, navigation | `e2e/portal.spec.ts` |
 | **S19-P2-002** | Error tracking review — Sentry capture in global error boundary | `apps/frontend/src/components/GlobalErrorBoundary.tsx` |
-| **S19-P2-003** | Documentation sync — Playbook updated to v1.8.0 | `CURRENT_SPRINT.md`, `OPEN_TASKS.md`, `CHANGELOG.md`, `QUALITY_GATES.md`, `06-STANDARDS/PERFORMANCE_CHECKLIST.md` |
+| **S19-P2-003** | Documentation sync — Playbook updated to v1.8.0 | `CURRENT_SPRINT.md`, `OPEN_TASKS.md`, `CHANGELOG.md`, `QUALITY_GATES.md`, `engineering/PERFORMANCE_CHECKLIST.md` |
 | **S19-P2-004** | Performance budget CI gate — Fail build on bundle-size regressions | `scripts/check-bundle-budgets.mjs`, `.gitlab-ci.yml` `bundle-analysis` job |
 
 #### P3 — Observability & Infrastructure (already complete)

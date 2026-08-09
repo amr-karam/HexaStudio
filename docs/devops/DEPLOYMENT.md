@@ -66,7 +66,7 @@ DNS records for `hexastudio.net` are managed via the Hostinger API using `script
 The script reads from the repo root `.env` (gitignored):
 
 ```env
-HOSTINGER_API_KEY=your_hostinger_api_key_here
+HOSTINGER_API_KEY=${HOSTINGER_API_KEY}
 DNS_DOMAIN=hexastudio.net
 SERVER_IP=19.16.1.100
 ```

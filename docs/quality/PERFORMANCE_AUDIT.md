@@ -66,6 +66,6 @@ All performance audits MUST be recorded in `15-QUALITY/LIGHTHOUSE_AUDIT_<YYYY-MM
 
 ## 5. RELATED DOCUMENTATION
 
-- [chrome-devtools-profiling skill](./.agents/skills/chrome-devtools-profiling/SKILL.md) — CDP profiling skill instructions.
-- [LIGHTHOUSE.md](docs/quality/LIGHTHOUSE.md) — Lighthouse CI thresholds.
-- [PERFORMANCE_CHECKLIST.md](docs/checklists/PERFORMANCE_CHECKLIST.md) — Performance checklist.
+- [chrome-devtools-profiling skill](../../.agents/skills/chrome-devtools-profiling/SKILL.md) — CDP profiling skill instructions.
+- [LIGHTHOUSE.md](LIGHTHOUSE.md) — Lighthouse CI thresholds.
+- [PERFORMANCE_CHECKLIST.md](../checklists/PERFORMANCE_CHECKLIST.md) — Performance checklist.

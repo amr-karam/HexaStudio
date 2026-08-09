@@ -61,5 +61,5 @@ To ensure accurate invoicing and timely payment collection for all services, mai
 ## Related Docs
 
 - `03-BUSINESS\SOPs.md`
-- `09-ODOO\SALES.md`
+- `odoo\SALES.md`
 - `12-CLIENT-PORTAL\INVOICES.md`

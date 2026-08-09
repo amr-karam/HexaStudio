@@ -7,7 +7,7 @@
 
 ## Overview
 
-This directory contains all project documentation organized by domain. All documents are version-controlled and subject to the governance rules defined in [GOVERNANCE.md](../../GOVERNANCE.md).
+This directory contains all project documentation organized by domain. All documents are version-controlled and subject to the governance rules defined in [GOVERNANCE.md](../GOVERNANCE.md).
 
 ## Directory Structure
 
@@ -55,7 +55,7 @@ docs/
 
 ## Governance
 
-- All documentation changes must follow [GOVERNANCE.md](../../GOVERNANCE.md)
+- All documentation changes must follow [GOVERNANCE.md](../GOVERNANCE.md)
 - Architecture changes require an ADR in [adr/](adr/)
 - Quality gates must pass before merging documentation changes
 - Outdated references (Next.js 15, WCAG 2.2 AA) must be updated to current stack (Next.js 16.2.11, WCAG 2.1 AAA)

@@ -75,7 +75,7 @@ All errors use consistent HTTP status codes:
 - Scope-based permissions
 - Token expiration and refresh strategy
 
-See: [Authentication Flow](./authentication-flow.md)
+See: [Authentication Flow](authentication-flow.md))
 
 ---
 
@@ -85,7 +85,7 @@ See: [Authentication Flow](./authentication-flow.md)
 - **Lifecycle:** Major versions support minimum 12 months
 - **Deprecation:** 6-month notice before EOL
 
-See: [API Versioning](../08-API/VERSIONING.md)
+See: [API Versioning](../api/VERSIONING.md)
 
 ---
 
@@ -100,7 +100,7 @@ See: [API Versioning](../08-API/VERSIONING.md)
 
 ## Related Documentation
 
-- [API Standards](../06-STANDARDS/API_STANDARDS.md)
-- [API Documentation](../08-API/API_DOCUMENTATION.md)
-- [Authorization](../08-API/AUTHORIZATION.md)
-- [CODING_STANDARDS.md](../06-STANDARDS/CODING_STANDARDS.md)
+- [API Standards](../engineering/API_STANDARDS.md)
+- [API Documentation](../api/API_DOCUMENTATION.md)
+- [Authorization](../api/AUTHORIZATION.md)
+- [CODING_STANDARDS.md](../engineering/CODING_STANDARDS.md)

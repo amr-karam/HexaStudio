@@ -60,5 +60,5 @@ To transform a qualified consultation into a legally binding contract and a fina
 ## Related Docs
 
 - `03-BUSINESS\SOPs.md`
-- `09-ODOO\SALES.md`
+- `odoo\SALES.md`
 - `12-CLIENT-PORTAL\INVOICES.md`

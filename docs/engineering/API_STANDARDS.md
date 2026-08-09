@@ -138,12 +138,12 @@ All endpoints must document:
 5. Possible errors
 6. Related endpoints
 
-See: [API Documentation](../08-API/API_DOCUMENTATION.md)
+See: [API Documentation](../api/API_DOCUMENTATION.md)
 
 ---
 
 ## Related Documentation
 
-- [API Architecture](../01-ARCHITECTURE/API_ARCHITECTURE.md)
-- [Authorization](../08-API/AUTHORIZATION.md)
-- [CODING_STANDARDS.md](./CODING_STANDARDS.md)
+- [API Architecture](../architecture/API_ARCHITECTURE.md)
+- [Authorization](../api/AUTHORIZATION.md)
+- [Coding Standards](CODING_STANDARDS.md)

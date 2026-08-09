@@ -36,4 +36,4 @@ export interface AnalyticsEvent {
 
 ## 4. RELATED DOCUMENTATION
 
-- [BI.md](.docs/analytics/BI.md) — BI pipeline.
+- [BI.md](BI.md)) — BI pipeline.

@@ -20,5 +20,5 @@ Defines custom Odoo Automated Actions (`base.automation`) that trigger webhooks 
 
 ## 3. RELATED DOCUMENTATION
 
-- [ODOO_ARCHITECTURE.md](docs/odoo/ODOO_ARCHITECTURE.md) — Odoo architecture.
-- [CRM.md](docs/odoo/CRM.md) — CRM integration.
+- [ODOO_ARCHITECTURE.md](ODOO_ARCHITECTURE.md)) — Odoo architecture.
+- [CRM.md](CRM.md)) — CRM integration.

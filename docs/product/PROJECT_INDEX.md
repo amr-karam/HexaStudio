@@ -739,18 +739,18 @@ All detailed documentation lives in `docs/`:
 | Category | Path | Contents |
 |----------|------|----------|
 | Governance | `00-GOVERNANCE/` | Constitution, Overview, Vision, Glossary, Folder Structure |
-| Architecture | `01-ARCHITECTURE/` | System Design, High/Low Level Design, Domain Model, ADRs |
+| Architecture | `architecture/` | System Design, High/Low Level Design, Domain Model, ADRs |
 | Roadmap | `02-ROADMAP/` | Milestones, Sprints, Backlog, Project Status, Changelog |
 | Business | `03-BUSINESS/` | Workflows, Client Journey, Sales Funnel, KPIs |
-| AI Agents | `04-AGENTS/` | Agent guides, Chief Architect, DevOps, QA, Security |
-| Standards | `06-STANDARDS/` | Coding, TypeScript, React, Three.js, GSAP, Security, SEO |
+| AI Agents | `agents/` | Agent guides, Chief Architect, DevOps, QA, Security |
+| Standards | `engineering/` | Coding, TypeScript, React, Three.js, GSAP, Security, SEO |
 | Design | `07-DESIGN/` | Design System, Colors, Typography, Motion, Brand Guidelines |
-| API | `08-API/` | API Documentation, Auth, Endpoints, Webhooks |
-| Odoo | `09-ODOO/` | Odoo Architecture, CRM, Sales, Projects, Automations |
+| API | `api/` | API Documentation, Auth, Endpoints, Webhooks |
+| Odoo | `odoo/` | Odoo Architecture, CRM, Sales, Projects, Automations |
 | AI | `10-AI/` | AI Architecture, Vector Search, Prompt Library, Assistants |
 | Analytics | `11-ANALYTICS/` | Dashboards, BI, Reports, Forecasting, Events |
 | Client Portal | `12-CLIENT-PORTAL/` | Portal docs, File management, Timeline, Invoices |
-| DevOps | `13-DEVOPS/` | Docker, Deployment, Monitoring, Backup, Disaster Recovery |
+| DevOps | `devops/` | Docker, Deployment, Monitoring, Backup, Disaster Recovery |
 | Quality | `15-QUALITY/` | Quality Gates, Testing (Unit, Integration, E2E, Lighthouse) |
 
 ---

@@ -662,8 +662,8 @@ echo "Rollback complete. Triggering incident review."
 ## Related Documents
 
 - [.gitlab-ci.yml](../../.gitlab-ci.yml) — Pipeline definition (source of truth)
-- [GitLab Operations](../docs/devops/GITLAB_OPERATIONS.md) — Runner and CI/CD ops
-- [Deployment Strategy](../docs/devops/DEPLOYMENT_STRATEGY.md) — Zero-downtime details
-- [Infrastructure Governance](../docs/devops/INFRASTRUCTURE_GOVERNANCE.md) — Server and Docker policies
-- [Quality Gates](../docs/quality/QUALITY_GATES.md) — Quality enforcement standards
-- [Troubleshooting](../docs/devops/TROUBLESHOOTING.md) — Operational troubleshooting
+- [GitLab Operations](devops/GITLAB_OPERATIONS.md) — Runner and CI/CD ops
+- [Deployment Strategy](devops/DEPLOYMENT_STRATEGY.md) — Zero-downtime details
+- [Infrastructure Governance](devops/INFRASTRUCTURE_GOVERNANCE.md) — Server and Docker policies
+- [Quality Gates](quality/QUALITY_GATES.md) — Quality enforcement standards
+- [Troubleshooting](devops/TROUBLESHOOTING.md) — Operational troubleshooting

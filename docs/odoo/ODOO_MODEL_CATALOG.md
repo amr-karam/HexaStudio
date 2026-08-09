@@ -554,14 +554,14 @@ Odoo ERP ──XML-RPC──► NestJS BFF ──REST──► Frontend
 
 ## Related Documents
 
-- [ODOO_ARCHITECTURE.md](./ODOO_ARCHITECTURE.md) — Architecture philosophy and BFF matrix
-- [MODULES.md](./MODULES.md) — Module inventory and webhook contract
-- [data-models.md](./data-models.md) — Custom field definitions
-- [CRM.md](./CRM.md) — CRM data flow and pipeline stages
-- [PROJECTS.md](./PROJECTS.md) — Project lifecycle and sync
-- [SALES.md](./SALES.md) — Sales order and invoice flows
-- [DOCUMENTS.md](./DOCUMENTS.md) — Document management architecture
-- [AUTOMATIONS.md](./AUTOMATIONS.md) — Automated actions and server actions
-- [crm-integration.md](./crm-integration.md) — CRM integration details
-- [project-integration.md](./project-integration.md) — Project integration details
-- [document-integration.md](./document-integration.md) — Document integration details
+- [ODOO_ARCHITECTURE.md](ODOO_ARCHITECTURE.md)) — Architecture philosophy and BFF matrix
+- [MODULES.md](MODULES.md)) — Module inventory and webhook contract
+- [data-models.md](data-models.md)) — Custom field definitions
+- [CRM.md](CRM.md)) — CRM data flow and pipeline stages
+- [PROJECTS.md](PROJECTS.md)) — Project lifecycle and sync
+- [SALES.md](SALES.md)) — Sales order and invoice flows
+- [DOCUMENTS.md](DOCUMENTS.md)) — Document management architecture
+- [AUTOMATIONS.md](AUTOMATIONS.md)) — Automated actions and server actions
+- [crm-integration.md](crm-integration.md)) — CRM integration details
+- [project-integration.md](project-integration.md)) — Project integration details
+- [document-integration.md](document-integration.md)) — Document integration details

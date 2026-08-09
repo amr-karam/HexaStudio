@@ -20,5 +20,5 @@ Integrates backend `CurrencyModule` to display:
 
 ## 3. RELATED DOCUMENTATION
 
-- [SALES.md](.docs/odoo/SALES.md) — Odoo sales module.
-- [CLIENT_PORTAL.md](.docs/client-portal/CLIENT_PORTAL.md) — Client portal.
+- [SALES.md](../odoo/SALES.md)) — Odoo sales module.
+- [CLIENT_PORTAL.md](CLIENT_PORTAL.md)) — Client portal.

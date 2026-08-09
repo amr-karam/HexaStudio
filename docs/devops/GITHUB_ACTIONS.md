@@ -89,6 +89,6 @@ npm run lint && npm run typecheck && npm run test && npm run build
 
 ## 6. RELATED DOCUMENTATION
 
-- [QUALITY_GATES.md](docs/quality/QUALITY_GATES.md) — 5 Quality Gates specification.
-- [GITLAB_MIGRATION.md](docs/devops/GITLAB_MIGRATION.md) — Self-hosted GitLab CI fallback.
-- [LIGHTHOUSE_AUDIT_2026-07-24.md](docs/quality/LIGHTHOUSE_AUDIT_2026-07-24.md) — Latest audit metrics.
+- [QUALITY_GATES.md](../quality/QUALITY_GATES.md)) — 5 Quality Gates specification.
+- [GITLAB_MIGRATION.md](GITLAB_MIGRATION.md)) — Self-hosted GitLab CI fallback.
+- [LIGHTHOUSE_AUDIT_2026-07-24.md](../quality/LIGHTHOUSE_AUDIT_2026-07-24.md)) — Latest audit metrics.

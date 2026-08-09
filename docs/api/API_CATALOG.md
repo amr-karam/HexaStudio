@@ -2630,9 +2630,9 @@ Toggle webhook active status.
 
 ## Related Documents
 
-- [API Architecture](./API_ARCHITECTURE.md) — Design principles and patterns
-- [API Standards](../06-STANDARDS/API_STANDARDS.md) — Request/response conventions
-- [Authentication](./AUTHENTICATION.md) — Auth flows and token management
-- [Authorization](./AUTHORIZATION.md) — Role-based access control
-- [Error Codes](./ERROR_CODES.md) — Full error code reference
-- [Webhooks](./WEBHOOKS.md) — Webhook event reference
+- [API Architecture](API_ARCHITECTURE.md) — Design principles and patterns
+- [API Standards](../engineering/API_STANDARDS.md) — Request/response conventions
+- [Authentication](AUTHENTICATION.md) — Auth flows and token management
+- [Authorization](AUTHORIZATION.md) — Role-based access control
+- [Error Codes](error-codes.md) — Full error code reference
+- [Webhooks](WEBHOOKS.md) — Webhook event reference

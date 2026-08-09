@@ -19,7 +19,7 @@ Pull Requests (PRs) are the primary gate for introducing code changes into integ
 ### Pre-PR Checklist
 1. **Scope Limit**: Atomic scope targeting a single feature or bugfix ticket.
 2. **Title**: Follows Conventional Commit format (`type(scope): description`).
-3. **Template**: Uses standard template (`16-TEMPLATES/TEMPLATE_PR.md`).
+3. **Template**: Uses standard template (`docs/templates/TEMPLATE_PR.md`).
 4. **Automated Checks**: 100% pass on lint, typecheck, unit tests, and production build.
 5. **No Any Types**: Zero `any` casts or unjustified `@ts-ignore` flags.
 
@@ -46,6 +46,6 @@ Reviewers grade PRs across 5 dimensions:
 
 ## 5. RELATED DOCUMENTATION
 
-- [TEMPLATE_PR.md](docs/templates/TEMPLATE_PR.md) — Pull Request template.
-- [QUALITY_GATES.md](docs/quality/QUALITY_GATES.md) — Review quality gates.
-- [COMMITS.md](docs/git/COMMITS.md) — Commit standards.
+- [TEMPLATE_PR.md](../templates/TEMPLATE_PR.md)) — Pull Request template.
+- [QUALITY_GATES.md](../quality/QUALITY_GATES.md)) — Review quality gates.
+- [COMMITS.md](COMMITS.md)) — Commit standards.

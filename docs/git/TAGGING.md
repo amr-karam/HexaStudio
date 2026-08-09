@@ -45,5 +45,5 @@ git tag -l -n1 --sort=-v:refname
 
 ## 5. RELATED DOCUMENTATION
 
-- [RELEASE_FLOW.md](docs/git/RELEASE_FLOW.md) — Release flow.
+- [RELEASE_FLOW.md](RELEASE_FLOW.md) — Release flow.
 - [CHANGELOG.md](./CHANGELOG.md) — Project changelog.

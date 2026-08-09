@@ -28,5 +28,5 @@ HEXA Vision uses vector embeddings for semantic project discovery, automated tag
 
 ## 3. RELATED DOCUMENTATION
 
-- [AI_ARCHITECTURE.md](.docs/ai/AI_ARCHITECTURE.md) — AI architecture.
-- [AUTOMATIONS.md](.docs/ai/AUTOMATIONS.md) — AI automations.
+- [AI_ARCHITECTURE.md](AI_ARCHITECTURE.md)) — AI architecture.
+- [AUTOMATIONS.md](AUTOMATIONS.md)) — AI automations.

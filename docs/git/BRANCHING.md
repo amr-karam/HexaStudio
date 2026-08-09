@@ -68,6 +68,6 @@ npm run paseo:worktree:archive -- feature/S16-my-feature
 
 ## 6. RELATED DOCUMENTATION
 
-- [GIT_STRATEGY.md](docs/git/GIT_STRATEGY.md) — Core Git strategy.
-- [COMMITS.md](docs/git/COMMITS.md) — Commit conventions.
-- [PULL_REQUESTS.md](docs/git/PULL_REQUESTS.md) — PR review standards.
+- [GIT_STRATEGY.md](GIT_STRATEGY.md)) — Core Git strategy.
+- [COMMITS.md](COMMITS.md)) — Commit conventions.
+- [PULL_REQUESTS.md](PULL_REQUESTS.md)) — PR review standards.

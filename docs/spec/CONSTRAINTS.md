@@ -25,4 +25,4 @@ This document establishes the non-negotiable architectural and operational const
 
 ## 5. REFERENCES
 - [/GOVERNANCE.md](../../GOVERNANCE.md)
-- [/docs/spec/SYSTEM_SPECIFICATION.md](./SYSTEM_SPECIFICATION.md)
+- [/docs/spec/SYSTEM_SPECIFICATION.md](SYSTEM_SPECIFICATION.md))

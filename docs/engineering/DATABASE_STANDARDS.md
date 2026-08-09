@@ -131,12 +131,12 @@ CREATE TABLE audit_logs (
 - **Frequency:** Daily full backups + hourly incrementals
 - **Retention:** 30-day rolling window
 - **Testing:** Monthly restore drills
-- **Documentation:** See [BACKUP.md](../13-DEVOPS/BACKUP.md)
+- **Documentation:** See [BACKUP.md](../devops/BACKUP.md)
 
 ---
 
 ## Related Documentation
 
-- [API Standards](./API_STANDARDS.md)
-- [BACKUP.md](../13-DEVOPS/BACKUP.md)
-- [DISASTER_RECOVERY.md](../13-DEVOPS/DISASTER_RECOVERY.md)
+- [API Standards](API_STANDARDS.md))
+- [BACKUP.md](../devops/BACKUP.md)
+- [DISASTER_RECOVERY.md](../devops/DISASTER_RECOVERY.md)

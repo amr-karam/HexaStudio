@@ -18,13 +18,28 @@ Since I cannot configure external DNS automatically, you need to manually config
 
 ### **For Production Deployment (After GitLab)**
 
+> **Note:** DNS records for `hexastudio.net`, `api.hexastudio.net`, `portal.hexastudio.net`,
+> `cms.hexastudio.net`, and `odoo.hexastudio.net` are already configured and active.
+> The records below reflect the current production topology (Traefik v3 ingress).
+
 | Type | Name | Value | TTL | Purpose |
 |------|------|-------|-----|---------|
-| A | api.hexastudio.net | [YOUR_API_SERVER_IP] | Auto | API Server |
-| A | app.hexastudio.net | [YOUR_APP_SERVER_IP] | Auto | Web Application |
+| A | hexastudio.net | [Production Server IP] | Auto | Frontend (Next.js) |
+| A | api.hexastudio.net | [Production Server IP] | Auto | Backend (NestJS BFF) |
+| A | portal.hexastudio.net | [Production Server IP] | Auto | Client Portal |
+| A | cms.hexastudio.net | [Production Server IP] | Auto | Strapi CMS |
+| A | odoo.hexastudio.net | [Production Server IP] | Auto | Odoo ERP |
+| A | grafana.hexastudio.net | [Production Server IP] | Auto | Monitoring |
 | CNAME | www.hexastudio.net | hexastudio.net | Auto | Redirect www |
 | MX | hexastudio.net | mail.hexastudio.net | Auto | Email Server |
 | TXT | hexastudio.net | v=spf1 include:_spf.google.com ~all | Auto | SPF Record |
+
+**Traefik v3 routing** (see `TRAEFIK.md` for full routing table):
+- `hexastudio.net` → `frontend` service (:3000)
+- `api.hexastudio.net` → `backend` service (:4000)
+- `portal.hexastudio.net` → `frontend` service (:3000, client portal ingress)
+- `cms.hexastudio.net` → `cms` service (:1337)
+- `odoo.hexastudio.net` → `odoo` service (:8069)
 
 ---
 

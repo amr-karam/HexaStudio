@@ -18,9 +18,9 @@ Read the following documents to understand the soul of the project:
 
 ### Step 2: The Technical Blueprint (The "How")
 Read these to understand the engineering constraints:
-1. **`01-ARCHITECTURE/SYSTEM_ARCHITECTURE.md`** $\rightarrow$ The master plan.
-2. **`06-STANDARDS/CODING_STANDARDS.md`** $\rightarrow$ The quality bar.
-3. **`06-STANDARDS/SECURITY_STANDARDS.md`** $\rightarrow$ The safety protocols.
+1. **`architecture/SYSTEM_ARCHITECTURE.md`** $\rightarrow$ The master plan.
+2. **`engineering/CODING_STANDARDS.md`** $\rightarrow$ The quality bar.
+3. **`engineering/SECURITY_STANDARDS.md`** $\rightarrow$ The safety protocols.
 
 ### Step 3: The Current State (The "What")
 Synchronize with the current progress:

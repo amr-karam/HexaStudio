@@ -15,9 +15,9 @@ This document is the **single authoritative contract** for all frontend implemen
 3. Specialized standards (linked in References)
 
 **Referenced standards (complementary, not redundant):**
-- `06-STANDARDS/MOTION_SYSTEM.md` — motion tokens, patterns, guidelines
+- `engineering/MOTION_SYSTEM.md` — motion tokens, patterns, guidelines
 - `07-DESIGN/UX_STRATEGY.md` — UX principles and interaction design
-- `06-STANDARDS/ACCESSIBILITY.md` — WCAG compliance and testing
+- `engineering/ACCESSIBILITY.md` — WCAG compliance and testing
 - `15-QUALITY/PERFORMANCE_STANDARDS.md` — performance budgets and measurement
 
 ---
@@ -450,9 +450,9 @@ A frontend task is done **only when ALL** of the following are satisfied:
 
 | Document | Path | Purpose |
 |----------|------|---------|
-| Motion System | `06-STANDARDS/MOTION_SYSTEM.md` | Tokens, patterns, implementation details |
+| Motion System | `engineering/MOTION_SYSTEM.md` | Tokens, patterns, implementation details |
 | UX Strategy | `07-DESIGN/UX_STRATEGY.md` | UX principles and interaction design |
-| Accessibility | `06-STANDARDS/ACCESSIBILITY.md` | WCAG compliance and testing procedures |
+| Accessibility | `engineering/ACCESSIBILITY.md` | WCAG compliance and testing procedures |
 | Performance Standards | `15-QUALITY/PERFORMANCE_STANDARDS.md` | Performance budgets and measurement |
 | Quality Gates | `15-QUALITY/QUALITY_GATES.md` | Release gate requirements |
 | Performance Checklist | `17-CHECKLISTS/PERFORMANCE_CHECKLIST.md` | Pre-PR performance verification |

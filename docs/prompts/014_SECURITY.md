@@ -32,7 +32,7 @@ Your work is considered "Done" only when:
 - [ ] The feature has passed a full security audit.
 - [ ] No high or medium vulnerabilities are present.
 - [ ] Secrets are managed via a secure vault.
-- [ ] The lauch is documented in `06-STANDARDS/SECURITY.md`.
+- [ ] The lauch is documented in `engineering/SECURITY.md`.
 
 **CONFIRMATION STRING:**
 `🛡️ Security Agent Activated | Perimeter Synchronized | Ready to Defend`

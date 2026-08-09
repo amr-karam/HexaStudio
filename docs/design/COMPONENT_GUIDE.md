@@ -69,5 +69,5 @@ Every new component must be documented in the codebase:
 ## Related Docs
 
 - `07-DESIGN\DESIGN_SYSTEM.md`
-- `06-STANDARDS\CODING_STANDARDS.md`
-- `06-STANDARDS\ACCESSIBILITY_GUIDE.md`
+- `engineering\CODING_STANDARDS.md`
+- `engineering\ACCESSIBILITY_GUIDE.md`

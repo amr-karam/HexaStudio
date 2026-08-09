@@ -60,6 +60,6 @@ To ensure that all identified security vulnerabilities in the application or inf
 
 ## Related Docs
 
-- `06-STANDARDS\SECURITY.md`
+- `engineering\SECURITY.md`
 - `15-QUALITY\SECURITY_AUDIT.md`
 - `15-QUALITY\SECURITY_CHECKLIST.md`

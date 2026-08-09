@@ -58,7 +58,7 @@ All jobs that invoke npm must report Node/npm versions and use `npm ci --legacy-
 
 Platform-specific native packages must be exact-version pinned to their JavaScript wrapper, optional where other host platforms may not support them, integrity-locked, loaded in a clean target-platform container before merge, and reviewed whenever the parent package changes.
 
-The current decision is documented in `01-ARCHITECTURE/ARCHITECTURE_DECISIONS/ADR-010-ci-node-toolchain-and-native-dependencies.md`.
+The current decision is documented in `architecture/ARCHITECTURE_DECISIONS/ADR-010-ci-node-toolchain-and-native-dependencies.md`.
 
 ## 6. Deployment and Rollback
 

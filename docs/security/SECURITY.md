@@ -38,7 +38,7 @@ Every user and service gets minimum required permissions:
 - **Scope-Based Permissions:** Fine-grained control
 - **Row-Level Security:** Users see only their data
 
-See: [Authentication Flow](../01-ARCHITECTURE/authentication-flow.md)
+See: [Authentication Flow](../architecture/authentication-flow.md)
 
 ---
 
@@ -155,6 +155,6 @@ See: [Authentication Flow](../01-ARCHITECTURE/authentication-flow.md)
 
 ## Related Documentation
 
-- [SECURITY_AUDIT.md](../15-QUALITY/SECURITY_AUDIT.md)
-- [Authentication Flow](../01-ARCHITECTURE/authentication-flow.md)
-- [SECURITY_STANDARDS.md](./SECURITY_STANDARDS.md)
+- [Security Audit](../quality/SECURITY_AUDIT.md)
+- [Authentication Flow](../architecture/authentication-flow.md)
+- [Security Standards](SECURITY_STANDARDS.md)

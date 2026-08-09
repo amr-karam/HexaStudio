@@ -36,12 +36,12 @@ A comprehensive audit of the HEXA-Vision-Playbook was performed to identify stru
 
 The following files contain only placeholder content (1-3 lines) and should be expanded with full documentation:
 
-### 01-ARCHITECTURE (3 files)
+### architecture (3 files)
 - `API_ARCHITECTURE.md` - Contains only title and description
 - `INTEGRATION_ARCHITECTURE.md` - Contains only title and description  
 - `MICROSERVICES.md` - Contains only title and description
 
-### 06-STANDARDS (5 files)
+### engineering (5 files)
 - `API_STANDARDS.md` - Contains only title and description
 - `DATABASE_STANDARDS.md` - Contains only title and description
 - `ACCESSIBILITY.md` - Contains only title and description
@@ -49,12 +49,12 @@ The following files contain only placeholder content (1-3 lines) and should be e
 - `SEO.md` - Contains only title and description
 - `SECURITY.md` - Contains only title and description
 
-### 08-API (3 files)
+### api (3 files)
 - `API_DOCUMENTATION.md` - Contains only title and description
 - `AUTHORIZATION.md` - Contains only title and description
 - `VERSIONING.md` - Contains only title and description
 
-### 09-ODOO (1 file)
+### odoo (1 file)
 - `AUTOMATIONS.md` - Contains only title and description
 
 ### 10-AI (8 files)
@@ -82,7 +82,7 @@ The following files contain only placeholder content (1-3 lines) and should be e
 - `INVOICES.md` - Contains only title and description
 - `NOTIFICATIONS.md` - Contains only title and description
 
-### 13-DEVOPS (8 files)
+### devops (8 files)
 - `DOCKER.md` - Contains only title and description
 - `DOCKER_COMPOSE.md` - Contains only title and description
 - `UBUNTU.md` - Contains only title and description
@@ -116,19 +116,19 @@ The following files contain only placeholder content (1-3 lines) and should be e
 ### ✅ Directory Structure
 All 17 main directories exist and match the expected structure:
 - ✅ 00-GOVERNANCE
-- ✅ 01-ARCHITECTURE (including ARCHITECTURE_DECISIONS subdirectory)
+- ✅ architecture (including ARCHITECTURE_DECISIONS subdirectory)
 - ✅ 02-ROADMAP
 - ✅ 03-BUSINESS
-- ✅ 04-AGENTS
+- ✅ agents
 - ✅ 05-PROMPTS
-- ✅ 06-STANDARDS
+- ✅ engineering
 - ✅ 07-DESIGN
-- ✅ 08-API
-- ✅ 09-ODOO
+- ✅ api
+- ✅ odoo
 - ✅ 10-AI
 - ✅ 11-ANALYTICS
 - ✅ 12-CLIENT-PORTAL
-- ✅ 13-DEVOPS
+- ✅ devops
 - ✅ 14-GIT
 - ✅ 15-QUALITY
 - ✅ 16-TEMPLATES

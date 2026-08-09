@@ -29,5 +29,5 @@ POST /api/v1/assistants/pm/report              — Generate project update repor
 
 ## 4. RELATED DOCUMENTATION
 
-- [PROJECTS.md](.docs/odoo/PROJECTS.md) — Odoo project integration.
-- [CLIENT_PORTAL.md](.docs/client-portal/CLIENT_PORTAL.md) — Client portal.
+- [PROJECTS.md](../odoo/PROJECTS.md)) — Odoo project integration.
+- [CLIENT_PORTAL.md](../client-portal/CLIENT_PORTAL.md)) — Client portal.

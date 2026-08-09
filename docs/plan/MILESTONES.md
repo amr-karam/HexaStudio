@@ -46,7 +46,7 @@ All milestones up to Milestone 5 are successfully completed and verified in prod
 
 ## 4. REFERENCES
 
-- [EXECUTION_PLAN.md](./EXECUTION_PLAN.md)
-- [RISK_REGISTER.md](./RISK_REGISTER.md)
+- [EXECUTION_PLAN.md](EXECUTION_PLAN.md))
+- [RISK_REGISTER.md](RISK_REGISTER.md))
 - [../../PROJECT_STATUS.md](../../PROJECT_STATUS.md)
 - [../../GOVERNANCE.md](../../GOVERNANCE.md)

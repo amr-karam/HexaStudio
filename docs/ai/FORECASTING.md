@@ -20,5 +20,5 @@ The Forecasting Engine analyzes historical project timelines, lead velocity, res
 
 ## 3. RELATED DOCUMENTATION
 
-- [BI.md](.docs/analytics/BI.md) — Business intelligence.
-- [EXECUTIVE_DASHBOARD.md](.docs/analytics/EXECUTIVE_DASHBOARD.md) — Executive reporting.
+- [BI.md](../analytics/BI.md)) — Business intelligence.
+- [EXECUTIVE_DASHBOARD.md](../analytics/EXECUTIVE_DASHBOARD.md)) — Executive reporting.

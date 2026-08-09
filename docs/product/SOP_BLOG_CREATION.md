@@ -58,6 +58,6 @@ To produce and publish high-value architectural insights that drive SEO and esta
 
 ## Related Docs
 
-- `06-STANDARDS\SEO.md`
-- `06-STANDARDS\DOCUMENTATION_STANDARDS.md`
+- `engineering\SEO.md`
+- `engineering\DOCUMENTATION_STANDARDS.md`
 - `03-BUSINESS\SOPs.md`

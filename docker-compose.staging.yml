@@ -14,7 +14,7 @@ services:
   # Reverse Proxy
   # ---------------------------------------------------------------------------
   traefik:
-    image: traefik:v2.11
+    image: traefik:v3.0
     <<: *default-restart
     logging: *default-logging
     command:

@@ -20,5 +20,5 @@ The Executive Dashboard aggregates key business metrics across CRM, sales, proje
 
 ## 3. RELATED DOCUMENTATION
 
-- [BI.md](.docs/analytics/BI.md) — BI architecture.
-- [METRICS.md](.docs/analytics/METRICS.md) — Key metrics dictionary.
+- [BI.md](BI.md)) — BI architecture.
+- [METRICS.md](METRICS.md)) — Key metrics dictionary.

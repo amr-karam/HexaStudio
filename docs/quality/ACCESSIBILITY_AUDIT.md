@@ -57,6 +57,6 @@ npx lighthouse "http://localhost:3000" --chrome-flags="--emulate-media-features=
 
 ## 5. RELATED DOCUMENTATION
 
-- [ACCESSIBILITY.md](docs/accessibility/ACCESSIBILITY.md) — Coding accessibility standards.
-- [accessibility-checklist.md](docs/checklists/accessibility-checklist.md) — WCAG 2.1 AAA verification checklist.
-- [FRONTEND_EXCELLENCE.md](docs/design/FRONTEND_EXCELLENCE.md) — Frontend contract.
+- [ACCESSIBILITY.md](../accessibility/ACCESSIBILITY.md)) — Coding accessibility standards.
+- [accessibility-checklist.md](../checklists/accessibility-checklist.md)) — WCAG 2.1 AAA verification checklist.
+- [FRONTEND_EXCELLENCE.md](../design/FRONTEND_EXCELLENCE.md)) — Frontend contract.
