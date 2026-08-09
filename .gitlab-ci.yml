@@ -222,9 +222,11 @@ build-image-backend:
   stage: image
   image: docker:24
   services:
-    - docker:24-dind
+    - name: docker:24-dind
+      command: ["--insecure-registry=19.16.1.100:5050"]
   variables:
-    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: tcp://docker:2375
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
@@ -251,9 +253,11 @@ build-image-frontend:
   stage: image
   image: docker:24
   services:
-    - docker:24-dind
+    - name: docker:24-dind
+      command: ["--insecure-registry=19.16.1.100:5050"]
   variables:
-    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: tcp://docker:2375
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
@@ -284,9 +288,11 @@ build-image-cms:
   stage: image
   image: docker:24
   services:
-    - docker:24-dind
+    - name: docker:24-dind
+      command: ["--insecure-registry=19.16.1.100:5050"]
   variables:
-    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: tcp://docker:2375
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
@@ -544,9 +550,11 @@ build-image-docs:
   stage: publish
   image: docker:24
   services:
-    - docker:24-dind
+    - name: docker:24-dind
+      command: ["--insecure-registry=19.16.1.100:5050"]
   variables:
-    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: tcp://docker:2375
     DOCS_IMAGE: $CI_REGISTRY_IMAGE/docs
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
