@@ -189,7 +189,7 @@
 - [x] Graceful degradation preserved with enhanced error logging for debugging
 
 **S-021 Roadmap:**
-- [ ] P2 — Live Odoo sync to production server (`19.16.1.100`; SSH port 22 verified reachable Aug 8; sync execution and evidence pending)
+- [x] P2 — Live Odoo sync to production server (`19.16.1.100`) — **COMPLETE (Aug 9, 2026)**: `hexa-backend-blue` rebuilt & redeployed. `project.task` full sync succeeds (4 records, 66ms, 0 errors), batch delta sync clean (11 records / 5 entities, 0 errors), Qdrant vector store connected, health endpoint `{"status":"ok","dependencies":{"odoo":"ok"}}`. Fixes: removed computed fields (`planned_hours`/`effective_hours`/`remaining_hours`) from `delta-sync.service.ts`; pinned `@qdrant/js-client-rest` to `1.18.0` (caret drifted to `1.19.0` which removed `search()` API). Gates: lint 0/0, typecheck 0, **339/339 tests**.
 
 ---
 
