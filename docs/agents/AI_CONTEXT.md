@@ -24,7 +24,7 @@ HEXA Studio is a luxury 3D Architecture Visualization platform.
 
 ## 3. Technical Blueprint
 ### Tech Stack
-- **Frontend**: Next.js 15 (App Router), TypeScript, TailwindCSS 4, Framer Motion, GSAP, Three.js / R3F
+- **Frontend**: Next.js 16.2.11 (App Router), TypeScript, TailwindCSS 4, Framer Motion, GSAP, Three.js / R3F
 - **Backend**: NestJS (BFF Pattern), PostgreSQL 16, Redis 7
 - **CMS**: Strapi 5
 - **Infrastructure**: Docker Compose, Traefik v3, MinIO, Prometheus/Grafana/Loki

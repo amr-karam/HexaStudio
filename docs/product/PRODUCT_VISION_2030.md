@@ -108,7 +108,7 @@ This document defines the long-term vision for HEXA Vision. It is aspirational b
 
 ### 2026-2027 (Foundation)
 
-- Next.js 15 with App Router
+- Next.js 16.2.11 with App Router
 - React Three Fiber / WebGL
 - TailwindCSS design system
 - NestJS BFF layer

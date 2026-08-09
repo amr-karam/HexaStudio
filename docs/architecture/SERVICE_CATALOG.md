@@ -159,7 +159,7 @@ The production stack is composed of **4 network planes**:
 
 | Attribute | Value |
 |-----------|-------|
-| **Purpose** | Next.js 15 application — renders the 3D architectural visualization experience with SSR/ISR for SEO and client-side 3D canvas |
+| **Purpose** | Next.js 16.2.11 application — renders the 3D architectural visualization experience with SSR/ISR for SEO and client-side 3D canvas |
 | **Image** | Custom build — `apps/frontend/Dockerfile` |
 | **Ports** | None exposed to `web` directly (routed via Traefik, internal port `3000`) |
 | **Networks** | `web` |

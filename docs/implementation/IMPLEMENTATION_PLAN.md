@@ -3,7 +3,7 @@
 ## 1. FRONTEND COMPONENTS
 
 ### Portfolio Website
-- Develop portfolio website with Next.js 15
+- Develop portfolio website with Next.js 16.2.11
 - Implement responsive design with Tailwind CSS
 - Integrate 3D visualization with Three.js
 - Develop contact form
@@ -11,7 +11,7 @@
 - Develop newsletter subscription
 
 ### Project Showcase Pages
-- Develop project showcase pages with Next.js 15
+- Develop project showcase pages with Next.js 16.2.11
 - Implement responsive design with Tailwind CSS
 - Integrate 3D visualization with Three.js
 - Develop project galleries
@@ -59,7 +59,7 @@
 ## 5. CLIENT PORTAL
 
 ### Project Management Dashboard
-- Develop project management dashboard with Next.js 15
+- Develop project management dashboard with Next.js 16.2.11
 - Implement responsive design with Tailwind CSS
 - Integrate 3D visualization with Three.js
 - Implement approval workflow

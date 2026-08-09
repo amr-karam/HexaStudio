@@ -7,7 +7,7 @@
 - Outline system boundaries
 
 ### Step 2: Establish Technical Stack
-- Select frontend framework (Next.js 15)
+- Select frontend framework (Next.js 16.2.11)
 - Select backend framework (NestJS)
 - Select database (PostgreSQL)
 - Select caching (Redis)
@@ -26,7 +26,7 @@
 ### Step 4: Set Non-Functional Requirements
 - Define performance targets (LCP < 2.5s, INP < 200ms, CLS < 0.1)
 - Define security requirements (OWASP Top 10 compliance)
-- Define accessibility requirements (WCAG 2.2 AA)
+- Define accessibility requirements (WCAG 2.1 AAA)
 - Define SEO requirements (Optimized for search engines)
 - Define scalability requirements (Support for 10,000+ concurrent users)
 
@@ -87,7 +87,7 @@
 - Establish linting must pass
 - Establish security scans must pass
 - Establish performance thresholds must be met
-- Establish accessibility must comply with WCAG 2.2 AA
+- Establish accessibility must comply with WCAG 2.1 AAA
 - Establish SEO validation must be completed
 
 ## 2. PHASE 2: PLANNING

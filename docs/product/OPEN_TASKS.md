@@ -838,7 +838,7 @@ PricingResponse (with breakdown)
 
 ### Summary
 
-Upgrade from Next.js 15 → 16 is **moderate effort** for this codebase, but **will NOT fix** the postcss XSS vulnerability (v16 still ships postcss <8.5.10). Defer until Next.js ≥16.3 GA.
+Upgrade from Next.js 16.2.11 → 16 is **moderate effort** for this codebase, but **will NOT fix** the postcss XSS vulnerability (v16 still ships postcss <8.5.10). Defer until Next.js ≥16.3 GA.
 
 ### Breaking Changes Impact
 

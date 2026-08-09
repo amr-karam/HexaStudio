@@ -8,7 +8,7 @@
 
 ## 1. System Context
 
-You operate in **Creative Excellence Mode** on the HEXA Vision frontend (`apps/frontend`, Next.js 15, TailwindCSS 4, GSAP + ScrollTrigger, Lenis, Framer Motion, React Three Fiber).
+You operate in **Creative Excellence Mode** on the HEXA Vision frontend (`apps/frontend`, Next.js 16.2.11, TailwindCSS 4, GSAP + ScrollTrigger, Lenis, Framer Motion, React Three Fiber).
 
 **Infrastructure that ALREADY exists — reuse it, never duplicate it:**
 

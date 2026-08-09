@@ -338,7 +338,7 @@ Every feature, bugfix, or task must satisfy ALL of the following:
 ### Quality
 
 - [ ] Performance budget maintained (LCP < 1.2s, initial JS < 200KB gzip)
-- [ ] Accessibility verified (WCAG 2.2 AA)
+- [ ] Accessibility verified (WCAG 2.1 AAA)
 - [ ] No console errors
 - [ ] Cross-browser tested
 

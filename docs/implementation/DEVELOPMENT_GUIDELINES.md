@@ -2,8 +2,8 @@
 
 ## 1. FRONTEND DEVELOPMENT
 
-### Next.js 15
-- Use Next.js 15 for frontend development
+### Next.js 16.2.11
+- Use Next.js 16.2.11 for frontend development
 - Implement server-side rendering for SEO
 - Use static site generation for performance
 - Implement incremental static regeneration for dynamic content
@@ -127,7 +127,7 @@
 ## 6. CLIENT PORTAL DEVELOPMENT
 
 ### Project Management Dashboard
-- Develop project management dashboard with Next.js 15
+- Develop project management dashboard with Next.js 16.2.11
 - Implement responsive design with Tailwind CSS
 - Integrate 3D visualization with Three.js
 - Implement approval workflow

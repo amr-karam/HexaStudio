@@ -351,7 +351,7 @@ This must be recorded in the ADR's dependency section and validated against `npm
 |------|--------|
 | `messages/page.tsx` | (a) Extend `Message` interface with `reactions`. (b) Wire `onToggleReaction` into both `MessageBubble` render sites (DM block ~line 804 and channel block ~line 946 — channel block is primary; DM is a no-op/hidden for this iteration). (c) Add `useEffect` socket listener for `channel:reaction:updated`. (d) Pass `currentUserId={user?.id}` and `reactable={m.type !== 'system'}`. |
 
-### 8.4 Accessibility (WCAG 2.2 AA — non-negotiable per ACCESSIBILITY.md)
+### 8.4 Accessibility (WCAG 2.1 AAA — non-negotiable per ACCESSIBILITY.md)
 
 - Each `ReactionPill` is a `<button>` with `aria-label={`React with ${emoji}, ${count} reactions${reacted ? ', you reacted' : ''}`}` and `aria-pressed={reacted}`.
 - Picker opens on click **and** on keyboard `Enter`/`Space`; closes on `Escape` and restores focus to the trigger.

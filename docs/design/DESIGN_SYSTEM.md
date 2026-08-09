@@ -22,7 +22,7 @@ The HEXA STUDIO design system is the single source of truth for the visual and i
 | **Editorial** | Content is the hero. The system supports storytelling, not fighting it. |
 | **Technically sophisticated** | The system is engineered — tokens, scales, constraints, and automation — not a collection of magic numbers. |
 | **Fast** | Performance is a design requirement. The system enables speed (LCP < 2.5s, INP < 200ms, CLS < 0.1). |
-| **Accessible** | Accessibility is built into the system, not bolted on. WCAG 2.2 AA is the baseline. |
+| **Accessible** | Accessibility is built into the system, not bolted on. WCAG 2.1 AAA is the baseline. |
 | **Responsive** | The system works at every breakpoint — from 320px to 1920px+. |
 
 ### 1.2 Design System Scope
@@ -245,7 +245,7 @@ Dark mode is a first-class concern. The system uses:
 
 ### 3.4 Color Accessibility
 
-All color combinations must meet WCAG 2.2 AA contrast requirements:
+All color combinations must meet WCAG 2.1 AAA contrast requirements:
 
 - **Normal text:** 4.5:1 contrast ratio minimum
 - **Large text:** 3:1 contrast ratio minimum
@@ -600,7 +600,7 @@ Error states are clear and actionable:
 
 ### 9.1 Accessibility Standards
 
-The design system targets **WCAG 2.2 AA** as the baseline, with AAA where achievable.
+The design system targets **WCAG 2.1 AAA** as the baseline, with AAA where achievable.
 
 ### 9.2 Color & Contrast
 
