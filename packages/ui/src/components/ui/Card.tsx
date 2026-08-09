@@ -8,7 +8,7 @@ export interface CardProps {
   title?: string;
   description?: string;
   image?: string;
-  variant?: 'featured' | 'minimal' | 'glass' | 'solid' | 'luxury';
+  variant?: 'featured' | 'minimal' | 'luxury' | 'solid';
   as?: 'div' | 'article' | 'section';
   hover?: boolean;
   children?: React.ReactNode;
@@ -28,46 +28,45 @@ const Card = ({
   const MotionTag =
     as === 'article' ? motion.article : as === 'section' ? motion.section : motion.div;
 
-  // When only children are provided (no title, description, or image),
-  // skip the padded wrapper so children can use h-full to fill the card.
   const hasOwnContent = !!(title || description || image);
 
   return (
     <MotionTag
-      whileHover={hover ? { y: -4 } : undefined}
+      whileHover={hover ? { y: -8 } : undefined}
       className={cn(
-        'group relative overflow-hidden rounded-2xl border transition-all duration-500',
+        'group relative overflow-hidden rounded-none border transition-all duration-700',
         variant === 'featured' &&
-          'border-white/10 bg-gradient-to-b from-white/[0.08] to-transparent',
-        variant === 'minimal' && 'border-transparent hover:bg-white/5',
-        variant === 'glass' &&
-          'border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-xl hover:border-[var(--glass-border-hover)]',
-        variant === 'solid' && 'bg-surface border-border/50',
+          'border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] text-[var(--color-primary)]',
+        variant === 'minimal' && 'border-transparent bg-transparent hover:bg-[var(--color-neutral-100)]',
         variant === 'luxury' &&
-          'border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-xl hover:border-accent/40 hover:shadow-[0_0_40px_rgba(212,175,55,0.15)]',
+          'border-[var(--color-accent)] bg-[var(--color-primary)] text-[var(--color-primary-fg)] shadow-[0_0_0_0px_var(--color-accent)] hover:shadow-[0_0_30px_rgba(197,163,93,0.2)]',
+        variant === 'solid' && 'border-[var(--color-neutral-300)] bg-[var(--color-neutral-100)]',
         className
       )}
     >
       {image && (
-        <div className="aspect-video overflow-hidden">
-          <img
+        <div className="aspect-[4/3] overflow-hidden bg-[var(--color-neutral-200)]">
+          <motion.img
             src={image}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
             alt={title || 'Project image'}
             loading="lazy"
             decoding="async"
+            initial={{ scale: 1.1 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
           />
         </div>
       )}
       {hasOwnContent ? (
-        <div className="p-6">
+        <div className="p-8">
           {title && (
-            <h3 className="text-xl font-serif mb-2 group-hover:text-accent transition-colors duration-300">
+            <h3 className="text-2xl font-serif mb-3 tracking-tight transition-colors duration-500 group-hover:text-[var(--color-accent)]">
               {title}
             </h3>
           )}
           {description && (
-            <p className="text-sm text-white/60 line-clamp-2 mb-4 transition-colors duration-300 group-hover:text-white/80">
+            <p className="text-sm leading-relaxed text-[var(--color-neutral-500)] mb-6 transition-colors duration-500 group-hover:text-[var(--color-neutral-700)]">
               {description}
             </p>
           )}
