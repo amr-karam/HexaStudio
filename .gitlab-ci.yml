@@ -69,6 +69,13 @@ workflow:
     - npm install --global "npm@${NPM_VERSION}"
     - node --version
     - npm --version
+    # Harden npm against intermittent registry connectivity failures
+    # (ECONNRESET/ETIMEDOUT flakes on the CI runner). Longer, more
+    # aggressive retries reduce the flake rate without masking real errors.
+    - npm config set fetch-retries 5
+    - npm config set fetch-retry-mintimeout 20000
+    - npm config set fetch-retry-maxtimeout 120000
+    - npm config set fetch-timeout 300000
     - npm ci --legacy-peer-deps
 
 .typecheck_base:

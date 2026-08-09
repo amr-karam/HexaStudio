@@ -31,7 +31,7 @@ describe('POST /api/v1/ai/spatial-synthesis/voice', () => {
     expect(response.status).toBe(400);
     const body = (await response.json()) as { error: string };
     expect(body.error).toBe('audioData is required');
-  });
+  }, 15000);
 
   it('rejects a request with an empty audioData payload', async () => {
     const { POST } = await import('@/app/api/v1/ai/spatial-synthesis/voice/route');

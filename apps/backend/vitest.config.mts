@@ -2,7 +2,7 @@ import { defineConfig } from 'vitest/config';
 import path from 'path';
 
 export default defineConfig({
-  root: path.resolve(__dirname),
+  root: path.resolve(import.meta.dirname),
   resolve: {
     tsconfigPaths: true,
   },

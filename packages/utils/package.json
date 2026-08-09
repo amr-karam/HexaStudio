@@ -6,7 +6,9 @@
   "types": "index.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .ts --max-warnings=0",
+    "test": "vitest run"
   },
   "dependencies": {
     "shiki": "^4.4.1"

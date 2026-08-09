@@ -15,7 +15,8 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "tsc --project tsconfig.json",
-    "lint": "eslint src/ --ext .ts,.tsx",
+    "lint": "eslint src/ --ext .ts,.tsx --max-warnings=0",
+    "test": "vitest run",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
