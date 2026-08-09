@@ -1,7 +1,7 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** August 9, 2026 — Quality-Gate Re-verification (Autonomous Pass) + Documentation Reconciliation (ADR-012, ADR-013) + Technology Reference Audit
-**Version:** 2.1.5
+**Last Updated:** August 9, 2026 — Design System Publish + Storybook Docs Deployment Pipeline (CI-validated)
+**Version:** 2.1.6
 **Authority Level:** 13 (Production)
 **Current Phase:** Production-Ready — Odoo-First Architecture + Workflow Automation (DEPLOYED)
 
@@ -64,9 +64,7 @@
 ### Infrastructure
 - **Traefik v3** — Edge reverse proxy (upgraded from v2.11 in `docker-compose.prod.yml`)
 - **Cloudflare Tunnel** — Zero-trust edge ingress
-- **GitLab CE CI/CD** — 7-stage pipeline (`quality → build → image → validate → mobile → publish → deploy`)
-- **npm Package Registry** — `@hexastudio/ui` publish job (`publish-ui`) using `CI_JOB_TOKEN`
-- **Design System Docs** — Storybook static site (`docs.hexastudio.net`) served by `docs-service:8080`
+- **GitLab CE CI/CD** — 7-stage pipeline (quality, build, image, validate, mobile, publish, deploy) (`quality → build → image → validate → mobile → deploy`)
 - **Prometheus + Grafana** — Metrics at `/metrics` endpoint
 - **Sentry** — Error tracking (`SENTRY_AUTH_TOKEN` configured)
 
@@ -199,7 +197,7 @@
 - [x] **Quality Gates**: Docker builds pass, services healthy, backups verified
 
 ### Phase 15: CI/CD ✅ (AUG 9, 2026)
-- [x] **GitLab CI/CD**: .gitlab-ci.yml with 6-stage pipeline (quality, build, image, validate, mobile, deploy)
+- [x] **GitLab CI/CD**: .gitlab-ci.yml with 7-stage pipeline (quality, build, image, validate, mobile, publish, deploy) (quality, build, image, validate, mobile, deploy)
 - [x] **Lint Job**: ESLint across all workspaces
 - [x] **Typecheck Job**: TypeScript type checking across all workspaces
 - [x] **Test Job**: Unit tests across all workspaces (frontend, backend, mobile)
@@ -491,7 +489,7 @@ The final product feels like a premium global Architecture Visualization Studio 
   1. **`packages/utils` missing `build` script** → added `"build": "tsc -p tsconfig.json"` (matching `packages/types`).
   2. **GitLab runner memory cap 2G** (`docker-compose.gitlab-runner.yml` `deploy.resources.limits` **and** `config.toml` `[runners.docker] memory`) → OOM-killed `next build` (exit 137). Raised to 8G/4 CPUs in both places; runner container recreated + config restored (the `tmp` compose project volume `tmp_gitlab_runner_config` held the registration token, which was copied to `hexastudio_gitlab_runner_config` — the repo compose uses project name `hexastudio`).
   3. **Windows-generated `package-lock.json` omits all Linux-native binaries** (75 platform entries missing across `@tailwindcss/oxide`, `@unrs/resolver-binding`, `@rolldown/binding`, `lightningcss` ×3, `@napi-rs/lzma`, `rolldown`) → `npm ci` on Linux silently skips them → `next build`/Turbopack fails loading `globals.css`. This is the ADR-010 tracked issue ("reconcile root lockfile on Linux"): lockfile **regenerated on Linux** (`node:20.20.2-bookworm-slim`, npm 11.17.0, `--legacy-peer-deps`), validated with clean `npm ci` on Linux (all 4 key binaries install), committed `afe99e8`. Also adds proper `resolved`+`integrity` entries for ~1972 packages and reconciles ~455 transitive versions to current registry state. `sbom` job failure (ELSPROBLEMS on lockfile drift) is expected to clear on this regen.
-- [x] **CI infra notes (Aug 3–4, 2026):** runner `hexa-docker-runner` (id 1, `concurrent=3`) executes jobs serially → full 6-stage pipeline takes ~45 min; jobs auto-trigger per push; older same-ref pipelines auto-cancel. Transient npm `network aborted` flake observed in `npm ci` (cold cache) — retry is sufficient. Temp PAT `ci-inspect-2` created for API monitoring (revoke after final pipeline validation).
+- [x] **CI infra notes (Aug 3–4, 2026):** runner `hexa-docker-runner` (id 1, `concurrent=3`) executes jobs serially → full 7-stage pipeline (quality, build, image, validate, mobile, publish, deploy) takes ~45 min; jobs auto-trigger per push; older same-ref pipelines auto-cancel. Transient npm `network aborted` flake observed in `npm ci` (cold cache) — retry is sufficient. Temp PAT `ci-inspect-2` created for API monitoring (revoke after final pipeline validation).
 
 ---
 
@@ -646,3 +644,5 @@ The final product feels like a premium global Architecture Visualization Studio 
 **Architecture verified:** Next.js 16.2.11, React 19.2.8, NestJS 11, TypeScript 5.7 (5.9.3 installed), TailwindCSS 4, Vitest 4.1.10, Jest (mobile).
 **Production builds verified:** ✅ Backend (NestJS) — `nest build` clean. ✅ Frontend (Next.js + Turbopack) — compiled in 32.4s, all 47 routes generated. ✅ Packages (types, utils) — `tsc` clean.
 **Conclusion:** The Aug 8 frontend BFF proxy authentication fix (`authenticatedFetch` wiring across 4 AI proxy routes) introduced zero regressions. All gates remain green at the `--max-warnings=0` strictness level. One build regression (`packages/ui HeroSection.tsx` missing `"use client"`) was discovered and fixed during verification. The "Quality gates pending re-run" open item from the Aug 8 session is now **CLOSED**.
+
+
