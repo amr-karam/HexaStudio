@@ -239,6 +239,24 @@ services:
       retries: 3
       start_period: 40s
 
+  # --- Design System Docs (Storybook static site) ---
+  # Serves packages/ui/storybook-static/ at docs.hexastudio.net.
+  # Traefik router already declared in docker/traefik/dynamic.yml:
+  #   Host(`docs.hexastudio.net`) -> docs-service:8080
+  docs:
+    image: ${DOCS_IMAGE:-registry.gitlab.hexastudio.net/root/hexa-platform/docs:latest}
+    container_name: hexa-docs-${SOT:-blue}
+    <<: *default-restart
+    logging: *default-logging
+    networks:
+      - web
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
   cms:
     container_name: hexa-cms-${SOT:-blue}
     build:
