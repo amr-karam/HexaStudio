@@ -6,7 +6,7 @@ import { motion, type TargetAndTransition, type Transition } from 'framer-motion
 import { cn } from '../../lib/utils';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'outline' | 'luxury';
+  variant?: 'primary' | 'secondary' | 'accent' | 'ghost' | 'danger' | 'outline' | 'luxury';
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
   asChild?: boolean;
@@ -14,6 +14,8 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 const variants = {
   primary:
+    'bg-accent text-background hover:bg-accent/90 shadow-lg shadow-accent/20 hover:shadow-[0_0_20px_rgba(212,175,55,0.15)]',
+  accent:
     'bg-accent text-background hover:bg-accent/90 shadow-lg shadow-accent/20 hover:shadow-[0_0_20px_rgba(212,175,55,0.15)]',
   secondary:
     'bg-white/5 text-white border border-white/10 hover:bg-white/10 hover:border-white/20',
