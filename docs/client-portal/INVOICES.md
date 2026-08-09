@@ -20,5 +20,5 @@ Integrates backend `CurrencyModule` to display:
 
 ## 3. RELATED DOCUMENTATION
 
-- [SALES.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/odoo/SALES.md) — Odoo sales module.
-- [CLIENT_PORTAL.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/client-portal/CLIENT_PORTAL.md) — Client portal.
+- [SALES.md](.docs/odoo/SALES.md) — Odoo sales module.
+- [CLIENT_PORTAL.md](.docs/client-portal/CLIENT_PORTAL.md) — Client portal.

@@ -57,6 +57,6 @@ npx lighthouse "http://localhost:3000" --chrome-flags="--emulate-media-features=
 
 ## 5. RELATED DOCUMENTATION
 
-- [ACCESSIBILITY.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/accessibility/ACCESSIBILITY.md) — Coding accessibility standards.
-- [accessibility-checklist.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/checklists/accessibility-checklist.md) — WCAG 2.1 AAA verification checklist.
-- [FRONTEND_EXCELLENCE.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/design/FRONTEND_EXCELLENCE.md) — Frontend contract.
+- [ACCESSIBILITY.md](docs/accessibility/ACCESSIBILITY.md) — Coding accessibility standards.
+- [accessibility-checklist.md](docs/checklists/accessibility-checklist.md) — WCAG 2.1 AAA verification checklist.
+- [FRONTEND_EXCELLENCE.md](docs/design/FRONTEND_EXCELLENCE.md) — Frontend contract.

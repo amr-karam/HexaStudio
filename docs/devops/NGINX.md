@@ -126,6 +126,6 @@ touch docker/traefik/dynamic.yml
 
 ## 7. RELATED DOCUMENTATION
 
-- [SSL.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/devops/SSL.md) — TLS certificate management.
-- [LOAD_BALANCING.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/devops/LOAD_BALANCING.md) — Traffic distribution rules.
-- [CLOUDFLARE_CACHE.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/devops/CLOUDFLARE_CACHE.md) — Edge caching policies.
+- [SSL.md](docs/devops/SSL.md) — TLS certificate management.
+- [LOAD_BALANCING.md](docs/devops/LOAD_BALANCING.md) — Traffic distribution rules.
+- [CLOUDFLARE_CACHE.md](docs/devops/CLOUDFLARE_CACHE.md) — Edge caching policies.

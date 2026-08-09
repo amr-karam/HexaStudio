@@ -18,4 +18,4 @@
 - **Proxy**: **Traefik v3** with Cloudflared tunnel integration. Nginx is not used.
 - **Docker Compose**: Production services managed via `docker-compose.prod.yml`.
 - **Zero-Downtime Swaps**: Container builds use blue/green deployment patterns (`hexa-frontend-blue`, `hexa-backend-blue`).
-- **Deploy Script**: Remote commands executed via SSH key authenticated script [`deploy.py`](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/deploy.py).
+- **Deploy Script**: Remote commands executed via SSH key authenticated script [`deploy.py`](./deploy.py).

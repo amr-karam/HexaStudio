@@ -20,4 +20,4 @@ Grafana (`docker/grafana/provisioning/dashboards/`) hosts pre-configured dashboa
 
 ## 3. RELATED DOCUMENTATION
 
-- [MONITORING.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/devops/MONITORING.md) — Monitoring setup.
+- [MONITORING.md](.docs/devops/MONITORING.md) — Monitoring setup.

@@ -87,6 +87,6 @@ npm run test -- --coverage
 
 ## 6. RELATED DOCUMENTATION
 
-- [INTEGRATION_TESTS.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/quality/INTEGRATION_TESTS.md) — API integration testing.
-- [QUALITY_GATES.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/quality/QUALITY_GATES.md) — Coverage quality gates.
-- [CODING_STANDARDS.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/engineering/CODING_STANDARDS.md) — Development guidelines.
+- [INTEGRATION_TESTS.md](docs/quality/INTEGRATION_TESTS.md) — API integration testing.
+- [QUALITY_GATES.md](docs/quality/QUALITY_GATES.md) — Coverage quality gates.
+- [CODING_STANDARDS.md](docs/engineering/CODING_STANDARDS.md) — Development guidelines.

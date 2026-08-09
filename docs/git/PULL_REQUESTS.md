@@ -46,6 +46,6 @@ Reviewers grade PRs across 5 dimensions:
 
 ## 5. RELATED DOCUMENTATION
 
-- [TEMPLATE_PR.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/templates/TEMPLATE_PR.md) — Pull Request template.
-- [QUALITY_GATES.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/quality/QUALITY_GATES.md) — Review quality gates.
-- [COMMITS.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/git/COMMITS.md) — Commit standards.
+- [TEMPLATE_PR.md](docs/templates/TEMPLATE_PR.md) — Pull Request template.
+- [QUALITY_GATES.md](docs/quality/QUALITY_GATES.md) — Review quality gates.
+- [COMMITS.md](docs/git/COMMITS.md) — Commit standards.

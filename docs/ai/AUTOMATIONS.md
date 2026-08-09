@@ -20,5 +20,5 @@ AI Automations run as asynchronous event handlers listening to the NestJS `Event
 
 ## 3. RELATED DOCUMENTATION
 
-- [VECTOR_SEARCH.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/ai/VECTOR_SEARCH.md) — Vector search.
-- [AI_ARCHITECTURE.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/ai/AI_ARCHITECTURE.md) — AI framework architecture.
+- [VECTOR_SEARCH.md](.docs/ai/VECTOR_SEARCH.md) — Vector search.
+- [AI_ARCHITECTURE.md](.docs/ai/AI_ARCHITECTURE.md) — AI framework architecture.

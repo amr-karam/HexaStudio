@@ -23,5 +23,5 @@ Clients can customize notification frequency in portal settings (`/portal/settin
 
 ## 3. RELATED DOCUMENTATION
 
-- [CLIENT_PORTAL.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/client-portal/CLIENT_PORTAL.md) — Portal architecture.
-- [EMAIL_ASSISTANT.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/ai/EMAIL_ASSISTANT.md) — Email assistant.
+- [CLIENT_PORTAL.md](.docs/client-portal/CLIENT_PORTAL.md) — Portal architecture.
+- [EMAIL_ASSISTANT.md](.docs/ai/EMAIL_ASSISTANT.md) — Email assistant.

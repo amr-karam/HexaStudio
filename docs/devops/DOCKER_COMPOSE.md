@@ -92,6 +92,6 @@ docker compose -f docker-compose.prod.yml --profile scheduled up -d backup-verif
 
 ## 7. RELATED DOCUMENTATION
 
-- [DOCKER.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/devops/DOCKER.md) — Base Dockerfile standards & resource limits.
-- [DEPLOYMENT.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/devops/DEPLOYMENT.md) — Zero-downtime deployment script execution.
-- [DISASTER_RECOVERY.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/devops/DISASTER_RECOVERY.md) — Backup and restore procedures.
+- [DOCKER.md](.docs/devops/DOCKER.md) — Base Dockerfile standards & resource limits.
+- [DEPLOYMENT.md](.docs/devops/DEPLOYMENT.md) — Zero-downtime deployment script execution.
+- [DISASTER_RECOVERY.md](.docs/devops/DISASTER_RECOVERY.md) — Backup and restore procedures.

@@ -20,4 +20,4 @@ Automated reporting definitions for weekly project delivery reports, monthly exe
 
 ## 3. RELATED DOCUMENTATION
 
-- [BI.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/analytics/BI.md) — Business intelligence.
+- [BI.md](.docs/analytics/BI.md) — Business intelligence.

@@ -21,5 +21,5 @@ Clients can click on specific milestone nodes to:
 
 ## 3. RELATED DOCUMENTATION
 
-- [PROJECT_TRACKING.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/client-portal/PROJECT_TRACKING.md) — Project tracking.
-- [CLIENT_PORTAL.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/client-portal/CLIENT_PORTAL.md) — Portal architecture.
+- [PROJECT_TRACKING.md](.docs/client-portal/PROJECT_TRACKING.md) — Project tracking.
+- [CLIENT_PORTAL.md](.docs/client-portal/CLIENT_PORTAL.md) — Portal architecture.

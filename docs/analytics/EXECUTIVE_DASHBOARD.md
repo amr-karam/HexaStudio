@@ -20,5 +20,5 @@ The Executive Dashboard aggregates key business metrics across CRM, sales, proje
 
 ## 3. RELATED DOCUMENTATION
 
-- [BI.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/analytics/BI.md) — BI architecture.
-- [METRICS.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/analytics/METRICS.md) — Key metrics dictionary.
+- [BI.md](.docs/analytics/BI.md) — BI architecture.
+- [METRICS.md](.docs/analytics/METRICS.md) — Key metrics dictionary.

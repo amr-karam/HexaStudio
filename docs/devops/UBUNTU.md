@@ -109,6 +109,6 @@ sudo unattended-upgrade --dry-run --debug
 
 ## 7. RELATED DOCUMENTATION
 
-- [DOCKER.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/devops/DOCKER.md) — Docker service limits.
-- [PASSWORD_ROTATION.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/devops/PASSWORD_ROTATION.md) — SSH key rotation procedures.
-- [DISASTER_RECOVERY.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/devops/DISASTER_RECOVERY.md) — System restoration runbook.
+- [DOCKER.md](docs/devops/DOCKER.md) — Docker service limits.
+- [PASSWORD_ROTATION.md](docs/devops/PASSWORD_ROTATION.md) — SSH key rotation procedures.
+- [DISASTER_RECOVERY.md](docs/devops/DISASTER_RECOVERY.md) — System restoration runbook.

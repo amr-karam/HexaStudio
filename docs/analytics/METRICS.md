@@ -21,4 +21,4 @@ Dictionary of core metric formulas across financial, operational, and performanc
 
 ## 3. RELATED DOCUMENTATION
 
-- [EXECUTIVE_DASHBOARD.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/analytics/EXECUTIVE_DASHBOARD.md) — Executive reporting.
+- [EXECUTIVE_DASHBOARD.md](.docs/analytics/EXECUTIVE_DASHBOARD.md) — Executive reporting.

@@ -103,6 +103,6 @@ curl -s "https://api.ssllabs.com/api/v3/analyze?host=hexastudio.net"
 
 ## 7. RELATED DOCUMENTATION
 
-- [NGINX.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/devops/NGINX.md) — Reverse proxy middleware settings.
-- [SECURITY_STANDARDS.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/security/SECURITY_STANDARDS.md) — Platform security standards.
-- [PASSWORD_ROTATION.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/devops/PASSWORD_ROTATION.md) — Key rotation schedules.
+- [NGINX.md](docs/devops/NGINX.md) — Reverse proxy middleware settings.
+- [SECURITY_STANDARDS.md](docs/security/SECURITY_STANDARDS.md) — Platform security standards.
+- [PASSWORD_ROTATION.md](docs/devops/PASSWORD_ROTATION.md) — Key rotation schedules.

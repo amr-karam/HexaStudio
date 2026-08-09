@@ -28,5 +28,5 @@ POST /api/v1/assistants/email/draft — Generate structured HTML/text email body
 
 ## 4. RELATED DOCUMENTATION
 
-- [EMAIL.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/odoo/EMAIL.md) — Odoo email integration.
-- [NOTIFICATIONS.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/client-portal/NOTIFICATIONS.md) — Notification systems.
+- [EMAIL.md](.docs/odoo/EMAIL.md) — Odoo email integration.
+- [NOTIFICATIONS.md](.docs/client-portal/NOTIFICATIONS.md) — Notification systems.

@@ -89,6 +89,6 @@ bash scripts/deploy-zero-downtime.sh
 
 ## 6. RELATED DOCUMENTATION
 
-- [NGINX.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/devops/NGINX.md) — Reverse proxy settings.
-- [DEPLOYMENT.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/devops/DEPLOYMENT.md) — Deployment scripts.
-- [CLOUDFLARE_CACHE.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/devops/CLOUDFLARE_CACHE.md) — Edge caching rules.
+- [NGINX.md](docs/devops/NGINX.md) — Reverse proxy settings.
+- [DEPLOYMENT.md](docs/devops/DEPLOYMENT.md) — Deployment scripts.
+- [CLOUDFLARE_CACHE.md](docs/devops/CLOUDFLARE_CACHE.md) — Edge caching rules.

@@ -20,5 +20,5 @@ The Client Portal File Management module (`/portal/projects/:id/files`) provides
 
 ## 3. RELATED DOCUMENTATION
 
-- [CLIENT_PORTAL.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/client-portal/CLIENT_PORTAL.md) — Portal architecture.
-- [DOCUMENTS.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/odoo/DOCUMENTS.md) — Odoo document integration.
+- [CLIENT_PORTAL.md](.docs/client-portal/CLIENT_PORTAL.md) — Portal architecture.
+- [DOCUMENTS.md](.docs/odoo/DOCUMENTS.md) — Odoo document integration.

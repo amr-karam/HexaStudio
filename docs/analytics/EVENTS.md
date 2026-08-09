@@ -36,4 +36,4 @@ export interface AnalyticsEvent {
 
 ## 4. RELATED DOCUMENTATION
 
-- [BI.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/analytics/BI.md) — BI pipeline.
+- [BI.md](.docs/analytics/BI.md) — BI pipeline.

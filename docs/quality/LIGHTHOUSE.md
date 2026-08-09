@@ -68,6 +68,6 @@ npx @lhci/cli autorun
 
 ## 5. RELATED DOCUMENTATION
 
-- [LIGHTHOUSE_AUDIT_2026-07-24.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/quality/LIGHTHOUSE_AUDIT_2026-07-24.md) — Active Lighthouse report.
-- [PERFORMANCE_AUDIT.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/quality/PERFORMANCE_AUDIT.md) — CDP profiling guide.
-- [WEB_VITALS_RUM.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/devops/WEB_VITALS_RUM.md) — Real user monitoring.
+- [LIGHTHOUSE_AUDIT_2026-07-24.md](docs/quality/LIGHTHOUSE_AUDIT_2026-07-24.md) — Active Lighthouse report.
+- [PERFORMANCE_AUDIT.md](docs/quality/PERFORMANCE_AUDIT.md) — CDP profiling guide.
+- [WEB_VITALS_RUM.md](docs/devops/WEB_VITALS_RUM.md) — Real user monitoring.
