@@ -58,7 +58,7 @@ After reading them:
 
 | Layer | Technology | Infrastructure Rule |
 |-------|-----------|---------------------|
-| **Frontend** | Next.js 16 (App Router), TypeScript 5.8, TailwindCSS 4 | Turbopack build, Client Island dynamic imports for WebGL |
+| **Frontend** | Next.js 16.2.11 (App Router), TypeScript 5.7+ (5.9.3 installed), TailwindCSS 4 | Turbopack build, Client Island dynamic imports for WebGL |
 | **3D Engine** | Three.js, React Three Fiber, @react-three/drei | Gated by `useMotionPolicy`, lazy loaded, fallback static cards |
 | **Backend** | NestJS 11, REST (Swagger), Socket.io, JWT | Microservices architecture, strict CORS & rate-limiting |
 | **CMS** | Strapi 5 (Headless) | PostgreSQL database, webhook triggers to Next.js revalidation |
