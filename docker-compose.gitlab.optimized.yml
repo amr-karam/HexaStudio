@@ -144,9 +144,8 @@ services:
         prometheus_monitoring['scrape_interval'] = 15
         prometheus_monitoring['scrape_timeout'] = 5
         
-        # Enable Grafana integration
-        grafana['enable'] = true
-        grafana['admin_password'] = "${GRAFANA_ADMIN_PASSWORD:-admin@2024}"
+        # NOTE: bundled Grafana was removed in GitLab 16.3 — Grafana runs
+        # as a separate container (hexastudio-grafana) instead.
         
         # ============================================
         # Let's Encrypt Configuration (Disabled for internal HTTP)
