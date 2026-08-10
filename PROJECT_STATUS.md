@@ -670,7 +670,7 @@ The final product feels like a premium global Architecture Visualization Studio 
 |---|---|---|---|
 | Frontend Lint | `npm run lint --workspace=apps/frontend` | ✅ 0 errors, 0 warnings | <1s |
 | Frontend Typecheck | `npm run typecheck --workspace=apps/frontend` | ✅ 0 errors | <1s |
-| Frontend Tests | `npm run test --workspace=apps/frontend` | ✅ 207/207 (35 files) | 59.09s |
+| Frontend Tests | `npm run test --workspace=apps/frontend` | ✅ 208/208 (36 files) | 55s |
 | Backend Lint | `npm run lint --workspace=apps/backend` | ✅ 0 errors, 0 warnings | <1s |
 | Backend Typecheck | `npm run typecheck --workspace=apps/backend` | ✅ 0 errors | <1s |
 | Backend Tests | `npm run test --workspace=apps/backend` | ✅ 339/339 (41 files) | 48.55s |
@@ -680,5 +680,25 @@ The final product feels like a premium global Architecture Visualization Studio 
 **Architecture verified:** Next.js 16.2.11, React 19.2.8, NestJS 11, TypeScript 5.7 (5.9.3 installed), TailwindCSS 4, Vitest 4.1.10, Jest (mobile).
 **Production builds verified:** ✅ Backend (NestJS) — `nest build` clean. ✅ Frontend (Next.js + Turbopack) — compiled in 32.4s, all 47 routes generated. ✅ Packages (types, utils) — `tsc` clean.
 **Conclusion:** The Aug 8 frontend BFF proxy authentication fix (`authenticatedFetch` wiring across 4 AI proxy routes) introduced zero regressions. All gates remain green at the `--max-warnings=0` strictness level. One build regression (`packages/ui HeroSection.tsx` missing `"use client"`) was discovered and fixed during verification. The "Quality gates pending re-run" open item from the Aug 8 session is now **CLOSED**.
+
+---
+
+## 2026-08-10 — Storybook Homepage + Studio Section + Environment Repair (Aug 10, 2026)
+
+**Status:** ✅ Committed (`9bb9d8ca`) — quality gates green.
+
+### Delivered
+- [x] **Homepage filled with all sections** (`apps/frontend/src/app/page.tsx`) — complete chaptered scroll film: `HomeChapterRail`, `HomeHeroStatic` (CH. I VISION, no 3D canvas), `HomePageDynamic` (CH. II–V CRAFT → METHOD → PROOF → CONTACT via lazy-loaded islands), plus `StudioSection` showcase.
+- [x] **DesignerModeConfigurator + SpatialLayerToggle removed from root layout** (`layout.tsx`) — full 3D experience now lives exclusively at `/studio` (`HomeHero` / FractureRingHero).
+- [x] **`SpatialAudio.tsx` fixed** — replaced broken `InstanceType<typeof PositionalAudio>` with Three.js `PositionalAudioImpl` type (0 `any`); file encoding repaired (backslash-escaped quotes).
+- [x] **Corrupted environment packages repaired** — `next@16.2.11` root install was incomplete (missing `package.json` / type declarations) causing 100+ `Cannot find module 'next/*'` errors across all workspaces; reinstalled. `lucide-react@0.460.0` missing ESM/CJS entry bundles; reinstalled. Both restored all quality gates.
+- [x] Added `MaterialSwatchSelector` organism; `lucide-react` hoisted to root `package.json`.
+
+### Quality Gates (frontend)
+| Gate | Result |
+|---|---|
+| Frontend Lint | ✅ 0 errors, 0 warnings |
+| Frontend Typecheck | ✅ 0 errors |
+| Frontend Tests | ✅ **208/208 passed** (36 files) |
 
 
