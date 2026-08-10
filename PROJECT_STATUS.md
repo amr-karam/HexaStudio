@@ -7,6 +7,13 @@
 
 ---
 
+## 1.1 Housekeeping & Disposition (Aug 10, 2026)
+- Portal AI Copilot "premium redesign" task (DELEGATION_TASK/PREMIUM_REDESIGN/EXECUTION_PLAN docs) marked SUPERSEDED — never implemented; production copilot lives at `features/portal/components/PortalAiCopilot.tsx`.
+- Removed dead code `features/scene/components/SpatialAudio.tsx` (unused; `SpatialAudioPlayer.tsx` is the active component in `app/layout.tsx`).
+- Task docs relocated from repo root to `docs/plan/` per GOVERNANCE §46 docs manifest.
+
+---
+
 ## 1. Production Server
 
 | Property | Value |

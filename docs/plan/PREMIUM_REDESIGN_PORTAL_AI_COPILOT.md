@@ -1,3 +1,11 @@
+> ## ⚠️ STATUS: SUPERSEDED — NOT IMPLEMENTED
+> This task spec was never implemented. The functional, production Portal AI Copilot
+> (multimodal: text / image upload / voice input) lives at
+> `apps/frontend/src/features/portal/components/PortalAiCopilot.tsx` and is wired into
+> the Client Portal. Kept for historical reference only.
+>
+> Reviewed 2026-08-10 by @review.
+
 # Premium Redesign Specification: PortalAiCopilot.tsx
 ## Creative Excellence Mode - 9.5/10 Standard
 
