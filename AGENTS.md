@@ -79,6 +79,7 @@ Before completing any task, execute the exact quality gate sequence across affec
 npm run lint --workspace=apps/frontend
 npm run typecheck --workspace=apps/frontend
 npm run test --workspace=apps/frontend
+node scripts/check-design-tokens.mjs --allow-inline-style-hex
 
 # Backend Gate
 npm run lint --workspace=apps/backend

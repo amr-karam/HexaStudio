@@ -111,6 +111,12 @@ lint:
     - npm run lint --workspace=apps/backend
     - npm run lint --workspace=apps/frontend
 
+# ----- Design Token Gate -----
+design-tokens:
+  extends: .typecheck_base
+  script:
+    - node scripts/check-design-tokens.mjs --allow-inline-style-hex
+
 # ----- Security Scan (replaces CI: security-scan) -----
 security-scan:
   extends: .typecheck_base

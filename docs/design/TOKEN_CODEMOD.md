@@ -87,23 +87,29 @@ These colors are *dynamic values*, not static design decisions — replacing the
 
 ## 5. Wiring Into CI
 
-Add a quality-stage job to `.gitlab-ci.yml` (mirrors the existing `lint`/`typecheck` job pattern):
+The gate is now **wired end-to-end** (not aspirational):
+
+- **`npm run lint --workspace=apps/frontend`** — the frontend `lint` script in `apps/frontend/package.json` chains `node ../../scripts/check-design-tokens.mjs --allow-inline-style-hex`, so every agent/CI invocation of the lint gate also runs the design-token check.
+- **`.gitlab-ci.yml`** — a `design-tokens` job in the `quality` stage (extends `.typecheck_base`) enforces the gate on every pipeline:
 
 ```yaml
 # ----- Design Token Gate -----
 design-tokens:
   extends: .typecheck_base
   script:
-    - node scripts/check-design-tokens.mjs
+    - node scripts/check-design-tokens.mjs --allow-inline-style-hex
 ```
 
-To allow intentional inline hex while still blocking class/easing regressions:
+- **`.ai/agents/frontend.md`** — the Frontend Engineer role's Required Checks mandate running the gate before declaring a frontend task complete.
+- **`AGENTS.md`** — the `# Frontend Gate` block of the Quality Gate Sequence lists `node scripts/check-design-tokens.mjs --allow-inline-style-hex`.
+- **`scripts/git-hooks/pre-commit`** — a staged-frontend-files check runs the gate before any commit touches `apps/frontend/src` TS/TSX.
 
-```yaml
-design-tokens:
-  extends: .typecheck_base
-  script:
-    - node scripts/check-design-tokens.mjs --allow-inline-style-hex
+Manual usage (from the monorepo root):
+
+```bash
+node scripts/check-design-tokens.mjs --allow-inline-style-hex  # gate
+node scripts/fix-design-tokens.mjs --dry-run --report          # preview fixes
+node scripts/fix-design-tokens.mjs --report                    # apply fixes
 ```
 
 If the gate fails with class/easing violations, the fix path is:
