@@ -98,7 +98,7 @@ export function AnnotationOverlay({
               </button>
 
               {selected === ann.id && (
-                <div className="absolute start-6 top-0 w-48 rounded-lg border border-white/10 bg-[#1A1A1A] p-3 shadow-xl">
+                <div className="absolute start-6 top-0 w-48 rounded-lg border border-white/10 bg-surface p-3 shadow-xl">
                   <p className="text-xs text-white/80">{ann.content}</p>
                   <div className="mt-2 flex items-center justify-between">
                     <span className="text-[10px] text-white/40">{ann.author}</span>
@@ -121,7 +121,7 @@ export function AnnotationOverlay({
               className="absolute"
               style={{ insetInlineStart: `${newPos.x * 100}%`, top: `${newPos.y * 100}%` }}
             >
-              <div className="absolute start-6 top-0 w-48 rounded-lg border border-[#D4AF37]/50 bg-[#1A1A1A] p-3 shadow-xl">
+              <div className="absolute start-6 top-0 w-48 rounded-lg border border-accent/50 bg-surface p-3 shadow-xl">
                 <textarea
                   value={newContent}
                   onChange={(e) => setNewContent(e.target.value)}

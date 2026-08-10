@@ -49,7 +49,7 @@ function StatusBadge({ status }: { status: WorkflowExecutionStatus }) {
       : status === 'failed'
         ? 'bg-red-500/20 text-red-400'
         : status === 'running'
-          ? 'bg-accent/20 text-[#D4AF37]'
+          ? 'bg-accent/20 text-accent'
           : 'bg-white/10 text-white/50';
   return <span className={`rounded-full px-2 py-0.5 text-[10px] ${classes}`}>{status}</span>;
 }
@@ -105,8 +105,8 @@ function WorkflowFormModal({ open, onClose, initial }: { open: boolean; onClose:
       <div className="relative w-full max-w-lg rounded-2xl border border-white/10 bg-neutral-900 p-8 shadow-2xl">
         <h2 className="mb-6 text-xl font-semibold text-white">{initial?.id ? 'Edit Workflow' : 'New Workflow'}</h2>
         <div className="space-y-4">
-          <input placeholder="Workflow name *" aria-label="Workflow name" value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50" />
-          <input placeholder="Description" aria-label="Description" value={description} onChange={(e) => setDescription(e.target.value)} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50" />
+          <input placeholder="Workflow name *" aria-label="Workflow name" value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
+          <input placeholder="Description" aria-label="Description" value={description} onChange={(e) => setDescription(e.target.value)} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
 
           <div>
             <label className="mb-1.5 block text-sm text-white/60">Trigger</label>
@@ -124,7 +124,7 @@ function WorkflowFormModal({ open, onClose, initial }: { open: boolean; onClose:
           </div>
 
           {triggerType === 'event' && (
-            <select aria-label="Trigger event" value={event} onChange={(e) => setEvent(e.target.value as WorkflowEventName)} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50">
+            <select aria-label="Trigger event" value={event} onChange={(e) => setEvent(e.target.value as WorkflowEventName)} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50">
               {EVENT_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
@@ -132,13 +132,13 @@ function WorkflowFormModal({ open, onClose, initial }: { open: boolean; onClose:
           )}
 
           {triggerType === 'schedule' && (
-            <input placeholder="Cron expression (e.g. 0 8 * * *)" aria-label="Cron schedule" value={schedule} onChange={(e) => setSchedule(e.target.value)} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50" />
+            <input placeholder="Cron expression (e.g. 0 8 * * *)" aria-label="Cron schedule" value={schedule} onChange={(e) => setSchedule(e.target.value)} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
           )}
 
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="mb-1.5 block text-sm text-white/60">Strategy</label>
-              <select aria-label="Execution strategy" value={strategy} onChange={(e) => setStrategy(e.target.value as 'sequential' | 'parallel')} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50">
+              <select aria-label="Execution strategy" value={strategy} onChange={(e) => setStrategy(e.target.value as 'sequential' | 'parallel')} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50">
                 <option value="sequential">Sequential</option>
                 <option value="parallel">Parallel</option>
               </select>

@@ -115,7 +115,7 @@ export function BookProgress() {
                 boxShadow: isActive
                   ? '0 0 12px rgba(212, 175, 55, 0.15)'
                   : 'none',
-                transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                transition: 'all 0.4s var(--hexa-ease-entrance)',
                 transform: isActive ? 'translateX(-2px)' : 'translateX(0)',
                 position: 'relative',
               }}

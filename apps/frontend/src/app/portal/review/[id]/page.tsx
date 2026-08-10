@@ -32,7 +32,7 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
   const [signatureHash, setSignatureHash] = useState<string | null>(null);
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white pt-24 pb-12 px-6">
+    <div className="min-h-screen bg-obsidian text-white pt-24 pb-12 px-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header Rail */}
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
@@ -96,7 +96,7 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
 
           {/* WebRTC Video Feeds & Participants */}
           <div className="space-y-4">
-            <div className="rounded-2xl border border-white/10 bg-[#0F0F10] p-4 space-y-3">
+            <div className="rounded-2xl border border-white/10 bg-surface p-4 space-y-3">
               <h3 className="text-sm font-semibold text-white">Active Participants ({webrtc.peerConnections + 1})</h3>
               
               <div className="space-y-2">

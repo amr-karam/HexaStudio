@@ -90,7 +90,7 @@ export default function HealthDashboardPage() {
   const allHealthy = healthy === total;
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white pt-24 pb-16 px-6">
+    <div className="min-h-screen bg-obsidian text-white pt-24 pb-16 px-6">
       <div className="max-w-5xl mx-auto space-y-8">
 
         {/* Header */}

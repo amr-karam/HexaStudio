@@ -10,8 +10,8 @@ export function XRLoadingScreen({ modelName }: { modelName?: string }) {
     <Html center>
       <div className="flex flex-col items-center gap-4">
         <div className="relative h-8 w-8">
-          <div className="absolute inset-0 animate-spin rounded-full border-2 border-white/10 border-t-[#D4AF37]" />
-          <div className="absolute inset-0 animate-ping rounded-full border border-[#D4AF37]/30" />
+          <div className="absolute inset-0 animate-spin rounded-full border-2 border-white/10 border-t-accent" />
+          <div className="absolute inset-0 animate-ping rounded-full border border-accent/30" />
         </div>
         <div className="flex flex-col items-center gap-1">
           <p className="text-sm text-white/60">

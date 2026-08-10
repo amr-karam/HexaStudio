@@ -83,24 +83,24 @@ function LeadFormModal({ open, onClose, initial }: { open: boolean; onClose: () 
       <div className="relative w-full max-w-lg rounded-2xl border border-white/10 bg-neutral-900 p-8 shadow-2xl">
         <h2 className="mb-6 text-xl font-semibold text-white">{initial?.id ? 'Edit Lead' : 'New Lead'}</h2>
         <div className="space-y-4">
-          <input placeholder="Lead name *" aria-label="Lead name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50" />
-          <input placeholder="Email" aria-label="Email" value={form.email_from} onChange={(e) => setForm({ ...form, email_from: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50" />
-          <input placeholder="Company" aria-label="Company" value={form.partner_name} onChange={(e) => setForm({ ...form, partner_name: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50" />
-          <input placeholder="Phone" aria-label="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50" />
-          <select aria-label="Service type" value={form.x_hexa_service} onChange={(e) => setForm({ ...form, x_hexa_service: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50">
+          <input placeholder="Lead name *" aria-label="Lead name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
+          <input placeholder="Email" aria-label="Email" value={form.email_from} onChange={(e) => setForm({ ...form, email_from: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
+          <input placeholder="Company" aria-label="Company" value={form.partner_name} onChange={(e) => setForm({ ...form, partner_name: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
+          <input placeholder="Phone" aria-label="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
+          <select aria-label="Service type" value={form.x_hexa_service} onChange={(e) => setForm({ ...form, x_hexa_service: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50">
             <option value="">Service type...</option>
             <option value="residential">Residential</option>
             <option value="commercial">Commercial</option>
             <option value="interior">Interior</option>
           </select>
-          <select aria-label="Budget range" value={form.x_hexa_budget} onChange={(e) => setForm({ ...form, x_hexa_budget: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50">
+          <select aria-label="Budget range" value={form.x_hexa_budget} onChange={(e) => setForm({ ...form, x_hexa_budget: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50">
             <option value="">Budget range...</option>
             <option value="under_50k">Under $50K</option>
             <option value="50k_100k">$50K - $100K</option>
             <option value="100k_500k">$100K - $500K</option>
             <option value="500k_plus">$500K+</option>
           </select>
-          <textarea placeholder="Description" aria-label="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50" rows={3} />
+          <textarea placeholder="Description" aria-label="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" rows={3} />
         </div>
         <div className="mt-6 flex justify-end gap-3">
           <button onClick={onClose} className="rounded-lg border border-white/10 px-4 py-2 text-sm text-white/60 hover:bg-white/5">Cancel</button>
@@ -135,9 +135,9 @@ function ContactFormModal({ open, onClose }: { open: boolean; onClose: () => voi
       <div className="relative w-full max-w-md rounded-2xl border border-white/10 bg-neutral-900 p-8 shadow-2xl">
         <h2 className="mb-6 text-xl font-semibold text-white">New Contact</h2>
         <div className="space-y-4">
-          <input placeholder="Name *" aria-label="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50" />
-          <input placeholder="Email" type="email" aria-label="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50" />
-          <input placeholder="Phone" aria-label="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50" />
+          <input placeholder="Name *" aria-label="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
+          <input placeholder="Email" type="email" aria-label="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
+          <input placeholder="Phone" aria-label="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
         </div>
         <div className="mt-6 flex justify-end gap-3">
           <button onClick={onClose} className="rounded-lg border border-white/10 px-4 py-2 text-sm text-white/60 hover:bg-white/5">Cancel</button>
@@ -183,9 +183,9 @@ function KnowledgeFormModal({ open, onClose, initial }: { open: boolean; onClose
       <div className="relative w-full max-w-lg rounded-2xl border border-white/10 bg-neutral-900 p-8 shadow-2xl">
         <h2 className="mb-6 text-xl font-semibold text-white">{initial?.id ? 'Edit Article' : 'New Article'}</h2>
         <div className="space-y-4">
-          <input placeholder="Article name *" aria-label="Article name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50" />
-          <input placeholder="Category ID (optional)" aria-label="Category ID" value={form.category_id} onChange={(e) => setForm({ ...form, category_id: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50" />
-          <textarea placeholder="Body" aria-label="Article body" value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50" rows={6} />
+          <input placeholder="Article name *" aria-label="Article name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
+          <input placeholder="Category ID (optional)" aria-label="Category ID" value={form.category_id} onChange={(e) => setForm({ ...form, category_id: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
+          <textarea placeholder="Body" aria-label="Article body" value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" rows={6} />
         </div>
         <div className="mt-6 flex justify-end gap-3">
           <button onClick={onClose} className="rounded-lg border border-white/10 px-4 py-2 text-sm text-white/60 hover:bg-white/5">Cancel</button>
@@ -220,9 +220,9 @@ function EmailSendModal({ open, onClose }: { open: boolean; onClose: () => void 
       <div className="relative w-full max-w-lg rounded-2xl border border-white/10 bg-neutral-900 p-8 shadow-2xl">
         <h2 className="mb-6 text-xl font-semibold text-white">Send Email</h2>
         <div className="space-y-4">
-          <input placeholder="To (email) *" type="email" aria-label="Recipient email" value={form.to} onChange={(e) => setForm({ ...form, to: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50" />
-          <input placeholder="Subject *" aria-label="Subject" value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50" />
-          <textarea placeholder="Body" aria-label="Email body" value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50" rows={6} />
+          <input placeholder="To (email) *" type="email" aria-label="Recipient email" value={form.to} onChange={(e) => setForm({ ...form, to: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
+          <input placeholder="Subject *" aria-label="Subject" value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
+          <textarea placeholder="Body" aria-label="Email body" value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" rows={6} />
         </div>
         <div className="mt-6 flex justify-end gap-3">
           <button onClick={onClose} className="rounded-lg border border-white/10 px-4 py-2 text-sm text-white/60 hover:bg-white/5">Cancel</button>
@@ -442,7 +442,7 @@ export default function OdooDashboardPage() {
           <div className="mb-4 flex items-center justify-between gap-4">
             <h2 className="text-lg font-medium text-white">Contacts</h2>
             <div className="flex gap-3">
-              <input placeholder="Search..." aria-label="Search contacts" value={contactSearch} onChange={(e) => setContactSearch(e.target.value)} className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50" />
+              <input placeholder="Search..." aria-label="Search contacts" value={contactSearch} onChange={(e) => setContactSearch(e.target.value)} className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
               <button onClick={() => setContactModalOpen(true)} className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black hover:bg-accent-dark">+ New Contact</button>
             </div>
           </div>
@@ -460,7 +460,7 @@ export default function OdooDashboardPage() {
                       <td className="py-2 font-medium text-white">{c.name}</td>
                       <td className="py-2 text-white/50">{c.email ?? '—'}</td>
                       <td className="py-2 text-white/50">{c.phone ?? '—'}</td>
-                      <td className="py-2">{c.x_hexa_client ? <span className="rounded bg-accent/20 px-2 py-0.5 text-xs text-[#D4AF37]">Client</span> : <span className="text-white/30">—</span>}</td>
+                      <td className="py-2">{c.x_hexa_client ? <span className="rounded bg-accent/20 px-2 py-0.5 text-xs text-accent">Client</span> : <span className="text-white/30">—</span>}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -484,7 +484,7 @@ export default function OdooDashboardPage() {
                   <p className="font-medium text-white">{p.name}</p>
                   <p className="mt-1 text-xs text-white/40">{p.x_hexa_type ?? '—'} · {p.x_hexa_status ?? idName(p.stage_id)}</p>
                   <div className="mt-3">
-                    <select aria-label="Project status" value={p.x_hexa_status ?? ''} onChange={(e) => handleUpdateProjectStatus(p.id, e.target.value)} className="w-full rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-xs text-white outline-none focus:border-[#D4AF37]/50">
+                    <select aria-label="Project status" value={p.x_hexa_status ?? ''} onChange={(e) => handleUpdateProjectStatus(p.id, e.target.value)} className="w-full rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-xs text-white outline-none focus:border-accent/50">
                       <option value="">Set status...</option>
                       <option value="inquiry">Inquiry</option>
                       <option value="consultation">Consultation</option>
@@ -512,7 +512,7 @@ export default function OdooDashboardPage() {
               aria-label="Select a project"
               value={selectedProjectId ?? ''}
               onChange={(e) => setSelectedProjectId(e.target.value ? parseInt(e.target.value, 10) : null)}
-              className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50"
+              className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50"
             >
               <option value="">Select a project...</option>
               {projects.data?.map((p) => (
@@ -858,7 +858,7 @@ export default function OdooDashboardPage() {
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-lg font-medium text-white">Emails</h2>
             <div className="flex gap-3">
-              <select aria-label="Email filter" value={emailFilter} onChange={(e) => setEmailFilter(e.target.value as 'all' | 'inbox' | 'sent')} className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#D4AF37]/50">
+              <select aria-label="Email filter" value={emailFilter} onChange={(e) => setEmailFilter(e.target.value as 'all' | 'inbox' | 'sent')} className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50">
                 <option value="all">All</option>
                 <option value="inbox">Inbox</option>
                 <option value="sent">Sent</option>
@@ -897,7 +897,7 @@ export default function OdooDashboardPage() {
               <button onClick={() => runSync(false)} disabled={syncing} className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black hover:bg-accent-dark disabled:opacity-50">
                 {syncing ? 'Syncing...' : 'Run Delta Sync'}
               </button>
-              <button onClick={() => runSync(true)} disabled={syncing} className="rounded-lg border border-[#D4AF37]/40 px-4 py-2 text-sm font-medium text-[#D4AF37] hover:bg-accent/10 disabled:opacity-50">
+              <button onClick={() => runSync(true)} disabled={syncing} className="rounded-lg border border-accent/40 px-4 py-2 text-sm font-medium text-accent hover:bg-accent/10 disabled:opacity-50">
                 {syncing ? 'Syncing...' : 'Run Full Sync'}
               </button>
             </div>
@@ -966,7 +966,7 @@ export default function OdooDashboardPage() {
                       <td className="py-2 text-white/40">{(c.conflictingFields ?? []).slice(0, 3).join(', ') || '—'}</td>
                       <td className="py-2">
                         <div className="flex items-center gap-2">
-                          <select aria-label="Resolution strategy" value={resolveStrategies[c.id] ?? 'odoo-wins'} onChange={(e) => setResolveStrategies({ ...resolveStrategies, [c.id]: e.target.value as 'odoo-wins' | 'hexa-wins' })} className="rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-xs text-white outline-none focus:border-[#D4AF37]/50">
+                          <select aria-label="Resolution strategy" value={resolveStrategies[c.id] ?? 'odoo-wins'} onChange={(e) => setResolveStrategies({ ...resolveStrategies, [c.id]: e.target.value as 'odoo-wins' | 'hexa-wins' })} className="rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-xs text-white outline-none focus:border-accent/50">
                             <option value="odoo-wins">Odoo wins</option>
                             <option value="hexa-wins">HEXA wins</option>
                           </select>

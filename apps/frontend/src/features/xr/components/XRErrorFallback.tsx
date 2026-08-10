@@ -24,7 +24,7 @@ export function XRErrorFallback({
   const handleReload = () => window.location.reload();
 
   return (
-    <div role="alert" className="flex h-screen w-screen items-center justify-center bg-[#0A0A0A]">
+    <div role="alert" className="flex h-screen w-screen items-center justify-center bg-surface-dark">
       {/* Background image (if provided). */}
       {coverImage && (
         <div
@@ -37,7 +37,7 @@ export function XRErrorFallback({
         {/* Icon */}
         <div className="w-14 h-14 mx-auto mb-5 border border-white/10 flex items-center justify-center rounded-lg bg-white/5">
           <svg
-            className="w-7 h-7 text-[#D4AF37]"
+            className="w-7 h-7 text-accent"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -58,7 +58,7 @@ export function XRErrorFallback({
 
         {/* Project name */}
         {projectName && (
-          <p className="mb-3 text-xs uppercase tracking-widest text-[#D4AF37]">
+          <p className="mb-3 text-xs uppercase tracking-widest text-accent">
             {projectName}
           </p>
         )}

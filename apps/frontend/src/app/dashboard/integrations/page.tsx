@@ -123,7 +123,7 @@ function WebhookForm({
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="e.g. Slack Notifications"
-          className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none transition-colors focus:border-[#D4AF37]/50"
+          className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none transition-colors focus:border-accent/50"
         />
       </div>
 
@@ -133,7 +133,7 @@ function WebhookForm({
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder="https://hooks.slack.com/..."
-          className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none transition-colors focus:border-[#D4AF37]/50"
+          className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none transition-colors focus:border-accent/50"
         />
       </div>
 
@@ -146,7 +146,7 @@ function WebhookForm({
                 type="checkbox"
                 checked={events.includes(opt.value)}
                 onChange={() => toggleEvent(opt.value)}
-                className="accent-[#D4AF37]"
+                className="accent-accent"
               />
               <span className="text-sm text-white/60">{opt.label}</span>
             </label>
@@ -207,7 +207,7 @@ function WorkflowsPanel() {
           <h3 className="font-medium text-white">Workflow Engine</h3>
           <p className="text-xs text-white/40">Automations across CRM, projects, helpdesk, and accounting</p>
         </div>
-        <span className="ml-auto rounded-full bg-accent/20 px-2 py-0.5 text-[10px] text-[#D4AF37]">
+        <span className="ml-auto rounded-full bg-accent/20 px-2 py-0.5 text-[10px] text-accent">
           Active
         </span>
       </div>
@@ -302,7 +302,7 @@ export default function IntegrationsPage() {
 
       {loading && (
         <div className="flex items-center justify-center py-16">
-          <div className="h-6 w-6 animate-spin rounded-full border-2 border-white/10 border-t-[#D4AF37]" />
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-white/10 border-t-accent" />
         </div>
       )}
 

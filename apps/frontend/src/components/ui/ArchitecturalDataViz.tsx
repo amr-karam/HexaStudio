@@ -63,7 +63,7 @@ export const ArchitecturalDataViz: React.FC<ArchitecturalDataVizProps> = ({
     <div className={`artisan-glass rounded-2xl p-6 sm:p-8 relative overflow-hidden ${className}`}>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <span className="text-xs font-mono tracking-widest text-[#D4AF37] uppercase block mb-1">
+          <span className="text-xs font-mono tracking-widest text-accent uppercase block mb-1">
             Digital Artisan Standard
           </span>
           <h3 className="text-xl sm:text-2xl font-serif font-bold text-white tracking-tight">
@@ -117,7 +117,7 @@ export const ArchitecturalDataViz: React.FC<ArchitecturalDataVizProps> = ({
               cx={pt.x}
               cy={pt.y}
               r="4"
-              className="fill-neutral-950 stroke-[#D4AF37] stroke-2 hover:r-6 transition-all duration-300 cursor-pointer"
+              className="fill-neutral-950 stroke-accent stroke-2 hover:r-6 transition-all duration-300 cursor-pointer"
             />
           ))}
         </svg>
@@ -137,7 +137,7 @@ export const ArchitecturalDataViz: React.FC<ArchitecturalDataVizProps> = ({
             whileHover={{ y: -4, transition: { type: 'spring', stiffness: 300, damping: 25 } }}
             className={`artisan-glass p-4 rounded-xl cursor-pointer transition-all duration-300 ${
               activePoint === idx
-                ? 'border-[#D4AF37]/50 shadow-[0_0_20px_rgba(212,175,55,0.15)]'
+                ? 'border-accent/50 shadow-[0_0_20px_rgba(212,175,55,0.15)]'
                 : 'hover:border-neutral-700'
             }`}
           >
@@ -149,7 +149,7 @@ export const ArchitecturalDataViz: React.FC<ArchitecturalDataVizProps> = ({
             </div>
             <div className="flex items-baseline gap-1">
               <span className="text-2xl font-bold font-mono text-white">{item.value}</span>
-              <span className="text-xs text-[#D4AF37] font-mono">{item.unit}</span>
+              <span className="text-xs text-accent font-mono">{item.unit}</span>
             </div>
             <p className="text-[11px] text-neutral-500 mt-2 line-clamp-2 leading-relaxed">
               {item.description}
