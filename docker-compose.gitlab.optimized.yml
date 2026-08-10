@@ -24,8 +24,8 @@ services:
         # ============================================
         # External URLs & Network Configuration
         # ============================================
-        external_url 'https://gitlab.hexastudio.net'
-        registry_external_url 'https://registry.gitlab.hexastudio.net'
+        external_url 'http://19.16.1.100:8929'
+        registry_external_url 'http://19.16.1.100:5050'
         
         # Internal registry configuration (HTTP for internal network)
         registry['enable'] = true
