@@ -144,6 +144,41 @@ export class ClientPortalGateway implements OnGatewayConnection, OnGatewayDiscon
     });
   }
 
+  @SubscribeMessage('material-update')
+  @UsePipes(new ValidationPipe())
+  handleMaterialUpdate(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: {
+      projectId: string;
+      materialId: string;
+      targetObjectId?: string;
+      source: 'voice' | 'prompt' | 'manual';
+    },
+  ) {
+    const user = client.data.user as User | undefined;
+    if (!user) throw new UnauthorizedException('Authentication required');
+
+    const room = `project_${payload.projectId}`;
+
+    // Only admin/editor (the "architect") may push material updates to the room.
+    if (user.role !== 'admin' && user.role !== 'editor') {
+      throw new UnauthorizedException('Only architects can apply material updates');
+    }
+
+    client.to(room).emit('material_applied', {
+      socketId: client.id,
+      userName: user.username,
+      materialId: payload.materialId,
+      targetObjectId: payload.targetObjectId,
+      source: payload.source,
+      timestamp: new Date().toISOString(),
+    });
+
+    this.logger.log(
+      `Material ${payload.materialId} applied by ${user.username} (source: ${payload.source})`,
+    );
+  }
+
   @SubscribeMessage('approval_action')
   handleApprovalAction(
     @ConnectedSocket() client: Socket,

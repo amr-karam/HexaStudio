@@ -16,7 +16,10 @@ import { TokenUsageService } from './token-usage.service';
 import { VoiceService } from './voice.service';
 import { SpatialSynthesisService } from './spatial-synthesis.service';
 import { SpatialSynthesisController } from './spatial-synthesis.controller';
+import { LeadScoringService } from './lead-scoring.service';
+import { TimelinePredictorService } from './timeline-predictor.service';
 import { MinIOVisionService } from './minio-vision.listener';
+import { AiIntelligenceController } from './ai-intelligence.controller';
 import { StorageModule } from '../storage/storage.module';
 import { VectorModule } from '../vector/vector.module';
 
@@ -39,7 +42,12 @@ import { VectorModule } from '../vector/vector.module';
  */
 @Module({
   imports: [forwardRef(() => VectorModule), StorageModule],
-  controllers: [MultimodalController, AiChatController, SpatialSynthesisController],
+  controllers: [
+    MultimodalController,
+    AiChatController,
+    SpatialSynthesisController,
+    AiIntelligenceController,
+  ],
   providers: [
     AiChatService,
     ModelRouterService,
@@ -56,6 +64,8 @@ import { VectorModule } from '../vector/vector.module';
     TransformReasoningService,
     SpatialSynthesisService,
     MinIOVisionService,
+    LeadScoringService,
+    TimelinePredictorService,
   ],
   exports: [
     AiChatService,
@@ -73,6 +83,8 @@ import { VectorModule } from '../vector/vector.module';
     TransformReasoningService,
     SpatialSynthesisService,
     MinIOVisionService,
+    LeadScoringService,
+    TimelinePredictorService,
   ],
 })
 export class AIModule {}

@@ -132,4 +132,43 @@ describe('ClientPortalGateway', () => {
       }));
     });
   });
+
+  describe('handleMaterialUpdate', () => {
+    const materialPayload = {
+      projectId: 'test-project',
+      materialId: 'brushed_titanium',
+      targetObjectId: 'facade-01',
+      source: 'voice',
+    };
+
+    it('should broadcast material_applied for admin users', () => {
+      mockSocket.data.user = { ...mockUser, role: 'admin' };
+      gateway.handleMaterialUpdate(mockSocket, materialPayload);
+
+      expect(mockSocket.to).toHaveBeenCalledWith('project_test-project');
+      expect(mockSocket.emit).toHaveBeenCalledWith('material_applied', expect.objectContaining({
+        userName: mockUser.username,
+        materialId: 'brushed_titanium',
+        source: 'voice',
+      }));
+    });
+
+    it('should broadcast material_applied for editor users', () => {
+      mockSocket.data.user = { ...mockUser, role: 'editor' };
+      gateway.handleMaterialUpdate(mockSocket, materialPayload);
+
+      expect(mockSocket.to).toHaveBeenCalledWith('project_test-project');
+      expect(mockSocket.emit).toHaveBeenCalledWith('material_applied', expect.objectContaining({
+        materialId: 'brushed_titanium',
+      }));
+    });
+
+    it('should reject regular users with UnauthorizedException', () => {
+      mockSocket.data.user = { ...mockUser, role: 'user' };
+
+      expect(() => gateway.handleMaterialUpdate(mockSocket, materialPayload)).toThrow(
+        'Only architects can apply material updates',
+      );
+    });
+  });
 });
