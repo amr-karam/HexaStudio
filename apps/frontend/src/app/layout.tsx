@@ -9,7 +9,6 @@ import { AnalyticsInit } from "@/lib/analytics";
 import { Suspense } from "react";
 import "./globals.css";
 import { AnimationDebugLoader } from "@/components/dev/AnimationDebugLoader";
-import { DesignerModeConfigurator, SpatialLayerToggle } from "@/features/scene";
 import { SpatialAnnotations } from "@/features/scene/components/SpatialAnnotations";
 import { SpatialAudioPlayer } from "@/features/scene/components/SpatialAudioPlayer";
 
@@ -160,10 +159,8 @@ export default function RootLayout({
             Skip to content
           </a>
           <LayoutShell>{children}</LayoutShell>
-          <DesignerModeConfigurator />
           <SpatialAnnotations />
           <SpatialAudioPlayer />
-          <SpatialLayerToggle />
           <Suspense fallback={null}>
             <AnalyticsInit />
           </Suspense>

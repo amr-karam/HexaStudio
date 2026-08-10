@@ -1,6 +1,7 @@
 import { HomeHeroStatic } from "@/features/portfolio/components/HomeHeroStatic";
 import { HomeChapterRail } from "@/features/portfolio/components/HomeChapterRail";
 import { HomePageDynamic } from "@/features/portfolio/components/HomePageDynamic";
+import { StudioSection } from "@/features/portfolio/components/StudioSection";
 import { fetchProjects } from "@/features/portfolio/lib/fetchProjects";
 
 /** ISR: 1h background refresh + on-demand via /api/revalidate (Sprint 15 P9).
@@ -34,6 +35,7 @@ export default async function HomePage() {
         featuredProject={projectsData.projects?.[0]}
         projects={projectsData.projects ?? []}
       />
+      <StudioSection />
     </div>
   );
 }
