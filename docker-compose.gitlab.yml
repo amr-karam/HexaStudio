@@ -78,9 +78,9 @@ services:
         postgresql['max_connections'] = 200
         postgresql['max_worker_processes'] = 8
         
-        # Sidekiq (background jobs) optimization
-        sidekiq['max_concurrency'] = 25
-        sidekiq['timeout'] = 3600
+# Sidekiq (background jobs) optimization
+sidekiq['concurrency'] = 25
+sidekiq['timeout'] = 3600
         sidekiq['queues'] = [
           'postgresql',
           'default',
