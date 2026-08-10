@@ -1,37 +1,90 @@
-# GitLab Runner — Docker executor
+# GitLab Runner — Docker executor - OPTIMIZED CONFIGURATION
 # Runs CI/CD jobs in Docker containers
 # Register with: docker exec -it hexa-gitlab-runner gitlab-runner register
-# (see scripts/deploy-gitlab.sh for automated registration)
+# Or use: bash scripts/register-gitlab-runner.sh
+#
+# OPTIMIZATIONS APPLIED:
+# - Increased concurrency for parallel jobs
+# - Proper Docker executor configuration
+# - Cache configuration for faster builds
+# - Resource limits for stability
+# - Network configuration for registry access
+# - Insecure registry configuration for HTTP registry
 
 services:
   gitlab-runner:
-    image: gitlab/gitlab-runner:latest
+    image: gitlab/gitlab-runner:alpine-v16.11.0
     container_name: hexa-gitlab-runner
     restart: unless-stopped
-    # NOTE: GitLab CE runs in docker-compose.gitlab.yml on the same external
-    # network (hexa-gitlab-net). Start GitLab first; no depends_on possible
-    # across compose projects with an external network.
+    privileged: true  # Required for Docker-in-Docker
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - gitlab_runner_config:/etc/gitlab-runner
+      - runner_cache:/cache
+      - runner_builds:/builds
     networks:
       - gitlab-net
     environment:
-      # Registration token from GitLab (set after first GitLab boot)
-      # Get from: http://19.16.1.100:8929/admin/runners
-      # Container-to-container traffic targets GitLab's internal port 80
-      # (host port 8929 is only the published mapping).
+      # GitLab Server Configuration
       CI_SERVER_URL: "http://gitlab:80"
+      CI_SERVER_HOST: "gitlab"
+      CI_SERVER_PORT: "80"
+      
+      # Runner Configuration
       RUNNER_EXECUTOR: "docker"
-      DOCKER_IMAGE: "alpine:latest"
+      RUNNER_OUTPUT_LIMIT: "10485760"  # 10MB
+      RUNNER_CONCURRENT: "10"  # Max concurrent jobs
+      RUNNER_CHECK_INTERVAL: "30"  # Check for jobs every 30s
+      RUNNER_SENTINEL: "0"  # Disable sentinel for single runner
+      
+      # Docker Configuration
+      DOCKER_IMAGE: "docker:24-dind"  # Default image for Docker executor
+      DOCKER_HOST: "unix:///var/run/docker.sock"
+      DOCKER_TLS_CERTDIR: ""
+      DOCKER_TLS_VERIFY: "0"
+      DOCKER_CERT_PATH: "/certs/client"
+      DOCKER_PRIVILEGED: "true"
+      
+      # Docker Network Configuration
+      DOCKER_NETWORK_MODE: "hexa-gitlab-net"
+      
+      # Cache Configuration
+      RUNNER_CACHE_DIR: "/cache"
+      RUNNER_BUILD_DIR: "/builds"
+      
+      # Metrics Configuration
+      RUNNER_METRICS_SERVER: "0.0.0.0:9252"
+      PROMETHEUS_METRICS_ENABLED: "true"
+      
+      # Registry Configuration (for insecure HTTP registry)
+      DOCKER_OPTS: "--insecure-registry=19.16.1.100:5050 --insecure-registry=registry.gitlab.hexastudio.net:5050"
     deploy:
       resources:
         limits:
           memory: 8G
           cpus: '4'
+        reservations:
+          memory: 2G
+          cpus: '1'
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 65535
+        hard: 65535
+    healthcheck:
+      test: ["CMD", "gitlab-runner", "--version"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
 volumes:
   gitlab_runner_config:
+    driver: local
+  runner_cache:
+    driver: local
+  runner_builds:
+    driver: local
 
 networks:
   gitlab-net:
