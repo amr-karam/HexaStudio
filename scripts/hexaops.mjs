@@ -178,7 +178,15 @@ async function cmdDeploy() {
   }
 
   const sshBase = `ssh -i "${key}" -o StrictHostKeyChecking=no ${server}`;
-  const files = ['docker-compose.gitlab.optimized.yml', 'docker-compose.gitlab-runner.optimized.yml', '.gitlab-ci.yml'];
+  // Sync the ACTIVE compose files first, then optional optimized variants.
+  // Order matters: docker-compose.gitlab.yml is what docker compose actually reads.
+  const files = [
+    'docker-compose.gitlab.yml',
+    'docker-compose.gitlab-runner.yml',
+    'docker-compose.gitlab.optimized.yml',
+    'docker-compose.gitlab-runner.optimized.yml',
+    '.gitlab-ci.yml',
+  ];
 
   // Step 1 — push configs (parallel scp)
   console.log(COLORS.cyan('  [1/3] Syncing config files…'));
