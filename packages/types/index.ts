@@ -470,6 +470,18 @@ export interface Transform3D {
   rotation?: { x: number; y: number; z: number };
 }
 
+/** A single keyframe in a camera storyboard animation. */
+export interface CameraKeyframe {
+  progress: number;
+  position: [number, number, number];
+  target: [number, number, number];
+  fov: number;
+  rotation?: [number, number, number];
+}
+
+/** A sequence of camera keyframes for smooth camera transitions. */
+export type CameraStoryboard = CameraKeyframe[];
+
 export * from './odoo';
 export * from './workflow';
 export * from './lead-qualification';
