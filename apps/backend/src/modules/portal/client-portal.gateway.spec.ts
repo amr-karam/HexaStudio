@@ -5,6 +5,7 @@ import { ProjectsService } from '../projects/projects.service';
 import { RedisService } from '../storage/redis.service';
 import { Socket } from 'socket.io';
 import { UnauthorizedException } from '@nestjs/common';
+import { vi } from 'vitest';
 
 describe('ClientPortalGateway', () => {
   let gateway: ClientPortalGateway;
@@ -20,9 +21,9 @@ describe('ClientPortalGateway', () => {
 
   const mockSocket = {
     id: 'socket-123',
-    join: jest.fn().mockResolvedValue(undefined),
-    to: jest.fn().mockReturnThis(),
-    emit: jest.fn(),
+    join: vi.fn().mockResolvedValue(undefined),
+    to: vi.fn().mockReturnThis(),
+    emit: vi.fn(),
     data: {},
     handshake: {
       auth: { token: 'valid-token' },
@@ -37,22 +38,22 @@ describe('ClientPortalGateway', () => {
         {
           provide: AuthService,
           useValue: {
-            validateToken: jest.fn().mockResolvedValue(mockUser),
+            validateToken: vi.fn().mockResolvedValue(mockUser),
           },
         },
         {
           provide: ProjectsService,
           useValue: {
-            getProjectBySlug: jest.fn().mockResolvedValue({ slug: 'test-project' }),
+            getProjectBySlug: vi.fn().mockResolvedValue({ slug: 'test-project' }),
           },
         },
         {
           provide: RedisService,
           useValue: {
-            hset: jest.fn().mockResolvedValue(undefined),
-            hdel: jest.fn().mockResolvedValue(undefined),
-            hgetall: jest.fn().mockResolvedValue({}),
-            expire: jest.fn().mockResolvedValue(undefined),
+            hset: vi.fn().mockResolvedValue(undefined),
+            hdel: vi.fn().mockResolvedValue(undefined),
+            hgetall: vi.fn().mockResolvedValue({}),
+            expire: vi.fn().mockResolvedValue(undefined),
           },
         },
       ],
@@ -76,7 +77,7 @@ describe('ClientPortalGateway', () => {
 
     it('should disconnect socket if token is missing', async () => {
       const socketNoToken = { ...mockSocket, handshake: { auth: {} } } as unknown as Socket;
-      socketNoToken.disconnect = jest.fn();
+      socketNoToken.disconnect = vi.fn();
       await gateway.handleConnection(socketNoToken);
       expect(socketNoToken.disconnect).toHaveBeenCalled();
     });
@@ -138,7 +139,7 @@ describe('ClientPortalGateway', () => {
       projectId: 'test-project',
       materialId: 'brushed_titanium',
       targetObjectId: 'facade-01',
-      source: 'voice',
+      source: 'voice' as const,
     };
 
     it('should broadcast material_applied for admin users', () => {
@@ -172,3 +173,4 @@ describe('ClientPortalGateway', () => {
     });
   });
 });
+

@@ -25,10 +25,17 @@
     "gitlab:setup": "bash scripts/setup-gitlab-variables.sh",
     "gitlab:migrate": "bash scripts/migrate-from-github.sh",
     "lint": "turbo run lint",
-    "test": "turbo run test",
-    "test:e2e": "npm run test:e2e --workspace=apps/frontend",
-    "test:e2e:ui": "playwright test --ui --config e2e/playwright.config.ts",
-    "typecheck": "turbo run typecheck"
+    "test": "npm run --workspace=apps/backend test",
+    "test:apps": "npm run test --workspace=apps/backend && npm run test --workspace=apps/frontend && npm run test --workspace=apps/mobile",
+    "test:watch": "npm run test --workspace=apps/backend -- --watch && npm run test --workspace=apps/frontend -- --watch && npm run test --workspace=apps/mobile -- --watch",
+    "quality": "node scripts/hexaops.mjs gate",
+    "quality:watch": "node scripts/hexaops.mjs gate --watch",
+    "quality:lint": "npm run lint",
+    "quality:types": "npm run typecheck",
+    "quality:test": "npm run test:apps",
+    "test:all": "npm run test:apps",
+    "test:int": "npm run test:apps -- --watch",
+    "test:ci": "npm run test:apps -- --coverage"
   },
   "dependencies": {
     "@google/genai": "2.15.0",
@@ -40,7 +47,6 @@
     "@sentry/nextjs": "^10.65.0",
     "axios": "^1.18.1",
     "framer-motion": "^11.18.2",
-    "libsodium-wrappers": "^0.8.4",
     "lucide-react": "^0.460.0",
     "react-error-boundary": "^6.1.2"
   },
