@@ -315,67 +315,135 @@ function ChapterDetails({ project }: { project: Project }) {
       className="relative min-h-screen w-full bg-background py-32 px-8 md:px-16"
     >
       <div ref={ref} className="max-w-[1400px] mx-auto">
-        <ChapterMarker index={4} title="Details" className="mb-16" />
+        <ChapterMarker index={4} title="Details" className="mb-8" />
 
         {/* Oversized index numeral */}
         <motion.div
           initial={staticMode ? { opacity: 1 } : { opacity: 0, x: -40 }}
           animate={inView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.8, ease: EASE.entrance }}
-          className="font-serif text-[120px] md:text-[200px] leading-none text-accent/10 font-light select-none pointer-events-none mb-16"
+          className="font-serif text-[120px] md:text-[200px] leading-none text-accent/10 font-light select-none pointer-events-none mb-12"
           aria-hidden="true"
         >
           04
         </motion.div>
 
-        {/* Counter grid (animejs stagger DNA) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-24">
-          {counters.map((c, i) => (
-            <motion.div
-              key={c.label}
-              initial={staticMode ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{
-                duration: 0.6,
-                delay: 0.2 + i * 0.08,
-                ease: EASE.entrance,
-              }}
-              className="text-center"
-            >
-              <div className="text-5xl md:text-7xl font-serif font-light text-accent mb-4">
-                <AnimatedCounter value={c.value} />
-              </div>
-              <span className="text-[10px] uppercase tracking-[0.4em] text-neutral-500 font-mono">
-                {c.label}
-              </span>
-            </motion.div>
-          ))}
+        {/* Editorial framing — § eyebrow + serif sub-title (bdsn.club DNA) */}
+        <div className="mb-12 max-w-2xl">
+          <motion.span
+            initial={staticMode ? { opacity: 1 } : { opacity: 0, y: 12 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.05, ease: EASE.entrance }}
+            className="block font-mono text-[10px] uppercase tracking-[0.4em] text-accent mb-5"
+          >
+            § 04 — By the Numbers
+          </motion.span>
+          <motion.h2
+            initial={staticMode ? { opacity: 1 } : { opacity: 0, y: 24 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.1, ease: EASE.entrance }}
+            className="text-3xl md:text-4xl font-serif font-light tracking-tight text-foreground leading-tight"
+          >
+            The details behind{' '}
+            <em className="font-serif italic text-gradient-gold">the build</em>
+          </motion.h2>
         </div>
 
-        {/* Live status from Odoo (if available) */}
+        {/* Counter grid — artisan glass panel + gold specular top (animejs stagger DNA) */}
+        <motion.div
+          initial={staticMode ? { opacity: 1, y: 0 } : { opacity: 0, y: 32 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.15, ease: EASE.entrance }}
+          className="artisan-glass artisan-specular-top relative overflow-hidden rounded-sm p-10 md:p-14 mb-16"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            {counters.map((c, i) => (
+              <motion.div
+                key={c.label}
+                initial={staticMode ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{
+                  duration: 0.6,
+                  delay: 0.2 + i * 0.08,
+                  ease: EASE.entrance,
+                }}
+                className={`flex flex-col items-center text-center ${i > 0 ? 'md:border-l md:border-border/20 md:pl-10' : ''}`}
+              >
+                <div className="text-5xl md:text-7xl font-serif font-light text-accent leading-none tabular-nums">
+                  <AnimatedCounter value={c.value} />
+                </div>
+                <div
+                  className="mt-6 mb-4 h-px w-10 bg-gradient-to-r from-transparent via-accent/60 to-transparent"
+                  aria-hidden="true"
+                />
+                <span className="text-[10px] uppercase tracking-[0.4em] text-neutral-500 font-mono">
+                  {c.label}
+                </span>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Live status from Odoo — gold-tinted glass (if available) */}
         {project.liveStatus && (
           <motion.div
             initial={staticMode ? { opacity: 1 } : { opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.5, ease: EASE.entrance }}
-            className="bg-surface border border-border/50 p-8 rounded-sm max-w-2xl"
+            className="artisan-glass-gold artisan-specular-top relative overflow-hidden rounded-sm p-8 md:p-10 max-w-2xl"
           >
-            <h3 className="text-xs uppercase tracking-widest text-neutral-500 mb-4 font-mono">
-              Live Project Status
-            </h3>
-            <div className="flex items-center gap-4 mb-4">
+            {/* Live eyebrow with pulsing beacon */}
+            <div className="flex items-center gap-3 mb-8">
+              <span className="relative flex h-2 w-2" aria-hidden="true">
+                {!staticMode && (
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
+                )}
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+              </span>
+              <h3 className="text-[10px] uppercase tracking-[0.4em] text-accent font-mono">
+                Live Project Status
+              </h3>
+            </div>
+
+            <div className="flex items-center gap-4 mb-6">
               <span className="text-sm text-foreground font-light">
                 {project.liveStatus.stage}
               </span>
-              <span className="text-xs text-accent font-mono">
+              <span className="diamond-bullet" aria-hidden="true" />
+              <span className="text-xs text-accent font-mono tabular-nums">
                 {project.liveStatus.progress}%
               </span>
             </div>
-            <div className="w-full h-1 bg-neutral-800 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-accent rounded-full transition-all duration-1000"
-                style={{ width: `${project.liveStatus.progress}%` }}
+
+            <div
+              className="w-full h-1 bg-surface-light/40 rounded-full overflow-hidden"
+              role="progressbar"
+              aria-valuenow={project.liveStatus.progress}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label={`Project progress ${project.liveStatus.progress} percent`}
+            >
+              <motion.div
+                initial={staticMode ? { width: `${project.liveStatus.progress}%` } : { width: '0%' }}
+                animate={inView ? { width: `${project.liveStatus.progress}%` } : {}}
+                transition={{ duration: 1.2, delay: 0.7, ease: EASE.entrance }}
+                className="h-full rounded-full bg-gradient-to-r from-accent-dark via-accent to-accent-light"
               />
+            </div>
+
+            <div className="mt-6 pt-6 border-t border-accent/15 flex justify-between items-baseline">
+              <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">
+                Last updated
+              </span>
+              <span className="text-xs text-neutral-400 font-mono">
+                {project.liveStatus.lastUpdate
+                  ? new Date(project.liveStatus.lastUpdate).toLocaleDateString(undefined, {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                    })
+                  : '—'}
+              </span>
             </div>
           </motion.div>
         )}
