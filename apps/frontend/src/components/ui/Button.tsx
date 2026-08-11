@@ -82,7 +82,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const base = cn(
       'group relative inline-flex items-center justify-center rounded-full font-medium',
-      'transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]',
+      'transition-all duration-300 ease-[var(--hexa-ease-interaction)]',
       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
       'disabled:opacity-50 disabled:pointer-events-none active:scale-95',
       variants[variant],

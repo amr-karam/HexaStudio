@@ -95,7 +95,9 @@ typecheck:
 cms-typecheck:
   extends: .typecheck_base
   script:
-    - npm run typecheck --workspace=apps/cms
+    # apps/cms is a standalone Strapi project (NOT in root workspaces), so
+    # --workspace=apps/cms fails. Run the check inside the app directory.
+    - cd apps/cms && npm run typecheck
   cache:
     key:
       files:

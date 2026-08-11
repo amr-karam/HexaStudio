@@ -99,7 +99,7 @@ export function HealthScore({ data, className }: HealthScoreProps) {
             style={{
               transition: prefersReduced
                 ? 'none'
-                : `stroke-dashoffset 2.5s cubic-bezier(0.19, 1, 0.22, 1)`,
+                : `stroke-dashoffset 2.5s var(--hexa-ease-entrance)`,
             }}
           />
         </svg>
@@ -137,3 +137,4 @@ export function HealthScore({ data, className }: HealthScoreProps) {
     </div>
   );
 }
+
