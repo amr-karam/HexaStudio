@@ -3,6 +3,10 @@
  *
  * Each ornament is a pure SVG returned as a React component.
  * They are decorative only (aria-hidden) and render inline.
+ *
+ * Colors use CSS variables from globals.css:
+ * - --color-gold: #D4AF37 (hex)
+ * - rgba() variants are constructed via opacity on fill/stroke
  */
 
 /** Small diamond bullet for list items / sub-sections. */
@@ -15,11 +19,11 @@ export function DiamondBullet({ className }: { className?: string }) {
       fill="none"
       className={className}
       aria-hidden="true"
+      style={{ color: 'rgba(212, 175, 55, 0.6)' }}
     >
       <path
         d="M4 0.5L7.5 4L4 7.5L0.5 4L4 0.5Z"
         fill="currentColor"
-        fillOpacity="0.6"
       />
     </svg>
   );
@@ -32,7 +36,12 @@ export function OrnamentalRule({ className }: { className?: string }) {
       className={className}
       role="separator"
       aria-hidden="true"
-      style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'rgba(212, 175, 55, 0.5)' }}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        color: 'rgba(212, 175, 55, 0.5)',
+      }}
     >
       <span style={{ flex: 1, height: '1px', background: 'currentColor' }} />
       <svg width="6" height="6" viewBox="0 0 6 6" fill="currentColor" aria-hidden="true">
@@ -50,11 +59,17 @@ export function DoubleRule({ className }: { className?: string }) {
       className={className}
       role="separator"
       aria-hidden="true"
-      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', color: 'rgba(212, 175, 55, 0.35)' }}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '5px',
+        color: 'rgba(212, 175, 55, 0.3)',
+      }}
     >
-      <span style={{ width: '40px', height: '1px', background: 'currentColor' }} />
-      <span style={{ width: '12px', height: '1px', background: 'currentColor' }} />
-      <span style={{ width: '40px', height: '1px', background: 'currentColor' }} />
+      <span style={{ width: '48px', height: '1px', background: 'currentColor' }} />
+      <span style={{ width: '14px', height: '1px', background: 'currentColor' }} />
+      <span style={{ width: '48px', height: '1px', background: 'currentColor' }} />
     </div>
   );
 }
@@ -75,7 +90,10 @@ export function CornerFlourish({
       viewBox="0 0 48 48"
       fill="none"
       className={className}
-      style={{ transform: `rotate(${rotation}deg)`, color: 'rgba(212, 175, 55, 0.3)' }}
+      style={{
+        transform: `rotate(${rotation}deg)`,
+        color: 'rgba(212, 175, 55, 0.28)',
+      }}
       aria-hidden="true"
     >
       {/* Curving flourish line */}
@@ -109,7 +127,12 @@ export function PageBorderSVG({ className }: { className?: string }) {
       preserveAspectRatio="none"
       className={className}
       aria-hidden="true"
-      style={{ position: 'absolute', inset: 0, pointerEvents: 'none', color: 'rgba(212, 175, 55, 0.12)' }}
+      style={{
+        position: 'absolute',
+        inset: 0,
+        pointerEvents: 'none',
+        color: 'rgba(212, 175, 55, 0.1)',
+      }}
     >
       {/* Outer frame */}
       <rect x="3" y="3" width="94" height="94" rx="1" fill="none" stroke="currentColor" strokeWidth="0.3" />
@@ -145,7 +168,7 @@ export function ChapterNumeral({
         fontSize: 'clamp(3rem, 8vw, 6rem)',
         fontWeight: 400,
         lineHeight: 1,
-        color: 'rgba(212, 175, 55, 0.2)',
+        color: 'rgba(212, 175, 55, 0.18)',
         display: 'block',
         letterSpacing: '-0.02em',
       }}

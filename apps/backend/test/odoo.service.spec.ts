@@ -51,7 +51,8 @@ describe('OdooService', () => {
     });
 
     await expect(service.authenticate()).rejects.toThrow(InternalServerErrorException);
-  });
+    expect(mockClient.methodCall).toHaveBeenCalledTimes(4);
+  }, 10000);
 
   it('searchRead returns cached data when available', async () => {
     const cached = [{ id: 1, name: 'Cached Project' }];

@@ -50,6 +50,11 @@ export class ContactService {
       if (!this.aiChat || !this.aiChat.isAvailable) {
         return 'AI Assessment unavailable (provider not configured).';
       }
+      
+      const client = this.aiChat.client;
+      if (!client) {
+        return 'AI Assessment unavailable (client not initialized).';
+      }
 
       const prompt = `Analyze this architectural studio client inquiry and provide a brief 2-sentence executive summary rating client qualification tier (High/Medium/Low) and estimated project complexity.
 Name: ${message.name}
@@ -58,7 +63,7 @@ Service: ${message.service || 'General'}
 Budget: ${message.budget || 'Unspecified'}
 Message: ${message.message}`;
 
-      const response = await this.aiChat.client!.chat.completions.create({
+      const response = await client.chat.completions.create({
         model: this.aiChat.model,
         messages: [
           { role: 'system', content: 'You are an expert CRM lead qualification analyst for high-end architecture.' },

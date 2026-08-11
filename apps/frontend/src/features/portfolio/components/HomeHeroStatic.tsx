@@ -11,7 +11,6 @@ import { useFinePointer } from '@/hooks/useFinePointer';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { getGsap } from '@/lib/gsap';
 import { hasIntroCompleted, INTRO_COMPLETE_EVENT } from '@/lib/intro-state';
-import { DUR, GSAP_EASING, STAGGER_TOKENS } from '@/lib/motion/tokens';
 import { cn } from '@/lib/utils';
 
 const INTRO_FALLBACK_MS = 3500;
@@ -62,36 +61,36 @@ export const HomeHeroStatic = () => {
 
       ctx = gsap.context(() => {
         const tl = gsap.timeline({
-          defaults: { ease: GSAP_EASING.easeOutExpo },
+          defaults: { ease: 'power4.out' }, // Shift to power4 for more weight
           delay,
         });
         tl.fromTo(
           q('[data-hero-kicker]'),
-          { y: 16, opacity: 0 },
-          { y: 0, opacity: 1, duration: DUR.ui },
+          { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1.2 },
         )
           .fromTo(
             q('[data-hero-headline]'),
-            { y: 32, opacity: 0 },
-            { y: 0, opacity: 1, duration: DUR.ui },
-            0.1,
+            { y: 40, opacity: 0 },
+            { y: 0, opacity: 1, duration: 1.4 },
+            0.15,
           )
           .fromTo(
             q('[data-hero-subline]'),
-            { y: 24, opacity: 0 },
-            { y: 0, opacity: 1, duration: DUR.ui },
-            '-=0.45',
+            { y: 30, opacity: 0 },
+            { y: 0, opacity: 1, duration: 1.2 },
+            '-=0.8',
           )
           .fromTo(
             q('[data-hero-cta]'),
-            { y: 28, opacity: 0 },
-            { y: 0, opacity: 1, duration: DUR.ui, stagger: STAGGER_TOKENS.cards },
-            '-=0.3',
+            { y: 30, opacity: 0 },
+            { y: 0, opacity: 1, duration: 1.2, stagger: 0.1 },
+            '-=0.8',
           )
           .fromTo(
             q('[data-hero-marker]'),
-            { x: -16, opacity: 0 },
-            { x: 0, opacity: 1, duration: DUR.ui },
+            { x: -20, opacity: 0 },
+            { x: 0, opacity: 1, duration: 1.2 },
             0.3,
           );
       }, root);
@@ -221,12 +220,12 @@ export const HomeHeroStatic = () => {
           <h1
             data-hero-headline=""
             aria-label="Living Spaces. Visualized."
-            className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-light tracking-tighter text-white leading-[1.05]"
+            className="text-5xl sm:text-6xl md:text-8xl lg:text-[10rem] font-light tracking-[-0.04em] text-white leading-[0.95]"
           >
             <span aria-hidden="true" className="block">
               <HeroWord word="Living" /> <HeroWord word="Spaces." accent />
             </span>
-            <span aria-hidden="true" className="block">
+            <span aria-hidden="true" className="block mt-2">
               <HeroWord word="Visualized." />
             </span>
           </h1>
@@ -234,10 +233,9 @@ export const HomeHeroStatic = () => {
 
         <p
           data-hero-subline=""
-          className="mx-auto w-full max-w-2xl text-base md:text-lg font-light text-white/40 mb-8 md:mb-12 leading-relaxed px-4"
+          className="mx-auto w-full max-w-xl text-sm md:text-base font-light text-white/50 mb-10 md:mb-14 leading-relaxed tracking-wide px-4"
         >
           Immersive 3D architectural experiences for the world&apos;s most ambitious projects.
-          Where vision takes shape.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pointer-events-auto">

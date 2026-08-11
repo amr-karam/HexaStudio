@@ -135,9 +135,9 @@ describe('ContactService', () => {
     it('should not crash when aiChat service is missing', async () => {
       // Use a new service instance with aiChat as null to simulate the failure
       const unsafeService = new ContactService(
-        mockOdooService as any,
-        mockRedisService as any,
-        null as any,
+        mockOdooService as unknown as OdooService,
+        mockRedisService as unknown as RedisService,
+        null as unknown as AiChatService,
       );
 
       const result = await unsafeService.sendMessage({

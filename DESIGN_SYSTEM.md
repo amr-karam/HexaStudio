@@ -61,3 +61,16 @@ Spacing follows the **Golden Ratio (1.618)** and 8px grid scale:
 - **No Generic Colors**: Plain red/blue/green are strictly forbidden. Use HSL/Hex tailored luxury tokens (`#D4AF37`, `#22C55E`, `#EF4444`).
 - **No Ad-Hoc Utilities**: All component styles MUST use defined tokens.
 - **Glassmorphism**: Backdrop blur MUST use `backdrop-blur-xl` combined with `border-white/10` or `border-gold/30`.
+
+---
+
+## 5. SINGLE SOURCE OF TRUTH (Aug 2026 — ADR-013)
+
+The HEXA STUDIO design system has **one canonical implementation**: `apps/frontend/`.
+
+- **Tokens**: `apps/frontend/src/app/globals.css` (`@theme` + `:root`), `apps/frontend/src/styles/artisan-tokens.css`, `apps/frontend/src/lib/motion/tokens.ts`
+- **Primitives**: `apps/frontend/src/components/ui/`
+- **Enforcement**: `scripts/check-design-tokens.mjs` (integrated into frontend lint via `--allow-inline-style-hex`)
+- **Archived**: `packages/ui` (Navy/Indigo system) retired per [ADR-013](../docs/adr/013-retire-packages-ui.md) — moved to `docs/adr/archive/packages-ui-snapshot/`
+
+All new design work targets the `apps/frontend` token namespace and component library.

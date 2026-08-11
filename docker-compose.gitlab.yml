@@ -104,12 +104,13 @@ services:
         puma['worker_timeout'] = 30
         puma['worker_max_memory'] = 512
         
-        # Gitaly (Git operations) optimization
+        # Gitaly (Git operations) — pack objects cache DISABLED: the /cache
+        # directory is not mounted in this container, so enabling it caused
+        # 'mkdir /cache: permission denied' → git clone/fetch failures
+        # ('aborting due to possible repository corruption').
         gitaly['configuration'] = {
           'pack_objects_cache' => {
-            'enabled' => true,
-            'dir' => '/cache/gitlab/gitaly/pack-objects',
-            'max_size' => '10.gb'
+            'enabled' => false
           }
         }
         

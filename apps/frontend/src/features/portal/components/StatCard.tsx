@@ -53,40 +53,40 @@ export function StatCard({ stat, index = 0 }: StatCardProps) {
           : { y: -2, transition: { duration: 0.2 } }
       }
       className={cn(
-        'relative p-5 rounded-xl',
-        'bg-surface border border-border/30',
-        'hover:border-border-light/50 transition-colors duration-300',
+        'relative p-6 rounded-sm',
+        'bg-background/40 backdrop-blur-sm border border-white/5',
+        'hover:border-accent/20 transition-all duration-700 ease-out-expo',
         'group cursor-default',
       )}
     >
       {/* Icon + Trend */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="w-10 h-10 rounded-lg bg-white/[0.03] border border-border/20 flex items-center justify-center group-hover:border-accent/20 transition-colors duration-300">
+      <div className="flex items-center justify-between mb-6">
+        <div className="w-10 h-10 rounded-none bg-surface-light/50 border border-border/20 flex items-center justify-center group-hover:border-accent/30 transition-colors duration-500">
           <Icon
             name={stat.icon as IconName}
-            size={18}
-            className="text-neutral-500 group-hover:text-accent transition-colors duration-300"
+            size={16}
+            className="text-neutral-500 group-hover:text-accent transition-colors duration-500"
           />
         </div>
 
-        <div className={cn('flex items-center gap-1 text-xs font-mono', trend.color)}>
-          <Icon name={trend.icon} size={12} />
+        <div className={cn('flex items-center gap-1 text-[10px] font-mono tracking-[0.2em] uppercase', trend.color)}>
+          <Icon name={trend.icon} size={10} />
           <span>{stat.trend.value}%</span>
         </div>
       </div>
 
       {/* Value */}
-      <p className="text-3xl font-serif font-light text-foreground tracking-tight mb-1">
+      <p className="text-4xl font-serif font-light text-foreground/90 tracking-tight mb-2">
         {formatValue(stat.value, stat.format)}
       </p>
 
       {/* Label */}
-      <p className="text-xs text-neutral-500 uppercase tracking-wider font-mono">
+      <p className="text-[9px] text-neutral-500 uppercase tracking-[0.3em] font-mono">
         {stat.label}
       </p>
 
       {/* Subtle gold accent line on hover */}
-      <div className="absolute bottom-0 left-4 right-4 h-[1px] bg-accent/0 group-hover:bg-accent/20 transition-colors duration-500" />
+      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-accent/0 group-hover:bg-accent/30 transition-colors duration-1000" />
     </motion.div>
   );
 }

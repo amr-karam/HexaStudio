@@ -87,7 +87,6 @@
     "apps/backend",
     "apps/mobile",
     "packages/types",
-    "packages/ui",
     "packages/utils"
   ],
   "optionalDependencies": {

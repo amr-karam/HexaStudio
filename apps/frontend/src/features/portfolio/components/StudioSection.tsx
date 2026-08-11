@@ -8,8 +8,8 @@ import { RadialGlow } from '@/components/animation';
 export const StudioSection = () => {
   return (
     <section className="px-8 md:px-16 py-32 bg-background relative overflow-hidden">
-      <RadialGlow color="#D4AF37" size={600} top="-200px" right="-120px" blur={70} opacity={0.08} />
-      <RadialGlow color="#D4AF37" size={400} bottom="-150px" left="-80px" blur={50} opacity={0.06} />
+      <RadialGlow color="#D4AF37" size={700} top="-300px" right="-200px" blur={100} opacity={0.04} />
+      <RadialGlow color="#D4AF37" size={500} bottom="-200px" left="-150px" blur={80} opacity={0.03} />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
         <motion.div
           initial={{ opacity: 0, x: -30 }}

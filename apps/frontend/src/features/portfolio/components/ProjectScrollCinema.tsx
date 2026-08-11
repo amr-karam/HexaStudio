@@ -14,7 +14,7 @@ import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { EASE } from '@/lib/motion';
 import { getGsap } from '@/lib/gsap';
 import { onIdle } from '@/lib/idle';
-
+import { OrnamentalRule, ChapterNumeral, DoubleRule } from '@/components/storybook/BookOrnaments';
 
 /* -------------------------------------------------------------------------- */
 /*  Types                                                                      */
@@ -46,6 +46,18 @@ function projectStats(project: Project) {
   ].filter((s) => s.value !== '—');
 }
 
+/**
+ * Chapter divider — a DoubleRule with generous book-style spacing.
+ * Used to separate major sections within the case study.
+ */
+function ChapterDivider() {
+  return (
+    <div className="my-20 md:my-28" aria-hidden="true">
+      <DoubleRule />
+    </div>
+  );
+}
+
 /* -------------------------------------------------------------------------- */
 /*  Chapter: 01 — HERO                                                        */
 /* -------------------------------------------------------------------------- */
@@ -65,16 +77,23 @@ function ChapterHero({ project }: { project: Project }) {
         <LazyProjectSceneWrapper project={project} />
       ) : (
         <div className="absolute inset-0">
-          <Image
-            src={project.coverImage}
-            alt={project.title}
-            fill
-            priority
-            placeholder="blur"
-            blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGAExecuteX7pAAAAAElFTkSuQmCC"
-            sizes="100vw"
-            className="object-cover opacity-60"
-          />
+          <motion.div
+            initial={{ scale: 1.05 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 10, ease: 'linear' }}
+            className="absolute inset-0"
+          >
+            <Image
+              src={project.coverImage}
+              alt={project.title}
+              fill
+              priority
+              placeholder="blur"
+              blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGAExecuteX7pAAAAAElFTkSuQmCC"
+              sizes="100vw"
+              className="object-cover opacity-60"
+            />
+          </motion.div>
           <div className="absolute inset-0 bg-gradient-to-b from-obsidian/20 via-transparent to-background" />
         </div>
       )}
@@ -136,16 +155,15 @@ function ChapterBrief({ project }: { project: Project }) {
         <div className="lg:col-span-7 space-y-12">
           <ChapterMarker index={2} title="Brief" className="mb-8" />
 
-          {/* Oversized index numeral (bdn DNA) */}
-          <motion.div
-            initial={staticMode ? { opacity: 1 } : { opacity: 0, x: -40 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.8, ease: EASE.entrance }}
-            className="font-serif text-[120px] md:text-[200px] leading-none text-accent/10 font-light select-none pointer-events-none"
-            aria-hidden="true"
-          >
-            02
-          </motion.div>
+          {/* Chapter numeral — Roman numeral treatment */}
+          <div className="mb-10" aria-hidden="true">
+            <ChapterNumeral number={2} />
+          </div>
+
+          {/* Ornamental rule above the description */}
+          <div aria-hidden="true" className="mb-10">
+            <OrnamentalRule />
+          </div>
 
           <motion.p
             initial={staticMode ? { opacity: 1 } : { opacity: 0, y: 30 }}
@@ -155,6 +173,11 @@ function ChapterBrief({ project }: { project: Project }) {
           >
             {project.description}
           </motion.p>
+
+          {/* Ornamental rule below the description */}
+          <div aria-hidden="true" className="mt-10">
+            <OrnamentalRule />
+          </div>
         </div>
 
         {/* Right: metadata rows with stagger (bdn DNA) */}
@@ -211,49 +234,49 @@ function ChapterExperience({ project }: { project: Project }) {
     let ctx: { revert: () => void } | null = null;
 
     const cancelIdle = onIdle(() => {
-    void (async () => {
-      const [gsap, scrollTriggerModule] = await Promise.all([
-        getGsap(),
-        import('gsap/ScrollTrigger'),
-      ]);
-      if (cancelled) return;
-      const { ScrollTrigger } = scrollTriggerModule;
+      void (async () => {
+        const [gsap, scrollTriggerModule] = await Promise.all([
+          getGsap(),
+          import('gsap/ScrollTrigger'),
+        ]);
+        if (cancelled) return;
+        const { ScrollTrigger } = scrollTriggerModule;
 
-      ctx = gsap.context(() => {
-        // Pin the 3D viewport while the user scrubs through it.
-        ScrollTrigger.create({
-          trigger: section,
-          start: 'top top',
-          end: '+=150%', // 1.5× viewport of scrub distance
-          pin: pin,
-          pinSpacing: false,
-          anticipatePin: 1,
-        });
+        ctx = gsap.context(() => {
+          // Pin the 3D viewport while the user scrubs through it.
+          ScrollTrigger.create({
+            trigger: section,
+            start: 'top top',
+            end: '+=150%', // 1.5× viewport of scrub distance
+            pin: pin,
+            pinSpacing: false,
+            anticipatePin: 1,
+          });
 
-        // Subtle scale pulse on the pinned content as scrub progresses.
-        gsap.fromTo(
-          pin,
-          { scale: 1 },
-          {
-            scale: 1.02,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: section,
-              start: 'top top',
-              end: '+=150%',
-              scrub: 1,
+          // Subtle scale pulse on the pinned content as scrub progresses.
+          gsap.fromTo(
+            pin,
+            { scale: 1 },
+            {
+              scale: 1.02,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: section,
+                start: 'top top',
+                end: '+=150%',
+                scrub: 1,
+              },
             },
-          },
-        );
-      }, section);
+          );
+        }, section);
 
-      // Refresh after fonts settle.
-      if (document.fonts?.ready) {
-        void document.fonts.ready
-          .then(() => ScrollTrigger.refresh())
-          .catch(() => undefined);
-      }
-    })();
+        // Refresh after fonts settle.
+        if (document.fonts?.ready) {
+          void document.fonts.ready
+            .then(() => ScrollTrigger.refresh())
+            .catch(() => undefined);
+        }
+      })();
     }, 1200);
 
     return () => {
@@ -315,18 +338,17 @@ function ChapterDetails({ project }: { project: Project }) {
       className="relative min-h-screen w-full bg-background py-32 px-8 md:px-16"
     >
       <div ref={ref} className="max-w-[1400px] mx-auto">
-        <ChapterMarker index={4} title="Details" className="mb-8" />
+        <ChapterMarker index={4} title="Details" className="mb-10" />
 
-        {/* Oversized index numeral */}
-        <motion.div
-          initial={staticMode ? { opacity: 1 } : { opacity: 0, x: -40 }}
-          animate={inView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.8, ease: EASE.entrance }}
-          className="font-serif text-[120px] md:text-[200px] leading-none text-accent/10 font-light select-none pointer-events-none mb-12"
-          aria-hidden="true"
-        >
-          04
-        </motion.div>
+        {/* Chapter numeral — Roman numeral treatment */}
+        <div className="mb-12" aria-hidden="true">
+          <ChapterNumeral number={4} />
+        </div>
+
+        {/* Ornamental rule above the editorial framing */}
+        <div aria-hidden="true" className="mb-12">
+          <OrnamentalRule />
+        </div>
 
         {/* Editorial framing — § eyebrow + serif sub-title (bdsn.club DNA) */}
         <div className="mb-12 max-w-2xl">
@@ -347,6 +369,11 @@ function ChapterDetails({ project }: { project: Project }) {
             The details behind{' '}
             <em className="font-serif italic text-gradient-gold">the build</em>
           </motion.h2>
+        </div>
+
+        {/* Ornamental rule below the title */}
+        <div aria-hidden="true" className="mb-16">
+          <OrnamentalRule />
         </div>
 
         {/* Counter grid — artisan glass panel + gold specular top (animejs stagger DNA) */}
@@ -448,6 +475,11 @@ function ChapterDetails({ project }: { project: Project }) {
           </motion.div>
         )}
       </div>
+
+      {/* Bottom double rule — chapter end */}
+      <div className="absolute bottom-16 left-1/2 -translate-x-1/2" aria-hidden="true">
+        <DoubleRule />
+      </div>
     </section>
   );
 }
@@ -468,6 +500,16 @@ function ChapterNext({ project: _project, nextProject }: { project: Project; nex
     >
       <div ref={ref} className="max-w-[1400px] mx-auto w-full">
         <ChapterMarker index={5} title="Next" className="mb-16" />
+
+        {/* Chapter numeral — Roman numeral treatment */}
+        <div className="mb-12" aria-hidden="true">
+          <ChapterNumeral number={5} />
+        </div>
+
+        {/* Ornamental rule */}
+        <div aria-hidden="true" className="mb-12">
+          <OrnamentalRule />
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* CTA side */}
@@ -522,7 +564,7 @@ function ChapterNext({ project: _project, nextProject }: { project: Project; nex
                     alt={nextProject.title}
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000"
+                    className="object-cover opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-[2000ms] ease-out"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
 
@@ -566,6 +608,11 @@ function ChapterNext({ project: _project, nextProject }: { project: Project; nex
             </motion.div>
           )}
         </div>
+
+        {/* Bottom double rule — chapter end */}
+        <div className="absolute bottom-16 left-1/2 -translate-x-1/2" aria-hidden="true">
+          <DoubleRule />
+        </div>
       </div>
     </section>
   );
@@ -580,9 +627,13 @@ export function ProjectScrollCinema({ project, nextProject }: ProjectScrollCinem
     <>
       <ProjectChapterRail />
       <ChapterHero project={project} />
+      <ChapterDivider />
       <ChapterBrief project={project} />
+      <ChapterDivider />
       <ChapterExperience project={project} />
+      <ChapterDivider />
       <ChapterDetails project={project} />
+      <ChapterDivider />
       <ChapterNext project={project} nextProject={nextProject} />
     </>
   );

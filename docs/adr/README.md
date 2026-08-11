@@ -18,6 +18,7 @@ This directory contains Architecture Decision Records for HEXA Vision.
 | [ADR-010](010-operating-model.md) | AI-Agent Operating Model (GOVERNANCE ΓåÆ ORCHESTRATOR ΓåÆ ARCHITECT/BUILDER/REVIEWER ΓåÆ GitLab ΓåÆ CI/CD ΓåÆ Staging ΓåÆ Production) | Accepted |
 | [ADR-011](011-docs-migration.md) | Documentation Tree Migration to `docs/<area>/` | Accepted |
 | [ADR-012](012-specification-and-plan-refresh.md) | Specification and Planning Documentation Refresh (Aug 2026) | Accepted |
+| [ADR-013](013-retire-packages-ui.md) | Retire `@hexastudio/ui` Package and Unify Design System | Accepted |
 
 ## Creating New ADRs
 

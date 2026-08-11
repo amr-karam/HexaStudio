@@ -1,9 +1,38 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** August 9, 2026 — Design System Publish + Storybook Docs Deployment Pipeline (CI-validated)
-**Version:** 2.1.6
+**Last Updated:** August 11, 2026 — Design System Unification (ADR-013: Retire @hexastudio/ui, inline primitives)
+**Version:** 2.1.8
 **Authority Level:** 13 (Production)
-**Current Phase:** Production-Ready — Odoo-First Architecture + Workflow Automation (DEPLOYED)
+**Current Phase:** Production-Ready — Design System Unified + Odoo-First Architecture + Workflow Automation (DEPLOYED)
+
+---
+
+## 0. Design System Unification — ADR-013 (Aug 11, 2026)
+
+- **Retired `@hexastudio/ui` package** — 4% adoption (3 of ~70 exports), broken build (`noEmit: true`), governance violation (Navy/Indigo palette vs mandated Gold/Black)
+- **Inlined 3 consumed primitives** into `apps/frontend/src/components/ui/` with token remapping:
+  - `Button.tsx` — zero token changes (already used `bg-accent`/`text-background`/`ring-accent` ✓)
+  - `Input.tsx` — `var(--color-primary)` → `text-foreground`; `var(--color-error)` → `text-red-500` utility
+  - `Modal.tsx` — `var(--color-primary-500)` → `var(--color-accent)`; `var(--color-text-muted)` → `var(--color-neutral-400)`
+- **Removed workspace wiring** — `packages/ui` removed from root `workspaces`; `@hexastudio/ui` dependency removed from `apps/frontend/package.json`
+- **Archived** package source to `docs/adr/archive/packages-ui-snapshot/` with `DEPRECATED.md` linking to ADR-013
+- **Updated governance docs** — `DESIGN_SYSTEM.md` §5 notes single source of truth = `apps/frontend`
+- **Single canonical design system** now: `apps/frontend` (Gold/Black Silent Luxury) with `globals.css`, `artisan-tokens.css`, `motion/tokens.ts`, and `scripts/check-design-tokens.mjs` enforcement
+- **Verified**: frontend typecheck 0 errors, ESLint 0/0 (`--max-warnings=0`), design-token gate PASS, **208/208 tests** (36 files)
+
+---
+
+## 1.0.3 CinematicPreloader — "The Atelier Frame" (Aug 11, 2026)
+
+- **Elevated `apps/frontend/src/components/ui/overlays/CinematicPreloader.tsx`** — purely additive Silent Luxury atmospheric depth behind the untouched 1.8s timing/phase machine:
+  - Blueprint drafting grid (64px cell hairlines at `rgba(212,175,55,0.05)`) + central radial gold aura (`rgba(212,175,55,0.06)`) fading in behind the HEXA logotype (`aria-hidden` + `pointer-events-none`).
+  - 1px gold specular top edge (`from-transparent via-accent/20 to-transparent`) mirroring the existing bottom gold edge.
+  - Gold underline rule drawing in via `scaleX` 0→1 `origin-left` with `EASING.easeOutExpo`, plus a rotate-45 diamond ornament (`border-accent/50`) beneath the letters.
+  - Studio wordmark "HexaStudio" flanked by diamond bullets (`border-accent/30`).
+  - Four architectural corner registration ticks (`border-accent/30`, 16px) in the atelier drafting-frame motif.
+  - All new elements `aria-hidden="true"` + `pointer-events-none`; token-pure (no raw hex, no `cubic-bezier`).
+- **Verified**: frontend typecheck 0 errors, ESLint 0/0 (`--max-warnings=0`), design-token gate repo-wide PASS, **208/208 tests** (36 files). Tailwind v4 compile verified for all new utility classes (PostCSS + `@tailwindcss/postcss`).
+- **Preserved untouched**: `MAX_INTRO_MS`, `COUNT_BUDGET_MS`, `EXIT_DURATION`, phase machine, reduced-motion/webdriver/sessionStorage skip gates, counter animation, `AnimatePresence` exit, and `role="status"`/`aria-live` attributes.
 
 ---
 
@@ -16,6 +45,12 @@
 - **Wired `artisan-tokens.css`** (`.artisan-glass` family) into `globals.css` via `@import "../styles/artisan-tokens.css"` — previously the artisan glass classes were never loaded (dead CSS) despite being used across Footer, LiquidGlassCard, ArchitecturalDataViz, and the atelier page.
 - **Verified**: frontend lint 0/0, typecheck 0 errors, **208/208 tests** (36 files), design-token gate: atelier page fully clean (repo-wide strict check dropped 150→149 pre-existing violations across 29→28 files).
 - **Note**: production `next build` is currently blocked by an unrelated concurrent WIP in `StorybookChapter.tsx` (`@/providers/quality-tier` module not found — import renamed from `quality-provider`; file modified 10:07 PM while this task ran). Not caused by this change; CSS pipeline validated directly via PostCSS (artisan utilities now present in bundle).
+
+## 1.0.2 About Rebuild — "The Manifesto" (Aug 11, 2026)
+
+- **Rebuilt `apps/frontend/src/app/about/page.tsx`** — Silent Luxury editorial monograph narrative, five movements: I. Frontispiece (title-page hero with ghost `Ⅰ`, `.storybook-ornament` double-rule, `TextCharReveal` + `ClientSilkShaderBackground`), II. The Doctrine (two-column fine-press essay with `.drop-cap`, justified `.storybook-body`, gold serif pull-quote, `§ 01` marker; CMS branch preserved via `StrapiBlocks`), III. The Method (four `.artisan-glass` + `.artisan-specular-top` pillar cards — Vision / Precision / Atmosphere / Fidelity — with Playfair serif numerals `Ⅰ–Ⅳ` and mono labels), IV. The Practitioners (`§ 03` band + existing `TeamSection`), V. Colophon (imprint-style closing, `§ 04`, mono studio details, `LiquidGlassCard` "Work With Us" CTA).
+- **Server Component preserved** (no `'use client'` at page level); only pre-existing client islands imported. Token-pure: `text-accent`/`bg-accent/25`-style opacities, `var(--hexa-ease-interaction)`, no raw `cubic-bezier`, no hardcoded hex. Ghost numerals `Ⅱ`/`Ⅲ` via `.chapter-numeral`; `§` markers via mono labels. Ornaments centered through flex wrappers (unlayered `.storybook-ornament` margins override Tailwind margin utilities).
+- **Verified**: frontend lint 0/0, design-token gate clean for the about page (repo-wide: ALL DESIGN TOKEN CHECKS PASSED), **208/208 tests** (36 files). My file introduces zero type errors; workspace `typecheck` remains blocked ONLY by the same pre-existing concurrent WIP in `StorybookChapter.tsx` (`@/providers/quality-tier` module not found — re-confirmed identical with my change stashed; file re-modified by concurrent process 10:32–10:34 PM while this task ran).
 
 ## 1.1 Housekeeping & Disposition (Aug 10, 2026)
 - Portal AI Copilot "premium redesign" task (DELEGATION_TASK/PREMIUM_REDESIGN/EXECUTION_PLAN docs) marked SUPERSEDED — never implemented; production copilot lives at `features/portal/components/PortalAiCopilot.tsx`.
