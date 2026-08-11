@@ -6,15 +6,15 @@ import { useQualityTier } from '@/providers/quality-provider';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { getGsap } from '@/lib/gsap';
 import { onIdle } from '@/lib/idle';
-import { OrnamentalRule, CornerFlourish, ChapterNumeral } from './BookOrnaments';
+import { OrnamentalRule, CornerFlourish, ChapterNumeral, DoubleRule } from './BookOrnaments';
 
 /**
  * StorybookChapter — a chapter from a fine press book.
  *
  * Visual language:
  * - Warm dark paper background with subtle gold undertone
- * - Double decorative border frame (SVG, low opacity)
- * - Corner flourishes (top-left, top-right)
+ * - Double decorative border frame (CSS pseudo-elements)
+ * - Corner flourishes (top-left, top-right, bottom-left, bottom-right)
  * - Large translucent Roman numeral in the top-left corner
  * - Centered chapter title with ornamental rules above and below
  * - Generous page-like padding, right-edge shadow for depth
@@ -87,14 +87,14 @@ export function StorybookChapter({
 
   // Chapter intro: numeral + rules + title
   const chapterIntro = (
-    <div className="relative z-10 max-w-3xl mx-auto text-center mb-16 md:mb-20">
+    <div className="relative z-10 max-w-3xl mx-auto text-center">
       {/* Large chapter numeral */}
-      <div aria-hidden="true" className="mb-8">
+      <div aria-hidden="true" className="mb-10">
         <ChapterNumeral number={chapterNumber} />
       </div>
 
       {/* Upper ornamental rule */}
-      <div aria-hidden="true" className="mb-5">
+      <div aria-hidden="true" className="mb-6">
         <OrnamentalRule />
       </div>
 
@@ -107,7 +107,7 @@ export function StorybookChapter({
       </h2>
 
       {/* Lower ornamental rule */}
-      <div aria-hidden="true" className="mb-4">
+      <div aria-hidden="true" className="mb-6">
         <OrnamentalRule />
       </div>
     </div>
@@ -126,9 +126,13 @@ export function StorybookChapter({
       {/* Double border frame */}
       <div className="storybook-border absolute inset-0 pointer-events-none" />
 
-      {/* Corner flourishes */}
+      {/* Top corner flourishes */}
       <CornerFlourish position="top-left" className="corner-flourish-tl" data-storybook-ornament />
       <CornerFlourish position="top-right" className="corner-flourish-tr" data-storybook-ornament />
+
+      {/* Bottom corner flourishes (mirror) */}
+      <CornerFlourish position="top-left" className="absolute bottom-6 left-6 md:bottom-8 md:left-8 rotate-180" data-storybook-ornament />
+      <CornerFlourish position="top-right" className="absolute bottom-6 right-6 md:bottom-8 md:right-8 rotate-180" data-storybook-ornament />
 
       {/* Chapter numeral (top-left, behind everything) */}
       <div
@@ -159,7 +163,7 @@ export function StorybookChapter({
         aria-hidden="true"
         data-storybook-ornament
       >
-        <OrnamentalRule />
+        <DoubleRule />
       </div>
 
       {/* Subtle left-edge page shadow */}
