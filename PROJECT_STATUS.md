@@ -87,7 +87,8 @@
 - `.env.local` (development — 24 provider keys including FreeTheAI, MiniMax, DigitalOcean, Tailscale, Vercel)
 - `.env` (docker/production)
 - `apps/backend/.env` (NestJS AI multi-provider engine)
-- `~/.config/opencode/opencode.json` (OpenCode global configuration)
+- `~/.config/opencode/opencode.json` (OpenCode global configuration — providers, MCP, agents)
+- `~/.opencode/opencode.jsonc` (OpenCode Aperture API provider configuration — `apiProvider: aperture`, baseURL: `http://hexastudio-1.minskin-mark.ts.net/v1`)
 - Backend `env.ts` Zod schema (type-safe, validated at startup)
 
 
