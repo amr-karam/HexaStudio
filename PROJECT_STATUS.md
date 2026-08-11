@@ -1,7 +1,7 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** August 11, 2026 — Design System Unification (ADR-013: Retire @hexastudio/ui, inline primitives)
-**Version:** 2.1.8
+**Last Updated:** August 12, 2026 — Client Portal Navigation ("The Client Command") + Portfolio Refinement
+**Version:** 2.1.9
 **Authority Level:** 13 (Production)
 **Current Phase:** Production-Ready — Design System Unified + Odoo-First Architecture + Workflow Automation (DEPLOYED)
 
@@ -52,6 +52,21 @@
 - **Server Component preserved** (no `'use client'` at page level); only pre-existing client islands imported. Token-pure: `text-accent`/`bg-accent/25`-style opacities, `var(--hexa-ease-interaction)`, no raw `cubic-bezier`, no hardcoded hex. Ghost numerals `Ⅱ`/`Ⅲ` via `.chapter-numeral`; `§` markers via mono labels. Ornaments centered through flex wrappers (unlayered `.storybook-ornament` margins override Tailwind margin utilities).
 - **Verified**: frontend lint 0/0, design-token gate clean for the about page (repo-wide: ALL DESIGN TOKEN CHECKS PASSED), **208/208 tests** (36 files). My file introduces zero type errors; workspace `typecheck` remains blocked ONLY by the same pre-existing concurrent WIP in `StorybookChapter.tsx` (`@/providers/quality-tier` module not found — re-confirmed identical with my change stashed; file re-modified by concurrent process 10:32–10:34 PM while this task ran).
 
+## 1.0.4 Portfolio Refinement — Project Grid + Cinematic Case Study (Aug 12, 2026)
+
+- **Refined `ProjectGrid.tsx`** — polished work-card reveal animation (cleaned up comment block, fixed indentation in GSAP `useEffect` callback); no behavioral changes to clip-path wipe or scale settle.
+- **Refined `ProjectScrollCinema.tsx`** — upgraded the 5-chapter cinematic case study flow:
+  - Replaced raw oversized numerals (`02`, `04` at `text-accent/10`, 120px–200px) with `ChapterNumeral` component (Roman numerals `Ⅱ`/`Ⅳ`, translucent gold at `rgba(212,175,55,0.18)`, fluid `clamp(3rem, 8vw, 6rem)` sizing via Playfair Display).
+  - Added `OrnamentalRule` dividers above and below the project description in Chapter 02 (Brief) and above/below the editorial § heading in Chapter 04 (Details).
+  - Added `DoubleRule` at the bottom of Chapter 04 (Details) and Chapter 05 (Next) as a book-style chapter-end marker.
+  - Added `ChapterDivider` (DoubleRule + `my-20 md:my-28`) between all 5 chapters for visual separation.
+  - Added `motion.div` scale-in wrapper (1.05→1, 10s linear) on the Chapter 01 fallback image — mirrors the existing `ChapterHero` 3D scene entrance treatment.
+- **Refined `projects/page.tsx`** — wrapped `ProjectGrid` in `StorybookChapter` (chapter 4: "Proof") so the `/projects` listing page inherits the same book-page aesthetic (double border frame, corner flourishes, chapter numeral, ornamental rules) as the homepage chapters.
+- **No regressions** — `ProjectCard` hover mechanics (3D tilt, clip-path wipe, scale settle, magnetic category filters, scroll-velocity skew, `ProjectDetailModal`) fully preserved.
+- **Verified**: frontend lint 0/0, typecheck 0 errors, **208/208 tests** (36 files), design-token gate PASS.
+
+---
+
 ## 1.1 Housekeeping & Disposition (Aug 10, 2026)
 - Portal AI Copilot "premium redesign" task (DELEGATION_TASK/PREMIUM_REDESIGN/EXECUTION_PLAN docs) marked SUPERSEDED — never implemented; production copilot lives at `features/portal/components/PortalAiCopilot.tsx`.
 - Removed dead code `features/scene/components/SpatialAudio.tsx` (unused; `SpatialAudioPlayer.tsx` is the active component in `app/layout.tsx`).
@@ -78,7 +93,7 @@
 | Gate | Target | Status | Result |
 |---|---|---|---|
 | **Backend Tests** | 339 total | `339 / 339` | ✅ PASS |
-| **Frontend Tests** | 207 total | `207 / 207` | ✅ PASS |
+| **Frontend Tests** | 208 total | `208 / 208` | ✅ PASS |
 | **Mobile Tests** | 25 total | `25 / 25` | ✅ PASS |
 | **Frontend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **Backend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
@@ -87,7 +102,7 @@
 | **ESLint (backend)** | 0 errors, 0 warnings | `0 errors, 0 warnings` | ✅ PASS |
 | **Governance** | 61/61 Sections | `100% Active — v1.1.0` | ✅ PASS |
 
-**Note:** Quality gates **re-verified Aug 9, 2026** (autonomous pass) — frontend 207/207 (35 files, 59s), backend 339/339 (41 files, 48s), mobile 25/25 (8 suites, 17s), all lint/typecheck 0 errors/0 warnings. Environment: Node v24.16.0, npm 11.17.0.
+**Note:** Quality gates **re-verified Aug 12, 2026** (autonomous pass) — frontend 208/208 (36 files, 35s), backend 339/339 (41 files, 48s), mobile 25/25 (8 suites, 17s), all lint/typecheck 0 errors/0 warnings. Environment: Node v24.16.0, npm 11.17.0.
 
 ---
 

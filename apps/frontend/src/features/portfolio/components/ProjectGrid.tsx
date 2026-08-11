@@ -8,7 +8,6 @@ import { Project } from '@hexastudio/types';
 import { Magnetic } from '@/components/ui/Magnetic';
 import { ChapterMarker } from '@/components/animation/ChapterMarker';
 import { KineticTitle } from '@/components/scroll/KineticTitle';
-import { OrnamentalRule, ChapterNumeral } from '@/components/storybook/BookOrnaments';
 import { getGsap } from '@/lib/gsap';
 import { onIdle } from '@/lib/idle';
 import { cn } from '@/lib/utils';
@@ -139,7 +138,6 @@ const ProjectCard = ({ title, category, image, index, onClick, isFocused, status
           <Card variant="solid" className="overflow-hidden p-0 aspect-[3/4]">
             <div className="absolute inset-0 bg-accent/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
             <div ref={imageClipRef} className="h-full w-full relative overflow-hidden bg-surface-light">
-              {/* Hover zoom (CSS-owned transform) wraps the GSAP-owned settle scale */}
               <div className="h-full w-full transition-transform duration-1000 ease-out-expo group-hover:scale-110">
                 <div ref={imageScaleRef} data-distortion="work-card" className="relative h-full w-full">
                   <Image
@@ -233,96 +231,6 @@ interface ProjectGridProps {
   projects: Project[];
 }
 
-/**
- * ProjectGridSection — frames the project grid in storybook chapter aesthetics.
- *
- * Provides a book-page border, corner flourishes, a large Roman numeral,
- * ornamental rules, and the chapter marker — wrapping the existing grid logic.
- */
-function ProjectGridSection({
-  children,
-  chapterNumber,
-  chapterTitle,
-  id,
-}: {
-  children: React.ReactNode;
-  chapterNumber: number;
-  chapterTitle?: string;
-  id?: string;
-}) {
-  return (
-    <section
-      id={id ?? `ch-${chapterNumber}`}
-      className="storybook-page-padding page-shadow storybook-border relative overflow-hidden"
-      style={{
-        background: 'linear-gradient(180deg, rgba(26,22,18,0.38) 0%, rgba(15,13,10,0.55) 100%)',
-      }}
-    >
-      {/* Double border frame */}
-      <div className="storybook-border absolute inset-0 pointer-events-none" />
-
-      {/* Corner flourishes */}
-      <div className="corner-flourish-tl absolute" aria-hidden="true">
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" style={{ transform: 'rotate(0deg)', color: 'rgba(212, 175, 55, 0.28)' }} aria-hidden="true">
-          <path d="M4 44 C4 20, 20 4, 44 4" stroke="currentColor" strokeWidth="0.75" strokeLinecap="round" />
-          <circle cx="4" cy="44" r="1.5" fill="currentColor" />
-          <path d="M10 38 C10 24, 22 14, 34 10" stroke="currentColor" strokeWidth="0.5" strokeLinecap="round" opacity="0.5" />
-        </svg>
-      </div>
-      <div className="corner-flourish-tr absolute" aria-hidden="true">
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" style={{ transform: 'rotate(90deg)', color: 'rgba(212, 175, 55, 0.28)' }} aria-hidden="true">
-          <path d="M4 44 C4 20, 20 4, 44 4" stroke="currentColor" strokeWidth="0.75" strokeLinecap="round" />
-          <circle cx="4" cy="44" r="1.5" fill="currentColor" />
-          <path d="M10 38 C10 24, 22 14, 34 10" stroke="currentColor" strokeWidth="0.5" strokeLinecap="round" opacity="0.5" />
-        </svg>
-      </div>
-
-      {/* Chapter numeral (top-left, behind everything) */}
-      <div className="absolute top-6 left-6 md:top-8 md:left-8" aria-hidden="true">
-        <ChapterNumeral number={chapterNumber} />
-      </div>
-
-      {/* Chapter title + ornamental rules */}
-      {chapterTitle && (
-        <div className="relative z-10 max-w-3xl mx-auto text-center mb-16 md:mb-20">
-          <div aria-hidden="true" className="mb-10">
-            <ChapterNumeral number={chapterNumber} />
-          </div>
-          <div aria-hidden="true" className="mb-6">
-            <OrnamentalRule />
-          </div>
-          <h2 className="storybook-heading mb-3" id={`chapter-title-${chapterNumber}`}>
-            {chapterTitle}
-          </h2>
-          <div aria-hidden="true" className="mb-6">
-            <OrnamentalRule />
-          </div>
-        </div>
-      )}
-
-      {/* Main content */}
-      <div className="relative z-10">
-        {children}
-      </div>
-
-      {/* Bottom double rule */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2" aria-hidden="true">
-        <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', color: 'rgba(212, 175, 55, 0.1)' }} aria-hidden="true">
-          <rect x="3" y="3" width="94" height="94" rx="1" fill="none" stroke="currentColor" strokeWidth="0.3" />
-        </svg>
-        <div className="flex flex-col items-center gap-2" style={{ color: 'rgba(212, 175, 55, 0.3)' }}>
-          <span style={{ width: '48px', height: '1px', background: 'currentColor' }} />
-          <span style={{ width: '14px', height: '1px', background: 'currentColor' }} />
-          <span style={{ width: '48px', height: '1px', background: 'currentColor' }} />
-        </div>
-      </div>
-
-      {/* Left-edge page shadow */}
-      <div className="absolute left-0 top-0 bottom-0 w-12 pointer-events-none opacity-20" style={{ background: 'linear-gradient(90deg, rgba(0,0,0,0.18) 0%, transparent 100%)' }} />
-    </section>
-  );
-}
-
 export const ProjectGrid = ({ projects }: ProjectGridProps) => {
   const [selectedProject, setSelectedProject] = useState<ProjectGridCard | null>(null);
   const [activeCategory, setActiveCategory] = useState('All');
@@ -388,104 +296,98 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
 
   return (
     <>
-      <ProjectGridSection
-        chapterNumber={4}
-        chapterTitle="Proof"
-        id="ch-proof"
-      >
-        {/* Chapter heading — within the storybook frame */}
-        <section ref={sectionRef} className="px-8 md:px-16 py-32 bg-background relative overflow-hidden">
-          <div className="absolute top-12 left-8 md:left-16 z-20">
-            <ChapterMarker index={4} title="Proof" />
-          </div>
-          <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
+      {/* Grid content section — storybook frame provided by parent page */}
+      <section ref={sectionRef} className="px-8 md:px-16 py-32 bg-background relative overflow-hidden">
+        <div className="absolute top-12 left-8 md:left-16 z-20">
+          <ChapterMarker index={4} title="Proof" />
+        </div>
+        <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
 
-          <div className="flex flex-col lg:flex-row justify-between items-end mb-24 gap-12">
-            <div className="w-full">
-              <motion.span
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
-              >
-                Selected Works
-              </motion.span>
-              <motion.div
-                style={{ y: headingY }}
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={makeTransition('entrance', 'page')}
-                className="max-w-2xl"
-              >
-                <KineticTitle
-                  text="Creating Visual Truth"
-                  accentWords={['Visual']}
-                  className="text-5xl md:text-7xl font-serif font-light tracking-[-0.03em] text-foreground leading-[1.05]"
-                />
-              </motion.div>
-            </div>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+        <div className="flex flex-col lg:flex-row justify-between items-end mb-24 gap-12">
+          <div className="w-full">
+            <motion.span
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={makeTransition('entrance', 'page', 0.2)}
-              className="text-neutral-500 font-light text-sm leading-relaxed w-full max-w-xs"
+              className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
             >
-              A curation of architectural narratives defined by light, material, and space.
-            </motion.p>
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-8 mb-20">
-            {categories.map((cat) => (
-              <Magnetic key={cat}>
-                <button
-                  onClick={() => setActiveCategory(cat)}
-                  className={cn(
-                    'text-[9px] uppercase tracking-[0.4em] transition-all duration-700 font-mono py-1 border-b border-transparent',
-                    activeCategory === cat
-                      ? 'text-accent border-accent'
-                      : 'text-neutral-600 hover:text-neutral-400'
-                  )}
-                >
-                  {cat}
-                </button>
-              </Magnetic>
-            ))}
-          </div>
-
-          <motion.div
-            style={enableShear ? { skewY } : undefined}
-            className="will-change-transform"
-          >
+              Selected Works
+            </motion.span>
             <motion.div
-              layout
-              className="columns-1 md:columns-2 lg:columns-4 gap-8 space-y-8"
+              style={{ y: headingY }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={makeTransition('entrance', 'page')}
+              className="max-w-2xl"
             >
-              <AnimatePresence mode="popLayout">
-                {filteredProjects.map((project, idx) => (
-                  <div
-                    key={project.slug}
-                    className="break-inside-avoid"
-                    onMouseEnter={() => setHoveredIndex(idx)}
-                    onMouseLeave={() => setHoveredIndex(null)}
-                  >
-                    <ProjectCard
-                      title={project.title}
-                      category={project.category}
-                      image={project.image}
-                      index={idx}
-                      isFocused={hoveredIndex === idx}
-                      status={project.status}
-                      onClick={() => setSelectedProject(project)}
-                    />
-                  </div>
-                ))}
-              </AnimatePresence>
+              <KineticTitle
+                text="Creating Visual Truth"
+                accentWords={['Visual']}
+                className="text-5xl md:text-7xl font-serif font-light tracking-[-0.03em] text-foreground leading-[1.05]"
+              />
             </motion.div>
+          </div>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={makeTransition('entrance', 'page', 0.2)}
+            className="text-neutral-500 font-light text-sm leading-relaxed w-full max-w-xs"
+          >
+            A curation of architectural narratives defined by light, material, and space.
+          </motion.p>
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-8 mb-20">
+          {categories.map((cat) => (
+            <Magnetic key={cat}>
+              <button
+                onClick={() => setActiveCategory(cat)}
+                className={cn(
+                  'text-[9px] uppercase tracking-[0.4em] transition-all duration-700 font-mono py-1 border-b border-transparent',
+                  activeCategory === cat
+                    ? 'text-accent border-accent'
+                    : 'text-neutral-600 hover:text-neutral-400'
+                )}
+              >
+                {cat}
+              </button>
+            </Magnetic>
+          ))}
+        </div>
+
+        <motion.div
+          style={enableShear ? { skewY } : undefined}
+          className="will-change-transform"
+        >
+          <motion.div
+            layout
+            className="columns-1 md:columns-2 lg:columns-4 gap-8 space-y-8"
+          >
+            <AnimatePresence mode="popLayout">
+              {filteredProjects.map((project, idx) => (
+                <div
+                  key={project.slug}
+                  className="break-inside-avoid"
+                  onMouseEnter={() => setHoveredIndex(idx)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                >
+                  <ProjectCard
+                    title={project.title}
+                    category={project.category}
+                    image={project.image}
+                    index={idx}
+                    isFocused={hoveredIndex === idx}
+                    status={project.status}
+                    onClick={() => setSelectedProject(project)}
+                  />
+                </div>
+              ))}
+            </AnimatePresence>
           </motion.div>
-        </section>
-      </ProjectGridSection>
+        </motion.div>
+      </section>
 
       <ProjectDetailModal
         isOpen={selectedProject !== null}

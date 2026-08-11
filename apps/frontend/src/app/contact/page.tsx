@@ -111,26 +111,26 @@ export default function ContactPage() {
             <LiquidGlassCard goldAccent glow className="p-8 md:p-16">
               <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
                 <div className="flex flex-col gap-2 group">
-                  <label className="text-[10px] uppercase tracking-widest text-neutral-500 group-focus-within:text-accent transition-colors duration-500">Full Name</label>
+                  <label className="text-[9px] uppercase tracking-[0.4em] text-neutral-500 group-focus-within:text-accent transition-colors duration-500 font-mono">Full Name</label>
                   <Input
                     placeholder="John Doe"
                     value={formState.name}
                     onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                    className={cn("bg-transparent border-b border-border focus:border-accent transition-all duration-500 rounded-none px-0", errors.name && "border-red-500")}
+                    className={cn("bg-transparent border-b border-border focus:border-accent transition-all duration-700 rounded-none px-0 py-4 text-lg font-light", errors.name && "border-red-500")}
                   />
-                  {errors.name && <span className="text-[9px] text-red-500 uppercase tracking-widest">{errors.name}</span>}
+                  {errors.name && <span className="text-[9px] text-red-500 uppercase tracking-[0.2em]">{errors.name}</span>}
                 </div>
-
+                
                 <div className="flex flex-col gap-2 group">
-                  <label className="text-[10px] uppercase tracking-widest text-neutral-500 group-focus-within:text-accent transition-colors duration-500">Email Address</label>
+                  <label className="text-[9px] uppercase tracking-[0.4em] text-neutral-500 group-focus-within:text-accent transition-colors duration-500 font-mono">Email Address</label>
                   <Input
                     placeholder="email@example.com"
                     type="email"
                     value={formState.email}
                     onChange={(e) => setFormState({ ...formState, email: e.target.value })}
-                    className={cn("bg-transparent border-b border-border focus:border-accent transition-all duration-500 rounded-none px-0", errors.email && "border-red-500")}
+                    className={cn("bg-transparent border-b border-border focus:border-accent transition-all duration-700 rounded-none px-0 py-4 text-lg font-light", errors.email && "border-red-500")}
                   />
-                  {errors.email && <span className="text-[9px] text-red-500 uppercase tracking-widest">{errors.email}</span>}
+                  {errors.email && <span className="text-[9px] text-red-500 uppercase tracking-[0.2em]">{errors.email}</span>}
                 </div>
 
                 <div className="flex flex-col gap-2 md:col-span-2 group">
