@@ -1,34 +1,29 @@
 'use client';
 
 import { useRef, useEffect, ReactNode } from 'react';
-import { useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { useQualityTier } from '@/providers/quality-provider';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { getGsap } from '@/lib/gsap';
 import { onIdle } from '@/lib/idle';
-import { OrnamentalRule, CornerFlourish, ChapterNumeral, PageBorderSVG } from './BookOrnaments';
-
-/** Book-page decorative border overlay (absolute-positioned SVG). */
-function BookBorder({ className }: { className?: string }) {
-  return <PageBorderSVG className={className} />;
-}
+import { OrnamentalRule, CornerFlourish, ChapterNumeral } from './BookOrnaments';
 
 /**
- * StorybookChapter — wraps a homepage section with book-page aesthetics.
+ * StorybookChapter — a chapter from a fine press book.
  *
- * Visual treatment:
- * - Warm paper-tone background (very subtle, doesn't fight the dark theme)
- * - Hanging decorative border frame (SVG, low opacity gold)
- * - Corner flourishes (top-left / top-right)
- * - Large translucent chapter numeral in the top-left
- * - Ornamental rule above the chapter heading area
- * - Generous page-margin padding (feels like a printed page)
- * - Subtle page shadow on the right edge
+ * Visual language:
+ * - Warm dark paper background with subtle gold undertone
+ * - Double decorative border frame (SVG, low opacity)
+ * - Corner flourishes (top-left, top-right)
+ * - Large translucent Roman numeral in the top-left corner
+ * - Centered chapter title with ornamental rules above and below
+ * - Generous page-like padding, right-edge shadow for depth
+ * - Content area with book-style typography
  *
  * Scroll behavior:
- * - Content gently fades/slides in as the chapter enters the viewport
- * - Respects reduced-motion (renders plainly)
- * - Respects quality tier (low tier = no animations)
+ * - Chapter content fades/slides in as it enters viewport
+ * - Ornament elements stagger-reveal on first enter
+ * - Respects reduced-motion and quality tiers
  */
 export function StorybookChapter({
   children,
@@ -45,120 +40,135 @@ export function StorybookChapter({
   const { staticMode } = useMotionPolicy();
   const { tier } = useQualityTier();
   const isLowTier = tier.level === 'low';
-  const shouldAnimate = !staticMode && !isLowTier;
+  const animate = !staticMode && !isLowTier;
 
-  // Scroll-driven fade + slide for the chapter content
+  // Scroll-driven fade + subtle vertical drift
   const { scrollYProgress: progress } = useScroll({
     target: ref,
     offset: ['start end', 'end start'],
   });
 
-  const opacity = useSpring(useTransform(progress, [0, 0.15, 0.5, 1], [0.4, 1, 1, 0.95]));
-  const y = useSpring(useTransform(progress, [0, 0.12, 1], [40, 0, -8]));
+  const opacity = useSpring(useTransform(progress, [0, 0.15, 0.5, 1], [0.35, 1, 1, 0.92]));
+  const y = useSpring(useTransform(progress, [0, 0.1, 1], [30, 0, -6]));
 
-  // On-first-enter GSAP micro-animation for ornament reveal
+  // Stagger-reveal ornaments on first viewport enter
   useEffect(() => {
     const el = ref.current;
-    if (!shouldAnimate || !el) return;
+    if (!animate || !el) return;
 
-    const cancel = onIdle(() => {
-      getGsap().then((gsap) => {
+    const cancel = onIdle(async () => {
+      const gsap = await getGsap();
+      if (!gsap || !el) return;
 
-        const ornaments = Array.from(el.querySelectorAll<HTMLElement>(
-          '[data-storybook-ornament]',
-        ));
-        gsap.context(() => {
-          ornaments.forEach((el, i) => {
+      const ornaments = Array.from(el.querySelectorAll<HTMLElement>(
+        '[data-storybook-ornament]',
+      ));
+      gsap.context(() => {
+        ornaments.forEach((el, i) => {
           gsap.fromTo(
             el,
-            { opacity: 0, y: 12 },
+            { opacity: 0, y: 14, scale: 0.96 },
             {
               opacity: 1,
               y: 0,
-              duration: 0.7,
-              delay: 0.15 + i * 0.08,
+              scale: 1,
+              duration: 0.8,
+              delay: 0.12 + i * 0.07,
               ease: 'expo.out',
             },
           );
-          });
-        }, el);
-      });
-    }, 2000);
+        });
+      }, el);
+    }, 2500);
     return cancel;
-  }, [shouldAnimate]);
+  }, [animate]);
 
   const idAttr = id ?? `ch-${chapterNumber}`;
+
+  // Chapter intro: numeral + rules + title
+  const chapterIntro = (
+    <div className="relative z-10 max-w-3xl mx-auto text-center mb-16 md:mb-20">
+      {/* Large chapter numeral */}
+      <div aria-hidden="true" className="mb-8">
+        <ChapterNumeral number={chapterNumber} />
+      </div>
+
+      {/* Upper ornamental rule */}
+      <div aria-hidden="true" className="mb-5">
+        <OrnamentalRule />
+      </div>
+
+      {/* Chapter title */}
+      <h2
+        id={`chapter-title-${chapterNumber}`}
+        className="storybook-heading mb-3"
+      >
+        {chapterTitle}
+      </h2>
+
+      {/* Lower ornamental rule */}
+      <div aria-hidden="true" className="mb-4">
+        <OrnamentalRule />
+      </div>
+    </div>
+  );
 
   return (
     <section
       ref={ref}
       id={idAttr}
       data-storybook-chapter=""
+      className="storybook-page-padding page-shadow storybook-border relative overflow-hidden"
       style={{
-        position: 'relative',
-       background: 'linear-gradient(180deg, rgba(26, 22, 18, 0.4) 0%, rgba(15, 13, 10, 0.5) 100%)',
-        border: '1px solid rgba(212, 175, 55, 0.08)',
-        borderRadius: '2px',
-        overflow: 'hidden',
-        padding: 'clamp(48px, 8vw, 96px)',
-        margin: '0 auto',
-        maxWidth: '1200px',
-        boxShadow: '4px 0 40px rgba(0,0,0,0.3), inset 0 0 80px rgba(212, 175, 55, 0.02)',
+        background: 'linear-gradient(180deg, rgba(26,22,18,0.38) 0%, rgba(15,13,10,0.55) 100%)',
       }}
     >
-      {/* Book page border overlay */}
-      {shouldAnimate && <BookBorder className="pointer-events-none" />}
+      {/* Double border frame */}
+      <div className="storybook-border absolute inset-0 pointer-events-none" />
 
       {/* Corner flourishes */}
-      <CornerFlourish position="top-left" className="absolute top-8 left-8 md:top-12 md:left-12 data-[storybook-ornament] data-storybook-ornament" data-storybook-ornament />
-      <CornerFlourish position="top-right" className="absolute top-8 right-8 md:top-12 md:right-12 data-[storybook-ornament] data-storybook-ornament" data-storybook-ornament />
+      <CornerFlourish position="top-left" className="corner-flourish-tl" data-storybook-ornament />
+      <CornerFlourish position="top-right" className="corner-flourish-tr" data-storybook-ornament />
 
-      {/* Chapter numeral — large translucent Roman numeral */}
+      {/* Chapter numeral (top-left, behind everything) */}
       <div
-        className="absolute top-8 left-8 md:top-12 md:left-12 data-[storybook-ornament] data-storybook-ornament"
-        data-storybook-ornament
+        className="absolute top-6 left-6 md:top-8 md:left-8"
         aria-hidden="true"
+        data-storybook-ornament
       >
         <ChapterNumeral number={chapterNumber} />
       </div>
 
-      {/* Chapter title with ornamental rule above */}
-      {chapterTitle && (
-        <div
-          className="absolute top-1/2 right-12 md:right-16 transform -translate-y-1/2 text-right data-[storybook-ornament] data-storybook-ornament"
-          data-storybook-ornament
-        >
-          <div
-            style={{
-              fontFamily: '"Playfair Display", serif',
-              fontSize: 'clamp(0.7rem, 1.5vw, 1rem)',
-              letterSpacing: '0.15em',
-              textTransform: 'uppercase',
-              color: 'rgba(212, 175, 55, 0.3)',
-              lineHeight: 1.4,
-            }}
-          >
-            {chapterTitle}
-          </div>
-          <div style={{ marginTop: '12px', height: '1px', width: '60px', background: 'rgba(212, 175, 55, 0.2)' }} />
-        </div>
-      )}
+      {/* Chapter intro: numeral + ornamental rules + title */}
+      {chapterIntro}
 
-      {/* Animate in on scroll */}
-      <div
+      {/* Animate in the main content */}
+      <motion.div
+        className="relative z-10"
         style={{
-          opacity: opacity as unknown as number,
-          transform: y as unknown as string,
-          transition: 'box-shadow 0.6s ease',
+          opacity,
+          y,
         }}
       >
         {children}
-      </div>
+      </motion.div>
 
-      {/* Bottom ornamental double-rule */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
+      {/* Bottom ornamental rule */}
+      <div
+        className="absolute bottom-10 left-1/2 -translate-x-1/2"
+        aria-hidden="true"
+        data-storybook-ornament
+      >
         <OrnamentalRule />
       </div>
+
+      {/* Subtle left-edge page shadow */}
+      <div
+        className="absolute left-0 top-0 bottom-0 w-12 pointer-events-none opacity-20"
+        style={{
+          background: 'linear-gradient(90deg, rgba(0,0,0,0.18) 0%, transparent 100%)',
+        }}
+      />
     </section>
   );
 }

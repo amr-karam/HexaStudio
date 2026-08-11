@@ -1,71 +1,201 @@
 'use client';
 
 import { animated, useSpring } from '@react-spring/web';
+import clsx from 'clsx';
 import Link from 'next/link';
-import { useState, useEffect, type CSSProperties } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type HTMLAttributes,
+  type ReactNode,
+} from 'react';
 
-function GlassButton({ 
-  children, 
-  onClick, 
-  className = '' 
-}: { 
-  children: React.ReactNode; 
-  onClick?: () => void; 
+/* -------------------------------------------------------------------------- */
+/*  Reveal — scroll-triggered fade-up.                                        */
+/*  Native IntersectionObserver (no animation library). The keyframes live in */
+/*  globals.css (`.atelier-reveal`) and stagger is applied via animation-     */
+/*  delay. The hidden state is only applied after the client runtime is       */
+/*  active, so content is never invisible without JavaScript.                 */
+/* -------------------------------------------------------------------------- */
+
+function Reveal({
+  children,
+  delay = 0,
+  className = '',
+  ...rest
+}: {
+  children: ReactNode;
+  delay?: number;
+  className?: string;
+} & HTMLAttributes<HTMLDivElement>) {
+  const [isActive, setIsActive] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    setIsActive(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isActive) return;
+
+    const node = ref.current;
+    if (!node) return;
+
+    if (typeof IntersectionObserver === 'undefined') {
+      setIsVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            observer.unobserve(entry.target);
+          }
+        }
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -8% 0px' },
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [isActive]);
+
+  return (
+    <div
+      {...rest}
+      ref={ref}
+      className={clsx(
+        'relative',
+        isActive && 'atelier-reveal',
+        isActive && isVisible && 'is-visible',
+        className,
+      )}
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  GlassButton — spring-driven CTA (kept on @react-spring/web).              */
+/*  Visual styling is fully token-based; the spring only drives transform     */
+/*  and opacity. Respects prefers-reduced-motion.                             */
+/* -------------------------------------------------------------------------- */
+
+function GlassButton({
+  children,
+  onClick,
+  className = '',
+}: {
+  children: ReactNode;
+  onClick?: () => void;
   className?: string;
 }) {
   const [isHover, setHover] = useState(false);
-  
+  const [isReducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReducedMotion(mediaQuery.matches);
+
+    const handleChange = (event: MediaQueryListEvent) => {
+      setReducedMotion(event.matches);
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
   const { scale, opacity } = useSpring({
-    scale: isHover ? 1.03 : 1,
-    opacity: isHover ? 1 : 0.9,
-    config: { mass: 0.6, tension: 40, friction: 26 }
+    scale: isHover && !isReducedMotion ? 1.04 : 1,
+    opacity: isHover ? 1 : 0.92,
+    config: { mass: 0.6, tension: 60, friction: 26 },
   });
 
-  const baseStyle: CSSProperties = {
-    cursor: 'pointer',
-    background: 'rgba(212, 175, 55, 0.2)',
-    border: '1px solid rgba(212, 175, 55, 0.3)',
-    color: '#fff',
-    fontWeight: 700,
-    textShadow: '0 0 15px rgba(212, 175, 55, 0.2)',
-    backdropFilter: 'blur(10px)',
-    WebkitBackdropFilter: 'blur(10px)',
-    borderRadius: '12px',
-    padding: '13px 28px',
-    margin: '0 auto',
-    display: 'block',
-    fontFamily: 'var(--type-preset-heading, system-ui)',
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+      return;
+    }
+
+    document
+      .getElementById('atelier-craft')
+      ?.scrollIntoView({ behavior: isReducedMotion ? 'auto' : 'smooth', block: 'start' });
   };
 
   return (
     <animated.button
-      style={{ 
-        ...baseStyle,
-        transform: scale.interpolate(s => `scale(${s})`),
-        opacity,
-      }}
+      type="button"
+      onClick={handleClick}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      onClick={onClick}
-      className={className}
+      onFocus={() => setHover(true)}
+      onBlur={() => setHover(false)}
+      style={{
+        transform: scale.interpolate((value) => `scale(${value})`),
+        opacity,
+      }}
+      className={clsx(
+        'group relative inline-flex cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-full border border-accent/40 bg-accent/10 px-10 py-4 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.3em] text-accent backdrop-blur-md transition-colors duration-500 hover:border-accent/70 hover:bg-accent/15 focus-luxury',
+        className,
+      )}
     >
+      <span
+        aria-hidden="true"
+        className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-accent-light/80 to-transparent"
+      />
+      <span
+        aria-hidden="true"
+        className="h-1.5 w-1.5 rotate-45 bg-accent transition-transform duration-500 ease-[var(--hexa-ease-interaction)] group-hover:rotate-[135deg]"
+      />
       {children}
+      <span
+        aria-hidden="true"
+        className="transition-transform duration-500 ease-[var(--hexa-ease-interaction)] group-hover:translate-x-1"
+      >
+        →
+      </span>
     </animated.button>
   );
 }
 
+/* -------------------------------------------------------------------------- */
+/*  Content data                                                              */
+/* -------------------------------------------------------------------------- */
+
 const cardItems = [
-  { label: 'Process', description: 'The rituals that transform intent into artifact' },
-  { label: 'Materials', description: 'Light, ink, geometry — the matter of digital making' },
-  { label: 'People', description: 'The hands and minds that shape the unseen' }
-];
+  {
+    index: '01',
+    label: 'Process',
+    description: 'The rituals that transform intent into artifact',
+  },
+  {
+    index: '02',
+    label: 'Materials',
+    description: 'Light, ink, geometry — the matter of digital making',
+  },
+  {
+    index: '03',
+    label: 'People',
+    description: 'The hands and minds that shape the unseen',
+  },
+] as const;
 
 const navItems = [
   { label: 'Return to Studio', href: '/studio' },
   { label: 'Explore Projects', href: '/projects' },
   { label: 'Creative Lab', href: '/shop' },
-  { label: 'Collaborate', href: '/contact' }
-];
+  { label: 'Collaborate', href: '/contact' },
+] as const;
+
+/* -------------------------------------------------------------------------- */
+/*  Page — The Digital Atelier                                                 */
+/* -------------------------------------------------------------------------- */
 
 export default function CreativeAtelierPage() {
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -79,148 +209,274 @@ export default function CreativeAtelierPage() {
       }
     };
 
+    updateScrollProgress();
     window.addEventListener('scroll', updateScrollProgress, { passive: true });
-    return () => window.removeEventListener('scroll', updateScrollProgress);
+    window.addEventListener('resize', updateScrollProgress, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', updateScrollProgress);
+      window.removeEventListener('resize', updateScrollProgress);
+    };
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-background overflow-x-hidden font-sans bg-slate-950 bg-[radial-gradient(circle_at_top,_rgba(18,18,20,0.95)_0%,_rgba(10,10,12,0.98)_70%)]">
-      {/* Background layers */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(18,18,20,0.5)_0%,_rgba(18,18,20,0.8)_70%)]" />
-      <div className="absolute inset-0 bg-artisan-glass-gold/30 backdrop-blur-lg pointer-events-none" />
-      <div className="absolute inset-0 bg-artisan-glass/50 backdrop-blur-lg pointer-events-none" />
-      
-      {/* Main content */}
-      <main className="relative flex flex-col min-h-screen">
-        {/* Header */}
-        <header className="fixed top-0 left-0 right-0 px-6 z-50">
-          <div className="flex items-center justify-between px-6 py-4">
-            <Link href="/studio" className="text-xl font-bold bg-gradient-to-r from-neutral-100 to-d4af37 bg-clip-text text-transparent transition-colors duration-300">
-              HEXASTUDIO
+    <div className="relative min-h-screen overflow-x-hidden bg-background font-sans text-foreground">
+      {/* Ambient obsidian-and-gold wash */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[70vh] bg-[radial-gradient(ellipse_at_top,_rgba(212,175,55,0.07)_0%,_transparent_65%)]"
+      />
+
+      <main className="relative flex min-h-screen flex-col">
+        {/* Fixed header */}
+        <header className="fixed inset-x-0 top-0 z-50">
+          <div className="flex items-center justify-between border-b border-accent/10 bg-background/70 px-6 py-4 backdrop-blur-xl sm:px-10">
+            <Link
+              href="/studio"
+              className="group flex items-center gap-3 rounded-sm focus-luxury"
+            >
+              <span
+                aria-hidden="true"
+                className="h-2 w-2 rotate-45 bg-accent transition-transform duration-500 ease-[var(--hexa-ease-interaction)] group-hover:rotate-[135deg]"
+              />
+              <span className="font-serif text-base tracking-[0.3em] text-foreground sm:text-lg">
+                HEXASTUDIO
+              </span>
             </Link>
+            <p className="hidden font-mono text-[0.625rem] uppercase tracking-[0.35em] text-neutral-500 sm:block">
+              The Digital Atelier
+            </p>
           </div>
         </header>
 
-        {/* Hero Section */}
-        <section className="mt-20 flex flex-col items-center justify-center py-20">
-          <h1 className="text-5xl lg:text-8xl font-bold text-center max-w-3xl">
-            <span className="bg-gradient-to-r from-d4af37 to-neutral-100 bg-clip-text text-transparent">
-              Creative Atelier
-            </span>
-          </h1>
-          <p className="text-neutral-400 text-lg max-w-2xl mx-auto leading-relaxed text-center mb-10">
-            Where digital creation manifests as visible process. 
-            <span className="block text-neutral-400">Every interaction writes form. Every pause reveals potential.</span>
-          </p>
+        {/* Hero — monument & drafting frame */}
+        <section className="relative flex flex-col items-center px-6 pb-14 pt-32 sm:pt-40">
+          {/* Architectural grid-line frame */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-4 bottom-6 top-24 hidden md:block"
+          >
+            <div className="absolute inset-0 border border-accent/10" />
+            <div className="absolute -left-px -top-px h-10 w-10 border-l-2 border-t-2 border-accent/40" />
+            <div className="absolute -right-px -top-px h-10 w-10 border-r-2 border-t-2 border-accent/40" />
+            <div className="absolute -bottom-px -left-px h-10 w-10 border-b-2 border-l-2 border-accent/40" />
+            <div className="absolute -bottom-px -right-px h-10 w-10 border-b-2 border-r-2 border-accent/40" />
+            <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-accent/10 to-transparent" />
+            <div className="absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-gradient-to-r from-transparent via-accent/10 to-transparent" />
+            <div className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rotate-45 border border-accent/50" />
+          </div>
+
+          {/* Decorative serif numeral */}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute right-[6%] top-20 hidden select-none font-serif text-[clamp(7rem,16vw,13rem)] leading-none text-accent/5 lg:block"
+          >
+            01
+          </span>
+
+          <Reveal className="flex flex-col items-center text-center">
+            <p className="mb-8 flex items-center gap-4 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-accent/70">
+              <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-accent/70" />
+              The Studio · Working Draft
+              <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-accent/70" />
+            </p>
+
+            <h1 className="max-w-4xl text-balance font-serif text-[clamp(2.75rem,7.5vw,7rem)] font-medium leading-[1.04] tracking-tight text-foreground">
+              Creative{' '}
+              <em className="text-gradient-gold font-normal italic">Atelier</em>
+            </h1>
+
+            <p className="mt-8 max-w-xl text-balance font-sans text-base leading-relaxed text-neutral-400 sm:text-lg">
+              Where raw intent is cut, set, and polished into artifact.
+              <span className="mt-2 block text-neutral-500">
+                Every interaction writes form. Every pause reveals potential.
+              </span>
+            </p>
+          </Reveal>
+
+          <Reveal delay={160} className="mt-12 flex w-full max-w-xs items-center gap-4">
+            <span className="h-px flex-1 bg-gradient-to-r from-transparent to-accent/40" />
+            <span aria-hidden="true" className="h-2 w-2 rotate-45 border border-accent/60" />
+            <span className="h-px flex-1 bg-gradient-to-l from-transparent to-accent/40" />
+          </Reveal>
         </section>
 
-        {/* Interactive Elements Grid */}
-        <section className="flex-1 flex flex-col items-center px-6">
-          <div className="w-full max-w-4xl grid grid-cols-1 sm:grid-cols-3 gap-8 mt-20">
+        {/* § 01 — The Elements */}
+        <section aria-labelledby="atelier-elements" className="relative px-6 pt-20 sm:pt-28">
+          <Reveal className="mx-auto flex w-full max-w-5xl flex-col items-center text-center">
+            <p className="flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-accent/70">
+              <span aria-hidden="true" className="h-px w-8 bg-accent/50" />
+              § 01 — The Elements
+              <span aria-hidden="true" className="h-px w-8 bg-accent/50" />
+            </p>
+            <h2
+              id="atelier-elements"
+              className="mt-5 font-serif text-3xl tracking-tight text-foreground sm:text-4xl"
+            >
+              Instruments of the{' '}
+              <em className="text-gradient-gold font-normal italic">Atelier</em>
+            </h2>
+          </Reveal>
+
+          <div className="mx-auto mt-12 grid w-full max-w-5xl grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-8">
             {cardItems.map((item, index) => (
-              <div
-                key={item.label}
-                className="group relative bg-artisan-glass/60 backdrop-blur-sm rounded-xl p-6 transition-all duration-500 border border-artisan-glass-border/30 hover:border-artisan-glass-border-hover hover:bg-artisan-glass-bg-hover cursor-pointer"
-              >
-                <div className="w-12 h-12 rounded-full bg-d4af37/30 flex items-center justify-center transition-all duration-500 group-hover:bg-d4af37 group-hover:scale-110">
-                  <span className="text-d4af37 font-bold text-xl">{index + 1}</span>
-                </div>
-                <div className="mt-3 text-neutral-400 text-sm text-center group-hover:text-d4af37 transition-colors duration-300">
-                  {item.label}
-                </div>
-              </div>
+              <Reveal key={item.label} delay={index * 140} className="h-full">
+                <article className="group artisan-glass artisan-specular-top relative flex h-full flex-col overflow-hidden rounded-2xl p-7 sm:p-8">
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute -right-14 -top-14 h-40 w-40 rounded-full bg-accent/10 opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
+                  />
+                  <span className="font-mono text-[0.625rem] uppercase tracking-[0.35em] text-accent/60">
+                    № {item.index}
+                  </span>
+                  <h3 className="mt-5 font-serif text-2xl text-foreground">{item.label}</h3>
+                  <p className="mt-3 flex-1 font-sans text-sm leading-relaxed text-neutral-400">
+                    {item.description}
+                  </p>
+                  <span className="mt-7 inline-flex items-center gap-2 self-start font-mono text-[0.625rem] uppercase tracking-[0.3em] text-neutral-500 transition-colors duration-500 group-hover:text-accent">
+                    Explore
+                    <span
+                      aria-hidden="true"
+                      className="transition-transform duration-500 ease-[var(--hexa-ease-interaction)] group-hover:translate-x-1"
+                    >
+                      →
+                    </span>
+                  </span>
+                </article>
+              </Reveal>
             ))}
           </div>
-
-          {/* CTA Button */}
-          <div className="pt-20">
-            <GlassButton 
-              onClick={() => window.scrollTo({ top: 1000, behavior: 'smooth' })}
-              className="px-10 py-3 bg-gradient-to-r from-d4af37 to-yellow-600 text-white font-bold rounded-xl shadow-xl transition-all duration-500"
-            >
-              Enter The Atelier
-            </GlassButton>
-          </div>
         </section>
 
-        {/* Glass Content Section */}
-        <section className="relative flex-1 py-20 px-6">
-          <div className="max-w-5xl mx-auto w-full">
-            {/* Glass Panel */}
-            <div className="bg-artisan-glass/70 backdrop-blur-xl rounded-3xl border border-artisan-glass-border/30 p-8 md:p-12">
-              <div className="grid md:grid-cols-2 gap-12">
-                {/* Column 1 */}
-                <div>
-                  <h2 className="text-3xl lg:text-5xl font-bold text-d4af37 mb-6">The Nature of Making</h2>
-                  <p className="text-neutral-300 leading-relaxed mb-6">
-                    True creation lives in the tension between control and surrender — between the precise intention and the happy accident that reveals new possibilities.
-                  </p>
-                  <p className="text-neutral-400">
-                    In this atelier, we don't just build interfaces. We cultivate environments where creative emergence becomes inevitable. Each project is a collaboration between human intention and digital possibility.
-                  </p>
-                </div>
-                
-                {/* Column 2 */}
-                <div className="space-y-6">
-                  <div className="bg-artisan-glass/40 backdrop-blur-sm rounded-xl p-6 md:p-8 border border-artisan-glass-border/30">
-                    <h3 className="text-xl lg:text-2xl font-semibold text-d4af37 mb-3">From Trace to Artifact</h3>
-                    <p className="text-neutral-300 leading-relaxed">
-                      What begins as a fleeting interaction becomes, through attention and iteration, a lasting artifact — not despite its process, but because of it.
+        {/* CTA */}
+        <div className="flex justify-center px-6 pt-20">
+          <Reveal delay={120}>
+            <GlassButton>Enter The Atelier</GlassButton>
+          </Reveal>
+        </div>
+
+        {/* § 02 — On Craft */}
+        <section
+          id="atelier-craft"
+          aria-labelledby="atelier-craft-title"
+          className="relative scroll-mt-24 px-6 pb-16 pt-28 sm:pt-36"
+        >
+          <div className="mx-auto w-full max-w-5xl">
+            <Reveal>
+              <div className="artisan-glass-gold artisan-specular-top relative overflow-hidden rounded-3xl p-8 md:p-14">
+                <p className="flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-accent/70">
+                  <span aria-hidden="true" className="h-px w-8 bg-accent/50" />
+                  § 02 — On Craft
+                </p>
+
+                <div className="mt-8 grid gap-12 md:mt-12 md:grid-cols-2 md:gap-14">
+                  {/* Column 1 — narrative */}
+                  <div>
+                    <h2
+                      id="atelier-craft-title"
+                      className="font-serif text-3xl leading-tight tracking-tight text-foreground sm:text-4xl"
+                    >
+                      The Nature of{' '}
+                      <em className="text-gradient-gold font-normal italic">Making</em>
+                    </h2>
+                    <p className="drop-cap mt-7 font-sans leading-relaxed text-neutral-300">
+                      True creation lives in the tension between control and surrender — between
+                      the precise intention and the happy accident that reveals new possibilities.
+                    </p>
+                    <p className="mt-5 font-sans leading-relaxed text-neutral-400">
+                      In this atelier, we don&apos;t just build interfaces. We cultivate
+                      environments where creative emergence becomes inevitable. Each project is a
+                      collaboration between human intention and digital possibility.
                     </p>
                   </div>
-                  
-                  <div className="bg-artisan-glass/40 backdrop-blur-sm rounded-xl p-6 md:p-8 border border-artisan-glass-border/30">
-                    <h3 className="text-xl lg:text-2xl font-semibold text-d4af37 mb-3">Materials of Thought</h3>
-                    <p className="text-neutral-300 leading-relaxed">
-                      Like a master artisan working with physical media, the digital creator shapes not just pixels but possibilities — light becomes structure, movement becomes meaning.
-                    </p>
-                  </div>
-                  
-                  <div className="bg-artisan-glass/40 backdrop-blur-sm rounded-xl p-6 md:p-8 border border-artisan-glass-border/30">
-                    <h3 className="text-xl lg:text-2xl font-semibold text-d4af37 mb-3">The Alchemy of Collaboration</h3>
-                    <p className="text-neutral-300 leading-relaxed">
-                      The best work emerges when diverse perspectives converge — designers, engineers, strategists, and dreamers each bringing their unique lens to the creative cauldron.
-                    </p>
+
+                  {/* Column 2 — craft notes */}
+                  <div className="space-y-6">
+                    <div className="artisan-glass artisan-specular-top relative overflow-hidden rounded-2xl p-6 md:p-8">
+                      <h3 className="font-serif text-xl text-foreground md:text-2xl">
+                        From Trace to{' '}
+                        <em className="text-gradient-gold font-normal italic">Artifact</em>
+                      </h3>
+                      <p className="mt-3 font-sans text-sm leading-relaxed text-neutral-400">
+                        What begins as a fleeting interaction becomes, through attention and
+                        iteration, a lasting artifact — not despite its process, but because of it.
+                      </p>
+                    </div>
+
+                    <div className="artisan-glass artisan-specular-top relative overflow-hidden rounded-2xl p-6 md:p-8">
+                      <h3 className="font-serif text-xl text-foreground md:text-2xl">
+                        Materials of{' '}
+                        <em className="text-gradient-gold font-normal italic">Thought</em>
+                      </h3>
+                      <p className="mt-3 font-sans text-sm leading-relaxed text-neutral-400">
+                        Like a master artisan working with physical media, the digital creator
+                        shapes not just pixels but possibilities — light becomes structure,
+                        movement becomes meaning.
+                      </p>
+                    </div>
+
+                    <div className="artisan-glass artisan-specular-top relative overflow-hidden rounded-2xl p-6 md:p-8">
+                      <h3 className="font-serif text-xl text-foreground md:text-2xl">
+                        The Alchemy of{' '}
+                        <em className="text-gradient-gold font-normal italic">Collaboration</em>
+                      </h3>
+                      <p className="mt-3 font-sans text-sm leading-relaxed text-neutral-400">
+                        The best work emerges when diverse perspectives converge — designers,
+                        engineers, strategists, and dreamers each bringing their unique lens to
+                        the creative cauldron.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </Reveal>
 
-            {/* Navigation Footer */}
-            <div className="mt-16 pt-8 border-t border-artisan-glass-border/20">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+            {/* Navigation footer */}
+            <Reveal delay={120}>
+              <nav
+                aria-label="Studio navigation"
+                className="mt-16 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 border-t border-accent/10 pt-10"
+              >
                 {navItems.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="text-neutral-300 hover:text-d4af37 transition-colors duration-300 flex items-center space-x-2 group"
+                    className="group inline-flex items-center gap-2 rounded-sm font-mono text-[0.6875rem] uppercase tracking-[0.25em] text-neutral-400 transition-colors duration-300 hover:text-accent focus-luxury"
                   >
-                    <span className="transition-transform duration-300 group-hover:scale-110">{item.label}</span>
+                    <span
+                      aria-hidden="true"
+                      className="h-1 w-1 rotate-45 bg-accent/40 transition-colors duration-300 group-hover:bg-accent"
+                    />
+                    {item.label}
                   </Link>
                 ))}
-              </div>
-            </div>
+              </nav>
+            </Reveal>
           </div>
         </section>
 
-        {/* Scroll Progress Indicator */}
-        <div className="fixed bottom-0 left-0 right-0 h-1 bg-artisan-glass/50 backdrop-blur-sm z-50 pointer-events-none">
-          <div 
-            className="h-full bg-gradient-to-r from-d4af37 to-yellow-400 rounded-full transition-all duration-300"
-            style={{ width: `${scrollProgress}%` }}
-            role="progressbar"
-            aria-valuenow={Math.round(scrollProgress)}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-label="Page scroll progress"
-          />
-        </div>
-        
-        {/* Footer Credit */}
-        <footer className="absolute bottom-8 left-6 opacity-30 text-neutral-300 text-sm pointer-events-none">
-          Crafted with artisan processes
+        {/* Footer credit */}
+        <footer className="mt-16 flex justify-center px-6 pb-14">
+          <p className="flex items-center justify-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.35em] text-neutral-600">
+            <span aria-hidden="true" className="h-1 w-1 rotate-45 bg-accent/40" />
+            Crafted with artisan processes
+          </p>
         </footer>
       </main>
+
+      {/* Scroll progress indicator */}
+      <div
+        role="progressbar"
+        aria-label="Page scroll progress"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={Math.round(scrollProgress)}
+        className="fixed inset-x-0 bottom-0 z-50 h-[3px] bg-background/80"
+      >
+        <div
+          className="h-full bg-gradient-to-r from-accent-dark via-accent to-accent-light shadow-[0_0_10px_rgba(212,175,55,0.45)]"
+          style={{ width: `${scrollProgress}%` }}
+        />
+      </div>
     </div>
   );
 }

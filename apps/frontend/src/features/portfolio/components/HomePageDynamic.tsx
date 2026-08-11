@@ -6,6 +6,7 @@ import type { Project } from '@hexastudio/types';
 import { SectionReveal } from '@/components/scroll/SectionReveal';
 import { StorybookChapter } from '@/components/storybook/StorybookChapter';
 import { BookProgress } from '@/components/storybook/BookProgress';
+import { OrnamentalRule } from '@/components/storybook/BookOrnaments';
 
 // S-019: below-the-fold homepage sections are hydrated on the client only.
 // This keeps the critical / page bundle (hero + rail) lean and pushes the
@@ -50,23 +51,44 @@ interface HomePageDynamicProps {
 }
 
 /**
+ * Storybook chapter epigraph — a short italic excerpt or lead-in sentence
+ * that appears between the chapter title and the main content.
+ */
+function ChapterEpigraph({ text }: { text: string }) {
+  return (
+    <blockquote className="mb-12 md:mb-16 text-center">
+      <OrnamentalRule className="mb-6" />
+      <p className="storybook-body italic" style={{ color: 'rgba(212, 175, 55, 0.65)' }}>
+        {text}
+      </p>
+      <OrnamentalRule className="mt-6" />
+    </blockquote>
+  );
+}
+
+/**
  * Wraps a section's content in the storybook chapter aesthetic.
  * Placed inside SectionReveal so the scroll mechanics stay intact.
  */
 function StorybookWrappedSection({
   chapterNumber,
   chapterTitle,
+  epigraph,
   children,
   id,
 }: {
   chapterNumber: number;
   chapterTitle: string;
+  epigraph?: string;
   children: ReactNode;
   id: string;
 }) {
   return (
     <StorybookChapter chapterNumber={chapterNumber} chapterTitle={chapterTitle} id={id}>
-      {children}
+      {epigraph && <ChapterEpigraph text={epigraph} />}
+      <div className="storybook-body">
+        {children}
+      </div>
     </StorybookChapter>
   );
 }
@@ -82,6 +104,7 @@ export function HomePageDynamic({ featuredProject, projects }: HomePageDynamicPr
           chapterNumber={2}
           chapterTitle="Craft"
           id="ch-craft"
+          epigraph="How a single vision becomes a rendered world — the disciplines, the tools, the hand."
         >
           <FeaturedWork project={featuredProject} />
         </StorybookWrappedSection>
@@ -93,6 +116,7 @@ export function HomePageDynamic({ featuredProject, projects }: HomePageDynamicPr
           chapterNumber={3}
           chapterTitle="Method"
           id="ch-method"
+          epigraph="From first sketch to final frame — the process that carries every project."
         >
           <ProcessSection />
           <AchievementsSection />
@@ -105,6 +129,7 @@ export function HomePageDynamic({ featuredProject, projects }: HomePageDynamicPr
           chapterNumber={4}
           chapterTitle="Proof"
           id="ch-proof"
+          epigraph="The work speaks — a selection of built and imagined worlds."
         >
           <ProjectGrid projects={projects} />
           <TestimonialsSection />
@@ -114,8 +139,11 @@ export function HomePageDynamic({ featuredProject, projects }: HomePageDynamicPr
       {/* CH. V — CONTACT */}
       <div id="ch-contact">
         <StorybookChapter chapterNumber={5} chapterTitle="Contact" id="ch-contact">
-          <CTASection />
-          <NewsletterSection />
+          <ChapterEpigraph text="Where vision becomes conversation — the studio awaits." />
+          <div className="storybook-body">
+            <CTASection />
+            <NewsletterSection />
+          </div>
         </StorybookChapter>
       </div>
 

@@ -47,7 +47,7 @@ export class ContactService {
 
   private async assessLeadWithAi(message: ContactMessage): Promise<string> {
     try {
-      if (!this.aiChat.isAvailable) {
+      if (!this.aiChat || !this.aiChat.isAvailable) {
         return 'AI Assessment unavailable (provider not configured).';
       }
 

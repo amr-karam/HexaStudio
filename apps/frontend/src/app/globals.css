@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "../styles/artisan-tokens.css";
 
 @theme {
   --color-background: #050505;
@@ -244,6 +245,38 @@ body {
 
 .animate-slow-zoom {
   animation: slow-zoom 20s ease-out forwards;
+}
+
+/* Digital Atelier — scroll reveal. Hidden state is applied only once the
+   client runtime is active (`.atelier-reveal` is added from JS) so content
+   is never invisible without JavaScript. Stagger is driven by
+   `animation-delay` inline style. Neutralized by the reduced-motion reset
+   below (animation: none + fully visible). */
+@keyframes atelier-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.atelier-reveal {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.atelier-reveal.is-visible {
+  animation: atelier-fade-up 0.9s var(--hexa-ease-entrance) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .atelier-reveal {
+    opacity: 1;
+    animation: none;
+  }
 }
 
 /* Button reset utility */

@@ -7,6 +7,16 @@
 
 ---
 
+## 1.0.1 Creative Atelier Rebuild — "The Digital Atelier" (Aug 11, 2026)
+
+- **Rebuilt `apps/frontend/src/app/studio/atelier/page.tsx`** — Silent Luxury editorial redesign (dark obsidian gallery + warm gold instrument light).
+- Fixed all flagged violations: removed `text-d4af37`/`from-d4af37`/`bg-d4af37` → token utilities (`text-accent`, `from-accent`, `bg-accent`); removed `bg-artisan-glass/60`-style opacity modifiers → plain `.artisan-glass` / `.artisan-glass-gold` / `.artisan-specular-top` classes; `bg-slate-950` → `bg-background`; removed inline `#fff`/rgba styles (spring-driven transform/opacity only).
+- **Design**: Playfair `font-serif` display headings with italic gold-gradient (`text-gradient-gold`) accents, JetBrains Mono eyebrow metadata, architectural drafting-frame motif with diamond ornaments, ghost serif numeral `01`, gold specular top-edge highlights, thin gold scroll-progress bar, scroll-triggered CSS keyframe reveals (native IntersectionObserver, staggered `animation-delay`), `@react-spring/web` retained for the CTA.
+- **Accessibility**: single `h1`, semantic `h2`/`h3` hierarchy, `aria-labelledby` sections, `aria-label`/`aria-valuenow` on the progress bar, keyboard focus states on the spring button, `prefers-reduced-motion` respected in JS (button spring + smooth scroll) and CSS.
+- **Wired `artisan-tokens.css`** (`.artisan-glass` family) into `globals.css` via `@import "../styles/artisan-tokens.css"` — previously the artisan glass classes were never loaded (dead CSS) despite being used across Footer, LiquidGlassCard, ArchitecturalDataViz, and the atelier page.
+- **Verified**: frontend lint 0/0, typecheck 0 errors, **208/208 tests** (36 files), design-token gate: atelier page fully clean (repo-wide strict check dropped 150→149 pre-existing violations across 29→28 files).
+- **Note**: production `next build` is currently blocked by an unrelated concurrent WIP in `StorybookChapter.tsx` (`@/providers/quality-tier` module not found — import renamed from `quality-provider`; file modified 10:07 PM while this task ran). Not caused by this change; CSS pipeline validated directly via PostCSS (artisan utilities now present in bundle).
+
 ## 1.1 Housekeeping & Disposition (Aug 10, 2026)
 - Portal AI Copilot "premium redesign" task (DELEGATION_TASK/PREMIUM_REDESIGN/EXECUTION_PLAN docs) marked SUPERSEDED — never implemented; production copilot lives at `features/portal/components/PortalAiCopilot.tsx`.
 - Removed dead code `features/scene/components/SpatialAudio.tsx` (unused; `SpatialAudioPlayer.tsx` is the active component in `app/layout.tsx`).
