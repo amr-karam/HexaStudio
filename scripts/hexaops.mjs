@@ -348,10 +348,75 @@ async function cmdCommit(rest) {
 }
 
 /* ------------------------------------------------------------------ */
+/*  7. SHIP — full iteration loop: gate → commit → push → watch        */
+/* ------------------------------------------------------------------ */
+async function cmdShip(message) {
+  const full = message;
+  if (!full) {
+    console.error(COLORS.red('\nUsage: hexaops ship "<commit message>"'));
+    console.error(COLORS.yellow('  Runs: gate → commit → push → watch pipeline (Ctrl+C to stop)\n'));
+    process.exit(1);
+  }
+
+  console.log(COLORS.bold('\n=== HEXAOPS: SHIP ===\n'));
+
+  // Step 1 — quality gate (fast lane: lint+typecheck only, tests are slowest)
+  console.log(COLORS.cyan('[1/4] Quality gates (lint + typecheck × 3 workspaces)…'));
+  const gates = await Promise.all([
+    ['frontend', 'lint'], ['frontend', 'typecheck'],
+    ['backend', 'lint'], ['backend', 'typecheck'],
+    ['mobile', 'lint'], ['mobile', 'typecheck'],
+  ].map(async ([ws, g]) => ({ ws, g, ...(await execSilent(`npm run ${g} --workspace=apps/${ws}`)) })));
+
+  let gateFails = 0;
+  for (const r of gates) {
+    const label = r.ok ? COLORS.green('PASS') : COLORS.red('FAIL');
+    if (!r.ok) gateFails++;
+    console.log(`    ${pad(r.ws, 10)} ${pad(r.g, 10)} ${label}`);
+  }
+  if (gateFails > 0) {
+    console.error(COLORS.red(`\n  ✗ ${gateFails} gates failed — aborting ship. Run 'hexaops gate' for full detail.`));
+    process.exit(1);
+  }
+  console.log(COLORS.green('    ✓ all lint + typecheck passed'));
+
+  // Step 2 — commit
+  console.log(COLORS.cyan('\n[2/4] Committing…'));
+  const st = await execSilent('git status --short');
+  if (!st.output.trim()) {
+    console.log(COLORS.yellow('    nothing to commit — skipping'));
+  } else {
+    await execSilent('git add -A');
+    const cm = await execSilent(`git commit -m "${full.replace(/"/g, '\\"')}"`);
+    if (cm.ok) {
+      console.log(COLORS.green(`    ✓ ${full}`));
+    } else {
+      console.error(COLORS.red(`    commit failed: ${cm.error || cm.output}`));
+      process.exit(1);
+    }
+  }
+
+  // Step 3 — push
+  console.log(COLORS.cyan('\n[3/4] Pushing…'));
+  const branch = (await execSilent('git rev-parse --abbrev-ref HEAD')).output.trim();
+  const push = await execSilent(`git push gitlab HEAD:${branch}`);
+  if (push.ok) {
+    console.log(COLORS.green(`    ✓ pushed ${branch}`));
+  } else {
+    console.error(COLORS.yellow(`    push note: ${push.error || push.output}`));
+  }
+
+  // Step 4 — watch pipeline (requires PAT)
+  console.log(COLORS.cyan('\n[4/4] Watching pipeline (Ctrl+C to stop)…'));
+  await cmdWatch('20');
+}
+
+/* ------------------------------------------------------------------ */
 /*  MAIN                                                               */
 /* ------------------------------------------------------------------ */
 function help() {
   console.log(COLORS.bold('\nHexaOps — HEXA Studio operations CLI\n'));
+  console.log('  hexaops ship <msg>    FULL LOOP: lint+typecheck → commit → push → watch pipeline');
   console.log('  hexaops gate          Run all 9 quality gates in parallel');
   console.log('  hexaops status        ONE-SHOT cockpit: git + server + GitLab + registry + pipeline');
   console.log('  hexaops watch [n]     Re-run status every N seconds (default 30)');
@@ -363,6 +428,7 @@ function help() {
 
 const [, , cmd, ...rest] = process.argv;
 switch (cmd) {
+  case 'ship': await cmdShip(rest.join(' ')); break;
   case 'gate': await cmdGate(); break;
   case 'status': await cmdStatus(); break;
   case 'watch': await cmdWatch(rest[0]); break;
