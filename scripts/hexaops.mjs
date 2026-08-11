@@ -7,6 +7,8 @@
  *
  * Commands:
  *   hexaops gate          → Run ALL quality gates (lint+typecheck+test × 3 workspaces) in parallel
+ *   hexaops status        → ONE-SHOT cockpit: git status + server health + GitLab + registry + latest pipeline, all in parallel
+ *   hexaops watch [n]     → Re-run status every N seconds (default 30) until Ctrl+C — perfect for boot/deploy monitoring
  *   hexaops pipeline      → Check GitLab pipeline status + latest jobs (needs HEXA_GITLAB_PAT)
  *   hexaops deploy        → Sync configs to server + show deploy status (needs HEXA_SSH_KEY)
  *   hexaops commit        → Conventional commit with auto-detected type
@@ -221,7 +223,92 @@ async function cmdDeploy() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  4. CONVENTIONAL COMMIT                                             */
+/*  4. ONE-SHOT STATUS COCKPIT (parallel checks)                       */
+/* ------------------------------------------------------------------ */
+async function cmdStatus() {
+  const key = process.env.HEXA_SSH_KEY || join(os.homedir(), '.ssh', 'hexastudio_key');
+  const server = process.env.HEXA_SERVER || 'root@19.16.1.100';
+  const pat = process.env.HEXA_GITLAB_PAT;
+  const url = process.env.HEXA_GITLAB_URL || 'http://19.16.1.100:8929';
+  const projId = process.env.HEXA_GITLAB_PROJECT_ID || '1';
+  const sshBase = `ssh -i "${key}" -o StrictHostKeyChecking=no -o ConnectTimeout=8 ${server}`;
+
+  console.log(COLORS.bold('\n=== HEXAOPS: STATUS COCKPIT ===\n'));
+
+  // Fire all independent checks in parallel
+  const [gitRes, gitlabRes, regRes, pipeRes, dockerRes] = await Promise.all([
+    execSilent('git status --short | head -15'),
+    execSilent(`${sshBase} "docker exec hexa-gitlab curl -sf http://localhost/-/health 2>/dev/null && echo OK || echo DOWN"`),
+    execSilent(`${sshBase} "curl -sf -o /dev/null -w '%{http_code}' http://localhost:5050/v2/ 2>/dev/null || echo down"`),
+    pat ? execSilent(`curl -s -m 8 -H "PRIVATE-TOKEN: ${pat}" "${url}/api/v4/projects/${projId}/pipelines?per_page=1"`) : Promise.resolve({ ok: false, output: '' }),
+    execSilent(`${sshBase} "docker ps --format '{{.Names}}: {{.Status}}' | grep -E 'gitlab|runner' | head -6"`),
+  ]);
+
+  // Git
+  console.log(COLORS.cyan('  [git]'));
+  if (gitRes.output.trim()) {
+    console.log(COLORS.dim(gitRes.output.trim().split('\n').map((l) => `    ${l}`).join('\n')));
+  } else {
+    console.log(COLORS.green('    ✓ clean working tree'));
+  }
+
+  // Server reachability
+  console.log(COLORS.cyan('\n  [server]'));
+  if (gitlabRes.ok) {
+    const health = gitlabRes.output.trim();
+    console.log(health === 'OK' ? COLORS.green('    ✓ GitLab HEALTHY') : COLORS.red(`    ✗ GitLab ${health}`));
+    if (dockerRes.ok && dockerRes.output.trim()) {
+      console.log(COLORS.dim(dockerRes.output.trim().split('\n').map((l) => `    ${l}`).join('\n')));
+    }
+  } else {
+    console.log(COLORS.red('    ✗ server unreachable (boot in progress or down)'));
+  }
+
+  // Registry
+  console.log(COLORS.cyan('\n  [registry]'));
+  if (regRes.ok) {
+    const code = regRes.output.trim();
+    console.log(code === '401' ? COLORS.green('    ✓ registry up (401 = auth required, expected)') : COLORS.dim(`    registry HTTP ${code}`));
+  } else {
+    console.log(COLORS.yellow('    … registry not checked'));
+  }
+
+  // Pipeline (only if PAT)
+  console.log(COLORS.cyan('\n  [pipeline]'));
+  if (pat && pipeRes.ok && pipeRes.output.trim()) {
+    try {
+      const pipe = JSON.parse(pipeRes.output);
+      if (pipe[0]) {
+        const p = pipe[0];
+        const c = p.status === 'success' ? COLORS.green : p.status === 'failed' ? COLORS.red : COLORS.yellow;
+        console.log(`    #${p.id} ${c(p.status)} on ${p.ref} ${COLORS.dim(new Date(p.created_at).toISOString())}`);
+      } else {
+        console.log(COLORS.yellow('    no pipelines yet'));
+      }
+    } catch {
+      console.log(COLORS.yellow('    (could not parse pipeline response)'));
+    }
+  } else {
+    console.log(COLORS.dim('    set HEXA_GITLAB_PAT to see pipeline status'));
+  }
+  console.log('');
+}
+
+/* ------------------------------------------------------------------ */
+/*  5. WATCH — re-run status on an interval                            */
+/* ------------------------------------------------------------------ */
+async function cmdWatch(intervalArg) {
+  const interval = Number(intervalArg) > 0 ? Number(intervalArg) : 30;
+  console.log(COLORS.bold(`\nWatching every ${interval}s — Ctrl+C to stop\n`));
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    await cmdStatus();
+    await new Promise((r) => setTimeout(r, interval * 1000));
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  6. CONVENTIONAL COMMIT                                             */
 /* ------------------------------------------------------------------ */
 async function cmdCommit(rest) {
   const message = rest.join(' ');
@@ -266,6 +353,8 @@ async function cmdCommit(rest) {
 function help() {
   console.log(COLORS.bold('\nHexaOps — HEXA Studio operations CLI\n'));
   console.log('  hexaops gate          Run all 9 quality gates in parallel');
+  console.log('  hexaops status        ONE-SHOT cockpit: git + server + GitLab + registry + pipeline');
+  console.log('  hexaops watch [n]     Re-run status every N seconds (default 30)');
   console.log('  hexaops pipeline      Check GitLab pipeline status');
   console.log('  hexaops deploy        Sync configs to server + health check');
   console.log('  hexaops commit <msg>  Conventional commit (auto type detection)');
@@ -275,6 +364,8 @@ function help() {
 const [, , cmd, ...rest] = process.argv;
 switch (cmd) {
   case 'gate': await cmdGate(); break;
+  case 'status': await cmdStatus(); break;
+  case 'watch': await cmdWatch(rest[0]); break;
   case 'pipeline': await cmdPipeline(); break;
   case 'deploy': await cmdDeploy(); break;
   case 'commit': await cmdCommit(rest); break;
