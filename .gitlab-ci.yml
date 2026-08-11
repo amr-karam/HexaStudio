@@ -88,7 +88,6 @@ typecheck:
   extends: .typecheck_base
   script:
     - npm run typecheck --workspace=packages/types
-    - npm run typecheck --workspace=packages/ui
     - npm run typecheck --workspace=packages/utils
     - npm run typecheck --workspace=apps/frontend
     - npm run typecheck --workspace=apps/backend
@@ -96,7 +95,7 @@ typecheck:
 cms-typecheck:
   extends: .typecheck_base
   script:
-    - npm run typecheck
+    - npm run typecheck --workspace=apps/cms
   cache:
     key:
       files:
@@ -530,9 +529,8 @@ publish-ui:
     - npm config set "//${CI_SERVER_HOST}/api/v4/packages/npm/:always-auth" "true"
     - npm publish --workspace=packages/ui
   rules:
-    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
-      when: manual
-      allow_failure: false
+    # packages/ui was retired (ADR-013) — job disabled until restored.
+    - when: never
 
 # ----- Build Storybook static site & push docs-service image -----
 build-storybook:
@@ -548,8 +546,8 @@ build-storybook:
       - packages/ui/storybook-static/
     expire_in: 7 days
   rules:
-    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
-    - if: $CI_COMMIT_BRANCH == "develop" && $CI_PIPELINE_SOURCE == "push"
+    # packages/ui was retired (ADR-013) — job disabled until restored.
+    - when: never
 
 # ----- Push docs-service container image (serves Storybook static build) -----
 build-image-docs:
@@ -579,8 +577,8 @@ build-image-docs:
   needs:
     - build-storybook
   rules:
-    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
-    - if: $CI_COMMIT_BRANCH == "develop" && $CI_PIPELINE_SOURCE == "push"
+    # packages/ui was retired (ADR-013) — job disabled until restored.
+    - when: never
 
 # ----------------------------------------------------------------------------
 # 7. DEPLOY STAGE
