@@ -1,9 +1,25 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** August 13, 2026 — Frontend Design System Elevation (Tokens, Components, Portal, Services)
-**Version:** 2.1.12
+**Last Updated:** August 13, 2026 — Motion Tokens Consolidation (single source of truth)
+**Version:** 2.1.13
 **Authority Level:** 13 (Production)
 **Current Phase:** Production-Ready — Design System Unified + Odoo-First Architecture + Workflow Automation (DEPLOYED)
+
+---
+
+## 1.0.9 Motion Tokens Consolidation — Canonical `src/lib/motion.ts` (Aug 13, 2026)
+
+- **Promoted `apps/frontend/src/lib/motion.ts` to the single source of truth** for easing curves and durations across the frontend motion layer (previously duplicated as numeric literals in `src/lib/motion/tokens.ts`).
+  - Added `EASE.cinematic` alias `[0.76, 0, 0.24, 1]` (= legacy `easeInOutQuint`) so every Phase-1 curve has a canonical name.
+  - Added `DURATION.scene` (`0.8s`) and `DURATION.transition` (`0.7s`) aliases, matching the Phase-1 granularity — `DURATION.component` is now annotated as the canonical name for the legacy `ui` duration.
+- **Converted `apps/frontend/src/lib/motion/tokens.ts` to a backward-compatible compatibility layer** — no consumer changes required:
+  - `EASING` → re-exports `EASE.entrance`/`EASE.cinematic` under the legacy `easeOutExpo`/`easeInOutQuint` names.
+  - `DUR` → re-exports `DURATION.micro`/`DURATION.component`/`DURATION.scene`/`DURATION.transition` under the legacy `micro`/`ui`/`scene`/`transition` names.
+  - `CSS_EASING` / `GSAP_EASING` / `STAGGER_TOKENS` / `tokenTransition` preserved (value-identical, now token-sourced).
+  - `CubicBezier` widened to `readonly [number, number, number, number]` to match `EASE`'s `as const` tuples.
+- **Migrated `PageTransition.tsx`** to import `EASE`/`DURATION` directly from `@/lib/motion` (curtain leg eased with `EASE.cinematic`, durations `DURATION.component`) — demonstrates the canonical import pattern for new code.
+- **10 other consumers** (`SectionReveal`, `ScrollCue`, `KineticTitle`, `ChapterHeading`, `NavbarMobileMenu`, `CinematicPreloader`, `ArticleDetailClient`, `AchievementsSection`, `FeaturedWork`, `HomeHero`, `ProjectGrid`) left untouched — they continue to import from `@/lib/motion/tokens` and work through the shim. Future cleanup can migrate them to the canonical names incrementally.
+- **Verified**: frontend lint 0/0 (`--max-warnings=0` + design-token gate PASS), typecheck 0 errors, **208/208 tests** (36 files — `test/lib/motion-tokens.test.ts` green, asserting exact Phase-1 values still hold through the shim).
 
 ---
 
