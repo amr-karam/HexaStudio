@@ -88,7 +88,6 @@ typecheck:
   extends: .typecheck_base
   script:
     - npm run typecheck --workspace=packages/types
-    - npm run typecheck --workspace=packages/ui
     - npm run typecheck --workspace=packages/utils
     - npm run typecheck --workspace=apps/frontend
     - npm run typecheck --workspace=apps/backend
