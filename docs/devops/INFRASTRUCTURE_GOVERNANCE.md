@@ -104,7 +104,7 @@ Two strict network boundaries:
 |--------|------|------|--------|---------|
 | `postgres_data` | `/data/postgres` | 100 GB | Yes (`pg_dump -Fc` via `backup` service) | Database files |
 | `redis_data` | `/data/redis` | 1 GB | No (ephemeral) | Cache data |
-| `minio_data` | `/data/minio` | 500 GB | No (not backed up — see [BACKUP.md](./BACKUP.md)) | Object storage |
+| `minio_data` | `/data/minio` | 500 GB | No (not backed up — see [BACKUP.md]$1) | Object storage |
 | `loki_data` | `/data/loki` | 50 GB | No (retention policy) | Log storage |
 | `prometheus_data` | `/data/prometheus` | 20 GB | No (retention policy) | Metrics |
 | `tempo_data` | `/data/tempo` | 10 GB | No | Traces |
@@ -438,7 +438,7 @@ hexa-studio/
 
 | Frequency | Method | Retention | Destination |
 |-----------|--------|-----------|-------------|
-| - | **Not backed up** — MinIO object store has no mirror job (GAP, see [BACKUP.md](./BACKUP.md)) | - | - |
+| - | **Not backed up** — MinIO object store has no mirror job (GAP, see [BACKUP.md]$1) | - | - |
 | Per-project completion | Manual archive | Indefinite | Cold storage |
 
 ---
@@ -607,8 +607,8 @@ Grafana Tempo data source configured with:
 |--------|-----------|-----------|--------|-------------|
 | PostgreSQL (all DBs) | Every 24h (sleep-loop service) | 30 days | `pg_dump -Fc` via `docker/backup/backup.sh`; upload to MinIO `backups` bucket via `mc` | Daily scheduled `verify-backup.sh` |
 | PostgreSQL WAL | Not implemented | - | - | - |
-| MinIO data | Not backed up | - | - | GAP (see [BACKUP.md](./BACKUP.md)) |
-| MinIO offsite | Not backed up | - | - | GAP (see [BACKUP.md](./BACKUP.md)) |
+| MinIO data | Not backed up | - | - | GAP (see [BACKUP.md]$1) |
+| MinIO offsite | Not backed up | - | - | GAP (see [BACKUP.md]$1) |
 | GitLab data | Daily | 7 days | `gitlab-rake backup:create` | Monthly restore drill |
 | SSL certificates | Auto-renewal | Active | Traefik ACME | Daily uptime check |
 
@@ -619,7 +619,7 @@ Grafana Tempo data source configured with:
 | Database backup | `docker/backup/backup.sh` | Infinite-loop `pg_dump -Fc` of `hexastudio_api`/`hexastudio_cms`/`hexastudio_odoo`/`hexastudio_db`, 30-day prune, optional MinIO `backups` upload |
 | Backup verify | `docker/backup/verify-backup.sh` | `pg_restore --list` integrity + 25h age check (exit 0/1) |
 | Verification daemon | `docker/backup/verify-loop.sh` | 24h loop wrapper for scheduled self-verification |
-| Restore database | `pg_restore -Fc -d <db> <dump>` | Restore a single DB from a dump (see [BACKUP.md](./BACKUP.md) §5) |
+| Restore database | `pg_restore -Fc -d <db> <dump>` | Restore a single DB from a dump (see [BACKUP.md](BACKUP.md) §5) |
 | Backup verify (compose) | `docker compose -f docker-compose.prod.yml --profile verify run --rm backup-verify` | One-shot verification service |
 
 ### 14.3 Encryption
@@ -820,13 +820,13 @@ Triggered when:
 
 ## Related Documents
 
-- [Infrastructure Overview](./infrastructure.md) — Base infrastructure topology
-- [Backup & Restore](./BACKUP.md) — Detailed backup procedures
-- [Disaster Recovery](./DISASTER_RECOVERY.md) — DR plan and runbooks
-- [Deployment Strategy](./DEPLOYMENT_STRATEGY.md) — Zero-downtime pipeline
-- [Observability](./OBSERVABILITY.md) — Monitoring, logging, tracing
-- [Docker Standards](./DOCKER.md) — Dockerfile and containerization
-- [Docker Compose](./DOCKER_COMPOSE.md) — Service composition
-- [GitLab Operations](./GITLAB_OPERATIONS.md) — CI/CD pipeline maintenance
-- [Incident Response](./incident-response.md) — Incident runbook
-- [Password Rotation](./PASSWORD_ROTATION.md) — Credential management
+- [Infrastructure Overview](infrastructure.md) — Base infrastructure topology
+- [Backup & Restore](BACKUP.md) — Detailed backup procedures
+- [Disaster Recovery](DISASTER_RECOVERY.md) — DR plan and runbooks
+- [Deployment Strategy](DEPLOYMENT_STRATEGY.md) — Zero-downtime pipeline
+- [Observability](OBSERVABILITY.md) — Monitoring, logging, tracing
+- [Docker Standards](DOCKER.md) — Dockerfile and containerization
+- [Docker Compose](DOCKER_COMPOSE.md) — Service composition
+- [GitLab Operations](GITLAB_OPERATIONS.md) — CI/CD pipeline maintenance
+- [Incident Response](incident-response.md) — Incident runbook
+- [Password Rotation](PASSWORD_ROTATION.md) — Credential management

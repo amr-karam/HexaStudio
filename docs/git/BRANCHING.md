@@ -68,6 +68,6 @@ npm run paseo:worktree:archive -- feature/S16-my-feature
 
 ## 6. RELATED DOCUMENTATION
 
-- [GIT_STRATEGY.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/git/GIT_STRATEGY.md) — Core Git strategy.
-- [COMMITS.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/git/COMMITS.md) — Commit conventions.
-- [PULL_REQUESTS.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/git/PULL_REQUESTS.md) — PR review standards.
+- [GIT_STRATEGY.md](GIT_STRATEGY.md)) — Core Git strategy.
+- [COMMITS.md](COMMITS.md)) — Commit conventions.
+- [PULL_REQUESTS.md](PULL_REQUESTS.md)) — PR review standards.

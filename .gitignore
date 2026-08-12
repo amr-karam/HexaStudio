@@ -12,6 +12,7 @@ build/
 out/
 .strapi/
 .tmp/
+storybook-static/
 
 # Environment (never commit secrets)
 .env
@@ -66,6 +67,16 @@ server.log
 tmp_*.py
 temp_*.py
 temp_*.sh
+
+# Operational one-off scripts (may embed credentials — NEVER commit)
+# Relocate any that must be kept to ops/archive/ (gitignored).
+gl_p*.py
+gl_poll*.py
+mint_pat*.sh
+poll_pipeline*.sh
+rails_probe*.sh
+verify_runner*.sh
+*_lf.sh
 
 # Files containing secrets — NEVER commit
 *.secret
@@ -158,3 +169,22 @@ hexastudio_key
 .obsidian/
 CUsers/
 Daily Notes/
+
+# Stakpak session files
+.stakpak/session*
+.stakpak/
+
+# Workflow tool artifacts
+.workflow/
+
+# Local npm auth config (never commit)
+*.npmrc
+
+# Git rewrite directories
+.git-rewrite/
+
+# Secret scrubbing scripts
+scrub_secret.py
+
+# Backup files
+*.bak

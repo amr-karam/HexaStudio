@@ -47,7 +47,7 @@ export function ToggleSwitch({
         onClick={() => !disabled && onChange(!checked)}
         className={`
           relative inline-flex h-7 w-12 shrink-0 cursor-pointer items-center rounded-full
-          transition-colors duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]
+          transition-colors duration-500 ease-[var(--hexa-ease-interaction)]
           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background
           ${disabled ? 'opacity-40 cursor-not-allowed' : ''}
           ${checked ? 'bg-accent' : 'bg-neutral-800'}

@@ -1,5 +1,23 @@
 import '@testing-library/jest-dom/vitest';
 
+// Next.js compiles styled-jsx (`<style jsx global>`) at build time via SWC,
+// but Vitest renders it as a plain `<style>` element. React then warns about
+// the `jsx` and `global` boolean attributes, which are build-time-only
+// styled-jsx markers and never reach the real DOM. Filter those two known
+// warnings while keeping every other console.error intact.
+const styledJsxAttributeWarning = /non-boolean attribute `%s`/;
+const originalConsoleError = console.error;
+console.error = (...args: unknown[]) => {
+  const message = args.map(String).join(' ');
+  if (
+    styledJsxAttributeWarning.test(message) &&
+    args.some((arg) => arg === 'jsx' || arg === 'global')
+  ) {
+    return;
+  }
+  originalConsoleError(...args);
+};
+
 // jsdom does not implement IntersectionObserver, which components using
 // framer-motion's useInView or IntersectionObserver rely on. Polyfill it.
 if (typeof window !== 'undefined' && !window.IntersectionObserver) {

@@ -1,7 +1,10 @@
 'use client';
+import { EASE } from '@/lib/motion';
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { REDUCED_TRANSITION } from '@/lib/motion';
 import { useAuth } from '@/features/auth';
 import { useLocale } from '@/i18n/LocaleProvider';
 import { TextReveal } from '@/components/ui/TextReveal';
@@ -90,6 +93,7 @@ async function syncToBackend(prefs: NotificationPreferences, userId: string): Pr
 
 /** Small inline component showing the active currency info in settings. */
 function CurrencyInfo() {
+  const reduced = useReducedMotion();
   const selectedCurrency = useCurrencyStore((s) => s.selectedCurrency);
   const availableCurrencies = useCurrencyStore((s) => s.availableCurrencies);
   const isLoading = useCurrencyStore((s) => s.isLoading);
@@ -103,8 +107,8 @@ function CurrencyInfo() {
     return (
       <div className="flex items-center gap-2">
         <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+          animate={reduced ? undefined : { rotate: 360 }}
+          transition={reduced ? REDUCED_TRANSITION : { repeat: Infinity, duration: 1, ease: 'linear' }}
           className="w-3 h-3 rounded-full border-2 border-accent/30 border-t-accent shrink-0"
         />
         <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">
@@ -145,11 +149,12 @@ function CurrencyInfo() {
 }
 
 function PageSkeleton() {
+  const reduced = useReducedMotion();
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
       <motion.div
-        animate={{ opacity: [0.5, 1, 0.5] }}
-        transition={{ repeat: Infinity, duration: 1.5 }}
+        animate={reduced ? undefined : { opacity: [0.5, 1, 0.5] }}
+        transition={reduced ? REDUCED_TRANSITION : { repeat: Infinity, duration: 1.5 }}
         className="text-xs uppercase tracking-[0.5em] text-neutral-500 font-mono"
       >
         Loading...
@@ -159,6 +164,7 @@ function PageSkeleton() {
 }
 
 export default function SettingsPage() {
+  const reduced = useReducedMotion();
   const { user, isLoading: authLoading } = useAuth();
   const { t } = useLocale();
   const [prefs, setPrefs] = useState<NotificationPreferences>(DEFAULT_PREFS);
@@ -229,7 +235,7 @@ export default function SettingsPage() {
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.6, ease: EASE.entrance }}
             className="text-[10px] uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
           >
             {t('portal.settings.title')}
@@ -242,7 +248,7 @@ export default function SettingsPage() {
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ delay: 0.25, duration: 0.6, ease: EASE.entrance }}
             className="mt-4 text-sm text-neutral-500 font-light leading-relaxed"
           >
             {t('portal.settings.subtitle')}
@@ -253,7 +259,7 @@ export default function SettingsPage() {
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ delay: 0.15, duration: 0.7, ease: EASE.entrance }}
           className="bg-surface border border-border/50 rounded-sm overflow-hidden"
         >
           <div className="px-6 py-5 border-b border-border/20">
@@ -270,7 +276,7 @@ export default function SettingsPage() {
                 key={item.key}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 + index * 0.05, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ delay: 0.2 + index * 0.05, duration: 0.5, ease: EASE.entrance }}
               >
                 <ToggleSwitch
                   label={t(item.labelKey)}
@@ -288,7 +294,7 @@ export default function SettingsPage() {
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ delay: 0.4, duration: 0.7, ease: EASE.entrance }}
           className="bg-surface border border-border/50 rounded-sm overflow-hidden mt-8"
         >
           <div className="px-6 py-5 border-b border-border/20">
@@ -327,8 +333,8 @@ export default function SettingsPage() {
           {syncStatus === 'syncing' && (
             <>
               <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+                animate={reduced ? undefined : { rotate: 360 }}
+                transition={reduced ? REDUCED_TRANSITION : { repeat: Infinity, duration: 1, ease: 'linear' }}
                 className="w-3 h-3 rounded-full border-2 border-accent/30 border-t-accent"
               />
               <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">

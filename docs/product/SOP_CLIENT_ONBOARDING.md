@@ -59,5 +59,5 @@ To transition a qualified lead from the "Opportunity" stage in the CRM to an act
 ## Related Docs
 
 - `03-BUSINESS\BUSINESS_WORKFLOWS.md`
-- `09-ODOO\CRM.md`
+- `odoo\CRM.md`
 - `12-CLIENT-PORTAL\CLIENT_PORTAL.md`

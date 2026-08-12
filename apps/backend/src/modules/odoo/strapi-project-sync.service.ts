@@ -459,7 +459,59 @@ export class StrapiProjectSyncService implements OnModuleInit {
     // Push real-time event to connected clients
     this.emitProjectSync(slug, existingEntry ? 'updated' : 'created', mergedCache);
 
+    // Purge frontend ISR cache so the new/updated project appears immediately
+    // on the homepage, /projects listing, and the project detail page.
+    await this.revalidateFrontend(slug);
+
     return entryId;
+  }
+
+  // ── Frontend ISR Revalidation ──────────────────────────────
+
+  /**
+   * Purge the Next.js ISR cache for all pages that display project data.
+   *
+   * Called after every Odoo→Strapi sync so new projects appear on the
+   * website in real time, not just on the 1-hour ISR refresh cycle.
+   */
+  private async revalidateFrontend(slug: string): Promise<void> {
+    const frontendUrl = getEnv().FRONTEND_URL;
+    const revalidateSecret = getEnv().REVALIDATE_SECRET;
+
+    if (!frontendUrl || !revalidateSecret) {
+      this.logger.debug('FRONTEND_URL or REVALIDATE_SECRET not configured — skipping ISR purge');
+      return;
+    }
+
+    try {
+      await firstValueFrom(
+        this.httpService.post(
+          `${frontendUrl}/api/revalidate`,
+          {
+            paths: [
+              '/',                    // homepage (project grid)
+              '/projects',            // projects listing
+              `/projects/${slug}`,    // project detail page
+              '/studio',              // 3D studio experience
+            ],
+            type: 'page',
+          },
+          {
+            headers: {
+              'x-revalidate-secret': revalidateSecret,
+              'Content-Type': 'application/json',
+            },
+            timeout: 10_000,
+          },
+        ),
+      );
+      this.logger.log(`Frontend ISR cache purged for slug "${slug}"`);
+    } catch (error) {
+      // Non-fatal: the ISR cache will self-heal on the next 1-hour cycle.
+      this.logger.warn(
+        `Frontend revalidation failed for slug "${slug}": ${(error as Error).message}`,
+      );
+    }
   }
 
   // ── Reconciliation ────────────────────────────────────────

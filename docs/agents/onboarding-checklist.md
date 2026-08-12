@@ -16,11 +16,11 @@ Read these documents in order. Do not skip.
 - [ ] `AGENTS.md` — The binding operating manual
 - [ ] `00-GOVERNANCE\PROJECT_OVERVIEW.md` — The "What" and "Why"
 - [ ] `00-GOVERNANCE\PRODUCT_VISION.md` — The a-grade standard
-- [ ] `01-ARCHITECTURE\SYSTEM_ARCHITECTURE.md` — The "How"
+- [ ] `architecture\SYSTEM_ARCHITECTURE.md` — The "How"
 - [ ] `02-ROADMAP\PROJECT_ROADMAP.md` — The "When"
-- [ ] `06-STANDARDS\CODING_STANDARDS.md` — The "Rules"
-- [ ] `06-STANDARDS\SECURITY_STANDARDS.md` — The "Safeguards"
-- [ ] `04-AGENTS\AI_AGENT_GUIDE.md` — The "Role"
+- [ ] `engineering\CODING_STANDARDS.md` — The "Rules"
+- [ ] `engineering\SECURITY_STANDARDS.md` — The "Safeguards"
+- [ ] `agents\AI_AGENT_GUIDE.md` — The "Role"
 
 ## Stage 2: Environment Setup
 
@@ -36,7 +36,7 @@ Read these documents in order. Do not skip.
 Complete these tasks to prove alignment:
 
 - [ ] **Architecture Quiz:** Explain the BFF pattern and why we use it.
-- [ ] **Standard Check:** Create a simple component following `06-STANDARDS`.
+- [ ] **Standard Check:** Create a simple component following `engineering`.
 - [ ] **Workflow Test:** Create a feature branch, commit a trivial change with a Conventional Commit, and open a draft PR.
 
 ## Stage 4: First Contribution

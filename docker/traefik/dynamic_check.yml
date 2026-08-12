@@ -154,7 +154,7 @@ http:
     traefik-auth:
       basicAuth:
         users:
-          - "admin:$apr1$iX4YLoGa$KRmTxSK1/9JvWQ9h5FKw90"
+          - "${TRAEFIK_AUTH_USER}:${TRAEFIK_AUTH_HASH}"
 
     forwarded-headers:
       headers:

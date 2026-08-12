@@ -19,5 +19,5 @@ The Project Tracking module (`/portal/projects/:id`) presents clients with an at
 
 ## 3. RELATED DOCUMENTATION
 
-- [CLIENT_PORTAL.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/client-portal/CLIENT_PORTAL.md) — Portal strategy.
-- [TIMELINE.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/client-portal/TIMELINE.md) — Timeline visualization.
+- [CLIENT_PORTAL.md](CLIENT_PORTAL.md) — Portal strategy.
+- [TIMELINE.md](TIMELINE.md) — Timeline visualization.

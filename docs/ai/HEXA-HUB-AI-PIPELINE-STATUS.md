@@ -98,7 +98,7 @@ Frontend Components
   - Online presence indicators
   - Responsive design with framer-motion animations
   - Glass morphism styling
-  - Accessible UI (WCAG 2.2 AA)
+  - Accessible UI (WCAG 2.1 AAA)
 
 - [x] **SocketProvider.tsx** - Real-time context
   - Socket.IO client initialization
@@ -182,7 +182,7 @@ hexa-hub/apps/web/src/app/api/portal/copilot/multimodal-query/
 - **Premium Shadows** - Multi-layer shadows with spread and blur
 - **Cinematic Animations** - GSAP and framer-motion
 - **Responsive Design** - Mobile-first approach
-- **Accessibility** - WCAG 2.2 AA compliant
+- **Accessibility** - WCAG 2.1 AAA compliant
 - **Performance** - GPU-accelerated animations
 - **Color Palette** - Premium gradients (#1a1a2e → #16213e → #0f3460)
 - **Typography** - Inter (sans-serif), Playfair Display (serif)
@@ -325,7 +325,7 @@ hexa-hub/apps/web/src/app/api/portal/copilot/multimodal-query/
 - ✅ Event validation and sanitization
 
 ### **Compliance**
-- ✅ WCAG 2.2 AA accessibility
+- ✅ WCAG 2.1 AAA accessibility
 - ✅ GDPR-ready data handling
 - ✅ Audit logging
 - ✅ Error handling without data leaks

@@ -449,8 +449,8 @@ All databases are accessed via internal Docker service names:
 
 ## Related Documents
 
-- [System Architecture](./SYSTEM_ARCHITECTURE.md) — High-level topology
-- [Backup & Restore](../13-DEVOPS/BACKUP.md) — Detailed backup procedures
-- [Disaster Recovery](../13-DEVOPS/DISASTER_RECOVERY.md) — DR scenarios
-- [Database Standards](../06-STANDARDS/DATABASE_STANDARDS.md) — Coding standards for DB access
-- [Infrastructure Governance](../13-DEVOPS/INFRASTRUCTURE_GOVERNANCE.md) — Infrastructure policies
+- [System Architecture](SYSTEM_ARCHITECTURE.md) — High-level topology
+- [Backup & Restore](../devops/BACKUP.md) — Detailed backup procedures
+- [Disaster Recovery](../devops/DISASTER_RECOVERY.md) — DR scenarios
+- [Database Standards](../engineering/DATABASE_STANDARDS.md) — Coding standards for DB access
+- [Infrastructure Governance](../devops/INFRASTRUCTURE_GOVERNANCE.md) — Infrastructure policies

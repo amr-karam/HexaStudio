@@ -45,5 +45,5 @@ git tag -l -n1 --sort=-v:refname
 
 ## 5. RELATED DOCUMENTATION
 
-- [RELEASE_FLOW.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/git/RELEASE_FLOW.md) — Release flow.
-- [CHANGELOG.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/CHANGELOG.md) — Project changelog.
+- [RELEASE_FLOW.md](RELEASE_FLOW.md) — Release flow.
+- [CHANGELOG.md](./CHANGELOG.md) — Project changelog.

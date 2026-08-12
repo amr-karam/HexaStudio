@@ -246,7 +246,7 @@ docker compose up -d --no-recreate <previous-tag>
 | Data | Frequency | Retention | Method |
 |------|-----------|-----------|--------|
 | PostgreSQL (all DBs) | Every 24h (sleep-loop service) | 30 days | `pg_dump -Fc` via `docker/backup/backup.sh` |
-| MinIO (media) | Not backed up | — | GAP (see [BACKUP.md](./BACKUP.md)) |
+| MinIO (media) | Not backed up | — | GAP (see [BACKUP.md](./BACKUP.md) |
 | Redis (cache) | Not backed up | — | Ephemeral (rebuildable) |
 | Application config | Per deploy | 10 releases | Version control |
 | SSL certs | Auto-renewal | — | Traefik + Let's Encrypt |

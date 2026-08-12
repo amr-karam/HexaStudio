@@ -1,11 +1,15 @@
 'use client';
 
 /**
- * HEXA Portal v3.0 — Analytics Dashboard
+ * HEXA Portal v3.0 — Analytics Dashboard · "The Studio Pulse"
  *
  * World-class executive analytics with animated SVG charts,
  * activity heatmap, milestone timeline, and budget donut.
  * All visualizations built with pure SVG + framer-motion — zero chart libraries.
+ *
+ * Crafted in the Silent Luxury language: obsidian artisan-glass panels, gold
+ * specular hairlines, serif numerals, and mono editorial markers framing
+ * every section — matching The Ledger, The Vault, and the Concierge.
  */
 
 import React, { useState, useCallback } from 'react';
@@ -18,6 +22,7 @@ import {
   staggerContainer,
   makeTransition,
   REDUCED_TRANSITION,
+  EASE,
 } from '@/lib/motion';
 
 /* -------------------------------------------------------------------------- */
@@ -179,7 +184,7 @@ const barFillVariant = (percentage: number, reduced: boolean) => ({
     ? { width: `${percentage}%`, transition: REDUCED_TRANSITION }
     : {
         width: `${percentage}%`,
-        transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] as const, delay: 0.3 },
+        transition: { duration: 1.2, ease: EASE.entrance, delay: 0.3 },
       },
 });
 
@@ -190,7 +195,7 @@ const lineDrawVariant = (reduced: boolean) => ({
     : {
         pathLength: 1,
         opacity: 1,
-        transition: { duration: 2, ease: [0.16, 1, 0.3, 1] as const, delay: 0.4 },
+        transition: { duration: 2, ease: EASE.entrance, delay: 0.4 },
       },
 });
 
@@ -198,10 +203,10 @@ const lineDrawVariant = (reduced: boolean) => ({
 /*  Sub-Components                                                            */
 /* -------------------------------------------------------------------------- */
 
-function GoldDot() {
+function DiamondBullet({ className }: { className?: string }) {
   return (
     <span
-      className="inline-block w-2 h-2 rounded-full bg-accent flex-shrink-0"
+      className={cn('inline-block h-1.5 w-1.5 rotate-45 bg-accent/70 flex-shrink-0', className)}
       aria-hidden="true"
     />
   );
@@ -229,24 +234,43 @@ function SectionCard({
       transition={makeTransition('entrance', 'component', delay)}
       aria-label={ariaLabel}
       className={cn(
-        'rounded-xl bg-surface border border-border/30 p-6',
-        'hover:border-border-light/40 transition-colors duration-500',
+        // Obsidian artisan-glass surfaces with gold specular top hairline —
+        // matches FinanceCenterView, DocumentCenterView (The Vault) panels.
+        'artisan-glass artisan-specular-top group relative overflow-hidden rounded-2xl p-6',
+        // The class owns its own :hover border/shadow upgrade (gold tint).
         className,
       )}
     >
-      {children}
+      {/* Ambient gold aura revealed on hover — subtle, group-driven */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-12 -top-12 h-28 w-28 rounded-full bg-accent/[0.04] opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
+      />
+      {/* Bottom specular gold hairline — appears on hover */}
+      <div
+        aria-hidden="true"
+        className="absolute bottom-0 left-0 right-0 h-px bg-accent/0 transition-colors duration-1000 group-hover:bg-accent/25"
+      />
+      <div className="relative">{children}</div>
     </motion.section>
   );
 }
 
-function SectionHeader({ title, subtitle }: { title: string; subtitle?: string }) {
+function SectionHeader({ title, subtitle, index }: { title: string; subtitle?: string; index?: string }) {
   return (
-    <div className="flex items-center gap-2.5 mb-5">
-      <GoldDot />
+    <div className="mb-5 flex items-start gap-3">
+      <span className="mt-1.5" aria-hidden="true">
+        <DiamondBullet />
+      </span>
       <div>
-        <h3 className="text-sm font-semibold text-foreground tracking-wide">{title}</h3>
+        {index && (
+          <p className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-accent/60">
+            {index}
+          </p>
+        )}
+        <h3 className="font-serif text-lg font-light tracking-tight text-foreground">{title}</h3>
         {subtitle && (
-          <p className="text-xs text-textMuted mt-0.5">{subtitle}</p>
+          <p className="mt-1 text-xs font-light text-neutral-500">{subtitle}</p>
         )}
       </div>
     </div>
@@ -259,10 +283,10 @@ function SectionHeader({ title, subtitle }: { title: string; subtitle?: string }
 
 function KpiCard({ kpi, index, reduced }: { kpi: KpiData; index: number; reduced: boolean }) {
   const trendColor = kpi.trend.direction === 'up'
-    ? 'text-emerald-400'
+    ? 'text-emerald-300'
     : kpi.trend.direction === 'down'
-      ? 'text-red-400'
-      : 'text-textMuted';
+      ? 'text-red-300'
+      : 'text-neutral-500';
 
   const trendIcon: IconName = kpi.trend.direction === 'up'
     ? 'arrow-up-right'
@@ -285,54 +309,62 @@ function KpiCard({ kpi, index, reduced }: { kpi: KpiData; index: number; reduced
       }}
       initial="hidden"
       animate="visible"
-      whileHover={reduced ? undefined : { y: -3, transition: { duration: 0.25, ease: [0.34, 1.56, 0.64, 1] } }}
+      whileHover={reduced ? undefined : { y: -3, transition: { duration: 0.25, ease: EASE.interaction } }}
       className={cn(
-        'relative p-5 rounded-xl group cursor-default',
-        'bg-surface border border-border/30',
-        'hover:border-accent/20 transition-colors duration-400',
+        // Artisan-glass KPI card — matches StatCard + FinanceCenterView summary card grammar.
+        'artisan-glass artisan-specular-top group relative overflow-hidden rounded-2xl p-5 cursor-default',
       )}
     >
-      {/* Top row: icon + trend */}
-      <div className="flex items-start justify-between mb-3">
+      {/* Hover gold radial aura */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full bg-accent/5 opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
+      />
+
+      {/* Top row: icon plate + trend */}
+      <div className="relative flex items-start justify-between mb-4">
         <div
           className={cn(
-            'w-10 h-10 rounded-lg flex items-center justify-center',
-            'bg-white/[0.03] border border-border/20',
-            'group-hover:border-accent/25 transition-colors duration-300',
+            'flex h-10 w-10 items-center justify-center rounded-lg',
+            'border border-white/[0.06] bg-white/[0.02]',
+            'transition-colors duration-500 group-hover:border-accent/40',
           )}
         >
           <Icon
             name={kpi.icon}
             size={18}
-            className="text-textMuted group-hover:text-accent transition-colors duration-300"
+            className="text-neutral-400 transition-colors duration-500 group-hover:text-accent"
           />
         </div>
-        <div className={cn('flex items-center gap-1 text-xs font-mono', trendColor)}>
+        <div className={cn('flex items-center gap-1 font-mono text-[0.625rem] uppercase tracking-[0.15em]', trendColor)}>
           <Icon name={trendIcon} size={11} />
           <span>{kpi.trend.value}%</span>
         </div>
       </div>
 
-      {/* Value */}
+      {/* Value — serif, lighter weight */}
       <p
         className={cn(
-          'text-3xl font-serif font-light tracking-tight mb-1',
+          'relative font-serif text-3xl font-light tracking-tight tabular-nums',
           kpi.accentClass ?? 'text-foreground',
         )}
       >
         {kpi.value}
       </p>
 
-      {/* Label */}
-      <p className="text-[11px] text-textMuted uppercase tracking-wider font-mono mb-1.5">
+      {/* Label — mono uppercase */}
+      <p className="relative mt-1.5 font-mono text-[0.625rem] uppercase tracking-[0.25em] text-neutral-500">
         {kpi.label}
       </p>
 
-      {/* Subtext */}
-      <p className="text-xs text-textSecondary">{kpi.subtext}</p>
+      {/* Subtext — editorial body */}
+      <p className="relative mt-1.5 text-xs font-light text-neutral-400">{kpi.subtext}</p>
 
-      {/* Bottom accent line */}
-      <div className="absolute bottom-0 left-4 right-4 h-[1px] bg-accent/0 group-hover:bg-accent/15 transition-colors duration-500" />
+      {/* Bottom specular gold hairline */}
+      <div
+        aria-hidden="true"
+        className="absolute bottom-0 left-4 right-4 h-px bg-accent/0 transition-colors duration-1000 group-hover:bg-accent/25"
+      />
     </motion.div>
   );
 }
@@ -387,7 +419,7 @@ function PhaseProgressBar({ phase, reduced }: { phase: PhaseData; reduced: boole
 function ProjectProgressChart({ reduced }: { reduced: boolean }) {
   return (
     <SectionCard ariaLabel="Project phase progress" reduced={reduced}>
-      <SectionHeader title="Project Progress" subtitle="Phase completion breakdown" />
+      <SectionHeader title="Project Progress" subtitle="Phase completion breakdown" index="§ I — Velocity" />
       <div className="space-y-5">
         {PHASE_DATA.map((phase) => (
           <PhaseProgressBar key={phase.name} phase={phase} reduced={reduced} />
@@ -404,7 +436,7 @@ function ProjectProgressChart({ reduced }: { reduced: boolean }) {
 function ActivityHeatmap({ reduced }: { reduced: boolean }) {
   return (
     <SectionCard ariaLabel="Weekly activity heatmap" reduced={reduced}>
-      <SectionHeader title="Activity Heatmap" subtitle="Weekly engagement intensity" />
+      <SectionHeader title="Activity Heatmap" subtitle="Weekly engagement intensity" index="§ II — Rhythm" />
       <div className="space-y-2">
         {/* Day labels */}
         <div className="grid grid-cols-[repeat(7,1fr)] gap-1.5 mb-1">
@@ -477,7 +509,7 @@ function ActivityHeatmap({ reduced }: { reduced: boolean }) {
 function MilestoneTimeline({ reduced }: { reduced: boolean }) {
   return (
     <SectionCard ariaLabel="Milestone timeline" reduced={reduced}>
-      <SectionHeader title="Milestone Timeline" subtitle="Project milestones & delivery dates" />
+      <SectionHeader title="Milestone Timeline" subtitle="Project milestones & delivery dates" index="§ III — Cadence" />
       <div className="relative pt-4 pb-2">
         {/* Connecting line */}
         <div className="absolute top-[28px] left-0 right-0 h-[2px] bg-neutral-800" aria-hidden="true" />
@@ -591,7 +623,7 @@ function ResponseTimeChart({ reduced }: { reduced: boolean }) {
 
   return (
     <SectionCard ariaLabel="Response time trend" reduced={reduced}>
-      <SectionHeader title="Response Time" subtitle="Average hours to first response (last 7 days)" />
+      <SectionHeader title="Response Time" subtitle="Average hours to first response (last 7 days)" index="§ IV — Tempo" />
       <div className="mt-2">
         <svg
           viewBox={`0 0 ${chartWidth} ${chartHeight}`}
@@ -666,7 +698,7 @@ function ResponseTimeChart({ reduced }: { reduced: boolean }) {
                 : {
                     opacity: 1,
                     scale: 1,
-                    transition: { delay: 0.8 + i * 0.1, duration: 0.3, ease: [0.16, 1, 0.3, 1] },
+                    transition: { delay: 0.8 + i * 0.1, duration: 0.3, ease: EASE.entrance },
                   }}
             />
           ))}
@@ -706,7 +738,7 @@ function FilesCard({ reduced }: { reduced: boolean }) {
 
   return (
     <SectionCard ariaLabel="File upload statistics" reduced={reduced} className="flex-1">
-      <SectionHeader title="Files Uploaded" subtitle="This month" />
+      <SectionHeader title="Files Uploaded" subtitle="This month" index="§ V — Throughput" />
       <p className="text-4xl font-serif font-light text-foreground tracking-tight mb-4">
         12
       </p>
@@ -723,7 +755,7 @@ function FilesCard({ reduced }: { reduced: boolean }) {
                   height: maxUpload > 0 ? (count / maxUpload) * 100 : 0,
                   transition: {
                     duration: 0.6,
-                    ease: [0.16, 1, 0.3, 1],
+                    ease: EASE.entrance,
                     delay: 0.4 + i * 0.03,
                   },
                 }}
@@ -746,7 +778,7 @@ function FilesCard({ reduced }: { reduced: boolean }) {
 function MeetingsCard({ reduced }: { reduced: boolean }) {
   return (
     <SectionCard ariaLabel="Meeting statistics" reduced={reduced} className="flex-1">
-      <SectionHeader title="Meetings" subtitle="This month" />
+      <SectionHeader title="Meetings" subtitle="This month" index="§ VI — Convenings" />
       <p className="text-4xl font-serif font-light text-foreground tracking-tight mb-4">
         8
       </p>
@@ -796,7 +828,7 @@ function BudgetDonut({ reduced }: { reduced: boolean }) {
 
   return (
     <SectionCard ariaLabel="Budget utilization" reduced={reduced}>
-      <SectionHeader title="Budget Utilization" subtitle="Financial overview" />
+      <SectionHeader title="Budget Utilization" subtitle="Financial overview" index="§ VII — Capital" />
       <div className="flex flex-col sm:flex-row items-center gap-6">
         {/* Donut */}
         <div className="relative w-36 h-36 flex-shrink-0">
@@ -833,7 +865,7 @@ function BudgetDonut({ reduced }: { reduced: boolean }) {
                 ? { strokeDashoffset: circumference - paidArc }
                 : {
                     strokeDashoffset: circumference - paidArc,
-                    transition: { duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.3 },
+                    transition: { duration: 1.4, ease: EASE.entrance, delay: 0.3 },
                   }}
             />
 
@@ -853,7 +885,7 @@ function BudgetDonut({ reduced }: { reduced: boolean }) {
                 ? { strokeDashoffset: -paidArc }
                 : {
                     strokeDashoffset: -paidArc,
-                    transition: { duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.6 },
+                    transition: { duration: 1.4, ease: EASE.entrance, delay: 0.6 },
                   }}
             />
           </svg>
@@ -868,32 +900,38 @@ function BudgetDonut({ reduced }: { reduced: boolean }) {
         {/* Legend */}
         <div className="space-y-3 flex-1">
           {BUDGET_SEGMENTS.map((seg) => (
-            <div key={seg.label} className="flex items-center justify-between">
+            <div key={seg.label} className="flex items-center justify-between" >
               <div className="flex items-center gap-2.5">
                 <div
-                  className="w-3 h-3 rounded-full flex-shrink-0"
+                  className="h-3 w-3 flex-shrink-0 rounded-full"
                   style={{
-                    background: seg.label === 'Paid'
-                      ? 'linear-gradient(135deg, #D4AF37, #E5C76B)'
-                      : seg.label === 'Outstanding'
-                        ? '#D4AF37'
-                        : '#2A2A2E',
+                    background:
+                      seg.label === 'Paid'
+                        ? 'linear-gradient(135deg, var(--color-accent), var(--color-accent-light))'
+                        : seg.label === 'Outstanding'
+                          ? 'var(--color-accent)'
+                          : 'var(--color-surface-light)',
                   }}
+                  aria-hidden="true"
                 />
-                <span className="text-xs text-textSecondary">{seg.label}</span>
+                <span className="text-xs font-light text-neutral-400">{seg.label}</span>
               </div>
-              <span className="text-xs font-mono font-medium text-foreground">
+              <span className="font-mono text-xs font-medium text-foreground">
                 {seg.percentage}%
               </span>
             </div>
           ))}
 
           {/* Divider */}
-          <div className="h-px bg-border/30 my-2" />
+          <div className="my-2 h-px bg-white/5" />
 
-          <div className="flex justify-between items-center">
-            <span className="text-xs text-textMuted">Total Budget</span>
-            <span className="text-sm font-serif font-light text-foreground">$125,000</span>
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-[0.625rem] uppercase tracking-[0.25em] text-neutral-500">
+              Total Budget
+            </span>
+            <span className="font-serif text-base font-light tracking-tight tabular-nums text-foreground">
+              $125,000
+            </span>
           </div>
         </div>
       </div>
@@ -914,49 +952,70 @@ export function AnalyticsView() {
   }, []);
 
   return (
-    <div className="space-y-6">
-      {/* ── Executive Summary Header ─────────────────────────────────────── */}
+    <div className="space-y-8">
+      {/* ── Editorial Header ─────────────────────────────────────────────── */}
       <motion.header
         initial="hidden"
         animate="visible"
         variants={fadeLift}
         custom={reduced}
-        className="flex flex-col sm:flex-row sm:items-end justify-between gap-4"
+        className="relative flex flex-col lg:flex-row lg:items-end justify-between gap-6"
       >
-        <div>
-          <div className="flex items-center gap-2.5 mb-1.5">
-            <GoldDot />
-            <h1 className="text-2xl font-bold text-foreground tracking-tight">
-              Analytics Dashboard
-            </h1>
-          </div>
-          <p className="text-sm text-textSecondary ml-[18px]">
-            Executive KPIs measuring project velocity, milestone accuracy, and team collaboration.
+        {/* Ambient gold aura behind the header */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-10 left-0 h-40 w-72 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.06),transparent_70%)] opacity-80 blur-2xl"
+        />
+
+        <div className="relative">
+          <p className="flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-accent/70">
+            <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-accent/70" />
+            § 01 — Analytics
+          </p>
+          <h1 className="mt-4 font-serif text-4xl font-light tracking-tight text-foreground sm:text-5xl">
+            The Studio <em className="text-gradient-gold font-normal italic">Pulse</em>
+          </h1>
+          <p className="mt-3 max-w-xl text-sm font-light leading-relaxed text-neutral-500">
+            Executive KPIs measuring project velocity, milestone accuracy, and team collaboration —
+            metrics framed as a concierge quarterly review.
           </p>
         </div>
 
-        {/* Date range filter pills */}
+        {/* Date-range selector — gold specular spring indicator (matches FinanceCenterView currency selector) */}
         <div
-          className="flex items-center gap-1.5 p-1 rounded-lg bg-white/[0.03] border border-border/20 self-start sm:self-auto"
+          className="artisan-glass artisan-specular-top relative flex items-center gap-1 self-start rounded-full p-1.5 lg:self-auto"
           role="radiogroup"
           aria-label="Select date range"
         >
-          {DATE_RANGE_OPTIONS.map((opt) => (
-            <button
-              key={opt.key}
-              onClick={() => handleDateRangeChange(opt.key)}
-              role="radio"
-              aria-checked={dateRange === opt.key}
-              className={cn(
-                'px-3 py-1.5 rounded-md text-xs font-mono font-medium transition-all duration-200',
-                dateRange === opt.key
-                  ? 'bg-accent/15 text-accent border border-accent/25'
-                  : 'text-textMuted hover:text-textSecondary hover:bg-white/[0.03] border border-transparent',
-              )}
-            >
-              {opt.label}
-            </button>
-          ))}
+          <span className="pl-3 pr-1 font-mono text-[0.625rem] uppercase tracking-[0.3em] text-neutral-500">
+            Range
+          </span>
+          {DATE_RANGE_OPTIONS.map((opt) => {
+            const isActive = dateRange === opt.key;
+            return (
+              <button
+                key={opt.key}
+                onClick={() => handleDateRangeChange(opt.key)}
+                role="radio"
+                aria-checked={isActive}
+                aria-label={`Show data for the last ${opt.label}`}
+                className={cn(
+                  'relative rounded-full px-4 py-1.5 font-mono text-xs tracking-[0.15em] transition-colors duration-500',
+                  isActive ? 'text-neutral-950' : 'text-neutral-400 hover:text-accent',
+                )}
+              >
+                {isActive && (
+                  <motion.span
+                    layoutId="analytics-range-indicator"
+                    className="absolute inset-0 rounded-full bg-gradient-to-r from-accent-dark via-accent to-accent-light shadow-[0_0_20px_rgba(212,175,55,0.25)]"
+                    transition={reduced ? { duration: 0.01 } : makeTransition('interaction', 'micro')}
+                    aria-hidden="true"
+                  />
+                )}
+                <span className="relative z-10">{opt.label}</span>
+              </button>
+            );
+          })}
         </div>
       </motion.header>
 

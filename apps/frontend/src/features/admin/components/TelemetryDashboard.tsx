@@ -1,4 +1,5 @@
 'use client';
+import { EASE } from '@/lib/motion';
 
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
@@ -22,7 +23,7 @@ const itemVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.4, ease: EASE.entrance },
   },
 };
 

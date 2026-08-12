@@ -12,6 +12,9 @@ import Link from 'next/link';
 import { useWebRTC } from '@/features/xr/hooks/useWebRTC';
 import { useCollaboration } from '@/features/xr/hooks/useCollaboration';
 import { ContractSignOffModal } from '@/features/portal/components/ContractSignOffModal';
+import { CoNavControls } from '@/features/portal/components/CoNavControls';
+import { XRCanvas } from '@/features/xr/components/XRCanvas';
+import { SpatialCursors } from '@/features/xr/components/SpatialCursors';
 
 interface ReviewRoomPageProps {
   params: Promise<{ id: string }>;
@@ -29,7 +32,7 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
   const [signatureHash, setSignatureHash] = useState<string | null>(null);
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white pt-24 pb-12 px-6">
+    <div className="min-h-screen bg-obsidian text-white pt-24 pb-12 px-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header Rail */}
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
@@ -55,7 +58,7 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
 
             <button
               onClick={() => setIsSignModalOpen(true)}
-              className="rounded-lg bg-[#D4AF37] px-4 py-2 text-xs font-bold text-black hover:bg-[#E5C76B] transition-colors"
+              className="rounded-lg bg-accent px-4 py-2 text-xs font-bold text-black hover:bg-accent-light transition-colors"
             >
               ✍️ Sign Off Deliverable
             </button>
@@ -70,14 +73,19 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
               <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
               <span>Live Multiplayer Session Active</span>
             </div>
+            <CoNavControls />
 
-            <div className="text-center space-y-3">
-              <div className="text-5xl">🏛️</div>
-              <h3 className="text-lg font-semibold text-white/80">3D Interactive Review Canvas</h3>
-              <p className="text-xs text-white/40 max-w-md mx-auto">
-                Drag to orbit, scroll to zoom, click spatial annotations to leave design directives.
-              </p>
-            </div>
+            <XRCanvas>
+              <SpatialCursors />
+              {/* 3D Model and Scene content would go here */}
+              <div className="text-center space-y-3 pointer-events-none">
+                <div className="text-5xl">🏛️</div>
+                <h3 className="text-lg font-semibold text-white/80">3D Interactive Review Canvas</h3>
+                <p className="text-xs text-white/40 max-w-md mx-auto">
+                  Drag to orbit, scroll to zoom, click spatial annotations to leave design directives.
+                </p>
+              </div>
+            </XRCanvas>
 
             {signatureHash && (
               <div className="absolute bottom-4 right-4 z-10 bg-emerald-950/80 border border-emerald-500/30 px-4 py-2 rounded-xl backdrop-blur-md text-xs text-emerald-300">
@@ -88,7 +96,7 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
 
           {/* WebRTC Video Feeds & Participants */}
           <div className="space-y-4">
-            <div className="rounded-2xl border border-white/10 bg-[#0F0F10] p-4 space-y-3">
+            <div className="rounded-2xl border border-white/10 bg-surface p-4 space-y-3">
               <h3 className="text-sm font-semibold text-white">Active Participants ({webrtc.peerConnections + 1})</h3>
               
               <div className="space-y-2">

@@ -128,4 +128,4 @@
 
 For the complete base performance checklist, see [`docs/checklists/PERFORMANCE_CHECKLIST.md`](../../17-CHECKLISTS/PERFORMANCE_CHECKLIST.md).
 
-For performance budgets and standards, see [`docs/performance/PERFORMANCE_STANDARDS.md`](./PERFORMANCE_STANDARDS.md).
+For performance budgets and standards, see [`docs/performance/PERFORMANCE_STANDARDS.md`](PERFORMANCE_STANDARDS.md).

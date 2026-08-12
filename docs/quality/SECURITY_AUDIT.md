@@ -41,7 +41,7 @@ A security audit performed via `npm audit` identified 81 vulnerabilities (26 Hig
 
 The primary blocker for automated resolution (`npm audit fix`) is a **peer dependency conflict**:
 
-- **Frontend/Root:** Uses **React 19**, the latest version for Next.js 15.
+- **Frontend/Root:** Uses **React 19**, the latest version for Next.js 16.2.11.
 - **Strapi 5:** Requires **React 17 or 18**.
 
 Because `npm audit fix` attempts to upgrade packages that might trigger a major version change or a peer dependency shift, it cannot safely resolve these without potentially breaking the Strapi admin interface or the Next.js frontend.

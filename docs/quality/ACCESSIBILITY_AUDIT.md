@@ -1,4 +1,4 @@
-# ♿ ACCESSIBILITY AUDITING & WCAG 2.2 AA STANDARDS
+# ♿ ACCESSIBILITY AUDITING & WCAG 2.1 AAA STANDARDS
 
 **Version:** 1.0.0 | **Scope:** Accessibility Testing | **Standard:** WCAG 2.2 Level AA Compliance
 
@@ -57,6 +57,6 @@ npx lighthouse "http://localhost:3000" --chrome-flags="--emulate-media-features=
 
 ## 5. RELATED DOCUMENTATION
 
-- [ACCESSIBILITY.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/accessibility/ACCESSIBILITY.md) — Coding accessibility standards.
-- [accessibility-checklist.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/checklists/accessibility-checklist.md) — WCAG 2.2 AA verification checklist.
-- [FRONTEND_EXCELLENCE.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/design/FRONTEND_EXCELLENCE.md) — Frontend contract.
+- [ACCESSIBILITY.md](../accessibility/ACCESSIBILITY.md) — Coding accessibility standards.
+- [accessibility-checklist.md](../checklists/accessibility-checklist.md) — WCAG 2.1 AAA verification checklist.
+- [FRONTEND_EXCELLENCE.md](../design/FRONTEND_EXCELLENCE.md) — Frontend contract.

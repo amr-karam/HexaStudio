@@ -11,9 +11,10 @@ import { AnimatedCounter } from '@/components/animation/AnimatedCounter';
 import { LazyProjectSceneWrapper } from '@/features/portfolio/components/LazyProjectSceneWrapper';
 import { ProjectChapterRail } from '@/features/portfolio/components/ProjectChapterRail';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
+import { EASE } from '@/lib/motion';
 import { getGsap } from '@/lib/gsap';
 import { onIdle } from '@/lib/idle';
-
+import { OrnamentalRule, ChapterNumeral, DoubleRule } from '@/components/storybook/BookOrnaments';
 
 /* -------------------------------------------------------------------------- */
 /*  Types                                                                      */
@@ -45,6 +46,18 @@ function projectStats(project: Project) {
   ].filter((s) => s.value !== '—');
 }
 
+/**
+ * Chapter divider — a DoubleRule with generous book-style spacing.
+ * Used to separate major sections within the case study.
+ */
+function ChapterDivider() {
+  return (
+    <div className="my-20 md:my-28" aria-hidden="true">
+      <DoubleRule />
+    </div>
+  );
+}
+
 /* -------------------------------------------------------------------------- */
 /*  Chapter: 01 — HERO                                                        */
 /* -------------------------------------------------------------------------- */
@@ -64,16 +77,23 @@ function ChapterHero({ project }: { project: Project }) {
         <LazyProjectSceneWrapper project={project} />
       ) : (
         <div className="absolute inset-0">
-          <Image
-            src={project.coverImage}
-            alt={project.title}
-            fill
-            priority
-            placeholder="blur"
-            blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGAExecuteX7pAAAAAElFTkSuQmCC"
-            sizes="100vw"
-            className="object-cover opacity-60"
-          />
+          <motion.div
+            initial={{ scale: 1.05 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 10, ease: 'linear' }}
+            className="absolute inset-0"
+          >
+            <Image
+              src={project.coverImage}
+              alt={project.title}
+              fill
+              priority
+              placeholder="blur"
+              blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGAExecuteX7pAAAAAElFTkSuQmCC"
+              sizes="100vw"
+              className="object-cover opacity-60"
+            />
+          </motion.div>
           <div className="absolute inset-0 bg-gradient-to-b from-obsidian/20 via-transparent to-background" />
         </div>
       )}
@@ -84,7 +104,7 @@ function ChapterHero({ project }: { project: Project }) {
         <motion.span
           initial={staticMode ? { opacity: 1 } : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.8, ease: EASE.entrance }}
           className="text-xs uppercase tracking-[0.5em] text-accent mb-6 block font-mono"
         >
           {project.category?.name}
@@ -92,7 +112,7 @@ function ChapterHero({ project }: { project: Project }) {
         <motion.h1
           initial={staticMode ? { opacity: 1 } : { opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1, delay: 0.2, ease: EASE.entrance }}
           className="text-6xl md:text-9xl font-serif font-light tracking-tighter text-foreground leading-tight"
         >
           {project.title}
@@ -135,25 +155,29 @@ function ChapterBrief({ project }: { project: Project }) {
         <div className="lg:col-span-7 space-y-12">
           <ChapterMarker index={2} title="Brief" className="mb-8" />
 
-          {/* Oversized index numeral (bdn DNA) */}
-          <motion.div
-            initial={staticMode ? { opacity: 1 } : { opacity: 0, x: -40 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="font-serif text-[120px] md:text-[200px] leading-none text-accent/10 font-light select-none pointer-events-none"
-            aria-hidden="true"
-          >
-            02
-          </motion.div>
+          {/* Chapter numeral — Roman numeral treatment */}
+          <div className="mb-10" aria-hidden="true">
+            <ChapterNumeral number={2} />
+          </div>
+
+          {/* Ornamental rule above the description */}
+          <div aria-hidden="true" className="mb-10">
+            <OrnamentalRule />
+          </div>
 
           <motion.p
             initial={staticMode ? { opacity: 1 } : { opacity: 0, y: 30 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8, delay: 0.2, ease: EASE.entrance }}
             className="text-xl md:text-2xl text-neutral-400 font-light leading-relaxed max-w-2xl"
           >
             {project.description}
           </motion.p>
+
+          {/* Ornamental rule below the description */}
+          <div aria-hidden="true" className="mt-10">
+            <OrnamentalRule />
+          </div>
         </div>
 
         {/* Right: metadata rows with stagger (bdn DNA) */}
@@ -171,7 +195,7 @@ function ChapterBrief({ project }: { project: Project }) {
                   transition={{
                     duration: 0.6,
                     delay: 0.3 + i * 0.08, // 80ms stagger per row
-                    ease: [0.16, 1, 0.3, 1],
+                    ease: EASE.entrance,
                   }}
                   className="flex justify-between items-baseline border-b border-border/30 pb-4 last:border-0"
                 >
@@ -210,49 +234,49 @@ function ChapterExperience({ project }: { project: Project }) {
     let ctx: { revert: () => void } | null = null;
 
     const cancelIdle = onIdle(() => {
-    void (async () => {
-      const [gsap, scrollTriggerModule] = await Promise.all([
-        getGsap(),
-        import('gsap/ScrollTrigger'),
-      ]);
-      if (cancelled) return;
-      const { ScrollTrigger } = scrollTriggerModule;
+      void (async () => {
+        const [gsap, scrollTriggerModule] = await Promise.all([
+          getGsap(),
+          import('gsap/ScrollTrigger'),
+        ]);
+        if (cancelled) return;
+        const { ScrollTrigger } = scrollTriggerModule;
 
-      ctx = gsap.context(() => {
-        // Pin the 3D viewport while the user scrubs through it.
-        ScrollTrigger.create({
-          trigger: section,
-          start: 'top top',
-          end: '+=150%', // 1.5× viewport of scrub distance
-          pin: pin,
-          pinSpacing: false,
-          anticipatePin: 1,
-        });
+        ctx = gsap.context(() => {
+          // Pin the 3D viewport while the user scrubs through it.
+          ScrollTrigger.create({
+            trigger: section,
+            start: 'top top',
+            end: '+=150%', // 1.5× viewport of scrub distance
+            pin: pin,
+            pinSpacing: false,
+            anticipatePin: 1,
+          });
 
-        // Subtle scale pulse on the pinned content as scrub progresses.
-        gsap.fromTo(
-          pin,
-          { scale: 1 },
-          {
-            scale: 1.02,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: section,
-              start: 'top top',
-              end: '+=150%',
-              scrub: 1,
+          // Subtle scale pulse on the pinned content as scrub progresses.
+          gsap.fromTo(
+            pin,
+            { scale: 1 },
+            {
+              scale: 1.02,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: section,
+                start: 'top top',
+                end: '+=150%',
+                scrub: 1,
+              },
             },
-          },
-        );
-      }, section);
+          );
+        }, section);
 
-      // Refresh after fonts settle.
-      if (document.fonts?.ready) {
-        void document.fonts.ready
-          .then(() => ScrollTrigger.refresh())
-          .catch(() => undefined);
-      }
-    })();
+        // Refresh after fonts settle.
+        if (document.fonts?.ready) {
+          void document.fonts.ready
+            .then(() => ScrollTrigger.refresh())
+            .catch(() => undefined);
+        }
+      })();
     }, 1200);
 
     return () => {
@@ -314,70 +338,147 @@ function ChapterDetails({ project }: { project: Project }) {
       className="relative min-h-screen w-full bg-background py-32 px-8 md:px-16"
     >
       <div ref={ref} className="max-w-[1400px] mx-auto">
-        <ChapterMarker index={4} title="Details" className="mb-16" />
+        <ChapterMarker index={4} title="Details" className="mb-10" />
 
-        {/* Oversized index numeral */}
-        <motion.div
-          initial={staticMode ? { opacity: 1 } : { opacity: 0, x: -40 }}
-          animate={inView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="font-serif text-[120px] md:text-[200px] leading-none text-accent/10 font-light select-none pointer-events-none mb-16"
-          aria-hidden="true"
-        >
-          04
-        </motion.div>
-
-        {/* Counter grid (animejs stagger DNA) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-24">
-          {counters.map((c, i) => (
-            <motion.div
-              key={c.label}
-              initial={staticMode ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{
-                duration: 0.6,
-                delay: 0.2 + i * 0.08,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-              className="text-center"
-            >
-              <div className="text-5xl md:text-7xl font-serif font-light text-accent mb-4">
-                <AnimatedCounter value={c.value} />
-              </div>
-              <span className="text-[10px] uppercase tracking-[0.4em] text-neutral-500 font-mono">
-                {c.label}
-              </span>
-            </motion.div>
-          ))}
+        {/* Chapter numeral — Roman numeral treatment */}
+        <div className="mb-12" aria-hidden="true">
+          <ChapterNumeral number={4} />
         </div>
 
-        {/* Live status from Odoo (if available) */}
+        {/* Ornamental rule above the editorial framing */}
+        <div aria-hidden="true" className="mb-12">
+          <OrnamentalRule />
+        </div>
+
+        {/* Editorial framing — § eyebrow + serif sub-title (bdsn.club DNA) */}
+        <div className="mb-12 max-w-2xl">
+          <motion.span
+            initial={staticMode ? { opacity: 1 } : { opacity: 0, y: 12 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.05, ease: EASE.entrance }}
+            className="block font-mono text-[10px] uppercase tracking-[0.4em] text-accent mb-5"
+          >
+            § 04 — By the Numbers
+          </motion.span>
+          <motion.h2
+            initial={staticMode ? { opacity: 1 } : { opacity: 0, y: 24 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.1, ease: EASE.entrance }}
+            className="text-3xl md:text-4xl font-serif font-light tracking-tight text-foreground leading-tight"
+          >
+            The details behind{' '}
+            <em className="font-serif italic text-gradient-gold">the build</em>
+          </motion.h2>
+        </div>
+
+        {/* Ornamental rule below the title */}
+        <div aria-hidden="true" className="mb-16">
+          <OrnamentalRule />
+        </div>
+
+        {/* Counter grid — artisan glass panel + gold specular top (animejs stagger DNA) */}
+        <motion.div
+          initial={staticMode ? { opacity: 1, y: 0 } : { opacity: 0, y: 32 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.15, ease: EASE.entrance }}
+          className="artisan-glass artisan-specular-top relative overflow-hidden rounded-sm p-10 md:p-14 mb-16"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            {counters.map((c, i) => (
+              <motion.div
+                key={c.label}
+                initial={staticMode ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{
+                  duration: 0.6,
+                  delay: 0.2 + i * 0.08,
+                  ease: EASE.entrance,
+                }}
+                className={`flex flex-col items-center text-center ${i > 0 ? 'md:border-l md:border-border/20 md:pl-10' : ''}`}
+              >
+                <div className="text-5xl md:text-7xl font-serif font-light text-accent leading-none tabular-nums">
+                  <AnimatedCounter value={c.value} />
+                </div>
+                <div
+                  className="mt-6 mb-4 h-px w-10 bg-gradient-to-r from-transparent via-accent/60 to-transparent"
+                  aria-hidden="true"
+                />
+                <span className="text-[10px] uppercase tracking-[0.4em] text-neutral-500 font-mono">
+                  {c.label}
+                </span>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Live status from Odoo — gold-tinted glass (if available) */}
         {project.liveStatus && (
           <motion.div
             initial={staticMode ? { opacity: 1 } : { opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="bg-surface border border-border/50 p-8 rounded-sm max-w-2xl"
+            transition={{ duration: 0.8, delay: 0.5, ease: EASE.entrance }}
+            className="artisan-glass-gold artisan-specular-top relative overflow-hidden rounded-sm p-8 md:p-10 max-w-2xl"
           >
-            <h3 className="text-xs uppercase tracking-widest text-neutral-500 mb-4 font-mono">
-              Live Project Status
-            </h3>
-            <div className="flex items-center gap-4 mb-4">
+            {/* Live eyebrow with pulsing beacon */}
+            <div className="flex items-center gap-3 mb-8">
+              <span className="relative flex h-2 w-2" aria-hidden="true">
+                {!staticMode && (
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
+                )}
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+              </span>
+              <h3 className="text-[10px] uppercase tracking-[0.4em] text-accent font-mono">
+                Live Project Status
+              </h3>
+            </div>
+
+            <div className="flex items-center gap-4 mb-6">
               <span className="text-sm text-foreground font-light">
                 {project.liveStatus.stage}
               </span>
-              <span className="text-xs text-accent font-mono">
+              <span className="diamond-bullet" aria-hidden="true" />
+              <span className="text-xs text-accent font-mono tabular-nums">
                 {project.liveStatus.progress}%
               </span>
             </div>
-            <div className="w-full h-1 bg-neutral-800 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-accent rounded-full transition-all duration-1000"
-                style={{ width: `${project.liveStatus.progress}%` }}
+
+            <div
+              className="w-full h-1 bg-surface-light/40 rounded-full overflow-hidden"
+              role="progressbar"
+              aria-valuenow={project.liveStatus.progress}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label={`Project progress ${project.liveStatus.progress} percent`}
+            >
+              <motion.div
+                initial={staticMode ? { width: `${project.liveStatus.progress}%` } : { width: '0%' }}
+                animate={inView ? { width: `${project.liveStatus.progress}%` } : {}}
+                transition={{ duration: 1.2, delay: 0.7, ease: EASE.entrance }}
+                className="h-full rounded-full bg-gradient-to-r from-accent-dark via-accent to-accent-light"
               />
+            </div>
+
+            <div className="mt-6 pt-6 border-t border-accent/15 flex justify-between items-baseline">
+              <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">
+                Last updated
+              </span>
+              <span className="text-xs text-neutral-400 font-mono">
+                {project.liveStatus.lastUpdate
+                  ? new Date(project.liveStatus.lastUpdate).toLocaleDateString(undefined, {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                    })
+                  : '—'}
+              </span>
             </div>
           </motion.div>
         )}
+      </div>
+
+      {/* Bottom double rule — chapter end */}
+      <div className="absolute bottom-16 left-1/2 -translate-x-1/2" aria-hidden="true">
+        <DoubleRule />
       </div>
     </section>
   );
@@ -400,12 +501,22 @@ function ChapterNext({ project: _project, nextProject }: { project: Project; nex
       <div ref={ref} className="max-w-[1400px] mx-auto w-full">
         <ChapterMarker index={5} title="Next" className="mb-16" />
 
+        {/* Chapter numeral — Roman numeral treatment */}
+        <div className="mb-12" aria-hidden="true">
+          <ChapterNumeral number={5} />
+        </div>
+
+        {/* Ornamental rule */}
+        <div aria-hidden="true" className="mb-12">
+          <OrnamentalRule />
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* CTA side */}
           <motion.div
             initial={staticMode ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8, ease: EASE.entrance }}
             className="space-y-8"
           >
             <span className="text-xs uppercase tracking-[0.5em] text-neutral-500 font-mono block">
@@ -441,7 +552,7 @@ function ChapterNext({ project: _project, nextProject }: { project: Project; nex
             <motion.div
               initial={staticMode ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
               animate={inView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.8, delay: 0.3, ease: EASE.entrance }}
             >
               <Link
                 href={`/projects/${nextProject.slug}`}
@@ -453,7 +564,7 @@ function ChapterNext({ project: _project, nextProject }: { project: Project; nex
                     alt={nextProject.title}
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000"
+                    className="object-cover opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-[2000ms] ease-out"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
 
@@ -497,6 +608,11 @@ function ChapterNext({ project: _project, nextProject }: { project: Project; nex
             </motion.div>
           )}
         </div>
+
+        {/* Bottom double rule — chapter end */}
+        <div className="absolute bottom-16 left-1/2 -translate-x-1/2" aria-hidden="true">
+          <DoubleRule />
+        </div>
       </div>
     </section>
   );
@@ -511,9 +627,13 @@ export function ProjectScrollCinema({ project, nextProject }: ProjectScrollCinem
     <>
       <ProjectChapterRail />
       <ChapterHero project={project} />
+      <ChapterDivider />
       <ChapterBrief project={project} />
+      <ChapterDivider />
       <ChapterExperience project={project} />
+      <ChapterDivider />
       <ChapterDetails project={project} />
+      <ChapterDivider />
       <ChapterNext project={project} nextProject={nextProject} />
     </>
   );

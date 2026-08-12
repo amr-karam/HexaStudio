@@ -60,6 +60,6 @@ To ensure all media assets (3D models, textures, images, videos) are optimized f
 
 ## Related Docs
 
-- `06-STANDARDS\THREEJS_GUIDE.md`
-- `06-STANDARDS\PERFORMANCE.md`
+- `engineering\THREEJS_GUIDE.md`
+- `engineering\PERFORMANCE.md`
 - `03-BUSINESS\SOPs.md`

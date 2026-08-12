@@ -15,7 +15,7 @@ The HEXA Studio architecture follows a **Decoupled Hybrid Architecture** designe
 
 ### 2.1 Presentation Layer (Frontend)
 
-**Technology:** Next.js 15 + React 19 + R3F + Tailwind CSS 4
+**Technology:** Next.js 16.2.11 + React 19 + R3F + Tailwind CSS 4
 
 **Key Characteristics:**
 - **App Router** used for all routing (no Pages directory)

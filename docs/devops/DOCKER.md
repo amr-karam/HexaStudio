@@ -106,6 +106,6 @@ bash scripts/deploy-zero-downtime.sh
 
 ## 7. RELATED DOCUMENTATION
 
-- [DOCKER_COMPOSE.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/devops/DOCKER_COMPOSE.md) — Service composition & stack configurations.
-- [SYSTEM_ARCHITECTURE.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/architecture/SYSTEM_ARCHITECTURE.md) — System topology & network architecture.
-- [DEPLOYMENT.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/devops/DEPLOYMENT.md) — Production deployment pipelines.
+- [DOCKER_COMPOSE.md](DOCKER_COMPOSE.md) — Service composition & stack configurations.
+- [SYSTEM_ARCHITECTURE.md](../architecture/SYSTEM_ARCHITECTURE.md) — System topology & network architecture.
+- [DEPLOYMENT.md](DEPLOYMENT.md) — Production deployment pipelines.

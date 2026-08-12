@@ -2,11 +2,15 @@
  * Formats a date string into a more readable format.
  */
 export const formatDate = (date: string | Date): string => {
+  const d = new Date(date);
+  if (isNaN(d.getTime())) {
+    return 'Invalid Date';
+  }
   return new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-  }).format(new Date(date));
+  }).format(d);
 };
 
 /**

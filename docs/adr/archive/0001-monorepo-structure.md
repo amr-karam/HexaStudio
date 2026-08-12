@@ -5,7 +5,7 @@
 - **Author:** Lead Architect
 
 ## Context
-HEXA Studio encompasses a Next.js 15 frontend, NestJS 10 backend, Strapi 5 CMS, and shared TypeScript type packages (`@hexastudio/types`, `@hexastudio/ui`, `@hexastudio/utils`).
+HEXA Studio encompasses a Next.js 16.2.11 frontend, NestJS 10 backend, Strapi 5 CMS, and shared TypeScript type packages (`@hexastudio/types`, `@hexastudio/ui`, `@hexastudio/utils`).
 
 ## Decision
 Adopt Turbo Monorepo (`turbo.json`) with pnpm/npm workspace linking.

@@ -45,7 +45,7 @@ handleProjectCreated(event: ProjectCreatedEvent) {
 - **Protocol:** XML-RPC
 - **Sync Direction:** Bidirectional (leads, projects, contacts)
 - **Frequency:** Real-time for critical events, hourly for bulk syncs
-- **Documentation:** [Odoo Integration](../09-ODOO/architecture.md)
+- **Documentation:** [Odoo Integration](../odoo/architecture.md)
 
 ### 2. **Third-Party Services**
 
@@ -105,6 +105,6 @@ Event → Queue → Worker → Persistence
 
 ## Related Documentation
 
-- [Odoo Integration](../09-ODOO/architecture.md)
-- [Backend Architecture](./backend-architecture.md)
-- [API Architecture](./API_ARCHITECTURE.md)
+- [Odoo Integration](../odoo/architecture.md)
+- [Backend Architecture](backend-architecture.md)
+- [API Architecture](API_ARCHITECTURE.md)

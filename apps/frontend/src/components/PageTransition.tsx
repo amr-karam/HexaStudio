@@ -3,17 +3,17 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname, useRouter } from 'next/navigation';
-import { EASING, DUR } from '@/lib/motion/tokens';
+import { EASE, DURATION } from '@/lib/motion';
 import { useHEXAMotion } from '@/hooks/useHEXAMotion';
 
 type CurtainPhase = 'idle' | 'cover' | 'reveal';
 
 /**
  * Curtain leg durations: cover 0.4s + reveal 0.4s = 0.8s total envelope,
- * inside the 600–800ms cinematic window (see src/lib/motion/tokens.ts).
+ * inside the 600–800ms cinematic window (see src/lib/motion.ts).
  */
-const COVER_DURATION = DUR.ui;
-const REVEAL_DURATION = DUR.ui;
+const COVER_DURATION = DURATION.component;
+const REVEAL_DURATION = DURATION.component;
 
 /**
  * Hard limits so a failed or interrupted navigation can never trap the user
@@ -181,7 +181,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
             animate={{ y: isCovering ? '0%' : '-100%' }}
             transition={{
               duration: isCovering ? COVER_DURATION : REVEAL_DURATION,
-              ease: EASING.easeInOutQuint,
+              ease: EASE.cinematic,
             }}
             onAnimationComplete={isCovering ? handleCoverComplete : finishReveal}
             className="fixed inset-0 z-[9998] bg-background"
@@ -200,7 +200,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
               <motion.span
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: DUR.micro, delay: 0.15 }}
+                transition={{ duration: DURATION.micro, delay: 0.15 }}
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-mono text-[10px] uppercase tracking-[0.5em] text-accent"
               >
                 HexaStudio

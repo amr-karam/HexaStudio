@@ -6,7 +6,8 @@
   "types": "index.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint \"*.ts\" \"**/*.ts\" --ext .ts --max-warnings=0 --ignore-pattern dist/"
   },
   "dependencies": {
     "shiki": "^4.4.1"

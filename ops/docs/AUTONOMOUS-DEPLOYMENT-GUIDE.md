@@ -22,8 +22,7 @@ cd C:\Users\amrmo\OneDrive\Desktop\hexastudio.net
 
 # Set environment variables
 $env:CLOUDFLARE_EMAIL = "justfilmk@pm.me"
-$env:CLOUDFLARE_API_KEY = "$env:CLOUDFLARE_API_KEY"
-
+$1
 # Execute Cloudflare DNS configuration
 pwsh -ExecutionPolicy Bypass -File .\configure-dns-cloudflare.ps1
 ```
@@ -401,7 +400,7 @@ npm run build
 ```powershell
 # Step 1: Configure DNS (2 minutes)
 $env:CLOUDFLARE_EMAIL = "justfilmk@pm.me"
-$env:CLOUDFLARE_API_KEY = "$env:CLOUDFLARE_API_KEY"
+$1
 pwsh -ExecutionPolicy Bypass -File .\configure-dns-cloudflare.ps1
 
 # Step 2: Deploy GitLab CE (45-90 minutes)

@@ -11,7 +11,7 @@ HEXA Studio is a world-class **3D Architecture Visualization platform** that bri
 | Layer | Technology |
 | :--- | :--- |
 | **Monorepo** | npm workspaces + Turbo |
-| **Frontend** | Next.js 15+ (App Router), Three.js, React Three Fiber, GSAP, TailwindCSS 4 |
+| **Frontend** | Next.js 16.2.11+ (App Router), Three.js, React Three Fiber, GSAP, TailwindCSS 4 |
 | **Mobile** | Expo + React Native |
 | **Backend** | NestJS (BFF / API Gateway), Strapi 5 (Headless CMS) |
 | **Databases** | PostgreSQL 16, Redis 7, Qdrant (Vector DB) |

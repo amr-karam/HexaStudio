@@ -122,6 +122,6 @@ Authorization: Bearer {api_key}
 
 ## Related Documentation
 
-- [Authentication Flow](../01-ARCHITECTURE/authentication-flow.md)
-- [API Documentation](./API_DOCUMENTATION.md)
-- [Security Standards](../06-STANDARDS/SECURITY.md)
+- [Authentication Flow](../architecture/authentication-flow.md)
+- [API Documentation](API_DOCUMENTATION.md)
+- [Security Standards](../security/SECURITY.md)

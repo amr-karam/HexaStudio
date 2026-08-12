@@ -9,6 +9,8 @@
 
 This document governs the GitLab pipeline in `/.gitlab-ci.yml`. YAML validation alone is not deployment evidence. A pipeline is validated only after live GitLab execution reaches every required stage successfully or records an approved, documented exception.
 
+> **Non-canonical variant:** `.gitlab-ci-optimized.yml` is an **experimental alternative** to the canonical pipeline and is **not** the source of truth. It is intentionally retained for evaluation only. Key differences from `.gitlab-ci.yml`: a different stage set/ordering (`validate → quality → build → image → test → deploy`) and **no `mobile` stage** (the canonical pipeline runs `quality → build → image → validate → mobile → deploy`). The local validator `scripts/validate-gitlab-ci.js` validates only `.gitlab-ci.yml`; the optimized variant is excluded by design.
+
 ## 2. Pipeline Control Flow
 
 ```mermaid
@@ -56,7 +58,7 @@ All jobs that invoke npm must report Node/npm versions and use `npm ci --legacy-
 
 Platform-specific native packages must be exact-version pinned to their JavaScript wrapper, optional where other host platforms may not support them, integrity-locked, loaded in a clean target-platform container before merge, and reviewed whenever the parent package changes.
 
-The current decision is documented in `01-ARCHITECTURE/ARCHITECTURE_DECISIONS/ADR-010-ci-node-toolchain-and-native-dependencies.md`.
+The current decision is documented in `architecture/ARCHITECTURE_DECISIONS/ADR-010-ci-node-toolchain-and-native-dependencies.md`.
 
 ## 6. Deployment and Rollback
 

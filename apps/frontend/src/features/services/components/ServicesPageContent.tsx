@@ -3,23 +3,10 @@
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui/Button';
-import { LiquidGlassCard } from '@/components/ui/LiquidGlassCard';
 import Link from 'next/link';
 import TextCharReveal from '@/components/effects/TextCharReveal';
 import { useLocale } from '@/i18n/LocaleProvider';
-import { cn } from '@/lib/utils';
 import type { Service } from '@hexastudio/types';
-
-const SilkShaderBackground = dynamic(
-  () => import('@/components/effects/SilkShaderBackground'),
-  { ssr: false },
-);
-
-const SPRING_TRANSITION = { type: 'spring' as const, stiffness: 120, damping: 20, mass: 0.8 };
-
-interface ServicesPageContentProps {
-  services: Service[];
-}
 
 const FALLBACK_SERVICES: Service[] = [
   {
@@ -90,99 +77,248 @@ const FALLBACK_SERVICES: Service[] = [
   },
 ];
 
+const SilkShaderBackground = dynamic(
+  () => import('@/components/effects/SilkShaderBackground'),
+  { ssr: false },
+);
+
+const SPRING_TRANSITION = { type: 'spring' as const, stiffness: 120, damping: 20, mass: 0.8 };
+
+interface ServicesPageContentProps {
+  services: Service[];
+}
+
+/** Ambient gradient per service — subtle atmospheric depth behind each card. */
+function ServiceAtmosphere({ index }: { index: number }) {
+  const gradients = [
+    'radial-gradient(ellipse at 30% 20%, rgba(var(--color-gold-rgb), 0.06) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, rgba(var(--color-gold-rgb), 0.03) 0%, transparent 50%)',
+    'radial-gradient(ellipse at 70% 30%, rgba(var(--color-gold-rgb), 0.05) 0%, transparent 50%), radial-gradient(ellipse at 20% 70%, rgba(255,255,255,0.015) 0%, transparent 50%)',
+    'radial-gradient(ellipse at 50% 10%, rgba(var(--color-gold-rgb), 0.07) 0%, transparent 40%), radial-gradient(ellipse at 80% 90%, rgba(var(--color-gold-rgb), 0.02) 0%, transparent 50%)',
+    'radial-gradient(ellipse at 20% 60%, rgba(var(--color-gold-rgb), 0.04) 0%, transparent 50%), radial-gradient(ellipse at 90% 20%, rgba(255,255,255,0.02) 0%, transparent 50%)',
+    'radial-gradient(ellipse at 60% 40%, rgba(var(--color-gold-rgb), 0.05) 0%, transparent 50%), radial-gradient(ellipse at 10% 80%, rgba(var(--color-gold-rgb), 0.025) 0%, transparent 50%)',
+    'radial-gradient(ellipse at 40% 70%, rgba(var(--color-gold-rgb), 0.06) 0%, transparent 50%), radial-gradient(ellipse at 80% 10%, rgba(255,255,255,0.015) 0%, transparent 50%)',
+  ];
+  return (
+    <div
+      aria-hidden="true"
+      className="absolute inset-0 pointer-events-none"
+      style={{ background: gradients[index % gradients.length] }}
+    />
+  );
+}
+
+/** Service index badge — refined mono label with gold accent. */
+function ServiceIndex({ index, title }: { index: number; title: string }) {
+  const numeral = String(index + 1).padStart(2, '0');
+  return (
+    <span className="font-mono text-[9px] uppercase tracking-[0.4em] text-neutral-500 mb-5 block">
+      <span className="text-accent">{numeral}</span>
+      {' — '}
+      {title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .slice(0, 12)}
+    </span>
+  );
+}
+
+/** Feature list with staggered entrance and gold dot indicators. */
+function FeatureList({ features }: { features: string[] }) {
+  return (
+    <ul className="space-y-3">
+      {features.map((item, i) => (
+        <motion.li
+          key={i}
+          initial={{ opacity: 0, x: -8 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ type: 'spring', stiffness: 160, damping: 22, delay: 0.06 * i }}
+          className="flex items-start gap-3 text-sm text-neutral-400 font-light leading-relaxed group/item"
+        >
+          <span className="mt-1.5 w-1 h-1 rounded-full bg-accent shrink-0 transition-colors duration-500 group-hover/item:bg-accent-bright" />
+          {item}
+        </motion.li>
+      ))}
+    </ul>
+  );
+}
+
 export function ServicesPageContent({ services }: ServicesPageContentProps) {
   const { t } = useLocale();
   const displayServices = services.length > 0 ? services : FALLBACK_SERVICES;
 
   return (
     <div className="bg-background text-foreground min-h-screen">
+      {/* ── HERO ──────────────────────────────────────────────────────────────── */}
       <section className="relative min-h-screen flex flex-col items-center justify-center px-8 pt-20 pb-32 overflow-hidden">
-        <SilkShaderBackground speed={0.25} opacity={0.1} />
+        {/* Atmospheric depth layers */}
+        <SilkShaderBackground speed={0.2} opacity={0.08} />
         <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
-        
-        <div className="text-center relative z-10 mb-24">
+        <div className="absolute inset-0" aria-hidden="true" style={{
+          background: 'radial-gradient(ellipse at 50% 0%, rgba(var(--color-gold-rgb), 0.04) 0%, transparent 40%)',
+        }} />
+
+        {/* Ambient floating light orbs */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+          <div className="absolute top-[15%] left-[20%] w-[30%] h-[30%] rounded-full bg-accent/5 blur-[120px] animate-pulse" style={{ animationDuration: '8s' }} />
+          <div className="absolute bottom-[20%] right-[15%] w-[25%] h-[25%] rounded-full bg-accent/3 blur-[100px]" style={{ animationDelay: '-3s' }} />
+        </div>
+
+        {/* Typography */}
+        <div className="text-center relative z-10 mb-32 md:mb-40">
           <motion.span
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={SPRING_TRANSITION}
-            className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
+            className="font-mono text-[9px] uppercase tracking-[0.5em] text-neutral-500 mb-8 block"
           >
             {t('services.expertise')}
           </motion.span>
-          <div className="text-6xl md:text-8xl font-serif font-light tracking-tighter text-foreground leading-tight">
+          <div className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-serif font-light tracking-tighter text-foreground leading-[0.92] mb-8">
             <TextCharReveal
               text={String(t('services.title')) || 'Our Services.'}
               as="h1"
-              delay={0.15}
-              stagger={0.03}
+              delay={0.12}
+              stagger={0.025}
               blur
             />
           </div>
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ ...SPRING_TRANSITION, delay: 0.25 }}
+            className="text-neutral-400 font-light text-base md:text-lg leading-relaxed max-w-xl mx-auto px-4"
+          >
+            {t('services.tagline') || 'From first sketch to final render — every service shaped by precision and light.'}
+          </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 w-full relative z-10">
-          {displayServices.map((service, idx) => {
-            const isLarge = idx === 0 || idx === 2 || idx === 4;
-            const title = service.title;
-            const description = service.description;
-            const features = service.features;
+        {/* Scroll affordance */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5, duration: 0.8 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
+        >
+          <span className="font-mono text-[9px] uppercase tracking-[0.4em] text-neutral-600">
+            Scroll to explore
+          </span>
+          <div className="w-px h-6 bg-gradient-to-b from-accent/50 to-transparent" />
+        </motion.div>
+      </section>
 
-            return (
-              <motion.div
-                key={service.id || title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ ...SPRING_TRANSITION, delay: idx * 0.1 }}
-                className={cn(isLarge ? "md:col-span-7" : "md:col-span-5")}
-              >
-                <LiquidGlassCard glow className="p-8 md:p-12 h-full group relative overflow-hidden">
-                  <div className="relative z-10 h-full flex flex-col">
-                    <span className="text-xs font-mono text-neutral-600 mb-4 block">0{idx + 1} — SERVICE</span>
-                    <h3 className="text-3xl font-serif font-light text-foreground mb-6 group-hover:text-accent transition-colors duration-500">
-                      {title}
-                    </h3>
-                    <p className="text-neutral-400 font-light leading-relaxed mb-8 w-full max-w-md">
-                      {description}
-                    </p>
-                    <div className="mt-auto">
-                      <ul className="space-y-3 mb-12">
-                        {features.map((item: string, i: number) => (
-                          <motion.li 
-                            key={i} 
-                            className="flex items-center gap-3 text-sm text-neutral-500 font-light"
-                            initial={{ opacity: 0, x: -10 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            transition={{ type: 'spring', stiffness: 150, damping: 20, delay: 0.05 * i }}
+      {/* ── SERVICES GRID ──────────────────────────────────────────────────────── */}
+      <section className="px-8 md:px-16 pb-32 relative">
+        {/* Section atmosphere */}
+        <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
+
+        <div className="relative z-10">
+          {/* Grid: 2 rows of 3, cinematic stagger choreography */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+            {displayServices.map((service, idx) => {
+              const title = service.title;
+              const description = service.description;
+              const features = service.features;
+
+              return (
+                <motion.div
+                  key={service.id || title}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.15 }}
+                  transition={{
+                    type: 'spring',
+                    stiffness: 100,
+                    damping: 24,
+                    delay: 0.08 * idx,
+                    duration: 0.9,
+                  }}
+                  className="group"
+                >
+                  {/* Card container with atmosphere, glass-depth, and cinematic hover */}
+                  <div
+                    className="relative overflow-hidden rounded-sm"
+                    style={{
+                      background: 'var(--glass-bg)',
+                      backdropFilter: 'blur(24px) saturate(180%)',
+                      WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+                      border: '1px solid var(--glass-depth-border)',
+                      boxShadow: '0 0 0 1px var(--glass-shadow), 0 8px 32px var(--glass-shadow-penumbra), inset 0 1px 0 var(--glass-highlight-top)',
+                    }}
+                  >
+                    {/* Atmospheric gradient inside card */}
+                    <ServiceAtmosphere index={idx} />
+
+                    {/* Hover state: brighter highlight + glow */}
+                    <div
+                      className="absolute inset-0 transition-opacity duration-700 pointer-events-none opacity-0 group-hover:opacity-100"
+                      style={{
+                        background: 'radial-gradient(ellipse at 50% 0%, rgba(var(--color-gold-rgb), 0.06) 0%, transparent 60%)',
+                      }}
+                    />
+
+                    {/* Content */}
+                    <div className="relative z-10 p-8 md:p-10">
+                      <ServiceIndex index={idx} title={title} />
+
+                      <h3 className="text-xl md:text-2xl font-serif font-light text-foreground mb-5 leading-snug group-hover:text-accent transition-colors duration-700">
+                        {title}
+                      </h3>
+
+                      <p className="text-neutral-400 font-light leading-relaxed mb-8 text-sm md:text-base">
+                        {description}
+                      </p>
+
+                      {/* Feature list */}
+                      <FeatureList features={features} />
+
+                      {/* Inquire CTA */}
+                      <div className="mt-8 pt-6 border-t border-border/30">
+                        <Link href="/contact">
+                          <Button
+                            variant="outline"
+                            size="lg"
+                            className="w-full group active:scale-[0.98]"
                           >
-                            <span className="w-1 h-1 bg-accent rounded-full" />
-                            {item}
-                          </motion.li>
-                        ))}
-                      </ul>
-                      <Link href="/contact">
-                        <Button variant="outline" size="lg" className="group-hover:bg-accent group-hover:text-background transition-all duration-500 active:scale-[0.97]">
-                          {t('services.inquire').replace('{title}', title)}
-                        </Button>
-                      </Link>
+                            {t('services.inquire').replace('{title}', title)}
+                            <span className="ml-3 transition-transform duration-300 group-hover:translate-x-1">
+                              &rarr;
+                            </span>
+                          </Button>
+                        </Link>
+                      </div>
                     </div>
+
+                    {/* Hover border highlight (CSS-only for smooth transition) */}
+                    <div
+                      className="absolute inset-0 rounded-sm pointer-events-none transition-all duration-700"
+                      style={{
+                        boxShadow: 'inset 0 0 0 1px rgba(var(--color-gold-rgb), 0)',
+                        border: '1px solid transparent',
+                      }}
+                    />
                   </div>
-                </LiquidGlassCard>
-              </motion.div>
-            );
-          })}
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
+      {/* ── CTA ────────────────────────────────────────────────────────────────── */}
       <section className="px-8 md:px-16 py-32 border-t border-border/30 relative overflow-hidden">
         <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
+        <div className="absolute inset-0" aria-hidden="true" style={{
+          background: 'radial-gradient(ellipse at 50% 50%, rgba(var(--color-gold-rgb), 0.03) 0%, transparent 50%)',
+        }} />
+
         <div className="w-full text-center relative z-10">
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={SPRING_TRANSITION}
-            className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
+            className="font-mono text-[9px] uppercase tracking-[0.5em] text-neutral-500 mb-6 block"
           >
             {t('services.ctaOverline')}
           </motion.span>
@@ -191,7 +327,7 @@ export function ServicesPageContent({ services }: ServicesPageContentProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ ...SPRING_TRANSITION, delay: 0.1 }}
-            className="text-4xl md:text-6xl font-serif font-light tracking-tight text-foreground mb-8 leading-tight"
+            className="text-3xl md:text-5xl lg:text-6xl font-serif font-light tracking-tight text-foreground mb-6 leading-tight"
           >
             {t('services.ctaHeading')}
           </motion.h2>
@@ -200,7 +336,7 @@ export function ServicesPageContent({ services }: ServicesPageContentProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ ...SPRING_TRANSITION, delay: 0.2 }}
-            className="text-neutral-400 font-light leading-relaxed mb-12 w-full max-w-2xl mx-auto"
+            className="text-neutral-400 font-light leading-relaxed mb-10 w-full max-w-2xl mx-auto text-base md:text-lg px-4"
           >
             {t('services.ctaDescription')}
           </motion.p>
@@ -211,9 +347,11 @@ export function ServicesPageContent({ services }: ServicesPageContentProps) {
             transition={{ ...SPRING_TRANSITION, delay: 0.3 }}
           >
             <Link href="/contact">
-              <Button variant="primary" size="lg" className="group active:scale-[0.97] transition-transform duration-150">
+              <Button variant="primary" size="lg" className="group active:scale-[0.97]">
                 {t('contactUs')}
-                <span className="ml-3 transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
+                <span className="ml-3 transition-transform duration-300 group-hover:translate-x-1">
+                  &rarr;
+                </span>
               </Button>
             </Link>
           </motion.div>

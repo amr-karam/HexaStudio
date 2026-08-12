@@ -47,14 +47,6 @@ const ProjectCard = ({ title, category, image, index, onClick, isFocused, status
   const { tier } = useQualityTier();
   const isLowTier = tier.level === 'low';
 
-  /**
-   * Work-card reveal (Phase 2A): the image wipes open via a scrubbed
-   * clip-path mask while the imagery settles from scale 1.08 → 1.
-   * Property discipline: framer-motion owns the card transform/opacity and
-   * the CSS hover scale (middle wrapper); GSAP owns clip-path + inner scale.
-   * PHASE 2B SEAM: `data-distortion="work-card"` marks the WebGL hover
-   * distortion target.
-   */
   useEffect(() => {
     if (reducedMotion || isLowTier) return;
     const card = cardRef.current;
@@ -66,29 +58,29 @@ const ProjectCard = ({ title, category, image, index, onClick, isFocused, status
     let ctx: { revert: () => void } | null = null;
 
     const cancelIdle = onIdle(() => {
-    void (async () => {
-      const gsap = await getGsap();
-      if (cancelled) return;
+      void (async () => {
+        const gsap = await getGsap();
+        if (cancelled) return;
 
-      ctx = gsap.context(() => {
-        const scrubRange = {
-          trigger: card,
-          start: 'top 92%',
-          end: 'top 55%',
-          scrub: 1,
-        };
-        gsap.fromTo(
-          clipTarget,
-          { clipPath: 'inset(100% 0% 0% 0%)' },
-          { clipPath: 'inset(0% 0% 0% 0%)', ease: GSAP_EASING.easeInOutQuint, scrollTrigger: scrubRange },
-        );
-        gsap.fromTo(
-          scaleTarget,
-          { scale: 1.08 },
-          { scale: 1, ease: GSAP_EASING.easeOutExpo, scrollTrigger: scrubRange },
-        );
-      }, card);
-    })();
+        ctx = gsap.context(() => {
+          const scrubRange = {
+            trigger: card,
+            start: 'top 92%',
+            end: 'top 55%',
+            scrub: 1,
+          };
+          gsap.fromTo(
+            clipTarget,
+            { clipPath: 'inset(100% 0% 0% 0%)' },
+            { clipPath: 'inset(0% 0% 0% 0%)', ease: GSAP_EASING.easeInOutQuint, scrollTrigger: scrubRange },
+          );
+          gsap.fromTo(
+            scaleTarget,
+            { scale: 1.08 },
+            { scale: 1, ease: GSAP_EASING.easeOutExpo, scrollTrigger: scrubRange },
+          );
+        }, card);
+      })();
     }, 1200);
 
     return () => {
@@ -146,7 +138,6 @@ const ProjectCard = ({ title, category, image, index, onClick, isFocused, status
           <Card variant="solid" className="overflow-hidden p-0 aspect-[3/4]">
             <div className="absolute inset-0 bg-accent/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
             <div ref={imageClipRef} className="h-full w-full relative overflow-hidden bg-surface-light">
-              {/* Hover zoom (CSS-owned transform) wraps the GSAP-owned settle scale */}
               <div className="h-full w-full transition-transform duration-1000 ease-out-expo group-hover:scale-110">
                 <div ref={imageScaleRef} data-distortion="work-card" className="relative h-full w-full">
                   <Image
@@ -159,22 +150,22 @@ const ProjectCard = ({ title, category, image, index, onClick, isFocused, status
                 </div>
               </div>
 
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-700" />
 
               <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
                 <div className="transition-all duration-500 ease-out">
-                  <p className="text-[10px] md:text-xs uppercase tracking-[0.4em] text-accent/80 group-hover:text-accent transition-colors duration-500 mb-2 font-mono">
+                  <p className="text-[9px] md:text-[10px] uppercase tracking-[0.6em] text-accent/90 group-hover:text-accent transition-colors duration-500 mb-3 font-mono">
                     {category}
                   </p>
                   {status && (
-                    <span className="mb-2 inline-block rounded-full border border-white/15 px-2 py-0.5 text-[9px] uppercase tracking-[0.2em] text-white/60">
+                    <span className="mb-3 inline-block rounded-none border border-white/10 px-2 py-0.5 text-[8px] uppercase tracking-[0.2em] text-white/50 bg-white/5">
                       {status}
                     </span>
                   )}
-                  <h3 className="text-lg md:text-xl lg:text-2xl font-serif font-light text-foreground/90 group-hover:text-foreground transition-colors duration-500 leading-tight">
+                  <h3 className="text-xl md:text-2xl font-serif font-light text-foreground/95 group-hover:text-white transition-colors duration-500 leading-[1.1] tracking-tight">
                     {title}
                   </h3>
-                  <div className="h-[1px] w-0 group-hover:w-full bg-accent transition-all duration-700 mt-4" />
+                  <div className="h-[1px] w-0 group-hover:w-full bg-accent transition-all duration-1000 mt-6 ease-out-expo" />
                 </div>
               </div>
             </div>
@@ -305,32 +296,35 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
 
   return (
     <>
+      {/* Grid content section — storybook frame provided by parent page */}
       <section ref={sectionRef} className="px-8 md:px-16 py-32 bg-background relative overflow-hidden">
         <div className="absolute top-12 left-8 md:left-16 z-20">
           <ChapterMarker index={4} title="Proof" />
         </div>
         <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
+
         <div className="flex flex-col lg:flex-row justify-between items-end mb-24 gap-12">
           <div className="w-full">
-              <motion.span
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
-              >
-                Selected Works
-              </motion.span>
+            <motion.span
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
+            >
+              Selected Works
+            </motion.span>
             <motion.div
               style={{ y: headingY }}
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={makeTransition('entrance', 'page')}
+              className="max-w-2xl"
             >
               <KineticTitle
                 text="Creating Visual Truth"
                 accentWords={['Visual']}
-                className="text-5xl md:text-7xl font-serif font-light tracking-tight text-foreground leading-[1.1]"
+                className="text-5xl md:text-7xl font-serif font-light tracking-[-0.03em] text-foreground leading-[1.05]"
               />
             </motion.div>
           </div>
@@ -345,16 +339,16 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
           </motion.p>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-4 mb-16">
+        <div className="flex flex-wrap justify-center gap-8 mb-20">
           {categories.map((cat) => (
             <Magnetic key={cat}>
               <button
                 onClick={() => setActiveCategory(cat)}
                 className={cn(
-                  'px-6 py-2 text-[10px] uppercase tracking-[0.3em] transition-all duration-500 rounded-full border',
+                  'text-[9px] uppercase tracking-[0.4em] transition-all duration-700 font-mono py-1 border-b border-transparent',
                   activeCategory === cat
-                    ? 'bg-accent text-obsidian border-accent'
-                    : 'bg-transparent text-neutral-500 border-border hover:border-neutral-400'
+                    ? 'text-accent border-accent'
+                    : 'text-neutral-600 hover:text-neutral-400'
                 )}
               >
                 {cat}

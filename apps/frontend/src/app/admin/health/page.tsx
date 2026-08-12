@@ -90,7 +90,7 @@ export default function HealthDashboardPage() {
   const allHealthy = healthy === total;
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white pt-24 pb-16 px-6">
+    <div className="min-h-screen bg-obsidian text-white pt-24 pb-16 px-6">
       <div className="max-w-5xl mx-auto space-y-8">
 
         {/* Header */}
@@ -106,7 +106,7 @@ export default function HealthDashboardPage() {
           <button
             onClick={runChecks}
             disabled={isRunning}
-            className="flex items-center space-x-2 rounded-lg bg-[#D4AF37] px-5 py-2.5 text-xs font-bold text-black disabled:opacity-50 hover:bg-[#E5C76B] transition-colors"
+            className="flex items-center space-x-2 rounded-lg bg-accent px-5 py-2.5 text-xs font-bold text-black disabled:opacity-50 hover:bg-accent-light transition-colors"
           >
             <span>{isRunning ? '⟳ Checking…' : '↺ Re-check All'}</span>
           </button>

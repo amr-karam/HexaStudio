@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "../styles/artisan-tokens.css";
 
 @theme {
   --color-background: #050505;
@@ -17,10 +18,19 @@
   --color-accent-dark: #B8860B;
   --color-accent-muted: rgba(212, 175, 55, 0.4);
 
-  --color-obsidian: #050505;
+  /* DESIGN_SYSTEM.md canonical tokens (previously missing or misaligned) */
+  --color-void: #050505;
+  --color-void-deep: #020203;
+  --color-obsidian: #0F0F10;
+  --color-obsidian-raised: #161618;
+  --color-slate: #1A1A1A;
   --color-gold: #D4AF37;
-  --color-gold-light: #E5C76B;
-  --color-gold-dark: #B8860B;
+  --color-gold-bright: #E5C76B;
+  --color-gold-deep: #A8862E;
+  --color-gold-rgb: 212, 175, 55;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #A0A0A0;
+  --color-text-muted: #6A6A6E;
 
   --color-neutral-50: #fafafa;
   --color-neutral-100: #f4f4f5;
@@ -38,52 +48,59 @@
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
   --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
 
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 2rem;
-  --spacing-xl: 4rem;
-  --spacing-2xl: 8rem;
-  --spacing-3xl: 12rem;
-  --spacing-4xl: 16rem;
-  --spacing-5xl: 20rem;
+  --spacing-xs: 0.25rem;   /* 4px  */
+  --spacing-sm: 0.5rem;    /* 8px  */
+  --spacing-md: 0.75rem;   /* 12px — DESIGN_SYSTEM.md md */
+  --spacing-lg: 1rem;      /* 16px */
+  --spacing-xl: 1.5rem;    /* 24px — DESIGN_SYSTEM.md xl */
+  --spacing-2xl: 2rem;     /* 32px — DESIGN_SYSTEM.md 2xl */
+  --spacing-3xl: 3rem;     /* 48px — DESIGN_SYSTEM.md 3xl */
+  --spacing-4xl: 4rem;     /* 64px — DESIGN_SYSTEM.md 4xl */
+  --spacing-5xl: 6rem;     /* 96px */
+  --spacing-6xl: 8rem;     /* 128px */
+  --spacing-7xl: 12rem;    /* 192px */
+  --spacing-8xl: 16rem;    /* 256px */
+  --spacing-9xl: 20rem;    /* 320px */
 
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
-  --ease-luxury: cubic-bezier(0.28, 1.2, 0.52, 1);
+  /* Legacy @theme easing removed — use :root --hexa-ease-* tokens instead */
 }
 
 /* -------------------------------------------------------------------------- */
-/*  HEXA Motion Tokens — CSS Custom Properties (mirrors src/lib/motion.ts)     */
+/*  HEXA Motion Tokens — CSS Custom Properties                                  */
+/*  Mirrors the TS token sources:                                              */
+/*    src/lib/motion.ts        (EASE, DURATION, STAGGER — semantic layer)      */
+/*    src/lib/motion/tokens.ts (EASING, DUR, STAGGER_TOKENS — Phase 1 raw)     */
 /* -------------------------------------------------------------------------- */
 
 :root {
-  /* Easing curves */
+  /* Easing curves — canonical semantic set (mirrors src/lib/motion/tokens.ts) */
   --hexa-ease-entrance: cubic-bezier(0.16, 1, 0.3, 1);
   --hexa-ease-interaction: cubic-bezier(0.34, 1.56, 0.64, 1);
   --hexa-ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
   --hexa-ease-sharp: cubic-bezier(0.4, 0, 0.6, 1);
-
-  /* Phase 1 motion tokens (mirrors src/lib/motion/tokens.ts) */
-  --hexa-ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --hexa-ease-in-out-quint: cubic-bezier(0.76, 0, 0.24, 1);
 
-  /* Durations */
+  /* Durations — mirrors src/lib/motion/tokens.ts DUR */
   --hexa-duration-micro: 0.2s;
-  --hexa-duration-component: 0.4s;
-  --hexa-duration-page: 0.75s;
-  --hexa-duration-camera: 1.4s;
   --hexa-duration-ui: 0.4s;
   --hexa-duration-scene: 0.8s;
   --hexa-duration-transition: 0.7s;
+  --hexa-duration-page: 0.75s;
+  --hexa-duration-camera: 1.4s;
 
-  /* Glass morphism */
+  /* Glass morphism — subtle white-tint glass (general UI) */
   --glass-bg: rgba(255, 255, 255, 0.02);
   --glass-border: rgba(255, 255, 255, 0.05);
   --glass-bg-hover: rgba(255, 255, 255, 0.04);
   --glass-border-hover: rgba(255, 255, 255, 0.08);
   --glass-highlight: rgba(255, 255, 255, 0.01);
+
+  /* Glass morphism — obsidian-depth variants for portal/dashboard surfaces */
+  --glass-shadow: rgba(0, 0, 0, 0.4);
+  --glass-shadow-penumbra: rgba(0, 0, 0, 0.2);
+  --glass-highlight-top: rgba(255, 255, 255, 0.04);
+  --glass-highlight-edge: rgba(212, 175, 55, 0.06);
+  --glass-depth-border: rgba(255, 255, 255, 0.06);
 }
 
 body {
@@ -96,8 +113,8 @@ body {
 }
 
 ::selection {
-  background-color: rgba(201, 169, 110, 0.3);
-  color: #f4f4f5;
+  background-color: color-mix(in srgb, var(--color-accent) 30%, transparent);
+  color: var(--color-foreground);
 }
 
 ::-webkit-scrollbar {
@@ -165,17 +182,32 @@ body {
   border-color: var(--glass-border-hover);
 }
 
-/* Gold gradient text */
+/* Gold gradient text — token-sourced */
 .text-gradient-gold {
-  background: linear-gradient(135deg, #D4AF37 0%, #E5C76B 40%, #B8860B 100%);
+  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-bright) 40%, var(--color-gold-deep) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-/* Cinematic gradient overlay */
+
+/* Premium nav feature — gold gradient underline (token-sourced, was inline in Navbar) */
+.premium-feature {
+  position: relative;
+}
+.premium-feature::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-gold-bright, #E5C76B), transparent);
+  opacity: 0.7;
+}
+/* Cinematic gradient overlay — token-sourced */
 .gradient-radial-gold {
-  background: radial-gradient(circle at center, rgba(212, 175, 55, 0.08) 0%, transparent 60%);
+  background: radial-gradient(circle at center, color-mix(in srgb, var(--color-accent) 8%, transparent) 0%, transparent 60%);
 }
 
 /* Premium focus ring (accessibility + luxury) */
@@ -183,6 +215,39 @@ body {
   outline: 2px solid var(--color-accent);
   outline-offset: 4px;
   box-shadow: 0 0 0 6px rgba(212, 175, 55, 0.1);
+}
+
+/* Text color utilities for canonical text tokens */
+.text-textPrimary {
+  color: var(--color-text-primary);
+}
+
+.text-textSecondary {
+  color: var(--color-text-secondary);
+}
+
+.text-textMuted {
+  color: var(--color-text-muted);
+}
+
+/* Glassmorphism depth utility — obsidian-surface panels with shadow + highlight */
+.glass-depth {
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--glass-depth-border);
+  box-shadow:
+    0 0 0 1px var(--glass-shadow),
+    0 8px 32px var(--glass-shadow-penumbra),
+    inset 0 1px 0 var(--glass-highlight-top);
+}
+
+.glass-depth:hover {
+  border-color: var(--glass-border-hover);
+  box-shadow:
+    0 0 0 1px var(--glass-shadow),
+    0 12px 48px var(--glass-shadow-penumbra),
+    inset 0 1px 0 var(--glass-highlight-top);
 }
 
 /* Nav link underline — draws from center on hover/focus (Phase 1 tokens).
@@ -231,6 +296,38 @@ body {
   animation: slow-zoom 20s ease-out forwards;
 }
 
+/* Digital Atelier — scroll reveal. Hidden state is applied only once the
+   client runtime is active (`.atelier-reveal` is added from JS) so content
+   is never invisible without JavaScript. Stagger is driven by
+   `animation-delay` inline style. Neutralized by the reduced-motion reset
+   below (animation: none + fully visible). */
+@keyframes atelier-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.atelier-reveal {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.atelier-reveal.is-visible {
+  animation: atelier-fade-up 0.9s var(--hexa-ease-entrance) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .atelier-reveal {
+    opacity: 1;
+    animation: none;
+  }
+}
+
 /* Button reset utility */
 .button-reset {
   appearance: none;
@@ -248,4 +345,222 @@ body {
    shrink to fit its content in these contexts, breaking text layout. */
 [class*="max-w-"] {
   width: 100%;
+}
+
+/* ========================================================================== */
+/*  STORYBOOK HOMEPAGE — Book-page aesthetic utilities                          */
+/* ========================================================================== */
+
+/* Paper-textured background for book chapters */
+.storybook-paper {
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 50%, rgba(212, 175, 55, 0.02) 0%, transparent 50%),
+    linear-gradient(180deg, rgba(26, 22, 18, 0.3) 0%, rgba(15, 13, 10, 0.5) 100%);
+}
+
+/* Decorative border frame for book pages */
+.storybook-border {
+  position: relative;
+}
+
+.storybook-border::before {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(212, 175, 55, 0.1);
+  border-radius: 1px;
+  pointer-events: none;
+}
+
+.storybook-border::after {
+  content: '';
+  position: absolute;
+  inset: 14px;
+  border: 1px solid rgba(212, 175, 55, 0.05);
+  border-radius: 0.5px;
+  pointer-events: none;
+}
+
+/* Ornamental rule — horizontal divider with centered diamond */
+.storybook-ornament {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(212, 175, 55, 0.4);
+  margin: 2rem 0;
+}
+
+.storybook-ornament::before,
+.storybook-ornament::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+}
+
+.storybook-ornament::before {
+  background: linear-gradient(90deg, transparent, currentColor);
+}
+
+.storybook-ornament::after {
+  background: linear-gradient(90deg, currentColor, transparent);
+}
+
+/* Chapter numeral — large decorative number */
+.chapter-numeral {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 400;
+  line-height: 1;
+  color: rgba(212, 175, 55, 0.15);
+  display: block;
+  letter-spacing: -0.02em;
+}
+
+/* Chapter title — book-style running header */
+.chapter-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(0.65rem, 1.4vw, 0.85rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(212, 175, 55, 0.3);
+  line-height: 1.5;
+  text-align: right;
+}
+
+/* Drop cap first letter */
+.drop-cap::first-letter {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 400;
+  line-height: 0.8;
+  float: left;
+  margin-right: 0.12em;
+  margin-top: 0.06em;
+  color: rgba(212, 175, 55, 0.8);
+  text-shadow: 0 2px 8px rgba(212, 175, 55, 0.12);
+  font-style: italic;
+}
+
+/* Narrative body text — enhanced readability for storybook sections */
+.storybook-body {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: clamp(1rem, 1.4vw, 1.125rem);
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.75);
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* Storybook section heading */
+.storybook-heading {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 400;
+  line-height: 1.2;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: -0.01em;
+}
+
+/* Storybook sub-heading */
+.storybook-subheading {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1rem, 1.8vw, 1.25rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.4;
+  color: rgba(212, 175, 55, 0.6);
+  letter-spacing: 0.01em;
+}
+
+/* Narrative accent word */
+.storybook-accent {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  color: rgba(212, 175, 55, 0.85);
+}
+
+/* Bookmark-style reading progress */
+.bookmark-progress {
+  position: fixed;
+  right: clamp(16px, 3vw, 40px);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 50;
+  pointer-events: none;
+}
+
+/* Page shadow effect for depth */
+.page-shadow {
+  box-shadow:
+    4px 0 40px rgba(0, 0, 0, 0.25),
+    inset 0 0 60px rgba(212, 175, 55, 0.015);
+}
+
+/* Corner flourish positions */
+.corner-flourish-tl {
+  position: absolute;
+  top: clamp(32px, 5vw, 48px);
+  left: clamp(32px, 5vw, 48px);
+}
+
+.corner-flourish-tr {
+  position: absolute;
+  top: clamp(32px, 5vw, 48px);
+  right: clamp(32px, 5vw, 48px);
+}
+
+/* Storybook page margin */
+.storybook-page-padding {
+  padding: clamp(40px, 7vw, 96px);
+}
+
+/* Decorative diamond bullet */
+.diamond-bullet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 6px;
+  height: 6px;
+  border-radius: 1px;
+  background: rgba(212, 175, 55, 0.3);
+  margin: 0 0.5em;
+  vertical-align: middle;
+}
+
+/* Storybook section spacing */
+.storybook-section-gap {
+  margin-top: clamp(3rem, 6vw, 6rem);
+}
+
+/* Narrative paragraph styling */
+.storybook-paragraph {
+  margin-bottom: 1.25em;
+  text-indent: 0;
+}
+
+.storybook-paragraph + .storybook-paragraph {
+  text-indent: 1.5em;
+}
+
+/* Drop cap styles */
+.drop-cap-lg {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+}
+
+.drop-cap-first {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 400;
+  line-height: 0.8;
+  float: left;
+  margin-right: 0.1em;
+  margin-top: 0.05em;
+  color: rgba(212, 175, 55, 0.85);
+  text-shadow: 0 2px 8px rgba(212, 175, 55, 0.15);
+  font-style: italic;
 }

@@ -64,7 +64,7 @@ export class SceneErrorBoundary extends React.Component<
       const { fallbackImage, title, description } = this.props;
 
       return (
-        <div role="alert" className="absolute inset-0 -z-10 flex items-center justify-center bg-[#050505]">
+        <div role="alert" className="absolute inset-0 -z-10 flex items-center justify-center bg-background">
           {/* Background cover image (if provided). */}
           {fallbackImage && (
             <div
@@ -77,7 +77,7 @@ export class SceneErrorBoundary extends React.Component<
             {/* Icon / illustration. */}
             <div className="w-14 h-14 mx-auto mb-5 border border-white/10 flex items-center justify-center rounded-lg bg-white/5 backdrop-blur-sm">
               <svg
-                className="w-7 h-7 text-[#D4AF37]"
+                className="w-7 h-7 text-accent"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -106,7 +106,7 @@ export class SceneErrorBoundary extends React.Component<
             <div className="flex items-center justify-center gap-3">
               <button
                 onClick={() => window.location.reload()}
-                className="rounded-lg bg-[#D4AF37] px-5 py-2.5 text-xs font-medium text-black transition-colors hover:bg-[#C49A2F]"
+                className="rounded-lg bg-accent px-5 py-2.5 text-xs font-medium text-black transition-colors hover:bg-accent-dark"
               >
                 Try Again
               </button>

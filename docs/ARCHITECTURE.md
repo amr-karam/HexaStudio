@@ -52,7 +52,7 @@ PostgreSQL and Redis have **no published ports**. Only services on both networks
 
 ### Next.js Frontend (`apps/frontend`)
 
-- Next.js 15 with App Router, standalone Docker output
+- Next.js 16.2.11 with App Router, standalone Docker output
 - TailwindCSS 4, Three.js/R3F/Drei
 - **Architecture:** Feature-based structure (`src/features`) for domain isolation.
 - **UI Components:** Atomic design approach with a dedicated `/ui` library.

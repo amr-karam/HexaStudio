@@ -7,7 +7,7 @@ This file enables any AI agent to pick up work exactly where the last agent stop
 
 ## 1. PROJECT ESSENCE
 
-**HexaStudio** (HexaStudio.net) = 3D architecture visualization platform with Next.js 15 frontend, NestJS backend (BFF), Strapi 5 CMS, Docker Compose infra (14 services), and "Awwwards-level" luxury aesthetic.
+**HexaStudio** (HexaStudio.net) = 3D architecture visualization platform with Next.js 16.2.11 frontend, NestJS backend (BFF), Strapi 5 CMS, Docker Compose infra (14 services), and "Awwwards-level" luxury aesthetic.
 
 **Monorepo:** `apps/{frontend,backend,cms}` + `packages/{types,utils}` + `docker/` + `scripts/`
 

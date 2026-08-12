@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import type { Project, ProjectResponse, Category, ProjectLiveStatus } from '@hexastudio/types';
+import type { Project, ProjectResponse, Category, ProjectLiveStatus, StoryBlock } from '@hexastudio/types';
 import { getEnv } from '../../config/env';
 import { OdooService } from '../odoo/odoo.service';
 import { RedisService } from '../storage/redis.service';
@@ -342,8 +342,34 @@ export class ProjectsService {
       area: attrs.area as string | undefined,
       services: attrs.services as string[] | undefined,
       isPublished: (attrs.isPublished as boolean) ?? true,
-      createdAt: (attrs.createdAt as string) ?? new Date().toISOString(),
-      updatedAt: (attrs.updatedAt as string) ?? new Date().toISOString(),
+      editorial: {
+        challenge: attrs.challenge as string | undefined,
+        solution: attrs.solution as string | undefined,
+        credits: (attrs.credits as Array<Record<string, unknown>>)?.map((c) => ({
+          role: c.role as string,
+          name: c.name as string,
+          link: c.link as string | undefined,
+        })) ?? [],
+        technicalDetails: attrs.technicalDetails as string | undefined,
+      },
+      heroMedia: {
+        type: 'image',
+        url: mapMedia(attrs.heroMedia as StrapiRelation, this.cmsUrl) ?? attrs.coverImage as string ?? '',
+        alt: attrs.heroMediaAlt as string | undefined,
+      },
+      gallery: (attrs.gallery as Array<Record<string, unknown>>)?.map((g) => ({
+        id: g.id as string,
+        type: g.type as 'image' | 'video' | '3d' | 'before_after' | 'image',
+        url: mapMedia(g as StrapiRelation, this.cmsUrl) ?? '',
+        alt: g.alt as string | undefined,
+        caption: g.caption as string | undefined,
+      })) ?? [],
+      storyBlocks: (attrs.storyBlocks as Array<Record<string, unknown>>)?.map((b) => ({
+        type: b.type as StoryBlock['type'],
+        content: b.content,
+      })) as StoryBlock[] ?? [],
+      createdAt: attrs.createdAt as string ?? '',
+      updatedAt: attrs.updatedAt as string ?? '',
     };
   }
 }

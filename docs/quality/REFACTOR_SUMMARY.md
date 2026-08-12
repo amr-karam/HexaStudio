@@ -64,7 +64,7 @@ The project was scaffolding with structural debt: flat imports, missing dependen
 - Shared types enable E2E type safety (backend wired; frontend ready)
 - Lazy loading infrastructure ready for 3D components in Sprint 3
 - Docker/CI builds resolve `@hexastudio/*` packages correctly
-- React 19 + Next.js 15 compatibility fixes unblock production builds
+- React 19 + Next.js 16.2.11 compatibility fixes unblock production builds
 
 ---
 

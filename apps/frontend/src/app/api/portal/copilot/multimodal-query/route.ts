@@ -7,8 +7,8 @@
  */
 
 import { NextResponse } from 'next/server';
-
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+import { authenticatedFetch } from '@/lib/api-client';
+import { API_BASE_URL } from '@/config/constants';
 
 export async function POST(request: Request) {
   try {
@@ -36,10 +36,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Attempt calling the NestJS BFF multimodal endpoint
+    // Attempt calling the NestJS BFF multimodal endpoint with authentication
     try {
-      const response = await fetch(
-        `${BACKEND_URL}/api/v1/portal/copilot/multimodal-query`,
+      const response = await authenticatedFetch(
+        `${API_BASE_URL}/api/v1/portal/copilot/multimodal-query`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -59,8 +59,9 @@ export async function POST(request: Request) {
         const data: unknown = await response.json();
         return NextResponse.json(data);
       }
-    } catch {
+    } catch (error) {
       // Degrade gracefully if backend is offline or times out
+      console.warn('Backend multimodal service unavailable, using fallback:', error);
     }
 
     // Intelligent fallback responses based on provided modalities

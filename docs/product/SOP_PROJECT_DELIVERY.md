@@ -56,5 +56,5 @@ To deliver the final high-fidelity 3D assets and project documentation to the cl
 ## Related Docs
 
 - `03-BUSINESS\SOPs.md`
-- `09-ODOO\PROJECTS.md`
+- `odoo\PROJECTS.md`
 - `12-CLIENT-PORTAL\FILES.md`

@@ -27,7 +27,7 @@ HEXA Vision (HexaStudio.net) is an early-stage monorepo targeting a world-class 
 | Security (structure) | B+ | Good isolation; pending hardening |
 
 **Critical finding:** The workspace folder `Hexa` is empty. All code lives in `HexaStudio`.  
-**Stack note:** User brief specifies Vite + React Router; the implemented stack is **Next.js 15 App Router**. This is documented as an architectural decision point in `ARCHITECTURE_REVIEW.md`.
+**Stack note:** User brief specifies Vite + React Router; the implemented stack is **Next.js 16.2.11 App Router**. This is documented as an architectural decision point in `ARCHITECTURE_REVIEW.md`.
 
 ---
 
@@ -35,7 +35,7 @@ HEXA Vision (HexaStudio.net) is an early-stage monorepo targeting a world-class 
 
 ```
 HexaStudio/                    # Active monorepo (npm workspaces)
-├── apps/frontend/             # Next.js 15 — 15 source files
+├── apps/frontend/             # Next.js 16.2.11 — 15 source files
 ├── apps/backend/              # NestJS — 6 source files
 ├── apps/cms/                  # Strapi 5 — Category content type only
 ├── packages/types/            # Shared interfaces (User, Project, ApiResponse)

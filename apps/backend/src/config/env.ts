@@ -103,6 +103,10 @@ const envSchema = z.object({
   WEBHOOK_RETRY_MAX_ATTEMPTS: z.coerce.number().default(5),
   WEBHOOK_RETRY_BACKOFF_MS: z.coerce.number().default(60_000),
 
+  // Frontend revalidation
+  FRONTEND_URL: z.string().url('FRONTEND_URL must be a valid URL').optional(),
+  REVALIDATE_SECRET: z.string().min(32, 'REVALIDATE_SECRET must be at least 32 characters').optional(),
+
   // Optional
   PORT: z.coerce.number().default(4000),
 

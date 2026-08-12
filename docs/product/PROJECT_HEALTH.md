@@ -8,7 +8,7 @@
 
 | Dimension | Score | Status | Evidence |
 |-----------|-------|--------|----------|
-| Architecture Health | 9.0/10 | EXCELLENT | Modular monorepo (5 workspaces), clear service boundaries (Next.js + NestJS + Strapi), 9 ADRs documented in `01-ARCHITECTURE/ARCHITECTURE_DECISIONS/`, strict network isolation via Traefik, 14 Docker services |
+| Architecture Health | 9.0/10 | EXCELLENT | Modular monorepo (5 workspaces), clear service boundaries (Next.js + NestJS + Strapi), 9 ADRs documented in `architecture/ARCHITECTURE_DECISIONS/`, strict network isolation via Traefik, 14 Docker services |
 | Code Quality | 8.5/10 | GOOD | TypeScript strict mode across all apps, ESLint with `--max-warnings=0` (zero tolerance), 31 coding standards files, CI-enforced typecheck + lint gates. Some unused deps and pre-existing type noise |
 | Documentation Coverage | 9.0/10 | EXCELLENT | 250+ Markdown files across 18 playbook categories, 9 formal ADRs, 14 API docs, 29 DevOps runbooks, 38 quality reports, 31 standards guides, 19 business SOPs, 14 template files, 15 checklists |
 | Test Coverage | 7.5/10 | ADEQUATE | 415+ unit tests (176 frontend + 239 backend per UNIT_TESTS.md), 3 Playwright E2E specs, visual regression testing in CI. Coverage target 80%+ but actual coverage not yet enforced as blocking gate |
@@ -77,7 +77,7 @@ All previously identified application P0 blockers (BLOCKING_ISSUES.md) are resol
 | Data Point | Source | Value |
 |-----------|--------|-------|
 | Documentation files | `docs/` glob | 250+ MD files |
-| ADRs | `01-ARCHITECTURE/ARCHITECTURE_DECISIONS/` | 9 formal ADRs |
+| ADRs | `architecture/ARCHITECTURE_DECISIONS/` | 9 formal ADRs |
 | Unit tests | UNIT_TESTS.md + spec file count | 415+ (176 frontend + 239 backend) |
 | E2E specs | `e2e/*.spec.ts` | 3 spec files |
 | Lighthouse score | LIGHTHOUSE_AUDIT_2026-07-24.md | 95/100 |

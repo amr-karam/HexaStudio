@@ -11,7 +11,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { EASE, DURATION } from '@/lib/motion';
+import { DURATION } from '@/lib/motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import type { HealthScoreData } from '../types';
 
@@ -21,10 +21,10 @@ interface HealthScoreProps {
 }
 
 function getScoreColor(score: number): { stroke: string; text: string; glow: string } {
-  if (score > 80) return { stroke: '#22c55e', text: 'text-emerald-400', glow: 'rgba(34, 197, 94, 0.15)' };
-  if (score > 60) return { stroke: '#eab308', text: 'text-yellow-400', glow: 'rgba(234, 179, 8, 0.15)' };
-  if (score > 40) return { stroke: '#f97316', text: 'text-orange-400', glow: 'rgba(249, 115, 22, 0.15)' };
-  return { stroke: '#ef4444', text: 'text-red-400', glow: 'rgba(239, 68, 68, 0.15)' };
+  if (score > 80) return { stroke: 'var(--color-accent)', text: 'text-accent', glow: 'rgba(var(--color-accent-rgb), 0.1)' };
+  if (score > 60) return { stroke: 'var(--color-neutral-400)', text: 'text-neutral-400', glow: 'rgba(var(--color-neutral-400-rgb), 0.1)' };
+  if (score > 40) return { stroke: 'var(--color-neutral-500)', text: 'text-neutral-500', glow: 'rgba(var(--color-neutral-500-rgb), 0.1)' };
+  return { stroke: 'var(--color-danger)', text: 'text-danger', glow: 'rgba(var(--color-danger-rgb), 0.1)' };
 }
 
 function getStatusLabel(score: number): string {
@@ -81,8 +81,8 @@ export function HealthScore({ data, className }: HealthScoreProps) {
             r={CIRCLE_RADIUS}
             fill="none"
             stroke="currentColor"
-            strokeWidth="6"
-            className="text-border/30"
+            strokeWidth="3"
+            className="text-border/20"
           />
 
           {/* Progress circle */}
@@ -92,14 +92,14 @@ export function HealthScore({ data, className }: HealthScoreProps) {
             r={CIRCLE_RADIUS}
             fill="none"
             stroke={colors.stroke}
-            strokeWidth="6"
-            strokeLinecap="round"
+            strokeWidth="3"
+            strokeLinecap="butt"
             strokeDasharray={CIRCLE_CIRCUMFERENCE}
             strokeDashoffset={animatedOffset}
             style={{
               transition: prefersReduced
                 ? 'none'
-                : `stroke-dashoffset ${DURATION.page}s ${EASE.entrance.join(', ')}`,
+                : `stroke-dashoffset 2.5s var(--hexa-ease-entrance)`,
             }}
           />
         </svg>
@@ -107,14 +107,14 @@ export function HealthScore({ data, className }: HealthScoreProps) {
         {/* Center content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <motion.span
-            initial={prefersReduced ? { opacity: 1 } : { opacity: 0, scale: 0.8 }}
+            initial={prefersReduced ? { opacity: 1 } : { opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{
-              duration: DURATION.component,
-              ease: EASE.entrance,
-              delay: prefersReduced ? 0 : 0.3,
+              duration: 1.5,
+              ease: 'power4.out',
+              delay: prefersReduced ? 0 : 0.2,
             }}
-            className="text-4xl font-serif font-light text-foreground"
+            className="text-5xl font-serif font-light text-foreground"
           >
             {score}
           </motion.span>
@@ -137,3 +137,4 @@ export function HealthScore({ data, className }: HealthScoreProps) {
     </div>
   );
 }
+

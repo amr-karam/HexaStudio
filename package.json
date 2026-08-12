@@ -25,26 +25,46 @@
     "gitlab:setup": "bash scripts/setup-gitlab-variables.sh",
     "gitlab:migrate": "bash scripts/migrate-from-github.sh",
     "lint": "turbo run lint",
-    "test": "turbo run test",
-    "test:e2e": "npm run test:e2e --workspace=apps/frontend",
-    "test:e2e:ui": "playwright test --ui --config e2e/playwright.config.ts",
-    "typecheck": "turbo run typecheck"
+    "test": "npm run --workspace=apps/backend test",
+    "test:apps": "npm run test --workspace=apps/backend && npm run test --workspace=apps/frontend && npm run test --workspace=apps/mobile",
+    "test:watch": "npm run test --workspace=apps/backend -- --watch && npm run test --workspace=apps/frontend -- --watch && npm run test --workspace=apps/mobile -- --watch",
+    "quality": "node scripts/hexa-fast.mjs",
+    "quality:watch": "node scripts/hexa-fast.mjs --watch",
+    "quality:lint": "node scripts/hexa-fast.mjs --lint",
+    "quality:types": "node scripts/hexa-fast.mjs --types",
+    "quality:test": "node scripts/hexa-fast.mjs --test",
+    "test:all": "npm run test:apps",
+    "test:int": "npm run test:apps -- --watch",
+    "test:ci": "npm run test:apps -- --coverage",
+    "fast:context": "node scripts/hexa-fast.mjs context",
+    "fast:gate": "node scripts/hexa-fast.mjs gate:frontend",
+    "fast:gate:all": "node scripts/hexa-fast.mjs gate:all",
+    "fast:tokens": "node scripts/hexa-fast.mjs tokens",
+    "fast:commit": "node scripts/hexa-fast.mjs commit"
   },
   "dependencies": {
+    "@google/genai": "2.15.0",
     "@playwright/test": "^1.62.1",
+    "@react-navigation/bottom-tabs": "7.18.14",
+    "@react-navigation/native": "7.3.14",
     "@reduxjs/toolkit": "^2.12.0",
+    "@sentry/core": "10.69.0",
     "@sentry/nextjs": "^10.65.0",
     "axios": "^1.18.1",
     "framer-motion": "^11.18.2",
-    "libsodium-wrappers": "^0.8.4",
+    "lucide-react": "^0.460.0",
     "react-error-boundary": "^6.1.2"
   },
   "devDependencies": {
+    "@axe-core/react": "^4.12.1",
     "@lhci/cli": "^0.14.0",
     "@nestjs/cli": "^11.0.24",
+    "@types/jest-axe": "^3.5.9",
     "@types/node": "^26.1.1",
+    "axe-core": "^4.13.0",
     "caniuse-lite": "^1.0.30001806",
-    "react-test-renderer": "19.2.7",
+    "jest-axe": "^11.0.0",
+    "react-test-renderer": "19.2.8",
     "turbo": "^2.10.4"
   },
   "overrides": {
@@ -56,17 +76,21 @@
     "sharp": "^0.35.3",
     "@types/react": "19.2.17",
     "@xmldom/xmldom": ">=0.9.0",
-    "js-yaml": "^5.2.2"
+    "js-yaml": "^5.2.2",
+    "react-test-renderer": "19.2.8",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "next": "16.2.11"
   },
   "workspaces": [
     "apps/frontend",
     "apps/backend",
     "apps/mobile",
     "packages/types",
-    "packages/ui",
     "packages/utils"
   ],
   "optionalDependencies": {
-    "@rolldown/binding-linux-x64-gnu": "1.1.5"
+    "@rolldown/binding-linux-x64-gnu": "1.2.2",
+    "@rolldown/binding-win32-x64-msvc": "1.2.2"
   }
 }

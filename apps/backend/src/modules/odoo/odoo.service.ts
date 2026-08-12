@@ -24,6 +24,8 @@ export class OdooService implements OnModuleInit {
   private readonly FAILURE_THRESHOLD = 0.4; // 40% failure rate opens the circuit
   private readonly ABSOLUTE_FAILURE_LIMIT = 5; // Or 5 absolute failures in window
   private readonly RESET_TIMEOUT = 30000; // 30 seconds before half-open
+  private readonly MAX_RETRIES = 3;
+  private readonly INITIAL_RETRY_DELAY = 1000; // 1 second
 
   constructor(private readonly redisService: RedisService) {
     const env = getEnv();
@@ -123,54 +125,78 @@ export class OdooService implements OnModuleInit {
     const username = env.ODOO_USER;
     const password = env.ODOO_PASSWORD;
 
-    try {
-      const result = await new Promise<number>((resolve, reject) => {
-        this.client.methodCall('authenticate', [db, username, password, {}], (error, value) => {
-          if (error) reject(error);
-          else resolve(value);
+    let lastError: unknown;
+    for (let attempt = 0; attempt <= this.MAX_RETRIES; attempt++) {
+      try {
+        const result = await new Promise<number>((resolve, reject) => {
+          this.client.methodCall('authenticate', [db, username, password, {}], (error, value) => {
+            if (error) reject(error);
+            else resolve(value);
+          });
         });
-      });
 
-      this.uid = result;
-      this.recordSuccess();
-      return result;
-    } catch (error) {
-      this.recordFailure();
-      this.logger.error(`Odoo authentication failed: ${error}`);
-      throw new InternalServerErrorException('Odoo authentication failed');
+        this.uid = result;
+        this.recordSuccess();
+        return result;
+      } catch (error) {
+        lastError = error;
+        if (attempt < this.MAX_RETRIES) {
+          const delay = this.INITIAL_RETRY_DELAY * Math.pow(2, attempt);
+          this.logger.warn(`Odoo auth failed (attempt ${attempt + 1}/${this.MAX_RETRIES + 1}): ${error}. Retrying in ${delay}ms...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+        }
+      }
     }
+
+    this.recordFailure();
+    this.logger.error(`Odoo authentication failed after ${this.MAX_RETRIES + 1} attempts: ${lastError}`);
+    throw new InternalServerErrorException('Odoo authentication failed');
   }
 
   async execute<T = unknown>(model: string, method: string, args: unknown[]): Promise<T> {
     await this.authenticate();
 
-    return new Promise<T>((resolve, reject) => {
-      const env = getEnv();
-      const password = env.ODOO_PASSWORD;
-      const db = env.ODOO_DB;
-      this.objectClient.methodCall('execute_kw', [db, this.uid!, password, model, method, args], (error, value) => {
-        if (error) {
+    let lastError: unknown;
+    for (let attempt = 0; attempt <= this.MAX_RETRIES; attempt++) {
+      try {
+        return await new Promise<T>((resolve, reject) => {
+          const env = getEnv();
+          const password = env.ODOO_PASSWORD;
+          const db = env.ODOO_DB;
+          this.objectClient.methodCall('execute_kw', [db, this.uid!, password, model, method, args], (error, value) => {
+            if (error) {
+              if (this.isAuthError(error)) {
+                this.uid = null;
+              }
+              reject(error);
+            } else {
+              resolve(value as T);
+            }
+          });
+        });
+      } catch (error) {
+        lastError = error;
+        const errMessage = (error as Error)?.message ?? String(error);
+        
+        // Don't retry on permission errors or validation errors (they won't change)
+        if (this.isPermissionError(errMessage)) {
           this.recordFailure();
-          if (this.isAuthError(error)) {
-            this.uid = null;
-          }
-          const errMessage = (error as Error)?.message ?? String(error);
-          if (this.isPermissionError(errMessage)) {
-            this.logger.error(
-              `Odoo Permission/Access Error on model "${model}" method "${method}": ${errMessage}. ` +
-              `Please ensure the Odoo user (${env.ODOO_USER}) is assigned to the required security groups in Odoo ` +
-              `(e.g., Project Administrator/Manager 'project.group_project_manager' for project creation, CRM/Sales groups for leads/quotations).`
-            );
-          } else {
-            this.logger.error(`Odoo XML-RPC error on model "${model}" method "${method}": ${errMessage}`);
-          }
-          reject(new InternalServerErrorException(`Odoo error: ${errMessage}`));
-        } else {
-          this.recordSuccess();
-          resolve(value as T);
+          this.logger.error(`Odoo Permission Error on model "${model}" method "${method}": ${errMessage}`);
+          throw new InternalServerErrorException(`Odoo permission error: ${errMessage}`);
         }
-      });
-    });
+
+        if (attempt < this.MAX_RETRIES) {
+          const delay = this.INITIAL_RETRY_DELAY * Math.pow(2, attempt);
+          this.logger.warn(`Odoo call failed (attempt ${attempt + 1}/${this.MAX_RETRIES + 1}): ${errMessage}. Retrying in ${delay}ms...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+        }
+      }
+    }
+
+    this.recordFailure();
+    const finalMessage = (lastError as Error)?.message ?? String(lastError);
+    this.logger.error(`Odoo call failed after ${this.MAX_RETRIES + 1} attempts on model "${model}" method "${method}": ${finalMessage}`);
+    throw new InternalServerErrorException(`Odoo error after retries: ${finalMessage}`);
   }
 
   async searchRead(model: string, domain: unknown[], fields: string[], useCache = true): Promise<Record<string, unknown>[]> {

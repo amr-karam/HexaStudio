@@ -58,6 +58,6 @@ To ensure that new architectural projects are published to the public site with 
 
 ## Related Docs
 
-- `06-STANDARDS\THREEJS_GUIDE.md`
+- `engineering\THREEJS_GUIDE.md`
 - `07-DESIGN\component-3d-canvas.md`
 - `03-BUSINESS\SOPs.md`

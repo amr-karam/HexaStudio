@@ -4,19 +4,22 @@ http:
     website:
       rule: "Host(`hexastudio.net`) || Host(`www.hexastudio.net`)"
       service: frontend
-      
+      middlewares:
+        - redirect-www
 
     # Backend API
     api:
       rule: "Host(`api.hexastudio.net`)"
       service: backend
-      
+      middlewares:
+        - security-headers
 
     # CMS
     cms:
       rule: "Host(`cms.hexastudio.net`)"
       service: cms
-      
+      middlewares:
+        - security-headers
 
     # ERP / Odoo
     odoo:
@@ -24,31 +27,35 @@ http:
       service: odoo
       middlewares:
         - forwarded-headers
-      
+        - security-headers
 
     # Storage / Files
     files:
       rule: "Host(`files.hexastudio.net`)"
       service: minio
-      
+      middlewares:
+        - security-headers
 
     # Storage Console
     files-console:
       rule: "Host(`files-console.hexastudio.net`)"
       service: minio-console
-      
+      middlewares:
+        - security-headers
 
     # Monitoring (Grafana)
     monitor:
       rule: "Host(`grafana.hexastudio.net`)"
       service: grafana
-      
+      middlewares:
+        - security-headers
 
     # Monitoring (Prometheus)
     prometheus:
       rule: "Host(`prometheus.hexastudio.net`)"
       service: prometheus
-      
+      middlewares:
+        - security-headers
 
     # Monitoring (Alertmanager UI — basic auth via traefik-auth)
     alertmanager:
@@ -56,49 +63,56 @@ http:
       service: alertmanager
       middlewares:
         - traefik-auth
-      
+        - security-headers
 
     # Uptime
     uptime:
       rule: "Host(`uptime.hexastudio.net`)"
       service: uptime-kuma
-      
+      middlewares:
+        - security-headers
 
     # AI Services
     ai:
       rule: "Host(`ai.hexastudio.net`)"
       service: ai-service
-      
+      middlewares:
+        - security-headers
 
     # Auth
     auth:
       rule: "Host(`auth.hexastudio.net`)"
       service: auth-service
-      
+      middlewares:
+        - security-headers
 
     # Analytics
     analytics:
       rule: "Host(`analytics.hexastudio.net`)"
       service: analytics-service
-      
+      middlewares:
+        - security-headers
 
     # Communication Hub
     hub:
       rule: "Host(`hub.hexastudio.net`)"
       service: hub-service
-      
+      middlewares:
+        - security-headers
 
     # Documentation
     docs:
       rule: "Host(`docs.hexastudio.net`)"
       service: docs-service
-      
+      middlewares:
+        - security-headers
 
     # Status Page
     status:
       rule: "Host(`status.hexastudio.net`)"
       service: status-service
-      
+      middlewares:
+        - security-headers
 
     # GitLab (TLS terminated at Cloudflare edge)
     gitlab:
@@ -162,13 +176,38 @@ http:
         servers: [{ url: "http://hexa-gitlab:80" }]
 
   middlewares:
+    # Traefik dashboard / Alertmanager basic auth — credentials from env.
+    # Generate the hash: htpasswd -nbB admin '<password>'
+    # TRAEFIK_AUTH_USER and TRAEFIK_AUTH_HASH are required in .env (no default fallback).
     traefik-auth:
       basicAuth:
         users:
-          - "admin:$apr1$iX4YLoGa$KRmTxSK1/9JvWQ9h5FKw90"
+          - "${TRAEFIK_AUTH_USER}:${TRAEFIK_AUTH_HASH}"
+
+    # www → non-www redirect — prevents infinite loop
+    # When a request comes to www.hexastudio.net, it gets
+    # explicitly redirected to hexastudio.net (non-www).
+    redirect-www:
+      redirect:
+        to: "https://hexastudio.net"
+        permanent: true
 
     forwarded-headers:
       headers:
         customRequestHeaders:
           X-Forwarded-Proto: "https"
           X-Forwarded-Ssl: "on"
+
+    # Security headers applied at the proxy edge (non-frontend services).
+    # The Next.js frontend sets its own tailored CSP via next.config.ts; adding
+    # a proxy-level CSP there would duplicate headers, so `website` is exempt.
+    # Baseline per docs/security/SECURITY_BASELINE.md §Security Headers.
+    security-headers:
+      headers:
+        customResponseHeaders:
+          Strict-Transport-Security: "max-age=31536000; includeSubDomains; preload"
+          X-Content-Type-Options: "nosniff"
+          X-Frame-Options: "SAMEORIGIN"
+          Referrer-Policy: "strict-origin-when-cross-origin"
+          Permissions-Policy: "camera=(), microphone=(), geolocation=(), xr-spatial-tracking=(self)"
+          Content-Security-Policy: "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"

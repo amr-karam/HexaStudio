@@ -15,7 +15,7 @@ All endpoints (except public) require Bearer token:
 Authorization: Bearer {access_token}
 ```
 
-See: [Authorization](./AUTHORIZATION.md)
+See: [Authorization](AUTHORIZATION.md)
 
 ---
 
@@ -77,7 +77,7 @@ All successful responses use this envelope:
 }
 ```
 
-See: [Error Codes](./error-codes.md)
+See: [Error Codes](error-codes.md)
 
 ---
 
@@ -120,6 +120,6 @@ Response includes:
 
 ## Related Documentation
 
-- [Authorization](./AUTHORIZATION.md)
-- [API Standards](../06-STANDARDS/API_STANDARDS.md)
-- [Error Codes](./error-codes.md)
+- [Authorization](AUTHORIZATION.md)
+- [API Standards](../engineering/API_STANDARDS.md)
+- [Error Codes](error-codes.md)

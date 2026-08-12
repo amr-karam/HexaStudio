@@ -3,11 +3,14 @@ FROM node:20-bookworm-slim AS base
 RUN apt-get update && apt-get install -y wget && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
-# Stage 2: Dependencies (with full source for workspace resolution)
+# Stage 2: Dependencies
+# COPY from repo root so package-lock.json (with workspace resolution) is available.
 FROM base AS deps
-COPY . .
-# Delete lockfile to work around npm#4828 (cross-platform optional deps bug)
-RUN rm -rf node_modules package-lock.json && npm install --no-audit --no-fund --legacy-peer-deps
+COPY package-lock.json package.json ./
+COPY apps/frontend/package.json apps/frontend/
+COPY apps/types/package.json apps/types/ 2>/dev/null || true
+COPY apps/utils/package.json apps/utils/ 2>/dev/null || true
+RUN npm install --no-audit --no-fund --legacy-peer-deps
 
 # Stage 3: Builder
 FROM deps AS builder
@@ -23,6 +26,10 @@ ENV NEXT_PUBLIC_SENTRY_DSN=$NEXT_PUBLIC_SENTRY_DSN
 ENV NODE_ENV=production
 ENV SKIP_ENV_VALIDATION=true
 ENV NEXT_OUTPUT_STANDALONE=true
+
+# Copy full source for build
+COPY . .
+
 RUN npm run build --workspace=apps/frontend
 
 # Stage 4: Runner

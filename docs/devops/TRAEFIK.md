@@ -46,40 +46,53 @@ HEXA Vision uses **Traefik v3** as its exclusive cloud-native edge proxy and ing
 
 ## 3. TRAEFIK MIDDLEWARE CONFIGURATION (`docker/traefik/dynamic.yml`)
 
+> **Authoritative config:** `docker/traefik/dynamic.yml`. The examples below are the **actual implemented** middlewares (verified 2026-08-08).
+
 ### A. Security Headers Middleware (`security-headers`)
+Applied at the proxy edge to every non-frontend router (backend, CMS, Odoo, MinIO, Grafana, Prometheus, Alertmanager, Uptime Kuma, AI/Auth/Analytics/Hub/Docs/Status). The Next.js frontend is **exempt** — it sets its own tailored CSP in `next.config.ts` (avoids duplicate headers).
+
 ```yaml
-http:
-  middlewares:
     security-headers:
       headers:
-        stsSeconds: 63072000
-        stsIncludeSubdomains: true
-        stsPreload: true
-        frameDeny: true
-        contentTypeNosniff: true
-        browserXssFilter: true
-        referrerPolicy: "strict-origin-when-cross-origin"
-        permissionsPolicy: "camera=(), microphone=(), geolocation=()"
+        customResponseHeaders:
+          Strict-Transport-Security: "max-age=31536000; includeSubDomains; preload"
+          X-Content-Type-Options: "nosniff"
+          X-Frame-Options: "SAMEORIGIN"
+          Referrer-Policy: "strict-origin-when-cross-origin"
+          Permissions-Policy: "camera=(), microphone=(), geolocation=(), xr-spatial-tracking=(self)"
+          Content-Security-Policy: "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
 ```
 
-### B. Rate Limiting Middleware (`rate-limit`)
+### B. Basic Auth Middleware (`traefik-auth`)
+Protects the Traefik dashboard and Alertmanager UI. Credentials are **env-var referenced — no hardcoded defaults** (PHASE 10 remediation; no default fallback):
+
 ```yaml
-    rate-limit:
-      rateLimit:
-        average: 100
-        burst: 50
+    traefik-auth:
+      basicAuth:
+        users:
+          - "${TRAEFIK_AUTH_USER}:${TRAEFIK_AUTH_HASH}"
 ```
 
-### C. Gzip & Brotli Compression (`gzip-compress`)
+Generate the bcrypt hash: `htpasswd -nbB admin '<password>'` → set `TRAEFIK_AUTH_USER` / `TRAEFIK_AUTH_HASH` in `.env` (see `.env.example`).
+
+### C. Forwarded Headers Middleware (`forwarded-headers`)
+Used on the Odoo router to normalize the scheme behind Cloudflare:
+
 ```yaml
-    gzip-compress:
-      compress:
-        excludedContentTypes:
-          - "image/jpeg"
-          - "image/png"
-          - "image/webp"
-          - "application/pdf"
+    forwarded-headers:
+      headers:
+        customRequestHeaders:
+          X-Forwarded-Proto: "https"
+          X-Forwarded-Ssl: "on"
 ```
+
+---
+
+## 3.5 TLS HARDENING (`docker/traefik/traefik.yml`)
+
+- **TLS 1.2 minimum** enforced globally via a default TLS options block (AES-GCM + ChaCha20-Poly1305 suites only).
+- **Dashboard API not insecure:** `api.insecure: false` — the dashboard is reachable only via the `traefik-dashboard` router (web entrypoint, `traefik-auth@file` basic-auth).
+- GitLab is exempt from proxy TLS (TLS terminated at the Cloudflare edge) and is not exposed on `websecure`.
 
 ---
 
@@ -92,11 +105,13 @@ Every container registered with Traefik must declare routing rules in `docker-co
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.rule=Host(`hexastudio.net`) || Host(`portal.hexastudio.net`)"
-      - "traefik.http.routers.frontend.entrypoints=websecure"
-      - "traefik.http.routers.frontend.tls.certresolver=cloudflare"
-      - "traefik.http.routers.frontend.middlewares=security-headers@file,gzip-compress@file"
+      - "traefik.http.routers.frontend.entrypoints=web"
+      - "traefik.http.routers.traefik-dashboard.service=api@internal"
+      - "traefik.http.routers.traefik-dashboard.middlewares=traefik-auth@file"
       - "traefik.http.services.frontend.loadbalancer.server.port=3000"
 ```
+
+> **Note:** dynamic routing for all app services is declared in `docker/traefik/dynamic.yml` (file provider) — middleware policy for backend/CMS/Odoo/MinIO/monitoring is `security-headers@file` (see §3).
 
 ---
 

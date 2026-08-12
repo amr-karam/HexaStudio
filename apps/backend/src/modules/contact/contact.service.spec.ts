@@ -122,14 +122,33 @@ describe('ContactService', () => {
     it('should still return success even if Redis queue also fails', async () => {
       mockOdooService.create.mockRejectedValueOnce(new Error('Connection refused'));
       mockRedisService.lpush.mockRejectedValueOnce(new Error('Redis down'));
-
+ 
       const result = await service.sendMessage({
         name: 'Test',
         email: 'test@test.com',
         message: 'Hello',
       });
-
+ 
       expect(result.success).toBe(true);
     });
+
+    it('should not crash when aiChat service is missing', async () => {
+      // Use a new service instance with aiChat as null to simulate the failure
+      const unsafeService = new ContactService(
+        mockOdooService as unknown as OdooService,
+        mockRedisService as unknown as RedisService,
+        null as unknown as AiChatService,
+      );
+
+      const result = await unsafeService.sendMessage({
+        name: 'Faulty Test',
+        email: 'faulty@test.com',
+        message: 'Testing crash',
+      });
+
+      expect(result.success).toBe(true);
+      expect(mockOdooService.create).toHaveBeenCalled();
+    });
+
   });
 });

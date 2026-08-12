@@ -49,6 +49,6 @@ git push origin v1.1.0
 
 ## 5. RELATED DOCUMENTATION
 
-- [TAGGING.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/git/TAGGING.md) — Git tagging rules.
-- [CHANGELOG.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/CHANGELOG.md) — Release changelog.
-- [DEPLOYMENT.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/devops/DEPLOYMENT.md) — Production CD execution.
+- [TAGGING.md](TAGGING.md) — Git tagging rules.
+- [CHANGELOG.md](./CHANGELOG.md) — Release changelog.
+- [DEPLOYMENT.md](../devops/DEPLOYMENT.md) — Production CD execution.

@@ -200,7 +200,7 @@ export const ExperienceCanvas = ({
   // Don't mount Canvas if WebGL is unavailable.
   if (!webglSupported) {
     return (
-      <div className="absolute inset-0 -z-10 flex items-center justify-center bg-[#050505]">
+      <div className="absolute inset-0 -z-10 flex items-center justify-center bg-obsidian">
         <div className="text-center max-w-md px-6">
           <h3 className="text-white/60 text-sm uppercase tracking-widest mb-2">
             3D Scene Unavailable

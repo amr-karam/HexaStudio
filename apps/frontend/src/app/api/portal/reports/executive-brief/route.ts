@@ -10,7 +10,7 @@ export async function GET() {
   <meta charset="UTF-8">
   <title>HEXA Studio — Executive Project Brief</title>
   <style>
-    body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #050508; color: #f5f5f7; margin: 0; padding: 40px; }
+    body { font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif; background: #050508; color: #f5f5f7; margin: 0; padding: 40px; }
     .header { display: flex; justify-content: space-between; align-items: center; border-b: 1px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
     .logo { font-size: 24px; font-weight: bold; letter-spacing: 2px; color: #d4af37; }
     .title { font-size: 28px; margin: 0 0 10px 0; color: #fff; }

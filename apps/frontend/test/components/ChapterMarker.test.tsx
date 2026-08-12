@@ -6,13 +6,48 @@ vi.mock('@/hooks/useMotionPolicy', () => ({
   useMotionPolicy: () => ({ staticMode: false }),
 }));
 
-vi.mock('framer-motion', () => ({
-  motion: {
-    span: ({ children, ...props }: React.HTMLAttributes<HTMLSpanElement>) => (
-      <span {...props}>{children}</span>
-    ),
-  },
-}));
+vi.mock('framer-motion', () => {
+  const motionOnlyProps = new Set<string>([
+    'variants',
+    'initial',
+    'animate',
+    'exit',
+    'whileInView',
+    'viewport',
+    'custom',
+    'transition',
+    'onViewportEnter',
+    'onViewportLeave',
+  ]);
+
+  return {
+    motion: {
+      span: ({
+        children,
+        ...props
+      }: React.HTMLAttributes<HTMLSpanElement> & {
+        variants?: unknown;
+        initial?: unknown;
+        animate?: unknown;
+        exit?: unknown;
+        whileInView?: unknown;
+        viewport?: unknown;
+        custom?: unknown;
+        transition?: unknown;
+        onViewportEnter?: unknown;
+        onViewportLeave?: unknown;
+      }) => {
+        const domProps = Object.fromEntries(
+          Object.entries(props as Record<string, unknown>).filter(
+            ([key]) => !motionOnlyProps.has(key),
+          ),
+        ) as React.HTMLAttributes<HTMLSpanElement>;
+
+        return <span {...domProps}>{children}</span>;
+      },
+    },
+  };
+});
 
 describe('toRomanNumeral', () => {
   it.each([

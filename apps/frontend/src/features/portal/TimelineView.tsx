@@ -5,6 +5,7 @@ import { motion, useInView } from 'framer-motion';
 import { useLocale } from '@/i18n/LocaleProvider';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
+import { EASE } from '@/lib/motion';
 
 /* -------------------------------------------------------------------------- */
 /*  Types                                                                     */
@@ -265,7 +266,7 @@ export function TimelineView({
                   transition={{
                     delay: index * 0.06,
                     duration: 0.5,
-                    ease: [0.16, 1, 0.3, 1],
+                    ease: EASE.entrance,
                   }}
                   className="relative flex items-center h-14 px-4 hover:bg-white/[0.02] transition-colors duration-300 group"
                   dir={isRTL ? 'rtl' : 'ltr'}
@@ -321,7 +322,7 @@ export function TimelineView({
                         transition={{
                           delay: index * 0.06 + 0.2,
                           duration: 0.6,
-                          ease: [0.16, 1, 0.3, 1],
+                          ease: EASE.entrance,
                         }}
                         style={{ originX: isRTL ? 1 : 0 }}
                         className={`h-full rounded-full ${config.bar} flex items-center px-3`}

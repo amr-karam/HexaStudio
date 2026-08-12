@@ -38,7 +38,7 @@ T-**CLS:** Cumulative Layout Shift. A metric that measures the visual stability 
 - **Monorepo:** A single repository containing multiple projects (frontend, backend, types).
 
 ## N
-- **Next.js 15:** Our frontend framework, chosen for its speed, SEO, and App Router capabilities.
+- **Next.js 16.2.11:** Our frontend framework, chosen for its speed, SEO, and App Router capabilities.
 
 ## O
 - **Odoo:** The ERP system used for business operations and as a content source for some modules.

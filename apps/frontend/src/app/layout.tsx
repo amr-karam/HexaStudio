@@ -9,7 +9,6 @@ import { AnalyticsInit } from "@/lib/analytics";
 import { Suspense } from "react";
 import "./globals.css";
 import { AnimationDebugLoader } from "@/components/dev/AnimationDebugLoader";
-import { DesignerModeConfigurator, SpatialLayerToggle } from "@/features/scene";
 import { SpatialAnnotations } from "@/features/scene/components/SpatialAnnotations";
 import { SpatialAudioPlayer } from "@/features/scene/components/SpatialAudioPlayer";
 
@@ -22,18 +21,18 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "Code Lens — 3D Architectural Visualization & Spatial Intelligence",
-    template: "%s | Code Lens",
+    default: "HexaStudio — 3D Architectural Visualization & Spatial Intelligence",
+    template: "%s | HexaStudio",
   },
   description:
-    "Code Lens by HexaStudio. Living Spaces. Visualized. Immersive 3D architectural experiences and spatial intelligence for ambitious projects.",
+    "HexaStudio. Living Spaces. Visualized. Immersive 3D architectural experiences and spatial intelligence for ambitious projects.",
   keywords: [
-    "Code Lens",
+    "HexaStudio",
     "architecture",
     "visualization",
     "3D rendering",
     "spatial intelligence",
-    "HexaStudio",
+    "design studio",
   ],
   alternates: {
     canonical: "https://hexastudio.net",
@@ -43,7 +42,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Code Lens — Living Spaces. Visualized.",
+    title: "HexaStudio — Living Spaces. Visualized.",
     description:
       "Living Spaces. Visualized. Immersive 3D architectural experiences for the world's most ambitious projects.",
     url: "https://hexastudio.net",
@@ -160,10 +159,8 @@ export default function RootLayout({
             Skip to content
           </a>
           <LayoutShell>{children}</LayoutShell>
-          <DesignerModeConfigurator />
           <SpatialAnnotations />
           <SpatialAudioPlayer />
-          <SpatialLayerToggle />
           <Suspense fallback={null}>
             <AnalyticsInit />
           </Suspense>

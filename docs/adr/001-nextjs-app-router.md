@@ -15,7 +15,7 @@ HEXA Vision requires a modern React framework that supports:
 - API routes for backend-for-frontend (BFF) pattern
 
 ## Decision
-We will use **Next.js 15 with App Router** as the primary frontend framework.
+We will use **Next.js 16.2.11 with App Router** as the primary frontend framework.
 
 ## Alternatives Considered
 | Alternative | Pros | Cons |

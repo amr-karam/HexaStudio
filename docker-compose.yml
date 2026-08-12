@@ -220,7 +220,7 @@ services:
       timeout: 5s
       retries: 3
 
-  # --- Reverse Proxy ---
+  # --- Reverse Proxy (DEV ONLY — production uses Traefik v3, see docker-compose.prod.yml) ---
   nginx:
     image: nginx:alpine
     container_name: hexa-proxy
@@ -233,6 +233,21 @@ services:
         condition: service_healthy
     networks:
       - hexa_web
+
+  # --- Design System Docs (Storybook static site) ---
+  # Serves the static Storybook build at docs.hexastudio.net (Traefik router:
+  #   Host(`docs.hexastudio.net`) -> docs-service:8080).
+  # Local dev: `npm run build-storybook --workspace=packages/ui` first.
+  docs-service:
+    image: ${DOCS_IMAGE:-hexastudio/docs:latest}
+    container_name: hexa-docs
+    networks:
+      - hexa_web
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   # --- Monitoring ---
   prometheus:

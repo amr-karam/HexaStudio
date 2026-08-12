@@ -44,7 +44,24 @@ if [ "$STAGED_TS" -gt 0 ]; then
   fi
 fi
 
-# ── 4. Exit ──────────────────────────────────────────────────────────────────
+# ── 4. Design-token gate on staged frontend files ─────────────────────────────
+STAGED_FE_TS=$(git diff --cached --name-only --diff-filter=ACM | grep -c '^apps/frontend/src/.*\.tsx\?$' || true)
+if [ "$STAGED_FE_TS" -gt 0 ]; then
+  echo ""
+  echo "?  Design Token Gate: checking staged frontend files..."
+  if ! node scripts/check-design-tokens.mjs --allow-inline-style-hex >/tmp/design-tokens-hook.log 2>&1; then
+    echo "!  Design token violations detected. Run:"
+    echo "   node scripts/fix-design-tokens.mjs --dry-run --report  # preview"
+    echo "   node scripts/fix-design-tokens.mjs --report            # apply"
+    echo ""
+    cat /tmp/design-tokens-hook.log
+    FAILED=true
+  else
+    echo "✓  Design token gate passed."
+  fi
+fi
+
+# ── 5. Exit ──────────────────────────────────────────────────────────────────
 if [ "$FAILED" = true ]; then
   echo ""
   echo "  Commit blocked. Fix issues above or use: git commit --no-verify"

@@ -4,22 +4,147 @@ export interface Project {
   slug: string;
   description: string;
   shortDescription?: string;
+  
+  // Editorial Content (Master Directive Requirement)
+  editorial: {
+    challenge?: string;
+    solution?: string;
+    credits?: {
+      role: string;
+      name: string;
+      link?: string;
+    }[];
+    technicalDetails?: string;
+  };
+
+  // Media & Assets
   coverImage: string;
+  heroMedia: {
+    type: 'image' | 'video' | '3d';
+    url: string;
+    alt?: string;
+  };
+  gallery: ProjectMediaAsset[];
+  
+  // Project Metadata
   category?: Category;
-  modelUrl?: string;
-  hotspots: ProjectHotspot[];
   client?: string;
+  architect?: string;
   location?: string;
   year?: number;
   area?: string;
   status?: string;
+  
+  // Storytelling Engine (Modular Blocks)
+  storyBlocks: StoryBlock[];
+  
+  // Technical/3D Integration
+  modelUrl?: string;
+  hotspots: ProjectHotspot[];
+  
+  // Business/Odoo Integration
   milestones?: { total: number; completed: number };
   liveStatus?: ProjectLiveStatus;
   services?: string[];
+  
   isPublished: boolean;
   createdAt: string;
   updatedAt: string;
 }
+
+/** Assets for the Portfolio Gallery */
+export interface ProjectMediaAsset {
+  id: string;
+  type: 'image' | 'video' | '3d' | 'before_after';
+  url: string;
+  alt?: string;
+  caption?: string;
+  beforeUrl?: string; // For before/after sliders
+  afterUrl?: string;  // For before/after sliders
+  metadata?: Record<string, unknown>;
+}
+
+/** Modular Storytelling Blocks (Master Directive Section 5) */
+export type StoryBlock = 
+  | { type: 'hero'; content: HeroBlockContent }
+  | { type: 'text'; content: TextBlockContent }
+  | { type: 'image'; content: ImageBlockContent }
+  | { type: 'gallery'; content: GalleryBlockContent }
+  | { type: 'video'; content: VideoBlockContent }
+  | { type: 'quote'; content: QuoteBlockContent }
+  | { type: 'stats'; content: StatsBlockContent }
+  | { type: 'timeline'; content: TimelineBlockContent }
+  | { type: 'comparison'; content: ComparisonBlockContent }
+  | { type: 'scene3d'; content: Scene3DBlockContent }
+  | { type: 'cta'; content: CTABlockContent };
+
+export interface HeroBlockContent {
+  title: string;
+  subtitle?: string;
+  mediaUrl: string;
+  overlayColor?: string;
+}
+
+export interface TextBlockContent {
+  content: RichTextBlock[];
+  alignment: 'left' | 'center' | 'right';
+  width: 'full' | 'medium' | 'small';
+}
+
+export interface ImageBlockContent {
+  url: string;
+  alt: string;
+  caption?: string;
+  layout: 'full' | 'split-left' | 'split-right' | 'grid';
+}
+
+export interface GalleryBlockContent {
+  assets: ProjectMediaAsset[];
+  layout: 'carousel' | 'grid' | 'horizontal-scroll';
+}
+
+export interface VideoBlockContent {
+  url: string;
+  autoplay: boolean;
+  muted: boolean;
+  loop: boolean;
+  poster?: string;
+}
+
+export interface QuoteBlockContent {
+  text: string;
+  author: string;
+  role: string;
+}
+
+export interface StatsBlockContent {
+  items: { label: string; value: string }[];
+}
+
+export interface TimelineBlockContent {
+  events: { date: string; title: string; description: string }[];
+}
+
+export interface ComparisonBlockContent {
+  beforeUrl: string;
+  afterUrl: string;
+  labelBefore?: string;
+  labelAfter?: string;
+}
+
+export interface Scene3DBlockContent {
+  modelUrl: string;
+  initialCamera: [number, number, number];
+  config: Record<string, unknown>;
+}
+
+export interface CTABlockContent {
+  title: string;
+  description: string;
+  buttonText: string;
+  link: string;
+}
+
 
 /** Live Odoo-derived project status attached to public portfolio responses. */
 export interface ProjectLiveStatus {
@@ -345,5 +470,18 @@ export interface Transform3D {
   rotation?: { x: number; y: number; z: number };
 }
 
+/** A single keyframe in a camera storyboard animation. */
+export interface CameraKeyframe {
+  progress: number;
+  position: [number, number, number];
+  target: [number, number, number];
+  fov: number;
+  rotation?: [number, number, number];
+}
+
+/** A sequence of camera keyframes for smooth camera transitions. */
+export type CameraStoryboard = CameraKeyframe[];
+
 export * from './odoo';
 export * from './workflow';
+export * from './lead-qualification';

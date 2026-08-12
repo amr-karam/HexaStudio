@@ -70,6 +70,6 @@ The pre-commit git hook (`scripts/git-hooks/commit-msg`) validates formatting pr
 
 ## 6. RELATED DOCUMENTATION
 
-- [GIT_WORKFLOW.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/git/GIT_WORKFLOW.md) — Git workflow.
-- [BRANCHING.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/git/BRANCHING.md) — Branching strategy.
-- [CHANGELOG.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/CHANGELOG.md) — Project changelog.
+- [GIT_WORKFLOW.md](GIT_WORKFLOW.md) — Git workflow.
+- [BRANCHING.md](BRANCHING.md) — Branching strategy.
+- [CHANGELOG.md](./CHANGELOG.md) — Project changelog.

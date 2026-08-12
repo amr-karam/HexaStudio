@@ -87,7 +87,7 @@ export function ContractSignOffModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-      <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-[#0F0F10] p-6 shadow-2xl text-white space-y-5">
+      <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-surface p-6 shadow-2xl text-white space-y-5">
         <div className="flex items-center justify-between border-b border-white/10 pb-4">
           <div>
             <h2 className="text-lg font-bold text-white">Digital Contract Sign-Off</h2>
@@ -108,7 +108,7 @@ export function ContractSignOffModal({
             value={typedName}
             onChange={(e) => setTypedName(e.target.value)}
             placeholder="e.g. Alexander Vance"
-            className="w-full rounded-lg border border-white/10 bg-black/50 px-3 py-2.5 text-sm text-white placeholder-white/30 focus:border-[#D4AF37] focus:outline-none"
+            className="w-full rounded-lg border border-white/10 bg-black/50 px-3 py-2.5 text-sm text-white placeholder-white/30 focus:border-accent focus:outline-none"
           />
         </div>
 
@@ -141,7 +141,7 @@ export function ContractSignOffModal({
             id="agree-terms"
             checked={agreed}
             onChange={(e) => setAgreed(e.target.checked)}
-            className="mt-1 accent-[#D4AF37] cursor-pointer"
+            className="mt-1 accent-accent cursor-pointer"
           />
           <label htmlFor="agree-terms" className="text-xs text-white/70 cursor-pointer">
             I agree that my typed name and drawn digital signature represent a legally binding audit-trailed sign-off for {contractTitle}.
@@ -158,7 +158,7 @@ export function ContractSignOffModal({
           <button
             onClick={handleSign}
             disabled={!typedName.trim() || !agreed || isSubmitting}
-            className="rounded-lg bg-[#D4AF37] px-5 py-2 text-xs font-bold text-black disabled:opacity-40 hover:bg-[#E5C76B] transition-colors"
+            className="rounded-lg bg-accent px-5 py-2 text-xs font-bold text-black disabled:opacity-40 hover:bg-accent-light transition-colors"
           >
             {isSubmitting ? 'Signing & Stamping...' : 'Confirm Digital Signature'}
           </button>

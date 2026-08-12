@@ -1,4 +1,5 @@
 'use client';
+import { EASE } from '@/lib/motion';
 
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
@@ -113,7 +114,7 @@ export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
         <motion.div
           initial={{ scale: 1.1, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1.2, ease: EASE.entrance }}
           className="absolute inset-0"
         >
           {article.coverImage ? (
@@ -135,7 +136,7 @@ export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
             <motion.span
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.6, delay: 0.4, ease: EASE.entrance }}
               className="text-[10px] uppercase tracking-[0.5em] text-accent mb-6 block font-mono"
             >
               {article.category?.name || 'Journal'}

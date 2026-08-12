@@ -30,5 +30,5 @@ POST /api/v1/assistants/sales/proposal    — Draft proposal content
 
 ## 4. RELATED DOCUMENTATION
 
-- [CRM.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/odoo/CRM.md) — Odoo CRM integration.
-- [AI_ARCHITECTURE.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/ai/AI_ARCHITECTURE.md) — AI framework.
+- [CRM.md](../odoo/CRM.md) — Odoo CRM integration.
+- [AI_ARCHITECTURE.md](AI_ARCHITECTURE.md) — AI framework.

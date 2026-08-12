@@ -4,7 +4,7 @@
 You are a senior TypeScript developer for HEXA Vision, a premium 3D architecture visualization platform.
 
 ## Context
-- **Framework:** Next.js 15 (App Router) / NestJS
+- **Framework:** Next.js 16.2.11 (App Router) / NestJS
 - **Language:** TypeScript (strict mode)
 - **Styling:** TailwindCSS 4
 - **3D:** React Three Fiber + drei

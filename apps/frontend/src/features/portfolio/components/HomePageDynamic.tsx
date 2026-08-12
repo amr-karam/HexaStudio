@@ -1,8 +1,13 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { ReactNode } from 'react';
 import type { Project } from '@hexastudio/types';
 import { SectionReveal } from '@/components/scroll/SectionReveal';
+import { StorybookChapter } from '@/components/storybook/StorybookChapter';
+import { BookProgress } from '@/components/storybook/BookProgress';
+import { DropCap } from '@/components/storybook/DropCap';
+import { OrnamentalRule, DoubleRule } from '@/components/storybook/BookOrnaments';
 
 // S-019: below-the-fold homepage sections are hydrated on the client only.
 // This keeps the critical / page bundle (hero + rail) lean and pushes the
@@ -46,31 +51,139 @@ interface HomePageDynamicProps {
   projects: Project[];
 }
 
+/**
+ * Storybook chapter epigraph — a short italic excerpt or lead-in sentence
+ * that appears between the chapter title and the main content.
+ */
+function ChapterEpigraph({ text }: { text: string }) {
+  return (
+    <blockquote className="mb-12 md:mb-16 text-center">
+      <OrnamentalRule className="mb-6" />
+      <p className="storybook-body italic" style={{ color: 'rgba(212, 175, 55, 0.65)' }}>
+        {text}
+      </p>
+      <OrnamentalRule className="mt-6" />
+    </blockquote>
+  );
+}
+
+/**
+ * Chapter lead-in — a short narrative paragraph with a drop cap.
+ * Appears after the chapter title, before the epigraph.
+ * Sets the editorial tone for the chapter.
+ */
+function ChapterLeadIn({ text }: { text: string }) {
+  return (
+    <p className="storybook-body mb-10 md:mb-12">
+      <DropCap>{text}</DropCap>
+    </p>
+  );
+}
+
+/**
+ * Chapter section divider — a DoubleRule with book-style spacing.
+ * Used to separate major sub-sections within a chapter.
+ */
+function ChapterDivider() {
+  return (
+    <div className="my-16 md:my-20" aria-hidden="true">
+      <DoubleRule />
+    </div>
+  );
+}
+
+/**
+ * Wraps a section's content in the storybook chapter aesthetic.
+ * Placed inside SectionReveal so the scroll mechanics stay intact.
+ */
+function StorybookWrappedSection({
+  chapterNumber,
+  chapterTitle,
+  leadIn,
+  epigraph,
+  children,
+  id,
+}: {
+  chapterNumber: number;
+  chapterTitle: string;
+  leadIn?: string;
+  epigraph?: string;
+  children: ReactNode;
+  id: string;
+}) {
+  return (
+    <StorybookChapter chapterNumber={chapterNumber} chapterTitle={chapterTitle} id={id}>
+      {leadIn && <ChapterLeadIn text={leadIn} />}
+      {epigraph && <ChapterEpigraph text={epigraph} />}
+      <div className="storybook-body">
+        {children}
+      </div>
+    </StorybookChapter>
+  );
+}
+
 export function HomePageDynamic({ featuredProject, projects }: HomePageDynamicProps) {
   return (
     <>
       <MarqueeBar />
+
+      {/* CH. II — CRAFT */}
       <SectionReveal>
-        <div id="ch-craft">
+        <StorybookWrappedSection
+          chapterNumber={2}
+          chapterTitle="Craft"
+          id="ch-craft"
+          leadIn="Every world begins as a question of light — where it falls, what it touches, and what it leaves behind."
+          epigraph="How a single vision becomes a rendered world — the disciplines, the tools, the hand."
+        >
           <FeaturedWork project={featuredProject} />
-        </div>
+        </StorybookWrappedSection>
       </SectionReveal>
+
+      {/* CH. III — METHOD */}
       <SectionReveal>
-        <div id="ch-method">
+        <StorybookWrappedSection
+          chapterNumber={3}
+          chapterTitle="Method"
+          id="ch-method"
+          leadIn="From the first sketch to the final frame — a discipline carried across every project, large or small."
+          epigraph="From first sketch to final frame — the process that carries every project."
+        >
           <ProcessSection />
+          <ChapterDivider />
           <AchievementsSection />
-        </div>
+        </StorybookWrappedSection>
       </SectionReveal>
+
+      {/* CH. IV — PROOF */}
       <SectionReveal>
-        <div id="ch-proof">
+        <StorybookWrappedSection
+          chapterNumber={4}
+          chapterTitle="Proof"
+          id="ch-proof"
+          leadIn="The work, laid out on its own terms — a selection of built and imagined worlds."
+          epigraph="The work speaks — a selection of built and imagined worlds."
+        >
           <ProjectGrid projects={projects} />
+          <ChapterDivider />
           <TestimonialsSection />
-        </div>
+        </StorybookWrappedSection>
       </SectionReveal>
+
+      {/* CH. V — CONTACT */}
       <div id="ch-contact">
-        <CTASection />
-        <NewsletterSection />
+        <StorybookChapter chapterNumber={5} chapterTitle="Contact" id="ch-contact">
+          <ChapterLeadIn text="Where vision becomes conversation — the studio awaits your next chapter." />
+          <ChapterEpigraph text="Where vision becomes conversation — the studio awaits." />
+          <div className="storybook-body">
+            <CTASection />
+            <ChapterDivider />
+            <NewsletterSection />
+          </div>
+        </StorybookChapter>
       </div>
+
+      <BookProgress />
     </>
   );
 }

@@ -16,8 +16,10 @@ import type { Transition, Variants } from 'framer-motion';
 /* -------------------------------------------------------------------------- */
 
 export const EASE = {
-  /** Smooth, decelerating — page loads, hero entrance */
+  /** Smooth, decelerating — page loads, hero entrance (a.k.a. easeOutExpo) */
   entrance: [0.16, 1, 0.3, 1] as const,
+  /** Symmetric, cinematic — page-transition curtain, preloader lift (a.k.a. easeInOutQuint) */
+  cinematic: [0.76, 0, 0.24, 1] as const,
   /** Bouncy, playful — button hover, tooltips */
   interaction: [0.34, 1.56, 0.64, 1] as const,
   /** Balanced — modal opens, page slides */
@@ -34,7 +36,9 @@ export type EaseName = keyof typeof EASE;
 
 export const DURATION = {
   micro: 0.2, // 150–300ms → mid value, micro-interactions
-  component: 0.4, // 300–500ms → mid value, component transitions
+  component: 0.4, // 300–500ms → mid value, component transitions (a.k.a. "ui")
+  scene: 0.8, // 600–900ms → scene-scale movement, hero imagery
+  transition: 0.7, // full page-transition envelope (curtain lift, preloader exit)
   page: 0.75, // 600–900ms → mid value, page transitions
   camera: 1.4, // 1s–2s → mid value, 3D camera moves
 } as const;

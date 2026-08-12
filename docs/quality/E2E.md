@@ -130,7 +130,7 @@ npx playwright show-report e2e/playwright-report
 
 ## 8. RELATED DOCUMENTATION
 
-- [QUALITY_GATES.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/quality/QUALITY_GATES.md) — CI Quality Gates.
-- [UNIT_TESTS.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/quality/UNIT_TESTS.md) — Unit test specifications.
-- [ACCESSIBILITY_AUDIT.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/quality/ACCESSIBILITY_AUDIT.md) — WCAG audit procedures.
-- [CURRENT_SPRINT.md](file:///c:/Users/amrmo/OneDrive/Desktop/hexastudio.net/docs/product/CURRENT_SPRINT.md) — S-018 E2E smoke test deliverables.
+- [QUALITY_GATES.md](QUALITY_GATES.md) — CI Quality Gates.
+- [UNIT_TESTS.md](UNIT_TESTS.md) — Unit test specifications.
+- [ACCESSIBILITY_AUDIT.md](ACCESSIBILITY_AUDIT.md) — WCAG audit procedures.
+- [CURRENT_SPRINT.md](../product/CURRENT_SPRINT.md) — S-018 E2E smoke test deliverables.

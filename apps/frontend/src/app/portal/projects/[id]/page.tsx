@@ -1,4 +1,5 @@
 'use client';
+import { EASE } from '@/lib/motion';
 
 import { useMemo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
@@ -197,7 +198,7 @@ export default function ProjectDetailPage() {
         <motion.div
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.5, ease: EASE.entrance }}
           className="mb-8"
         >
           <button
@@ -216,7 +217,7 @@ export default function ProjectDetailPage() {
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.6, ease: EASE.entrance }}
             className="text-[10px] uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
           >
             {t('portal.projectStatus')}
@@ -255,7 +256,7 @@ export default function ProjectDetailPage() {
                     strokeDasharray={2 * Math.PI * 28}
                     initial={{ strokeDashoffset: 2 * Math.PI * 28 }}
                     animate={{ strokeDashoffset: 2 * Math.PI * 28 * (1 - progress / 100) }}
-                    transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ duration: 1.5, ease: EASE.entrance }}
                   />
                 </svg>
                 <span className="absolute inset-0 flex items-center justify-center text-xs font-mono text-accent">
@@ -278,7 +279,7 @@ export default function ProjectDetailPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ delay: 0.2, duration: 0.7, ease: EASE.entrance }}
         >
           <TimelineView
             milestones={timelineMilestones}
@@ -291,7 +292,7 @@ export default function ProjectDetailPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ delay: 0.35, duration: 0.7, ease: EASE.entrance }}
           className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4"
         >
           {[
@@ -331,7 +332,7 @@ export default function ProjectDetailPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.45, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ delay: 0.45, duration: 0.7, ease: EASE.entrance }}
             className="mt-8"
           >
             <DocumentUpload

@@ -81,5 +81,5 @@ When upgrading versions:
 
 ## Related Documentation
 
-- [API Documentation](./API_DOCUMENTATION.md)
-- [API Standards](../06-STANDARDS/API_STANDARDS.md)
+- [API Documentation](API_DOCUMENTATION.md)
+- [API Standards](../engineering/API_STANDARDS.md)

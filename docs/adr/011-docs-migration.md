@@ -11,7 +11,7 @@ Accepted
 
 This dual layout is confusing:
 1. Two documentation roots (`docs/` and `HEXA-Vision-Playbook/`).
-2. Playbook folder names are numeric (`01-ARCHITECTURE`) rather than area-named (`architecture`).
+2. Playbook folder names are numeric (`architecture`) rather than area-named (`architecture`).
 3. Numerous root-level duplicates (`ARCHITECTURE.md`, `DESIGN_SYSTEM.md`, `SECURITY.md`, …) mirror playbook content.
 4. Internal cross-references throughout the playbook use `HEXA-Vision-Playbook/...` paths that break if content moves.
 5. External agent configurations (`.junie/AGENTS.md`, `.opencode/agents/docs.md`, `.agents/skills/...`) reference playbook paths.
@@ -20,7 +20,7 @@ The four open questions from the migration review were:
 
 | Gap | Decision |
 |-----|----------|
-| Unmapped playbook folders (04-AGENTS, 05-PROMPTS, 08-API, 09-ODOO, 10-AI, 11-ANALYTICS, 12-CLIENT-PORTAL, 14-GIT, 16-TEMPLATES, 17-CHECKLISTS, meeting-notes) | Add matching `docs/<area>/` folders for each (e.g. `docs/agents/`, `docs/api/`, `docs/odoo/`, `docs/meeting-notes/`) so no content is left behind |
+| Unmapped playbook folders (agents, 05-PROMPTS, api, odoo, 10-AI, 11-ANALYTICS, 12-CLIENT-PORTAL, 14-GIT, 16-TEMPLATES, 17-CHECKLISTS, meeting-notes) | Add matching `docs/<area>/` folders for each (e.g. `docs/agents/`, `docs/api/`, `docs/odoo/`, `docs/meeting-notes/`) so no content is left behind |
 | Root-level duplicate docs | Keep root files as the **manifest layer** (they are the highest authority per Section 4 hierarchy and are referenced by `AGENTS.md`); their canonical content lives in `docs/<area>/`. No root file is deleted in this ADR. |
 | `HEXA-Vision-Playbook/` after migration | Becomes an **empty stub** with a single `README.md` redirect to `docs/`, then removed in a follow-up once all references are verified |
 | Code restructure (`src/`, `apps/`, `infrastructure/`) | **Out of scope** for this ADR — the code tree remains a multi-app monorepo (ADR-004); the single-app `src/` layout is not adopted |
@@ -31,20 +31,20 @@ Migrate documentation content from `HEXA-Vision-Playbook/` into `docs/<area>/` f
 | Source (playbook) | Target (`docs/`) |
 |-------------------|------------------|
 | `00-GOVERNANCE/` | `product/` (vision, principles, metrics) |
-| `01-ARCHITECTURE/` | `architecture/` |
-| `01-ARCHITECTURE/ARCHITECTURE_DECISIONS/` | `adr/archive/` (legacy series — `docs/adr/` already owns the canonical ADR-001…011 numbering, so a subdirectory avoids filename collisions) |
+| `architecture/` | `architecture/` |
+| `architecture/ARCHITECTURE_DECISIONS/` | `adr/archive/` (legacy series — `docs/adr/` already owns the canonical ADR-001…011 numbering, so a subdirectory avoids filename collisions) |
 | `02-ROADMAP/` | `product/` (sprints, backlog, status) |
 | `03-BUSINESS/` | `product/` (SOPs, KPIs) |
-| `04-AGENTS/` + `agents/` | `agents/` |
+| `agents/` + `agents/` | `agents/` |
 | `05-PROMPTS/` | `prompts/` |
-| `06-STANDARDS/` | `engineering/` (+ `security/`, `performance/`, `accessibility/`, `seo/` picks) |
+| `engineering/` | `engineering/` (+ `security/`, `performance/`, `accessibility/`, `seo/` picks) |
 | `07-DESIGN/` | `design/` |
-| `08-API/` | `api/` |
-| `09-ODOO/` | `odoo/` |
+| `api/` | `api/` |
+| `odoo/` | `odoo/` |
 | `10-AI/` | `ai/` |
 | `11-ANALYTICS/` | `analytics/` |
 | `12-CLIENT-PORTAL/` | `client-portal/` |
-| `13-DEVOPS/` | `devops/` |
+| `devops/` | `devops/` |
 | `14-GIT/` | `git/` |
 | `15-QUALITY/` | `quality/` |
 | `16-TEMPLATES/` | `templates/` |

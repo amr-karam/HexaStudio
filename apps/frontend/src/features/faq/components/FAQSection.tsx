@@ -81,7 +81,7 @@ export const FAQSection = ({ faqs: serverFaqs }: FAQSectionProps = {}) => {
                     style={{
                       gridTemplateRows: isOpen ? '1fr' : '0fr',
                       transitionDuration: staticMode ? '0ms' : '300ms',
-                      transitionTimingFunction: staticMode ? 'step-end' : 'cubic-bezier(0.16, 1, 0.3, 1)',
+                      transitionTimingFunction: staticMode ? 'step-end' : 'var(--hexa-ease-entrance)',
                     }}
                   >
                     <div className="overflow-hidden">

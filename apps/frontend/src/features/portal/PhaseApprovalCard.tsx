@@ -46,7 +46,7 @@ export function PhaseApprovalCard({ phase, onSubmit, onReview, isAdmin }: PhaseA
         {!isAdmin && phase.status === 'pending' && onSubmit && (
           <button
             onClick={() => onSubmit(phase.id)}
-            className="rounded-md bg-[#D4AF37] px-3 py-1.5 text-xs font-medium text-black transition-colors hover:bg-[#C49A2F]"
+            className="rounded-md bg-accent px-3 py-1.5 text-xs font-medium text-black transition-colors hover:bg-accent-dark"
           >
             {t('portal.approval.submitForApproval')}
           </button>

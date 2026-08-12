@@ -20,14 +20,14 @@ To ensure every new feature is implemented with a consistent process that priori
 
 ### 1. Technical Planning
 - **Types First:** Define the necessary data structures in `packages/types/`.
-- **API Design:** Draft the API endpoint (if needed) in `08-API\endpoints.md`.
+- **API Design:** Draft the API endpoint (if needed) in `api\endpoints.md`.
 - **UI Mockup:** Review Figma designs and identify reusable components from the Design System.
 
 ### 2. Implementation
 - **Branching:** Create a feature branch `feature/kebab-case-name` from `develop`.
 - **Core Logic:** Implement the backend service and frontend logic.
-- **Styling:** Apply TailwindCSS utilities following `06-STANDARDS\design-system-standards.md`.
-- **3D Work:** If 3D, follow `06-STANDARDS\3d-modeling-standards.md`.
+- **Styling:** Apply TailwindCSS utilities following `engineering\design-system-standards.md`.
+- **3D Work:** If 3D, follow `engineering\3d-modeling-standards.md`.
 
 ### 3. Verification
 - **Unit Tests:** Write tests for all new business logic.
@@ -60,5 +60,5 @@ To ensure every new feature is implemented with a consistent process that priori
 ## Related Docs
 
 - `DEVELOPMENT_WORKFLOW.md`
-- `06-STANDARDS\CODING_STANDARDS.md`
+- `engineering\CODING_STANDARDS.md`
 - `15-QUALITY\QUALITY_GATES.md`

@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('HEXA Studio Client Portal v3.0 & 3D Designer E2E Flow', () => {
   test('should load public homepage and verify luxury title metadata', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveTitle(/Code Lens|HexaStudio/);
+    await expect(page).toHaveTitle(/HexaStudio|HEXA STUDIO/);
   });
 
   test('should navigate to Client Portal HQ and verify executive status grid', async ({ page }) => {

@@ -1,7 +1,7 @@
 # Accessibility Governance - HEXA STUDIO
 
 ## Targets
-- **Compliance:** WCAG 2.2 AA.
+- **Compliance:** WCAG 2.1 AAA.
 
 ## Accessibility Principles
 - **Keyboard Navigation:** All interactive elements MUST be reachable and usable via keyboard.

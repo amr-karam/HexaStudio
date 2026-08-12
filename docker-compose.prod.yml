@@ -1,4 +1,4 @@
-name: hexastudio
+# name: hexastudio
 
 x-logging: &default-logging
   driver: json-file
@@ -14,7 +14,7 @@ services:
   # Reverse Proxy
   # ---------------------------------------------------------------------------
   traefik:
-    image: traefik:v3.0
+    image: traefik:v3.7.10
     <<: *default-restart
     logging: *default-logging
     command:
@@ -25,6 +25,7 @@ services:
     environment:
       CLOUDFLARE_EMAIL: ${CLOUDFLARE_EMAIL:?CLOUDFLARE_EMAIL is required}
       CLOUDFLARE_API_KEY: ${CLOUDFLARE_API_KEY:?CLOUDFLARE_API_KEY is required}
+      DOCKER_API_VERSION: "1.40"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./docker/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
@@ -46,7 +47,7 @@ services:
     image: cloudflare/cloudflared:latest
     <<: *default-restart
     logging: *default-logging
-    command: tunnel run
+    command: tunnel --protocol http2 run
     environment:
       TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:?CLOUDFLARE_TUNNEL_TOKEN is required}
     networks:
@@ -238,6 +239,24 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+
+  # --- Design System Docs (Storybook static site) ---
+  # Serves packages/ui/storybook-static/ at docs.hexastudio.net.
+  # Traefik router already declared in docker/traefik/dynamic.yml:
+  #   Host(`docs.hexastudio.net`) -> docs-service:8080
+  docs-service:
+    image: ${DOCS_IMAGE:-registry.gitlab.hexastudio.net/root/hexa-platform/docs:latest}
+    container_name: hexa-docs-${SOT:-blue}
+    <<: *default-restart
+    logging: *default-logging
+    networks:
+      - web
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
   cms:
     container_name: hexa-cms-${SOT:-blue}

@@ -274,22 +274,6 @@ export const Navbar = () => {
         </Magnetic>
       </nav>
 
-      <style jsx global>{`
-        .premium-feature {
-          position: relative;
-        }
-        .premium-feature::after {
-          content: '';
-          position: absolute;
-          bottom: -2px;
-          left: 0;
-          right: 0;
-          height: 1px;
-          background: linear-gradient(90deg, transparent, #FFD700, transparent);
-          opacity: 0.7;
-        }
-      `}</style>
-
       <NavbarMobileMenu
         isOpen={isMenuOpen}
         onClose={closeMenu}

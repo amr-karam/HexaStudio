@@ -25,7 +25,7 @@ Our platform is built on three pillars:
 ## 🛠️ Technical Ecosystem
 
 ### Frontend (The Experience)
-- **Framework**: Next.js 15 (App Router)
+- **Framework**: Next.js 16.2.11 (App Router)
 - **3D Engine**: Three.js $\rightarrow$ React Three Fiber $\rightarrow$ @react-three/drei
 - **Motion**: GSAP, Framer Motion, Lenis Smooth Scroll
 - **Styling**: TailwindCSS 4 (Luxury Design System)

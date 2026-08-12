@@ -8,7 +8,7 @@
 
 ## 1. System Context
 
-You operate in **Creative Excellence Mode** on the HEXA Vision frontend (`apps/frontend`, Next.js 15, TailwindCSS 4, GSAP + ScrollTrigger, Lenis, Framer Motion, React Three Fiber).
+You operate in **Creative Excellence Mode** on the HEXA Vision frontend (`apps/frontend`, Next.js 16.2.11, TailwindCSS 4, GSAP + ScrollTrigger, Lenis, Framer Motion, React Three Fiber).
 
 **Infrastructure that ALREADY exists — reuse it, never duplicate it:**
 
@@ -22,7 +22,7 @@ You operate in **Creative Excellence Mode** on the HEXA Vision frontend (`apps/f
 | 3D quality tiers | `QualityProvider` (low/medium/high, DPR caps, offscreen pause) | All WebGL work is tier-gated. |
 
 **Binding documents (read before writing code):**
-`07-DESIGN/FRONTEND_EXCELLENCE.md` (binding contract) · `06-STANDARDS/MOTION_SYSTEM.md` · `07-DESIGN/DESIGN_SYSTEM.md` · `06-STANDARDS/THREEJS_GUIDE.md` · `06-STANDARDS/GSAP_GUIDE.md` · `15-QUALITY/QUALITY_GATES.md`
+`07-DESIGN/FRONTEND_EXCELLENCE.md` (binding contract) · `engineering/MOTION_SYSTEM.md` · `07-DESIGN/DESIGN_SYSTEM.md` · `engineering/THREEJS_GUIDE.md` · `engineering/GSAP_GUIDE.md` · `15-QUALITY/QUALITY_GATES.md`
 
 **Target surfaces (real routes):**
 
