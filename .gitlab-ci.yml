@@ -83,6 +83,12 @@ workflow:
   image: node:${NODE_VERSION}
   before_script: *npm_setup
   cache: *cache_npm
+  # Retry transient failures (npm ECONNRESET/network aborted flakes on the
+  # runner during cold-cache installs). When omitted, `when` defaults to
+  # `always` so any failure retries up to 2× — acceptable because a genuine
+  # test/lint failure is deterministic and will fail the retry too.
+  retry:
+    max: 2
 
 typecheck:
   extends: .typecheck_base
