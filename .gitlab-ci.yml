@@ -66,7 +66,7 @@ workflow:
 # ----- TypeScript checks (replaces CI: typecheck + cms-typecheck) -----
 .npm_setup:
   before_script: &npm_setup
-    - npm install --global "npm@${NPM_VERSION}"
+    - CURRENT_NPM=$(npm --version) && if [ "$CURRENT_NPM" != "${NPM_VERSION}" ]; then npm install --global "npm@${NPM_VERSION}" || true; fi
     - node --version
     - npm --version
     # Harden npm against intermittent registry connectivity failures
