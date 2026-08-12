@@ -20,7 +20,11 @@ import { toast } from 'sonner';
 import { Icon } from './PortalIcons';
 import { cn } from '@/lib/utils';
 import { formatFileSize } from '@/lib/utils';
+import { EASE, fadeLift } from '@/lib/motion';
 import type { CopilotMessage } from '../types';
+import { LiquidGlassCard } from '@/components/ui/LiquidGlassCard';
+import { Input } from '@/components/ui/inputs/Input';
+import { Button } from '@/components/ui/Button';
 
 /* -------------------------------------------------------------------------- */
 /*  Web Speech API Type Declarations                                           */
@@ -538,50 +542,48 @@ export function PortalAiCopilot({
             </AnimatePresence>
 
             {/* ---- Header ---- */}
-            <div className="p-4 border-b border-neutral-800 flex items-center justify-between bg-neutral-950/50 shrink-0">
+            <LiquidGlassCard glow className="p-3 md:p-4 shrink-0 border-b border-white/10">
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-neutral-950 font-bold">
-                  ✨
+                <div className="w-8 h-8 rounded-none bg-white/5 flex items-center justify-center text-accent font-bold">
+                  <Icon name="sparkles" className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-neutral-100">
-                    HEXA Copilot
-                  </h3>
-                  <p className="text-xs text-neutral-400">
+                  <h3 className="text-sm font-serif font-light text-foreground/90">HEXA Copilot</h3>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-neutral-500 font-mono">
                     AI Assistant &bull; Scope: {projectName}
                   </p>
                 </div>
               </div>
-              <button
-                onClick={onClose}
-                className="p-2 rounded-lg text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 transition-colors"
-                aria-label="Close Copilot"
-              >
-                <Icon name="x" className="w-5 h-5" />
-              </button>
-            </div>
+              <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close Copilot">
+                <Icon name="x" className="w-4 h-4" />
+              </Button>
+            </LiquidGlassCard>
 
             {/* ---- Messages Stream ---- */}
             <div
-              className="flex-1 overflow-y-auto p-4 space-y-4 font-sans text-sm"
+              className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 font-sans text-sm"
               role="log"
               aria-label="Chat messages"
               aria-live="polite"
             >
               {messages.map((msg) => (
-                <div
+                <motion.div
                   key={msg.id}
+                  variants={fadeLift}
+                  initial="hidden"
+                  animate="visible"
                   className={cn(
-                    'flex flex-col',
-                    msg.role === 'user' ? 'items-end' : 'items-start',
+                    'flex flex-col max-w-[90%]',
+                    msg.role === 'user' ? 'items-end self-end' : 'items-start self-start',
                   )}
                 >
-                  <div
+                  <LiquidGlassCard
+                    glow={msg.role === 'assistant'}
                     className={cn(
-                      'max-w-[85%] rounded-2xl p-3.5 leading-relaxed',
+                      'relative max-w-[85%] px-4 py-3 leading-relaxed transition-all duration-500',
                       msg.role === 'user'
-                        ? 'bg-amber-500 text-neutral-950 font-medium rounded-br-none'
-                        : 'bg-neutral-800/80 border border-neutral-700/60 text-neutral-200 rounded-bl-none',
+                        ? 'bg-white/5 border-white/10 text-foreground self-end'
+                        : 'bg-white/3 border-white/10 text-foreground self-start'
                     )}
                   >
                     {/* Attached image thumbnail */}
@@ -589,42 +591,50 @@ export function PortalAiCopilot({
                       <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.2 }}
-                        className="mb-2"
+                        transition={{ duration: 0.3, ease: EASE.entrance }}
+                        className="mb-3"
                       >
                         <Image
                           src={msg.imageUrl}
                           alt="Attached image"
                           width={320}
                           height={128}
-                          className="rounded-lg max-h-32 w-auto object-cover border border-neutral-700/50"
+                          className="rounded-none w-auto object-cover border border-white/10 max-h-32"
                           unoptimized
                         />
                       </motion.div>
                     )}
-                    <p className="whitespace-pre-wrap">{msg.content}</p>
-                  </div>
-                  <span className="text-[10px] text-neutral-500 mt-1 px-1">
+                    <p className="whitespace-pre-wrap font-light text-sm leading-relaxed">{msg.content}</p>
+                  </LiquidGlassCard>
+
+                  <span className="text-[9px] uppercase tracking-[0.2em] text-neutral-500 font-mono mt-1.5 px-1 self-end">
                     {msg.timestamp}
                   </span>
 
                   {/* Suggested Quick Buttons */}
                   {msg.suggestedActions &&
                     msg.suggestedActions.length > 0 && (
-                      <div className="mt-2.5 flex flex-wrap gap-1.5 max-w-[85%]">
+                      <motion.div
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="mt-3 flex flex-wrap gap-1.5 max-w-[85%]"
+                      >
                         {msg.suggestedActions.map((action, idx) => (
-                          <button
+                          <Button
                             key={idx}
+                            variant="ghost"
+                            size="sm"
                             onClick={() => handleSend(action.label)}
-                            className="text-xs bg-neutral-800 hover:bg-neutral-700 text-amber-300 border border-amber-500/20 px-2.5 py-1 rounded-full transition-colors text-left"
+                            className="text-[10px] uppercase tracking-[0.2em] font-mono text-accent/80 hover:text-white h-auto px-3 py-1.5 bg-white/3 border border-white/10 hover:border-accent/30"
                             aria-label={action.label}
                           >
                             {action.label}
-                          </button>
+                          </Button>
                         ))}
-                      </div>
+                      </motion.div>
                     )}
-                </div>
+                </motion.div>
               ))}
 
               {/* Typing indicator */}
@@ -632,9 +642,9 @@ export function PortalAiCopilot({
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="flex items-center space-x-2 text-neutral-400 text-xs italic bg-neutral-800/50 p-2.5 rounded-xl max-w-[120px]"
+                  className="flex items-center space-x-2 text-neutral-400 text-xs italic bg-white/3 border border-white/10 p-2.5 rounded-xl max-w-[120px] self-start"
                 >
-                  <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                  <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
                   <span>Analyzing...</span>
                 </motion.div>
               )}
@@ -650,35 +660,37 @@ export function PortalAiCopilot({
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="px-3 pt-2 overflow-hidden shrink-0"
+                  transition={{ duration: 0.3, ease: EASE.entrance }}
+                  className="px-4 md:px-6 pt-2 shrink-0"
                 >
-                  <div className="relative inline-block">
+                  <LiquidGlassCard glow className="p-3 relative inline-block">
                     <Image
                       src={imagePreview}
                       alt="Selected image preview"
                       width={160}
                       height={64}
-                      className="h-16 w-auto rounded-lg object-cover border border-neutral-700"
+                      className="h-16 w-auto rounded-none object-cover border border-white/10"
                       unoptimized
                     />
                     {isEncodingImage && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-neutral-900/60 rounded-lg">
-                        <span className="text-[10px] text-neutral-300">
+                      <div className="absolute inset-0 flex items-center justify-center bg-white/5 rounded-none">
+                        <span className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-mono">
                           Encoding...
                         </span>
                       </div>
                     )}
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={removeImage}
-                      className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-neutral-800 border border-neutral-600 flex items-center justify-center text-neutral-400 hover:text-neutral-100 hover:bg-neutral-700 transition-colors"
+                      className="absolute -top-2 -right-2"
                       aria-label="Remove selected image"
                     >
-                      <Icon name="x" size={12} />
-                    </button>
-                  </div>
+                      <Icon name="x" className="w-3 h-3" />
+                    </Button>
+                  </LiquidGlassCard>
                   {selectedImage && (
-                    <span className="text-[10px] text-neutral-500 ml-2 align-middle">
+                    <span className="text-[9px] uppercase tracking-[0.2em] text-neutral-500 font-mono ml-2 align-middle">
                       {formatFileSize(selectedImage.size)}
                     </span>
                   )}
@@ -687,7 +699,7 @@ export function PortalAiCopilot({
             </AnimatePresence>
 
             {/* ---- Input Bar ---- */}
-            <div className="p-3 border-t border-neutral-800 bg-neutral-950/50 shrink-0">
+            <div className="p-3 md:p-4 border-t border-white/10 bg-white/3 shrink-0">
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -707,39 +719,40 @@ export function PortalAiCopilot({
                 />
 
                 {/* Image upload button */}
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="icon"
                   onClick={openFilePicker}
                   disabled={isTyping || isEncodingImage}
                   className={cn(
-                    'p-2.5 rounded-xl transition-colors',
+                    'transition-colors',
                     imagePreview
-                      ? 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30'
-                      : 'text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800',
-                    (isTyping || isEncodingImage) &&
-                      'opacity-50 cursor-not-allowed',
+                      ? 'text-accent hover:bg-white/5'
+                      : 'text-neutral-400 hover:text-white hover:bg-white/5',
+                    (isTyping || isEncodingImage) && 'opacity-50 cursor-not-allowed',
                   )}
                   aria-label="Attach image"
                 >
                   <Icon name="camera" className="w-4 h-4" />
-                </button>
+                </Button>
 
                 {/* Voice input button */}
                 {isSpeechSupported && (
-                  <button
+                  <Button
                     type="button"
+                    variant="ghost"
+                    size="icon"
                     onClick={toggleListening}
                     disabled={isTyping}
                     className={cn(
-                      'p-2.5 rounded-xl transition-colors relative',
+                      'transition-colors relative',
                       isListening
-                        ? 'bg-red-500/20 text-red-400 animate-pulse'
-                        : 'text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800',
+                        ? 'text-red-400 animate-pulse'
+                        : 'text-neutral-400 hover:text-white hover:bg-white/5',
                       isTyping && 'opacity-50 cursor-not-allowed',
                     )}
-                    aria-label={
-                      isListening ? 'Stop listening' : 'Voice input'
-                    }
+                    aria-label={isListening ? 'Stop listening' : 'Voice input'}
                     aria-pressed={isListening}
                   >
                     <Icon name="mic" className="w-4 h-4" />
@@ -751,7 +764,7 @@ export function PortalAiCopilot({
                         className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-red-400"
                       />
                     )}
-                  </button>
+                  </Button>
                 )}
 
                 {/* Listening status pill */}
@@ -761,7 +774,7 @@ export function PortalAiCopilot({
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.9 }}
-                      className="flex items-center gap-1.5 text-xs text-red-400 bg-red-500/10 px-2 py-1 rounded-full shrink-0"
+                      className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] text-red-400 font-mono bg-red-500/10 border border-red-500/10 px-2 py-1 rounded-none shrink-0"
                     >
                       <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
                       Listening...
@@ -770,7 +783,7 @@ export function PortalAiCopilot({
                 </AnimatePresence>
 
                 {/* Text input */}
-                <input
+                <Input
                   ref={inputRef}
                   type="text"
                   value={input}
@@ -783,7 +796,7 @@ export function PortalAiCopilot({
                   }
                   disabled={isTyping || isListening}
                   className={cn(
-                    'flex-1 bg-neutral-800/80 border border-neutral-700/60 rounded-xl px-3.5 py-2 text-sm text-neutral-100 placeholder-neutral-500 focus:outline-none focus:border-amber-500/60 transition-colors',
+                    'flex-1 bg-white/3 border border-white/10 rounded-none px-4 py-2.5 text-sm text-foreground placeholder-neutral-500 focus:outline-none focus:border-accent/50 transition-colors',
                     (isTyping || isListening) && 'opacity-50',
                   )}
                   aria-label="Chat input"
@@ -791,22 +804,22 @@ export function PortalAiCopilot({
                 />
 
                 {/* Send button */}
-                <button
+                <Button
                   type="submit"
+                  variant="primary"
+                  size="icon"
                   disabled={
                     (!input.trim() && !imagePreview) || isTyping || isListening
                   }
-                  className={cn(
-                    'p-2.5 rounded-xl bg-amber-500 text-neutral-950 font-bold hover:bg-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors',
-                  )}
+                  className="transition-colors"
                   aria-label="Send query"
                 >
                   <Icon name="send" className="w-4 h-4" />
-                </button>
+                </Button>
               </form>
 
               {/* Hint text */}
-              <p className="text-[10px] text-neutral-600 mt-1.5 text-center">
+              <p className="text-[9px] uppercase tracking-[0.2em] text-neutral-500 font-mono mt-2 text-center">
                 {imagePreview
                   ? 'Images are limited to 10 MB'
                   : 'Attach images or use voice for multimodal queries'}
@@ -818,3 +831,5 @@ export function PortalAiCopilot({
     </AnimatePresence>
   );
 }
+
+

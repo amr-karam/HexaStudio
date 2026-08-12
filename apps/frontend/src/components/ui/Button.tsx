@@ -6,16 +6,14 @@ import { motion, type TargetAndTransition, type Transition } from 'framer-motion
 import { cn } from '@/lib/utils';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'accent' | 'ghost' | 'danger' | 'outline' | 'luxury';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'outline' | 'luxury' | 'couture';
+  size?: 'sm' | 'md' | 'lg' | 'icon';
   isLoading?: boolean;
   asChild?: boolean;
 }
 
 const variants = {
   primary:
-    'bg-accent text-background hover:bg-accent/90 shadow-lg shadow-accent/20 hover:shadow-[0_0_20px_rgba(212,175,55,0.15)]',
-  accent:
     'bg-accent text-background hover:bg-accent/90 shadow-lg shadow-accent/20 hover:shadow-[0_0_20px_rgba(212,175,55,0.15)]',
   secondary:
     'bg-white/5 text-white border border-white/10 hover:bg-white/10 hover:border-white/20',
@@ -24,13 +22,16 @@ const variants = {
   outline:
     'border border-border text-foreground hover:border-accent hover:text-accent hover:bg-accent/5',
   luxury:
-    'bg-white/[0.03] text-white border border-accent/40 backdrop-blur-xl hover:border-accent hover:shadow-[0_0_30px_rgba(212,175,55,0.25)]',
+    'bg-white/[0.03] text-white border border-accent/40 backdrop-blur-2xl hover:border-accent hover:shadow-[var(--artisan-glass-shadow),0_0_35px_rgba(212,175,55,0.25)]',
+  couture:
+    'bg-gradient-to-r from-neutral-900 via-neutral-900/95 to-black text-foreground border border-accent/40 shadow-[var(--artisan-glass-shadow),var(--artisan-glass-highlight)] hover:border-accent hover:shadow-[var(--artisan-glass-shadow),0_0_40px_rgba(212,175,55,0.35)]',
 };
 
 const sizes = {
   sm: 'h-8 px-3 text-xs',
   md: 'h-11 px-6 text-sm',
   lg: 'h-14 px-8 text-base',
+  icon: 'h-9 w-9 p-0',
 };
 
 /**
