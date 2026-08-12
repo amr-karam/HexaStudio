@@ -38,6 +38,25 @@
 
 ---
 
+## 1.0.10 Blog Page — Editorial Magazine Layout (Aug 13, 2026)
+
+- **Elevated `apps/frontend/src/features/blog/components/BlogPageContent.tsx`** — from a plain product grid to a cinematic editorial magazine experience:
+  - **Atmospheric depth**: `gradient-radial-gold` + dual radial gold gradient overlays (30%/80% ellipse positions, `rgba(212,175,55,0.04/0.02)`) behind the entire article grid.
+  - **Header**: `OrnamentalRule` dividers above the "Thoughts & Insights" eyebrow and below the subtitle — book-page chapter aesthetic carried from the homepage storybook system. Subtitle now has a `border-l-2 border-accent/30 pl-6` editorial rule.
+  - **Typography refinements**: `TextReveal` title with tighter `leading-[0.88]`, serif italic accent (`fontFamily: "Playfair Display", serif`) on "Journal"; eyebrow at `tracking-[0.5em]` mono; subtitle at `text-lg md:text-xl leading-relaxed`.
+  - **Article cards**: cover images with `opacity-60` → `opacity-100` + `scale-[1.04]` hover; refined "Read →" hover overlay with gold arrow accent (`text-accent`) and `border-white/20`; category labels at `tracking-[0.5em]` mono gold; read-time at `tracking-widest` mono neutral-600; gold hairline separator between metadata and title; titles at `tracking-tighter` serif with `text-accent` hover; gold accent line (`w-0` → `w-32`) reveals on card hover.
+  - **Featured article (first)**: full-width `md:col-span-12 lg:col-span-8` with 21:9 cinematic aspect ratio, `DropCap` lead-in paragraph with `border-l-2 border-accent/30 pl-6`, `storybook-body` typography, `text-lg text-neutral-400`.
+  - **Storybook ornamental dividers**: `OrnamentalRule` between non-featured article cards (hidden on mobile, `lg:block`, absolutely positioned at `translate-x-1/2`).
+  - **Grid choreography**: velocity shear preserved (`demilie.ru`/`cuberto` DNA), `SPRING_TRANSITION` staggered entrance (`delay: 0.06 * idx`), `whileInView` with `amount: 0.15`.
+  - **Footer**: ornamental rule + centered newsletter teaser line ("delivered occasionally" in gold).
+  - **Accessibility**: `aria-hidden="true"` on all ornamental elements; semantic `<article>` tags; `Link` components for navigation.
+
+- **Removed**: plain product-grid aesthetic without atmospheric depth or editorial ornamentation.
+- **Preserved**: velocity shear, `TextReveal`, `FALLBACK_ARTICLES` data, `useScrollVelocity`/`useFinePointer`/`useMotionPolicy` shear logic, `Link` navigation, `Image` with `sizes` attribute.
+- **Verified**: frontend lint 0/0, typecheck 0 errors, **208/208 tests** (36 files), design-token gate PASS (`--allow-inline-style-hex`).
+
+---
+
 ## 1.0.7 Client Portal KPI Stat Cards — "Obsidian Instrument Panel" (Aug 12, 2026)
 
 - **Elevated `apps/frontend/src/features/portal/components/StatCard.tsx`** — "Silent Luxury" artisan-glass KPI, matching the atelier treatment just applied to `PortalSidebar`/`PortalNav`:
