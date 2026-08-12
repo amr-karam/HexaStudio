@@ -1,11 +1,15 @@
 'use client';
 
 /**
- * HEXA Portal v3.0 — Analytics Dashboard
+ * HEXA Portal v3.0 — Analytics Dashboard · "The Studio Pulse"
  *
  * World-class executive analytics with animated SVG charts,
  * activity heatmap, milestone timeline, and budget donut.
  * All visualizations built with pure SVG + framer-motion — zero chart libraries.
+ *
+ * Crafted in the Silent Luxury language: obsidian artisan-glass panels, gold
+ * specular hairlines, serif numerals, and mono editorial markers framing
+ * every section — matching The Ledger, The Vault, and the Concierge.
  */
 
 import React, { useState, useCallback } from 'react';
@@ -199,10 +203,10 @@ const lineDrawVariant = (reduced: boolean) => ({
 /*  Sub-Components                                                            */
 /* -------------------------------------------------------------------------- */
 
-function GoldDot() {
+function DiamondBullet({ className }: { className?: string }) {
   return (
     <span
-      className="inline-block w-2 h-2 rounded-full bg-accent flex-shrink-0"
+      className={cn('inline-block h-1.5 w-1.5 rotate-45 bg-accent/70 flex-shrink-0', className)}
       aria-hidden="true"
     />
   );
@@ -230,24 +234,43 @@ function SectionCard({
       transition={makeTransition('entrance', 'component', delay)}
       aria-label={ariaLabel}
       className={cn(
-        'rounded-xl bg-surface border border-border/30 p-6',
-        'hover:border-border-light/40 transition-colors duration-500',
+        // Obsidian artisan-glass surfaces with gold specular top hairline —
+        // matches FinanceCenterView, DocumentCenterView (The Vault) panels.
+        'artisan-glass artisan-specular-top group relative overflow-hidden rounded-2xl p-6',
+        // The class owns its own :hover border/shadow upgrade (gold tint).
         className,
       )}
     >
-      {children}
+      {/* Ambient gold aura revealed on hover — subtle, group-driven */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-12 -top-12 h-28 w-28 rounded-full bg-accent/[0.04] opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
+      />
+      {/* Bottom specular gold hairline — appears on hover */}
+      <div
+        aria-hidden="true"
+        className="absolute bottom-0 left-0 right-0 h-px bg-accent/0 transition-colors duration-1000 group-hover:bg-accent/25"
+      />
+      <div className="relative">{children}</div>
     </motion.section>
   );
 }
 
-function SectionHeader({ title, subtitle }: { title: string; subtitle?: string }) {
+function SectionHeader({ title, subtitle, index }: { title: string; subtitle?: string; index?: string }) {
   return (
-    <div className="flex items-center gap-2.5 mb-5">
-      <GoldDot />
+    <div className="mb-5 flex items-start gap-3">
+      <span className="mt-1.5" aria-hidden="true">
+        <DiamondBullet />
+      </span>
       <div>
-        <h3 className="text-sm font-semibold text-foreground tracking-wide">{title}</h3>
+        {index && (
+          <p className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-accent/60">
+            {index}
+          </p>
+        )}
+        <h3 className="font-serif text-lg font-light tracking-tight text-foreground">{title}</h3>
         {subtitle && (
-          <p className="text-xs text-textMuted mt-0.5">{subtitle}</p>
+          <p className="mt-1 text-xs font-light text-neutral-500">{subtitle}</p>
         )}
       </div>
     </div>
@@ -260,10 +283,10 @@ function SectionHeader({ title, subtitle }: { title: string; subtitle?: string }
 
 function KpiCard({ kpi, index, reduced }: { kpi: KpiData; index: number; reduced: boolean }) {
   const trendColor = kpi.trend.direction === 'up'
-    ? 'text-emerald-400'
+    ? 'text-emerald-300'
     : kpi.trend.direction === 'down'
-      ? 'text-red-400'
-      : 'text-textMuted';
+      ? 'text-red-300'
+      : 'text-neutral-500';
 
   const trendIcon: IconName = kpi.trend.direction === 'up'
     ? 'arrow-up-right'
@@ -288,52 +311,60 @@ function KpiCard({ kpi, index, reduced }: { kpi: KpiData; index: number; reduced
       animate="visible"
       whileHover={reduced ? undefined : { y: -3, transition: { duration: 0.25, ease: EASE.interaction } }}
       className={cn(
-        'relative p-5 rounded-xl group cursor-default',
-        'bg-surface border border-border/30',
-        'hover:border-accent/20 transition-colors duration-400',
+        // Artisan-glass KPI card — matches StatCard + FinanceCenterView summary card grammar.
+        'artisan-glass artisan-specular-top group relative overflow-hidden rounded-2xl p-5 cursor-default',
       )}
     >
-      {/* Top row: icon + trend */}
-      <div className="flex items-start justify-between mb-3">
+      {/* Hover gold radial aura */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full bg-accent/5 opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
+      />
+
+      {/* Top row: icon plate + trend */}
+      <div className="relative flex items-start justify-between mb-4">
         <div
           className={cn(
-            'w-10 h-10 rounded-lg flex items-center justify-center',
-            'bg-white/[0.03] border border-border/20',
-            'group-hover:border-accent/25 transition-colors duration-300',
+            'flex h-10 w-10 items-center justify-center rounded-lg',
+            'border border-white/[0.06] bg-white/[0.02]',
+            'transition-colors duration-500 group-hover:border-accent/40',
           )}
         >
           <Icon
             name={kpi.icon}
             size={18}
-            className="text-textMuted group-hover:text-accent transition-colors duration-300"
+            className="text-neutral-400 transition-colors duration-500 group-hover:text-accent"
           />
         </div>
-        <div className={cn('flex items-center gap-1 text-xs font-mono', trendColor)}>
+        <div className={cn('flex items-center gap-1 font-mono text-[0.625rem] uppercase tracking-[0.15em]', trendColor)}>
           <Icon name={trendIcon} size={11} />
           <span>{kpi.trend.value}%</span>
         </div>
       </div>
 
-      {/* Value */}
+      {/* Value — serif, lighter weight */}
       <p
         className={cn(
-          'text-3xl font-serif font-light tracking-tight mb-1',
+          'relative font-serif text-3xl font-light tracking-tight tabular-nums',
           kpi.accentClass ?? 'text-foreground',
         )}
       >
         {kpi.value}
       </p>
 
-      {/* Label */}
-      <p className="text-[11px] text-textMuted uppercase tracking-wider font-mono mb-1.5">
+      {/* Label — mono uppercase */}
+      <p className="relative mt-1.5 font-mono text-[0.625rem] uppercase tracking-[0.25em] text-neutral-500">
         {kpi.label}
       </p>
 
-      {/* Subtext */}
-      <p className="text-xs text-textSecondary">{kpi.subtext}</p>
+      {/* Subtext — editorial body */}
+      <p className="relative mt-1.5 text-xs font-light text-neutral-400">{kpi.subtext}</p>
 
-      {/* Bottom accent line */}
-      <div className="absolute bottom-0 left-4 right-4 h-[1px] bg-accent/0 group-hover:bg-accent/15 transition-colors duration-500" />
+      {/* Bottom specular gold hairline */}
+      <div
+        aria-hidden="true"
+        className="absolute bottom-0 left-4 right-4 h-px bg-accent/0 transition-colors duration-1000 group-hover:bg-accent/25"
+      />
     </motion.div>
   );
 }
@@ -388,7 +419,7 @@ function PhaseProgressBar({ phase, reduced }: { phase: PhaseData; reduced: boole
 function ProjectProgressChart({ reduced }: { reduced: boolean }) {
   return (
     <SectionCard ariaLabel="Project phase progress" reduced={reduced}>
-      <SectionHeader title="Project Progress" subtitle="Phase completion breakdown" />
+      <SectionHeader title="Project Progress" subtitle="Phase completion breakdown" index="§ I — Velocity" />
       <div className="space-y-5">
         {PHASE_DATA.map((phase) => (
           <PhaseProgressBar key={phase.name} phase={phase} reduced={reduced} />
@@ -405,7 +436,7 @@ function ProjectProgressChart({ reduced }: { reduced: boolean }) {
 function ActivityHeatmap({ reduced }: { reduced: boolean }) {
   return (
     <SectionCard ariaLabel="Weekly activity heatmap" reduced={reduced}>
-      <SectionHeader title="Activity Heatmap" subtitle="Weekly engagement intensity" />
+      <SectionHeader title="Activity Heatmap" subtitle="Weekly engagement intensity" index="§ II — Rhythm" />
       <div className="space-y-2">
         {/* Day labels */}
         <div className="grid grid-cols-[repeat(7,1fr)] gap-1.5 mb-1">
@@ -926,7 +957,12 @@ export function AnalyticsView() {
       >
         <div>
           <div className="flex items-center gap-2.5 mb-1.5">
-            <GoldDot />
+             <span className="relative inline-flex w-2.5 h-2.5" aria-hidden="true">
+              <span
+                className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60"
+              />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-accent" />
+            </span>
             <h1 className="text-2xl font-bold text-foreground tracking-tight">
               Analytics Dashboard
             </h1>
