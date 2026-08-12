@@ -8,6 +8,7 @@ import { EventBus } from '../src/modules/realtime/event-bus.service';
 import { WebhookRetryService } from '../src/modules/odoo/webhook-retry.service';
 import { ConflictResolutionService } from '../src/modules/odoo/conflict-resolution.service';
 import { DeltaSyncService } from '../src/modules/odoo/delta-sync.service';
+import { StrapiProjectSyncService } from '../src/modules/odoo/strapi-project-sync.service';
 import type {
   OdooWebhookPayload,
   SyncConflict,
@@ -60,6 +61,10 @@ const mockDeltaSyncService = {
   getSyncStatus: vi.fn(),
   getAllCursors: vi.fn().mockResolvedValue({}),
   resetCursor: vi.fn().mockResolvedValue(undefined),
+};
+
+const mockStrapiProjectSyncService = {
+  syncOdooProjectToStrapi: vi.fn().mockResolvedValue(null),
 };
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
@@ -120,6 +125,7 @@ describe('OdooSyncService', () => {
         { provide: WebhookRetryService, useValue: mockWebhookRetryService },
         { provide: ConflictResolutionService, useValue: mockConflictResolutionService },
         { provide: DeltaSyncService, useValue: mockDeltaSyncService },
+        { provide: StrapiProjectSyncService, useValue: mockStrapiProjectSyncService },
       ],
     }).compile();
 

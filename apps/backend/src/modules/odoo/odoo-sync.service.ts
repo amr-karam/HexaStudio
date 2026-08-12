@@ -5,6 +5,7 @@ import { EventBus } from '../realtime/event-bus.service';
 import { WebhookRetryService } from './webhook-retry.service';
 import { ConflictResolutionService } from './conflict-resolution.service';
 import { DeltaSyncService } from './delta-sync.service';
+import { StrapiProjectSyncService } from './strapi-project-sync.service';
 import type {
   OdooWebhookPayload,
   SyncConflict,
@@ -91,6 +92,8 @@ export class OdooSyncService implements OnModuleInit {
     private readonly webhookRetryService: WebhookRetryService,
     private readonly conflictResolutionService: ConflictResolutionService,
     private readonly deltaSyncService: DeltaSyncService,
+    @Inject(forwardRef(() => StrapiProjectSyncService))
+    private readonly strapiProjectSyncService: StrapiProjectSyncService,
   ) {}
 
   // ────────────────────────────────────────────────────────────────────────
@@ -232,6 +235,17 @@ export class OdooSyncService implements OnModuleInit {
           return;
         }
         this.eventBus.emit('odoo:project', payload);
+
+        // Real-time: sync Odoo project → Strapi portfolio + purge frontend ISR cache.
+        // This ensures new Odoo projects appear on the website immediately,
+        // not just on the 10-minute reconciliation cron.
+        try {
+          await this.strapiProjectSyncService.syncOdooProjectToStrapi(payload.id);
+        } catch (error) {
+          this.logger.warn(
+            `Odoo→Strapi sync failed for project #${payload.id}: ${(error as Error).message}`,
+          );
+        }
         break;
       case 'crm.lead':
         try {
@@ -273,6 +287,15 @@ export class OdooSyncService implements OnModuleInit {
       case 'project.project':
         await this.syncProjectWithConflictCheck(payload);
         this.eventBus.emit('odoo:project', payload);
+
+        // Real-time: sync Odoo project → Strapi portfolio + purge frontend ISR cache.
+        try {
+          await this.strapiProjectSyncService.syncOdooProjectToStrapi(payload.id);
+        } catch (error) {
+          this.logger.warn(
+            `Odoo→Strapi sync failed for project #${payload.id} (retry): ${(error as Error).message}`,
+          );
+        }
         break;
       case 'crm.lead':
         await this.syncLeadWithConflictCheck(payload);
