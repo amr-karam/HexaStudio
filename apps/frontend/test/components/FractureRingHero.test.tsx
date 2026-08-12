@@ -2,6 +2,15 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { FractureRingHero } from '@/features/experience/components/FractureRingHero';
 
+// FractureRingHero -> SceneErrorBoundary imports @sentry/nextjs. Its CJS build
+// requires next/constants, which cannot be resolved from the root-hoisted
+// @sentry/nextjs in this monorepo (next is nested under apps/frontend/node_modules).
+// Unit tests render the static fallback path and never need real Sentry, so
+// stub the SDK surface the component graph touches.
+vi.mock('@sentry/nextjs', () => ({
+  captureException: vi.fn(),
+}));
+
 vi.mock('@/providers/quality-provider', () => ({
   useQualityTier: () => ({ tier: { level: 'low' }, ready: true }),
 }));

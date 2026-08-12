@@ -2,7 +2,7 @@ api:
   dashboard: true
   # Dashboard is reachable ONLY via the traefik-dashboard router (web entrypoint,
   # basic-auth protected by traefik-auth@file middleware in docker-compose.prod.yml).
-  # Raw :8080 API exposure is disabled — never enable insecure: true.
+  # Raw :8080 API exposure is disabled -- never enable insecure: true.
   insecure: false
 
 entryPoints:
@@ -37,7 +37,7 @@ entryPoints:
     address: ":443"
 
   # Internal metrics entrypoint (port 8080). Required because metrics.prometheus
-  # references ntryPoint: traefik below and insecure: false (line 6) means the
+  # references entryPoint: traefik below and insecure: false (line 6) means the
   # legacy API endpoint is NOT auto-created. Not published externally (compose
   # only maps 80/443), so blast radius is the internal Docker network only.
   traefik:

@@ -1,5 +1,14 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
+// The route handler imports @/lib/api-client which imports @sentry/nextjs.
+// Its CJS build requires next/constants, which cannot be resolved from the
+// root-hoisted @sentry/nextjs in this monorepo (next is nested under
+// apps/frontend/node_modules). This proxy route's contract is about validation
+// + backend forwarding, so stub the SDK surface used by the handler graph.
+vi.mock('@sentry/nextjs', () => ({
+  captureException: vi.fn(),
+}));
+
 /**
  * Tests for POST /api/v1/ai/spatial-synthesis/voice proxy route.
  * Covers validation, backend forwarding, and graceful 502 degradation.

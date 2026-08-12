@@ -68,6 +68,9 @@ tmp_*.py
 temp_*.py
 temp_*.sh
 
+# Temporary working directory (diagnostic/cloudflare scripts may embed credentials)
+temp/
+
 # Operational one-off scripts (may embed credentials — NEVER commit)
 # Relocate any that must be kept to ops/archive/ (gitignored).
 gl_p*.py

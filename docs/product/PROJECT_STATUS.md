@@ -110,6 +110,16 @@ HEXA Studio is fully deployed and operational on production infrastructure. **Sp
 - ✅ 285/285 backend tests, 176/176 frontend tests, 0 lint, 0 typecheck
 - ✅ TBT at 60ms (already exceeding <100ms target)
 
+**Production Incident Log — 2026-08-12 (ERR_TOO_MANY_REDIRECTS + Traefik crash-loop):**
+- 🔴 **Symptom:** hexastudio.net returned `ERR_TOO_MANY_REDIRECTS` in browsers; Cloudflare edge served a 3xx loop.
+- 🔍 **Root cause (Traefik crash-loop):** `docker/traefik/traefik.yml` contained a raw ESC control character (0x1B) inside the comment `references ‹ESC›ntryPoint` — corrupted the word "entryPoint" → "ntryPoint". `yaml: control characters are not allowed` → Traefik refused to start → no router behind Cloudflare → redirect loop.
+- 🛠️ **Fixes applied (all verified live on prod 19.16.1.100):**
+  - Replaced ESC char → `e` in `traefik.yml` (Traefik now starts cleanly).
+  - Removed deprecated `redirect` middleware syntax from `dynamic.yml` for Traefik v3 compatibility (commit c77f2885).
+  - HTTPS apex + www both serve **HTTP 200** from public internet; `http://hexastudio.net` → 301 → HTTPS (correct, no loop).
+- ✅ **Post-incident verification:** 30/30 core containers healthy (frontend, backend, CMS, DB, Redis, MinIO, Traefik). All quality gates green: frontend 44/44 files (336 tests), backend 44/44 files (357 tests), 0 lint/0 typecheck.
+- 📝 **Follow-up (non-blocking):** `minio-backup` container crash-loops with stale MinIO credentials — pre-existing, needs server-side env sync.
+
 **Pending for v1.8.0:**
 - LCP < 1.5s optimization
 - Lighthouse 95+ desktop audit

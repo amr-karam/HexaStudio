@@ -11,22 +11,11 @@ import { useFinePointer } from '@/hooks/useFinePointer';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { getGsap } from '@/lib/gsap';
 import { hasIntroCompleted, INTRO_COMPLETE_EVENT } from '@/lib/intro-state';
-import { cn } from '@/lib/utils';
 
 const INTRO_FALLBACK_MS = 3500;
 const RETURN_VISIT_DELAY = 0.35;
 
-/** Static hero word — no char cascade, just fade-up on load. */
-const HeroWord = ({ word, accent = false }: { word: string; accent?: boolean }) => (
-  <span
-    className={cn(
-      'inline-block',
-      accent && 'font-serif italic text-gradient-gold',
-    )}
-  >
-    {word}
-  </span>
-);
+
 
 /**
  * HomeHeroStatic — CH. I — VISION (non-3D variant).
