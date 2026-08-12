@@ -1,0 +1,403 @@
+/* -------------------------------------------------------------------------- */
+/*  Silent Luxury — Refined Minimalist Premium Design System                  */
+/* -------------------------------------------------------------------------- */
+
+:root {
+  /* Silent Luxury Color Palette — understated elegance */
+  --sl-void: #0A0A0B;
+  --sl-obsidian: #121214;
+  --sl-stone: #1C1C1F;
+  --sl-alabaster: #F5F4F2;
+  --sl-silver: #A8A8A8;
+  --sl-mist: #D4D4D4;
+  --sl-warm-neutral: #E8E6E3;
+
+  /* Subtle gold accent — barely there, only on hover/focus */
+  --sl-gold-subtle: rgba(196, 176, 145, 0.15);
+  --sl-gold-hover: rgba(196, 176, 145, 0.3);
+  --sl-gold-rgb: 196, 176, 145;
+
+  /* Typography scale — refined hierarchy */
+  --sl-heading-font: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --sl-body-font: 'Jost', 'Inter', system-ui, sans-serif;
+
+  /* Easing — slower, more elegant */
+  --sl-ease-entrance: cubic-bezier(0.22, 1, 0.36, 1);
+  --sl-ease-interaction: cubic-bezier(0.32, 1.1, 0.64, 1);
+  --sl-ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
+
+  /* Durations — deliberate, unhurried */
+  --sl-duration-micro: 0.3s;
+  --sl-duration-ui: 0.5s;
+  --sl-duration-scene: 1s;
+  --sl-duration-page: 0.9s;
+  --sl-duration-parallax: 1.2s;
+
+  /* Glass morphisms — whisper-quiet */
+  --sl-glass-bg: rgba(245, 244, 242, 0.02);
+  --sl-glass-border: rgba(245, 244, 242, 0.06);
+  --sl-glass-border-hover: rgba(196, 176, 145, 0.12);
+  --sl-glass-blur: 32px;
+  --sl-glass-shadow: 0 0 0 1px rgba(245, 244, 242, 0.03), 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Silent Luxury Utility Classes                                             */
+/* -------------------------------------------------------------------------- */
+
+.sl-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 clamp(24px, 5vw, 64px);
+}
+
+.sl-section {
+  padding: clamp(80px, 12vw, 160px) 0;
+}
+
+.sl-section-alt {
+  background: var(--sl-obsidian);
+}
+
+.sl-kicker {
+  font-family: var(--sl-body-font);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--sl-silver);
+}
+
+.sl-heading {
+  font-family: var(--sl-heading-font);
+  font-weight: 300;
+  font-style: normal;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--sl-alabaster);
+}
+
+.sl-heading-display {
+  font-size: clamp(3rem, 7vw, 5.5rem);
+}
+
+.sl-heading-lg {
+  font-size: clamp(2rem, 4vw, 3.25rem);
+}
+
+.sl-heading-md {
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+}
+
+.sl-body {
+  font-family: var(--sl-body-font);
+  font-weight: 300;
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
+  line-height: 1.75;
+  color: var(--sl-mist);
+}
+
+.sl-body-muted {
+  color: var(--sl-silver);
+}
+
+/* Hyper-minimal glass — whisper thin */
+.sl-glass {
+  background: var(--sl-glass-bg);
+  backdrop-filter: blur(var(--sl-glass-blur));
+  -webkit-backdrop-filter: blur(var(--sl-glass-blur));
+  border: 1px solid var(--sl-glass-border);
+  transition: border-color var(--sl-duration-ui) var(--sl-ease-transition),
+              background var(--sl-duration-ui) var(--sl-ease-transition);
+}
+
+.sl-glass:hover {
+  background: rgba(245, 244, 242, 0.03);
+  border-color: var(--sl-glass-border-hover);
+}
+
+/* Center-aligned hero content */
+.sl-hero-center {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Decorative divider — hairline rule with centered lozenge */
+.sl-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: rgba(168, 168, 168, 0.3);
+  margin: 32px 0;
+}
+
+.sl-divider::before,
+.sl-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+}
+
+.sl-divider::before {
+  background: linear-gradient(90deg, transparent, currentColor);
+}
+
+.sl-divider::after {
+  background: linear-gradient(90deg, currentColor, transparent);
+}
+
+/* Centered diamond accent */
+.sl-divider::before,
+.sl-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+}
+
+.sl-divider-dots::before,
+.sl-divider-dots::after {
+  background: none;
+}
+
+.sl-divider-dots .sl-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(168, 168, 168, 0.4);
+  flex-shrink: 0;
+}
+
+/* Scroll reveal — elegant fade */
+@keyframes sl-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sl-reveal {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.sl-reveal.is-visible {
+  animation: sl-fade-up var(--sl-duration-page) var(--sl-ease-entrance) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sl-reveal {
+    opacity: 1;
+    animation: none;
+  }
+}
+
+/* Mouse-follow micro-parallax — restrained */
+.sl-parallax {
+  transition: transform var(--sl-duration-parallax) var(--sl-ease-interaction);
+}
+
+/* Gold hairline accent — reveals on hover */
+.sl-accent-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(196, 176, 145, 0.3), transparent);
+  width: 0;
+  transition: width var(--sl-duration-ui) var(--sl-ease-transition);
+  margin: 0 auto;
+}
+
+.sl-accent-line.reveal {
+  width: 60px;
+}
+
+/* Premium button — understated */
+.sl-btn {
+  font-family: var(--sl-body-font);
+  font-weight: 300;
+  font-size: 0.875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 14px 32px;
+  background: transparent;
+  border: 1px solid var(--sl-glass-border);
+  color: var(--sl-alabaster);
+  cursor: pointer;
+  transition: all var(--sl-duration-ui) var(--sl-ease-interaction);
+  position: relative;
+  overflow: hidden;
+}
+
+.sl-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(196, 176, 145, 0.04), transparent);
+  opacity: 0;
+  transition: opacity var(--sl-duration-ui) var(--sl-ease-transition);
+}
+
+.sl-btn:hover {
+  border-color: var(--sl-gold-hover);
+  color: var(--sl-warm-neutral);
+}
+
+.sl-btn:hover::before {
+  opacity: 1;
+}
+
+.sl-btn:active {
+  transform: scale(0.98);
+}
+
+/* Focus state — luxury ring */
+.sl-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--sl-void), 0 0 0 4px rgba(196, 176, 145, 0.2);
+}
+
+/* Simplified navigation */
+.sl-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 24px clamp(24px, 5vw, 64px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to bottom, var(--sl-void) 60%, transparent);
+  pointer-events: none;
+}
+
+.sl-nav-link {
+  font-family: var(--sl-body-font);
+  font-size: 0.75rem;
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--sl-silver);
+  text-decoration: none;
+  padding: 8px 0;
+  position: relative;
+  transition: color var(--sl-duration-micro) var(--sl-ease-transition);
+}
+
+.sl-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--sl-gold-hover);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform var(--sl-duration-ui) var(--sl-ease-entrance);
+}
+
+.sl-nav-link:hover,
+.sl-nav-link.active {
+  color: var(--sl-warm-neutral);
+}
+
+.sl-nav-link:hover::after,
+.sl-nav-link.active::after {
+  transform: scaleX(1);
+}
+
+/* Visa-card style project card */
+.sl-card {
+  position: relative;
+  overflow: hidden;
+  background: var(--sl-stone);
+  border: 1px solid var(--sl-glass-border);
+  transition: border-color var(--sl-duration-ui) var(--sl-ease-transition),
+              box-shadow var(--sl-duration-ui) var(--sl-ease-transition);
+}
+
+.sl-card:hover {
+  border-color: var(--sl-glass-border-hover);
+  box-shadow: var(--sl-glass-shadow);
+}
+
+.sl-card-image {
+  aspect-ratio: 4/3;
+  width: 100%;
+  object-fit: cover;
+  transition: transform var(--sl-duration-scene) var(--sl-ease-entrance);
+}
+
+.sl-card:hover .sl-card-image {
+  transform: scale(1.03);
+}
+
+.sl-card-content {
+  padding: 24px;
+}
+
+.sl-card-title {
+  font-family: var(--sl-heading-font);
+  font-weight: 300;
+  font-size: 1.25rem;
+  color: var(--sl-alabaster);
+  letter-spacing: -0.01em;
+  margin: 0 0 8px 0;
+}
+
+.sl-card-meta {
+  font-size: 0.75rem;
+  color: var(--sl-silver);
+  letter-spacing: 0.05em;
+}
+
+/* Ambient grain overlay */
+.sl-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* Cinematic vignette */
+.sl-vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.4) 100%);
+}
+
+/* Subtle gold shimmer — slow, barely perceptible */
+@keyframes sl-shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.sl-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(196, 176, 145, 0.03) 25%,
+    rgba(196, 176, 145, 0.06) 50%,
+    rgba(196, 176, 145, 0.03) 75%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: sl-shimmer 8s ease-in-out infinite;
+}

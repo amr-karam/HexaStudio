@@ -10,25 +10,29 @@ import { fetchProjects } from "@/features/portfolio/lib/fetchProjects";
 export const revalidate = 3600;
 
 /**
- * Homepage — the chaptered scroll film (Prompt 017), static variant.
+ * Homepage — Silent Luxury Design (Minimalist Premium Aesthetic)
  *
- *   CH. I   — VISION  → HomeHeroStatic (no 3D canvas)
- *   CH. II  — CRAFT   → MarqueeBar + FeaturedWork
- *   CH. III — METHOD  → ProcessSection + AchievementsSection
- *   CH. IV  — PROOF   → ProjectGrid + TestimonialsSection
- *   CH. V   — CONTACT → CTASection + NewsletterSection
- *
- * The 3D visualization experience lives at /studio.
- * SectionReveal wraps each chapter so the next sibling slides over it
- * (pasqua.it / agencidev.com sticky-stack DNA). Server component
- * composition is unchanged: every animated piece is a client island;
- * fetchProjects stays server-side.
+ * Design principles:
+ * - Maximum whitespace, minimum ink
+ * - Restrained micro-parallax (subtle tilt on hover)
+ * - Hairline gold accents, revealed on interaction
+ * - Cormorant Garamond for headlines (elegant serif)
+ * - Jost for body (clean, geometric sans)
+ * - Cinematic grain + vignette for depth
+ * - Understated animations (slow, deliberate)
  */
 export default async function HomePage() {
   const projectsData = await fetchProjects();
 
   return (
-    <div className="bg-background">
+    <div className="bg-sl-void">
+      {/* Ambient grain overlay — whispers texture */}
+      <div className="sl-grain" aria-hidden="true" />
+      {/* Cinematic vignette — depth perception */}
+      <div className="sl-vignette" aria-hidden="true" />
+      {/* Subtle warm radial glow */}
+      <div className="absolute inset-0 gradient-radial-gold opacity-20 pointer-events-none" aria-hidden="true" />
+      
       <HomeChapterRail />
       <HomeHeroStatic />
       <HomePageDynamic

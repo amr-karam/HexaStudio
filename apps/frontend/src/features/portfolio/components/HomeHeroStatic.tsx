@@ -185,23 +185,23 @@ export const HomeHeroStatic = () => {
     <section
       ref={containerRef}
       id="ch-vision"
-      className="relative flex min-h-screen flex-col items-center justify-center px-4 sm:px-8 pt-20 overflow-hidden bg-obsidian"
+      className="relative flex min-h-screen flex-col items-center justify-center px-4 sm:px-6 overflow-hidden bg-sl-void"
     >
-      {/* Ambient gradient overlays for cinematic depth */}
-      <div className="absolute inset-0 bg-gradient-to-b from-obsidian/60 via-transparent to-obsidian pointer-events-none z-[1]" />
+      {/* Gradient overlays for depth */}
+      <div className="absolute inset-0 bg-gradient-to-b from-sl-obsidian/40 via-transparent to-sl-void pointer-events-none z-[1]" />
       <div className="absolute inset-0 gradient-radial-gold pointer-events-none z-[1]" aria-hidden="true" />
 
-      {/* Mouse-follow ambient glow — gated to fine pointer + not static */}
+      {/* Mouse-follow ambient glow — subtle, restrained */}
       {finePointer && !staticMode && (
         <div
           ref={glowRef}
-          className="absolute top-1/2 left-1/2 w-[400px] h-[400px] -translate-x-1/2 -translate-y-1/2 bg-accent/5 blur-[120px] rounded-full pointer-events-none z-[1]"
+          className="absolute top-1/2 left-1/2 w-[300px] h-[300px] -translate-x-1/2 -translate-y-1/2 bg-accent/3 blur-[100px] rounded-full pointer-events-none z-[1]"
           aria-hidden="true"
         />
       )}
 
-      {/* Chapter marker — CH. I */}
-      <div data-hero-marker="" className="absolute top-24 left-8 md:left-16 z-10">
+      {/* Chapter marker */}
+      <div data-hero-marker="" className="absolute top-20 left-8 md:left-16 z-10">
         <ChapterMarker index={1} title="Vision" />
       </div>
 
@@ -211,31 +211,35 @@ export const HomeHeroStatic = () => {
       >
         <span
           data-hero-kicker=""
-          className="mb-6 block text-[10px] uppercase tracking-[0.5em] text-gold/60 font-medium"
+          className="mb-5 block text-[10px] uppercase tracking-[0.35em] text-silver/70 font-medium"
         >
-          Architectural Visualization
+          Architectural Vision
         </span>
 
-        <div className="mb-6 md:mb-8">
+        <div className="mb-5 md:mb-6">
           <h1
             data-hero-headline=""
             aria-label="Living Spaces. Visualized."
-            className="text-5xl sm:text-6xl md:text-8xl lg:text-[10rem] font-light tracking-[-0.04em] text-white leading-[0.95]"
+            className="sl-heading sl-heading-display font-light leading-tight"
+            style={{ fontFamily: 'Cormorant Garamond, Playfair Display, Georgia, serif' }}
           >
-            <span aria-hidden="true" className="block">
-              <HeroWord word="Living" /> <HeroWord word="Spaces." accent />
+            <span aria-hidden="true" className="block text-alabaster">
+              Living
             </span>
-            <span aria-hidden="true" className="block mt-2">
-              <HeroWord word="Visualized." />
+            <span aria-hidden="true" className="block mt-0 text-gradient-gold font-italic">
+              Spaces
+            </span>
+            <span aria-hidden="true" className="block mt-1 text-alabaster">
+              Visualized.
             </span>
           </h1>
         </div>
 
         <p
           data-hero-subline=""
-          className="mx-auto w-full max-w-xl text-sm md:text-base font-light text-white/50 mb-10 md:mb-14 leading-relaxed tracking-wide px-4"
+          className="mx-auto w-full max-w-2xl text-sm md:text-base font-light text-silver/60 mb-10 md:mb-14 leading-relaxed tracking-wide px-4"
         >
-          Immersive 3D architectural experiences for the world&apos;s most ambitious projects.
+          Immersive 3D architectural experiences for the world&apos;s most discerning projects.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pointer-events-auto">
