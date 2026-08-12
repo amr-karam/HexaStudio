@@ -1,35 +1,29 @@
 /**
  * HEXA Motion Tokens — Phase 1: Global Motion Foundation
  *
- * The single numeric source of truth for the Awwwards-grade motion layer.
- * Complements `src/lib/motion.ts` (semantic variants/policies) with the
- * canonical easing curves, durations, and stagger intervals every Phase-1
- * system consumes: smooth scroll, page transitions, cursor, preloader,
- * and micro-interactions.
+ * COMPATIBILITY LAYER: This module re-exports the canonical tokens from
+ * `src/lib/motion.ts` (the single source of truth) under the Phase-1 names.
+ * New code should import directly from `@/lib/motion`.
  *
- * Philosophy: Motion is Communication. No linear defaults, ever.
+ * Original philosophy: Motion is Communication. No linear defaults, ever.
  */
 
-/* -------------------------------------------------------------------------- */
-/*  EASING — Custom cubic beziers (the secret to luxury)                       */
-/* -------------------------------------------------------------------------- */
+import { EASE, DURATION } from '../motion';
 
-/** Mutable cubic-bezier tuple — directly assignable to Framer Motion's `ease`. */
-export type CubicBezier = [number, number, number, number];
+export type CubicBezier = readonly [number, number, number, number];
 
+/** Phase-1 easing aliases (map to canonical EASE values). */
 export const EASING = {
-  /** Smooth, decelerating — entrances, reveals, menu staggers. */
-  easeOutExpo: [0.16, 1, 0.3, 1] as CubicBezier,
-  /** Symmetric, cinematic — page-transition curtain, preloader lift. */
-  easeInOutQuint: [0.76, 0, 0.24, 1] as CubicBezier,
-} satisfies Record<string, CubicBezier>;
+  easeOutExpo: EASE.entrance,
+  easeInOutQuint: EASE.cinematic,
+} as const;
 
 export type EasingName = keyof typeof EASING;
 
 /** `cubic-bezier()` strings mirroring {@link EASING} for CSS transitions. */
 export const CSS_EASING: Record<EasingName, string> = {
-  easeOutExpo: 'cubic-bezier(0.16, 1, 0.3, 1)',
-  easeInOutQuint: 'cubic-bezier(0.76, 0, 0.24, 1)',
+  easeOutExpo: `cubic-bezier(${EASE.entrance.join(', ')})`,
+  easeInOutQuint: `cubic-bezier(${EASE.cinematic.join(', ')})`,
 };
 
 /** GSAP ease strings mirroring {@link EASING} for tween-driven systems. */
@@ -38,41 +32,24 @@ export const GSAP_EASING: Record<EasingName, string> = {
   easeInOutQuint: 'quint.inOut',
 };
 
-/* -------------------------------------------------------------------------- */
-/*  DURATION — seconds                                                         */
-/* -------------------------------------------------------------------------- */
-
+/** Phase-1 duration aliases (map to canonical DURATION values). */
 export const DUR = {
-  /** 200ms — hover states, cursor feedback. Must feel instant. */
-  micro: 0.2,
-  /** 400ms — UI chrome: curtain cover/reveal legs, magnetic settle. */
-  ui: 0.4,
-  /** 800ms — scene-scale movement, hero imagery. */
-  scene: 0.8,
-  /** 700ms — full page transition envelope (curtain lift, preloader exit). */
-  transition: 0.7,
+  micro: DURATION.micro,
+  ui: DURATION.component,
+  scene: DURATION.scene,
+  transition: DURATION.transition,
 } as const;
 
 export type DurationName = keyof typeof DUR;
 
-/* -------------------------------------------------------------------------- */
-/*  STAGGER — choreographed reveals (seconds between siblings)                 */
-/* -------------------------------------------------------------------------- */
-
+/** Fine-grained stagger intervals (Phase-1 granularity; STAGGER in motion.ts is coarser). */
 export const STAGGER_TOKENS = {
-  /** Per-character reveals (logotype, headlines). */
   chars: 0.03,
-  /** Card grids, project lists. */
   cards: 0.06,
-  /** Lines of text, mobile menu items. */
   lines: 0.08,
 } as const;
 
 export type StaggerName = keyof typeof STAGGER_TOKENS;
-
-/* -------------------------------------------------------------------------- */
-/*  HELPERS                                                                    */
-/* -------------------------------------------------------------------------- */
 
 /** Framer Motion transition built from tokens. */
 export function tokenTransition(
