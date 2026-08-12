@@ -4,7 +4,8 @@ http:
     website:
       rule: "Host(`hexastudio.net`) || Host(`www.hexastudio.net`)"
       service: frontend
-      
+      middlewares:
+        - redirect-www
 
     # Backend API
     api:
@@ -182,6 +183,14 @@ http:
       basicAuth:
         users:
           - "${TRAEFIK_AUTH_USER}:${TRAEFIK_AUTH_HASH}"
+
+    # www → non-www redirect — prevents infinite loop
+    # When a request comes to www.hexastudio.net, it gets
+    # explicitly redirected to hexastudio.net (non-www).
+    redirect-www:
+      redirect:
+        to: "https://hexastudio.net"
+        permanent: true
 
     forwarded-headers:
       headers:

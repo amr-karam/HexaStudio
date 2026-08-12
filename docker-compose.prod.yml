@@ -1,4 +1,4 @@
-name: hexastudio
+# name: hexastudio
 
 x-logging: &default-logging
   driver: json-file

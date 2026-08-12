@@ -509,7 +509,7 @@ function ActivityHeatmap({ reduced }: { reduced: boolean }) {
 function MilestoneTimeline({ reduced }: { reduced: boolean }) {
   return (
     <SectionCard ariaLabel="Milestone timeline" reduced={reduced}>
-      <SectionHeader title="Milestone Timeline" subtitle="Project milestones & delivery dates" />
+      <SectionHeader title="Milestone Timeline" subtitle="Project milestones & delivery dates" index="§ III — Cadence" />
       <div className="relative pt-4 pb-2">
         {/* Connecting line */}
         <div className="absolute top-[28px] left-0 right-0 h-[2px] bg-neutral-800" aria-hidden="true" />
@@ -623,7 +623,7 @@ function ResponseTimeChart({ reduced }: { reduced: boolean }) {
 
   return (
     <SectionCard ariaLabel="Response time trend" reduced={reduced}>
-      <SectionHeader title="Response Time" subtitle="Average hours to first response (last 7 days)" />
+      <SectionHeader title="Response Time" subtitle="Average hours to first response (last 7 days)" index="§ IV — Tempo" />
       <div className="mt-2">
         <svg
           viewBox={`0 0 ${chartWidth} ${chartHeight}`}
@@ -738,7 +738,7 @@ function FilesCard({ reduced }: { reduced: boolean }) {
 
   return (
     <SectionCard ariaLabel="File upload statistics" reduced={reduced} className="flex-1">
-      <SectionHeader title="Files Uploaded" subtitle="This month" />
+      <SectionHeader title="Files Uploaded" subtitle="This month" index="§ V — Throughput" />
       <p className="text-4xl font-serif font-light text-foreground tracking-tight mb-4">
         12
       </p>
@@ -778,7 +778,7 @@ function FilesCard({ reduced }: { reduced: boolean }) {
 function MeetingsCard({ reduced }: { reduced: boolean }) {
   return (
     <SectionCard ariaLabel="Meeting statistics" reduced={reduced} className="flex-1">
-      <SectionHeader title="Meetings" subtitle="This month" />
+      <SectionHeader title="Meetings" subtitle="This month" index="§ VI — Convenings" />
       <p className="text-4xl font-serif font-light text-foreground tracking-tight mb-4">
         8
       </p>
@@ -828,7 +828,7 @@ function BudgetDonut({ reduced }: { reduced: boolean }) {
 
   return (
     <SectionCard ariaLabel="Budget utilization" reduced={reduced}>
-      <SectionHeader title="Budget Utilization" subtitle="Financial overview" />
+      <SectionHeader title="Budget Utilization" subtitle="Financial overview" index="§ VII — Capital" />
       <div className="flex flex-col sm:flex-row items-center gap-6">
         {/* Donut */}
         <div className="relative w-36 h-36 flex-shrink-0">
@@ -900,32 +900,38 @@ function BudgetDonut({ reduced }: { reduced: boolean }) {
         {/* Legend */}
         <div className="space-y-3 flex-1">
           {BUDGET_SEGMENTS.map((seg) => (
-            <div key={seg.label} className="flex items-center justify-between">
+            <div key={seg.label} className="flex items-center justify-between" >
               <div className="flex items-center gap-2.5">
                 <div
-                  className="w-3 h-3 rounded-full flex-shrink-0"
+                  className="h-3 w-3 flex-shrink-0 rounded-full"
                   style={{
-                    background: seg.label === 'Paid'
-                      ? 'linear-gradient(135deg, #D4AF37, #E5C76B)'
-                      : seg.label === 'Outstanding'
-                        ? '#D4AF37'
-                        : '#2A2A2E',
+                    background:
+                      seg.label === 'Paid'
+                        ? 'linear-gradient(135deg, var(--color-accent), var(--color-accent-light))'
+                        : seg.label === 'Outstanding'
+                          ? 'var(--color-accent)'
+                          : 'var(--color-surface-light)',
                   }}
+                  aria-hidden="true"
                 />
-                <span className="text-xs text-textSecondary">{seg.label}</span>
+                <span className="text-xs font-light text-neutral-400">{seg.label}</span>
               </div>
-              <span className="text-xs font-mono font-medium text-foreground">
+              <span className="font-mono text-xs font-medium text-foreground">
                 {seg.percentage}%
               </span>
             </div>
           ))}
 
           {/* Divider */}
-          <div className="h-px bg-border/30 my-2" />
+          <div className="my-2 h-px bg-white/5" />
 
-          <div className="flex justify-between items-center">
-            <span className="text-xs text-textMuted">Total Budget</span>
-            <span className="text-sm font-serif font-light text-foreground">$125,000</span>
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-[0.625rem] uppercase tracking-[0.25em] text-neutral-500">
+              Total Budget
+            </span>
+            <span className="font-serif text-base font-light tracking-tight tabular-nums text-foreground">
+              $125,000
+            </span>
           </div>
         </div>
       </div>
@@ -946,54 +952,70 @@ export function AnalyticsView() {
   }, []);
 
   return (
-    <div className="space-y-6">
-      {/* ── Executive Summary Header ─────────────────────────────────────── */}
+    <div className="space-y-8">
+      {/* ── Editorial Header ─────────────────────────────────────────────── */}
       <motion.header
         initial="hidden"
         animate="visible"
         variants={fadeLift}
         custom={reduced}
-        className="flex flex-col sm:flex-row sm:items-end justify-between gap-4"
+        className="relative flex flex-col lg:flex-row lg:items-end justify-between gap-6"
       >
-        <div>
-          <div className="flex items-center gap-2.5 mb-1.5">
-             <span className="relative inline-flex w-2.5 h-2.5" aria-hidden="true">
-              <span
-                className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60"
-              />
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-accent" />
-            </span>
-            <h1 className="text-2xl font-bold text-foreground tracking-tight">
-              Analytics Dashboard
-            </h1>
-          </div>
-          <p className="text-sm text-textSecondary ml-[18px]">
-            Executive KPIs measuring project velocity, milestone accuracy, and team collaboration.
+        {/* Ambient gold aura behind the header */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-10 left-0 h-40 w-72 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.06),transparent_70%)] opacity-80 blur-2xl"
+        />
+
+        <div className="relative">
+          <p className="flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-accent/70">
+            <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-accent/70" />
+            § 01 — Analytics
+          </p>
+          <h1 className="mt-4 font-serif text-4xl font-light tracking-tight text-foreground sm:text-5xl">
+            The Studio <em className="text-gradient-gold font-normal italic">Pulse</em>
+          </h1>
+          <p className="mt-3 max-w-xl text-sm font-light leading-relaxed text-neutral-500">
+            Executive KPIs measuring project velocity, milestone accuracy, and team collaboration —
+            metrics framed as a concierge quarterly review.
           </p>
         </div>
 
-        {/* Date range filter pills */}
+        {/* Date-range selector — gold specular spring indicator (matches FinanceCenterView currency selector) */}
         <div
-          className="flex items-center gap-1.5 p-1 rounded-lg bg-white/[0.03] border border-border/20 self-start sm:self-auto"
+          className="artisan-glass artisan-specular-top relative flex items-center gap-1 self-start rounded-full p-1.5 lg:self-auto"
           role="radiogroup"
           aria-label="Select date range"
         >
-          {DATE_RANGE_OPTIONS.map((opt) => (
-            <button
-              key={opt.key}
-              onClick={() => handleDateRangeChange(opt.key)}
-              role="radio"
-              aria-checked={dateRange === opt.key}
-              className={cn(
-                'px-3 py-1.5 rounded-md text-xs font-mono font-medium transition-all duration-200',
-                dateRange === opt.key
-                  ? 'bg-accent/15 text-accent border border-accent/25'
-                  : 'text-textMuted hover:text-textSecondary hover:bg-white/[0.03] border border-transparent',
-              )}
-            >
-              {opt.label}
-            </button>
-          ))}
+          <span className="pl-3 pr-1 font-mono text-[0.625rem] uppercase tracking-[0.3em] text-neutral-500">
+            Range
+          </span>
+          {DATE_RANGE_OPTIONS.map((opt) => {
+            const isActive = dateRange === opt.key;
+            return (
+              <button
+                key={opt.key}
+                onClick={() => handleDateRangeChange(opt.key)}
+                role="radio"
+                aria-checked={isActive}
+                aria-label={`Show data for the last ${opt.label}`}
+                className={cn(
+                  'relative rounded-full px-4 py-1.5 font-mono text-xs tracking-[0.15em] transition-colors duration-500',
+                  isActive ? 'text-neutral-950' : 'text-neutral-400 hover:text-accent',
+                )}
+              >
+                {isActive && (
+                  <motion.span
+                    layoutId="analytics-range-indicator"
+                    className="absolute inset-0 rounded-full bg-gradient-to-r from-accent-dark via-accent to-accent-light shadow-[0_0_20px_rgba(212,175,55,0.25)]"
+                    transition={reduced ? { duration: 0.01 } : makeTransition('interaction', 'micro')}
+                    aria-hidden="true"
+                  />
+                )}
+                <span className="relative z-10">{opt.label}</span>
+              </button>
+            );
+          })}
         </div>
       </motion.header>
 
