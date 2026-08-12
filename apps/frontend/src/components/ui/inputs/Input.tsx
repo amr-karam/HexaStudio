@@ -6,28 +6,67 @@ import { cn } from '@/lib/utils';
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
+  /**
+   * Visual treatment of the field shell.
+   * - `underline` (default): architectural hairline underline that brightens on focus.
+   * - `glass`: liquid-glass shell using the `artisan-glass` token, with gold border on focus.
+   */
+  variant?: 'underline' | 'glass';
 }
 
 /**
- * Input — architectural "underline" form field.
- * The active state is driven entirely by CSS `group-focus-within`,
- * matching the precision of an architectural drawing.
+ * Input — architectural form field.
+ *
+ * `underline` is the editorial default (precise hairline that brightens on focus).
+ * `glass` opts into the liquid-glass system (`artisan-glass` + gold border on focus)
+ * to harmonize with `LiquidGlassCard` and the `glass` Button variant.
  */
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, label, error, ...props }, ref) => {
+  ({ className, type, label, error, variant = 'underline', ...props }, ref) => {
+    if (variant === 'glass') {
+      return (
+        <div className="group relative w-full">
+          {label && (
+            <label className="mb-2 block text-[11px] font-mono font-medium uppercase tracking-[0.25em] text-neutral-400 transition-colors duration-300 group-focus-within:text-accent">
+              {label}
+            </label>
+          )}
+          <div className="artisan-glass relative rounded-lg px-4 transition-all duration-300 group-focus-within:artisan-glass-gold group-focus-within:border-accent/40">
+            <input
+              type={type}
+              className={cn(
+                'flex h-12 w-full rounded-none bg-transparent px-0 py-2 text-sm text-foreground transition-all duration-300',
+                'placeholder:text-neutral-500 font-light',
+                'focus:outline-none',
+                'disabled:cursor-not-allowed disabled:opacity-50',
+                className,
+              )}
+              ref={ref}
+              {...props}
+            />
+          </div>
+          {error && (
+            <span className="absolute -bottom-5 left-0 text-[10px] uppercase tracking-tighter text-red-500">
+              {error}
+            </span>
+          )}
+        </div>
+      );
+    }
+
     return (
       <div className="group relative w-full">
         {label && (
-          <label className="mb-2 block text-[10px] font-medium uppercase tracking-widest text-neutral-500 transition-colors duration-300 group-focus-within:text-accent">
+          <label className="mb-2 block text-[11px] font-mono font-medium uppercase tracking-[0.25em] text-neutral-400 transition-colors duration-300 group-focus-within:text-accent">
             {label}
           </label>
         )}
-        <div className="relative border-b-2 border-neutral-200 transition-colors duration-300 group-focus-within:border-accent">
+        <div className="relative rounded-lg bg-white/[0.02] border border-white/[0.06] px-4 transition-all duration-300 group-focus-within:border-accent group-focus-within:bg-white/[0.04] group-focus-within:shadow-[var(--artisan-glass-shadow),0_0_20px_rgba(212,175,55,0.15)]">
           <input
             type={type}
             className={cn(
-              'flex h-12 w-full rounded-none bg-transparent px-0 py-2 text-sm text-foreground transition-colors duration-300',
-              'placeholder:text-neutral-400',
+              'flex h-12 w-full rounded-none bg-transparent px-0 py-2 text-sm text-foreground transition-all duration-300',
+              'placeholder:text-neutral-500 font-light',
               'focus:outline-none',
               'disabled:cursor-not-allowed disabled:opacity-50',
               className,

@@ -64,11 +64,12 @@ function PendingDot({ reduced }: PendingDotProps) {
   return (
     <span className="relative inline-flex w-2 h-2" aria-hidden="true">
       <motion.span
-        className={cn('absolute inset-0 rounded-full bg-amber-400')}
+        className="absolute inset-0 rounded-full"
+        style={{ background: 'var(--color-accent)' }}
         animate={reduced ? undefined : { scale: [1, 2.4], opacity: [0.7, 0] }}
         transition={reduced ? REDUCED_TRANSITION : { duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
       />
-      <span className="relative inline-flex w-2 h-2 rounded-full bg-amber-400" />
+      <span className="relative inline-flex w-2 h-2 rounded-full" style={{ background: 'var(--color-accent)' }} />
     </span>
   );
 }
@@ -133,20 +134,20 @@ export function ApprovalCenterView() {
         initial="hidden"
         animate="visible"
       >
-        <h1 className="text-2xl font-bold text-neutral-100 inline-flex items-center gap-2">
+        <h1 className="text-2xl font-bold text-foreground inline-flex items-center gap-2">
           Approval Center
           <span
             className={cn(
               'text-[10px] font-mono px-2 py-0.5 rounded-full border',
               dataSource === 'live'
-                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                ? 'bg-accent/10 text-accent border-accent/20'
+                : 'bg-accent/10 text-accent border-accent/20'
             )}
           >
             {dataSource === 'live' ? 'Live' : 'Demo'}
           </span>
         </h1>
-        <p className="text-sm text-neutral-400">
+        <p className="text-sm text-neutral-400 mt-1">
           Review, sign, and authorize deliverables, scope changes, and milestone invoices with full audit logging.
         </p>
       </motion.div>
@@ -179,12 +180,12 @@ export function ApprovalCenterView() {
                 className={cn(
                   'w-full text-left p-4 rounded-xl border transition-colors',
                   isActive
-                    ? 'bg-amber-500/10 border-amber-500/50 shadow-lg shadow-amber-500/10'
-                    : 'bg-neutral-900 border-neutral-800 hover:border-neutral-700'
+                    ? 'bg-accent/10 border-accent/50 shadow-lg shadow-accent/10'
+                    : 'bg-surface border-border/50 hover:border-border hover:bg-surface-light'
                 )}
               >
                 <div className="flex items-center justify-between">
-                  <span className="inline-flex items-center gap-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-neutral-800 text-amber-400 border border-amber-500/20 uppercase tracking-wider">
+                  <span className="inline-flex items-center gap-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-white/5 text-accent border border-accent/20 uppercase tracking-wider">
                     {isPending && <PendingDot reduced={reduced} />}
                     {item.type}
                   </span>
@@ -192,17 +193,17 @@ export function ApprovalCenterView() {
                     className={cn(
                       'text-xs px-2 py-0.5 rounded-full capitalize font-medium',
                       item.status === 'approved'
-                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                        ? 'bg-accent/10 text-accent border border-accent/20'
                         : item.status === 'revision_requested'
-                        ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
-                        : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                        ? 'bg-red-500/10 text-red-400 border border-red-500/20'
+                        : 'bg-accent/10 text-accent border border-accent/20'
                     )}
                   >
                     {item.status.replace('_', ' ')}
                   </span>
                 </div>
-                <h3 className="text-sm font-semibold text-neutral-100 mt-2 line-clamp-1">{item.title}</h3>
-                <p className="text-xs text-neutral-400 mt-1">{item.phaseName}</p>
+                <h3 className="text-sm font-medium text-foreground/90 mt-2 line-clamp-1 font-serif font-light">{item.title}</h3>
+                <p className="text-xs text-neutral-500 mt-1">{item.phaseName}</p>
                 <div className="flex items-center justify-between mt-3 text-[11px] text-neutral-500">
                   <span>By: {item.submittedBy}</span>
                   <span>{new Date(item.submittedAt).toLocaleDateString()}</span>
@@ -213,7 +214,7 @@ export function ApprovalCenterView() {
         </motion.div>
 
         {/* Selected Detail & Audit Trail */}
-        <div className="lg:col-span-7 bg-neutral-900 border border-neutral-800 rounded-xl p-6 flex flex-col justify-between min-h-[24rem]">
+        <div className="lg:col-span-7 bg-surface border border-border/50 rounded-xl p-6 flex flex-col justify-between min-h-[24rem]">
           <AnimatePresence mode="wait">
             {activeApproval ? (
               <motion.div
@@ -226,24 +227,24 @@ export function ApprovalCenterView() {
                 className="space-y-6"
               >
                 <div>
-                  <span className="text-xs font-semibold uppercase tracking-wider text-amber-400">{activeApproval.type}</span>
-                  <h2 className="text-xl font-bold text-neutral-100 mt-1">{activeApproval.title}</h2>
-                  <p className="text-xs text-neutral-400 mt-1">{activeApproval.projectName} • {activeApproval.phaseName}</p>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-accent">{activeApproval.type}</span>
+                  <h2 className="text-xl font-medium text-foreground mt-1 font-serif font-light">{activeApproval.title}</h2>
+                  <p className="text-xs text-neutral-500 mt-1">{activeApproval.projectName} \u2022 {activeApproval.phaseName}</p>
                 </div>
 
                 {/* Preview Card */}
-                <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800 flex items-center justify-between">
+                <div className="p-4 rounded-xl bg-surface-light border border-border/50 flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className="p-3 bg-neutral-800 rounded-lg text-amber-400">
+                    <div className="p-3 bg-white/5 rounded-lg text-accent">
                       <Icon name="file-text" className="w-6 h-6" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-neutral-200">Deliverable Package File</p>
-                      <p className="text-xs text-neutral-500">PDF • Signed Presigned URL ready</p>
+                      <p className="text-sm font-medium text-foreground/80">Deliverable Package File</p>
+                      <p className="text-xs text-neutral-500">PDF \u2022 Signed Presigned URL ready</p>
                     </div>
                   </div>
                   <button
-                    className="text-xs bg-neutral-800 hover:bg-neutral-700 text-neutral-100 font-medium px-3 py-1.5 rounded-lg border border-neutral-700 transition-colors flex items-center space-x-1.5"
+                    className="text-xs bg-white/5 hover:bg-white/10 text-foreground/80 font-medium px-3 py-1.5 rounded-lg border border-border/50 transition-colors flex items-center space-x-1.5"
                     aria-label="Preview deliverable package file"
                   >
                     <Icon name="eye" className="w-3.5 h-3.5" />
@@ -262,14 +263,14 @@ export function ApprovalCenterView() {
                   >
                     <button
                       onClick={() => handleAction(activeApproval.id, 'approved')}
-                      className="flex-1 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-sm transition-colors shadow-lg shadow-emerald-500/20"
+                      className="flex-1 py-2.5 rounded-xl bg-accent hover:bg-accent/90 text-background font-medium text-sm transition-colors shadow-lg shadow-accent/20"
                       aria-label="Approve this deliverable"
                     >
                       Approve Deliverable
                     </button>
                     <button
                       onClick={() => handleAction(activeApproval.id, 'revision_requested', 'Please adjust lighting angle')}
-                      className="flex-1 py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700 font-medium text-sm transition-colors"
+                      className="flex-1 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-foreground/80 border border-border/50 font-medium text-sm transition-colors"
                       aria-label="Request a revision"
                     >
                       Request Revision
@@ -279,14 +280,14 @@ export function ApprovalCenterView() {
 
                 {/* Audit Trail */}
                 <div>
-                  <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3">Audit Trail Log</h4>
-                  <div className="space-y-3 font-mono text-xs border-l-2 border-neutral-800 pl-4">
+                  <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-500 mb-3">Audit Trail Log</h4>
+                  <div className="space-y-3 font-mono text-xs border-l-2 border-accent/30 pl-4">
                     {activeApproval.auditTrail?.map((log, idx) => (
                       <div key={idx} className="relative">
-                        <span className="absolute -left-[21px] top-1.5 w-2 h-2 rounded-full bg-amber-400" />
-                        <p className="text-neutral-200 font-sans font-medium">{log.action}</p>
-                        <p className="text-neutral-500 text-[11px]">{new Date(log.timestamp).toLocaleString()} • {log.actor}</p>
-                        {log.notes && <p className="text-amber-300 text-[11px] mt-0.5 font-sans">"{log.notes}"</p>}
+                        <span className="absolute -left-[21px] top-1.5 w-2 h-2 rounded-full" style={{ background: 'var(--color-accent)' }} />
+                        <p className="text-foreground/80 font-medium">{log.action}</p>
+                        <p className="text-neutral-500 text-[11px]">{new Date(log.timestamp).toLocaleDateString()} \u2022 {log.actor}</p>
+                        {log.notes && <p className="text-accent/80 text-[11px] mt-0.5 font-sans">"{log.notes}"</p>}
                       </div>
                     ))}
                   </div>
@@ -303,11 +304,11 @@ export function ApprovalCenterView() {
                 className="h-64 flex flex-col items-center justify-center text-neutral-500 text-sm space-y-3"
                 role="status"
               >
-                <div className="p-4 rounded-2xl bg-neutral-800/40 border border-neutral-800 text-neutral-300">
+                <div className="p-4 rounded-2xl bg-white/5 border border-white/10 text-accent/50">
                   <Icon name="file-check" className="w-8 h-8" />
                 </div>
                 <div className="text-center">
-                  <p className="text-neutral-300 font-medium">No approval selected</p>
+                  <p className="text-foreground/70 font-medium">No approval selected</p>
                   <p className="text-xs text-neutral-500 mt-0.5">Choose an item from the queue to review its full detail and audit trail.</p>
                 </div>
               </motion.div>

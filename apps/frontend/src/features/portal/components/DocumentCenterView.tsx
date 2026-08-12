@@ -23,6 +23,9 @@ import { useAuth } from '@/features/auth';
 import { portalOdooApi } from '@/features/odoo/api';
 import type { DocumentItem } from '../types';
 import type { PortalDocumentRecord } from '@/features/odoo/api';
+import { LiquidGlassCard } from '@/components/ui/LiquidGlassCard';
+import { Input } from '@/components/ui/inputs/Input';
+import { Button } from '@/components/ui/Button';
 
 /* -------------------------------------------------------------------------- */
 /*  Helpers                                                                    */
@@ -295,63 +298,60 @@ export function DocumentCenterView() {
         className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
       >
         <div>
-          <h1 className="text-2xl font-bold text-neutral-100">Document Center</h1>
-          <p className="text-sm text-neutral-400">
+          <h1 className="text-3xl md:text-4xl font-serif font-light tracking-tight text-foreground">Document Center</h1>
+          <p className="text-base font-light text-neutral-400 leading-relaxed mt-2 max-w-xl">
             Secure presigned S3 deliverable storage, BIM packages, contracts, and version control.
           </p>
         </div>
-        <button
-          className="inline-flex items-center space-x-2 bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-colors shadow-lg shadow-amber-500/20"
-          aria-label="Upload a new document"
-        >
-          <Icon name="upload" className="w-4 h-4" />
-          <span>Upload Document</span>
-        </button>
+        <Button variant="primary" size="md" className="group">
+          <Icon name="upload" className="w-4 h-4 mr-2" />
+          Upload Document
+          <motion.span
+            initial={{ x: 0 }}
+            whileHover={{ x: 6 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+          >
+            →
+          </motion.span>
+        </Button>
       </motion.div>
 
       {/* Search & Folder Filters */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-neutral-900 p-4 rounded-xl border border-neutral-800">
-        <div className="flex items-center space-x-2 w-full sm:w-auto overflow-x-auto" role="tablist" aria-label="Document folders">
-          {FOLDERS.map((folder) => {
-            const isActive = activeFolder === folder;
-            return (
-              <button
-                key={folder}
-                onClick={() => setActiveFolder(folder)}
-                role="tab"
-                aria-selected={isActive}
-                aria-label={`Filter by ${folder} folder`}
-                className={cn(
-                  'relative px-3 py-1.5 rounded-lg text-xs font-semibold capitalize whitespace-nowrap transition-colors',
-                  isActive ? 'text-neutral-950' : 'bg-neutral-800 text-neutral-400 hover:text-neutral-200'
-                )}
-              >
-                {isActive && (
-                  <motion.span
-                    layoutId="folder-pill-active"
-                    className="absolute inset-0 rounded-lg bg-amber-500"
-                    transition={reduced ? { duration: 0.01 } : makeTransition('interaction', 'micro')}
-                    aria-hidden="true"
-                  />
-                )}
-                <span className="relative z-10">{folder}</span>
-              </button>
-            );
-          })}
+      <LiquidGlassCard glow className="p-4 md:p-6">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="relative flex-1 max-w-xs">
+            <Icon name="search" className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
+            <Input
+              placeholder="Search documents or tags..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-12 bg-background/30 border-border/30 focus:border-accent/50 rounded-none py-3 text-sm font-light"
+            />
+          </div>
+          <div className="flex flex-wrap gap-2" role="tablist" aria-label="Document folders">
+            {FOLDERS.map((folder) => {
+              const isActive = activeFolder === folder;
+              return (
+                <button
+                  key={folder}
+                  onClick={() => setActiveFolder(folder)}
+                  role="tab"
+                  aria-selected={isActive}
+                  aria-label={`Filter by ${folder} folder`}
+                  className={cn(
+                    'relative px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-mono rounded-none transition-all duration-500',
+                    isActive
+                      ? 'text-accent bg-white/5 border-b-2 border-accent'
+                      : 'text-neutral-500 hover:text-neutral-300'
+                  )}
+                >
+                  {folder}
+                </button>
+              );
+            })}
+          </div>
         </div>
-
-        <div className="relative w-full sm:w-64">
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search documents or tags..."
-            aria-label="Search documents by name or tag"
-            className="w-full bg-neutral-800 border border-neutral-700 rounded-lg pl-9 pr-3.5 py-1.5 text-xs text-neutral-100 placeholder-neutral-500 focus:outline-none focus:border-amber-500 transition-colors"
-          />
-          <Icon name="search" className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500" />
-        </div>
-      </div>
+      </LiquidGlassCard>
 
       {/* Document Grid */}
       <AnimatePresence mode="wait">
@@ -365,49 +365,55 @@ export function DocumentCenterView() {
             initial="hidden"
             animate="visible"
             exit="hidden"
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             {filteredDocs.map((doc) => (
               <motion.div
                 key={doc.id}
                 variants={fadeLift}
-                whileHover={reduced ? undefined : { y: -6, transition: makeTransition('interaction', 'micro') }}
-                className="bg-neutral-900 border border-neutral-800 rounded-xl p-5 flex flex-col justify-between hover:border-amber-500/40 transition-colors"
+                whileHover={reduced ? undefined : { y: -8, transition: makeTransition('interaction', 'micro') }}
               >
-                <div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-neutral-800 text-amber-400 uppercase tracking-wider">
-                      {doc.version}
-                    </span>
-                    <span className="text-xs text-neutral-500">{doc.fileSize}</span>
-                  </div>
-                  <h3 className="text-sm font-semibold text-neutral-100 mt-3 line-clamp-2">{doc.name}</h3>
-                  <p className="text-xs text-neutral-400 mt-1">Uploaded by {doc.uploadedBy}</p>
+                <LiquidGlassCard glow className="p-6 h-full flex flex-col transition-all duration-700 group-hover:border-accent/20">
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-[9px] uppercase tracking-[0.3em] font-mono text-accent/70">{doc.version}</span>
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-neutral-500 font-mono">{doc.fileSize}</span>
+                    </div>
+                    <h3 className="text-lg font-serif font-light text-foreground/95 leading-tight mb-2 group-hover:text-white transition-colors duration-500 line-clamp-2">{doc.name}</h3>
+                    <p className="text-sm font-light text-neutral-500 mb-6">Uploaded by {doc.uploadedBy}</p>
 
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-1.5 mt-3">
-                    {doc.tags.map((tag, idx) => (
-                      <span
-                        key={idx}
-                        className="text-[10px] bg-neutral-800/60 text-neutral-400 px-2 py-0.5 rounded border border-neutral-700/40"
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-2">
+                      {doc.tags.map((tag, idx) => (
+                        <span
+                          key={idx}
+                          className="text-[9px] uppercase tracking-[0.2em] font-mono bg-white/5 text-neutral-400 px-2.5 py-1 rounded-none border border-white/10"
+                        >
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/10">
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-neutral-500 font-mono">{new Date(doc.uploadedAt).toLocaleDateString()}</span>
+                    <a
+                      href={doc.downloadUrl}
+                      className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-mono text-accent hover:text-white transition-colors duration-500 group"
+                      aria-label={`Download ${doc.name}`}
+                    >
+                      <Icon name="download" className="w-4 h-4" />
+                      <span>Download</span>
+                      <motion.span
+                        initial={{ x: 0 }}
+                        whileHover={{ x: 4 }}
+                        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
                       >
-                        #{tag}
-                      </span>
-                    ))}
+                        →
+                      </motion.span>
+                    </a>
                   </div>
-                </div>
-
-                <div className="flex items-center justify-between mt-5 pt-3 border-t border-neutral-800">
-                  <span className="text-[11px] text-neutral-500">{new Date(doc.uploadedAt).toLocaleDateString()}</span>
-                  <a
-                    href={doc.downloadUrl}
-                    className="inline-flex items-center space-x-1.5 text-xs text-amber-400 hover:text-amber-300 font-semibold transition-colors"
-                    aria-label={`Download ${doc.name}`}
-                  >
-                    <Icon name="download" className="w-3.5 h-3.5" />
-                    <span>Download</span>
-                  </a>
-                </div>
+                </LiquidGlassCard>
               </motion.div>
             ))}
           </motion.div>
@@ -419,26 +425,28 @@ export function DocumentCenterView() {
             initial="hidden"
             animate="visible"
             exit="hidden"
-            className="flex flex-col items-center justify-center text-center py-16 border border-dashed border-neutral-800 rounded-xl"
+            className="flex flex-col items-center justify-center text-center py-24 border border-dashed border-white/10 rounded-2xl"
             role="status"
           >
-            <div className="p-4 rounded-2xl bg-neutral-800/40 border border-neutral-800 text-neutral-300">
-              <Icon name="file-text" className="w-8 h-8" />
+            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 text-neutral-300 mb-6">
+              <Icon name="file-text" className="w-10 h-10 mx-auto text-accent/50" />
             </div>
-            <p className="text-neutral-300 font-medium mt-4">No documents found</p>
-            <p className="text-xs text-neutral-500 mt-1 max-w-xs">
+            <p className="text-lg font-light text-neutral-300 mb-2">No documents found</p>
+            <p className="text-sm text-neutral-500 mt-1 max-w-xs leading-relaxed">
               Nothing matches your search and folder filter. Try a different keyword or reset the folder to{' '}
-              <span className="text-amber-400 font-semibold">all</span>.
+              <span className="text-accent font-medium">all</span>.
             </p>
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
+              className="mt-6"
               onClick={() => {
                 setSearch('');
                 setActiveFolder('all');
               }}
-              className="mt-4 text-xs font-semibold text-amber-400 hover:text-amber-300 transition-colors"
             >
               Clear filters
-            </button>
+            </Button>
           </motion.div>
         )}
       </AnimatePresence>

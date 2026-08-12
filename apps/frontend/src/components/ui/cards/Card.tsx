@@ -30,25 +30,25 @@ const Card = ({
     as === 'article' ? motion.article : as === 'section' ? motion.section : motion.div;
 
   const baseStyles =
-    'relative overflow-hidden rounded-2xl border border-border/10 bg-surface-texture/50 backdrop-blur-sm shadow-xl';
+    'relative overflow-hidden rounded-2xl border border-border/10 backdrop-blur-sm shadow-xl';
 
   const variantStyles = {
     featured: 'bg-gradient-to-br from-surface-light to-surface-dark border-border/10 shadow-2xl',
     minimal:
       'bg-transparent border-border/5 shadow-none backdrop-blur-sm bg-clip-content',
     glass:
-      'bg-white/5 backdrop-blur-2xl border-white/10 shadow-xl bg-clip-padding',
+      'artisan-glass border-white/10 shadow-[var(--artisan-glass-shadow),var(--artisan-glass-highlight)]',
     solid: 'bg-surface-dark border-border/10 shadow-xl',
     luxury:
-      'bg-gradient-to-br from-surface-dark via-surface to-surface-light border-2 border-yellow-500/20 shadow-2xl',
+      'bg-gradient-to-br from-surface-dark via-surface to-surface-light border-2 border-accent/20 shadow-2xl',
   };
 
   const hoverStyles = {
     featured: 'hover:border-gold/30 hover:shadow-2xl hover:shadow-gold/5',
     minimal: 'hover:border-border/20 hover:shadow-md',
-    glass: 'hover:border-white/20 hover:shadow-2xl',
+    glass: 'hover:artisan-glass-gold hover:border-accent/40',
     solid: 'hover:border-border/30 hover:shadow-2xl',
-    luxury: 'hover:border-yellow-500/40 hover:shadow-2xl hover:shadow-yellow-500/10',
+    luxury: 'hover:border-accent/40 hover:shadow-2xl hover:shadow-accent/10',
   };
 
   return (

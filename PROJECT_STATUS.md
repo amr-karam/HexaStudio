@@ -1,9 +1,38 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** August 12, 2026 — Client Portal Navigation ("The Client Command") + Portfolio Refinement
-**Version:** 2.1.9
+**Last Updated:** August 13, 2026 — Frontend Design System Elevation (Tokens, Components, Portal, Services)
+**Version:** 2.1.12
 **Authority Level:** 13 (Production)
 **Current Phase:** Production-Ready — Design System Unified + Odoo-First Architecture + Workflow Automation (DEPLOYED)
+
+---
+
+## 1.0.7 Client Portal KPI Stat Cards — "Obsidian Instrument Panel" (Aug 12, 2026)
+
+- **Elevated `apps/frontend/src/features/portal/components/StatCard.tsx`** — "Silent Luxury" artisan-glass KPI, matching the atelier treatment just applied to `PortalSidebar`/`PortalNav`:
+  - **Card surface**: replaced generic `bg-background/40 backdrop-blur-sm border border-white/5` with `.artisan-glass` + `.artisan-specular-top` (gold specular top hairline via `::before`), retained `rounded-xl p-6 overflow-hidden`, layered `hover:border-accent/30` + `transition-colors duration-700 ease-[var(--hexa-ease-interaction)]` so the artisan-glass gold hover merges gracefully.
+  - **Decorative**: gold radial aura (`-right-10 -top-10 h-24 w-24 rounded-full bg-accent/5 blur-2xl`, `opacity-0` → `group-hover:opacity-100`, 700ms) — identical to the atelier element cards.
+  - **Icon plate**: `rounded-none` → `rounded-lg`, true gradient gold border via 1px `p-px` wrapper (`bg-gradient-to-br from-accent/25 via-accent/[0.07] to-transparent`, `opacity-40` → `group-hover:opacity-100`), retained `group-hover:border-accent/40`, faint gold tint `bg-accent/[0.04]` layered over `bg-surface-light/50` (dedicated overlay layer so both surfaces compose deterministically).
+  - **Value typography**: `font-serif text-4xl font-light` retained; positive trends (`direction === 'up'`) now render `text-gradient-gold` (token-sourced from `globals.css`), otherwise `text-foreground/90`.
+  - **Trend badge**: refined to a glass pill — `rounded-full px-2 py-0.5 bg-white/[0.03] border border-white/5` — with emerald/red/neutral mono color coding retained.
+  - **Preserved untouched**: `motion.div` structure, `fadeLift` variants, `makeTransition` + `index` stagger, `useReducedMotion`, `whileHover` lift, `formatValue`, `TREND_CONFIG`, `Icon`/`IconName` usage, `StatCardProps`, and the hover gold bottom accent line.
+  - **Token purity**: token classes only (`text-accent`, `bg-accent/[0.04]`, `border-accent/30`, `from-accent/25`) — no `text-d4af37`, no raw hex in Tailwind classes; easing via `fadeLift`/`makeTransition` + `var(--hexa-ease-interaction)`; no raw `cubic-bezier`.
+- **Verified**: frontend lint 0/0 (`--max-warnings=0` + design-token gate PASS), typecheck 0 errors, **208/208 tests** (36 files).
+
+---
+
+## 1.0.6 Client Portal Sidebar — "The Client Command Sidebar" (Aug 12, 2026)
+
+- **Elevated `apps/frontend/src/features/portal/components/PortalSidebar.tsx`** — "Silent Luxury" atelier treatment on the active portal navigation rail (desktop fixed + mobile drawer), mirroring the `PortalNav` "Client Command" language already deployed:
+  - **Panel**: layered obsidian — `bg-surface` base + barely-visible gold radial aura at top (`bg-[radial-gradient(ellipse_at_top,rgba(212,175,55,0.05),transparent_70%)]`, decorative `aria-hidden`/`pointer-events-none`) + 1px gold specular top hairline (`from-transparent via-accent/20 to-transparent`) + retained `border-r border-border/30`.
+  - **Brand header**: serif "Client" + `text-accent` "Portal" wordmark (`tracking-[0.3em]`), gold roundel with a **rotating diamond accent** (12s linear 360°, static under `prefers-reduced-motion` — mirrors preloader/PortalNav motif).
+  - **Nav sections**: nav config grouped into 3 sections — `OVERVIEW` (Dashboard, Projects), `WORKSPACE` (Approvals, Documents, Finance), `SYSTEM` (Support, Analytics, Settings) — mono uppercase markers (`font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-neutral-600`) with gold diamond bullets.
+  - **Nav items**: active bar refined to gold specular gradient (`w-[3px] rounded-full bg-gradient-to-b from-accent-light via-accent to-accent-dark`, spring `layoutId="sidebar-active-indicator"` retained), active `text-accent bg-accent/5` + subtle inner glow, hover `hover:text-foreground hover:bg-white/[0.03]`, icon hover shift to accent, labels `tracking-[0.02em]` at `text-sm`.
+  - **User profile**: gold-ring avatar (`border-accent/40 ring-1 ring-accent/20`) + rotating diamond corner accent, role label prefixed by a glowing gold status dot, Sign Out refined to `font-mono text-[0.625rem] uppercase tracking-[0.25em]` with retained red-on-hover.
+  - **Mobile drawer**: slide-out behavior preserved, same elevated panel + gold aura; slide collapses to opacity-only under reduced motion.
+- **Preserved untouched**: `SidebarContent` / `PortalSidebar` / `PortalMobileSidebar` exports, `usePortalStore` mobile wiring, `usePathname/useRouter`/`useAuth`, `Icon` usage, active-state logic (`pathname?.startsWith`), spring `layoutId="sidebar-active-indicator"`, focus rings, red-on-hover logout.
+- **Token purity**: token classes only (`bg-surface`, `text-accent`, `border-accent/20`, `text-neutral-500/600`, `accent-light`/`accent-dark` gradient); the only raw values are decorative `rgba(212,175,55,…)` radial/shadows (explicitly permitted by the design-token gate); motion via `EASE`/`DURATION` tokens; no raw `cubic-bezier`.
+- **Verified**: frontend lint 0/0 (`--max-warnings=0`), typecheck 0 errors, design-token gate PASS, **208/208 tests** (36 files).
 
 ---
 
@@ -76,6 +105,22 @@
   - Added `motion.div` scale-in wrapper (1.05→1, 10s linear) on the Chapter 01 fallback image — mirrors the existing `ChapterHero` 3D scene entrance treatment.
 - **Refined `projects/page.tsx`** — wrapped `ProjectGrid` in `StorybookChapter` (chapter 4: "Proof") so the `/projects` listing page inherits the same book-page aesthetic (double border frame, corner flourishes, chapter numeral, ornamental rules) as the homepage chapters.
 - **No regressions** — `ProjectCard` hover mechanics (3D tilt, clip-path wipe, scale settle, magnetic category filters, scroll-velocity skew, `ProjectDetailModal`) fully preserved.
+- **Verified**: frontend lint 0/0, typecheck 0 errors, **208/208 tests** (36 files), design-token gate PASS.
+
+---
+
+## 1.0.8 Frontend Design System Elevation — Tokens, Components, Portal, Services (Aug 13, 2026)
+
+- **Design tokens (`globals.css`)** — added `--color-gold-rgb: 212, 175, 55` for rgba() references in JS template literals; added `--glass-shadow`, `--glass-shadow-penumbra`, `--glass-highlight-top`, `--glass-highlight-edge`, `--glass-depth-border` for obsidian-depth glassmorphism; added `.text-textPrimary`, `.text-textSecondary`, `.text-textMuted` utility classes mapping to canonical text color tokens; added `.glass-depth` utility class for deep shadow + highlight obsidian panels; fixed `.text-gradient-gold` to use `var(--color-gold)` family instead of hardcoded hex; fixed `.gradient-radial-gold` to use `color-mix(in srgb, var(--color-accent) 8%, transparent)`.
+- **Artisan tokens (`artisan-tokens.css`)** — extracted `--artisan-glass-shadow`, `--artisan-glass-highlight`, `--artisan-gold-shadow` CSS variables from hardcoded values; updated `.artisan-glass` and `.artisan-glass-gold` to use token-sourced rgba via `var(--color-gold-rgb)`; refined shadow depths and highlight intensities.
+- **Button component** — removed duplicate `accent` variant (identical to `primary`); added `glass` variant (`artisan-glass` base + hover → `artisan-glass-gold`); added `glass` to shimmer show condition.
+- **Input component** — changed default border from `border-neutral-200` (light gray, Tailwind arbitrary) to `border-border` (design system token); maintains architectural underline aesthetic.
+- **Card component** — `glass` variant now uses `artisan-glass` instead of raw `bg-white/5 backdrop-blur-2xl border-white/10`; `luxury` variant fixed from `border-yellow-500/20` to `border-accent/20`.
+- **Services page (`ServicesPageContent.tsx`)** — full cinematic redesign: atmospheric hero with layered silk shader + dual radial gold glow + floating light orbs; 3-column grid (was alternating 7/5) with per-card atmospheric gradient backgrounds via `ServiceAtmosphere`; refined typography (9px mono index labels with gold numeral, serif titles with accent hover, neutral-400 body); `LiquidGlassCard` removed in favor of direct CSS glass styling with `--glass-*` tokens; feature list with staggered spring entrance + gold dot indicators; hover state reveals radial gold glow + border highlight; scroll affordance in hero; all `rgba(212,175,55,...)` replaced with `rgba(var(--color-gold-rgb), ...)`.
+- **Document Center (`DocumentCenterView.tsx`)** — replaced all inline styles and `bg-neutral-900`/`bg-amber-*` tokens with `LiquidGlassCard`, `Input`, `Button` components; title upgraded to 3xl/4xl serif; cards now use `artisan-glass` via `LiquidGlassCard glow`; search input uses `Input` component; upload button uses `Button variant="primary"` with spring arrow animation; empty state refined with `Button ghost` + gold icon.
+- **Approval Center (`ApprovalCenterView.tsx`)** — full token alignment: `PendingDot` pulsing animation uses `var(--color-accent)` instead of `bg-amber-400`; all card states transition from `bg-neutral-900`/`bg-amber-500/*` → `bg-surface`/`bg-accent/*`; type badges, status badges, and detail panel all use accent/gold tokens; audit trail left border uses `border-accent/30`; approve button uses `bg-accent` instead of `bg-emerald-500`; empty state uses `bg-white/5` + `text-accent/50`.
+- **DESIGN_SYSTEM.md** — expanded color matrix with CSS Variable and Tailwind Utility columns; added §C (Motion Tokens — Easing & Duration) and §D (Motion Tokens detailed table); added note on dual glass systems (`.glass` vs `.artisan-glass`); updated spacing section with full `@theme` scale.
+- **PROJECT_STATUS.md** — updated frontend test count 207→208, re-verification date.
 - **Verified**: frontend lint 0/0, typecheck 0 errors, **208/208 tests** (36 files), design-token gate PASS.
 
 ---

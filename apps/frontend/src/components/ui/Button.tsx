@@ -6,7 +6,7 @@ import { motion, type TargetAndTransition, type Transition } from 'framer-motion
 import { cn } from '@/lib/utils';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'outline' | 'luxury' | 'couture';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'outline' | 'luxury' | 'couture' | 'glass';
   size?: 'sm' | 'md' | 'lg' | 'icon';
   isLoading?: boolean;
   asChild?: boolean;
@@ -25,6 +25,8 @@ const variants = {
     'bg-white/[0.03] text-white border border-accent/40 backdrop-blur-2xl hover:border-accent hover:shadow-[var(--artisan-glass-shadow),0_0_35px_rgba(212,175,55,0.25)]',
   couture:
     'bg-gradient-to-r from-neutral-900 via-neutral-900/95 to-black text-foreground border border-accent/40 shadow-[var(--artisan-glass-shadow),var(--artisan-glass-highlight)] hover:border-accent hover:shadow-[var(--artisan-glass-shadow),0_0_40px_rgba(212,175,55,0.35)]',
+  glass:
+    'artisan-glass text-foreground hover:artisan-glass-gold hover:border-accent/40 focus-visible:ring-accent/60',
 };
 
 const sizes = {
@@ -91,7 +93,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       className
     );
 
-    const showShimmer = variant === 'primary' || variant === 'luxury';
+    const showShimmer = variant === 'primary' || variant === 'luxury' || variant === 'glass';
 
     if (asChild) {
       return (

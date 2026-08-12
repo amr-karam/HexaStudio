@@ -27,6 +27,7 @@
   --color-gold: #D4AF37;
   --color-gold-bright: #E5C76B;
   --color-gold-deep: #A8862E;
+  --color-gold-rgb: 212, 175, 55;
   --color-text-primary: #FFFFFF;
   --color-text-secondary: #A0A0A0;
   --color-text-muted: #6A6A6E;
@@ -65,7 +66,10 @@
 }
 
 /* -------------------------------------------------------------------------- */
-/*  HEXA Motion Tokens — CSS Custom Properties (mirrors src/lib/motion.ts)     */
+/*  HEXA Motion Tokens — CSS Custom Properties                                  */
+/*  Mirrors the TS token sources:                                              */
+/*    src/lib/motion.ts        (EASE, DURATION, STAGGER — semantic layer)      */
+/*    src/lib/motion/tokens.ts (EASING, DUR, STAGGER_TOKENS — Phase 1 raw)     */
 /* -------------------------------------------------------------------------- */
 
 :root {
@@ -90,6 +94,13 @@
   --glass-bg-hover: rgba(255, 255, 255, 0.04);
   --glass-border-hover: rgba(255, 255, 255, 0.08);
   --glass-highlight: rgba(255, 255, 255, 0.01);
+
+  /* Glass morphism — obsidian-depth variants for portal/dashboard surfaces */
+  --glass-shadow: rgba(0, 0, 0, 0.4);
+  --glass-shadow-penumbra: rgba(0, 0, 0, 0.2);
+  --glass-highlight-top: rgba(255, 255, 255, 0.04);
+  --glass-highlight-edge: rgba(212, 175, 55, 0.06);
+  --glass-depth-border: rgba(255, 255, 255, 0.06);
 }
 
 body {
@@ -171,9 +182,9 @@ body {
   border-color: var(--glass-border-hover);
 }
 
-/* Gold gradient text */
+/* Gold gradient text — token-sourced */
 .text-gradient-gold {
-  background: linear-gradient(135deg, #D4AF37 0%, #E5C76B 40%, #B8860B 100%);
+  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-bright) 40%, var(--color-gold-deep) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -191,12 +202,12 @@ body {
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--color-gold-light, #E5C76B), transparent);
+  background: linear-gradient(90deg, transparent, var(--color-gold-bright, #E5C76B), transparent);
   opacity: 0.7;
 }
-/* Cinematic gradient overlay */
+/* Cinematic gradient overlay — token-sourced */
 .gradient-radial-gold {
-  background: radial-gradient(circle at center, rgba(212, 175, 55, 0.08) 0%, transparent 60%);
+  background: radial-gradient(circle at center, color-mix(in srgb, var(--color-accent) 8%, transparent) 0%, transparent 60%);
 }
 
 /* Premium focus ring (accessibility + luxury) */
@@ -204,6 +215,39 @@ body {
   outline: 2px solid var(--color-accent);
   outline-offset: 4px;
   box-shadow: 0 0 0 6px rgba(212, 175, 55, 0.1);
+}
+
+/* Text color utilities for canonical text tokens */
+.text-textPrimary {
+  color: var(--color-text-primary);
+}
+
+.text-textSecondary {
+  color: var(--color-text-secondary);
+}
+
+.text-textMuted {
+  color: var(--color-text-muted);
+}
+
+/* Glassmorphism depth utility — obsidian-surface panels with shadow + highlight */
+.glass-depth {
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--glass-depth-border);
+  box-shadow:
+    0 0 0 1px var(--glass-shadow),
+    0 8px 32px var(--glass-shadow-penumbra),
+    inset 0 1px 0 var(--glass-highlight-top);
+}
+
+.glass-depth:hover {
+  border-color: var(--glass-border-hover);
+  box-shadow:
+    0 0 0 1px var(--glass-shadow),
+    0 12px 48px var(--glass-shadow-penumbra),
+    inset 0 1px 0 var(--glass-highlight-top);
 }
 
 /* Nav link underline — draws from center on hover/focus (Phase 1 tokens).
