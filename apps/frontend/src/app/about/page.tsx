@@ -120,7 +120,7 @@ export default async function AboutPage() {
             <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-accent/70" />
           </span>
 
-          <h1 className="mb-10 text-6xl font-serif font-light leading-[0.9] tracking-tighter text-foreground md:text-9xl">
+          <h1 className="mb-10 text-6xl font-serif font-light leading-[0.9] tracking-[-0.04em] text-foreground md:text-9xl">
             <TextCharReveal
               text={page?.title ?? 'The Manifesto'}
               as="span"
@@ -183,50 +183,45 @@ export default async function AboutPage() {
             <DiamondOrnament className="mt-8" />
           </div>
 
-          {hasCmsContent ? (
-            <div className="mt-14 prose prose-invert prose-headings:font-serif prose-headings:font-light prose-a:text-accent">
-              <StrapiBlocks content={page?.content ?? []} />
-            </div>
-          ) : (
-            /* Editorial essay — two-column fine-press layout */
-            <div className="mt-16 grid gap-16 md:grid-cols-12 md:gap-14">
-              {/* Essay column */}
-              <div className="md:col-span-7">
-                <p className="drop-cap storybook-body font-light md:text-justify">
-                  We believe the distance between a good render and a masterpiece is
-                  measured in details — the way light falls across brushed metal, the
-                  quiet imperfection of a concrete wall, the patience of a shadow at
-                  dusk. We study the physics of reality so that our digital worlds feel
-                  inhabited long before they exist.
-                </p>
-                <p className="storybook-body storybook-paragraph mt-7 font-light md:text-justify">
-                  The studio was founded on a single conviction: architectural
-                  visualization is not illustration, it is a discipline of seeing. Every
-                  frame we produce is an argument about how a space should feel at a
-                  particular hour, beneath a particular sky, in a particular mood.
-                </p>
-                <p className="storybook-body storybook-paragraph mt-7 font-light md:text-justify">
-                  And so we work the way a fine press sets type — slowly, deliberately,
-                  revising until the image no longer describes the project but becomes
-                  its first true inhabitant.
-                </p>
+            {hasCmsContent ? (
+              <div className="mt-14 prose prose-invert prose-headings:font-serif prose-headings:font-light prose-a:text-accent">
+                <StrapiBlocks content={page?.content ?? []} />
               </div>
-
-              {/* Pull-quote + supporting note column */}
-              <div className="md:col-span-5 md:border-l md:border-accent/10 md:pl-12">
-                <blockquote className="storybook-accent border-l-2 border-accent/30 pl-6 font-serif text-2xl italic leading-snug md:text-3xl">
-                  &ldquo;We do not decorate architecture with light. We use light to
-                  tell the truth about it.&rdquo;
-                </blockquote>
-                <p className="storybook-body mt-10 font-light md:text-justify">
-                  Every commission begins the same way — not with software, but with
-                  listening. We read the drawings, study the context, and ask the
-                  questions that give a building its atmosphere long before the first
-                  pixel is placed.
-                </p>
+            ) : (
+              /* Editorial essay — asymmetrical fine-press layout */
+              <div className="mt-16 grid gap-12 md:grid-cols-12">
+                {/* Main Narrative - shifted to create intentional negative space */}
+                <div className="md:col-span-6 lg:col-span-7 space-y-8">
+                  <p className="drop-cap storybook-body font-light md:text-justify leading-relaxed text-neutral-300">
+                    We believe the distance between a good render and a masterpiece is
+                    measured in details — the way light falls across brushed metal, the
+                    quiet imperfection of a concrete wall, the patience of a shadow at
+                    dusk. We study the physics of reality so that our digital worlds feel
+                    inhabited long before they exist.
+                  </p>
+                  <p className="storybook-body storybook-paragraph font-light md:text-justify leading-relaxed text-neutral-400">
+                    The studio was founded on a single conviction: architectural
+                    visualization is not illustration, it is a discipline of seeing. Every
+                    frame we produce is an argument about how a space should feel at a
+                    particular hour, beneath a particular sky, in a particular mood.
+                  </p>
+                </div>
+                
+                {/* High-contrast sidecar for the pull-quote */}
+                <div className="md:col-span-6 lg:col-span-5 md:pt-24 lg:pt-32">
+                  <blockquote className="storybook-accent border-l-2 border-accent/30 pl-8 font-serif text-2xl italic leading-tight md:text-3xl text-foreground">
+                    &ldquo;We do not decorate architecture with light. We use light to
+                    tell the truth about it.&rdquo;
+                  </blockquote>
+                  <p className="storybook-body mt-12 font-light md:text-justify text-neutral-500 leading-relaxed">
+                    Every commission begins the same way — not with software, but with
+                    listening. We read the drawings, study the context, and ask the
+                    questions that give a building its atmosphere long before the first
+                    pixel is placed.
+                  </p>
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </div>
       </section>
 

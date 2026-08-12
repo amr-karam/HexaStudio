@@ -7,6 +7,19 @@
 
 ---
 
+## 1.0.5 Client Portal Navigation — "The Client Command" (Aug 12, 2026)
+
+- **Rewrote `apps/frontend/src/features/portal/PortalNav.tsx`** — luxury executive-command top bar (Silent Luxury): obsidian glass (`bg-background/80 backdrop-blur-2xl`), serif/`text-accent` "Client Portal" wordmark with a slowly rotating gold diamond accent, gold roundel brand mark.
+- **All 9 key routes reachable from the top nav** — Dashboard, Projects, Documents, Approvals (always visible, `lg+`), then a premium "More" glass dropdown for Finance, Analytics, Notifications, Support, Settings. Two-tier strategy keeps the bar under 1024px (fits at exactly `lg`, verified by budget math).
+- **Desktop**: mono uppercase labels (`text-xs uppercase tracking-[0.25em]`), `PortalIcons` `Icon` per item, gold center-rule `layoutId` spring indicator (`portal-nav-indicator`), subtle `bg-accent/10` active "sign-off" state; `aria-current="page"`, `focus-luxury` rings.
+- **Mobile**: animated hamburger → full-screen obsidian overlay with staggered serif links (`font-serif text-2xl md:text-3xl`), mono `01–09` index markers, "Executive HQ" section marker, scroll-lock + Escape + focus restore (focus returns to toggle on close).
+- **User dropdown**: gold-ring avatar → premium glass panel (Profile, Settings, Logout). Currency selector preserved. Logout gets hover state (`hover:text-red-400`).
+- **Motion**: all easing sourced from `EASE`/`DURATION`/`STAGGER` tokens + `useHEXAMotion` reduced-motion collapse; click-outside dismissal on all floatings; no raw `cubic-bezier`, no raw hex.
+- **Note**: `PortalNav` remains a standalone exported component (unchanged interface); the live portal layout currently renders `PortalTopBar` in `apps/frontend/src/app/portal/layout.tsx`. Wiring/consolidating the two top bars is a deferred integration decision, not part of this task.
+- **Verified**: frontend lint 0/0 (`--max-warnings=0`), typecheck 0 errors, design-token gate PASS, **208/208 tests** (36 files).
+
+---
+
 ## 0. Design System Unification — ADR-013 (Aug 11, 2026)
 
 - **Retired `@hexastudio/ui` package** — 4% adoption (3 of ~70 exports), broken build (`noEmit: true`), governance violation (Navy/Indigo palette vs mandated Gold/Black)
