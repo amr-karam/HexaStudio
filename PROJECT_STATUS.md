@@ -23,6 +23,21 @@
 
 ---
 
+## 1.0.9 Client Portal Document Center — "The Vault" (Aug 12, 2026)
+
+- **Elevated `apps/frontend/src/features/portal/components/DocumentCenterView.tsx`** — "Silent Luxury" private-vault redesign, matching the artisan-glass treatment applied to `PortalSidebar`/`PortalNav`/`StatCard`:
+  - **Section header**: atelier `§ 01 — Documents` mono eyebrow flanked by gold hairlines; serif `h1` "The Document *Vault*" with `text-gradient-gold` italic accent; ambient `gradient-radial-gold` aura behind the header.
+  - **Search & filter rail**: replaced `LiquidGlassCard` with raw `.artisan-glass` + `.artisan-specular-top` obsidian panel, top radial gold aura (`rgba(212,175,55,0.06)`), `Input` search inside the panel, and folder pills with a shared-layout gold specular spring underline (`layoutId="doc-folder-indicator"`).
+  - **Upload dropzone**: `.artisan-glass-gold` + `.artisan-specular-top` with a **dashed gold border** — because the unlayered artisan shorthand outranks Tailwind utilities, the dashed style is applied via inline `borderStyle` (comment documents the cascade-layer rationale). "Secured Transfer" mono eyebrow, serif CTA, gold icon plate, gold-tinted drag wash overlay, reduced-motion-guarded spinner, keyboard + `role="button"`/`aria-disabled`/`aria-busy` a11y.
+  - **Upload wiring (additive)**: `portalOdooApi.uploadDocument(activeProjectId, file)` + `queryClient.invalidateQueries(['portal-documents', ...])` so new files refetch into the grid; validation mirroring `DocumentUpload` (50MB cap, allowed-type list), `sonner` toast feedback; header "Upload Document" CTA now opens the picker (previously decorative).
+  - **Document cards**: `.artisan-glass artisan-specular-top` index cards with hover gold border (via the class's own `:hover`), gold radial aura reveal, gold-tinted file-type plate (`getFileTypeLabel` extension label), mono version + status chip (approved/in_review/draft), serif file name, tags, archival date + elegant link-style Download action with token-eased arrow `group-hover` translate.
+  - **Empty state**: diamond ornament rule, gold aura, serif "The archive is *silent*" with gold italic accent, ghost Clear-filters; loading skeleton re-skinned for the obsidian vault.
+- **Preserved untouched**: `useAuth`/`useQuery` data flow, `inferFolder`/`inferTags`/`mapToDocumentItem` mapping, folder grouping + search/filter logic, presigned `downloadUrl` anchors + `aria-label`s, `fadeLift`/`staggerContainer`/`makeTransition` motion, `prefers-reduced-motion` (variant `custom`, hover-lift, upload spinner, dropdown drag classes), tablist ARIA.
+- **Token purity**: token classes only (`text-accent`, `bg-accent/[0.04]`, `border-accent/30`, `from-accent-light via-accent to-accent-dark`); decorative `rgba(212,175,55,…)` gradients permitted by the gate; easing via `var(--hexa-ease-interaction)` + `makeTransition`; no `cubic-bezier`, no raw hex in Tailwind classes.
+- **Verified**: frontend typecheck 0 errors, ESLint 0/0 (`--max-warnings=0`), design-token gate PASS (`--allow-inline-style-hex`), **208/208 tests** (36 files).
+
+---
+
 ## 1.0.7 Client Portal KPI Stat Cards — "Obsidian Instrument Panel" (Aug 12, 2026)
 
 - **Elevated `apps/frontend/src/features/portal/components/StatCard.tsx`** — "Silent Luxury" artisan-glass KPI, matching the atelier treatment just applied to `PortalSidebar`/`PortalNav`:
