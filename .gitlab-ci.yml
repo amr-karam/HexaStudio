@@ -477,7 +477,6 @@ build-mobile:
   before_script: *npm_setup
   cache: *cache_npm
   script:
-    - npx expo login --token $EXPO_TOKEN
     - npx eas build --platform all --profile production --non-interactive
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
@@ -492,7 +491,6 @@ submit-mobile:
   before_script: *npm_setup
   cache: *cache_npm
   script:
-    - npx expo login --token $EXPO_TOKEN
     - npx eas submit --platform all --profile production --non-interactive
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
