@@ -1,0 +1,19 @@
+{
+    "environment": [
+        {
+            "type": "env",
+            "key": "EXAMPLE_KEY",
+            "value": "example_value"
+        }
+    ],
+    "setup": {
+        "windows": [
+            "Write-Output \"Setup ran successfully with $env:EXAMPLE_KEY!\" | Out-File -FilePath (Join-Path $env:TEMP air-setup-test.txt)"
+        ]
+    },
+    "cleanup": {
+        "windows": [
+            "Remove-Item -Path (Join-Path $env:TEMP air-setup-test.txt) -Force -ErrorAction SilentlyContinue"
+        ]
+    }
+}

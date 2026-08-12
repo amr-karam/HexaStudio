@@ -49,9 +49,38 @@ HEXA STUDIO enforces a strict 60-30-10 architectural color balance across all we
 - **Body & UI**: `Inter` (Sans-serif, clean legibility) → `--font-sans`
 - **Monospace & Metadata**: `JetBrains Mono` (Timestamps, code, IDs) → `--font-mono`
 
-### C. Motion Tokens (Easing & Duration)
+### C. Typography Scale & Editorial Tracking
 
-Canonical easing curves (`:root` in `globals.css`, mirrored in `src/lib/motion/tokens.ts`):
+**Font families** (Google Fonts):
+- **Headings**: `Playfair Display` (Serif, italic accents) → `--font-serif`
+- **Body & UI**: `Inter` (Sans-serif, clean legibility) → `--font-sans`
+- **Monospace & Metadata**: `JetBrains Mono` (Timestamps, code, IDs) → `--font-mono`
+
+**Tracking (letter-spacing) — editorial consistency rules:**
+
+| Context | Token / Value | Usage |
+|---------|--------------|-------|
+| Serif display headings | `tracking-tighter` / `tracking-[-0.04em]` | Large serif titles (h1, h2) — tight, modern, dramatic |
+| Mono labels (eyebrows, section markers) | `tracking-[0.4em]` / `tracking-[0.5em]` | `§ 01`, `01 — SERVICE`, nav items — wide, editorial, refined |
+| Mono small labels (badges, pills) | `tracking-[0.2em]` / `tracking-[0.25em]` | Status chips, file-type plates, footer metadata |
+| Mono medium labels (nav, sidebar) | `tracking-[0.3em]` / `tracking-[0.35em]` | Portal nav items, mobile overlay links |
+| All-caps sans labels | `tracking-wider` | UI chrome, button labels, section overline text |
+| Body text | Default (0) | Never apply manual tracking to body copy |
+
+**Leading (line-height) — readability hierarchy:**
+
+| Context | Value | Usage |
+|---------|-------|-------|
+| Serif display headings | `leading-[0.9]`–`leading-[1.05]` | Tight, poster-like impact (h1, h2) |
+| Serif sub-headings | `leading-tight` / `leading-relaxed` | h3, editorial labels |
+| Body copy (Inter) | `leading-relaxed` / `leading-[1.8]` | Long-form reading, storybook body |
+| Mono metadata | `leading-normal` / default | Timestamps, IDs, inline labels |
+
+> **Typography rule**: Headings use tight tracking/leading for dramatic poster-like presence; mono labels use wide tracking for editorial refinement; body copy never gets manual tracking. The tracking values documented above are the canonical editorial scale — deviate only with design justification.
+
+### D. Motion Tokens (Easing & Duration)
+
+Canonical easing curves (`:root` in `globals.css`, canonical source `src/lib/motion.ts`, compatibility re-export `src/lib/motion/tokens.ts`):
 
 | Token | Curve | Purpose |
 |-------|-------|---------|
@@ -59,40 +88,17 @@ Canonical easing curves (`:root` in `globals.css`, mirrored in `src/lib/motion/t
 | `--hexa-ease-interaction` | `cubic-bezier(0.34, 1.56, 0.64, 1)` | Bouncy spring — button hover, tooltips, magnetic |
 | `--hexa-ease-transition` | `cubic-bezier(0.25, 0.1, 0.25, 1)` | Balanced — modal opens, page slides |
 | `--hexa-ease-sharp` | `cubic-bezier(0.4, 0, 0.6, 1)` | Fast, precise — error messages, toggles |
-| `--hexa-ease-in-out-quint` | `cubic-bezier(0.76, 0, 0.24, 1)` | Symmetric cinematic — page transitions, preloader |
+| `--hexa-ease-cinematic` | `cubic-bezier(0.76, 0, 0.24, 1)` | Symmetric cinematic — page transitions, preloader |
 
-Durations (`:root`, mirrored in `motion/tokens.ts` `DUR`):
+Durations (`:root`, canonical source `src/lib/motion.ts`, compatibility re-export `src/lib/motion/tokens.ts`):
 
 | Token | Value | Purpose |
 |-------|-------|---------|
 | `--hexa-duration-micro` | `0.2s` | Hover states, cursor feedback |
-| `--hexa-duration-ui` | `0.4s` | UI chrome, curtain cover/reveal |
+| `--hexa-duration-component` | `0.4s` | UI chrome, curtain cover/reveal, magnetic settle |
 | `--hexa-duration-scene` | `0.8s` | Scene-scale movement, hero imagery |
 | `--hexa-duration-transition` | `0.7s` | Full page-transition envelope |
 | `--hexa-duration-page` | `0.75s` | Page-level transitions |
-| `--hexa-duration-camera` | `1.4s` | 3D camera moves |
-
-> **Glass tokens**: Two semantic glass systems coexist — `.glass` (subtle white-tint, general UI) and `.artisan-glass` (dark-tint with gold reflections, premium surfaces). Both use canonical `--hexa-ease-*` easing.
-
-### D. Motion Tokens (Easing & Duration)
-
-Easing curves and durations are defined in `globals.css` `:root` and mirrored in `src/lib/motion/tokens.ts`.
-
-| Easing Token | Curve | Semantic Use |
-|---|---|---|
-| `--hexa-ease-entrance` | `cubic-bezier(0.16, 1, 0.3, 1)` | Entrances, reveals, menu staggers |
-| `--hexa-ease-interaction` | `cubic-bezier(0.34, 1.56, 0.64, 1)` | Button hover, tooltips, bouncy feedback |
-| `--hexa-ease-transition` | `cubic-bezier(0.25, 0.1, 0.25, 1)` | Modal opens, page slides |
-| `--hexa-ease-sharp` | `cubic-bezier(0.4, 0, 0.6, 1)` | Error messages, toggles |
-| `--hexa-ease-in-out-quint` | `cubic-bezier(0.76, 0, 0.24, 1)` | Cinematic page transitions |
-
-| Duration Token | Time | Semantic Use |
-|---|---|---|
-| `--hexa-duration-micro` | `0.2s` | Hover states, cursor feedback |
-| `--hexa-duration-ui` | `0.4s` | UI chrome, curtains, magnetic settle |
-| `--hexa-duration-scene` | `0.8s` | Scene-scale movement, hero imagery |
-| `--hexa-duration-transition` | `0.7s` | Full page transition envelope |
-| `--hexa-duration-page` | `0.75s` | Page transitions |
 | `--hexa-duration-camera` | `1.4s` | 3D camera moves |
 
 > **Rule**: Never use raw `cubic-bezier(...)` or linear `ease` in components. The `check-design-tokens.mjs` gate enforces this (canonical sources exempt). Stagger intervals live in `src/lib/motion/tokens.ts` (`STAGGER_TOKENS.chars/cards/lines`) — no CSS mirror.
