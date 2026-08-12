@@ -1,11 +1,14 @@
 http:
   routers:
-    # Main Website
+    # Main Website (Non-WWW)
     website:
-      rule: "Host(`hexastudio.net`) || Host(`www.hexastudio.net`)"
+      rule: "Host(`hexastudio.net`)"
       service: frontend
-      middlewares:
-        - redirect-www
+
+    # Main Website (WWW — serve same content, no redirect needed)
+    website-www:
+      rule: "Host(`www.hexastudio.net`)"
+      service: frontend
 
     # Backend API
     api:
@@ -185,13 +188,6 @@ http:
           - "${TRAEFIK_AUTH_USER}:${TRAEFIK_AUTH_HASH}"
 
     # www → non-www redirect — prevents infinite loop
-    # When a request comes to www.hexastudio.net, it gets
-    # explicitly redirected to hexastudio.net (non-www).
-    redirect-www:
-      redirect:
-        to: "https://hexastudio.net"
-        permanent: true
-
     forwarded-headers:
       headers:
         customRequestHeaders:
