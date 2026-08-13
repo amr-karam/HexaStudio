@@ -8,8 +8,8 @@ WORKDIR /app
 FROM base AS deps
 COPY package-lock.json package.json ./
 COPY apps/frontend/package.json apps/frontend/
-COPY apps/types/package.json apps/types/ 2>/dev/null || true
-COPY apps/utils/package.json apps/utils/ 2>/dev/null || true
+COPY packages/types/package.json packages/types/
+COPY packages/utils/package.json packages/utils/
 RUN npm install --no-audit --no-fund --legacy-peer-deps
 
 # Stage 3: Builder
