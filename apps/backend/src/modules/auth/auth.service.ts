@@ -316,7 +316,7 @@ export class AuthService {
   private signAccessToken(user: User): string {
     return this.jwtService.sign(
       { sub: user.id, email: user.email, role: user.role, jti: randomUUID() },
-      { expiresIn: '15m' },
+      { expiresIn: '15m', algorithm: 'RS256' },
     );
   }
 

@@ -65,8 +65,8 @@
 | Algorithm | RS256 |
 | Access Token TTL | 15 minutes |
 | Refresh Token TTL | 7 days |
-| Secret | 256-bit minimum, injected via env |
-| Storage | HTTP-only cookies (preferred) or Authorization header |
+| Secret | RSA Key pair (Private/Public) |
+| Storage | Environment variables/Secret Manager |
 
 ### Password Policy
 
@@ -221,7 +221,7 @@ async remove(@Param('id') id: string) {
 
 1. **Never commit secrets** — `.env` files are in `.gitignore`
 2. **Use environment variables** — For all configuration
-3. **Rotate regularly** — JWT secrets quarterly, database passwords on staff change
+3. **Rotate regularly** — RSA Key pair (JWT) quarterly (ensure graceful key rollover), database passwords on staff change
 4. **Audit access** — Log all secret access in production
 5. **CI/CD secrets** — Use GitHub Actions secrets or vault
 

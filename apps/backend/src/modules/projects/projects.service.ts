@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import type { Project, ProjectResponse, Category, ProjectLiveStatus, StoryBlock } from '@hexastudio/types';
+import type { Project, ProjectResponse, Category, ProjectLiveStatus, StoryBlock, ModelConfig } from '@hexastudio/types';
 import { getEnv } from '../../config/env';
 import { OdooService } from '../odoo/odoo.service';
 import { RedisService } from '../storage/redis.service';
@@ -316,6 +316,40 @@ export class ProjectsService {
         lastUpdate,
       },
     };
+  }
+
+  async getModelConfig(slug: string): Promise<ModelConfig> {
+    const modelConfigs: Record<string, ModelConfig> = {
+      'hexa-crystal': {
+        path: '/models/hexa-crystal.glb',
+        scale: 1,
+        position: [0, 0, 0],
+        rotation: [0, 0, 0],
+        exposure: 1,
+        envMapIntensity: 1,
+        cinematicPoints: [
+          { name: 'Hero', position: [0, 2, 5], lookAt: [0, 0, 0] },
+          { name: 'Detail', position: [2, 1, 2], lookAt: [0, 0, 0] },
+        ],
+        animation: { autoplay: true, loop: 2201, speed: 1 },
+      },
+      'tower': {
+        path: '/models/tower.glb',
+        scale: 0.5,
+        position: [0, -2, 0],
+        rotation: [0, 0, 0],
+        exposure: 1.2,
+        envMapIntensity: 1.5,
+        cinematicPoints: [
+          { name: 'Ground', position: [0, 0, 10], lookAt: [0, 5, 0] },
+          { name: 'Mid-Rise', position: [5, 15, 5], lookAt: [0, 15, 0] },
+          { name: 'Summit', position: [0, 40, 2], lookAt: [0, 40, 0] },
+        ],
+        animation: { autoplay: true, loop: 2201, speed: 1 },
+      },
+    };
+
+    return modelConfigs[slug] || modelConfigs['hexa-crystal'];
   }
 
   private mapProject(item: Record<string, unknown>): Project {

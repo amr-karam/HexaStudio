@@ -1,10 +1,13 @@
-import { useEffect, useRef, useMemo, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import { useThree, useFrame } from '@react-three/fiber';
 import gsap from 'gsap';
 import { useCameraStore } from '@/features/scene/store/camera-store';
 import { Vector3 } from 'three';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { getModelConfig } from '@/features/scene/config/model-registry';
+import { getDefaultModelConfig, fetchModelConfig } from '@/features/scene/config/model-registry';
+import { ModelConfig } from '@hexastudio/types';
+
+/* ... */
 
 /* -------------------------------------------------------------------------- */
 /*  Constants                                                                  */
@@ -32,8 +35,7 @@ const _lookAtTarget = new Vector3();
 /*  Target registry builder                                                    */
 /* -------------------------------------------------------------------------- */
 
-function buildTargets() {
-  const config = getModelConfig();
+function buildTargetsFromConfig(config: ModelConfig) {
   const targets: Record<string, { position: Vector3; lookAt: Vector3 }> = {};
   for (const point of config.cinematicPoints) {
     targets[point.name] = {
@@ -52,7 +54,7 @@ function buildTargets() {
 /*  Hook                                                                       */
 /* -------------------------------------------------------------------------- */
 
-export function useCinematicCamera(enabled = true) {
+export function useCinematicCamera(projectId: string = 'default', enabled = true) {
   const { camera, gl } = useThree();
   const store = useCameraStore();
   const currentTarget = store.currentTarget;
@@ -60,15 +62,22 @@ export function useCinematicCamera(enabled = true) {
   const setTransitioning = store.setTransitioning;
   const reducedMotion = useReducedMotion();
 
+  const [targets, setTargets] = useState(() => buildTargetsFromConfig(getDefaultModelConfig(projectId)));
+
+  useEffect(() => {
+    fetchModelConfig(projectId).then(config => {
+      setTargets(buildTargetsFromConfig(config));
+    });
+  }, [projectId]);
+
   const mouse = useRef({ x: 0, y: 0 });
   const idleAngle = useRef(0);
   const parallaxPos = useRef({ x: 0, y: 0 });
   const transitioning = useRef(false);
   const ctxRef = useRef<gsap.Context | null>(null);
 
-  const targets = useMemo(buildTargets, []);
-
   // Subscribe to pointer for parallax.
+// ...
   useEffect(() => {
     if (!enabled) return;
     const handleMouseMove = (e: PointerEvent) => {

@@ -1,8 +1,9 @@
 import { z } from 'zod';
 
 const envSchema = z.object({
-  // Required — throw if missing
-  JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters'),
+  // JWT
+  JWT_PUBLIC_KEY: z.string().min(1, 'JWT_PUBLIC_KEY is required'),
+  JWT_PRIVATE_KEY: z.string().min(1, 'JWT_PRIVATE_KEY is required'),
   CMS_URL: z.string().url('CMS_URL must be a valid URL'),
 
   // MinIO

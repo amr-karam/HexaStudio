@@ -1,12 +1,18 @@
-import { Controller, Post, Body, Get, UseGuards, VERSION_NEUTRAL, Request } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, VERSION_NEUTRAL, Request, UsePipes } from '@nestjs/common';
 import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
 import { ApiTags, ApiOperation, ApiBody, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { RegisterDto, LoginDto } from '../auth/dto/auth.dto';
+import { 
+  RegisterDtoClass as RegisterDto, 
+  LoginDtoClass as LoginDto, 
+  RegisterSchema,
+  LoginSchema
+} from '../auth/dto/auth.dto';
 import { AuthService } from '../auth/auth.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { MobileApiService } from './mobile.service';
 import { RegisterPushTokenDto } from './dto/push-token.dto';
 import type { User } from '@hexastudio/types';
+import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe';
 
 @ApiTags('Mobile')
 @Controller({ path: 'mobile', version: ['1', VERSION_NEUTRAL] })
@@ -23,6 +29,7 @@ export class MobileApiController {
   @ApiBody({ type: RegisterDto })
   @ApiResponse({ status: 201, description: 'User registered successfully' })
   @ApiResponse({ status: 400, description: 'Validation failed' })
+  @UsePipes(new ZodValidationPipe(RegisterSchema))
   async register(@Body() body: RegisterDto) {
     return this.authService.register(body.email, body.username, body.password);
   }
@@ -34,6 +41,7 @@ export class MobileApiController {
   @ApiBody({ type: LoginDto })
   @ApiResponse({ status: 200, description: 'Login successful' })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
+  @UsePipes(new ZodValidationPipe(LoginSchema))
   async login(@Body() body: LoginDto) {
     return this.authService.login(body.identifier, body.password);
   }

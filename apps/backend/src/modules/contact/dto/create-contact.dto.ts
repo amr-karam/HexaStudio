@@ -1,36 +1,37 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEmail, IsOptional, IsString, IsIn } from 'class-validator';
+import { z } from 'zod';
 
-export class CreateContactDto {
+export const CreateContactSchema = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+  company: z.string().optional(),
+  phone: z.string().optional(),
+  service: z.string().optional(),
+  budget: z.enum(['under_50k', '50k_100k', '100k_500k', '500k_plus']).optional(),
+  message: z.string().min(1),
+});
+
+export type CreateContactDto = z.infer<typeof CreateContactSchema>;
+
+export class CreateContactDtoClass {
   @ApiProperty({ example: 'John Doe', description: 'Full name of the sender' })
-  @IsString()
   name!: string;
 
   @ApiProperty({ example: 'john@example.com', description: 'Email address of the sender' })
-  @IsEmail()
   email!: string;
 
   @ApiPropertyOptional({ example: 'Acme Corp', description: 'Company name (optional)' })
-  @IsOptional()
-  @IsString()
   company?: string;
 
   @ApiPropertyOptional({ example: '+1234567890', description: 'Phone number (optional)' })
-  @IsOptional()
-  @IsString()
   phone?: string;
 
   @ApiPropertyOptional({ example: 'residential', description: 'Service slug (e.g. "residential", "commercial")' })
-  @IsOptional()
-  @IsString()
   service?: string;
 
   @ApiPropertyOptional({ example: '100k_500k', description: 'Budget range: under_50k, 50k_100k, 100k_500k, 500k_plus' })
-  @IsOptional()
-  @IsIn(['under_50k', '50k_100k', '100k_500k', '500k_plus'])
   budget?: 'under_50k' | '50k_100k' | '100k_500k' | '500k_plus';
 
   @ApiProperty({ example: 'I would like to discuss a project...', description: 'Message content' })
-  @IsString()
   message!: string;
 }

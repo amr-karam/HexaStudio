@@ -17,8 +17,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         ExtractJwt.fromAuthHeaderAsBearerToken(),
       ]),
       ignoreExpiration: false,
-      secretOrKey: env.JWT_SECRET,
-      algorithms: ['HS256'],  // Enforce HS256 to prevent algorithm confusion attacks. TODO: migrate to RS256 (per SECURITY_STANDARDS.md) when an RSA key pair is provisioned.
+      publicKey: env.JWT_PUBLIC_KEY,
+      algorithms: ['RS256'],
     });
   }
 

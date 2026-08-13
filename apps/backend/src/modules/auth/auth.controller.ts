@@ -1,63 +1,31 @@
-import { Controller, Post, Body, Get, UseGuards, Request, Res, Headers, VERSION_NEUTRAL } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Request, Res, Headers, VERSION_NEUTRAL, UsePipes } from '@nestjs/common';
 import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
 import { ApiTags, ApiOperation, ApiBody, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { IsEmail, IsString, MinLength, MaxLength, Matches } from 'class-validator';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import type { User } from '@hexastudio/types';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CsrfGuard, generateCsrfToken, CSRF_COOKIE_NAME } from './guards/csrf.guard';
-import { RegisterDto, LoginDto } from './dto/auth.dto';
-
-class RefreshTokenDto {
-  @IsString()
-  refreshToken!: string;
-}
-
-class ForgotPasswordDto {
-  @IsEmail()
-  email!: string;
-}
-
-class ResetPasswordDto {
-  @IsString()
-  code!: string;
-
-  @IsString()
-  @MinLength(12)
-  @MaxLength(100)
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/, {
-    message: 'Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character',
-  })
-  password!: string;
-
-  @IsString()
-  @MinLength(12)
-  @MaxLength(100)
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/, {
-    message: 'Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character',
-  })
-  passwordConfirmation!: string;
-}
-
-class ChangePasswordDto {
-  @IsString()
-  @MinLength(12)
-  @MaxLength(100)
-  currentPassword!: string;
-
-  @IsString()
-  @MinLength(12)
-  @MaxLength(100)
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/, {
-    message: 'Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character',
-  })
-  newPassword!: string;
-}
+import { 
+  RegisterDtoClass as RegisterDto, 
+  LoginDtoClass as LoginDto, 
+  RefreshTokenDtoClass as RefreshTokenDto, 
+  ForgotPasswordDtoClass as ForgotPasswordDto, 
+  ResetPasswordDtoClass as ResetPasswordDto, 
+  ChangePasswordDtoClass as ChangePasswordDto,
+  RegisterSchema,
+  LoginSchema,
+  RefreshTokenSchema,
+  ForgotPasswordSchema,
+  ResetPasswordSchema,
+  ChangePasswordSchema
+} from './dto/auth.dto';
+import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe';
+import { SecurityAuditService } from '../security/security-audit.service';
 
 const COOKIE_OPTIONS = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
+  secure: true,
   sameSite: 'lax' as const,
   path: '/',
   maxAge: 15 * 60 * 1000,
@@ -66,13 +34,17 @@ const COOKIE_OPTIONS = {
 @ApiTags('Auth')
 @Controller({ path: 'auth', version: ['1', VERSION_NEUTRAL] })
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly securityAuditService: SecurityAuditService,
+  ) {}
 
   @Post('register')
   @ApiOperation({ summary: 'Register a new user' })
   @ApiBody({ type: RegisterDto })
   @ApiResponse({ status: 201, description: 'User registered successfully' })
   @ApiResponse({ status: 400, description: 'Invalid input' })
+  @UsePipes(new ZodValidationPipe(RegisterSchema))
   async register(
     @Body() body: RegisterDto,
     @Res({ passthrough: true }) res: Response,
@@ -89,15 +61,31 @@ export class AuthController {
   @ApiBody({ type: LoginDto })
   @ApiResponse({ status: 200, description: 'Login successful' })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
+  @UsePipes(new ZodValidationPipe(LoginSchema))
   async login(
     @Body() body: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const result = await this.authService.login(body.identifier, body.password);
-    res.cookie('auth_token', result.accessToken, COOKIE_OPTIONS);
-    const csrfToken = generateCsrfToken();
-    res.cookie(CSRF_COOKIE_NAME, csrfToken, { ...COOKIE_OPTIONS, httpOnly: false });
-    return { user: result.user, accessToken: result.accessToken, refreshToken: result.refreshToken };
+    try {
+      const result = await this.authService.login(body.identifier, body.password);
+      res.cookie('auth_token', result.accessToken, COOKIE_OPTIONS);
+      const csrfToken = generateCsrfToken();
+      res.cookie(CSRF_COOKIE_NAME, csrfToken, { ...COOKIE_OPTIONS, httpOnly: false });
+      
+      this.securityAuditService.logEvent({
+        type: 'LOGIN_SUCCESS',
+        userId: result.user.id,
+        details: { identifier: body.identifier },
+      });
+      
+      return { user: result.user, accessToken: result.accessToken, refreshToken: result.refreshToken };
+    } catch (error) {
+      this.securityAuditService.logEvent({
+        type: 'LOGIN_FAILURE',
+        details: { identifier: body.identifier },
+      });
+      throw error;
+    }
   }
 
   @Get('me')
@@ -130,6 +118,7 @@ export class AuthController {
   @ApiBody({ type: RefreshTokenDto })
   @ApiResponse({ status: 200, description: 'Tokens refreshed' })
   @ApiResponse({ status: 401, description: 'Invalid refresh token' })
+  @UsePipes(new ZodValidationPipe(RefreshTokenSchema))
   async refreshToken(
     @Body() body: RefreshTokenDto,
     @Res({ passthrough: true }) res: Response,
@@ -163,6 +152,7 @@ export class AuthController {
   @ApiBody({ type: ForgotPasswordDto })
   @ApiResponse({ status: 200, description: 'Reset email sent' })
   @ApiResponse({ status: 400, description: 'Failed to send email' })
+  @UsePipes(new ZodValidationPipe(ForgotPasswordSchema))
   async forgotPassword(@Body() body: ForgotPasswordDto) {
     return this.authService.forgotPassword(body.email);
   }
@@ -174,6 +164,7 @@ export class AuthController {
   @ApiBody({ type: ResetPasswordDto })
   @ApiResponse({ status: 200, description: 'Password reset successfully' })
   @ApiResponse({ status: 400, description: 'Failed to reset password' })
+  @UsePipes(new ZodValidationPipe(ResetPasswordSchema))
   async resetPassword(@Body() body: ResetPasswordDto) {
     return this.authService.resetPassword(body.code, body.password, body.passwordConfirmation);
   }
@@ -186,6 +177,7 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Password changed, new tokens issued' })
   @ApiResponse({ status: 400, description: 'Failed to change password' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @UsePipes(new ZodValidationPipe(ChangePasswordSchema))
   async changePassword(
     @Request() req: { user: User },
     @Body() body: ChangePasswordDto,

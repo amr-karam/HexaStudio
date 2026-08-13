@@ -33,7 +33,7 @@ export const CameraController = () => {
 
   // Always call both hooks — enabled flag controls activation.
   useScrollCamera(heroPath, { enabled: isHomePage });
-  useCinematicCamera(!isHomePage);
+  useCinematicCamera('default', !isHomePage);
 
   return null;
 };

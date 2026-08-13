@@ -1,3 +1,30 @@
+export interface AnimationPolicy {
+  /** Clip name to play. If undefined, plays the first clip. */
+  clipName?: string;
+  /** Whether to autoplay on load. */
+  autoplay: boolean;
+  /** Loop mode — use Three.js LoopOnce (2200), LoopRepeat (2201), or LoopPingPong (2202). */
+  loop: 2200 | 2201 | 2202;
+  /** Playback speed multiplier. */
+  speed: number;
+}
+
+export interface ModelConfig {
+  path: string;
+  scale: number;
+  position: [number, number, number];
+  rotation: [number, number, number];
+  exposure: number;
+  envMapIntensity: number;
+  cinematicPoints: {
+    name: string;
+    position: [number, number, number];
+    lookAt: [number, number, number];
+  }[];
+  /** Animation playback policy. Defaults to autoplay, loop, speed 1. */
+  animation?: AnimationPolicy;
+}
+
 export interface Project {
   id: string;
   title: string;

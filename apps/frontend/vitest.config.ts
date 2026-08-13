@@ -7,6 +7,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      'next/constants': path.resolve(__dirname, './node_modules/next/constants.js'),
     },
   },
   test: {

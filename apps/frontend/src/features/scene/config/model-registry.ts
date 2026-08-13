@@ -1,38 +1,10 @@
 
-export interface AnimationPolicy {
-  /** Clip name to play. If undefined, plays the first clip. */
-  clipName?: string;
-  /** Whether to autoplay on load. */
-  autoplay: boolean;
-  /** Loop mode — use Three.js LoopOnce (2200), LoopRepeat (2201), or LoopPingPong (2202). */
-  loop: 2200 | 2201 | 2202;
-  /** Playback speed multiplier. */
-  speed: number;
-}
-
-export interface ModelConfig {
-  path: string;
-  scale: number;
-  position: [number, number, number];
-  rotation: [number, number, number];
-  exposure: number;
-  envMapIntensity: number;
-  cinematicPoints: {
-    name: string;
-    position: [number, number, number];
-    lookAt: [number, number, number];
-  }[];
-  /** Animation playback policy. Defaults to autoplay, loop, speed 1. */
-  animation?: AnimationPolicy;
-}
+import type { ModelConfig } from '@hexastudio/types';
 
 /**
- * Static model registry — maps project identifiers to 3D model configurations.
- *
- * TODO: Replace with API-driven config loaded from backend alongside project data
- * so the registry scales without code changes as the portfolio grows.
+ * Static fallback registry if API is down or loading.
  */
-export const MODEL_REGISTRY: Record<string, ModelConfig> = {
+const FALLBACK_REGISTRY: Record<string, ModelConfig> = {
   'default': {
     path: '/models/hexa-crystal.glb',
     scale: 1,
@@ -62,7 +34,19 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
   },
 };
 
-/** Returns the config for a given project ID, falling back to the default model. */
-export function getModelConfig(projectId?: string): ModelConfig {
-  return MODEL_REGISTRY[projectId || 'default'] ?? MODEL_REGISTRY['default'];
+/** Returns the default config (synchronous), falling back to hexa-crystal. */
+export function getDefaultModelConfig(projectId?: string): ModelConfig {
+  return FALLBACK_REGISTRY[projectId || 'default'] ?? FALLBACK_REGISTRY['default'];
+}
+
+/** Fetches the config for a given project ID from the backend. */
+export async function fetchModelConfig(projectId: string): Promise<ModelConfig> {
+  try {
+    const response = await fetch(`/api/v1/projects/${projectId}/model-config`);
+    if (!response.ok) throw new Error('Failed to fetch model config');
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to fetch model config, using fallback:', error);
+    return getDefaultModelConfig(projectId);
+  }
 }

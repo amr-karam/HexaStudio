@@ -7,7 +7,7 @@ import { ProjectsService } from './projects.service';
 import { RecommendationService, SimilarProjectResult } from '../vector/recommendation.service';
 import { StrapiProjectSyncService } from '../odoo/strapi-project-sync.service';
 import { OdooApiService } from '../odoo/odoo-api.service';
-import type { Project, ProjectResponse } from '@hexastudio/types';
+import type { Project, ProjectResponse, ModelConfig } from '@hexastudio/types';
 
 @ApiTags('Projects')
 @Controller({ path: 'projects', version: ['1', VERSION_NEUTRAL] })
@@ -55,6 +55,13 @@ export class ProjectsController {
     @Query('locale') locale?: string,
   ): Promise<Project> {
     return this.projectsService.getProjectBySlug(slug, locale);
+  }
+
+  @Get(':slug/model-config')
+  @ApiOperation({ summary: 'Get 3D model configuration for a project' })
+  @ApiResponse({ status: 200, description: 'Model configuration' })
+  async getModelConfig(@Param('slug') slug: string): Promise<ModelConfig> {
+    return this.projectsService.getModelConfig(slug);
   }
 
   // ── Gap 8: POST /projects — programmatic project creation ──

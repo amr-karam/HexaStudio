@@ -248,7 +248,7 @@ export function CommandPalette() {
             custom={prefersReduced}
             className={cn(
               'relative w-full max-w-xl mx-4',
-              'bg-surface border border-border/30 rounded-2xl',
+              'artisan-glass artisan-specular-top rounded-2xl',
               'shadow-2xl shadow-black/40',
               'overflow-hidden',
             )}

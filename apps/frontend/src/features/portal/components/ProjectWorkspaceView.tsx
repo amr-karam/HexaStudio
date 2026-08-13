@@ -279,7 +279,7 @@ function OverviewTab({ prefersReduced }: { prefersReduced: boolean }) {
         <motion.section
           variants={itemVariants}
           custom={prefersReduced}
-          className="bg-surface border border-border/30 rounded-2xl p-6"
+          className="artisan-glass artisan-specular-top rounded-2xl p-6"
           aria-label="Milestone progress timeline"
         >
           <h3 className="text-sm font-semibold text-foreground mb-5 flex items-center gap-2">
@@ -380,7 +380,7 @@ function OverviewTab({ prefersReduced }: { prefersReduced: boolean }) {
                 custom={prefersReduced}
                 transition={makeTransition('entrance', 'component', idx * STAGGER.component)}
                 whileHover={prefersReduced ? undefined : { y: -2, transition: { duration: 0.2 } }}
-                className="bg-surface border border-border/30 rounded-xl p-4 group hover:border-border-light/50 transition-colors duration-300"
+                className="artisan-glass artisan-specular-top rounded-xl p-4 group hover:border-accent/20 transition-colors duration-300"
               >
                 <div className={cn('w-8 h-8 rounded-lg border flex items-center justify-center mb-3', stat.accent)}>
                   <Icon name={stat.icon} size={14} />
@@ -396,7 +396,7 @@ function OverviewTab({ prefersReduced }: { prefersReduced: boolean }) {
         <motion.section
           variants={itemVariants}
           custom={prefersReduced}
-          className="bg-surface border border-border/30 rounded-2xl p-6"
+          className="artisan-glass artisan-specular-top rounded-2xl p-6"
           aria-label="Recent project activity"
         >
           <div className="flex items-center justify-between mb-5">
@@ -439,7 +439,7 @@ function OverviewTab({ prefersReduced }: { prefersReduced: boolean }) {
         <motion.section
           variants={itemVariants}
           custom={prefersReduced}
-          className="bg-surface border border-border/30 rounded-2xl p-6"
+          className="artisan-glass artisan-specular-top rounded-2xl p-6"
           aria-label="Budget summary"
         >
           <div className="flex items-center justify-between mb-5">
@@ -477,11 +477,11 @@ function OverviewTab({ prefersReduced }: { prefersReduced: boolean }) {
           </div>
         </motion.section>
 
-        {/* Change Requests */}
+{/* Change Requests */}
         <motion.section
           variants={itemVariants}
           custom={prefersReduced}
-          className="bg-surface border border-border/30 rounded-2xl p-6"
+          className="artisan-glass artisan-specular-top rounded-2xl p-6"
           aria-label="Change requests and scope logs"
         >
           <div className="flex items-center justify-between mb-5">
@@ -500,8 +500,8 @@ function OverviewTab({ prefersReduced }: { prefersReduced: boolean }) {
           <div className="space-y-3">
             {[
               { title: 'CR-003: Interior Lighting CRI Upgrade', status: 'Under Review', statusColor: 'text-amber-400 bg-amber-500/10 border-amber-500/20', date: 'Jul 22', impact: '+$1,800 USD' },
-              { title: 'CR-002: West Facade Glass Specification Upgrade', status: 'Approved', statusColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20', date: 'Jul 14', impact: '+$3,200 USD' },
-              { title: 'CR-001: Landscape Irrigation System Add-on', status: 'Approved', statusColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20', date: 'Jun 28', impact: '+$4,500 USD' },
+              { title: 'CR-002: West Facade Glass Specification Upgrade', status: 'Approved', statusColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20', date: 'Jul 19', impact: '+$4,200 USD' },
+              { title: 'CR-001: Structural Steel Grade Upgrade', status: 'Implemented', statusColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20', date: 'Jul 15', impact: '+$12,500 USD' },
             ].map((cr, idx) => (
               <motion.div
                 key={cr.title}
@@ -536,7 +536,7 @@ function OverviewTab({ prefersReduced }: { prefersReduced: boolean }) {
         aria-label="Project sidebar"
       >
         {/* Next Meeting */}
-        <div className="bg-surface border border-border/30 rounded-2xl p-5 relative overflow-hidden">
+        <div className="artisan-glass artisan-specular-top rounded-2xl p-5 relative overflow-hidden">
           {/* Gold shimmer accent */}
           <div className="absolute -top-12 -right-12 w-32 h-32 bg-accent/8 blur-2xl rounded-full pointer-events-none" aria-hidden="true" />
 
@@ -556,7 +556,7 @@ function OverviewTab({ prefersReduced }: { prefersReduced: boolean }) {
         </div>
 
         {/* Team Roster */}
-        <div className="bg-surface border border-border/30 rounded-2xl p-5">
+        <div className="artisan-glass artisan-specular-top rounded-2xl p-5">
           <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
             <Icon name="users" size={16} className="text-accent" />
             Studio Team
@@ -581,7 +581,7 @@ function OverviewTab({ prefersReduced }: { prefersReduced: boolean }) {
         </div>
 
         {/* Quick Links */}
-        <div className="bg-surface border border-border/30 rounded-2xl p-5">
+        <div className="artisan-glass artisan-specular-top rounded-2xl p-5">
           <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
             <Icon name="external-link" size={16} className="text-accent" />
             Quick Links
@@ -658,7 +658,7 @@ export function ProjectWorkspaceView({ projectId = 1 }: ProjectWorkspaceViewProp
         initial={prefersReduced ? { opacity: 1 } : { opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={prefersReduced ? REDUCED_TRANSITION : makeTransition('entrance', 'page')}
-        className="relative bg-surface border border-border/30 rounded-t-2xl overflow-hidden"
+        className="relative artisan-glass artisan-specular-top glass-depth overflow-hidden rounded-t-2xl"
         aria-label="Project workspace hero"
       >
         {/* Gold gradient glow */}

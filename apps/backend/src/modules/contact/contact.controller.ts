@@ -1,8 +1,9 @@
-import { Body, Controller, HttpCode, Post, UseGuards, VERSION_NEUTRAL } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, UseGuards, VERSION_NEUTRAL, UsePipes } from '@nestjs/common';
 import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
 import { ApiTags, ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { ContactService } from './contact.service';
-import { CreateContactDto } from './dto/create-contact.dto';
+import { CreateContactDtoClass as CreateContactDto, CreateContactSchema } from './dto/create-contact.dto';
+import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe';
 
 @ApiTags('contact')
 @Controller({ path: 'contact', version: ['1', VERSION_NEUTRAL] })
@@ -17,6 +18,7 @@ export class ContactController {
   @ApiBody({ type: CreateContactDto })
   @ApiResponse({ status: 200, description: 'Message sent successfully' })
   @ApiResponse({ status: 400, description: 'Validation failed' })
+  @UsePipes(new ZodValidationPipe(CreateContactSchema))
   async sendMessage(@Body() dto: CreateContactDto) {
     return this.contactService.sendMessage(dto);
   }

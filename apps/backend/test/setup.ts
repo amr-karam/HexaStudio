@@ -1,6 +1,7 @@
 process.env.NODE_ENV = 'test';
 process.env.PORT ??= '4001';
-process.env.JWT_SECRET ??= 'test-jwt-secret-that-is-at-least-32-chars-long-for-testing';
+process.env.JWT_PUBLIC_KEY ??= '-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAK+i/w+test-public-key-for-testing-----END PUBLIC KEY-----';
+process.env.JWT_PRIVATE_KEY ??= '-----BEGIN RSA PRIVATE KEY-----\ntest-private-key-for-testing-----END RSA PRIVATE KEY-----';
 process.env.CMS_URL ??= 'http://test-cms:1337';
 process.env.REDIS_PASSWORD ??= 'test-redis-password';
 process.env.MINIO_ROOT_USER ??= 'test-minio-user';
