@@ -35,7 +35,7 @@ const FALLBACK_SERVICES: Service[] = [
     id: 'fallback-3',
     title: '4K Architectural Cinema & Motion',
     slug: 'architectural-cinema',
-    description: 'Cinematic film walkthroughs with choreographed camera movement, atmospheric soundscapes, and photorealistic motion blur.',
+    description: 'Cinematic film walkthroughs with choreographed camera movement, atmospheric depth, and photorealistic motion blur.',
     features: ['Choreographed GSAP & Camera Timelines', '4K 60FPS Video Rendering', 'Depth of Field & Anamorphic Lens Effects', 'Color Grading & Sound Design'],
     order: 3,
     isPublished: true,
