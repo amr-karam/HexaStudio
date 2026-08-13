@@ -1,0 +1,8 @@
+tunnel: 4137e139-cfd3-41b3-ad7d-a99697a5316d
+
+ingress:
+  - hostname: hexastudio.net
+    service: http://traefik:80
+  - hostname: www.hexastudio.net
+    service: http://traefik:80
+  - service: http_status:503

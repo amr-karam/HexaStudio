@@ -47,9 +47,11 @@ services:
     image: cloudflare/cloudflared:latest
     <<: *default-restart
     logging: *default-logging
-    command: tunnel --protocol http2 run
+    command: tunnel run
     environment:
       TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:?CLOUDFLARE_TUNNEL_TOKEN is required}
+    volumes:
+      - ./docker/cloudflared/config.yml:/etc/cloudflared/config.yml:ro
     networks:
       - web
       - internal

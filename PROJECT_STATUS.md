@@ -26,7 +26,7 @@
 | Gate | Target | Status | Result |
 |---|---|---|---|
 | **Backend Tests** | 330 total | `339 / 339` | ✅ PASS |
-| **Frontend Tests** | 207 total | `207 / 207` | ✅ PASS |
+| **Frontend Tests** | 207 total | `201 / 207` | ❌ FAIL (6 tests failed) |
 | **Mobile Tests** | 25 passing | `25 / 25` | ✅ PASS |
 | **Frontend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **Backend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
@@ -238,9 +238,60 @@
 
 ---
 
-## 2026-08-08 � Decision B: Agent roles canonicalized to `.ai/agents/`
+## 2026-08-08 � Decision B: Agent roles canonicalized to `.ai/agents/`
 
 - Approved: accept `.ai/agents/` as the canonical agent-role location (ADR-010). `.opencode/` legacy tree (14 agent files + 4 prompts) removed.
-- Created `.ai/agents/orchestrator.md` � canonical ORCHESTRATOR role definition (relocated from deleted `.opencode/prompts/orchestrator.txt`).
+- Created `.ai/agents/orchestrator.md` � canonical ORCHESTRATOR role definition (relocated from deleted `.opencode/prompts/orchestrator.txt`).
 - Updated dangling references: ADR-010 (role table, role-file statement, references) and GOVERNANCE.md (Operating Model) now point to `.ai/agents/orchestrator.md`.
-- Production verified live: host 19.16.1.100, 28 containers, blue/green app stack healthy, zero-trust ingress via Traefik only, deployed commit `dbc8b206` (3 behind GitLab main � CI/lockfile/docs delta only).
+- Production verified live: host 19.16.1.100, 28 containers, blue/green app stack healthy, zero-trust ingress via Traefik only, deployed commit `dbc8b206` (3 behind GitLab main � CI/lockfile/docs delta only).
+
+---
+
+## 2026-08-13 — Incident: Cloudflare HTTPS 403 Error 1010 — RESOLVED
+
+**Status:** ✅ Resolved (17:04 UTC+3)
+
+### Symptoms
+- All HTTPS pages via Cloudflare returned **HTTP 403 error 1010** ("incident_id")
+- HTTP through Cloudflare timed out
+- Direct HTTP to origin (`curl -H 'Host: hexastudio.net' http://19.16.1.100/`) returned HTTP 200 with correct content (611KB, title "HexaStudio — 3D Architectural Visualization & Spatial Intelligence", 14 HexaStudio mentions, 0 Code Lens)
+
+### Root Causes (3 stacked issues)
+
+1. **Tunnel token mismatch:** Container was running with token for tunnel `51f0f785` (original tunnel), but that tunnel was **deleted** when `cloudflared tunnel create` was run during debugging. New tunnel `4137e139` had no valid token in the container. Container logs showed: `"Unauthorized: Tunnel not found"`.
+
+2. **DNS CNAME pointing to deleted tunnel:** All 11 DNS CNAME records still pointed to `51f0f785-6b8c-41ec-be7f-93a9d5237eb3.cfargotunnel.com` (the deleted tunnel's ID).
+
+3. **Missing ingress rules:** API-created tunnel had no ingress rules configured → returned HTTP 503 for all requests. Container logs: `"No ingress rules were defined in provided config"`.
+
+4. **Container config flag error:** Using `--config` flag caused `flag provided but not defined: -config` error in cloudflared container (the flag must be passed without dash when using config file at default path `/etc/cloudflared/config.yml`).
+
+### Resolution Steps
+
+1. **Created new tunnel via Cloudflare API** (`POST /accounts/{id}/tunnels`) with proper ingress rules → received fresh tunnel token
+2. **Updated all 11 DNS CNAME records** from `51f0f785.cfargotunnel.com` → `4137e139.cfargotunnel.com` (zone ID: `214e4603a28f73d7279946baf820f5ed`)
+3. **Created tunnel config** at `docker/cloudflared/config.yml` with ingress rules
+4. **Restarted container** with config volume mounted, using `tunnel run` (no `--config` flag — defaults to `/etc/cloudflared/config.yml`)
+5. **Updated `.env`** with new tunnel token for future deployments
+
+### Files Changed
+
+| File | Change |
+|------|--------|
+| `docker-compose.prod.yml` | Updated cloudflared service: `command: tunnel run`, added `volumes` mount for config |
+| `docker/cloudflared/config.yml` | **New file** — tunnel UUID (`4137e139-cfd3-41b3-ad7d-a99697a5316d`) + ingress rules |
+| Server `.env` | Updated `CLOUDFLARE_TUNNEL_TOKEN` |
+
+### Verification
+
+| Test | Result |
+|------|--------|
+| `https://hexastudio.net/` | ✅ HTTP 200, 608,360 bytes |
+| `https://www.hexastudio.net/` | ✅ HTTP 200 |
+| Page title | ✅ "HexaStudio — 3D Architectural Visualization & Spatial Intelligence" |
+| HexaStudio mentions | ✅ 14 (correct) |
+| Code Lens mentions | ✅ 0 (clean) |
+
+### Key Learning
+
+When debugging Cloudflare Tunnel issues, **do NOT run `cloudflared tunnel create`** — this creates a new tunnel and deletes the old one, invalidating the existing container token. Use `cloudflared tunnel token <name>` or the Cloudflare API (`POST /accounts/{id}/tunnels`) to get a fresh token for the existing tunnel instead.
