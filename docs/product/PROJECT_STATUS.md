@@ -144,6 +144,12 @@ HEXA Studio is fully deployed and operational on production infrastructure. **Sp
   4. Restart: `docker compose -f docker-compose.prod.yml up -d cloudflared` → verify site 200.
   - **If the tunnel ID is UNCHANGED** (`51f0f785-...`), the 11 existing DNS CNAMEs still work — only the token needs updating.
   - **If the tunnel ID CHANGED**, update 11 CNAMEs → `<new-id>.cfargotunnel.com` (hexastudio.net, www, api, cms, odoo, grafana, traefik, files, gitlab, alertmanager, ai, opencode). Recovery script staged at `/tmp/recover_tunnel.sh` on the server.
+  - **One-command recovery (recommended):** after creating the tunnel in the dashboard, run on the server:
+    ```
+    bash /tmp/recover_tunnel.sh '<paste-new-tunnel-token>'
+    ```
+    It backs up `.env`, swaps the token, recreates cloudflared, and verifies.
+  - **Exhausted server-side options (no working write credentials):** `cfk_` API key (401 revoked), tunnel token (zone/DNS read-only), AI token `cfut_VqYQ...` (Workers-AI scoped, 0 zones), R2 keys (S3-only), no `cert.pem` on server. Tunnel creation is dashboard-only.
   - **Account note:** zone `hexastudio.net` lives in account `88ad114a30c688258cd944081d518ff6` (token account). The local `.env`'s `CLOUDFLARE_ACCOUNT_ID=e9a9d278...` is a **different, empty account** — do not use it for tunnel recovery.
 - 📌 **Long-term hardening:** use a proper API token (Zone:DNS edit + Zone:Cache Purge + Account:Tunnel read) in `.env` so tunnels/tokens can be diagnosed and refreshed from CLI.
 
