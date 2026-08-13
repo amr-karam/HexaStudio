@@ -15,7 +15,6 @@ export const TRANSLATIONS: Record<Locale, Record<string, string>> = {
     odoo_sync: 'Odoo ERP Synced',
     lighting_preset: 'Lighting Presets',
     materials_preset: 'PBR Materials',
-    spatial_audio: 'Spatial Audio',
     ar_view: 'AR Room View',
   },
   ar: {
@@ -32,7 +31,6 @@ export const TRANSLATIONS: Record<Locale, Record<string, string>> = {
     odoo_sync: 'متزامن مع أودو ERP',
     lighting_preset: 'إعدادات الإضاءة',
     materials_preset: 'المواد والخامات',
-    spatial_audio: 'الصوت المكاني',
     ar_view: 'عرض الواقع المعزز',
   },
 };

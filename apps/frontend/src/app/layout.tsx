@@ -9,8 +9,6 @@ import { AnalyticsInit } from "@/lib/analytics";
 import { Suspense } from "react";
 import "./globals.css";
 import { AnimationDebugLoader } from "@/components/dev/AnimationDebugLoader";
-import { SpatialAnnotations } from "@/features/scene/components/SpatialAnnotations";
-import { SpatialAudioPlayer } from "@/features/scene/components/SpatialAudioPlayer";
 
 export const viewport: Viewport = {
   themeColor: [
@@ -159,8 +157,6 @@ export default function RootLayout({
             Skip to content
           </a>
           <LayoutShell>{children}</LayoutShell>
-          <SpatialAnnotations />
-          <SpatialAudioPlayer />
           <Suspense fallback={null}>
             <AnalyticsInit />
           </Suspense>
