@@ -133,6 +133,17 @@ HEXA Studio is fully deployed and operational on production infrastructure. **Sp
   - Rebuilt image → recreated container → verified: **HexaStudio title live**, all pages 200, `.next` owned by `nextjs` (ISR writes OK), 0 runtime errors, container healthy.
 - ✅ **Post-incident verification:** frontend 44/44 test files (336 tests), lint 0/0, typecheck clean.
 
+**Production Incident Log — 2026-08-13 (Cloudflare Tunnel deleted — BLOCKED on dashboard access):**
+- 🔴 **Symptom:** hexastudio.net returns **HTTP 530** (Cloudflare origin error) intermittently; cloudflared container exits cleanly (code 0) ~2 min after start.
+- 🔍 **Root cause (confirmed from cloudflared logs):** `ERR Register tunnel error from server side error="Unauthorized: Tunnel not found"` for tunnel **`51f0f785-6b8c-41ec-be7f-93a9d5237eb3`** (account `88ad114a30c688258cd944081d518ff6`). The tunnel referenced by `CLOUDFLARE_TUNNEL_TOKEN` **no longer exists** in the Cloudflare account — it was deleted/expired in the dashboard. Restart policy (`unless-stopped`) does not recover a clean-exit container; token also lacks DNS/list/purge permissions so it cannot be remediated via API.
+- ✅ **Not affected:** origin stack fully healthy (Traefik 200, backend `{"status":"ok"}`, frontend/CMS/DB/Redis/MinIO healthy). Public DNS correct (Cloudflare proxy IPs). Ingress config valid (all hostnames → traefik).
+- ⛔ **BLOCKED on human action (requires Cloudflare account access):**
+  1. Log in to `dash.cloudflare.com` → Zero Trust → Networks → Tunnels.
+  2. Recreate tunnel `hexastudio` (or restore `51f0f785-...`) — named tunnel with the same ingress (hexastudio.net, www, api, cms, odoo, grafana, monitor, traefik, files, gitlab, alertmanager, ai → `http://traefik:80`).
+  3. Copy the new tunnel token → update `CLOUDFLARE_TUNNEL_TOKEN` in `/home/hexa/hexastudio/.env`.
+  4. Restart: `docker compose -f docker-compose.prod.yml up -d cloudflared` → verify site 200.
+- 📌 **Long-term hardening:** use a proper API token (Zone:DNS + Zone:Cache Purge + Account:Tunnel read) in `.env` so tunnels/tokens can be diagnosed and refreshed from CLI.
+
 **Pending for v1.8.0:**
 - LCP < 1.5s optimization
 - Lighthouse 95+ desktop audit
