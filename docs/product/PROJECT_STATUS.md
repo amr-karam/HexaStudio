@@ -153,6 +153,12 @@ HEXA Studio is fully deployed and operational on production infrastructure. **Sp
   - **Account note:** zone `hexastudio.net` lives in account `88ad114a30c688258cd944081d518ff6` (token account). The local `.env`'s `CLOUDFLARE_ACCOUNT_ID=e9a9d278...` is a **different, empty account** — do not use it for tunnel recovery.
 - 📌 **Long-term hardening:** use a proper API token (Zone:DNS edit + Zone:Cache Purge + Account:Tunnel read) in `.env` so tunnels/tokens can be diagnosed and refreshed from CLI.
 
+**Production Incident Log — 2026-08-13 (Cloudflare Tunnel partial recovery — subdomain ingress pending):**
+- ✅ **Site restored (2026-08-13 evening):** tunnel recreated in dashboard with the same ID → `hexastudio.net` + `www.hexastudio.net` → **200** (verified live, HexaStudio title).
+- ⚠️ **Remaining:** tunnel currently has ONLY 2 ingress rules (apex + www). All other subdomains return **503** (tunnel catch-all): `api`, `cms`, `odoo`, `grafana`, `traefik`, `files`, `gitlab`, `alertmanager`, `ai`, `opencode`.
+- 🔧 **Fix needed (dashboard):** in the tunnel's Public Hostnames, add each missing subdomain → `http://traefik:80` (list in `/tmp/verify_ingress.sh` on the server). Then run `bash /tmp/verify_ingress.sh` to verify + restart cloudflared.
+- 📌 **Note:** the tunnel token in `.env` was NOT changed (same ID reused) — cloudflared runs fine with it. Tunnel config writes (ingress) still require dashboard access; all tested API tokens remain read-only.
+
 **Pending for v1.8.0:**
 - LCP < 1.5s optimization
 - Lighthouse 95+ desktop audit
