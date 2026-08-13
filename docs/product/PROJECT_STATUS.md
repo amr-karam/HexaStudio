@@ -120,6 +120,19 @@ HEXA Studio is fully deployed and operational on production infrastructure. **Sp
 - ✅ **Post-incident verification:** 30/30 core containers healthy (frontend, backend, CMS, DB, Redis, MinIO, Traefik). All quality gates green: frontend 44/44 files (336 tests), backend 44/44 files (357 tests), 0 lint/0 typecheck.
 - 📝 **Follow-up (non-blocking):** `minio-backup` container crash-loops with stale MinIO credentials — pre-existing, needs server-side env sync.
 
+**Production Incident Log — 2026-08-13 (stale frontend image + broken Docker build):**
+- 🔴 **Symptom:** Site served old **"Code Lens"** branding; frontend image rebuilds failed.
+- 🔍 **Root causes (3 stacked):**
+  1. **Broken Dockerfile deps stage** — `COPY apps/types/package.json` + `COPY apps/utils/package.json` referenced non-existent dirs with invalid shell-redirect syntax, breaking BuildKit checksum (`"/apps/utils": not found`) and blocking image rebuilds → prod kept a stale pre-branding image.
+  2. **Corrupted filenames in build context** — `odoo/custom/hexa_studio\__init__.py` + `\__manifest__.py` (literal backslash in name, from a Windows sync artifact) broke BuildKit checksum (`"/||": not found`). Backed up to `/root/broken-filenames-backup/` and removed; proper module exists at `odoo/custom/hexa_studio/`.
+  3. **Missing direct dependency** — `@radix-ui/react-slot` imported by `Button.tsx` but only present via hoisted transitive deps → clean-room Docker `npm install` failed `Module not found: Can't resolve '@radix-ui/react-slot'`.
+- 🛠️ **Fixes (commit 03ea67f7):**
+  - Dockerfile: `COPY packages/types/package.json packages/types/` + `packages/utils/` (correct workspace paths).
+  - Added `"@radix-ui/react-slot": "^1.0.1"` to `apps/frontend/package.json`.
+  - Cleaned junk from build context (`.env.bak.*`, `traefik.yml.bak.pre-esc-fix`, backslash files).
+  - Rebuilt image → recreated container → verified: **HexaStudio title live**, all pages 200, `.next` owned by `nextjs` (ISR writes OK), 0 runtime errors, container healthy.
+- ✅ **Post-incident verification:** frontend 44/44 test files (336 tests), lint 0/0, typecheck clean.
+
 **Pending for v1.8.0:**
 - LCP < 1.5s optimization
 - Lighthouse 95+ desktop audit
