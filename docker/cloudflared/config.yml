@@ -5,4 +5,36 @@ ingress:
     service: http://traefik:80
   - hostname: www.hexastudio.net
     service: http://traefik:80
+  - hostname: api.hexastudio.net
+    service: http://traefik:80
+  - hostname: cms.hexastudio.net
+    service: http://traefik:80
+  - hostname: odoo.hexastudio.net
+    service: http://traefik:80
+  - hostname: files.hexastudio.net
+    service: http://traefik:80
+  - hostname: files-console.hexastudio.net
+    service: http://traefik:80
+  - hostname: grafana.hexastudio.net
+    service: http://traefik:80
+  - hostname: prometheus.hexastudio.net
+    service: http://traefik:80
+  - hostname: alertmanager.hexastudio.net
+    service: http://traefik:80
+  - hostname: uptime.hexastudio.net
+    service: http://traefik:80
+  - hostname: ai.hexastudio.net
+    service: http://traefik:80
+  - hostname: auth.hexastudio.net
+    service: http://traefik:80
+  - hostname: analytics.hexastudio.net
+    service: http://traefik:80
+  - hostname: hub.hexastudio.net
+    service: http://traefik:80
+  - hostname: docs.hexastudio.net
+    service: http://traefik:80
+  - hostname: status.hexastudio.net
+    service: http://traefik:80
+  - hostname: gitlab.hexastudio.net
+    service: http://traefik:80
   - service: http_status:503

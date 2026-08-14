@@ -2,6 +2,7 @@
 
 import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
+import type { RootState } from '@react-three/fiber';
 import {
   PerspectiveCamera,
   ContactShadows,
@@ -12,9 +13,9 @@ import { SceneContent } from './SceneContent';
 import { CameraController } from './CameraController';
 const PostProcessing = lazy(() => import('./PostProcessing').then((module) => ({ default: module.PostProcessing })));
 import { SceneAccessibility } from './SceneAccessibility';
-import { Color } from 'three';
 import { useQualityTier } from '@/providers/quality-provider';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useContextLossRecovery } from '@/hooks/useContextLossRecovery';
 import { ProjectHotspot } from '@hexastudio/types';
 import { useDesignerStore } from '../store/designer-store';
 import { LIGHTING_PRESETS } from '../config/lighting-presets';
@@ -134,8 +135,20 @@ export const ExperienceCanvas = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(true);
   const [webglSupported, setWebglSupported] = useState(true);
+  const [contextLost, setContextLost] = useState(false);
+  const [restartKey, setRestartKey] = useState(0);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const cleanupContextRef = useRef<(() => void) | null>(null);
+
+  // WebGL context-loss recovery: pause the render loop on loss (never unmount),
+  // and on restore remount the Canvas via `restartKey` so a fresh context is
+  // created. This closes the post-context-loss render race that otherwise lets
+  // three.js compile programs against dead GL handles (getProgramParameter).
+  const { registerContext } = useContextLossRecovery({
+    remountOnRestore: true,
+    onLost: () => setContextLost(true),
+    onRestore: () => setRestartKey((key) => key + 1),
+  });
 
   // Pre-mount WebGL detection.
   useEffect(() => {
@@ -170,31 +183,19 @@ export const ExperienceCanvas = ({
   useEffect(() => {
     return () => {
       cleanupContextRef.current?.();
+      cleanupContextRef.current = null;
     };
   }, []);
 
   // Webglcontextlost / restored.
   const handleCreated = React.useCallback(
-    (state: { gl: { domElement: HTMLCanvasElement; setClearColor: (color: Color) => void } }) => {
+    (state: RootState) => {
       canvasRef.current = state.gl.domElement;
-
-      const onContextLost = (e: Event) => {
-        e.preventDefault();
-        setIsVisible(false);
-      };
-      const onContextRestored = () => {
-        setIsVisible(true);
-      };
-
-      state.gl.domElement.addEventListener('webglcontextlost', onContextLost);
-      state.gl.domElement.addEventListener('webglcontextrestored', onContextRestored);
-
-      cleanupContextRef.current = () => {
-        state.gl.domElement.removeEventListener('webglcontextlost', onContextLost);
-        state.gl.domElement.removeEventListener('webglcontextrestored', onContextRestored);
-      };
+      cleanupContextRef.current = registerContext(state);
+      // A fresh context is live: hide the static fallback overlay.
+      setContextLost(false);
     },
-    [],
+    [registerContext],
   );
 
   // Don't mount Canvas if WebGL is unavailable.
@@ -226,8 +227,23 @@ export const ExperienceCanvas = ({
   return (
     <div ref={containerRef} className="absolute inset-0 -z-10 h-full w-full" data-cursor="drag">
       <SceneAccessibility hotspots={hotspots} projectTitle={projectTitle} />
+      {/* Static fallback while the WebGL context is lost. The Canvas stays
+          mounted (loop paused) so the scene can resume cleanly on restore;
+          the overlay is non-interactive and announces the state to AT. */}
+      {contextLost && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="pointer-events-none absolute inset-0 flex items-center justify-center bg-obsidian"
+        >
+          <p className="text-neutral-400 text-xs uppercase tracking-widest">
+            3D experience paused
+          </p>
+        </div>
+      )}
       {isVisible && (
         <Canvas
+          key={restartKey}
           shadows={tier.shadows}
           dpr={[1, tier.maxDpr]}
           frameloop={frameloop}

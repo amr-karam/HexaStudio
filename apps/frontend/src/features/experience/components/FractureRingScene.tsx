@@ -7,6 +7,7 @@ import { Environment } from '@react-three/drei';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import { Group, TorusGeometry, BufferAttribute, MeshStandardMaterial, DoubleSide, ACESFilmicToneMapping } from 'three';
 import { createFractureTexture } from './fracture-ring-texture';
+import { useContextLossRecovery } from '@/hooks/useContextLossRecovery';
 
 /* -------------------------------------------------------------------------- */
 /*  Shaders                                                                   */
@@ -160,6 +161,18 @@ function RingGroup({ scrollProgress, finePointer }: FractureRingSceneProps) {
 /* -------------------------------------------------------------------------- */
 
 export function FractureRingScene({ scrollProgress, finePointer }: FractureRingSceneProps) {
+  // Pause the render loop on WebGL context loss and resume it on restore —
+  // never unmounts the Canvas, closing the post-context-loss render race.
+  const { registerContext } = useContextLossRecovery();
+  const cleanupContextRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    return () => {
+      cleanupContextRef.current?.();
+      cleanupContextRef.current = null;
+    };
+  }, []);
+
   return (
     <Canvas
       camera={{ position: [0, 0, 7], fov: 45 }}
@@ -170,6 +183,9 @@ export function FractureRingScene({ scrollProgress, finePointer }: FractureRingS
         toneMappingExposure: 1.0,
       }}
       style={{ background: 'transparent' }}
+      onCreated={(state) => {
+        cleanupContextRef.current = registerContext(state);
+      }}
     >
       <ambientLight intensity={0.35} />
       <directionalLight position={[3, 4, 5]} intensity={2.8} color="#fff4e0" />

@@ -7,3 +7,4 @@ export { useFinePointer } from './useFinePointer';
 export { useMotionPolicy } from './useMotionPolicy';
 export { useScrollVelocity } from './useScrollVelocity';
 export { useVoiceTransform } from './useVoiceTransform';
+export { useContextLossRecovery } from './useContextLossRecovery';

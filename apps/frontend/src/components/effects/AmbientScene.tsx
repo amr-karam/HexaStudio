@@ -5,6 +5,7 @@ import { Suspense, useEffect, useRef, useState } from 'react';
 import ShaderGradient from './ShaderGradient';
 import ParticleDust from './ParticleDust';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useContextLossRecovery } from '@/hooks/useContextLossRecovery';
 
 /* -------------------------------------------------------------------------- */
 /*  Types                                                                      */
@@ -59,6 +60,18 @@ export default function AmbientScene({
   const [isVisible, setIsVisible] = useState(false);
   const [mounted, setMounted] = useState(false);
 
+  // WebGL context-loss recovery: pause the render loop on loss, resume on
+  // restore — never unmounts the Canvas (closes the getProgramParameter race).
+  const { registerContext } = useContextLossRecovery();
+  const cleanupContextRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    return () => {
+      cleanupContextRef.current?.();
+      cleanupContextRef.current = null;
+    };
+  }, []);
+
   // Only render canvas after client-side mount (no SSR canvas)
   useEffect(() => { setMounted(true); }, []);
 
@@ -105,6 +118,9 @@ export default function AmbientScene({
           camera={{ position: [0, 0, 1], fov: 45 }}
           dpr={[1, 1.25]}
           style={{ background: (color1 as string) || '#050508' }}
+          onCreated={(state) => {
+            cleanupContextRef.current = registerContext(state);
+          }}
         >
           <Suspense fallback={null}>
             <ShaderGradient
