@@ -74,16 +74,19 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
     }
   }, [router]);
 
-  // Derived-state-during-render: when the pathname commits, the curtain must
-  // cover/reveal in the SAME paint as the new page — a post-paint effect
-  // would flash unstyled content for one frame.
-  if (pathname !== lastPathname) {
-    setLastPathname(pathname);
-    if (!reduced) {
-      clearSafety();
-      setPhase('reveal');
+  // When the pathname commits, reveal the new page behind the curtain.
+  // Moved to useEffect (from render-phase setState) to avoid React DOM
+  // reconciliation collisions (insertBefore NotFoundError) when the curtain
+  // overlay mounts/unmounts in the same commit as the page swap.
+  useEffect(() => {
+    if (pathname !== lastPathname) {
+      setLastPathname(pathname);
+      if (!reduced) {
+        clearSafety();
+        setPhase('reveal');
+      }
     }
-  }
+  }, [pathname, lastPathname, reduced, clearSafety]);
 
   // Intercept internal link clicks to choreograph the cover before push.
   useEffect(() => {

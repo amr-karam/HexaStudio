@@ -361,15 +361,11 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
           style={enableShear ? { skewY } : undefined}
           className="will-change-transform"
         >
-          <motion.div
-            layout
-            className="columns-1 md:columns-2 lg:columns-4 gap-8 space-y-8"
-          >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <AnimatePresence mode="popLayout">
               {filteredProjects.map((project, idx) => (
-                <div
+                <motion.div
                   key={project.slug}
-                  className="break-inside-avoid"
                   onMouseEnter={() => setHoveredIndex(idx)}
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
@@ -382,10 +378,10 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
                     status={project.status}
                     onClick={() => setSelectedProject(project)}
                   />
-                </div>
+                </motion.div>
               ))}
             </AnimatePresence>
-          </motion.div>
+          </div>
         </motion.div>
       </section>
 
