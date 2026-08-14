@@ -229,6 +229,9 @@ build:
 # ----- Build & push backend image -----
 build-image-backend:
   stage: image
+  # Serialize image builds: 3 concurrent buildx builds against the single
+  # dind daemon cause 'error reading from server: EOF' / session timeouts.
+  resource_group: image-builds
   image: docker:24
   services:
     - name: docker:24-dind
@@ -257,6 +260,9 @@ build-image-backend:
 # ----- Build & push frontend image -----
 build-image-frontend:
   stage: image
+  # Serialize image builds: 3 concurrent buildx builds against the single
+  # dind daemon cause 'error reading from server: EOF' / session timeouts.
+  resource_group: image-builds
   image: docker:24
   services:
     - name: docker:24-dind
@@ -289,6 +295,9 @@ build-image-frontend:
 # ----- Build & push CMS image -----
 build-image-cms:
   stage: image
+  # Serialize image builds: 3 concurrent buildx builds against the single
+  # dind daemon cause 'error reading from server: EOF' / session timeouts.
+  resource_group: image-builds
   image: docker:24
   services:
     - name: docker:24-dind
