@@ -3,16 +3,15 @@ import { captureException } from '@sentry/nextjs';
 
 // ─── Module-level state ───────────────────────────────────────────────────────
 // Refresh token held in memory only — never persisted to localStorage/cookies.
+let _accessToken: string | null = null;
 let _refreshToken: string | null = null;
 let _refreshPromise: Promise<boolean> | null = null;
 let _onAuthLogout: (() => void) | null = null;
 
-// ─── Public API ───────────────────────────────────────────────────────────────
+export function setAccessToken(token: string | null): void {
+  _accessToken = token;
+}
 
-/**
- * Store the refresh token in memory after login/register/refresh.
- * Call this from useAuth when a new token pair is received.
- */
 export function setRefreshToken(token: string | null): void {
   _refreshToken = token;
 }
@@ -64,6 +63,7 @@ export async function authenticatedFetch(
     ...options,
     headers: {
       'Content-Type': 'application/json',
+      ...(_accessToken ? { Authorization: `Bearer ${_accessToken}` } : {}),
       ...options.headers,
     },
   };

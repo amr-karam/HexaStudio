@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { useLocale } from '../context/LocaleContext';
+import { useLocale } from '@/i18n/LocaleProvider';
 
 export function LocaleSwitcher() {
   const { locale, setLocale } = useLocale();

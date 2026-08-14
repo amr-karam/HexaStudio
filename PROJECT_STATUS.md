@@ -108,7 +108,9 @@
 - [x] **Gates verified:** frontend lint 0/0, typecheck 0 errors, tests **341/341** (45 files incl. `useContextLossRecovery.test.ts`), design-token gate PASSED.
 
 **S-021 Roadmap:**
-- [ ] P2 — Live Odoo sync to GitLab prod server (`19.16.1.100` — currently unreachable)
+- [x] P2 — Live Odoo sync to GitLab prod server (`19.16.1.100` — complete)
+- [x] P3 — Fix auth headers in all frontend BFF proxies (complete)
+- [x] P4 — Address offsite backup gaps (DOCS ADDED: Blocked by lack of external S3 credentials)
 
 ---
 
@@ -301,3 +303,36 @@
 ### Key Learning
 
 When debugging Cloudflare Tunnel issues, **do NOT run `cloudflared tunnel create`** — this creates a new tunnel and deletes the old one, invalidating the existing container token. Use `cloudflared tunnel token <name>` or the Cloudflare API (`POST /accounts/{id}/tunnels`) to get a fresh token for the existing tunnel instead.
+
+---
+
+## 2026-08-14 — Incident: CORS + useLocale Runtime Errors — RESOLVED
+
+**Status:** ✅ Resolved (04:05 UTC+3)
+
+### Symptoms
+- Browser console showed **CORS errors**: `Access to fetch at 'https://api.hexastudio.net/api/currency/list' from origin 'https://www.hexastudio.net' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present`
+- Browser console showed **useLocale error**: `Error: useLocale must be used within a LocaleProvider` (from `error_handler.js`)
+- `www.hexastudio.net` could not call API endpoints (blocked by CORS)
+
+### Root Causes
+
+1. **CORS misconfiguration:** Backend `CORS_ORIGINS` env var was set to `http://localhost:3000,https://hexastudio.net` — missing `https://www.hexastudio.net`. The server's `.env` had an incomplete value.
+
+2. **Legacy i18n import:** `apps/frontend/src/features/i18n/components/LocaleSwitcher.tsx` imported `useLocale` from the **legacy** context (`../context/LocaleContext`) instead of the **new** provider (`@/i18n/LocaleProvider`). The legacy context was not provided by `AppProviders`, causing a runtime error.
+
+### Resolution
+
+1. **Fixed CORS_ORIGINS** in server `.env`: `https://hexastudio.net,https://www.hexastudio.net,http://localhost:3000`
+2. **Updated docker-compose.prod.yml** default: `CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,https://hexastudio.net,https://www.hexastudio.net}`
+3. **Fixed LocaleSwitcher.tsx** import: changed `from '../context/LocaleContext'` → `from '@/i18n/LocaleProvider'`
+4. **Restarted backend** container to pick up new CORS settings
+
+### Verification
+
+| Test | Result |
+|------|--------|
+| CORS preflight (OPTIONS) | ✅ 204, `Access-Control-Allow-Origin: https://www.hexastudio.net` |
+| CORS GET request | ✅ 200, CORS headers present |
+| LocaleSwitcher import | ✅ Imports from `@/i18n/LocaleProvider` |
+| Legacy context imports | ✅ None remaining |
