@@ -421,6 +421,10 @@ bundle-analysis:
 container-scan:
   stage: validate
   image: aquasec/trivy:latest
+  # aquasec/trivy image sets ENTRYPOINT ["trivy"] — GitLab's default wrapper
+  # runs `trivy sh -c ...` which fails with `unknown command "sh"`. Override
+  # the entrypoint so the script lines execute normally.
+  entrypoint: [""]
   needs:
     - build-image-backend
     - build-image-frontend
