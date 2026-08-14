@@ -1,111 +1,26 @@
 # Changelog
 
-All notable changes to the HEXA Vision platform are documented in this file.
+All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/),
-and this project adheres to [Semantic Versioning](https://semver.org/).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — 2026-08-09
+## [1.0.1] - 2026-08-14
 
-### Design System Publish & Storybook Docs Deployment
+### Fixed
 
-#### Added
-- **`@hexastudio/ui` npm Package Publishing**: Removed `private` flag, added `publishConfig` targeting the GitLab npm Package Registry, and added the `publish-ui` CI job (authenticates via `CI_JOB_TOKEN`, no manual secrets).
-- **Storybook Documentation Site**: Scaffolded Storybook 8 (react-vite) for `packages/ui` with 30 stories across Button, Card, Input, Badge, and HeroSection. Added `packages/ui/Dockerfile` + `docker/docs/nginx.conf` serving the static build on port 8080.
-- **`docs-service` container**: Added to `docker-compose.yml` and `docker-compose.prod.yml`, matching the existing Traefik router (`docs.hexastudio.net` → `docs-service:8080`).
-- **CI publish stage**: New `publish` stage with `publish-ui`, `build-storybook`, and `build-image-docs` jobs; wired `build-image-docs` into production/staging deploys with health verification.
+#### User-Facing
+- **Frontend**: Resolved `NotFoundError: Failed to execute 'insertBefore' on 'Node'` runtime crash on `/projects` page ([bab0ae4](https://github.com/amr-karam/HexaStudio/commit/bab0ae463f886ff6d8cebe459f775dfcb3bd0ce3)):
+  - Rewrote `TextSplit` to declarative JSX rendering with GSAP refs to prevent DOM reconciliation conflicts caused by imperative innerHTML mutations.
+  - Converted `ProjectGrid` from CSS multi-column layout (`columns-*`) to CSS Grid to fix `framer-motion` popLayout FLIP measurement inaccuracies and phantom reference node insertions.
+  - Moved `PageTransition` render-phase state update into `useEffect` to prevent curtain animation collisions during page transitions.
 
-#### Fixed
-- **Cross-platform CI lockfile bug**: Moved `@rolldown/binding-win32-x64-msvc` to `optionalDependencies` so `npm ci` no longer fails with `EBADPLATFORM` on Linux runners (npm#4828).
-- **jest-axe Vitest typecheck**: Added `test/jest-axe.d.ts` augmenting the `vitest` module interfaces so `toHaveNoViolations()` typechecks under Vitest.
-- **Corrupted ADR index**: Restored `docs/adr/README.md` from a 546KB escaped-`\n` corruption back to the clean 12-ADR index.
-
-## [1.8.0] — 2026-07-27
-
-### Sprint 19 — Mobile & Web Performance (IN PROGRESS)
-
-#### Added
-- **Dead Three.js Code Removal**: Removed 11 unused files (BlueprintParticles, SplineField, ForceField, ParticleSimulation, HeroBloom, HexaCrystal, SceneModel, MeshDistortion, LivingBlueprintHero, shaders, entire features/experience/engine). Cleaned up barrels and empty directories. ~25 KB bundle reduction.
-- **Bundle Budgets Enforced**: 200KB JS per-route budget via webpack `config.performance` with production build errors.
-- **Bundle Analyzer**: Enhanced configuration producing static HTML report + stats JSON when `ANALYZE=true`.
-- **OpenTelemetry Tracing**: Backend instrumentation added with trace propagation across services.
-- **Request ID Propagation**: `RequestIdMiddleware` generates and propagates `X-Request-ID` header across all services for end-to-end request tracking.
-- **Tempo Tracing Service**: `grafana/tempo:2.6.1` added to `docker-compose.prod.yml` with Grafana datasource configuration.
-- **Enterprise Architecture Governance Framework**: 11 documents, 7,831 lines defining architecture standards, CI/CD governance, and decision record processes.
-- **3 New Architecture Decision Records**:
-  - ADR-007: Routing & Layout Strategy
-  - ADR-008: Persistent Experience Layer
-  - ADR-009: Bidirectional Strapi-Odoo Sync
-- **Mobile App v1.0 Core**:
-  - Tab navigation finalized as Dashboard / Projects / Notifications / Profile (Invoices tab removed).
-  - Offline-first project data caching with `@react-native-async-storage/async-storage`, TTL support, and animated offline banner.
-  - Push notification integration (`expo-notifications`) with permission handling, token registration, and backend `POST /api/mobile/push/register` endpoint.
-  - App store assets generated (icon, splash, adaptive icon, notification icon, favicon) and wired into `app.json`.
-  - OTA updates integration (`expo-updates`) with launch check, download banner, and restart prompt.
-  - New test suites for cache, network status, notifications service, and OTA updates.
-
-#### Quality
-- TBT at 60ms (target: <100ms) — already exceeding target
-- Frontend typecheck: 0 errors
-- Frontend lint: 0 errors
-- Backend typecheck: 0 errors
-- Backend lint: 0 errors
-- Mobile typecheck: 0 errors
-- Mobile lint: 0 errors
-- Backend tests: 285/285 passing
-- Frontend tests: 176/176 passing
-- Mobile tests: 25/25 passing
-
----
-
-## [1.3.0] — 2026-07-24
+#### Infrastructure & CI
+- **CI/CD**: Removed unsupported `--cache-to type=registry` and `--cache-from` flags when building images with the standard Docker driver in GitLab CI ([70dd400](https://github.com/amr-karam/HexaStudio/commit/70dd4001de7f5fa2de5ff1f0f5d00763729977be)).
+- **CI/CD**: Switched Docker buildx from `docker-container` driver to default `docker` driver to eliminate DinD TCP upgrade failure (404) and switched cache mode to inline ([486b8b9](https://github.com/amr-karam/HexaStudio/commit/486b8b992444eff1890e925c481028cb0b65f247)).
 
 ### Added
-- **Digital Artisan Design System**: Premium immersive visual upgrade across five core sections.
-- **SilkShaderBackground**: Lightweight WebGL silk/iridescence shader (~3KB gzipped) delivering a Stripe-grade animated mesh-gradient hero effect on the About hero and CTA sections.
-- **LiquidGlassCard**: Interactive glass-morphism card with mouse-reactive gold radial highlight, used on About CTA, CTASection (collaboration), and ProcessSection step cards.
-- **Spring Physics Motion Upgrade**: All staggered in-view transitions migrated from cubic-bezier easing to Framer Motion spring physics (`stiffness`/`damping`) on NewsletterSection, CTASection, ProcessSection, and Footer link reveals.
-- **Footer Artisan Upgrade**: Footer migrated to `artisan-glass-gold` backdrop with staggered spring-animated link reveals across nav, legal, and social columns.
+- **Architecture & Observability**: Added ADR-014 defining the enhanced observability and standardized health check architecture (`/health` and `/admin/health`), service contracts, and Prometheus metrics ([b185da1](https://github.com/amr-karam/HexaStudio/commit/b185da18a27ac8f46a91462c630898ccdbc2485d)).
 
 ### Changed
-- About hero: SilkShader as background layer beneath gradient-radial-gold.
-- About CTA: Wrapped in `LiquidGlassCard goldAccent` with SilkShader background.
-- CTASection: Content wrapped in `LiquidGlassCard goldAccent`; SilkShader ambient layer added; all staggered reveals switched to spring physics.
-- NewsletterSection: `childVariants` transition changed from `DURATION.component`/`EASE.entrance` to `type: 'spring'`.
-- ProcessSection: Step cards replaced plain `bg-surface/30 border` with `LiquidGlassCard goldAccent` + spring entry animation.
-- Design System documented: Glass-morphism tokens (`artisan-glass`, `artisan-glass-gold`) and spring motion tokens.
-
-### Quality
-- TypeScript strict mode: clean `tsc --noEmit` with zero errors.
-- Reduced motion respected: all spring animations gracefully degrade via `useReducedMotion()` or `prefers-reduced-motion` query.
-
-## [1.2.0] — 2026-07-15
-
-### Added
-- **AI Vector Search**: Real OpenAI `text-embedding-3-small` embeddings (1536-dim) powering semantic search.
-- **Semantic Search endpoint**: `POST /vector/search/public` with real embeddings.
-- **Auto-Tagging**: GPT-powered tag generation with keyword-extraction fallback.
-- **Recommendations engine**: Vector-similarity "similar projects" via `RecommendationService`.
-- **Vector Sync**: `VectorSyncService` for embedding and syncing projects to Qdrant.
-- **LightingService**: AI-driven lighting suggestions using the embedding pipeline (`lighting_presets`).
-- **Test coverage**: `recommendation.service.spec.ts`, `vector-sync.service.spec.ts`, `PageTransition.spec.tsx`, `SmoothScroll.spec.tsx`.
-
-### Changed
-- Centralized motion tokens (`EASE.entrance`, `DURATION`) across experience components.
-- Reduced-motion handling hardened (Navbar focus trap, LoadingScreen, Counter, ScrollFadeIn).
-- Backend scoped out of the Vercel build workspace (deployed via Docker).
-
-### Removed
-- Dead `Scene.tsx` 3D component (superseded by `ArchitecturalModel` / experience canvas).
-
-### Quality
-- 144 passing tests (80 backend + 64 frontend) at sprint close; 0 typecheck/lint errors.
-
-## [1.1.0] — 2026-07-13
-
-### Added
-- Client Portal foundation: `/client` dashboard, role-based redirection, scoped Client API.
-- Real-time client notifications.
-
-### Security
-- RBAC enforcement: `CLIENT` role cannot access `EMPLOYEE` / `SUPER_ADMIN` resources.
+- **Dependencies**: Updated Babel plugin dev packages (`@babel/plugin-*`) and resolved package integrity hashes in the lockfile ([89d7d77](https://github.com/amr-karam/HexaStudio/commit/89d7d778efe5931d37c9a1b16d2c124637692401)).
