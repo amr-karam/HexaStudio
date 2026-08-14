@@ -248,8 +248,11 @@ build-image-backend:
         --tag $BACKEND_IMAGE:$IMAGE_TAG_BRANCH \
         --tag $BACKEND_IMAGE:latest \
         --file apps/backend/Dockerfile \
-        --push \
+        --load \
         .
+    - docker push $BACKEND_IMAGE:$IMAGE_TAG_SHA
+    - docker push $BACKEND_IMAGE:$IMAGE_TAG_BRANCH
+    - docker push $BACKEND_IMAGE:latest
   dependencies:
     - build
   rules:
@@ -283,8 +286,11 @@ build-image-frontend:
         --tag $FRONTEND_IMAGE:$IMAGE_TAG_BRANCH \
         --tag $FRONTEND_IMAGE:latest \
         --file apps/frontend/Dockerfile \
-        --push \
+        --load \
         .
+    - docker push $FRONTEND_IMAGE:$IMAGE_TAG_SHA
+    - docker push $FRONTEND_IMAGE:$IMAGE_TAG_BRANCH
+    - docker push $FRONTEND_IMAGE:latest
   dependencies:
     - build
   rules:
@@ -314,8 +320,11 @@ build-image-cms:
         --tag $CMS_IMAGE:$IMAGE_TAG_BRANCH \
         --tag $CMS_IMAGE:latest \
         --file apps/cms/Dockerfile \
-        --push \
+        --load \
         .
+    - docker push $CMS_IMAGE:$IMAGE_TAG_SHA
+    - docker push $CMS_IMAGE:$IMAGE_TAG_BRANCH
+    - docker push $CMS_IMAGE:latest
   dependencies:
     - build
   rules:
@@ -577,8 +586,12 @@ build-image-docs:
         --tag $DOCS_IMAGE:$IMAGE_TAG_BRANCH \
         --tag $DOCS_IMAGE:latest \
         --file packages/ui/Dockerfile \
-        --push \
+        --load \
         .
+    # Default docker driver cannot --push; load locally then push explicitly.
+    - docker push $DOCS_IMAGE:$IMAGE_TAG_SHA
+    - docker push $DOCS_IMAGE:$IMAGE_TAG_BRANCH
+    - docker push $DOCS_IMAGE:latest
   needs:
     - build-storybook
   rules:
