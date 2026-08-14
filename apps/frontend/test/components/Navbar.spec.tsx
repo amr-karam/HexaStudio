@@ -1,6 +1,27 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Navbar } from '@/components/ui/nav/Navbar';
+import React from 'react';
+
+// Mock NavbarMobileMenu component
+const MockNavbarMobileMenu = function NavbarMobileMenu({ isOpen, onClose, navItems }: { isOpen: boolean; onClose: () => void; navItems: { label: string; href: string }[] }) {
+  if (!isOpen) return null;
+  return (
+    <div
+      id="mobile-menu"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Mobile navigation"
+      data-testid="mobile-menu"
+    >
+      {navItems.map((item) => (
+        <a key={item.href} href={item.href} onClick={onClose}>
+          {item.label}
+        </a>
+      ))}
+    </div>
+  );
+};
 
 vi.mock('next/navigation', () => ({
   usePathname: () => '/projects',
@@ -36,6 +57,10 @@ vi.mock('@/i18n/LocaleProvider', () => ({
 
 vi.mock('@/features/currency', () => ({
   CurrencySelector: () => <div data-testid="currency-selector" />,
+}));
+
+vi.mock('@/components/ui/nav/NavbarMobileMenu', () => ({
+  NavbarMobileMenu: MockNavbarMobileMenu,
 }));
 
 describe('Navbar', () => {
