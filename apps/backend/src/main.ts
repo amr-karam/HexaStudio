@@ -45,10 +45,18 @@ async function bootstrap() {
   );
   app.useGlobalFilters(new GlobalExceptionFilter());
 
-  const corsOrigins = (env.CORS_ORIGINS ?? "http://localhost:3000")
+  const corsOrigins = (env.CORS_ORIGINS ?? "http://localhost:3000,https://hexastudio.net,https://www.hexastudio.net")
     .split(",")
     .map((o: string) => o.trim());
-  app.enableCors({ origin: corsOrigins, credentials: true });
+  app.enableCors({
+    origin: corsOrigins,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
+    exposedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  });
 
   // Only enable Swagger in development
   if (env.NODE_ENV === "development") {

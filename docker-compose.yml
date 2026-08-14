@@ -148,7 +148,7 @@ services:
       REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
       CMS_URL: http://cms:1337
       SENTRY_DSN: ${SENTRY_DSN}
-      CORS_ORIGINS: http://localhost,http://${SERVER_IP}
+      CORS_ORIGINS: http://localhost,http://${SERVER_IP},https://hexastudio.net,https://www.hexastudio.net
     depends_on:
       postgres:
         condition: service_healthy
