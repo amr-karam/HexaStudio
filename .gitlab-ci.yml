@@ -94,8 +94,18 @@ typecheck:
 
 cms-typecheck:
   extends: .typecheck_base
+  before_script:
+    # CMS is NOT a root workspace — install and check in its own directory.
+    - node --version
+    - npm --version
+    - npm config set fetch-retries 5
+    - npm config set fetch-retry-mintimeout 20000
+    - npm config set fetch-retry-maxtimeout 120000
+    - npm config set fetch-timeout 300000
+    - cd apps/cms && npm ci --legacy-peer-deps && cd ../..
+    - cd apps/cms && npm run typecheck
   script:
-    - npm run typecheck
+    - echo "cms typecheck completed"
   cache:
     key:
       files:
