@@ -23,11 +23,14 @@ const withBundleAnalyzer = bundleAnalyzer({
  */
 const ContentSecurityPolicy = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https://www.googletagmanager.com https://us.i.posthog.com https://www.gstatic.com https://static.cloudflareinsights.com",
+  // Scripts: Next.js hydration + JSON-LD need 'unsafe-inline'; React/Three.js/PostHog/Sentry need 'unsafe-eval'
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https://www.googletagmanager.com https://us.i.posthog.com https://www.gstatic.com https://static.cloudflareinsights.com https://challenges.cloudflare.com",
+  // Styles: Tailwind + Google Fonts
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
   "img-src 'self' data: blob: https:",
   "media-src 'self' blob: https:",
+  // Connect: API + WebSockets + analytics + Sentry
   [
     "connect-src 'self'",
     "https://api.hexastudio.net wss://api.hexastudio.net",
@@ -35,9 +38,10 @@ const ContentSecurityPolicy = [
     "https://us.i.posthog.com https://us.posthog.com https://*.posthog.com",
     "https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com",
     "https://*.sentry.io", "https://cloudflareinsights.com",
+    "https://challenges.cloudflare.com",
   ].join(" "),
   "worker-src 'self' blob:",
-  "frame-src 'none'",
+  "frame-src 'self' https://challenges.cloudflare.com",
   "frame-ancestors 'self' https://hexastudio.net http://localhost:1337",
   "object-src 'none'",
   "base-uri 'self'",
