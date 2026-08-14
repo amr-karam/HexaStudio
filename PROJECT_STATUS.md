@@ -1,6 +1,6 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** August 2, 2026 — 12:10 UTC+3
+**Last Updated:** August 14, 2026 — verified against live repo (all 3 gates 0/0)
 **Version:** 2.1.2
 **Authority Level:** 13 (Production)
 **Current Phase:** Production-Ready — Odoo-First Architecture + Workflow Automation (DEPLOYED)
@@ -25,8 +25,8 @@
 
 | Gate | Target | Status | Result |
 |---|---|---|---|
-| **Backend Tests** | 330 total | `339 / 339` | ✅ PASS |
-| **Frontend Tests** | 207 total | `201 / 207` | ❌ FAIL (6 tests failed) |
+| **Backend Tests** | 357 total | `357 / 357` | ✅ PASS |
+| **Frontend Tests** | 336 total | `336 / 336` | ✅ PASS |
 | **Mobile Tests** | 25 passing | `25 / 25` | ✅ PASS |
 | **Frontend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **Backend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
@@ -100,6 +100,11 @@
 - [x] Backend gates: lint 0/0, typecheck 0, **335/335 tests**; Frontend gates: lint 0/0, typecheck 0, **205/207** (2 pre-existing `Navbar.spec.tsx` mobile-menu failures, untouched)
 
 **Known gap (pre-existing, documented):** all frontend BFF proxies (`/api/...` Next routes) call JWT-guarded NestJS AI endpoints without an `Authorization` header — so the live AI synthesis path currently 401s and degrades to the local keyword fallback. Consistent with every existing AI proxy (copilot, multimodal, agents). Wiring real auth in the proxies is a follow-up (sprint debt).
+
+**Frontend bug fixes (Aug 14, 2026):**
+- [x] **BUG 1 — `/portal` crash (`useLocale must be used within a LocaleProvider`):** `PortalTopBar.tsx` imported the LEGACY `LocaleSwitcher` from `@/features/i18n/components/LocaleSwitcher` (never-mounted legacy provider). Repointed to the canonical `@/components/LocaleSwitcher` (uses `@/i18n/LocaleProvider`, mounted in `app-providers.tsx`). Grep audit: 0 remaining `@/features/i18n` imports in `apps/frontend/src`. Legacy `features/i18n` folder intentionally untouched (out of scope).
+- [x] **BUG 2 — `/premium-chat` 404:** created route `apps/frontend/src/app/premium-chat/` — server `page.tsx` (exports `metadata`) + client island `PremiumChatClient.tsx` (stateful: `useAuth`-derived identity with neutral Guest fallback, welcome message, send/reaction handlers wired to the existing `PremiumChat` presentational component). Design-system tokens only.
+- [x] **Gates verified:** frontend lint 0/0, typecheck 0 errors, tests **336/336** (44 files), design-token gate PASSED.
 
 **S-021 Roadmap:**
 - [ ] P2 — Live Odoo sync to GitLab prod server (`19.16.1.100` — currently unreachable)

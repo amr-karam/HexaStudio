@@ -18,7 +18,7 @@ import { EASE, DURATION } from '@/lib/motion';
 
 import { NotificationCenter } from '@/features/notifications/components/NotificationCenter';
 import { OdooSyncStatusWidget } from './OdooSyncStatusWidget';
-import { LocaleSwitcher } from '@/features/i18n/components/LocaleSwitcher';
+import { LocaleSwitcher } from '@/components/LocaleSwitcher';
 import { WebXRArButton } from '@/features/scene/components/WebXRArButton';
 
 export function PortalTopBar() {

@@ -165,7 +165,7 @@ services:
       REDIS_URL: redis://:${REDIS_PASSWORD}@redis-green:6379
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
-      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,https://hexastudio.net}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,https://hexastudio.net,https://www.hexastudio.net}
       RATE_LIMIT_TTL: ${RATE_LIMIT_TTL:-60}
       RATE_LIMIT_MAX: ${RATE_LIMIT_MAX:-100}
       SENTRY_DSN: ${SENTRY_DSN:-}
