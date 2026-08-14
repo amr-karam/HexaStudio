@@ -63,6 +63,10 @@ function WireframeTorus() {
     return nonIndexed;
   }, []);
 
+  // Dispose GPU resources on unmount — prevents the post-teardown render race
+  // (getProgramParameter on dead GL handles) when navigating away from the hero.
+  useEffect(() => () => geometry.dispose(), [geometry]);
+
   return (
     <mesh geometry={geometry}>
       <shaderMaterial
@@ -91,6 +95,16 @@ function StoneShell() {
       side: DoubleSide,
     });
   }, []);
+
+  // Dispose GPU resources on unmount — prevents the post-unmount render race
+  // where the loop hits getProgramParameter on dead GL handles (BUG-6).
+  useEffect(() => {
+    return () => {
+      const alphaMap = material.alphaMap;
+      material.dispose();
+      alphaMap?.dispose();
+    };
+  }, [material]);
 
   return (
     <mesh material={material} scale={[1.02, 1.02, 1.02]}>
