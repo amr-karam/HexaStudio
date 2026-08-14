@@ -26,8 +26,9 @@
 | Gate | Target | Status | Result |
 |---|---|---|---|
 | **Backend Tests** | 357 total | `357 / 357` | ✅ PASS |
-| **Frontend Tests** | 336 total | `336 / 336` | ✅ PASS |
+| **Frontend Tests** | 341 total | `341 / 341` | ✅ PASS |
 | **Mobile Tests** | 25 passing | `25 / 25` | ✅ PASS |
+| **Backend Tests** | 357 total | `357 / 357` | ✅ PASS |
 | **Frontend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **Backend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **Mobile Typecheck** | 0 errors | `0 errors` | ✅ PASS |
@@ -336,3 +337,100 @@ When debugging Cloudflare Tunnel issues, **do NOT run `cloudflared tunnel create
 | CORS GET request | ✅ 200, CORS headers present |
 | LocaleSwitcher import | ✅ Imports from `@/i18n/LocaleProvider` |
 | Legacy context imports | ✅ None remaining |
+
+---
+
+## 2026-08-14 — Incident: CORS Preflight Failure (Full Fix Pending Deployment)
+
+**Status:** 🔄 Code fixed, awaiting production deployment
+
+### Symptoms
+- Browser console showed **CORS errors** on 4 endpoints:
+  - `GET /api/currency/list` — blocked (missing `Access-Control-Allow-Origin`)
+  - `GET /api/users/me` — blocked (missing `Access-Control-Allow-Origin`)
+  - `GET /api/achievements` — blocked + 503 Service Unavailable
+  - `GET /api/testimonials/featured` — blocked + 503 Service Unavailable
+- 503 errors on achievements and testimonials indicate backend may be unhealthy
+- 404 on `/premium-chat` (route exists in code, not yet deployed)
+- 503 on `/_next/image` optimization (likely cascading from backend issues)
+
+### Root Causes
+
+1. **Incomplete CORS configuration in backend** (`apps/backend/src/main.ts`):
+   - `enableCors()` was missing `methods`, `allowedHeaders`, `exposedHeaders`
+   - Preflight requests (OPTIONS) were not properly handled
+   - `CORS_ORIGINS` default only included `http://localhost:3000`
+
+2. **Backend container not redeployed** with the fix:
+   - Code changes committed to `main` but production hasn't been updated
+   - Backend health endpoint returning 503 indicates service issues
+
+### Resolution (Code Complete — Deployment Pending)
+
+1. **Enhanced CORS configuration** in `apps/backend/src/main.ts`:
+   ```typescript
+   app.enableCors({
+     origin: corsOrigins,
+     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+     allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
+     exposedHeaders: ['Content-Type', 'Authorization'],
+     credentials: true,
+     preflightContinue: false,
+     optionsSuccessStatus: 204,
+   });
+   ```
+
+2. **Updated `docker-compose.yml`** CORS_ORIGINS:
+   ```
+   CORS_ORIGINS: http://localhost,http://${SERVER_IP},https://hexastudio.net,https://www.hexastudio.net
+   ```
+
+3. **Updated `.env.example`** to enable CORS_ORIGINS by default
+
+4. **Frontend test fix**: Mocked `NavbarMobileMenu` component for test environment
+
+### Files Changed
+| File | Change |
+|------|--------|
+| `apps/backend/src/main.ts` | Complete CORS configuration |
+| `docker-compose.yml` | Updated CORS_ORIGINS env var |
+| `apps/backend/.env.example` | Enabled CORS_ORIGINS |
+| `apps/frontend/test/components/Navbar.spec.tsx` | Mock NavbarMobileMenu |
+
+### Quality Gates (Post-Fix)
+| Gate | Result |
+|------|--------|
+| Backend Lint | ✅ 0 errors |
+| Backend Typecheck | ✅ 0 errors |
+| Backend Tests | ✅ 357/357 |
+| Frontend Lint | ✅ 0 errors |
+| Frontend Typecheck | ✅ 0 errors |
+| Frontend Tests | ✅ 341/341 |
+| Design Tokens | ✅ PASS |
+
+### Deployment Required
+
+Run the production deployment to apply the CORS fix:
+
+```bash
+# Option 1: Via GitLab CI/CD (recommended)
+# Trigger manual deploy-production job on main branch
+
+# Option 2: Direct SSH deployment
+ssh -i C:\Users\amrmo\.ssh\hexastudio_key root@19.16.1.100
+cd /home/hexa/hexastudio
+git fetch origin main
+git reset --hard origin/main
+docker compose -f docker-compose.prod.yml pull
+docker compose -f docker-compose.prod.yml up -d --build backend
+```
+
+### Verification (After Deployment)
+
+| Test | Expected Result |
+|------|-----------------|
+| `GET https://api.hexastudio.net/api/health` | ✅ 200 |
+| `OPTIONS https://api.hexastudio.net/api/currency/list` | ✅ 204 + CORS headers |
+| `GET https://api.hexastudio.net/api/achievements` | ✅ 200 + CORS headers |
+| `GET https://www.hexastudio.net/premium-chat` | ✅ 200 (page exists) |
+| `GET https://www.hexastudio.net/_next/image?...` | ✅ 200 (image optimization working) |
