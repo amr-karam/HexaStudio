@@ -241,14 +241,14 @@ build-image-backend:
   script:
     - docker buildx create --use
     - |
-      docker buildx build
-        --cache-from type=registry,ref=$BACKEND_IMAGE:buildcache
-        --cache-to type=registry,ref=$BACKEND_IMAGE:buildcache,mode=max
-        --tag $BACKEND_IMAGE:$IMAGE_TAG_SHA
-        --tag $BACKEND_IMAGE:$IMAGE_TAG_BRANCH
-        --tag $BACKEND_IMAGE:latest
-        --file apps/backend/Dockerfile
-        --push
+      docker buildx build \
+        --cache-from type=registry,ref=$BACKEND_IMAGE:buildcache \
+        --cache-to type=registry,ref=$BACKEND_IMAGE:buildcache,mode=max \
+        --tag $BACKEND_IMAGE:$IMAGE_TAG_SHA \
+        --tag $BACKEND_IMAGE:$IMAGE_TAG_BRANCH \
+        --tag $BACKEND_IMAGE:latest \
+        --file apps/backend/Dockerfile \
+        --push \
         .
   dependencies:
     - build
@@ -272,18 +272,18 @@ build-image-frontend:
   script:
     - docker buildx create --use
     - |
-      docker buildx build
-        --build-arg NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-        --build-arg NEXT_PUBLIC_CMS_URL=$NEXT_PUBLIC_CMS_URL
-        --build-arg NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
-        --build-arg NEXT_PUBLIC_STRAPI_API_URL=$NEXT_PUBLIC_CMS_URL
-        --cache-from type=registry,ref=$FRONTEND_IMAGE:buildcache
-        --cache-to type=registry,ref=$FRONTEND_IMAGE:buildcache,mode=max
-        --tag $FRONTEND_IMAGE:$IMAGE_TAG_SHA
-        --tag $FRONTEND_IMAGE:$IMAGE_TAG_BRANCH
-        --tag $FRONTEND_IMAGE:latest
-        --file apps/frontend/Dockerfile
-        --push
+      docker buildx build \
+        --build-arg NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
+        --build-arg NEXT_PUBLIC_CMS_URL=$NEXT_PUBLIC_CMS_URL \
+        --build-arg NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL \
+        --build-arg NEXT_PUBLIC_STRAPI_API_URL=$NEXT_PUBLIC_CMS_URL \
+        --cache-from type=registry,ref=$FRONTEND_IMAGE:buildcache \
+        --cache-to type=registry,ref=$FRONTEND_IMAGE:buildcache,mode=max \
+        --tag $FRONTEND_IMAGE:$IMAGE_TAG_SHA \
+        --tag $FRONTEND_IMAGE:$IMAGE_TAG_BRANCH \
+        --tag $FRONTEND_IMAGE:latest \
+        --file apps/frontend/Dockerfile \
+        --push \
         .
   dependencies:
     - build
@@ -307,14 +307,14 @@ build-image-cms:
   script:
     - docker buildx create --use
     - |
-      docker buildx build
-        --cache-from type=registry,ref=$CMS_IMAGE:buildcache
-        --cache-to type=registry,ref=$CMS_IMAGE:buildcache,mode=max
-        --tag $CMS_IMAGE:$IMAGE_TAG_SHA
-        --tag $CMS_IMAGE:$IMAGE_TAG_BRANCH
-        --tag $CMS_IMAGE:latest
-        --file apps/cms/Dockerfile
-        --push
+      docker buildx build \
+        --cache-from type=registry,ref=$CMS_IMAGE:buildcache \
+        --cache-to type=registry,ref=$CMS_IMAGE:buildcache,mode=max \
+        --tag $CMS_IMAGE:$IMAGE_TAG_SHA \
+        --tag $CMS_IMAGE:$IMAGE_TAG_BRANCH \
+        --tag $CMS_IMAGE:latest \
+        --file apps/cms/Dockerfile \
+        --push \
         .
   dependencies:
     - build
@@ -568,14 +568,14 @@ build-image-docs:
   script:
     - docker buildx create --use
     - |
-      docker buildx build
-        --cache-from type=registry,ref=$DOCS_IMAGE:buildcache
-        --cache-to type=registry,ref=$DOCS_IMAGE:buildcache,mode=max
-        --tag $DOCS_IMAGE:$IMAGE_TAG_SHA
-        --tag $DOCS_IMAGE:$IMAGE_TAG_BRANCH
-        --tag $DOCS_IMAGE:latest
-        --file packages/ui/Dockerfile
-        --push
+      docker buildx build \
+        --cache-from type=registry,ref=$DOCS_IMAGE:buildcache \
+        --cache-to type=registry,ref=$DOCS_IMAGE:buildcache,mode=max \
+        --tag $DOCS_IMAGE:$IMAGE_TAG_SHA \
+        --tag $DOCS_IMAGE:$IMAGE_TAG_BRANCH \
+        --tag $DOCS_IMAGE:latest \
+        --file packages/ui/Dockerfile \
+        --push \
         .
   needs:
     - build-storybook
