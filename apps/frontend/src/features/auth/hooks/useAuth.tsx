@@ -5,6 +5,7 @@ import { User } from '@/types';
 import { API_BASE_URL } from '@/config/constants';
 import {
   setRefreshToken,
+  setAccessToken,
   onAuthLogout,
   authFetch,
 } from '@/lib/api-client';
@@ -65,9 +66,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const data = await response.json();
     setUser(data.user);
 
-    // Store refresh token in memory for automatic renewal
+    // Store tokens in memory for automatic renewal
     if (data.refreshToken) {
       setRefreshToken(data.refreshToken);
+    }
+    if (data.accessToken) {
+      setAccessToken(data.accessToken);
     }
   };
 
@@ -87,9 +91,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const data = await response.json();
     setUser(data.user);
 
-    // Store refresh token in memory for automatic renewal
+    // Store tokens in memory for automatic renewal
     if (data.refreshToken) {
       setRefreshToken(data.refreshToken);
+    }
+    if (data.accessToken) {
+      setAccessToken(data.accessToken);
     }
   };
 
@@ -101,6 +108,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
     } finally {
       setRefreshToken(null);
+      setAccessToken(null);
       setUser(null);
     }
   }, []);
