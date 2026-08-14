@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import PremiumChat from '@/components/chat/PremiumChat';
 import { useAuth } from '@/features/auth';
@@ -62,7 +62,11 @@ function createWelcomeMessage(): ChatMessage {
 
 export default function PremiumChatClient() {
   const { user } = useAuth();
-  const [messages, setMessages] = useState<ChatMessage[]>(() => [createWelcomeMessage()]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+
+  useEffect(() => {
+    setMessages([createWelcomeMessage()]);
+  }, []);
 
   /** Derive the chat identity from the real authenticated user when available. */
   const currentUser = useMemo<ChatUser>(() => {

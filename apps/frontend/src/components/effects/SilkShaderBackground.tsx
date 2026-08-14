@@ -136,6 +136,8 @@ export const SilkShaderBackground: React.FC<SilkShaderBackgroundProps> = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);
   const startTimeRef = useRef<number>(0);
+  const programRef = useRef<WebGLProgram | null>(null);
+  const glRef = useRef<WebGLRenderingContext | null>(null);
 
   const prefersReducedMotion = typeof window !== 'undefined'
     && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -144,8 +146,15 @@ export const SilkShaderBackground: React.FC<SilkShaderBackgroundProps> = ({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false });
-    if (!gl) return;
+    if (!glRef.current || glRef.current.isContextLost()) {
+      const gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false });
+      if (!gl) return;
+      glRef.current = gl;
+      programRef.current = null;
+    }
+
+    const gl = glRef.current;
+    if (!gl || gl.isContextLost()) return;
 
     // Resize
     const dpr = Math.min(window.devicePixelRatio, 1.5); // Cap at 1.5 for performance
@@ -157,8 +166,8 @@ export const SilkShaderBackground: React.FC<SilkShaderBackgroundProps> = ({
       gl.viewport(0, 0, canvas.width, canvas.height);
     }
 
-    // Init shaders (only once)
-    if (!canvas.dataset.shaderInit) {
+    // Init shaders (only once or after context restore)
+    if (!programRef.current) {
       const vert = createShader(gl, gl.VERTEX_SHADER, VERT_SHADER);
       const frag = createShader(gl, gl.FRAGMENT_SHADER, FRAG_SHADER);
       if (!vert || !frag) return;
@@ -166,6 +175,7 @@ export const SilkShaderBackground: React.FC<SilkShaderBackgroundProps> = ({
       const program = createProgram(gl, vert, frag);
       if (!program) return;
 
+      programRef.current = program;
       gl.useProgram(program);
 
       // Full-screen quad
@@ -179,15 +189,9 @@ export const SilkShaderBackground: React.FC<SilkShaderBackgroundProps> = ({
       const posLoc = gl.getAttribLocation(program, 'a_position');
       gl.enableVertexAttribArray(posLoc);
       gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
-
-      canvas.dataset.shaderInit = 'true';
-      canvas.dataset.programId = String(program);
     }
 
-    const program = gl.getProgramParameter(Number(canvas.dataset.programId), gl.LINK_STATUS)
-      ? Number(canvas.dataset.programId)
-      : null;
-
+    const program = programRef.current;
     if (!program) return;
 
     gl.useProgram(program);
@@ -225,18 +229,35 @@ export const SilkShaderBackground: React.FC<SilkShaderBackgroundProps> = ({
 
     loop();
 
+    const canvas = canvasRef.current;
+    const handleContextLost = (event: Event) => {
+      event.preventDefault();
+      programRef.current = null;
+      glRef.current = null;
+    };
+    const handleContextRestored = () => {
+      programRef.current = null;
+      glRef.current = null;
+    };
+
+    if (canvas) {
+      canvas.addEventListener('webglcontextlost', handleContextLost, false);
+      canvas.addEventListener('webglcontextrestored', handleContextRestored, false);
+    }
+
     return () => {
       running = false;
       cancelAnimationFrame(animFrameRef.current);
-      // Cleanup WebGL context
-      const canvas = canvasRef.current;
       if (canvas) {
-        const gl = canvas.getContext('webgl');
-        if (gl) {
-          const programId = canvas.dataset.programId;
-          if (programId) gl.deleteProgram(Number(programId));
-        }
+        canvas.removeEventListener('webglcontextlost', handleContextLost);
+        canvas.removeEventListener('webglcontextrestored', handleContextRestored);
       }
+      // Cleanup WebGL context
+      if (programRef.current && glRef.current) {
+        glRef.current.deleteProgram(programRef.current);
+        programRef.current = null;
+      }
+      glRef.current = null;
     };
   }, [prefersReducedMotion, render]);
 

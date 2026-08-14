@@ -130,9 +130,12 @@ async function doRefresh(): Promise<boolean> {
 
     const data = await response.json();
 
-    // Store the new refresh token
+    // Store the new tokens
     if (data.refreshToken) {
       _refreshToken = data.refreshToken;
+    }
+    if (data.accessToken) {
+      _accessToken = data.accessToken;
     }
 
     return true;

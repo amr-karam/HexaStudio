@@ -549,7 +549,10 @@ publish-ui:
       when: manual
       allow_failure: false
 
-# ----- Build Storybook static site & push docs-service image -----
+# NOTE (ADR-013): packages/ui was retired — Storybook/docs jobs reference the
+# archived package and are disabled (manual, never auto-run). The docs-service
+# is commented out of docker-compose.prod.yml. Re-enable only if a design-system
+# docs site returns (see docs/adr/archive/packages-ui-snapshot/).
 build-storybook:
   stage: publish
   image: node:${NODE_VERSION}
@@ -564,7 +567,13 @@ build-storybook:
     expire_in: 7 days
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
+      when: manual
+      allow_failure: true
     - if: $CI_COMMIT_BRANCH == "develop" && $CI_PIPELINE_SOURCE == "push"
+      when: manual
+      allow_failure: true
+      when: manual
+      allow_failure: true
 
 # ----- Push docs-service container image (serves Storybook static build) -----
 build-image-docs:
@@ -596,7 +605,11 @@ build-image-docs:
     - build-storybook
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
+      when: manual
+      allow_failure: true
     - if: $CI_COMMIT_BRANCH == "develop" && $CI_PIPELINE_SOURCE == "push"
+      when: manual
+      allow_failure: true
 
 # ----------------------------------------------------------------------------
 # 7. DEPLOY STAGE
@@ -631,9 +644,7 @@ deploy-production:
         docker ps --filter "health=healthy" --format "{{.Names}}" | grep -q "hexa-backend" || { echo "Backend unhealthy"; exit 1; }
         docker ps --filter "health=healthy" --format "{{.Names}}" | grep -q "hexa-frontend" || { echo "Frontend unhealthy"; exit 1; }
         docker ps --filter "health=healthy" --format "{{.Names}}" | grep -q "hexa-cms" || { echo "CMS unhealthy"; exit 1; }
-        docker ps --filter "health=healthy" --format "{{.Names}}" | grep -q "hexa-docs" || { echo "Docs unhealthy"; exit 1; }
         curl -sf http://localhost:4000/api/health || { echo "API health endpoint unreachable"; exit 1; }
-        curl -sf http://localhost:8080/ || { echo "Docs endpoint unreachable"; exit 1; }
         echo "Deployment verified successfully."
       EOF
   environment:
