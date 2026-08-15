@@ -4,13 +4,13 @@ import { APP_FILTER, APP_GUARD } from "@nestjs/core";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { AppController } from "./app.controller";
 import { SecurityThrottlerFilter } from "./common/filters/security-throttler.filter";
+import { CoreModule } from "./core/core.module";
 import {
   AccountingModule,
   AgentsModule,
   AIModule,
   ArticlesModule,
   AssistantsModule,
-  AuthModule,
   CalendarModule,
   ContactModule,
   CurrencyModule,
@@ -28,10 +28,8 @@ import {
   PortalModule,
   ProjectsModule,
   RealtimeModule,
-  RedisModule,
   RequestsModule,
   ServicesModule,
-  StorageModule,
   TeamMembersModule,
   TestimonialsModule,
   TimesheetsModule,
@@ -41,6 +39,8 @@ import {
   TranslationsModule,
   GeoipModule,
   WorkflowModule,
+  StorageModule,
+  RedisModule,
 } from "./modules/index";
 import { RequestIdMiddleware } from "./common/middleware/request-id.middleware";
 import { WorkflowWiringService } from "./modules/workflow/workflow-wiring.service";
@@ -54,6 +54,7 @@ import { WorkflowWiringService } from "./modules/workflow/workflow-wiring.servic
         limit: parseInt(process.env.RATE_LIMIT_MAX ?? "100", 10),
       },
     ]),
+    CoreModule,
     HealthModule,
     HelpdeskModule,
     CalendarModule,
@@ -70,7 +71,6 @@ import { WorkflowWiringService } from "./modules/workflow/workflow-wiring.servic
     TeamMembersModule,
     FAQsModule,
     ContactModule,
-    AuthModule,
     StorageModule,
     RedisModule,
     CurrencyModule,
@@ -86,11 +86,10 @@ import { WorkflowWiringService } from "./modules/workflow/workflow-wiring.servic
     AgentsModule,
     AssistantsModule,
     WebhooksModule,
-    // NotionModule and JiraModule removed — Odoo covers all needs
-  TranslationsModule,
-  MobileModule,
-  GeoipModule,
-  WorkflowModule,
+    TranslationsModule,
+    MobileModule,
+    GeoipModule,
+    WorkflowModule,
   ],
   controllers: [AppController],
   providers: [

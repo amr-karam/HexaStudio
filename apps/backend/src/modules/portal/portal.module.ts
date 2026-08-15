@@ -10,7 +10,13 @@ import { AuthModule } from '../auth/auth.module';
 import { ProjectsModule } from '../projects/projects.module';
 
 @Module({
-  imports: [OdooModule, StorageModule, AIModule, forwardRef(() => AuthModule), ProjectsModule],
+  imports: [
+    OdooModule,
+    StorageModule,
+    AIModule,
+    forwardRef(() => AuthModule),
+    forwardRef(() => ProjectsModule),
+  ],
   controllers: [PortalController],
   providers: [ClientPortalGateway, PortalService, PortalCopilotService],
   exports: [PortalService, PortalCopilotService, ClientPortalGateway],

@@ -46,6 +46,7 @@ export class ClientPortalGateway implements OnGatewayConnection, OnGatewayDiscon
   constructor(
     @Inject(forwardRef(() => AuthService))
     private readonly authService: AuthService,
+    @Inject(forwardRef(() => ProjectsService))
     private readonly projectsService: ProjectsService,
     private readonly redisService: RedisService,
   ) {}
