@@ -1,0 +1,9 @@
+{
+  "cloudflare": {
+    "api_token": "cfk_CsOmAm6voORiPLSjRvH3J2H9iNMYjlwJv5zHVysZ7b22cd39",
+    "email": "justfilmk@pm.me",
+    "type": "global_api_key",
+    "last_updated": "2026-08-15"
+  },
+  "notes": "Cloudflare Global API Token. Use X-Auth-Email + X-Auth-Key headers for API requests."
+}

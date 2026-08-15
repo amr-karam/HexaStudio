@@ -18,7 +18,7 @@
  * - Full accessibility: ARIA labels, focus states, semantic HTML
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
@@ -247,6 +247,13 @@ export default function PortalDashboardPage() {
   const { user } = useAuth();
   const prefersReduced = useReducedMotion();
   const [copilotOpen, setCopilotOpen] = useState(false);
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!user) {
+      router.replace('/portal/login');
+    }
+  }, [user, router]);
 
   const { data = MOCK_FALLBACK_DASHBOARD } = useQuery<DashboardData>({
     queryKey: ['portal-dashboard'],
