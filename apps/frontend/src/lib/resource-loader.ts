@@ -86,6 +86,10 @@ export class OptimizedResourceLoader {
       const rawPayload = await fetcher();
       const duration = performance.now() - startTime;
 
+      if (duration > 2000) {
+        console.warn(`[ResourceLoader] Slow fetch for ${category}/${id}: ${duration.toFixed(0)}ms`);
+      }
+
       const item: ResourceItem = {
         id,
         category,
