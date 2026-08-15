@@ -58,6 +58,11 @@ export default function ProjectMilestonesScreen() {
                 {project.progress}% complete
               </Text>
             )}
+            <View style={[styles.arBadge, { backgroundColor: colors.background, borderColor: colors.border }]}>
+              <Text style={[styles.arText, { color: colors.accent }]}>
+                ✦ 1:1 Scale AR Asset Cached &amp; Ready
+              </Text>
+            </View>
           </View>
         }
         renderItem={({ item }) => (
@@ -106,6 +111,8 @@ const styles = StyleSheet.create({
   headerCard: { padding: 16, borderRadius: 4, borderWidth: 1, marginBottom: 16 },
   status: { fontSize: 13, lineHeight: 20, marginBottom: 4 },
   progress: { fontSize: 14, fontWeight: '600' },
+  arBadge: { marginTop: 12, paddingVertical: 8, paddingHorizontal: 12, borderRadius: 4, borderWidth: 1, alignItems: 'center' },
+  arText: { fontSize: 11, fontWeight: '600', letterSpacing: 0.5 },
   card: { padding: 20, borderRadius: 4, borderWidth: 1, marginBottom: 12 },
   cardHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 6 },
   dot: { width: 10, height: 10, borderRadius: 5, marginRight: 10 },

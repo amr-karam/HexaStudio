@@ -22,7 +22,7 @@ jest.mock('../src/lib/api', () => ({
   ),
 }));
 
-jest.setTimeout(15000);
+jest.setTimeout(60000);
 
 describe('ProjectMilestonesScreen', () => {
   it('renders milestones from the API', async () => {

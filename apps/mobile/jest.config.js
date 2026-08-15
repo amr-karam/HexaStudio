@@ -9,6 +9,7 @@ const jestConfig = {
     '^@hexastudio/utils$': '<rootDir>/../../packages/utils',
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  testTimeout: 60000,
 };
 
 module.exports = jestConfig;

@@ -2,19 +2,25 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { GlassCard } from '@/components/ui/GlassCard';
 
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, className, ...props }: { children?: React.ReactNode; className?: string; [key: string]: unknown }) => (
-      <div className={className} {...props}>{children}</div>
-    ),
-    article: ({ children, className, ...props }: { children?: React.ReactNode; className?: string; [key: string]: unknown }) => (
-      <article className={className} {...props}>{children}</article>
-    ),
-    section: ({ children, className, ...props }: { children?: React.ReactNode; className?: string; [key: string]: unknown }) => (
-      <section className={className} {...props}>{children}</section>
-    ),
-  },
-}));
+vi.mock('framer-motion', () => {
+  const filterProps = (props: Record<string, unknown>) => {
+    const { whileHover: _wh, whileTap: _wt, initial: _i, animate: _a, exit: _e, transition: _t, ...rest } = props;
+    return rest;
+  };
+  return {
+    motion: {
+      div: ({ children, className, ...props }: { children?: React.ReactNode; className?: string; [key: string]: unknown }) => (
+        <div className={className} {...filterProps(props)}>{children}</div>
+      ),
+      article: ({ children, className, ...props }: { children?: React.ReactNode; className?: string; [key: string]: unknown }) => (
+        <article className={className} {...filterProps(props)}>{children}</article>
+      ),
+      section: ({ children, className, ...props }: { children?: React.ReactNode; className?: string; [key: string]: unknown }) => (
+        <section className={className} {...filterProps(props)}>{children}</section>
+      ),
+    },
+  };
+});
 
 vi.mock('@/hooks/useReducedMotion', () => ({
   useReducedMotion: () => false,
