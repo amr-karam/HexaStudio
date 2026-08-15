@@ -169,6 +169,8 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-hexastudio}:${POSTGRES_PASSWORD}@postgres:5432/hexastudio_api
       REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      JWT_PUBLIC_KEY: ${JWT_PUBLIC_KEY:?JWT_PUBLIC_KEY is required}
+      JWT_PRIVATE_KEY: ${JWT_PRIVATE_KEY:?JWT_PRIVATE_KEY is required}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,https://hexastudio.net,https://www.hexastudio.net}
       RATE_LIMIT_TTL: ${RATE_LIMIT_TTL:-60}
