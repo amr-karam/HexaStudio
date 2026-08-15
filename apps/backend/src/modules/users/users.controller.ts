@@ -1,4 +1,4 @@
-import { Controller, Get, Param, NotFoundException, UseGuards, VERSION_NEUTRAL } from '@nestjs/common';
+import { Controller, Get, Param, NotFoundException, UseGuards, Req, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import type { User } from '@hexastudio/types';
@@ -14,10 +14,8 @@ export class UsersController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get current user profile' })
   @ApiResponse({ status: 200, description: 'Current user profile' })
-  async findMe(): Promise<User> {
-    const user = await this.usersService.findById('1');
-    if (!user) throw new NotFoundException('User not found');
-    return user;
+  async findMe(@Req() req: { user: User }): Promise<User> {
+    return req.user;
   }
 
   @Get(':id')

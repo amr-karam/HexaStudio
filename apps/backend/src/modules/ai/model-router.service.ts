@@ -43,6 +43,15 @@ const MODEL_CAPABILITIES: Record<string, ModelCapabilities> = {
     supportsFunctionCalling: true,
     supportsStructuredOutput: true,
   },
+  'google/gemma-4-e4b@q4_k_m': {
+    maxTokens: 8192,
+    reasoningAbility: 'medium',
+    speed: 'fast',
+    costPer1KTokens: 0,
+    supportsMultimodal: true,
+    supportsFunctionCalling: true,
+    supportsStructuredOutput: true,
+  },
   'gemma-4-12b-it-qat': {
     maxTokens: 8192,
     reasoningAbility: 'high',
