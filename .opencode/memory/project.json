@@ -1,0 +1,272 @@
+{
+  "meta": {
+    "created": "2026-08-15",
+    "version": "1.0",
+    "description": "OpenCode Desktop memory for HexaStudio project — comprehensive project knowledge for AI assistants"
+  },
+  "project": {
+    "name": "HexaStudio",
+    "tagline": "3D Architectural Visualization & Spatial Intelligence Platform",
+    "repo": "https://github.com/amr-karam/HexaStudio",
+    "gitlab": "http://19.16.1.100:8929/root/hexa-platform",
+    "domain": "hexastudio.net",
+    "stack": ["Next.js 16", "React 19", "TypeScript 5.9", "TailwindCSS 4", "NestJS", "PostgreSQL", "Redis", "MinIO", "Three.js", "React Three Fiber", "Framer Motion"],
+    "type": "Turborepo monorepo",
+    "workspaces": ["apps/frontend", "apps/backend", "apps/cms", "packages/ui", "packages/types", "packages/utils"]
+  },
+  "architecture": {
+    "frontend": {
+      "framework": "Next.js 16.2.11 (App Router)",
+      "path": "apps/frontend",
+      "features": ["3D Designer Mode", "Client Portal v3", "WebXR AR", "Spatial Audio", "WebRTC Review Rooms", "E-Signature"],
+      "ai_providers": ["Gemini 2.5 Flash (primary)", "OpenAI GPT-4o-mini", "Claude", "Grok", "DeepSeek", "Mistral", "OpenRouter", "Kimi", "FreeTheAI", "Local LM Studio (Gemma 4)"],
+      "state_management": "Zustand (client) + TanStack Query (server state)"
+    },
+    "backend": {
+      "framework": "NestJS 11",
+      "path": "apps/backend",
+      "port": 4000,
+      "features": ["Odoo sync", "Workflow automation", "AI spatial synthesis", "Real-time collaboration (WebSocket)", "Vector search (Qdrant)"],
+      "auth": "JWT RS256 via Passport.js + cookie (auth_token) + Bearer header",
+      "db": "PostgreSQL 16 (hexastudio_api, hexastudio_cms, hexastudio_odoo)",
+      "redis": "Redis 7 (caching, sessions, rate limiting)",
+      "vector": "Qdrant (embedding storage)"
+    },
+    "cms": {
+      "framework": "Strapi 5 (Headless)",
+      "path": "apps/cms",
+      "port": 1337,
+      "db": "PostgreSQL (hexastudio_cms)"
+    },
+    "infrastructure": {
+      "host": "19.16.1.100",
+      "ssh_user": "root",
+      "ssh_key": "C:\\Users\\amrmo\\.ssh\\hexastudio_key",
+      "ssh_cmd": "ssh root@19.16.1.100 -i C:\\Users\\amrmo\\.ssh\\hexastudio_key",
+      "server_dir": "/root/quarantine-stale-deploy-20260714",
+      "deploy_script": "python ops/scripts/deploy.py root C:\\Users\\amrmo\\.ssh\\hexastudio_key ...",
+      "proxy": "Traefik v3.7.10 (edge reverse proxy, TLS termination)",
+      "tunnel": "Cloudflare Tunnel (cloudflared) — no public IP exposure",
+      "storage": "MinIO (S3-compatible) — buckets: uploads, models, textures, videos, hdr, backups",
+      "monitoring": "Prometheus + Grafana + Loki + Promtail + Alertmanager + Uptime Kuma"
+    }
+  },
+  "network": {
+    "docker_networks": {
+      "hexastudio_web": "Frontend exposure (Traefik → public)",
+      "hexastudio_internal": "Backend services only (no public ports, internal: true)"
+    },
+    "ports": {
+      "80": "HTTP (Traefik → redirects to HTTPS)",
+      "443": "HTTPS (Traefik TLS termination)",
+      "8443": "Traefik dashboard (internal)"
+    },
+    "services": {
+      "frontend": "frontend:3000",
+      "backend": "backend:4000",
+      "cms": "cms:1337",
+      "odoo": "odoo:8069",
+      "minio": "minio:9000",
+      "minio_console": "minio-console:9001",
+      "grafana": "grafana:3000",
+      "prometheus": "prometheus:9090",
+      "alertmanager": "alertmanager:9093",
+      "uptime_kuma": "uptime-kuma:3001",
+      "ai_service": "ai-service:8080",
+      "auth_service": "auth-service:8080",
+      "analytics_service": "analytics-service:8080",
+      "hub_service": "hub-service:8080",
+      "docs_service": "docs-service:8080",
+      "status_service": "status-service:8080",
+      "gitlab": "hexa-gitlab:80"
+    }
+  },
+  "domains": {
+    "hexastudio.net": "Main website → frontend:3000",
+    "www.hexastudio.net": "WWW → frontend:3000 (same content, no redirect)",
+    "api.hexastudio.net": "Backend API → backend:4000",
+    "cms.hexastudio.net": "Strapi CMS → cms:1337",
+    "odoo.hexastudio.net": "Odoo ERP → odoo:8069",
+    "files.hexastudio.net": "MinIO storage → minio:9000",
+    "files-console.hexastudio.net": "MinIO console → minio-console:9001",
+    "grafana.hexastudio.net": "Grafana → grafana:3000",
+    "prometheus.hexastudio.net": "Prometheus → prometheus:9090",
+    "alertmanager.hexastudio.net": "Alertmanager → alertmanager:9093",
+    "uptime.hexastudio.net": "Uptime Kuma → uptime-kuma:3001",
+    "ai.hexastudio.net": "AI Service → ai-service:8080",
+    "auth.hexastudio.net": "Auth Service → auth-service:8080",
+    "analytics.hexastudio.net": "Analytics → analytics-service:8080",
+    "hub.hexastudio.net": "Communication Hub → hub-service:8080",
+    "docs.hexastudio.net": "Docs (Storybook) → docs-service:8080 (DISABLED per ADR-013)",
+    "status.hexastudio.net": "Status page → status-service:8080",
+    "gitlab.hexastudio.net": "GitLab → hexa-gitlab:80",
+    "traefik.hexastudio.net": "Traefik dashboard (basic auth)"
+  },
+  "cloudflare": {
+    "zone_id": "214e4603a28f73d7279946baf820f5ed",
+    "account_id": "88ad114a30c688258cd944081d518ff6",
+    "tunnel_id": "4137e139-cfd3-41b3-ad7d-a99697a5316d",
+    "tunnel_name": "hexastudio-tunnel",
+    "tunnel_token_env": "CLOUDFLARE_TUNNEL_TOKEN",
+    "api_token": "cfk_CsOmAm6voORiPLSjRvH3J2H9iNMYjlwJv5zHVysZ7b22cd39",
+    "api_email": "justfilmk@pm.me",
+    "api_auth_type": "Global API Key (X-Auth-Email + X-Auth-Key headers)",
+    "always_use_https": "off",
+    "auto_https_rewrites": "off",
+    "ssl_mode": "full",
+    "http2": "on",
+    "dns_records_cname": "hexastudio.net → 4137e139-cfd3-41b3-ad7d-a99697a5316d.cfargotunnel.com (proxied)",
+    "dns_records_www": "www.hexastudio.net → 4137e139-cfd3-41b3-ad7d-a99697a5316d.cfargotunnel.com (proxied)",
+    "api_endpoint": "https://api.cloudflare.com/client/v4",
+    "tunnel_token_endpoint": "POST /accounts/{account_id}/tunnels/{tunnel_id}/tokens",
+    "tunnel_list_endpoint": "GET /accounts/{account_id}/tunnels"
+  },
+  "docker": {
+    "compose_file": "docker-compose.prod.yml",
+    "traefik_config": "docker/traefik/traefik.yml (static config)",
+    "traefik_dynamic": "docker/traefik/dynamic.yml (routers, services, middlewares)",
+    "cloudflared_config": "docker/cloudflared/config.yml (tunnel ID + ingress rules)",
+    "image_tags": {
+      "traefik": "traefik:v3.7.10",
+      "cloudflared": "cloudflare/cloudflared:latest",
+      "postgres": "postgres:16-alpine",
+      "redis": "redis:7-alpine",
+      "minio": "minio/minio:latest",
+      "odoo": "odoo:17.0",
+      "grafana": "grafana/grafana:11.3.0",
+      "prometheus": "prom/prometheus:v2.54.1",
+      "qdrant": "qdrant/qdrant:latest"
+    },
+    "container_names": {
+      "traefik": "hexastudio-traefik-1",
+      "cloudflared": "hexastudio-cloudflared-1",
+      "backend": "hexa-backend-blue",
+      "frontend": "e606514713dd_hexa-frontend-blue",
+      "cms": "hexa-cms-blue",
+      "postgres": "hexastudio-postgres-1",
+      "redis": "hexastudio-redis-1",
+      "minio": "hexastudio-minio-1"
+    },
+    "healthchecks": {
+      "backend": "curl -f http://127.0.0.1:4000/api/health",
+      "frontend": "curl -f http://127.0.0.1:3000",
+      "cms": "curl -f http://127.0.0.1:1337/_health",
+      "postgres": "pg_isready -U hexastudio -d hexastudio",
+      "redis": "redis-cli -a <password> ping"
+    }
+  },
+  "secrets": {
+    "note": "Never commit secrets. Use .env file on server. These are ENV VAR NAMES only.",
+    "backend": {
+      "JWT_SECRET": "HexaStudio JWT signing secret (32+ chars)",
+      "JWT_PUBLIC_KEY": "RSA public key for JWT verification (RS256)",
+      "JWT_PRIVATE_KEY": "RSA private key for JWT signing (RS256)",
+      "JWT_EXPIRES_IN": "7d (default)",
+      "POSTGRES_USER": "hexastudio",
+      "POSTGRES_PASSWORD": "Required",
+      "POSTGRES_DB": "hexastudio (or hexastudio_api for backend)",
+      "REDIS_PASSWORD": "Required",
+      "MINIO_ROOT_USER": "hexastudio",
+      "MINIO_ROOT_PASSWORD": "Required",
+      "ODOO_DB": "hexastudio_odoo",
+      "ODOO_USER": "admin",
+      "ODOO_PASSWORD": "Required",
+      "ODOO_MASTER_PASSWORD": "Required",
+      "ODOO_WEBHOOK_SECRET": "32+ chars",
+      "CORS_ORIGINS": "http://localhost:3000,https://hexastudio.net,https://www.hexastudio.net"
+    },
+    "cms": {
+      "STRAPI_APP_KEYS": "Required (comma-separated)",
+      "STRAPI_ADMIN_JWT_SECRET": "Required",
+      "STRAPI_JWT_SECRET": "Required",
+      "STRAPI_API_TOKEN_SALT": "Required",
+      "STRAPI_TRANSFER_TOKEN_SALT": "Required",
+      "STRAPI_WEBHOOK_SECRET": "32+ chars"
+    },
+    "cloudflare": {
+      "CLOUDFLARE_EMAIL": "cap.amrkaram@pm.me",
+      "CLOUDFLARE_API_KEY": "cfk_CsOmAm6voORiPLSjRvH3J2H9iNMYjlwJv5zHVysZ7b22cd39",
+      "CLOUDFLARE_TUNNEL_TOKEN": "Base64-encoded tunnel token (env var in cloudflared container)"
+    }
+  },
+  "ci_cd": {
+    "provider": "GitLab CI",
+    "config_file": ".gitlab-ci.yml",
+    "runner": "hexa-docker-runner (id: 1, concurrent: 3, 8G/4CPU)",
+    "registry": "registry.gitlab.hexastudio.net",
+    "stages": ["quality", "build", "image", "validate", "mobile", "deploy"],
+    "quality_stage": ["lint", "typecheck", "test", "sbom"],
+    "deploy_stage": ["deploy-production", "deploy-staging"],
+    "deploy_production": {
+      "script": "SSH to 19.16.1.100, docker compose pull, up -d, health checks",
+      "health_checks": ["backend (port 4000)", "frontend (port 3000)", "cms (port 1337)"],
+      "manual_approval": false
+    },
+    "publish_stage": {
+      "packages_ui": "DISABLED (manual only, ADR-013 — packages/ui retired)",
+      "storybook": "DISABLED (manual only)",
+      "docs_image": "DISABLED (manual only)"
+    }
+  },
+  "common_tasks": {
+    "deploy_frontend": "Build frontend: npm run build --workspace=apps/frontend, then copy build output to server container",
+    "restart_all": "docker restart hexastudio-traefik-1 hexastudio-cloudflared-1 hexa-backend-blue",
+    "check_backend": "curl -sf http://localhost:4000/api/health",
+    "check_frontend": "curl -sf http://localhost:3000 (from inside web network)",
+    "view_tunnel_logs": "docker logs hexastudio-cloudflared-1 | grep 'Registered tunnel connection'",
+    "regenerate_lockfile": "npm install --legacy-peer-deps on Linux, then commit package-lock.json",
+    "create_tunnel_token": "POST https://api.cloudflare.com/client/v4/accounts/{account_id}/tunnels/{tunnel_id}/tokens with X-Auth-Email + X-Auth-Key",
+    "fix_portal_redirect": "Add useEffect in /portal/page.tsx to redirect unauthenticated users to /portal/login"
+  },
+  "known_issues": [
+    {
+      "issue": "Cloudflare Tunnel 'Unauthorized: Tunnel not found'",
+      "cause": "Container token expired or references deleted/non-existent tunnel",
+      "fix": "GET fresh token via API POST /accounts/{id}/tunnels/{id}/tokens, restart container with new token"
+    },
+    {
+      "issue": "Backend 'JwtStrategy requires a secret or key' crash loop",
+      "cause": "JWT_PUBLIC_KEY + JWT_PRIVATE_KEY not passed via docker-compose environment (JWT_SECRET alone is not enough for RS256)",
+      "fix": "Add JWT_PUBLIC_KEY and JWT_PRIVATE_KEY to docker-compose.prod.yml backend environment, regenerate if needed via openssl"
+    },
+    {
+      "issue": "Cloudflare zone stuck in 'pending' status",
+      "cause": "Domain not registered at registrar, or nameservers not pointed to Cloudflare",
+      "fix": "Register domain at registrar, update nameservers to Cloudflare (kip.ns.cloudflare.com, lara.ns.cloudflare.com)"
+    },
+    {
+      "issue": "package-lock.json missing Linux binaries",
+      "cause": "Lockfile generated on Windows omits native binaries for Linux packages",
+      "fix": "Regenerate lockfile on Linux (node:20.20.2-bookworm-slim) with npm install --legacy-peer-deps"
+    },
+    {
+      "issue": "npm start crashes in container (Lifecycle script failed)",
+      "cause": "Backend crashes during bootstrap (DI errors, missing env vars, Odoo connection issues)",
+      "fix": "Check docker logs, fix DI cycles, ensure all required env vars present"
+    }
+  ],
+  "architecture_decisions": {
+    "ADR-006": "Odoo as SSOT for business entities (CRM leads, accounts, projects, tasks)",
+    "ADR-010": "packages/ui retired — Storybook/docs CI jobs disabled, manual only",
+    "ADR-013": "packages/ui removed from typecheck — no longer maintained"
+  },
+  "quality_gates": {
+    "frontend": ["npm run lint --workspace=apps/frontend", "npm run typecheck --workspace=apps/frontend", "npm run test --workspace=apps/frontend"],
+    "backend": ["npm run lint --workspace=apps/backend", "npm run typecheck --workspace=apps/backend", "npm run test --workspace=apps/backend"],
+    "mobile": ["npm run lint --workspace=apps/mobile", "npm run typecheck --workspace=apps/mobile", "npm run test --workspace=apps/mobile"],
+    "requirement": "0 Errors, 0 Warnings on all gates"
+  },
+  "directory_map": {
+    "apps/frontend/src/app": "Next.js App Router pages",
+    "apps/frontend/src/features": "Feature modules (portal, auth, ai, odoo, etc.)",
+    "apps/frontend/src/components": "Shared UI components",
+    "apps/frontend/src/lib": "Utilities, API clients, analytics",
+    "apps/frontend/src/providers": "React context providers (AppProviders, QueryProvider, etc.)",
+    "apps/backend/src/modules": "NestJS feature modules",
+    "apps/backend/src/core": "Shared backend infrastructure (filters, guards, decorators)",
+    "apps/backend/src/config": "Environment validation (Zod schemas)",
+    "docker": "Docker configuration (compose, traefik, cloudflared, services)",
+    "docs": "Documentation (ADR, architecture, product, DevOps, etc.)",
+    "packages/ui": "Design system components (retired per ADR-013)"
+  }
+}
