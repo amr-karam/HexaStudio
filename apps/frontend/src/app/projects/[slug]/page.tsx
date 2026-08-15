@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
   const { slug } = await params;
   const project = await fetchProject(slug);
   return {
-    title: `${project?.title ?? 'Project'} | HexaStudio`,
+    title: project?.title ?? 'Project',
     description: project?.description ?? 'Architectural visualization project by HexaStudio',
   };
 }

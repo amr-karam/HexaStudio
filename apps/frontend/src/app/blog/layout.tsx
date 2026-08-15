@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 export const metadata: Metadata = {
-  title: "Blog | HexaStudio",
+  title: "Blog",
   description:
     "Insights on architectural visualization, 3D technology, and design.",
 };

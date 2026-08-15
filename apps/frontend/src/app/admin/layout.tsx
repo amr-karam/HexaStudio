@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Studio Admin | HexaStudio',
+  title: 'Studio Admin',
   description: 'Internal management dashboard for HexaStudio operations.',
 };
 

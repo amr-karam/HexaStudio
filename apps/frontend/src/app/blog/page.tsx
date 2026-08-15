@@ -11,7 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
   if (articleCount > 0) {
     const latest = data.articles[0];
     return {
-      title: 'Blog | HexaStudio',
+      title: 'Blog',
       description: latest.seoDescription || latest.excerpt || 'Insights on spatial design, real-time technology, and architectural visualization by HexaStudio.',
       openGraph: {
         title: 'Blog | HexaStudio',
@@ -22,7 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 
   return {
-    title: 'Blog | HexaStudio',
+    title: 'Blog',
     description: 'Insights on spatial design, real-time technology, and architectural visualization by HexaStudio.',
   };
 }

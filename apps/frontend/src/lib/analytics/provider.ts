@@ -16,13 +16,25 @@ class PostHogProvider implements AnalyticsProvider {
 
   init() {
     if (typeof window === 'undefined') return;
-    const script = document.createElement('script');
-    script.src = `https://us.i.posthog.com/static/array.js`;
-    script.async = true;
-    script.setAttribute('data-phjs', '1');
-    script.setAttribute('data-api-key', this.apiKey);
-    script.setAttribute('data-cdn', 'https://us.i.posthog.com');
-    document.head.appendChild(script);
+
+    const runInit = () => {
+      // Check if script already exists to prevent duplicate injection
+      if (document.querySelector(`[data-api-key="${this.apiKey}"]`)) return;
+
+      const script = document.createElement('script');
+      script.src = `https://us.i.posthog.com/static/array.js`;
+      script.async = true;
+      script.setAttribute('data-phjs', '1');
+      script.setAttribute('data-api-key', this.apiKey);
+      script.setAttribute('data-cdn', 'https://us.i.posthog.com');
+      document.head.appendChild(script);
+    };
+
+    if (document.readyState === 'complete') {
+      runInit();
+    } else {
+      window.addEventListener('load', runInit, { once: true });
+    }
   }
 
   pageView(path: string) {
@@ -62,10 +74,18 @@ class GA4Provider implements AnalyticsProvider {
     gtag('js', new Date());
     gtag('config', this.measurementId);
 
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${this.measurementId}`;
-    document.head.appendChild(script);
+    const runInit = () => {
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${this.measurementId}`;
+      document.head.appendChild(script);
+    };
+
+    if (document.readyState === 'complete') {
+      runInit();
+    } else {
+      window.addEventListener('load', runInit, { once: true });
+    }
   }
 
   pageView(path: string) {

@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!article) {
     return {
-      title: 'Article Not Found | HexaStudio',
+      title: 'Article Not Found',
     };
   }
 
@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const imageUrl = article.coverImage ? `${article.coverImage}?w=1200&q=80` : `${baseUrl}/logo.svg`;
 
   return {
-    title: `${article.title} | HexaStudio`,
+    title: article.title,
     description: article.excerpt,
     openGraph: {
       title: article.title,

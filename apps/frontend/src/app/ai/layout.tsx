@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'AI Architectural Assistant | HexaStudio',
+  title: 'AI Architectural Assistant',
   description:
     'Experience HexaStudio AI — intelligent spatial analysis, material suggestions, and real-time architectural design conversation.',
   openGraph: {

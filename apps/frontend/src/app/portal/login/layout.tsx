@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Client Login | HexaStudio',
+  title: 'Client Login',
   description: 'Secure access to your project gateway.',
 };
 

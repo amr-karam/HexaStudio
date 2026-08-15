@@ -6,7 +6,7 @@ export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: 'Services | HexaStudio',
+    title: 'Services',
     description: 'Professional 3D architectural visualization services — from concept to photorealistic rendering.',
   };
 }

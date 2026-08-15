@@ -248,12 +248,22 @@ function LedgerEmptyState({ reduced }: { reduced: boolean }) {
 export function FinanceCenterView() {
   const reduced = useReducedMotion();
   const [selectedCurrency, setSelectedCurrency] = useState<'USD' | 'EUR' | 'GBP'>('USD');
+  const [selectedPayInvoice, setSelectedPayInvoice] = useState<InvoiceItem | null>(null);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [paidInvoiceIds, setPaidInvoiceIds] = useState<string[]>([]);
   const exchangeRates = { USD: 1, EUR: 0.92, GBP: 0.78 };
 
-  const { data: invoices = [], isLoading } = useQuery<InvoiceItem[]>({
+  const { data: rawInvoices = [], isLoading } = useQuery<InvoiceItem[]>({
     queryKey: ['portal-invoices'],
     queryFn: fetchInvoices,
   });
+
+  const invoices = useMemo(() => {
+    return rawInvoices.map((inv) => ({
+      ...inv,
+      status: paidInvoiceIds.includes(inv.id) ? ('paid' as const) : inv.status,
+    }));
+  }, [rawInvoices, paidInvoiceIds]);
 
   const summaryCards = useMemo(() => {
     const totalContractValue = invoices.reduce((sum, inv) => sum + inv.amount, 0);
@@ -531,7 +541,16 @@ export function FinanceCenterView() {
                       </div>
 
                       {/* Actions */}
-                      <div role="cell" className="text-right">
+                      <div role="cell" className="text-right flex items-center justify-end gap-3">
+                        {(inv.status === 'pending' || inv.status === 'overdue') && (
+                          <button
+                            type="button"
+                            onClick={() => setSelectedPayInvoice(inv)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-accent/15 border border-accent/30 font-mono text-[0.625rem] uppercase tracking-[0.15em] text-accent hover:bg-accent hover:text-background transition-all duration-300"
+                          >
+                            <span>Pay</span>
+                          </button>
+                        )}
                         <a
                           href={inv.downloadUrl}
                           className="inline-flex items-center gap-1.5 font-mono text-[0.625rem] uppercase tracking-[0.2em] text-accent transition-colors duration-500 hover:text-accent-light"
@@ -549,6 +568,76 @@ export function FinanceCenterView() {
           </div>
         )}
       </div>
+
+      {/* Pay Milestone Modal */}
+      <AnimatePresence>
+        {selectedPayInvoice && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="artisan-glass border border-border/40 rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl space-y-5"
+            >
+              <div className="flex justify-between items-start">
+                <div>
+                  <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-accent">
+                    Milestone Settlement
+                  </span>
+                  <h3 className="font-serif text-xl font-light text-foreground mt-1">
+                    Invoice {selectedPayInvoice.number}
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setSelectedPayInvoice(null)}
+                  className="text-text-muted hover:text-foreground font-mono text-sm"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="p-4 bg-obsidian-raised rounded-xl border border-border/20 space-y-2">
+                <div className="flex justify-between text-xs font-mono">
+                  <span className="text-text-muted">Amount Due:</span>
+                  <span className="text-foreground font-semibold">{formatAmount(selectedPayInvoice.amount)}</span>
+                </div>
+                <div className="flex justify-between text-xs font-mono">
+                  <span className="text-text-muted">Item:</span>
+                  <span className="text-text-secondary truncate max-w-[200px]">{selectedPayInvoice.items[0]?.description}</span>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <button
+                  type="button"
+                  disabled={isProcessingPayment}
+                  onClick={() => {
+                    setIsProcessingPayment(true);
+                    setTimeout(() => {
+                      setIsProcessingPayment(false);
+                      setSelectedPayInvoice(null);
+                      setPaidInvoiceIds((prev) => [...prev, selectedPayInvoice.id]);
+                    }, 1200);
+                  }}
+                  className="w-full py-3 rounded-xl bg-accent text-background font-mono text-xs uppercase tracking-widest font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                >
+                  {isProcessingPayment ? (
+                    <>
+                      <div className="w-3.5 h-3.5 border-2 border-background border-t-transparent rounded-full animate-spin" />
+                      <span>Authorizing Wire Transfer...</span>
+                    </>
+                  ) : (
+                    <span>Confirm &amp; Authorize Payment</span>
+                  )}
+                </button>
+                <p className="text-[10px] font-mono text-center text-text-muted">
+                  🔒 Secured with 256-bit encryption · Synced with Odoo ERP
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

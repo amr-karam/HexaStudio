@@ -32,8 +32,10 @@ const ContentSecurityPolicy = [
   "img-src 'self' data: blob: https:",
   "media-src 'self' blob: https:",
   // Connect: API + WebSockets + analytics + Sentry + Cloudflare + CDNs (3D/HDR assets)
+  // Local origins match default API_BASE_URL (`http://api.localhost`) and Nest on :4000.
   [
     "connect-src 'self'",
+    "http://api.localhost ws://api.localhost http://localhost:4000 ws://localhost:4000 http://127.0.0.1:4000 ws://127.0.0.1:4000",
     "https://api.hexastudio.net wss://api.hexastudio.net https://*.hexastudio.net wss://*.hexastudio.net https://fonts.googleapis.com https://fonts.gstatic.com https://www.gstatic.com https://us.i.posthog.com https://us.posthog.com https://*.posthog.com https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.sentry.io https://cloudflareinsights.com https://challenges.cloudflare.com https://*.cloudflare.com https://raw.githubusercontent.com https://raw.githack.com https://storage.hexastudio.net https://*.hexastudio.net data: blob:",
   ].join(" "),
   "worker-src 'self' blob: https://*.cloudflare.com",
@@ -95,12 +97,6 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
-      {
-        source: "/_next/static/:path*",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
-        ],
-      },
       // ISR pages: serve stale HTML at the edge while revalidating in the
       // background. `s-maxage` controls CDN cache; `stale-while-revalidate`
       // lets Cloudflare serve the previous build's HTML instantly while the
@@ -108,7 +104,7 @@ const nextConfig: NextConfig = {
       // window covers deploy-time regeneration gaps without showing content
       // older than one day.
       {
-        source: "/(projects|blog|about|services|privacy|terms|contact|premium-chat|)",
+        source: "/(projects|blog|about|services|privacy|terms|contact|premium-chat)",
         headers: [
           { key: "Cache-Control", value: "public, s-maxage=3600, stale-while-revalidate=86400" },
         ],

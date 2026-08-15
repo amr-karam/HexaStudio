@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { fetchPage } from '@/features/pages/lib/fetchPages';
 import { StrapiBlocks } from '@/components/ui/StrapiBlocks';
 import { Button } from '@/components/ui/Button';
+import { siteTitleSegment } from '@/lib/site-title';
 
 export const revalidate = 3600;
 
@@ -11,14 +12,14 @@ export async function generateMetadata(): Promise<Metadata> {
 
   if (!page) {
     return {
-      title: 'Privacy Policy | HexaStudio',
+      title: 'Privacy Policy',
       description:
         'HexaStudio privacy policy — how we collect, use, and protect your data.',
     };
   }
 
   return {
-    title: page.seoTitle || `${page.title} | HexaStudio`,
+    title: page.seoTitle ? siteTitleSegment(page.seoTitle) : page.title,
     description:
       page.seoDescription ||
       'HexaStudio privacy policy — how we collect, use, and protect your data.',

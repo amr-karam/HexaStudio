@@ -9,6 +9,7 @@ import { TeamSection } from '@/features/team/components/TeamSection';
 import { LiquidGlassCard } from '@/components/ui/LiquidGlassCard';
 
 import { ClientSilkShaderBackground } from '@/components/effects/ClientSilkShaderBackground';
+import { siteTitleSegment } from '@/lib/site-title';
 export const revalidate = 3600;
 
 const FALLBACK_DESCRIPTION =
@@ -68,13 +69,13 @@ export async function generateMetadata(): Promise<Metadata> {
 
   if (!page) {
     return {
-      title: 'About | HexaStudio',
+      title: 'About',
       description: FALLBACK_DESCRIPTION,
     };
   }
 
   return {
-    title: page.seoTitle || `${page.title} | HexaStudio`,
+    title: page.seoTitle ? siteTitleSegment(page.seoTitle) : page.title,
     description: page.seoDescription || page.excerpt || FALLBACK_DESCRIPTION,
   };
 }
