@@ -133,6 +133,12 @@ lh-report.json
 deploy.py
 sshrun.py
 upload_script*.py
+ops/scripts/fix-jwt-prod.sh
+ops/scripts/run_remote_script.py
+ops/scripts/sync_auth_files.py
+ops/scripts/sync_jwt_strategy.py
+scripts/cdp-page-sweep.mjs
+build-output.txt
 
 # Lighthouse CI temp data
 .lighthouse-tmp/
