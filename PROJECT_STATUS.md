@@ -1,9 +1,9 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** August 14, 2026 — verified against live repo (all 3 gates 0/0)
-**Version:** 2.1.2
+**Last Updated:** August 15, 2026 — verified against live repo (all 3 gates 0/0)
+**Version:** 2.2.0
 **Authority Level:** 13 (Production)
-**Current Phase:** Production-Ready — Odoo-First Architecture + Workflow Automation (DEPLOYED)
+**Current Phase:** Production-Ready — Quad-Track Feature Delivery & Silent Luxury Design System (DEPLOYED)
 
 ---
 
@@ -26,13 +26,24 @@
 | Gate | Target | Status | Result |
 |---|---|---|---|
 | **Backend Tests** | 357 total | `357 / 357` | ✅ PASS |
-| **Frontend Tests** | 341 total | `341 / 341` | ✅ PASS |
+| **Frontend Tests** | 343 total | `343 / 343` | ✅ PASS |
 | **Mobile Tests** | 25 passing | `25 / 25` | ✅ PASS |
-| **Backend Tests** | 357 total | `357 / 357` | ✅ PASS |
 | **Frontend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **Backend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **Mobile Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **ESLint (all)** | 0 errors, 0 warnings | `0 errors, 0 warnings` (frontend, backend, mobile full `src` + `test`) | ✅ PASS |
+
+- **Current Phase**: Phase 4 / Release Candidate & Live Operations (v2.2.0)
+- **Active Workspace Quality Gates**:
+  - `apps/frontend`: 46 suites / 343 tests passed (100%), 50 routes compiled, 0 errors, 0 warnings
+  - `apps/backend`: 44 suites / 357 tests passed (100%), 0 errors, 0 warnings
+  - `apps/mobile`: 8 suites / 25 tests passed (100%), 0 errors, 0 warnings
+- **Production Server (`19.16.1.100`)**:
+  - 28/28 containers **Up (healthy)**
+  - Odoo ERP Delta Sync: **Active (0 errors, 18 records synced across 5 entities)**
+  - Strapi CMS Backfill: **Active (6 portfolios synced, 0 errors)**
+  - Exchange Rate Sync: **Active (166 currencies synced)**
+  - Local AI Inference: **Gemma 4 integration active** (`DesignerModeConfigurator.tsx`)
 | **Governance** | 61/61 Sections | `100% Active — v1.1.0` | ✅ PASS |
 
 ---
@@ -434,3 +445,61 @@ docker compose -f docker-compose.prod.yml up -d --build backend
 | `GET https://api.hexastudio.net/api/achievements` | ✅ 200 + CORS headers |
 | `GET https://www.hexastudio.net/premium-chat` | ✅ 200 (page exists) |
 | `GET https://www.hexastudio.net/_next/image?...` | ✅ 200 (image optimization working) |
+
+---
+
+## 2026-08-15 — Incident: Production Backend Crash Loop + Cloudflare Error 1000 (RESOLVED)
+
+**Status:** ✅ Resolved & verified in production
+
+### Symptoms
+- Backend container `hexa-backend-blue` was in a **crash/restart loop**.
+- `https://api.hexastudio.net/api/health` returned **HTTP 403 (Cloudflare Error 1000: DNS points to prohibited IP)** — all `*.hexastudio.net` hostnames were unreachable via the tunnel.
+
+### Root Causes
+
+1. **Missing JWT keys in production `.env`:** `JWT_PUBLIC_KEY` and `JWT_PRIVATE_KEY` were required by `apps/backend/src/config/env.ts` (zod) but absent from the server's `.env`, so the backend refused to start with `❌ Missing or invalid environment variables`.
+
+2. **NestJS DI failure:** After the env was fixed, `ClientPortalGateway` crashed with `UnknownDependenciesException` — `AuthService` at index `[0]` could not be resolved inside `PortalModule`. The module graph between `PortalModule` and `AuthModule` could not resolve `AuthService`.
+
+3. **Cloudflare tunnel token pointed to a deleted tunnel:** The docker `cloudflared` container was launched with `TUNNEL_TOKEN` for tunnel `51f0f785-…` which **no longer exists** in the Cloudflare account. Logs showed `ERR Register tunnel error from server side error="Unauthorized: Tunnel not found"`, so Cloudflare could not route any hostname → **Error 1000** on every domain.
+
+### Resolution
+
+1. **Generated & persisted RSA JWT keys** on the server `.env` (2048-bit, `openssl`), then **force-recreated** the backend container so compose re-injected the env:
+   ```bash
+   docker compose -f docker-compose.prod.yml up -d --force-recreate --no-deps backend
+   ```
+
+2. **Fixed NestJS DI graph** (`apps/backend`):
+   - `AuthModule`: added missing `Global` import (fixes `TS2552` build error), decorated with `@Global()`.
+   - Added `apps/backend/src/core/core.module.ts` — a `@Global()` module aggregating `AuthModule`, `RedisModule`, `StorageModule`.
+   - `PortalModule`: imports `forwardRef(() => AuthModule)` + `ProjectsModule`; `ClientPortalGateway` injects `AuthService` via `@Inject(forwardRef(() => AuthService))`.
+   - Committed as `e39d60a` and pushed to `main`.
+
+3. **Fixed Cloudflare tunnel token:**
+   - Retrieved a fresh token for the active tunnel `4137e139-cfd3-41b3-ad7d-a99697a5316d` (`hexastudio-tunnel`) via the Cloudflare API.
+   - Updated `CLOUDFLARE_TUNNEL_TOKEN` in the server `.env` and recreated the `cloudflared` container.
+   - Cloudflared precheck now reports: **"Environment is healthy. cloudflared will use 'quic' as primary protocol."**
+
+### Files Changed
+| File | Change |
+|------|--------|
+| `apps/backend/src/modules/auth/auth.module.ts` | Imported `Global`, added `@Global()` decorator |
+| `apps/backend/src/core/core.module.ts` | New global CoreModule (Auth/Redis/Storage) |
+| `apps/backend/src/modules/portal/portal.module.ts` | `forwardRef(() => AuthModule)` + `ProjectsModule` |
+| `apps/backend/src/modules/portal/client-portal.gateway.ts` | `@Inject(forwardRef(() => AuthService))` |
+| `apps/backend/src/app.module.ts` | Imported `CoreModule`, removed direct `AuthModule` |
+| Server `.env` | Added JWT key pair; refreshed `CLOUDFLARE_TUNNEL_TOKEN` |
+
+### Verification (Production)
+| Test | Result |
+|------|--------|
+| `docker ps` backend | ✅ `Up (healthy)` |
+| `docker exec backend curl /api/health` | ✅ HTTP 200 |
+| `GET https://api.hexastudio.net/api/health` | ✅ HTTP 200 |
+| `GET https://www.hexastudio.net` / `https://hexastudio.net` | ✅ HTTP 200 |
+| `OPTIONS https://api.hexastudio.net/api/currency/list` (Origin: www) | ✅ HTTP 204 + correct CORS headers |
+| API routes (`currency/list`, `achievements`, `pages`, `services`, `testimonials`, `projects`) | ✅ all HTTP 200 |
+| Frontend routes (`/`, `/premium-chat`, `/projects`, `/ai`, `/portal`, admin sub-pages) | ✅ all HTTP 200 |
+| Backend lint + typecheck | ✅ 0 errors |
