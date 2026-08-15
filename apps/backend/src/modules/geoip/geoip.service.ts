@@ -51,6 +51,12 @@ export class GeoipService {
 
     // Call ip-api.com
     try {
+      // Avoid calling external GeoIP services for internal Docker network IPs
+      if (ip.startsWith('172.') || ip.startsWith('192.168.') || ip.startsWith('10.')) {
+        this.logger.debug(`Skipping GeoIP lookup for internal IP: ${ip}`);
+        return this.fallbackResult(ip);
+      }
+
       const url = `http://ip-api.com/json/${encodeURIComponent(ip)}?fields=status,message,country,countryCode,region,regionName,city,zip,lat,lon,timezone,isp,org,as,query`;
       const { data } = await firstValueFrom(this.httpService.get<GeoIpResult>(url));
 
