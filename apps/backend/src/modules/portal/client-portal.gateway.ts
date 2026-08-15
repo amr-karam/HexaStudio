@@ -7,7 +7,7 @@ import {
   MessageBody,
   ConnectedSocket,
 } from '@nestjs/websockets';
-import { Logger, UnauthorizedException, UsePipes } from '@nestjs/common';
+import { Logger, UnauthorizedException, UsePipes, Inject, forwardRef } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { ValidationPipe } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
@@ -44,6 +44,7 @@ export class ClientPortalGateway implements OnGatewayConnection, OnGatewayDiscon
   private readonly logger = new Logger(ClientPortalGateway.name);
 
   constructor(
+    @Inject(forwardRef(() => AuthService))
     private readonly authService: AuthService,
     private readonly projectsService: ProjectsService,
     private readonly redisService: RedisService,

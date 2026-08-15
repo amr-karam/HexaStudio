@@ -9,6 +9,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { getEnv } from '../../config/env';
 import { UsersModule } from '../users/users.module';
 
+@Global()
 @Module({
   imports: [
     HttpModule,
@@ -28,6 +29,6 @@ import { UsersModule } from '../users/users.module';
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
-  exports: [AuthService, JwtModule],
+  exports: [AuthService, JwtModule, JwtStrategy],
 })
 export class AuthModule {}
