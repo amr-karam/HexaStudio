@@ -125,6 +125,9 @@ function createProgram(gl: WebGLRenderingContext, vert: WebGLShader, frag: WebGL
     gl.deleteProgram(program);
     return null;
   }
+  // Once linked, shaders can be flagged for deletion on program teardown
+  gl.deleteShader(vert);
+  gl.deleteShader(frag);
   return program;
 }
 
@@ -137,6 +140,7 @@ export const SilkShaderBackground: React.FC<SilkShaderBackgroundProps> = ({
   const animFrameRef = useRef<number>(0);
   const startTimeRef = useRef<number>(0);
   const programRef = useRef<WebGLProgram | null>(null);
+  const bufferRef = useRef<WebGLBuffer | null>(null);
   const glRef = useRef<WebGLRenderingContext | null>(null);
 
   const prefersReducedMotion = typeof window !== 'undefined'
@@ -180,6 +184,7 @@ export const SilkShaderBackground: React.FC<SilkShaderBackgroundProps> = ({
 
       // Full-screen quad
       const buffer = gl.createBuffer();
+      bufferRef.current = buffer;
       gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
         -1, -1, 1, -1, -1, 1,
@@ -253,9 +258,15 @@ export const SilkShaderBackground: React.FC<SilkShaderBackgroundProps> = ({
         canvas.removeEventListener('webglcontextrestored', handleContextRestored);
       }
       // Cleanup WebGL context
-      if (programRef.current && glRef.current) {
-        glRef.current.deleteProgram(programRef.current);
-        programRef.current = null;
+      if (glRef.current) {
+        if (bufferRef.current) {
+          glRef.current.deleteBuffer(bufferRef.current);
+          bufferRef.current = null;
+        }
+        if (programRef.current) {
+          glRef.current.deleteProgram(programRef.current);
+          programRef.current = null;
+        }
       }
       glRef.current = null;
     };

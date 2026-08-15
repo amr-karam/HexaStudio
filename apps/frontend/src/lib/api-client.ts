@@ -80,7 +80,16 @@ export async function authenticatedFetch(
     const refreshed = await attemptTokenRefresh();
     if (refreshed) {
       try {
-        response = await fetch(url, merged);
+        const retryMerged: RequestInit = {
+          credentials: 'include',
+          ...options,
+          headers: {
+            'Content-Type': 'application/json',
+            ...(_accessToken ? { Authorization: `Bearer ${_accessToken}` } : {}),
+            ...options.headers,
+          },
+        };
+        response = await fetch(url, retryMerged);
       } catch {
         throw new Error('Network request failed after token refresh');
       }

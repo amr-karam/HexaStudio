@@ -108,7 +108,7 @@ const nextConfig: NextConfig = {
       // window covers deploy-time regeneration gaps without showing content
       // older than one day.
       {
-        source: "/(projects|blog|about|services|privacy|terms|contact|)",
+        source: "/(projects|blog|about|services|privacy|terms|contact|premium-chat|)",
         headers: [
           { key: "Cache-Control", value: "public, s-maxage=3600, stale-while-revalidate=86400" },
         ],
