@@ -3,6 +3,7 @@ import { HomeChapterRail } from "@/features/portfolio/components/HomeChapterRail
 import { HomePageDynamic } from "@/features/portfolio/components/HomePageDynamic";
 import { StudioSection } from "@/features/portfolio/components/StudioSection";
 import { fetchProjects } from "@/features/portfolio/lib/fetchProjects";
+import { GlobalErrorBoundary } from "@/components/GlobalErrorBoundary";
 
 /** ISR: 1h background refresh + on-demand via /api/revalidate (Sprint 15 P9).
     * Pages prerender at build (gracefully empty when backend is down); deploy
@@ -46,10 +47,25 @@ export default async function HomePage() {
       
       <HomeChapterRail />
       <HomeHeroStatic />
-      <HomePageDynamic
-        featuredProject={featuredProject}
-        projects={projects}
-      />
+      <GlobalErrorBoundary fallback={
+        <div className="flex flex-col items-center justify-center py-20 px-4">
+          <div className="max-w-md text-center">
+            <h2 className="text-xl font-semibold text-foreground mb-2">Something went wrong</h2>
+            <p className="text-neutral-500 mb-4">We're sorry for the inconvenience.</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 rounded-lg bg-accent text-void hover:bg-accent-bright transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      }>
+        <HomePageDynamic
+          featuredProject={featuredProject}
+          projects={projects}
+        />
+      </GlobalErrorBoundary>
       <StudioSection />
     </div>
   );
