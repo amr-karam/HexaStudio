@@ -47,20 +47,7 @@ export default async function HomePage() {
       
       <HomeChapterRail />
       <HomeHeroStatic />
-      <GlobalErrorBoundary fallback={
-        <div className="flex flex-col items-center justify-center py-20 px-4">
-          <div className="max-w-md text-center">
-            <h2 className="text-xl font-semibold text-foreground mb-2">Something went wrong</h2>
-            <p className="text-neutral-500 mb-4">We're sorry for the inconvenience.</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-4 py-2 rounded-lg bg-accent text-void hover:bg-accent-bright transition-colors"
-            >
-              Retry
-            </button>
-          </div>
-        </div>
-      }>
+      <GlobalErrorBoundary>
         <HomePageDynamic
           featuredProject={featuredProject}
           projects={projects}
