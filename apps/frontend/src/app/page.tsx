@@ -3,6 +3,7 @@ import { HomeChapterRail } from "@/features/portfolio/components/HomeChapterRail
 import { HomePageDynamic } from "@/features/portfolio/components/HomePageDynamic";
 import { StudioSection } from "@/features/portfolio/components/StudioSection";
 import { fetchProjects } from "@/features/portfolio/lib/fetchProjects";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 /** ISR: 1h background refresh + on-demand via /api/revalidate (Sprint 15 P9).
     * Pages prerender at build (gracefully empty when backend is down); deploy
@@ -22,7 +23,18 @@ export const revalidate = 3600;
  * - Understated animations (slow, deliberate)
  */
 export default async function HomePage() {
-  const projectsData = await fetchProjects();
+  let projectsData;
+  try {
+    projectsData = await fetchProjects();
+  } catch (error) {
+    // If fetch fails entirely, use empty data
+    console.error("Failed to fetch projects for homepage:", error);
+    projectsData = { projects: [], total: 0, page: 1, limit: 20, totalPages: 0 };
+  }
+
+  // Validate the response
+  const projects = Array.isArray(projectsData?.projects) ? projectsData.projects : [];
+  const featuredProject = projects.length > 0 ? projects[0] : undefined;
 
   return (
     <div className="bg-sl-void">
@@ -35,10 +47,17 @@ export default async function HomePage() {
       
       <HomeChapterRail />
       <HomeHeroStatic />
-      <HomePageDynamic
-        featuredProject={projectsData.projects?.[0]}
-        projects={projectsData.projects ?? []}
-      />
+      <ErrorBoundary fallback={
+        <div className="flex flex-col items-center justify-center py-20">
+          <p className="text-neutral-500">We're having trouble loading the homepage content.</p>
+          <p className="text-neutral-400 text-sm mt-2">Please refresh or try again later.</p>
+        </div>
+      }>
+        <HomePageDynamic
+          featuredProject={featuredProject}
+          projects={projects}
+        />
+      </ErrorBoundary>
       <StudioSection />
     </div>
   );

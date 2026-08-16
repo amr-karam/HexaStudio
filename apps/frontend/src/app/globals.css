@@ -32,6 +32,13 @@
   --color-text-secondary: #A0A0A0;
   --color-text-muted: #6A6A6E;
 
+  /* Silent Luxury (sl-) palette — registered as Tailwind color utilities */
+  --color-sl-void: #0A0A0B;
+  --color-sl-obsidian: #121214;
+  --color-alabaster: #F5F4F2;
+  --color-silver: #A8A8A8;
+  --color-mist: #D4D4D4;
+
   --color-neutral-50: #fafafa;
   --color-neutral-100: #f4f4f5;
   --color-neutral-200: #e4e4e7;
@@ -304,14 +311,6 @@ body {
 
 .sl-btn:active {
   transform: scale(0.98);
-}
-
-/* Gradient text */
-.text-gradient-gold {
-  background: linear-gradient(135deg, #C4B091 0%, #D4C5A8 40%, #B8A88C 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 /* Glass morphism — frosted panels */
