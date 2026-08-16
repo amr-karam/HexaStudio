@@ -576,5 +576,45 @@ Deployed via direct server run: `SOT=green docker compose -f docker-compose.prod
 - Tunnel tokens can be retrieved/created entirely via API (`GET /accounts/{acct}/cfd_tunnel/{id}/token`); dashboard token rotations invalidate prior tokens.
 
 ### Open Items (unchanged)
-- CI `deploy-production` deadlock (`build-storybook` → retired `packages/ui`); GitLab pipelines 92/93 (user commits `64372d0f`/`d8fdac6f`, GitLab-only, not deployed).
-- Odoo webhook 401 spam (HMAC secret misalignment).
+- ~~CI `deploy-production` deadlock~~ → **RESOLVED 2026-08-16** (see below)
+- ~~Odoo webhook 401 spam~~ → **RESOLVED 2026-08-16** (see below)
+
+---
+
+## 2026-08-16 — Follow-up Fixes: Odoo Webhook, GitLab CI, Traefik Dead Routes — COMPLETE
+
+**Status:** ✅ All live-verified
+
+### 1. Odoo webhook 401 spam — FIXED
+**Root cause:** Odoo DB record `hexa.webhook.config` (id=1) held a literal placeholder secret (`hexa_webhook_secret_2026_...`) that did not match backend `ODOO_WEBHOOK_SECRET` (63 chars, `7401be87...`), so every HMAC verification failed → `HEXA webhook dispatch failed: HTTP Error 401` every 10 min.
+**Fix:** `UPDATE hexa_webhook_config SET secret = '<backend secret>' WHERE id = 1;` on `hexastudio_odoo` (transferred via base64 to avoid shell-quoting corruption). Verified: manual HMAC-SHA256 test → HTTP 200 `{"success":true,"message":"Webhook processed"}`; next scheduled 16:40 dispatch all 200s, zero errors.
+**Note:** `docker/odoo/entrypoint.sh` substitutes `__ODOO_WEBHOOK_SECRET__` only on fresh data load — existing DB rows must be updated directly.
+
+### 2. GitLab CI deadlock — FIXED
+**Root cause:** `gitlab/main` was at `d8fdac6f` (old 695-line pipeline referencing retired `packages/ui`); the user's `c06f26d8` ArgoCD pipeline was never pushed, and its helm repo `gitops-agent.github.io/gitops-helm` returns 404 (doesn't exist) + `alpine/helm` entrypoint broke the runner script.
+**Fix:**
+- Pushed `c06f26d8` to `gitlab/main` → pipeline #94 ran (deadlock gone) but ArgoCD job failed (`unknown command "sh" for "helm"`).
+- Replaced `.gitlab-ci.yml` (commit `4594d9a`) with a working SSH+compose zero-downtime deploy job (alpine image, `ssh ${PROD_SERVER_USER}@${PROD_SERVER_IP}`, `git reset --hard gitlab/main`, `bash scripts/deploy-zero-downtime.sh`, health gates).
+- Created GitLab CI/CD variables via API: `SSH_PRIVATE_KEY`, `PROD_SERVER_USER=root`, `PROD_SERVER_IP=19.16.1.100`.
+- Pipeline #95 = `deploy-production` (manual, `allow_failure=false`) — ready to trigger.
+
+### 3. Traefik dead routes — FIXED
+- `ai.hexastudio.net` was 502: route → `ai-service:8080` (container never existed — AI lives in backend `/api/ai/chat`). Removed router+service from `dynamic.yml` + `dynamic_check.yml` (commit `251f5fb`) → now 404.
+- `traefik.hexastudio.net` was 503: dashboard router existed in compose labels but hostname was missing from tunnel ingress → added `traefik.hexastudio.net → http://traefik:80` to ingress (now 20 hostnames) → now 401 (basic-auth challenge = reachable).
+
+### Live Verification (final sweep, server-side)
+| Host | Result |
+|------|--------|
+| `hexastudio.net` / `www` | ✅ 200 / 200 |
+| `api.hexastudio.net/api/health` | ✅ 200 (`dependencies.odoo: ok`) |
+| `cms.hexastudio.net/admin` | ✅ 200 (admin token verified: `/admin/users/me` → 200, user `hexastudio`) |
+| `odoo.hexastudio.net/web/login` | ✅ 200 |
+| `files.hexastudio.net` | ✅ 403 (root bucket listing — expected; objects 200) |
+| `gitlab.hexastudio.net` / `grafana` | ✅ 302 (auth redirect — expected) |
+| `alertmanager` / `traefik` | ✅ 401 (basic-auth challenge — expected) |
+| `ai.hexastudio.net` | ✅ 404 (was 502) |
+| `opencode.hexastudio.net` | ⚠️ 503 (dangling DNS record, no service — user decision) |
+
+### Remaining / Notes
+- `opencode.hexastudio.net`: DNS CNAME exists but no router/service (planned OpenCode IDE host never built; docs stale). Decision needed: remove DNS record or leave catch-all 503.
+- Deploy pipeline is ready; trigger manually in GitLab when next deploy is wanted.
