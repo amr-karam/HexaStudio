@@ -3,6 +3,7 @@ import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagg
 import { UsersService } from './users.service';
 import type { User } from '@hexastudio/types';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt-auth.guard';
 
 @ApiTags('Users')
 @Controller({ path: 'users', version: ['1', VERSION_NEUTRAL] })
@@ -10,12 +11,19 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('me')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get current user profile' })
-  @ApiResponse({ status: 200, description: 'Current user profile' })
-  async findMe(@Req() req: { user: User }): Promise<User> {
-    return req.user;
+  @UseGuards(OptionalJwtAuthGuard)
+  @ApiOperation({
+    summary: 'Get current user profile (data: null when unauthenticated)',
+    description:
+      'Public "who am I" endpoint. Returns the authenticated user when a valid ' +
+      'session/token is present, or 200 with `data: null` for anonymous visitors ' +
+      '(avoids noisy 401s on public pages).',
+  })
+  @ApiResponse({ status: 200, description: 'Current user profile, or { data: null } when unauthenticated' })
+  async findMe(
+    @Req() req: { user?: User },
+  ): Promise<User | { data: null }> {
+    return req.user ?? { data: null };
   }
 
   @Get(':id')
