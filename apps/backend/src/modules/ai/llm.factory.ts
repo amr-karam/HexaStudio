@@ -10,6 +10,30 @@ export interface ChatClient {
 }
 
 /**
+ * Sanitizes user-supplied prompt text before it reaches an LLM provider.
+ *
+ * - Trims surrounding whitespace.
+ * - Strips ASCII control characters (excluding \n, \t, \r) — neutralizes null
+ *   bytes, terminal escape sequences, and other invisible injection payloads
+ *   without touching normal content.
+ *
+ * Length limits are enforced upstream by DTO validation.
+ */
+export function sanitizePrompt(input: string): string {
+  const trimmed = input.trim();
+  let result = '';
+  for (let i = 0; i < trimmed.length; i++) {
+    const code = trimmed.charCodeAt(i);
+    const isLineBreak = code === 0x0a || code === 0x0d || code === 0x09; // \n, \r, \t
+    const isPrintable = code >= 0x20 && code !== 0x7f; // printable ASCII, excluding DEL
+    if (isLineBreak || isPrintable) {
+      result += trimmed[i];
+    }
+  }
+  return result;
+}
+
+/**
  * Resolves the chat LLM client from AI_CHAT_PROVIDER.
  *
  * - 'local'     → LM Studio self-hosted server (OpenAI-compatible,

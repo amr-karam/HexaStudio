@@ -69,6 +69,28 @@ describe('SpatialSynthesisService', () => {
         'Failed to generate valid structured output',
       );
     });
+
+    it('sanitizes the prompt before building the synthesis prompt', async () => {
+      mockStructuredOutputService.generateStructuredOutput.mockResolvedValue(mockBrief);
+
+      await service.synthesizeFromPrompt('  luxury villa \u0000\u001B  ');
+
+      expect(mockStructuredOutputService.generateStructuredOutput).toHaveBeenCalledWith(
+        expect.stringContaining('luxury villa'),
+        SpatialBriefSchema,
+        expect.objectContaining({ temperature: 0.4 }),
+      );
+      expect(mockStructuredOutputService.generateStructuredOutput).toHaveBeenCalledWith(
+        expect.not.stringContaining('\u0000'),
+        SpatialBriefSchema,
+        expect.objectContaining({ temperature: 0.4 }),
+      );
+      expect(mockStructuredOutputService.generateStructuredOutput).toHaveBeenCalledWith(
+        expect.not.stringContaining('\u001B'),
+        SpatialBriefSchema,
+        expect.objectContaining({ temperature: 0.4 }),
+      );
+    });
   });
 
   describe('synthesizeFromAudio', () => {

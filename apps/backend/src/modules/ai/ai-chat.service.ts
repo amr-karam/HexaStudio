@@ -185,11 +185,11 @@ export class AiChatService {
         stream: true,
       });
     } catch (error) {
-      this.logger.error(`Stream start failed: ${(error as Error).message}`);
-      yield {
-        type: 'error',
-        message: error instanceof Error ? error.message : String(error),
-      };
+      // Log full details server-side; expose only a generic message to clients.
+      this.logger.error(
+        `Stream start failed: ${error instanceof Error ? error.stack : String(error)}`,
+      );
+      yield { type: 'error', message: 'Stream failed' };
       return;
     }
 
@@ -218,11 +218,11 @@ export class AiChatService {
         }
       }
     } catch (error) {
-      this.logger.error(`Stream interrupted: ${(error as Error).message}`);
-      yield {
-        type: 'error',
-        message: error instanceof Error ? error.message : String(error),
-      };
+      // Log full details server-side; expose only a generic message to clients.
+      this.logger.error(
+        `Stream interrupted: ${error instanceof Error ? error.stack : String(error)}`,
+      );
+      yield { type: 'error', message: 'Stream interrupted' };
     }
   }
 }

@@ -181,16 +181,23 @@ export function OptimizedCanvas({
   }, [onPerformanceIssue]);
 
   return (
-    <canvas 
-      ref={canvasRef}
-      style={{ 
-        width: '100%', 
-        height: '100%',
-        touchAction: 'none' // Optimize touch interactions
-      }}
-    >
-      {children}
-    </canvas>
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+          touchAction: 'none', // Optimize touch interactions
+        }}
+      />
+      {/* Children must be rendered OUTSIDE the <canvas> — browsers drop
+          canvas children from the DOM. Render them as an overlay sibling. */}
+      {children ? (
+        <div style={{ position: 'absolute', inset: 0 }}>{children}</div>
+      ) : null}
+    </div>
   );
 }
 

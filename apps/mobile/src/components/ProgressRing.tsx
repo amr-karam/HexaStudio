@@ -19,6 +19,8 @@ export interface ProgressRingProps {
   strokeWidth?: number;
   /** Show percentage text */
   showText?: boolean;
+  /** Accessibility label describing what the ring measures */
+  accessibilityLabel?: string;
   /** Custom style */
   style?: ViewStyle;
 }
@@ -28,6 +30,7 @@ export function ProgressRing({
   size = 48,
   strokeWidth = 4,
   showText = true,
+  accessibilityLabel,
   style,
 }: ProgressRingProps) {
   const { colors } = useTheme();
@@ -35,7 +38,13 @@ export function ProgressRing({
   const innerSize = size - strokeWidth * 2;
 
   return (
-    <View style={[{ alignItems: 'center', justifyContent: 'center', width: size, height: size }, style]}>
+    <View
+      accessible
+      accessibilityRole="progressbar"
+      accessibilityLabel={accessibilityLabel ?? 'Progress'}
+      accessibilityValue={{ min: 0, max: 100, now: percentage }}
+      style={[{ alignItems: 'center', justifyContent: 'center', width: size, height: size }, style]}
+    >
       {/* Background circle */}
       <View
         style={{

@@ -95,6 +95,9 @@ export function GoldButton({
   return (
     <AnimatedPressable
       disabled={disabled}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ disabled }}
       onPressIn={(e) => {
         pressed.value = 1;
         onPressIn?.(e);

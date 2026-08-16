@@ -19,6 +19,10 @@ import { Channel } from './entities/channel.entity';
 import { ChannelMessage } from './entities/channel-message.entity';
 import { ChannelMember } from './entities/channel-member.entity';
 
+interface RequestWithUser {
+  user: { id: string };
+}
+
 @UseGuards(JwtAuthGuard)
 @Controller('channels')
 export class ChannelsController {
@@ -27,60 +31,68 @@ export class ChannelsController {
   @Post()
   async create(
     @Body() createDto: CreateChannelDto,
-    @Request() req: { user: { id: string } },
+    @Request() req: RequestWithUser,
   ): Promise<Channel> {
     return this.channelsService.create(createDto, req.user.id);
   }
 
   @Get()
-  async findAll(): Promise<Channel[]> {
-    return this.channelsService.findAll();
+  async findAll(@Request() req: RequestWithUser): Promise<Channel[]> {
+    return this.channelsService.findAll(undefined, req.user.id);
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<Channel> {
-    return this.channelsService.findOne(id);
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Request() req: RequestWithUser,
+  ): Promise<Channel> {
+    return this.channelsService.findOne(id, req.user.id);
   }
 
   @Put(':id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateDto: UpdateChannelDto,
+    @Request() req: RequestWithUser,
   ): Promise<Channel> {
-    return this.channelsService.update(id, updateDto);
+    return this.channelsService.update(id, updateDto, req.user.id);
   }
 
   @Delete(':id')
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
+    @Request() req: RequestWithUser,
   ): Promise<{ id: string; deleted: boolean }> {
-    return this.channelsService.remove(id);
+    return this.channelsService.remove(id, req.user.id);
   }
 
   @Post(':channelId/members')
   async addMember(
     @Param('channelId', ParseUUIDPipe) channelId: string,
     @Body() addMemberDto: AddChannelMemberDto,
+    @Request() req: RequestWithUser,
   ): Promise<ChannelMember> {
     return this.channelsService.addMember(
       channelId,
       addMemberDto.userId,
       addMemberDto.role,
+      req.user.id,
     );
   }
 
   @Get(':channelId/members')
   async getMembers(
     @Param('channelId', ParseUUIDPipe) channelId: string,
+    @Request() req: RequestWithUser,
   ): Promise<ChannelMember[]> {
-    return this.channelsService.getMembers(channelId);
+    return this.channelsService.getMembers(channelId, req.user.id);
   }
 
   @Post(':channelId/messages')
   async sendMessage(
     @Param('channelId', ParseUUIDPipe) channelId: string,
     @Body() body: { content: string; type?: string; replyTo?: string },
-    @Request() req: { user: { id: string } },
+    @Request() req: RequestWithUser,
   ): Promise<ChannelMessage> {
     return this.channelsService.sendMessage(
       channelId,
@@ -95,8 +107,9 @@ export class ChannelsController {
   @Get(':channelId/messages')
   async getMessages(
     @Param('channelId', ParseUUIDPipe) channelId: string,
+    @Request() req: RequestWithUser,
   ): Promise<ChannelMessage[]> {
-    return this.channelsService.getMessages(channelId);
+    return this.channelsService.getMessages(channelId, undefined, req.user.id);
   }
 
   // ─── Thread Endpoints ───────────────────────────────────────────────────
@@ -104,24 +117,27 @@ export class ChannelsController {
   @Get(':channelId/messages/threaded')
   async getThreadedMessages(
     @Param('channelId', ParseUUIDPipe) channelId: string,
+    @Request() req: RequestWithUser,
   ) {
-    return this.channelsService.getThreadedMessages(channelId);
+    return this.channelsService.getThreadedMessages(channelId, req.user.id);
   }
 
   @Get(':channelId/messages/:messageId/thread')
   async getThreadContext(
     @Param('channelId', ParseUUIDPipe) _channelId: string,
     @Param('messageId', ParseUUIDPipe) messageId: string,
+    @Request() req: RequestWithUser,
   ) {
-    return this.channelsService.getThreadContext(messageId);
+    return this.channelsService.getThreadContext(messageId, req.user.id);
   }
 
   @Get(':channelId/messages/:messageId/replies')
   async getThreadReplies(
     @Param('channelId', ParseUUIDPipe) _channelId: string,
     @Param('messageId', ParseUUIDPipe) messageId: string,
+    @Request() req: RequestWithUser,
   ) {
-    return this.channelsService.getThreadReplies(messageId);
+    return this.channelsService.getThreadReplies(messageId, req.user.id);
   }
 
   @Post(':channelId/messages/:messageId/reply')
@@ -129,7 +145,7 @@ export class ChannelsController {
     @Param('channelId', ParseUUIDPipe) channelId: string,
     @Param('messageId', ParseUUIDPipe) messageId: string,
     @Body() body: { content: string; type?: string },
-    @Request() req: { user: { id: string } },
+    @Request() req: RequestWithUser,
   ) {
     return this.channelsService.replyToMessage(
       channelId,

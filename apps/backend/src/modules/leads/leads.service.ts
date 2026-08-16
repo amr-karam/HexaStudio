@@ -1,9 +1,11 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { OdooApiService } from "@/modules/odoo/odoo-api.service";
 import { QualifiedLead, LeadQualificationResponse } from "@hexastudio/types";
 
 @Injectable()
 export class LeadsService {
+  private readonly logger = new Logger(LeadsService.name);
+
   constructor(private readonly odooService: OdooApiService) {}
 
   async qualifyLead(lead: QualifiedLead): Promise<LeadQualificationResponse> {
@@ -27,7 +29,9 @@ export class LeadsService {
         nextStep: lead.leadScore > 80 ? "partner_contact" : "generic_thank_you",
       };
     } catch (error) {
-      console.error("Odoo Lead Sync Error:", error);
+      this.logger.error(
+        `Odoo Lead Sync Error: ${error instanceof Error ? error.stack : String(error)}`,
+      );
       throw new InternalServerErrorException("Failed to synchronize lead with CRM");
     }
   }

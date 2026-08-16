@@ -2,6 +2,7 @@ import { Injectable, Logger, ServiceUnavailableException } from '@nestjs/common'
 import { SpatialBrief, SpatialBriefSchema } from './spatial-brief.schema';
 import { StructuredOutputService } from './structured-output.service';
 import { VoiceService } from './voice.service';
+import { sanitizePrompt } from './llm.factory';
 
 /**
  * SpatialSynthesisService
@@ -26,9 +27,12 @@ export class SpatialSynthesisService {
    * StructuredOutputService for a validated, deterministic brief.
    */
   async synthesizeFromPrompt(prompt: string): Promise<SpatialBrief> {
+    // Sanitize user-supplied prompt text (trim + strip control characters)
+    // before it is interpolated into the synthesis prompt.
+    const cleanPrompt = sanitizePrompt(prompt);
     const synthesisPrompt = `You are a luxury architectural spatial designer. Synthesize a complete spatial design brief for the following concept:
 
-"${prompt}"
+"${cleanPrompt}"
 
 Return a structured brief with:
 - atmosphere: a short, evocative description of the spatial mood (1-2 sentences)
@@ -37,7 +41,7 @@ Return a structured brief with:
 - colorPalette: an array of 3-5 hex color strings (#RRGGBB) curated for the scene
 - designRationale: a concise explanation of how the chosen lighting, material, and palette achieve optimal depth, material contrast, and spatial luxury`;
 
-    this.logger.debug(`Synthesizing spatial brief from prompt (${prompt.length} chars)`);
+    this.logger.debug(`Synthesizing spatial brief from prompt (${cleanPrompt.length} chars)`);
 
     return this.structuredOutputService.generateStructuredOutput(
       synthesisPrompt,

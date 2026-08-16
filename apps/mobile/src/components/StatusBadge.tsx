@@ -76,7 +76,7 @@ export function StatusBadge({
   return (
     <View style={containerStyle}>
       {dot && <View style={dotStyle} />}
-      <Text style={textStyle}>{label}</Text>
+      <Text accessibilityRole="text" style={textStyle}>{label}</Text>
     </View>
   );
 }

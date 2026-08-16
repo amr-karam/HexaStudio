@@ -123,6 +123,40 @@
 - [x] **BUG — site images HTTP 403 (`files.hexastudio.net`):** every MinIO bucket was `private` (`docker/minio/init-buckets.sh` ran `mc anonymous set none` on all), so every `<img>` and `_next/image` fetch from `files.hexastudio.net` returned 403 (Next.js optimizer cascaded the source 403). Fixed `init-buckets.sh` → `download` (public read) on asset buckets `uploads/models/textures/videos/hdr`; `backups` stays `private`. Live hotfix applied via `ops/scripts/fix-minio-public.sh`; verified live: source URL → 200, `_next/image` URL → 200 (commit `cf4bb5e`).
 - [x] **BUG — noisy 401 on `GET /api/users/me` for logged-out visitors:** endpoint was strictly `JwtAuthGuard`-protected, so every public page load fired a 401 in the browser console (huge scheduler stack trace that looked like a retry loop) + backend WARN spam. Backend logs prove it's a single check per page load (3 calls/hour), not a loop. Fixed: new `OptionalJwtAuthGuard` — `GET /users/me` returns `200 { data: null }` when anonymous, raw `User` when authenticated; frontend `AuthProvider.fetchUser` unwraps `{ data: null }` explicitly (commits `34b3e3f`, `b7ff7ee`).
 
+**Security audit remediation (Aug 16, 2026) — backend (uncommitted):**
+- [x] **M1 — RolesGuard audit DI:** removed hacky `res?.req.app.get(SecurityAuditService)` lookup; `SecurityModule` is now `@Global()` and `RolesGuard` injects `SecurityAuditService` via constructor — `RBAC_FAILURE` events can no longer be silently dropped. Guard spec extended (4 tests, incl. audit-event assertions).
+- [x] **H14 — Logout revocation (verified + tested):** `AuthService.logout()` already revokes the Redis refresh-token record + family + user token-set entry and blacklists the access-token `jti`; added `auth.service.spec.ts` (4 tests) locking in the behavior.
+- [x] **H1-H2 — Error leakage:** SSE stream path (`ai-chat.controller.ts` / `ai-chat.service.ts`) no longer sends raw `error.message` to clients — full details logged server-side, generic `Stream failed`/`Stream interrupted` events exposed.
+- [x] **H3-H8 — console usage:** `console.error` in `leads.service.ts` replaced with NestJS `Logger` (no console.* remains in API routes; `config/env.ts` + `tracing.ts` are boot-time infra only; `main.ts` already clean).
+- [x] **H9-H12 — AI route input hardening:** `class-validator` DTOs + length limits added across agents (`chat` 8k, `deep-research`, `clear-memory`), multimodal (all image/text fields, `generate-brief`), spatial-synthesis (prompt 8k, audio/mime limits), ai-intelligence (`score-lead`, `predict-timeline` query); new shared `sanitizePrompt()` (trim + control-char strip) applied at every prompt boundary before LLM/system-prompt interpolation; sanitization tests added to `spatial-synthesis.service.spec.ts` + `lead-scoring.service.spec.ts`. `test/health.integration.spec.ts` imports `SecurityModule` for the new guard DI.
+- [x] **Gates (Aug 16, 2026):** backend lint 0/0, typecheck 0 errors, tests **386/386** (46 files).
+
+**Security audit remediation (Aug 16, 2026) — frontend / mobile / hexa-hub / CMS (uncommitted):**
+- [x] **M7 — Frontend logout race (`useAuth.tsx`):** token captured before state clear; logout API fired fire-and-forget (never blocks cleanup); state cleared synchronously; in-flight guard makes concurrent calls idempotent; forced-logout now also clears access token. New spec: 4 tests.
+- [x] **L5 — `TextCharReveal` reduced motion:** uses existing `useReducedMotion` hook — renders full text instantly (no stagger/motion spans) when `prefers-reduced-motion: reduce`.
+- [x] **L1 — Modal focus ring:** Radix Dialog already traps/restores focus; added design-system `focus-visible` ring classes to `ModalContent` (keyboard-visible, mouse-clean). 2 new test assertions.
+- [x] **L15 — `deferred-scene-loader` canvas children:** `OptimizedCanvas` rendered React children inside `<canvas>` (invalid HTML — dropped by browsers); restructured to relative wrapper + absolutely-positioned canvas + overlay sibling. Behavior/contracts unchanged.
+- [x] **Frontend gates:** lint 0/0, typecheck 0, tests **357/357** (49 files), design-token gate PASSED.
+- [x] **C8 — Mobile project detail auth guard:** `(tabs)/projects/[id].tsx` now waits for session restore then `<Redirect href="/login">` when unauthenticated; fetches gated on `user`.
+- [x] **H15 — Mobile API client 401 handling:** `lib/api.ts` clears tokens + `router.replace('/login')` on 401 with a 1s loop-guard flag (single redirect per burst).
+- [x] **H16 — Mobile login validation:** email regex + non-empty password with inline errors (backend has no min-length on login); `accessibilityState` wired.
+- [x] **L6-L11 — Mobile a11y labels:** roles/labels added across `GoldButton`, `GlassCard`, `StatusBadge`, `ProgressRing`, `NetworkBanner`, `OfflineBanner`, `SectionHeader`, `UpdateBanner`, skeleton components, `MonoLabel`, profile/projects/notifications screens; decorative elements marked `accessible={false}`.
+- [x] **Mobile gates:** lint 0/0, typecheck clean, tests **26/26** (8 suites).
+- [x] **C4-C7 — hexa-hub hardcoded fallbacks removed (fail-fast):** `database/seed.ts` (was `ChangeMeInProduction!`), `database/data-source.ts` (was `hub_password`), `auth.module.ts` + `jwt.strategy.ts` (were `hexa-hub-super-secret-key` — now throw at boot if `JWT_SECRET` unset), `docker-compose.prod.yml` (`DATABASE_PASSWORD` fallback removed).
+- [x] **C9 — hexa-hub channels authorization:** class-level `JwtAuthGuard` extended with membership/ownership RBAC in `channels.service.ts` (read = member-or-creator, manage = creator/OWNER/ADMIN, auto-OWNER on create, `findAll` scoped to user's channels); controller passes `req.user.id` through all routes.
+- [x] **H18 — hexa-hub realtime CORS:** `CORS_ORIGIN` parsed as comma-separated allowlist (wildcard rejected), `credentials: true` wired into Socket.IO server; JWT auth middleware verified present.
+- [x] **C1-C3 — CMS script secrets:** all `apps/cms` + root `fix_*.js` scripts verified env-driven (no literals). **CRITICAL:** `apps/cms/inspect_db.js` contained a hardcoded DB password in git history (commit `2ca68ff3`) — rewritten to env + fail-fast, added to `.gitignore`, and staged for `git rm --cached` (history scrub + **DB password rotation** still required — see follow-ups).
+- [x] **H17 — CMS admin vs API JWT secrets verified separate:** CMS `ADMIN_JWT_SECRET` (20 chars, `apps/cms/.env`) ≠ backend `JWT_PRIVATE_KEY` (RSA 1734 chars, `.env`) — confirmed live on server.
+
+**Follow-ups (not executed):**
+- [ ] **ROTATE the CMS database password** (`apps/cms/inspect_db.js` history, commit `2ca68ff3` — value `1091…d6a` is in git history; rotate `DATABASE_PASSWORD` on server + compose).
+- [ ] **Scrub git history** for the leaked CMS DB password (BFG/git-filter-repo + force-push to `gitlab` + `hexa`) after rotation.
+- [ ] **Untrack** `apps/cms/inspect_db.js` via `git rm --cached` (already staged) in the next commit.
+- [ ] Consider adding a pre-commit secret scanner (gitleaks/trufflehog).
+
+**CMS schema change (Aug 16, 2026) — Article `isPublished` (uncommitted):**
+- [x] Added `isPublished` Boolean field to the Article content type in `apps/cms/src/api/article/content-types/article/schema.json` (Strapi 5, MEDIUM risk — schema change, no ADR required). Applied via schema source-of-truth (the same file the Admin panel edits); takes effect on next CMS boot/deploy. Typecheck ✅ + `strapi build` ✅ verified from `apps/cms`. Note: existing articles will have `isPublished: null` until set — frontend/API consumers should tolerate `null` (treat as falsy or backfill).
+
 **S-021 Roadmap:**
 - [x] P2 — Live Odoo sync to GitLab prod server (`19.16.1.100` — complete)
 - [x] P3 — Fix auth headers in all frontend BFF proxies (complete)

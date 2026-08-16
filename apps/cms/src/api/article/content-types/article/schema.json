@@ -52,6 +52,9 @@
       "type": "integer",
       "default": 5
     },
+    "isPublished": {
+      "type": "boolean"
+    },
     "tags": {
       "type": "json"
     },

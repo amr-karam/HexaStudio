@@ -189,10 +189,11 @@ export class AiChatController {
 
       writeEvent(res, 'done', {});
     } catch (error) {
-      this.logger.error(`SSE stream failed: ${error}`);
-      writeEvent(res, 'error', {
-        message: error instanceof Error ? error.message : String(error),
-      });
+      // Log full details server-side; never leak raw error messages to clients.
+      this.logger.error(
+        `SSE stream failed: ${error instanceof Error ? error.stack : String(error)}`,
+      );
+      writeEvent(res, 'error', { message: 'Stream failed' });
     } finally {
       finish();
     }

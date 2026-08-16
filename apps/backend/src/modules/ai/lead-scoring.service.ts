@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { StructuredOutputService } from './structured-output.service';
 import { LeadScore, LeadScoreSchema } from './lead-score.schema';
+import { sanitizePrompt } from './llm.factory';
 
 /**
  * LeadScoringService
@@ -34,17 +35,27 @@ export class LeadScoringService {
     location?: string;
     message: string;
   }): Promise<LeadScore> {
+    // Sanitize every user-supplied field before it is interpolated into the
+    // prompt (trim + strip control characters) — never pass raw input to the model.
+    const name = sanitizePrompt(lead.name);
+    const company = lead.company ? sanitizePrompt(lead.company) : undefined;
+    const email = sanitizePrompt(lead.email);
+    const service = lead.service ? sanitizePrompt(lead.service) : undefined;
+    const budget = lead.budget ? sanitizePrompt(lead.budget) : undefined;
+    const location = lead.location ? sanitizePrompt(lead.location) : undefined;
+    const message = sanitizePrompt(lead.message);
+
     const prompt = `You are an expert lead qualification analyst for a high-end architectural visualization studio ("Hexa Studio").
 
 Analyze the following client inquiry and classify it for our sales team:
 
-- Name: ${lead.name}
-- Company: ${lead.company || 'N/A'}
-- Email: ${lead.email}
-- Service interest: ${lead.service || 'General'}
-- Budget indicator: ${lead.budget || 'Unspecified'}
-- Location: ${lead.location || 'Unknown'}
-- Message: ${lead.message}
+- Name: ${name}
+- Company: ${company || 'N/A'}
+- Email: ${email}
+- Service interest: ${service || 'General'}
+- Budget indicator: ${budget || 'Unspecified'}
+- Location: ${location || 'Unknown'}
+- Message: ${message}
 
 A "high_value" lead is typically: a luxury residential/commercial project, a clear budget above $250k, a named architect/developer, or a portfolio-style masterplan.
 A "strategic" lead may be a high-potential but early-stage inquiry (e.g., feasibility, multi-site, brand collaboration).
@@ -60,7 +71,7 @@ Return:
 - recommendedPriority: immediate_follow_up | schedule_this_week | nurture | low_priority
 - reasons: 1-6 concise strings explaining the classification`;
 
-    this.logger.debug(`Scoring lead for ${lead.email}`);
+    this.logger.debug(`Scoring lead for ${email}`);
 
     return this.structuredOutputService.generateStructuredOutput(
       prompt,

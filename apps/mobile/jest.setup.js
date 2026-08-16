@@ -142,6 +142,7 @@ jest.mock('expo-router', () => ({
   useRouter: () => ({ push: jest.fn(), replace: jest.fn() }),
   useSegments: () => [''],
   useLocalSearchParams: () => ({ id: '1', name: 'Test Project' }),
+  Redirect: () => null,
   Stack: { Screen: () => null },
   Tabs: { Screen: () => null },
 }));

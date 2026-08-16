@@ -22,7 +22,7 @@ export function ContentSkeleton({ lines = 3, lineWidths = [90, 100, 60] }: Props
   }, [pulse]);
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} accessible={false}>
       {/* Title bar */}
       <Animated.View style={[styles.bar, { width: '50%', height: 28, opacity: pulse }]} />
       <View style={{ height: 16 }} />

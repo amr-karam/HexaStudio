@@ -122,4 +122,22 @@ describe('Modal', () => {
     // The dialog container should be present in the accessibility tree
     expect(dialog).toBeInTheDocument();
   });
+
+  it('moves focus into the dialog when opened', () => {
+    renderModal(true);
+    const dialog = screen.getByRole('dialog');
+    // Radix Dialog focuses the first focusable element (or the container)
+    // inside the dialog on open and traps focus while it is open.
+    expect(dialog.contains(document.activeElement)).toBe(true);
+  });
+
+  it('exposes a visible focus ring for keyboard users', () => {
+    renderModal(true);
+    const dialog = screen.getByRole('dialog');
+    // Design-system focus-visible styles must not be stripped: the dialog
+    // container shows an accent ring when it receives keyboard focus.
+    expect(dialog.className).toContain('focus-visible:outline-none');
+    expect(dialog.className).toContain('focus-visible:ring-2');
+    expect(dialog.className).toContain('focus-visible:ring-accent');
+  });
 });

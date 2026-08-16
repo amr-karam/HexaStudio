@@ -74,23 +74,60 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   turbopack: {},
   transpilePackages: ["@hexastudio/types", "@hexastudio/utils", "@hexastudio/ui"],
+  // Remove console.log in production to reduce bundle size
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
   experimental: {
-    optimizePackageImports: ["three", "@react-three/fiber", "@react-three/drei", "@react-three/postprocessing", "gsap", "framer-motion", "@sentry/nextjs"],
+    optimizePackageImports: ["three", "@react-three/fiber", "@react-three/drei"],
     // Inline page CSS directly into the HTML — removes the render-blocking
     // stylesheet request from the critical path (FCP). HTML is served
     // no-store through Cloudflare, so separate CSS caching buys little here.
     inlineCss: true,
+    // Defer non-critical third-party scripts to reduce main-thread work
+    scrollRestoration: true,
   },
   // S-019 performance budgets
   // - 200 KB JS per-route budget (enforced via webpack performance)
   // - TBT < 100ms  (monitored via Sentry + Core Web Vitals)
   // - LCP < 1.5s   (monitored via Sentry + Core Web Vitals)
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
+  webpack: (config, { isServer, dev }) => {
+    if (!isServer && !dev) {
       config.performance = {
         maxAssetSize: 200 * 1024,
         maxEntrypointSize: 200 * 1024,
-        hints: process.env.NODE_ENV === "production" ? "error" : "warning",
+        hints: "error",
+        // Add runtime size hints
+        assetFilter: (assetFilename: string) => {
+          return assetFilename.endsWith(".js") || assetFilename.endsWith(".css");
+        },
+      };
+    }
+    // Optimization: minimize main-thread work by reducing script parse time
+    if (!isServer) {
+      // Split chunks to keep initial payload under budget
+      config.optimization = config.optimization || {};
+      config.optimization.splitChunks = {
+        chunks: "all",
+        cacheGroups: {
+          default: false,
+          vendors: false,
+          // Keep Three.js and related packages in a separate chunk
+          threejs: {
+            test: /[\\/]node_modules[\\/]/,
+            name(module: any) {
+              const packageName = module.context.match(/[\\/]node_modules[\\/]([^\\/]+)/)?.[1];
+              return [`threejs`, packageName].filter(Boolean).join("-");
+            },
+            priority: 20,
+          },
+          // Separate GSAP and animation libraries
+          animations: {
+            test: /[\\/]node_modules[\\/](gsap|framer-motion|lenis)[\\/]/,
+            name: "animations",
+            priority: 10,
+          },
+        },
       };
     }
     return config;

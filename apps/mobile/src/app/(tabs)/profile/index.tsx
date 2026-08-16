@@ -23,6 +23,8 @@ export default function ProfileScreen() {
         {user ? (
           <TouchableOpacity
             onPress={logout}
+            accessibilityRole="button"
+            accessibilityLabel="Sign Out"
             style={[styles.button, { backgroundColor: colors.accent }]}
             activeOpacity={0.8}
           >
@@ -31,6 +33,8 @@ export default function ProfileScreen() {
         ) : (
           <TouchableOpacity
             onPress={() => router.push('/login')}
+            accessibilityRole="button"
+            accessibilityLabel="Sign In"
             style={[styles.button, { backgroundColor: colors.accent }]}
             activeOpacity={0.8}
           >

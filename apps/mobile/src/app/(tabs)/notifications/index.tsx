@@ -107,6 +107,7 @@ export default function NotificationsScreen() {
             <Switch
               value={prefs[opt.key]}
               onValueChange={() => toggle(opt.key)}
+              accessibilityLabel={opt.label}
               trackColor={{ false: colors.border, true: colors.accent }}
               thumbColor={colors.foreground}
             />

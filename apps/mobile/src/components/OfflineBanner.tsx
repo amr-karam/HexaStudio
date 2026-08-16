@@ -22,6 +22,8 @@ export function OfflineBanner({ floating = true }: OfflineBannerProps) {
 
   return (
     <Animated.View
+      accessible
+      accessibilityRole="alert"
       style={[
         styles.banner,
         !floating && styles.inline,

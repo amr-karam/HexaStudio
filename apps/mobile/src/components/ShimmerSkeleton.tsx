@@ -55,6 +55,7 @@ export function ShimmerSkeleton({
 
   const renderLine = (lineWidth: number | string) => (
     <Animated.View
+      accessible={false}
       style={[
         {
           width: lineWidth as ViewStyle['width'],
@@ -98,7 +99,7 @@ export function ShimmerSkeleton({
 export function SkeletonLine({ width = '100%', style }: { width?: number | string; style?: ViewStyle }) {
   const { colors } = useTheme();
   return (
-    <View style={[{ width: width as ViewStyle['width'], height: 16, backgroundColor: colors.border, borderRadius: 4 }, style]} />
+    <View accessible={false} style={[{ width: width as ViewStyle['width'], height: 16, backgroundColor: colors.border, borderRadius: 4 }, style]} />
   );
 }
 
@@ -106,7 +107,7 @@ export function SkeletonLine({ width = '100%', style }: { width?: number | strin
 export function SkeletonCard({ style }: { style?: ViewStyle }) {
   const { colors, spacing, radius } = useTheme();
   return (
-    <View style={[{
+    <View accessible={false} style={[{
       backgroundColor: colors.obsidian,
       borderRadius: radius.lg,
       padding: spacing.lg,

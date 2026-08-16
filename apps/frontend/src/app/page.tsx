@@ -44,7 +44,7 @@ export default async function HomePage() {
       <div className="sl-vignette" aria-hidden="true" />
       {/* Subtle warm radial glow */}
       <div className="absolute inset-0 gradient-radial-gold opacity-20 pointer-events-none" aria-hidden="true" />
-      
+
       <HomeChapterRail />
       <HomeHeroStatic />
       <GlobalErrorBoundary>

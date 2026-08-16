@@ -136,10 +136,10 @@ export class AuthController {
   async logout(
     @Res({ passthrough: true }) res: Response,
     @Headers('authorization') authHeader?: string,
-    @Body() body?: { refreshToken?: string },
+    @Body() body: { refreshToken: string },
   ) {
     const accessToken = authHeader?.replace('Bearer ', '') ?? '';
-    await this.authService.logout(accessToken, body?.refreshToken);
+    await this.authService.logout(accessToken, body.refreshToken);
     res.clearCookie('auth_token', { path: '/' });
     res.clearCookie(CSRF_COOKIE_NAME, { path: '/' });
     return { success: true };

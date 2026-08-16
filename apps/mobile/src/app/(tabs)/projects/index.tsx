@@ -83,6 +83,8 @@ export default function ProjectsScreen() {
             <TouchableOpacity
               style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}
               activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityLabel={`Open project ${item.name}`}
               onPress={() =>
                 router.push({
                   pathname: '/(tabs)/projects/[id]',

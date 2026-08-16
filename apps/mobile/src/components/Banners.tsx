@@ -4,7 +4,7 @@ import { UpdateBanner } from './UpdateBanner';
 
 export function Banners() {
   return (
-    <View style={styles.container} pointerEvents="box-none">
+    <View style={styles.container} pointerEvents="box-none" accessible={false}>
       <UpdateBanner />
       <OfflineBanner floating={false} />
     </View>

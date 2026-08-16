@@ -85,6 +85,32 @@ describe('LeadScoringService', () => {
       expect(result.tier).toBe('inquiry');
       expect(result.recommendedPriority).toBe('nurture');
     });
+
+    it('sanitizes user-supplied fields before sending them to the model', async () => {
+      mockStructuredOutputService.generateStructuredOutput.mockResolvedValue(mockScore);
+
+      await service.scoreLead({
+        name: 'Jane \u0000Architect',
+        email: 'jane@acme.dev',
+        message: '  Luxury tower \u001B project  ',
+      });
+
+      expect(mockStructuredOutputService.generateStructuredOutput).toHaveBeenCalledWith(
+        expect.stringContaining('Jane Architect'),
+        LeadScoreSchema,
+        expect.objectContaining({ temperature: 0.2 }),
+      );
+      expect(mockStructuredOutputService.generateStructuredOutput).toHaveBeenCalledWith(
+        expect.not.stringContaining('\u0000'),
+        LeadScoreSchema,
+        expect.objectContaining({ temperature: 0.2 }),
+      );
+      expect(mockStructuredOutputService.generateStructuredOutput).toHaveBeenCalledWith(
+        expect.not.stringContaining('\u001B'),
+        LeadScoreSchema,
+        expect.objectContaining({ temperature: 0.2 }),
+      );
+    });
   });
 
   describe('toTags', () => {

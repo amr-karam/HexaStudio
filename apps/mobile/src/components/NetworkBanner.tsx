@@ -35,7 +35,11 @@ export function NetworkBanner() {
   if (!isOffline) return null;
 
   return (
-    <Animated.View style={[styles.banner, { opacity: fadeAnim }]}>
+    <Animated.View
+      accessible
+      accessibilityRole="alert"
+      style={[styles.banner, { opacity: fadeAnim }]}
+    >
       <Text style={styles.text}>No internet connection</Text>
     </Animated.View>
   );

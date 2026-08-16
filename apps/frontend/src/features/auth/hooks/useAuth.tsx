@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect, useCallback, createContext, useContext } from 'react';
+import { useState, useEffect, useCallback, useRef, createContext, useContext } from 'react';
 import { User } from '@/types';
 import { API_BASE_URL } from '@/config/constants';
 import {
   setRefreshToken,
   setAccessToken,
+  getRefreshToken,
   onAuthLogout,
   authFetch,
 } from '@/lib/api-client';
@@ -23,11 +24,14 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  // Guards against concurrent/double logout invocations (idempotent logout).
+  const logoutInFlightRef = useRef(false);
 
   // Register logout handler — when refresh token is revoked/expired, force UI logout
   useEffect(() => {
     onAuthLogout(() => {
       setRefreshToken(null);
+      setAccessToken(null);
       setUser(null);
     });
   }, []);
@@ -73,6 +77,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const data = await response.json();
     setUser(data.user);
 
+    // A new session starts — release any stale logout in-flight guard.
+    logoutInFlightRef.current = false;
+
     // Store tokens in memory for automatic renewal
     if (data.refreshToken) {
       setRefreshToken(data.refreshToken);
@@ -98,6 +105,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const data = await response.json();
     setUser(data.user);
 
+    // A new session starts — release any stale logout in-flight guard.
+    logoutInFlightRef.current = false;
+
     // Store tokens in memory for automatic renewal
     if (data.refreshToken) {
       setRefreshToken(data.refreshToken);
@@ -108,16 +118,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = useCallback(async () => {
-    try {
-      await fetch(`${API_BASE_URL}/api/auth/logout`, {
-        method: 'POST',
-        credentials: 'include',
+    // Idempotent: ignore concurrent/double logout invocations until the
+    // server-side revocation settles (or the user logs back in).
+    if (logoutInFlightRef.current) return;
+    logoutInFlightRef.current = true;
+
+    // Capture the refresh token BEFORE clearing state, so the server-side
+    // session can still be revoked by the API call below.
+    const refreshToken = getRefreshToken();
+
+    // Clear auth state synchronously — the local session ends immediately,
+    // regardless of the network result.
+    setRefreshToken(null);
+    setAccessToken(null);
+    setUser(null);
+
+    // Fire-and-forget server-side revocation. Local cleanup never waits on
+    // the network; the guard releases when the request settles.
+    void fetch(`${API_BASE_URL}/api/auth/logout`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refreshToken }),
+    })
+      .catch(() => {
+        // Best-effort revocation — local session is already cleared above.
+      })
+      .finally(() => {
+        logoutInFlightRef.current = false;
       });
-    } finally {
-      setRefreshToken(null);
-      setAccessToken(null);
-      setUser(null);
-    }
   }, []);
 
   return (

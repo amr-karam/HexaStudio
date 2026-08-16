@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Logger, Param, Post, Query, UseGuards } from '@nestjs/common';
+import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -6,6 +7,89 @@ import { LeadScoringService } from './lead-scoring.service';
 import { TimelinePredictorService, ProjectTimelineInput } from './timeline-predictor.service';
 import { LeadScore } from './lead-score.schema';
 import { TimelinePrediction } from './timeline-prediction.schema';
+
+class ScoreLeadDto {
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(200)
+  name!: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  company?: string;
+
+  @IsEmail()
+  @MaxLength(320)
+  email!: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  service?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  budget?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  location?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(8000)
+  message!: string;
+}
+
+class PredictTimelineQueryDto {
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  projectName?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  projectType?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(20)
+  progress?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(20)
+  daysUntilNextMilestone?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(20)
+  revisionCount?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(20)
+  recentActivityCount?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(20)
+  historicalAvgCompletionDays?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(20)
+  historicalOnTimeRate?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(2000)
+  description?: string;
+}
 
 /**
  * AI Intelligence Controller
@@ -26,18 +110,7 @@ export class AiIntelligenceController {
 
   @Post('leads/score')
   @Roles('admin', 'editor')
-  async scoreLead(
-    @Body()
-    body: {
-      name: string;
-      company?: string;
-      email: string;
-      service?: string;
-      budget?: string;
-      location?: string;
-      message: string;
-    },
-  ): Promise<LeadScore> {
+  async scoreLead(@Body() body: ScoreLeadDto): Promise<LeadScore> {
     this.logger.log(`Scoring lead for ${body.email}`);
     return this.leadScoringService.scoreLead(body);
   }
@@ -46,7 +119,7 @@ export class AiIntelligenceController {
   @Roles('admin', 'editor')
   async predictTimeline(
     @Param('id') id: string,
-    @Query() query: Record<string, string>,
+    @Query() query: PredictTimelineQueryDto,
   ): Promise<TimelinePrediction> {
     const input: ProjectTimelineInput = {
       projectId: id,

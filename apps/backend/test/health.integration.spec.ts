@@ -15,6 +15,7 @@ import { VectorModule } from '../src/modules/vector/vector.module';
 import { EventBus } from '../src/modules/realtime/event-bus.service';
 import { TransformReasoningService } from '../src/modules/ai/transform-reasoning.service';
 import { RedisModule } from '../src/modules/storage/redis.module';
+import { SecurityModule } from '../src/modules/security/security.module';
 
 const mockRedisService = {
   get: vi.fn().mockResolvedValue(null),
@@ -74,7 +75,15 @@ describe('HealthModule', () => {
     process.env.VECTOR_PORT = '6333';
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [ConfigModule.forRoot({ isGlobal: true }), RedisModule, HealthModule, VectorModule],
+      // SecurityModule is @Global and provides SecurityAuditService, which
+      // RolesGuard now injects (ProjectsController, pulled in via VectorModule).
+      imports: [
+        ConfigModule.forRoot({ isGlobal: true }),
+        RedisModule,
+        HealthModule,
+        VectorModule,
+        SecurityModule,
+      ],
       providers: [
         { provide: RedisService, useValue: mockRedisService },
         { provide: EventBus, useValue: mockEventBus },

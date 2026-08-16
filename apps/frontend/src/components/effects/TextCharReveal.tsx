@@ -1,5 +1,6 @@
 'use client';
 import { EASE } from '@/lib/motion';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
@@ -25,6 +26,7 @@ export default function TextCharReveal({
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: '-50px' });
+  const reducedMotion = useReducedMotion();
 
   const chars = text.split('');
 
@@ -54,6 +56,16 @@ export default function TextCharReveal({
       },
     },
   };
+
+  if (reducedMotion) {
+    // Accessibility: render the full text immediately — no stagger, no
+    // per-character animation, no motion wrappers.
+    return (
+      <Tag ref={ref} className={`inline-block ${className}`}>
+        {text}
+      </Tag>
+    );
+  }
 
   return (
     <Tag ref={ref} className={`inline-block ${className}`}>

@@ -205,9 +205,11 @@ generate_token*.js
 # CMS admin scripts with hardcoded credentials
 apps/cms/get_admin_user.js
 apps/cms/scripts/debug_permissions.js
+apps/cms/inspect_db.js
 
 # API test scripts that use live tokens
 test_api.sh
 
 # Content API token minting script
 generate_content_token.js
+fix_*.js

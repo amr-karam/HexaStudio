@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Text, View, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useLocalSearchParams, Stack } from 'expo-router';
+import { Redirect, useLocalSearchParams, Stack } from 'expo-router';
 import { useTheme } from '@/components/ThemeProvider';
+import { useAuth } from '@/hooks/useAuth';
 import { fetchProjectDetail, ClientProjectDetail } from '@/lib/api';
 
 export default function ProjectMilestonesScreen() {
   const { colors } = useTheme();
+  const { user, isLoading: isAuthLoading } = useAuth();
   const { id, name } = useLocalSearchParams<{ id: string; name?: string }>();
   const [project, setProject] = useState<ClientProjectDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -25,8 +27,27 @@ export default function ProjectMilestonesScreen() {
   }, [id]);
 
   useEffect(() => {
-    load();
-  }, [load]);
+    if (user) {
+      load();
+    } else {
+      setIsLoading(false);
+    }
+  }, [user, load]);
+
+  // Auth guard — wait for session restore, then redirect unauthenticated users
+  // to the login screen (data fetches are gated on `user` to avoid firing
+  // token-less requests while the session is still being restored).
+  if (isAuthLoading) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
+        <ActivityIndicator color={colors.foreground} style={styles.spinner} />
+      </SafeAreaView>
+    );
+  }
+
+  if (!user) {
+    return <Redirect href="/login" />;
+  }
 
   const renderContent = () => {
     if (isLoading) {

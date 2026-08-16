@@ -137,6 +137,7 @@ async function bootstrap(): Promise<void> {
   const io = new Server(httpServer, {
     cors: {
       origin: config.cors.origin,
+      credentials: config.cors.credentials,
       methods: ['GET', 'POST'],
     },
     pingInterval: config.heartbeat.interval,

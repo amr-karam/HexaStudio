@@ -75,6 +75,8 @@ export function SectionHeader({
         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: spacing.sm }}>
           <Text
             onPress={onAction}
+            accessibilityRole="button"
+            accessibilityLabel={action}
             style={{
               color: colors.gold,
               fontSize: typography.monoLabel.fontSize,

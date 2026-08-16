@@ -75,6 +75,8 @@ export function GlassCard({
       <AnimatedView style={[pressableStyle, animatedStyle]}>
         <Pressable
           onPress={onPress}
+          accessible
+          accessibilityRole="button"
           onPressIn={() => { pressed.value = withSpring(1, SPRING.micro); }}
           onPressOut={() => { pressed.value = withSpring(0, SPRING.micro); }}
           style={({ pressed: p }) => [cardStyle, p && { opacity: 0.8 }]}

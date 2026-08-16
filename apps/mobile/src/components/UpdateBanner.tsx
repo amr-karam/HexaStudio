@@ -28,6 +28,8 @@ export function UpdateBanner() {
         </Text>
         <Pressable
           onPress={download}
+          accessibilityRole="button"
+          accessibilityLabel="Download Update"
           style={[styles.button, { backgroundColor: colors.accent, borderRadius: radius.sm }]}
         >
           <Text style={[styles.buttonText, { color: colors.background }]}>Download Update</Text>
@@ -55,6 +57,8 @@ export function UpdateBanner() {
         </Text>
         <Pressable
           onPress={restart}
+          accessibilityRole="button"
+          accessibilityLabel="Restart Now"
           style={[styles.button, { backgroundColor: colors.accent, borderRadius: radius.sm }]}
         >
           <Text style={[styles.buttonText, { color: colors.background }]}>Restart Now</Text>

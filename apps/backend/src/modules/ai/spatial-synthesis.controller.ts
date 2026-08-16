@@ -8,7 +8,7 @@ import {
   VERSION_NEUTRAL,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 import { SpatialSynthesisService } from './spatial-synthesis.service';
 import { SpatialBrief } from './spatial-brief.schema';
 import { VoiceService } from './voice.service';
@@ -17,16 +17,19 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 class SpatialSynthesisPromptDto {
   @IsString()
   @IsNotEmpty()
+  @MaxLength(8000)
   prompt!: string;
 }
 
 class SpatialSynthesisVoiceDto {
   @IsString()
   @IsNotEmpty()
+  @MaxLength(15_000_000)
   audioData!: string;
 
   @IsString()
   @IsNotEmpty()
+  @MaxLength(100)
   mimeType!: string;
 }
 

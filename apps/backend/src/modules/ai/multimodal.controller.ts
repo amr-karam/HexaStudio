@@ -1,23 +1,86 @@
 import { Controller, Post, Body, UseGuards, Version, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { IsNotEmpty, IsNumber, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
+import { Type } from 'class-transformer';
 import { MultimodalService } from './multimodal.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { sanitizePrompt } from './llm.factory';
+
+const MAX_IMAGE_DATA_LENGTH = 15_000_000; // base64 payload (~11 MB binary)
+const MAX_TEXT_LENGTH = 8000;
 
 class AnalyzeImageDto {
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(MAX_IMAGE_DATA_LENGTH)
   imageData!: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
   mimeType?: string;
 }
 
 class CompareDesignsDto {
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(MAX_IMAGE_DATA_LENGTH)
   image1Data!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(MAX_IMAGE_DATA_LENGTH)
   image2Data!: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
   mimeType?: string;
 }
 
 class DesignSuggestionsDto {
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(MAX_IMAGE_DATA_LENGTH)
   referenceImageData!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(MAX_TEXT_LENGTH)
   projectContext!: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
   mimeType?: string;
+}
+
+class GenerateBriefDto {
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(200)
+  projectType!: string;
+
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  @Max(1_000_000_000)
+  squareFootage!: number;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(200)
+  stylePreference!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(2000)
+  sustainabilityGoals!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(200)
+  budgetRange!: string;
 }
 
 @ApiTags('AI Multimodal')
@@ -64,7 +127,11 @@ export class MultimodalController {
   @ApiOperation({ summary: 'Generate design suggestions based on reference image and context' })
   @ApiResponse({ status: 200, description: 'Suggestions generated' })
   async designSuggestions(@Body() dto: DesignSuggestionsDto) {
-    return this.multimodalService.generateDesignSuggestions(dto.referenceImageData, dto.projectContext, dto.mimeType);
+    return this.multimodalService.generateDesignSuggestions(
+      dto.referenceImageData,
+      sanitizePrompt(dto.projectContext),
+      dto.mimeType,
+    );
   }
 
   @Post('extract-bim')
@@ -79,16 +146,13 @@ export class MultimodalController {
   @Version(['1', VERSION_NEUTRAL])
   @ApiOperation({ summary: 'Generate AI architectural project brief' })
   @ApiResponse({ status: 200, description: 'Brief generated' })
-  async generateBrief(
-    @Body()
-    dto: {
-      projectType: string;
-      squareFootage: number;
-      stylePreference: string;
-      sustainabilityGoals: string;
-      budgetRange: string;
-    }
-  ) {
-    return this.multimodalService.generateArchitecturalBrief(dto);
+  async generateBrief(@Body() dto: GenerateBriefDto) {
+    return this.multimodalService.generateArchitecturalBrief({
+      projectType: sanitizePrompt(dto.projectType),
+      squareFootage: dto.squareFootage,
+      stylePreference: sanitizePrompt(dto.stylePreference),
+      sustainabilityGoals: sanitizePrompt(dto.sustainabilityGoals),
+      budgetRange: sanitizePrompt(dto.budgetRange),
+    });
   }
 }

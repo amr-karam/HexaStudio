@@ -5,6 +5,8 @@ import { router } from 'expo-router';
 import { useTheme } from '@/components/ThemeProvider';
 import { useAuth } from '@/hooks/useAuth';
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function LoginScreen() {
   const { colors } = useTheme();
   const { login } = useAuth();
@@ -12,12 +14,23 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+
+  const validate = (): boolean => {
+    const isEmailValid = EMAIL_REGEX.test(email.trim());
+    const isPasswordValid = password.length > 0;
+    setEmailError(isEmailValid ? null : 'Enter a valid email address.');
+    setPasswordError(isPasswordValid ? null : 'Enter your password.');
+    return isEmailValid && isPasswordValid;
+  };
 
   const handleLogin = async () => {
     setError(null);
+    if (!validate()) return;
     setLoading(true);
     try {
-      await login(email, password);
+      await login(email.trim(), password);
       router.replace('/(tabs)');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');
@@ -45,23 +58,41 @@ export default function LoginScreen() {
           placeholder="Email"
           placeholderTextColor={colors.muted}
           value={email}
-          onChangeText={setEmail}
+          onChangeText={(value) => {
+            setEmail(value);
+            if (emailError) setEmailError(null);
+          }}
           autoCapitalize="none"
           keyboardType="email-address"
+          autoComplete="email"
+          accessibilityLabel="Email"
         />
+        {emailError && (
+          <Text style={[styles.fieldError, { color: colors.error }]}>{emailError}</Text>
+        )}
 
         <TextInput
           style={[styles.input, { backgroundColor: colors.surface, borderColor: colors.border, color: colors.foreground }]}
           placeholder="Password"
           placeholderTextColor={colors.muted}
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(value) => {
+            setPassword(value);
+            if (passwordError) setPasswordError(null);
+          }}
           secureTextEntry
+          accessibilityLabel="Password"
         />
+        {passwordError && (
+          <Text style={[styles.fieldError, { color: colors.error }]}>{passwordError}</Text>
+        )}
 
         <TouchableOpacity
           onPress={handleLogin}
           disabled={loading}
+          accessibilityRole="button"
+          accessibilityLabel="Sign In"
+          accessibilityState={{ disabled: loading }}
           style={[styles.button, { backgroundColor: colors.accent }, loading && { opacity: 0.6 }]}
           activeOpacity={0.8}
         >
@@ -90,6 +121,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: { color: '#0a0a0a', fontWeight: '600', fontSize: 14 },
+  fieldError: { fontSize: 12, marginTop: -10, marginBottom: 8 },
   error: {
     padding: 12,
     borderRadius: 4,

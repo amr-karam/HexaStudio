@@ -7,7 +7,10 @@ import { Request } from 'express';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(private readonly reflector: Reflector) {}
+  constructor(
+    private readonly reflector: Reflector,
+    private readonly securityAuditService: SecurityAuditService,
+  ) {}
 
   canActivate(context: ExecutionContext): boolean {
     const requiredRoles = this.reflector.getAllAndOverride<User['role'][]>(ROLES_KEY, [
@@ -21,8 +24,7 @@ export class RolesGuard implements CanActivate {
     const user = request.user;
     
     if (user === undefined || !requiredRoles.includes(user.role)) {
-      const securityAuditService = context.switchToHttp().getRequest().res?.req.app.get(SecurityAuditService);
-      securityAuditService?.logEvent({
+      this.securityAuditService.logEvent({
         type: 'RBAC_FAILURE',
         userId: user?.id,
         details: {

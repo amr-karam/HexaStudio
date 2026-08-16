@@ -28,5 +28,5 @@ export function MonoLabel({ label, size = 'md', style }: MonoLabelProps) {
     color: style?.color ?? 'inherit',
   } as TextStyle;
 
-  return <Text style={baseStyle}>{label}</Text>;
+  return <Text accessibilityRole="text" style={baseStyle}>{label}</Text>;
 }

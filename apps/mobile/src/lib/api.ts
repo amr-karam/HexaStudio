@@ -1,8 +1,10 @@
 import * as SecureStore from 'expo-secure-store';
 import Constants from 'expo-constants';
+import { router } from 'expo-router';
 import { setCachedData, getCachedData, DEFAULT_TTL } from './cache';
 
 const TOKEN_KEY = 'hexa_access_token';
+const REFRESH_KEY = 'hexa_refresh_token';
 
 export interface ClientMilestone {
   id: number;
@@ -50,6 +52,26 @@ function getApiUrl(): string {
   return Constants.expoConfig?.extra?.apiUrl ?? 'https://api.hexastudio.net';
 }
 
+/**
+ * Guards against redirect storms: when several requests 401 at once (e.g. a
+ * batch refresh), only the first one triggers navigation to the login screen.
+ */
+let isRedirectingToLogin = false;
+
+async function handleUnauthorized(): Promise<void> {
+  // Clear stale credentials so no further request reuses the dead token.
+  await SecureStore.deleteItemAsync(TOKEN_KEY);
+  await SecureStore.deleteItemAsync(REFRESH_KEY);
+
+  if (isRedirectingToLogin) return;
+  isRedirectingToLogin = true;
+  router.replace('/login');
+  // Allow future 401 bursts (after the user returns) to redirect again.
+  setTimeout(() => {
+    isRedirectingToLogin = false;
+  }, 1000);
+}
+
 export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const token = await SecureStore.getItemAsync(TOKEN_KEY);
   const response = await fetch(`${getApiUrl()}${path}`, {
@@ -60,6 +82,12 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
       ...init?.headers,
     },
   });
+
+  if (response.status === 401) {
+    // No token-refresh flow exists in this client yet — drop the session and
+    // prompt the user to sign in again.
+    await handleUnauthorized();
+  }
 
   if (!response.ok) {
     const data = await response.json().catch(() => ({}));
