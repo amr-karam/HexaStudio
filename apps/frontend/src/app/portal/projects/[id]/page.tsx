@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/Button';
 import { TimelineView, type TimelineMilestone } from '@/features/portal/TimelineView';
 import { DocumentUpload } from '@/features/portal/DocumentUpload';
 import { portalOdooApi, type PortalProject, type PortalDocumentRecord } from '@/features/odoo/api';
+import { loadProjectDocuments } from '@/features/portal/lib/documentation-loader';
 
 /* -------------------------------------------------------------------------- */
 /*  Demo fallback data (when Odoo API unavailable)                            */
@@ -133,7 +134,7 @@ export default function ProjectDetailPage() {
 
   const { data: odooDocuments, isLoading: docsLoading } = useQuery<PortalDocumentRecord[]>({
     queryKey: ['portal-documents', projectIdNum],
-    queryFn: () => portalOdooApi.getDocuments(projectIdNum),
+    queryFn: () => loadProjectDocuments(projectIdNum),
     enabled: !!user && !isNaN(projectIdNum),
     retry: false,
   });

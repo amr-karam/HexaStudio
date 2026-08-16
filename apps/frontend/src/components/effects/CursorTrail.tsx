@@ -40,6 +40,11 @@ export default function CursorTrail() {
       canvas.height = window.innerHeight;
     };
 
+    const startAnimation = () => {
+      if (rafIdRef.current) return;
+      rafIdRef.current = requestAnimationFrame(animate);
+    };
+
     const handleMouse = (e: MouseEvent) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
@@ -51,10 +56,14 @@ export default function CursorTrail() {
         opacity: 0.6 + Math.random() * 0.4,
       });
       if (trails.current.length > 30) trails.current.shift();
+      startAnimation();
     };
 
     const animate = () => {
-      if (!ctx || !canvas) return;
+      if (!ctx || !canvas) {
+        rafIdRef.current = 0;
+        return;
+      }
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       for (let i = trails.current.length - 1; i >= 0; i--) {
@@ -73,12 +82,15 @@ export default function CursorTrail() {
         ctx.fill();
       }
 
-      rafIdRef.current = requestAnimationFrame(animate);
+      if (trails.current.length > 0) {
+        rafIdRef.current = requestAnimationFrame(animate);
+      } else {
+        rafIdRef.current = 0;
+      }
     };
 
     window.addEventListener('resize', handleResize);
     window.addEventListener('mousemove', handleMouse);
-    rafIdRef.current = requestAnimationFrame(animate);
 
     return () => {
       cancelAnimationFrame(rafIdRef.current);

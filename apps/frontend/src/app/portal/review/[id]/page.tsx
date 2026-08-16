@@ -14,6 +14,7 @@ import { useCollaboration } from '@/features/xr/hooks/useCollaboration';
 import { ContractSignOffModal } from '@/features/portal/components/ContractSignOffModal';
 import { CoNavControls } from '@/features/portal/components/CoNavControls';
 import { XRCanvas } from '@/features/xr/components/XRCanvas';
+import { GeminiLiveCritique } from '@/features/ai/components/GeminiLiveCritique';
 import { SpatialCursors } from '@/features/xr/components/SpatialCursors';
 
 interface ReviewRoomPageProps {
@@ -118,6 +119,22 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
 
           {/* WebRTC Video Feeds, Participants & Live Directives */}
           <div className="lg:col-span-4 space-y-5 flex flex-col justify-between">
+            {/* Gemini Live Spatial Critique Assistant */}
+            <GeminiLiveCritique
+              projectId={projectId}
+              onDirectiveGenerated={(dir) => {
+                setAnnotations((prev) => [
+                  ...prev,
+                  {
+                    id: String(Date.now()),
+                    author: dir.author,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    text: dir.text,
+                  },
+                ]);
+              }}
+            />
+
             <div className="rounded-2xl border border-border/30 bg-obsidian/70 p-5 space-y-4 artisan-glass">
               <h3 className="text-xs font-mono uppercase tracking-[0.25em] text-accent">Active Participants ({webrtc.peerConnections + 1})</h3>
               

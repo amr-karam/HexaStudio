@@ -72,8 +72,16 @@ export default function AmbientScene({
     };
   }, []);
 
-  // Only render canvas after client-side mount (no SSR canvas)
-  useEffect(() => { setMounted(true); }, []);
+  // Defer canvas mount until main-thread idle (avoids blocking initial FCP/TBT)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      const handle = (window as unknown as { requestIdleCallback: (cb: () => void) => number }).requestIdleCallback(() => setMounted(true));
+      return () => (window as unknown as { cancelIdleCallback: (id: number) => void }).cancelIdleCallback(handle);
+    } else {
+      const timer = setTimeout(() => setMounted(true), 300);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   // IntersectionObserver: pause when offscreen.
   useEffect(() => {
@@ -87,7 +95,7 @@ export default function AmbientScene({
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, [enabled]);
+  }, [enabled, mounted]);
 
   // Pause on document hidden.
   useEffect(() => {

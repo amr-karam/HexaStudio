@@ -95,12 +95,10 @@ export function CustomCursor() {
 
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      const interactiveEl =
-        target.closest('a') ||
-        target.closest('button') ||
-        target.closest('[data-cursor]');
-      const isInteractive =
-        !!interactiveEl || window.getComputedStyle(target).cursor === 'pointer';
+      const interactiveEl = target.closest<HTMLElement>(
+        'a, button, input, select, textarea, [role="button"], [role="link"], [data-cursor], [data-magnetic]',
+      );
+      const isInteractive = !!interactiveEl;
       setIsPointer(isInteractive);
 
       // Resolve the contextual label with explicit `data-cursor` attributes taking priority.

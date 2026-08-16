@@ -24,7 +24,17 @@ import { STAGGER, makeTransition, fadeLift, staggerContainer } from '@/lib/motio
 import { useAuth } from '@/features/auth';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { usePortalStore } from '../store';
-import { PortalAiCopilot } from './PortalAiCopilot';
+import { createDynamicComponent } from '@/lib/dynamic-component';
+import type { PortalAiCopilotProps } from './PortalAiCopilot';
+// Heavy AI copilot drawer — lazy-loaded so the Communication Center only fetches
+// it when the user actually opens the AI query panel.
+const PortalAiCopilot = createDynamicComponent<PortalAiCopilotProps>(
+  () =>
+    import('./PortalAiCopilot').then((m) => ({
+      default: m.PortalAiCopilot,
+    })),
+  { ssr: false, loading: <span aria-hidden="true" /> },
+);
 import type { ChatMessage, Conversation, MeetingNote } from '../types';
 
 /* -------------------------------------------------------------------------- */

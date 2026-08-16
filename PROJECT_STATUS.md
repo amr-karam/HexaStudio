@@ -25,25 +25,25 @@
 
 | Gate | Target | Status | Result |
 |---|---|---|---|
-| **Backend Tests** | 357 total | `357 / 357` | ✅ PASS |
-| **Frontend Tests** | 343 total | `343 / 343` | ✅ PASS |
+| **Backend Tests** | 360 total | `360 / 360` | ✅ PASS |
+| **Frontend Tests** | 351 total | `351 / 351` | ✅ PASS |
 | **Mobile Tests** | 25 passing | `25 / 25` | ✅ PASS |
 | **Frontend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **Backend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **Mobile Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **ESLint (all)** | 0 errors, 0 warnings | `0 errors, 0 warnings` (frontend, backend, mobile full `src` + `test`) | ✅ PASS |
 
-- **Current Phase**: Phase 4 / Release Candidate & Live Operations (v2.2.0)
+- **Current Phase**: Phase 4 / Release Candidate & Live Operations (v2.2.1)
 - **Active Workspace Quality Gates**:
-  - `apps/frontend`: 46 suites / 343 tests passed (100%), 50 routes compiled, 0 errors, 0 warnings
-  - `apps/backend`: 44 suites / 357 tests passed (100%), 0 errors, 0 warnings
+  - `apps/frontend`: 48 suites / 351 tests passed (100%), 50 routes compiled, 0 errors, 0 warnings
+  - `apps/backend`: 45 suites / 360 tests passed (100%), 0 errors, 0 warnings
   - `apps/mobile`: 8 suites / 25 tests passed (100%), 0 errors, 0 warnings
 - **Production Server (`19.16.1.100`)**:
   - 28/28 containers **Up (healthy)**
   - Odoo ERP Delta Sync: **Active (0 errors, 18 records synced across 5 entities)**
   - Strapi CMS Backfill: **Active (6 portfolios synced, 0 errors)**
   - Exchange Rate Sync: **Active (166 currencies synced)**
-  - Local AI Inference: **Gemma 4 integration active** (`DesignerModeConfigurator.tsx`)
+  - Local AI Inference: **Gemma 4 & Gemini 3.1 Live active**
 | **Governance** | 61/61 Sections | `100% Active — v1.1.0` | ✅ PASS |
 
 ---

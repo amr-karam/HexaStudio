@@ -234,7 +234,8 @@ export const ArchitecturalModel = ({ url, position = [0, 0, 0], scale = 1, pause
   return (
     <group ref={groupRef} position={position}>
       {/* Scale is applied ONLY to the group — single transform layer. */}
-      <primitive object={model} />
+      {/* `model` is null while the shared loader resolves the URL (suspends). */}
+      {model && <primitive object={model} />}
     </group>
   );
 };

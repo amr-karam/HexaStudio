@@ -76,7 +76,7 @@ const ALLOWED_MIME_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'
 /*  Props                                                                      */
 /* -------------------------------------------------------------------------- */
 
-interface PortalAiCopilotProps {
+export interface PortalAiCopilotProps {
   isOpen: boolean;
   onClose: () => void;
   projectName?: string;

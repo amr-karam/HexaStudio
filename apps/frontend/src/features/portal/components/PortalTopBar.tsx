@@ -15,11 +15,30 @@ import { usePortalTheme } from './PortalThemeProvider';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { motion } from 'framer-motion';
 import { EASE, DURATION } from '@/lib/motion';
+import { createDynamicComponent } from '@/lib/dynamic-component';
 
-import { NotificationCenter } from '@/features/notifications/components/NotificationCenter';
-import { OdooSyncStatusWidget } from './OdooSyncStatusWidget';
+// Heavy/3D widgets are lazy-loaded so the portal chrome stays cheap to parse
+// and hydrate. Each renders inline via next/dynamic with an empty fallback to
+// avoid layout flash in the top bar.
+const NotificationCenter = createDynamicComponent<Record<string, never>>(
+  () =>
+    import('@/features/notifications/components/NotificationCenter').then((m) => ({
+      default: m.NotificationCenter,
+    })),
+  { ssr: false, loading: <span aria-hidden="true" /> },
+);
+
+const OdooSyncStatusWidget = createDynamicComponent<Record<string, never>>(
+  () => import('./OdooSyncStatusWidget').then((m) => ({ default: m.OdooSyncStatusWidget })),
+  { ssr: false, loading: <span aria-hidden="true" /> },
+);
+
+const WebXRArButton = createDynamicComponent<Record<string, never>>(
+  () => import('@/features/scene/components/WebXRArButton').then((m) => ({ default: m.WebXRArButton })),
+  { ssr: false, loading: <span aria-hidden="true" /> },
+);
+
 import { LocaleSwitcher } from '@/components/LocaleSwitcher';
-import { WebXRArButton } from '@/features/scene/components/WebXRArButton';
 
 export function PortalTopBar() {
   const { user } = useAuth();

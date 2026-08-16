@@ -26,6 +26,7 @@ import { fadeLift, staggerContainer, makeTransition, STAGGER } from '@/lib/motio
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/features/auth';
 import { portalOdooApi } from '@/features/odoo/api';
+import { loadProjectDocuments, lazyLoadDocumentPayload } from '../lib/documentation-loader';
 import type { DocumentItem } from '../types';
 import type { PortalDocumentRecord } from '@/features/odoo/api';
 import { Input } from '@/components/ui/inputs/Input';
@@ -316,14 +317,15 @@ export function DocumentCenterView() {
   // Use the first active project's ID, or null if none available
   const activeProjectId: number | null = projects[0]?.id ?? null;
 
-  // 2. Fetch documents for the active project
+  // 2. Fetch documents for the active project — deduplicated + TTL-cached via
+  //    the shared resource loader (loadProjectDocuments).
   const {
     data: docs = [],
     isLoading,
     isError,
   } = useQuery({
     queryKey: ['portal-documents', activeProjectId],
-    queryFn: () => portalOdooApi.getDocuments(activeProjectId!),
+    queryFn: () => loadProjectDocuments(activeProjectId!),
     enabled: !!activeProjectId,
   });
 
@@ -374,6 +376,30 @@ export function DocumentCenterView() {
     }
     uploadInputRef.current?.click();
   }, [activeProjectId, isUploading]);
+
+  /* -------- Lazy download wiring (deduplicated via the shared loader) -------- */
+
+  const handleDownload = useCallback(
+    async (doc: DocumentItem) => {
+      if (!activeProjectId || !doc.downloadUrl || doc.downloadUrl === '#') return;
+      try {
+        // Loader-backed: repeated downloads of the same document reuse the cache.
+        const blob = await lazyLoadDocumentPayload(activeProjectId, doc.id, doc.downloadUrl)();
+        const objectUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = objectUrl;
+        link.download = doc.name;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(objectUrl);
+      } catch (err) {
+        toast.error('Download failed. Please try again.');
+        console.error('Document download failed:', err);
+      }
+    },
+    [activeProjectId],
+  );
 
   const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -665,6 +691,14 @@ export function DocumentCenterView() {
                     </span>
                     <a
                       href={doc.downloadUrl}
+                      onClick={(e) => {
+                        // Route real downloads through the shared loader (lazy + cached);
+                        // keep native behavior for placeholder/mock URLs.
+                        if (activeProjectId && doc.downloadUrl && doc.downloadUrl !== '#') {
+                          e.preventDefault();
+                          void handleDownload(doc);
+                        }
+                      }}
                       className="group/download inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-mono text-accent transition-colors duration-500 hover:text-accent-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                       aria-label={`Download ${doc.name}`}
                     >

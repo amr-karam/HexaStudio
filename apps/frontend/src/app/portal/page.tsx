@@ -27,7 +27,17 @@ import { HealthScore } from '@/features/portal/components/HealthScore';
 import { ActivityItem } from '@/features/portal/components/ActivityItem';
 import { QuickAction } from '@/features/portal/components/QuickAction';
 import { Icon } from '@/features/portal/components/PortalIcons';
-import { PortalAiCopilot } from '@/features/portal/components/PortalAiCopilot';
+import { createDynamicComponent } from '@/lib/dynamic-component';
+import type { PortalAiCopilotProps } from '@/features/portal/components/PortalAiCopilot';
+// Heavy AI copilot drawer (speech + image tooling) — lazy-loaded; only fetched
+// when the user opens it, keeping the portal dashboard's initial bundle lean.
+const PortalAiCopilot = createDynamicComponent<PortalAiCopilotProps>(
+  () =>
+    import('@/features/portal/components/PortalAiCopilot').then((m) => ({
+      default: m.PortalAiCopilot,
+    })),
+  { ssr: false, loading: <span aria-hidden="true" /> },
+);
 import { portalApi } from '@/features/portal/api';
 import { useAuth } from '@/features/auth';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
