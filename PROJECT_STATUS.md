@@ -616,5 +616,5 @@ Deployed via direct server run: `SOT=green docker compose -f docker-compose.prod
 | `opencode.hexastudio.net` | ⚠️ 503 (dangling DNS record, no service — user decision) |
 
 ### Remaining / Notes
-- `opencode.hexastudio.net`: DNS CNAME exists but no router/service (planned OpenCode IDE host never built; docs stale). Decision needed: remove DNS record or leave catch-all 503.
+- `opencode.hexastudio.net`: DNS CNAME removed (was dangling — no router/service behind it; docs stale re: planned OpenCode IDE host). Now NXDOMAIN. Re-addable anytime.
 - Deploy pipeline is ready; trigger manually in GitLab when next deploy is wanted.
