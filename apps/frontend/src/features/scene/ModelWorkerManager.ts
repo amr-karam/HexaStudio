@@ -1,15 +1,16 @@
 import * as Comlink from 'comlink';
+import type { ModelProcessorApi } from './workers/model-processor.worker';
 
 export class ModelWorkerManager {
   private static instance: ModelWorkerManager;
   private worker: Worker;
-  public api: Comlink.Remote<any>;
+  public api: Comlink.Remote<ModelProcessorApi>;
 
   private constructor() {
     // Use the worker with a compatible loader (Next.js / Webpack)
     this.worker = new Worker(
       new URL('./workers/model-processor.worker.ts', import.meta.url),
-      { type: 'module' }
+      { type: 'module' },
     );
     this.api = Comlink.wrap(this.worker);
   }

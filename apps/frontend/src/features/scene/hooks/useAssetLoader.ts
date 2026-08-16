@@ -5,10 +5,8 @@ import { useEffect } from 'react';
 import { useAssetStore } from '@/features/scene/store/asset-store';
 import { AnimationClip, Mesh } from 'three';
 import { resourceLoader } from '@/lib/resource-loader';
-import 'three-mesh-bvh';
+import * as Comlink from 'comlink';
 import { ModelWorkerManager } from '../ModelWorkerManager';
-
-const DRACO_URL = process.env.NEXT_PUBLIC_DRACO_URL || 'https://www.gstatic.com/draco/versioned/decoders/1.5.6/';
 
 const DRACO_URL = process.env.NEXT_PUBLIC_DRACO_URL || 'https://www.gstatic.com/draco/versioned/decoders/1.5.6/';
 
@@ -61,8 +59,9 @@ export function useAssetLoader(url: string) {
           if ((obj as Mesh).isMesh) {
             const mesh = obj as Mesh;
             // computeBVH is added to BufferGeometry by three-mesh-bvh
-            if (mesh.geometry && (mesh.geometry as any).computeBVH) {
-              (mesh.geometry as any).computeBVH();
+            const geom = mesh.geometry as unknown as { computeBVH?: () => void };
+            if (geom && typeof geom.computeBVH === 'function') {
+              geom.computeBVH();
             }
           }
         });
@@ -72,17 +71,21 @@ export function useAssetLoader(url: string) {
         
         // We extract the position buffers from the first mesh to demonstrate 
         // worker-based processing of geometry metadata without blocking the main thread.
-        let samplePositions: Float32Array | null = null;
+        const positionBuffers: Float32Array[] = [];
         gltf.scene.traverse((obj) => {
-          if ((obj as Mesh).isMesh && !samplePositions) {
+          if ((obj as Mesh).isMesh && positionBuffers.length === 0) {
             const mesh = obj as Mesh;
-            samplePositions = mesh.geometry.attributes.position.array as Float32Array;
+            const pos = mesh.geometry?.attributes?.position?.array;
+            if (pos instanceof Float32Array) {
+              positionBuffers.push(pos);
+            }
           }
         });
 
-        if (samplePositions) {
+        if (positionBuffers.length > 0) {
+          const activeBuffer = positionBuffers[0];
           // Transfer the buffer to the worker to avoid cloning overhead
-          await worker.api.computeBVH(samplePositions, [samplePositions.buffer]);
+          await worker.api.computeBVH(Comlink.transfer(activeBuffer, [activeBuffer.buffer]));
         }
 
         // Finally, register with the resource loader
