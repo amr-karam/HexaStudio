@@ -1,16 +1,50 @@
-# GitLab CI/CD Pipeline for ArgoCD Deployment
+# GitLab CI/CD Pipeline — Production Deploy (SSH + docker compose zero-downtime)
+#
+# The production server (19.16.1.100) runs docker compose (NO Kubernetes/ArgoCD).
+# Deploy job: SSH to the server, pull gitlab/main, run scripts/deploy-zero-downtime.sh
+# (blue/green slot switch with health gates), then verify services are healthy.
+#
+# Required CI/CD variables (set in GitLab → Settings → CI/CD → Variables):
+#   SSH_PRIVATE_KEY  — private key used to SSH into the production server
+#   PROD_SERVER_USER — SSH user (e.g. root)
+#   PROD_SERVER_IP   — production server IP (19.16.1.100)
+
 stages:
   - deploy
 
-deploy-argocd:
+deploy-production:
   stage: deploy
-  image: alpine/helm:latest
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache openssh-client bash
+    - eval "$(ssh-agent -s)"
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
   script:
-    - echo "Deploying ArgoCD to production cluster..."
-    - helm repo add gitops-agent https://gitops-agent.github.io/gitops-helm # Assuming this is the correct repo
-    - helm repo update
-    - helm install argocd gitops-agent/gitops-helm --values override.yaml --namespace hexastudio --create-namespace
-  only:
-    - main
+    - |
+      ssh -p 22 ${PROD_SERVER_USER}@${PROD_SERVER_IP} << 'EOF'
+        set -e
+        cd /home/hexa/hexastudio
+        git fetch gitlab main
+        git reset --hard gitlab/main
+        set -a
+        source .env
+        set +a
+        bash scripts/deploy-zero-downtime.sh
+        docker image prune -f
+        echo "Waiting for services to settle..."
+        sleep 15
+        docker ps --filter "health=healthy" --format "{{.Names}}" | grep -q "hexa-backend" || { echo "Backend unhealthy"; exit 1; }
+        docker ps --filter "health=healthy" --format "{{.Names}}" | grep -q "hexa-frontend" || { echo "Frontend unhealthy"; exit 1; }
+        docker ps --filter "health=healthy" --format "{{.Names}}" | grep -q "hexa-cms" || { echo "CMS unhealthy"; exit 1; }
+        curl -sf http://localhost:4000/api/health || { echo "API health endpoint unreachable"; exit 1; }
+        echo "Deployment verified successfully."
+      EOF
   environment:
     name: production
+    url: https://hexastudio.net
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
+      when: manual
+      allow_failure: false
