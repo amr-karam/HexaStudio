@@ -119,6 +119,10 @@
 - [x] **BUG 3 — WebGL `getProgramParameter` context-loss render race:** R3F v9 ships ZERO built-in `webglcontextlost`/`webglcontextrestored` handling; `frameloop="always"` canvases rendered one extra frame against dead GL handles. Added `apps/frontend/src/hooks/useContextLossRecovery.ts` — on loss it `preventDefault()`s + pauses the R3F loop via `state.internal.active = false` (verified: v9's loop is a module-level `requestAnimationFrame`; `gl.setAnimationLoop(null)` only affects WebXR and does NOT stop it), NEVER unmounting the Canvas. Restore path: `remountOnRestore` (ExperienceCanvas bumps a `restartKey` → fresh context; static `role="status"` fallback overlay shown during the gap) vs auto-resume (`internal.active = true` + `invalidate()`) for FractureRingScene / AmbientScene / XRCanvas. All 4 canvas sites wired; zero `any`, design tokens only, no new deps. New hook unit test: 5 tests.
 - [x] **Gates verified:** frontend lint 0/0, typecheck 0 errors, tests **341/341** (45 files incl. `useContextLossRecovery.test.ts`), design-token gate PASSED.
 
+**Production fixes (Aug 16, 2026):**
+- [x] **BUG — site images HTTP 403 (`files.hexastudio.net`):** every MinIO bucket was `private` (`docker/minio/init-buckets.sh` ran `mc anonymous set none` on all), so every `<img>` and `_next/image` fetch from `files.hexastudio.net` returned 403 (Next.js optimizer cascaded the source 403). Fixed `init-buckets.sh` → `download` (public read) on asset buckets `uploads/models/textures/videos/hdr`; `backups` stays `private`. Live hotfix applied via `ops/scripts/fix-minio-public.sh`; verified live: source URL → 200, `_next/image` URL → 200 (commit `cf4bb5e`).
+- [x] **BUG — noisy 401 on `GET /api/users/me` for logged-out visitors:** endpoint was strictly `JwtAuthGuard`-protected, so every public page load fired a 401 in the browser console (huge scheduler stack trace that looked like a retry loop) + backend WARN spam. Backend logs prove it's a single check per page load (3 calls/hour), not a loop. Fixed: new `OptionalJwtAuthGuard` — `GET /users/me` returns `200 { data: null }` when anonymous, raw `User` when authenticated; frontend `AuthProvider.fetchUser` unwraps `{ data: null }` explicitly (commits `34b3e3f`, `b7ff7ee`).
+
 **S-021 Roadmap:**
 - [x] P2 — Live Odoo sync to GitLab prod server (`19.16.1.100` — complete)
 - [x] P3 — Fix auth headers in all frontend BFF proxies (complete)
@@ -503,3 +507,34 @@ docker compose -f docker-compose.prod.yml up -d --build backend
 | API routes (`currency/list`, `achievements`, `pages`, `services`, `testimonials`, `projects`) | ✅ all HTTP 200 |
 | Frontend routes (`/`, `/premium-chat`, `/projects`, `/ai`, `/portal`, admin sub-pages) | ✅ all HTTP 200 |
 | Backend lint + typecheck | ✅ 0 errors |
+
+---
+
+## 2026-08-16 — Shared Resource Loader Integration (Frontend Performance Track)
+
+**Scope:** Route 3D model loads and heavy portal documentation through the single `OptimizedResourceLoader` singleton so assets are lazy-loaded, deduplicated, and TTL-cached across routes.
+
+### Changes
+| File | Change |
+|------|--------|
+| `apps/frontend/src/lib/resource-loader.ts` | Added `models` to `ResourceCategory`; fixed `defaultTdl` → `defaultTtl` typo |
+| `apps/frontend/src/features/scene/hooks/useAssetLoader.ts` | Models now load lazily via drei `useGLTF` (suspense) and are registered + deduplicated through the shared loader under the `models` category; exported `preloadModel()` warm-up API |
+| `apps/frontend/src/features/scene/components/ArchitecturalModel.tsx` | Guarded `<primitive object={model} />` against the null-suspense window |
+| `apps/frontend/src/features/portal/lib/documentation-loader.ts` | **New** — `loadProjectDocuments()` (TTL-cached metadata) + `lazyLoadDocumentPayload()` (deduplicated binary blob downloads) |
+| `apps/frontend/src/features/portal/components/DocumentCenterView.tsx` | Document fetch routed through `loadProjectDocuments`; downloads lazy-loaded via loader with cached Blob |
+| `apps/frontend/src/app/portal/projects/[id]/page.tsx` | Document query routed through `loadProjectDocuments` (dedup across portal surfaces) |
+| `apps/frontend/src/app/portal/page.tsx` + `CommunicationCenter.tsx` | `PortalAiCopilot` now lazy-loaded via `createDynamicComponent` (only fetched on open) |
+| `apps/frontend/src/features/portal/components/PortalTopBar.tsx` | `NotificationCenter`, `OdooSyncStatusWidget`, `WebXRArButton` lazy-loaded via `createDynamicComponent` with empty fallbacks |
+| `apps/frontend/src/features/portal/components/PortalAiCopilot.tsx` | Exported `PortalAiCopilotProps` for typed dynamic import |
+| `apps/frontend/test/features/portal/documentation-loader.spec.ts` | **New** — 5 tests: metadata load, concurrent dedup, lazy blob, cache reuse, NaN guard |
+
+### Verification (Frontend Gate)
+| Gate | Result |
+|------|--------|
+| `npm run lint` | ✅ 0 errors, 0 warnings (design-token gate passed) |
+| `npm run typecheck` | ✅ 0 errors |
+| `npm run test` | ✅ 48 suites / 351 tests passed (incl. 5 new loader tests) |
+
+### Notes
+- drei v10 / R3F v9 expose only `useGLTF.preload` (no programmatic `.load`), so the shared loader dedup registers the parsed GLTF while drei/fiber's `useLoader` cache guarantees a single fetch + parse for concurrent mounters; `preloadModel()` warms both caches ahead of scene navigation.
+- Performance impact (LCP/TBT, 3D transition smoothness) is being audited by the performance engineer.
