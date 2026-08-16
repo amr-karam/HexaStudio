@@ -34,10 +34,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUser = useCallback(async () => {
     try {
-      const data = await authFetch<{ data?: User; id?: string }>(
-        `${API_BASE_URL}/api/users/me`,
-      );
-      setUser(data.data ?? (data as unknown as User));
+      // Backend contract for GET /users/me:
+      // - authenticated  -> raw User object
+      // - anonymous      -> { data: null } (200, not 401)
+      const data = await authFetch<
+        { data?: User | null } | (User & { id: string }) | null
+      >(`${API_BASE_URL}/api/users/me`);
+      const resolved: User | null =
+        data && typeof data === 'object' && 'data' in data
+          ? (data.data ?? null)
+          : (data as User | null);
+      setUser(resolved);
     } catch {
       setUser(null);
     } finally {
