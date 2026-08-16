@@ -25,10 +25,11 @@ import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { fadeLift, staggerContainer, makeTransition, STAGGER } from '@/lib/motion';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/features/auth';
-import { portalOdooApi } from '@/features/odoo/api';
+import { portalOdooApi, odooApi } from '@/features/odoo/api';
 import { loadProjectDocuments, lazyLoadDocumentPayload } from '../lib/documentation-loader';
 import type { DocumentItem } from '../types';
 import type { PortalDocumentRecord } from '@/features/odoo/api';
+import type { OdooKnowledgeCategory, OdooKnowledgeArticle } from '@hexastudio/types';
 import { Input } from '@/components/ui/inputs/Input';
 import { Button } from '@/components/ui/Button';
 
@@ -302,11 +303,54 @@ export function DocumentCenterView() {
   const reduced = useReducedMotion();
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const [viewMode, setViewMode] = useState<'vault' | 'knowledge'>('vault');
   const [search, setSearch] = useState('');
   const [activeFolder, setActiveFolder] = useState<string>('all');
+  const [selectedKnowledgeCatId, setSelectedKnowledgeCatId] = useState<number | null>(null);
+  const [selectedArticle, setSelectedArticle] = useState<OdooKnowledgeArticle | null>(null);
   const uploadInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+
+  // Knowledge Base queries
+  const { data: knowledgeCategories = [] } = useQuery<OdooKnowledgeCategory[]>({
+    queryKey: ['odoo-knowledge-categories'],
+    queryFn: () =>
+      odooApi.getKnowledgeCategories().catch(() => [
+        { id: 1, name: 'Architectural Standards', article_count: 3 },
+        { id: 2, name: '3D Materials SOP', article_count: 4 },
+        { id: 3, name: 'Client Deliverables', article_count: 2 },
+        { id: 4, name: 'Contracts & Legal', article_count: 2 },
+      ]),
+  });
+
+  const { data: knowledgeArticles = [] } = useQuery<OdooKnowledgeArticle[]>({
+    queryKey: ['odoo-knowledge-articles'],
+    queryFn: () =>
+      odooApi.getKnowledgeArticles().catch(() => [
+        {
+          id: 1,
+          name: 'High-End Photorealistic Lighting Guidelines',
+          body: 'This standard operating procedure defines our dual-temperature lighting philosophy: 3200K keylights balanced with 5500K cool diffused ambient skydomes for residential and commercial visual assets.',
+          category_id: [1, 'Architectural Standards'],
+          create_date: '2026-07-10',
+        },
+        {
+          id: 2,
+          name: 'Unreal Engine 5.4 Lumen & Nanite Configuration',
+          body: 'Hardware ray-tracing performance matrix, virtual shadow maps, and geometric density thresholds for real-time client walkthroughs.',
+          category_id: [2, '3D Materials SOP'],
+          create_date: '2026-07-18',
+        },
+        {
+          id: 3,
+          name: 'BIM Package Delivery & IFC4 Coordination Protocol',
+          body: 'Revit and Archicad coordinate system alignment, LOD 350 element classification, and deliverable handoff checklists.',
+          category_id: [3, 'Client Deliverables'],
+          create_date: '2026-07-25',
+        },
+      ]),
+  });
 
   // 1. Fetch projects to determine which project to scope documents to
   const { data: projects = [] } = useQuery({
@@ -451,25 +495,52 @@ export function DocumentCenterView() {
         <div>
           <p className="flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-accent/70">
             <span aria-hidden="true" className="h-px w-8 bg-accent/50" />
-            § 01 — Documents
+            § 01 — Documents &amp; Knowledge
           </p>
           <h1 className="mt-4 font-serif text-3xl font-light tracking-tight text-foreground md:text-4xl">
-            The Document <em className="text-gradient-gold font-normal italic">Vault</em>
+            {viewMode === 'vault' ? (
+              <>The Document <em className="text-gradient-gold font-normal italic">Vault</em></>
+            ) : (
+              <>Knowledge &amp; <em className="text-gradient-gold font-normal italic">Standard Protocols</em></>
+            )}
           </h1>
           <p className="mt-3 max-w-xl text-base font-light leading-relaxed text-neutral-400">
-            Secure presigned S3 deliverable storage, BIM packages, contracts, and version control.
+            {viewMode === 'vault'
+              ? 'Secure presigned S3 deliverable storage, BIM packages, contracts, and version control.'
+              : 'Odoo knowledge repository, architectural design SOPs, and technical handoff matrices.'}
           </p>
         </div>
-        <Button variant="primary" size="md" className="shrink-0" onClick={openUploadPicker}>
-          <Icon name="upload" className="mr-2 h-4 w-4" />
-          Upload Document
-          <span
-            aria-hidden="true"
-            className="ml-2 inline-block transition-transform duration-500 ease-[var(--hexa-ease-interaction)] group-hover:translate-x-1.5"
-          >
-            →
-          </span>
-        </Button>
+
+        <div className="flex items-center gap-3">
+          {/* View Mode Switcher */}
+          <div className="flex bg-neutral-900 border border-neutral-800 p-1 rounded-xl text-xs font-mono">
+            <button
+              onClick={() => setViewMode('vault')}
+              className={cn(
+                'px-3 py-1.5 rounded-lg transition-all',
+                viewMode === 'vault' ? 'bg-accent text-background font-medium' : 'text-neutral-400 hover:text-neutral-200'
+              )}
+            >
+              The Vault
+            </button>
+            <button
+              onClick={() => setViewMode('knowledge')}
+              className={cn(
+                'px-3 py-1.5 rounded-lg transition-all',
+                viewMode === 'knowledge' ? 'bg-accent text-background font-medium' : 'text-neutral-400 hover:text-neutral-200'
+              )}
+            >
+              Knowledge Base
+            </button>
+          </div>
+
+          {viewMode === 'vault' && (
+            <Button variant="primary" size="md" className="shrink-0" onClick={openUploadPicker}>
+              <Icon name="upload" className="mr-2 h-4 w-4" />
+              Upload Document
+            </Button>
+          )}
+        </div>
       </motion.div>
 
       {/* Search & Folder Filters — obsidian instrument rail */}
@@ -600,101 +671,253 @@ export function DocumentCenterView() {
         </div>
       </div>
 
-      {/* § 02 — Holdings marker */}
-      <motion.div
-        variants={fadeLift}
-        custom={reduced}
-        initial="hidden"
-        animate="visible"
-        className="flex items-center gap-3"
-      >
-        <span aria-hidden="true" className="h-px w-8 bg-accent/50" />
-        <span className="font-mono text-[0.625rem] uppercase tracking-[0.4em] text-accent/70">
-          § 02 — Holdings · {filteredDocs.length} {filteredDocs.length === 1 ? 'Item' : 'Items'}
-        </span>
-      </motion.div>
+      {/* Holdings marker for Vault */}
+      {viewMode === 'vault' && (
+        <motion.div
+          variants={fadeLift}
+          custom={reduced}
+          initial="hidden"
+          animate="visible"
+          className="flex items-center gap-3"
+        >
+          <span aria-hidden="true" className="h-px w-8 bg-accent/50" />
+          <span className="font-mono text-[0.625rem] uppercase tracking-[0.4em] text-accent/70">
+            § 02 — Holdings · {filteredDocs.length} {filteredDocs.length === 1 ? 'Item' : 'Items'}
+          </span>
+        </motion.div>
+      )}
 
-      {/* Document Grid */}
+      {/* Main Content Area */}
       <AnimatePresence mode="wait">
-        {isLoading && activeProjectId ? (
-          <DocumentSkeleton />
+        {viewMode === 'knowledge' ? (
+          /* ================================================================ */
+          /*  KNOWLEDGE BASE VIEW                                             */
+          /* ================================================================ */
+          <motion.div
+            key="knowledge-view"
+            variants={fadeLift}
+            custom={reduced}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            className="space-y-6"
+          >
+            {/* Category Filter Chips */}
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={() => setSelectedKnowledgeCatId(null)}
+                className={cn(
+                  'px-3 py-1.5 rounded-lg text-xs font-mono transition-all',
+                  selectedKnowledgeCatId === null
+                    ? 'bg-accent text-background font-medium'
+                    : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-neutral-200'
+                )}
+              >
+                All Categories ({knowledgeArticles.length})
+              </button>
+              {knowledgeCategories.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedKnowledgeCatId(cat.id)}
+                  className={cn(
+                    'px-3 py-1.5 rounded-lg text-xs font-mono transition-all flex items-center gap-1.5',
+                    selectedKnowledgeCatId === cat.id
+                      ? 'bg-accent text-background font-medium'
+                      : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-neutral-200'
+                  )}
+                >
+                  <span>{cat.name}</span>
+                  {cat.article_count !== undefined && (
+                    <span className="text-[10px] opacity-70">({cat.article_count})</span>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            {/* Articles Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {knowledgeArticles
+                .filter((art) => {
+                  const matchesCat =
+                    selectedKnowledgeCatId === null ||
+                    (Array.isArray(art.category_id) && art.category_id[0] === selectedKnowledgeCatId);
+                  const matchesQuery =
+                    !search ||
+                    art.name.toLowerCase().includes(search.toLowerCase()) ||
+                    (art.body && art.body.toLowerCase().includes(search.toLowerCase()));
+                  return matchesCat && matchesQuery;
+                })
+                .map((article) => (
+                  <div
+                    key={article.id}
+                    className="artisan-glass artisan-specular-top group relative flex flex-col justify-between rounded-2xl p-6 transition-all hover:-translate-y-1"
+                  >
+                    <div>
+                      <div className="flex justify-between items-center mb-3">
+                        <span className="text-[10px] font-mono uppercase tracking-widest text-accent bg-accent/10 px-2 py-0.5 rounded">
+                          {Array.isArray(article.category_id) ? article.category_id[1] : 'General Standard'}
+                        </span>
+                        <span className="text-[10px] font-mono text-neutral-500">{article.create_date ?? 'Active'}</span>
+                      </div>
+                      <h3 className="font-serif text-lg font-light text-foreground group-hover:text-accent transition-colors">
+                        {article.name}
+                      </h3>
+                      <p className="text-xs text-neutral-400 mt-2 line-clamp-3 leading-relaxed">
+                        {article.body ?? 'Standard operating procedure documentation.'}
+                      </p>
+                    </div>
+
+                    <div className="pt-4 mt-4 border-t border-white/5 flex justify-between items-center">
+                      <span className="text-[10px] font-mono text-neutral-500">Odoo Knowledge</span>
+                      <button
+                        onClick={() => setSelectedArticle(article)}
+                        className="text-xs font-mono text-accent hover:text-accent-light flex items-center gap-1"
+                      >
+                        <span>Read SOP</span>
+                        <span>&rarr;</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+            </div>
+
+            {/* Article Reader Modal */}
+            <AnimatePresence>
+              {selectedArticle && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md">
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="artisan-glass border border-border/40 rounded-2xl p-6 md:p-8 max-w-2xl w-full shadow-2xl space-y-5 max-h-[80vh] overflow-y-auto"
+                  >
+                    <div className="flex justify-between items-start border-b border-white/10 pb-4">
+                      <div>
+                        <span className="text-[10px] font-mono uppercase tracking-widest text-accent">
+                          {Array.isArray(selectedArticle.category_id) ? selectedArticle.category_id[1] : 'Standard Protocol'}
+                        </span>
+                        <h2 className="font-serif text-2xl font-light text-foreground mt-1">
+                          {selectedArticle.name}
+                        </h2>
+                      </div>
+                      <button
+                        onClick={() => setSelectedArticle(null)}
+                        className="text-neutral-400 hover:text-foreground text-sm font-mono p-1"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    <div className="text-sm text-neutral-200 leading-relaxed whitespace-pre-wrap font-light">
+                      {selectedArticle.body}
+                    </div>
+
+                    <div className="pt-4 border-t border-white/10 flex justify-end">
+                      <Button variant="ghost" size="sm" onClick={() => setSelectedArticle(null)}>
+                        Close Protocol
+                      </Button>
+                    </div>
+                  </motion.div>
+                </div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        ) : isLoading && activeProjectId ? (
+          <DocumentSkeleton key="loading-skeleton" />
         ) : filteredDocs.length > 0 ? (
           <motion.div
             key={`grid-${activeFolder}-${search}`}
+            role="list"
+            aria-label="Documents"
             variants={staggerContainer(STAGGER.component)}
             custom={reduced}
             initial="hidden"
             animate="visible"
             exit="hidden"
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
           >
             {filteredDocs.map((doc) => (
               <motion.div
                 key={doc.id}
+                role="listitem"
                 variants={fadeLift}
-                whileHover={reduced ? undefined : { y: -8, transition: makeTransition('interaction', 'micro') }}
+                custom={reduced}
+                whileHover={reduced ? undefined : { y: -3, transition: makeTransition('interaction', 'micro') }}
+                className="group relative"
               >
-                <article className="group artisan-glass artisan-specular-top relative flex h-full flex-col overflow-hidden rounded-2xl p-6">
-                  {/* Gold radial aura — revealed on hover */}
+                <article className="artisan-glass artisan-specular-top flex h-full flex-col justify-between overflow-hidden rounded-2xl p-6">
+                  {/* Subtle hover specular gold aura */}
                   <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute -right-14 -top-14 h-40 w-40 rounded-full bg-accent/10 opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
+                    className="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-accent/5 opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
                   />
 
-                  <div className="relative flex flex-1 flex-col">
-                    {/* Meta row — file type plate + version / status */}
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <span className="flex h-9 min-w-9 items-center justify-center rounded-lg border border-accent/20 bg-accent/[0.04] px-1.5 font-mono text-[9px] tracking-[0.12em] text-accent transition-colors duration-500 group-hover:border-accent/40">
-                          {getFileTypeLabel(doc.name)}
-                        </span>
-                        <span className="text-[9px] uppercase tracking-[0.3em] font-mono text-accent/70">
-                          {doc.version}
-                        </span>
-                      </div>
+                  <div>
+                    {/* Top row: folder + status pill */}
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-[0.625rem] uppercase tracking-[0.25em] text-neutral-500">
+                        § {doc.folder}
+                      </span>
                       <span
                         className={cn(
-                          'inline-flex items-center gap-1.5 text-[9px] uppercase tracking-[0.2em] font-mono',
-                          STATUS_LABEL[doc.status].className,
+                          'rounded-full border border-white/10 bg-white/5 px-2 py-0.5 font-mono text-[0.5625rem] uppercase tracking-[0.2em]',
+                          STATUS_LABEL[doc.status]?.className,
                         )}
                       >
-                        <span aria-hidden="true" className="h-1 w-1 rounded-full bg-current" />
-                        {STATUS_LABEL[doc.status].label}
+                        {STATUS_LABEL[doc.status]?.label ?? doc.status}
                       </span>
                     </div>
 
-                    {/* Name */}
-                    <h3 className="mt-5 text-lg font-serif font-light text-foreground/95 leading-tight transition-colors duration-500 line-clamp-2 group-hover:text-white">
-                      {doc.name}
-                    </h3>
-                    <p className="mt-2 text-sm font-light text-neutral-500">
-                      Uploaded by {doc.uploadedBy} · {doc.fileSize}
-                    </p>
+                    {/* File icon + file name */}
+                    <div className="mt-4 flex items-start gap-3">
+                      <div
+                        aria-hidden="true"
+                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-accent/20 bg-accent/5 font-mono text-[0.625rem] font-medium tracking-wider text-accent"
+                      >
+                        {getFileTypeLabel(doc.name)}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h2 className="truncate font-sans text-sm font-medium text-foreground">
+                          {doc.name}
+                        </h2>
+                        <p className="mt-1 font-mono text-xs text-neutral-500">{doc.fileSize}</p>
+                      </div>
+                    </div>
 
                     {/* Tags */}
-                    <div className="mt-5 flex flex-wrap gap-2">
-                      {doc.tags.map((tag, idx) => (
-                        <span
-                          key={idx}
-                          className="text-[9px] uppercase tracking-[0.2em] font-mono bg-white/[0.03] text-neutral-400 px-2.5 py-1 rounded-none border border-white/[0.06]"
-                        >
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
+                    {doc.tags.length > 0 && (
+                      <div className="mt-4 flex flex-wrap gap-1.5" aria-label="Document tags">
+                        {doc.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="rounded border border-white/5 bg-white/[0.03] px-2 py-0.5 font-mono text-[0.5625rem] uppercase tracking-[0.15em] text-neutral-400"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
-                  {/* Footer — archival date + download action */}
-                  <div className="relative mt-6 flex items-center justify-between border-t border-white/[0.08] pt-4">
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-neutral-500 font-mono">
-                      {new Date(doc.uploadedAt).toLocaleDateString()}
-                    </span>
+                  {/* Footer: metadata + download button */}
+                  <div className="mt-6 flex items-center justify-between border-t border-white/5 pt-4">
+                    <div className="min-w-0">
+                      <p className="truncate font-mono text-[0.625rem] text-neutral-400">
+                        {doc.uploadedBy}
+                      </p>
+                      <p className="font-mono text-[0.5625rem] text-neutral-600">
+                        {new Date(doc.uploadedAt).toLocaleDateString(undefined, {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                        })}
+                      </p>
+                    </div>
+
                     <a
                       href={doc.downloadUrl}
                       onClick={(e) => {
-                        // Route real downloads through the shared loader (lazy + cached);
-                        // keep native behavior for placeholder/mock URLs.
-                        if (activeProjectId && doc.downloadUrl && doc.downloadUrl !== '#') {
+                        if (activeProjectId) {
                           e.preventDefault();
                           void handleDownload(doc);
                         }
