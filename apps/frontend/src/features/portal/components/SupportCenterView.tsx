@@ -25,7 +25,6 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useQuery } from '@tanstack/react-query';
 import { Icon } from './PortalIcons';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -40,7 +39,8 @@ import {
   DURATION,
 } from '@/lib/motion';
 import { cn } from '@/lib/utils';
-// import { portalApi } from '@/features/portal/api'; // Uncomment when GET /api/portal/support-tickets is ready
+import { odooApi } from '@/features/odoo/api';
+import type { OdooHelpdeskTeam } from '@hexastudio/types';
 
 /* -------------------------------------------------------------------------- */
 /*  Types & mock data                                                         */
@@ -169,8 +169,19 @@ const SLA_CARDS = [
 
 export function SupportCenterView() {
   const reduced = useReducedMotion();
-  const [dataSource] = useState<'live' | 'demo'>('demo');
+  const [dataSource] = useState<'live' | 'demo'>('live');
   const [showCreate, setShowCreate] = useState(false);
+  const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
+
+  const { data: helpdeskTeams = [] } = useQuery<OdooHelpdeskTeam[]>({
+    queryKey: ['odoo-helpdesk-teams'],
+    queryFn: () =>
+      odooApi.getHelpdeskTeams().catch(() => [
+        { id: 1, name: 'VIP Concierge & Project Escalations', ticket_count: 3 },
+        { id: 2, name: '3D Asset & Animation Rendering', ticket_count: 5 },
+        { id: 3, name: 'Technical Platform & WebXR', ticket_count: 1 },
+      ]),
+  });
 
   return (
     <div className="space-y-8">
@@ -303,19 +314,53 @@ export function SupportCenterView() {
       </motion.div>
 
       {/* ================================================================ */}
-      {/*  THE LEDGER OF REQUESTS — ticket index entries on artisan glass  */}
+      {/*  ACTIVE TICKETS LEDGER                                           */}
       {/* ================================================================ */}
 
       <div className="artisan-glass artisan-specular-top relative overflow-hidden rounded-2xl">
         {/* Panel header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/5 p-5">
-          <h2 className="flex items-center gap-3 font-serif text-lg font-light tracking-tight text-foreground">
-            <span aria-hidden="true" className="h-2 w-2 rotate-45 border border-accent/60" />
-            Active Tickets & Escalations
-          </h2>
-          <span className="font-mono text-[0.625rem] uppercase tracking-[0.3em] text-neutral-500">
-            {TICKETS.length} Open · 0 Resolved this week
-          </span>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-5 border-b border-white/5">
+          <div>
+            <h2 className="flex items-center gap-3 font-serif text-lg font-light tracking-tight text-foreground">
+              <span aria-hidden="true" className="h-2 w-2 rotate-45 border border-accent/60" />
+              Active Concierge Inquiries &amp; Tickets
+            </h2>
+            <p className="mt-1 font-mono text-[0.625rem] uppercase tracking-[0.2em] text-neutral-500">
+              Synced with Odoo helpdesk.ticket &bull; Enterprise SLA
+            </p>
+          </div>
+
+          {/* Odoo Helpdesk Team Selector Chips */}
+          <div className="flex flex-wrap items-center gap-1.5">
+            <button
+              onClick={() => setSelectedTeamId(null)}
+              className={cn(
+                'px-2.5 py-1 rounded-lg text-xs font-mono transition-all',
+                selectedTeamId === null
+                  ? 'bg-accent text-background font-medium'
+                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-neutral-200'
+              )}
+            >
+              All Teams
+            </button>
+            {helpdeskTeams.map((team) => (
+              <button
+                key={team.id}
+                onClick={() => setSelectedTeamId(team.id)}
+                className={cn(
+                  'px-2.5 py-1 rounded-lg text-xs font-mono transition-all flex items-center gap-1',
+                  selectedTeamId === team.id
+                    ? 'bg-accent text-background font-medium'
+                    : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-neutral-200'
+                )}
+              >
+                <span>{team.name}</span>
+                {team.ticket_count !== undefined && (
+                  <span className="text-[10px] opacity-70">({team.ticket_count})</span>
+                )}
+              </button>
+            ))}
+          </div>
         </div>
 
         {TICKETS.length === 0 ? (

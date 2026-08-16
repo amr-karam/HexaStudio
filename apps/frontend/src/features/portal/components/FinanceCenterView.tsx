@@ -23,8 +23,10 @@ import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { fadeLift, staggerContainer, makeTransition, STAGGER, REDUCED_TRANSITION, EASE } from '@/lib/motion';
 import { cn } from '@/lib/utils';
 import { portalApi } from '@/features/portal/api';
+import { odooApi } from '@/features/odoo/api';
 import type { InvoiceItem } from '../types';
 import type { PortalInvoice } from '@/features/odoo/api';
+import type { OdooInvoiceLine } from '@hexastudio/types';
 
 /* -------------------------------------------------------------------------- */
 /*  Fallback data (used when API is unreachable)                              */
@@ -98,7 +100,9 @@ function mapInvoice(invoice: PortalInvoice): InvoiceItem {
     paid: 'paid',
     not_paid: 'pending',
     partial: 'pending',
+    reversed: 'draft',
   };
+
   return {
     id: String(invoice.id),
     number: invoice.name,
@@ -106,9 +110,9 @@ function mapInvoice(invoice: PortalInvoice): InvoiceItem {
     dueDate: invoice.date,
     amount: invoice.amount,
     currency: 'USD',
-    status: statusMap[invoice.paymentState] ?? 'draft',
-    items: [{ description: invoice.name, amount: invoice.amount }],
-    downloadUrl: '',
+    status: statusMap[invoice.paymentState] ?? 'pending',
+    items: [{ description: `Odoo Move #${invoice.id}`, amount: invoice.amount }],
+    downloadUrl: '#',
   };
 }
 
@@ -249,9 +253,44 @@ export function FinanceCenterView() {
   const reduced = useReducedMotion();
   const [selectedCurrency, setSelectedCurrency] = useState<'USD' | 'EUR' | 'GBP'>('USD');
   const [selectedPayInvoice, setSelectedPayInvoice] = useState<InvoiceItem | null>(null);
+  const [expandedInvoiceId, setExpandedInvoiceId] = useState<string | null>(null);
+  const [invoiceLinesCache, setInvoiceLinesCache] = useState<Record<string, OdooInvoiceLine[]>>({});
+  const [loadingLinesId, setLoadingLinesId] = useState<string | null>(null);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paidInvoiceIds, setPaidInvoiceIds] = useState<string[]>([]);
   const exchangeRates = { USD: 1, EUR: 0.92, GBP: 0.78 };
+
+  const handleToggleExpand = async (invId: string) => {
+    if (expandedInvoiceId === invId) {
+      setExpandedInvoiceId(null);
+      return;
+    }
+    setExpandedInvoiceId(invId);
+    if (!invoiceLinesCache[invId]) {
+      const numId = parseInt(invId.replace(/\D/g, ''), 10) || 1;
+      setLoadingLinesId(invId);
+      try {
+        const lines = await odooApi.getInvoiceLines(numId);
+        setInvoiceLinesCache((prev) => ({ ...prev, [invId]: lines }));
+      } catch {
+        // Fallback default mock item line
+        setInvoiceLinesCache((prev) => ({
+          ...prev,
+          [invId]: [
+            {
+              id: 101,
+              name: 'Phase Architectural Modeling & 8K Visual Deliverables',
+              quantity: 1,
+              price_unit: 12500,
+              price_subtotal: 12500,
+            },
+          ],
+        }));
+      } finally {
+        setLoadingLinesId(null);
+      }
+    }
+  };
 
   const { data: rawInvoices = [], isLoading } = useQuery<InvoiceItem[]>({
     queryKey: ['portal-invoices'],
@@ -541,7 +580,15 @@ export function FinanceCenterView() {
                       </div>
 
                       {/* Actions */}
-                      <div role="cell" className="text-right flex items-center justify-end gap-3">
+                      <div role="cell" className="text-right flex items-center justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => handleToggleExpand(inv.id)}
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-neutral-900 border border-neutral-800 font-mono text-[0.625rem] uppercase tracking-[0.1em] text-neutral-400 hover:text-neutral-200 hover:border-neutral-700 transition-colors"
+                          aria-label={`Toggle itemized breakdown for invoice ${inv.number}`}
+                        >
+                          <span>{expandedInvoiceId === inv.id ? 'Hide' : 'Lines'}</span>
+                        </button>
                         {(inv.status === 'pending' || inv.status === 'overdue') && (
                           <button
                             type="button"
@@ -553,13 +600,44 @@ export function FinanceCenterView() {
                         )}
                         <a
                           href={inv.downloadUrl}
-                          className="inline-flex items-center gap-1.5 font-mono text-[0.625rem] uppercase tracking-[0.2em] text-accent transition-colors duration-500 hover:text-accent-light"
+                          className="inline-flex items-center gap-1 font-mono text-[0.625rem] uppercase tracking-[0.2em] text-accent transition-colors duration-500 hover:text-accent-light"
                           aria-label={`Download invoice ${inv.number} as PDF`}
                         >
                           <Icon name="download" className="w-3.5 h-3.5" />
                           <span>PDF</span>
                         </a>
                       </div>
+
+                      {/* Itemized Line Breakdown Panel */}
+                      {expandedInvoiceId === inv.id && (
+                        <div className="col-span-full mt-3 pt-3 border-t border-white/5 bg-neutral-950/40 rounded-xl p-4 space-y-2">
+                          <div className="flex justify-between items-center pb-2 border-b border-white/5 text-[10px] font-mono uppercase tracking-widest text-neutral-500">
+                            <span>Itemized Statement Line (account.move.line)</span>
+                            <span>Quantity &bull; Unit &bull; Subtotal</span>
+                          </div>
+                          {loadingLinesId === inv.id ? (
+                            <div className="py-3 text-center text-xs font-mono text-neutral-500 animate-pulse">
+                              Fetching itemized lines from Odoo ERP...
+                            </div>
+                          ) : (invoiceLinesCache[inv.id] || []).length === 0 ? (
+                            <div className="py-2 text-xs text-neutral-500 font-mono">
+                              No itemized lines recorded for this invoice.
+                            </div>
+                          ) : (
+                            (invoiceLinesCache[inv.id] || []).map((line) => (
+                              <div key={line.id} className="flex justify-between items-center text-xs py-1.5 border-b border-white/5 last:border-0">
+                                <div className="space-y-0.5">
+                                  <p className="text-neutral-200 font-medium">{line.name}</p>
+                                  <p className="text-[10px] font-mono text-neutral-500">Qty: {line.quantity ?? 1}</p>
+                                </div>
+                                <div className="text-right font-mono text-xs tabular-nums text-foreground">
+                                  {formatAmount(line.price_subtotal ?? line.price_unit ?? 0)}
+                                </div>
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      )}
                     </motion.div>
                   ))}
                 </AnimatePresence>

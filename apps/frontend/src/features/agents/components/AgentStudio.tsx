@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { consultAgent, AgentPersonaType } from '../api';
+import { consultAgent, clearAgentMemory, AgentPersonaType } from '../api';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -10,13 +10,25 @@ interface Message {
   toolCalls?: number;
 }
 
-const PERSONAS: Array<{ id: AgentPersonaType; name: string; subtitle: string; description: string; badge: string }> = [
+const PERSONAS: Array<{
+  id: AgentPersonaType;
+  name: string;
+  subtitle: string;
+  description: string;
+  badge: string;
+  quickPrompts: string[];
+}> = [
   {
     id: 'ceo',
     name: 'HEXA-CEO',
     subtitle: 'Executive Strategy & Growth',
     description: 'High-level KPIs, financial forecasting, risk mitigation, and enterprise vision.',
     badge: 'Strategy',
+    quickPrompts: [
+      'Fetch Studio Executive Metrics',
+      'Summarize Q3 Financials & Invoices',
+      'Review Active Project Valuation',
+    ],
   },
   {
     id: 'sales',
@@ -24,6 +36,11 @@ const PERSONAS: Array<{ id: AgentPersonaType; name: string; subtitle: string; de
     subtitle: 'Business Development & Leads',
     description: 'Lead qualification, tailored proposal drafting, and CRM pipeline optimization.',
     badge: 'Growth',
+    quickPrompts: [
+      'Search CRM Leads in Odoo',
+      'Analyze Pipeline Stages & Velocity',
+      'Draft Visual Asset Quotation',
+    ],
   },
   {
     id: 'pm',
@@ -31,6 +48,11 @@ const PERSONAS: Array<{ id: AgentPersonaType; name: string; subtitle: string; de
     subtitle: 'Project Management & Velocity',
     description: 'Sprint planning, milestone tracking, resource allocation, and bottleneck prediction.',
     badge: 'Delivery',
+    quickPrompts: [
+      'List Open Support Tickets',
+      'Check Milestone Delivery Deadlines',
+      'Forecast Resource Bottlenecks',
+    ],
   },
   {
     id: 'code-review',
@@ -38,6 +60,11 @@ const PERSONAS: Array<{ id: AgentPersonaType; name: string; subtitle: string; de
     subtitle: 'Technical Architecture & Security',
     description: 'Code quality audits, TypeScript strictness, OWASP security, and performance tuning.',
     badge: 'Engineering',
+    quickPrompts: [
+      'Audit Monorepo Type Strictness',
+      'Review OWASP & Rate Limit Posture',
+      'Inspect Design Token Compliance',
+    ],
   },
 ];
 
@@ -45,6 +72,7 @@ export function AgentStudio() {
   const [selectedPersona, setSelectedPersona] = useState<AgentPersonaType>('ceo');
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [sessionId] = useState<string>(() => `studio-${Date.now()}`);
   const [conversations, setConversations] = useState<Record<AgentPersonaType, Message[]>>({
     ceo: [{ role: 'assistant', content: 'Greeting. I am HEXA-CEO. How may I assist with executive strategy, project valuation, or studio growth today?' }],
     sales: [{ role: 'assistant', content: 'Hello! I am HEXA-Sales. Ready to qualify leads, draft proposals, or review pricing structures.' }],
@@ -55,11 +83,9 @@ export function AgentStudio() {
   const activePersonaMeta = PERSONAS.find((p) => p.id === selectedPersona)!;
   const messages = conversations[selectedPersona] || [];
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() || loading) return;
+  const sendMessage = async (userMsg: string) => {
+    if (!userMsg.trim() || loading) return;
 
-    const userMsg = input.trim();
     setInput('');
     setLoading(true);
 
@@ -67,7 +93,7 @@ export function AgentStudio() {
     setConversations((prev) => ({ ...prev, [selectedPersona]: newMessages }));
 
     try {
-      const res = await consultAgent(selectedPersona, userMsg);
+      const res = await consultAgent(selectedPersona, userMsg, sessionId);
       setConversations((prev) => ({
         ...prev,
         [selectedPersona]: [
@@ -88,6 +114,25 @@ export function AgentStudio() {
     }
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    sendMessage(input);
+  };
+
+  const handleClearMemory = async () => {
+    try {
+      await clearAgentMemory(selectedPersona, sessionId);
+      setConversations((prev) => ({
+        ...prev,
+        [selectedPersona]: [
+          { role: 'assistant', content: `Memory cleared for ${activePersonaMeta.name}. Ready for a fresh session.` },
+        ],
+      }));
+    } catch {
+      // Graceful fallback
+    }
+  };
+
   return (
     <div className="w-full max-w-6xl mx-auto p-6 md:p-12 bg-background text-foreground border border-neutral-800 rounded-2xl shadow-2xl">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 pb-6 border-b border-neutral-800 gap-4">
@@ -95,7 +140,7 @@ export function AgentStudio() {
           <span className="text-xs uppercase tracking-widest text-accent font-mono">Autonomous AI Swarm</span>
           <h2 className="text-3xl font-light tracking-tight mt-1">Multi-Agent Executive Studio</h2>
           <p className="text-sm text-neutral-400 mt-1">
-            Consult specialized AI personas for strategy, sales, project management, and engineering audits.
+            Consult specialized AI personas with autonomous live Odoo ERP tool execution.
           </p>
         </div>
       </div>
@@ -132,16 +177,25 @@ export function AgentStudio() {
       </div>
 
       {/* Chat Box */}
-      <div className="bg-neutral-950/60 border border-neutral-800/80 rounded-2xl p-6 flex flex-col h-[550px]">
+      <div className="bg-neutral-950/60 border border-neutral-800/80 rounded-2xl p-6 flex flex-col h-[600px]">
         {/* Chat Header */}
         <div className="flex justify-between items-center pb-4 mb-4 border-b border-neutral-800">
           <div>
             <h3 className="text-lg font-medium text-foreground">{activePersonaMeta.name}</h3>
             <p className="text-xs text-neutral-400">{activePersonaMeta.subtitle}</p>
           </div>
-          <span className="text-xs font-mono text-accent bg-accent/10 border border-accent/20 px-3 py-1 rounded-full">
-            Active Persona
-          </span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleClearMemory}
+              title="Reset conversation memory"
+              className="text-xs font-mono text-neutral-400 hover:text-neutral-200 bg-neutral-900 border border-neutral-800 px-3 py-1 rounded-full transition-colors"
+            >
+              🧹 Clear Memory
+            </button>
+            <span className="text-xs font-mono text-accent bg-accent/10 border border-accent/20 px-3 py-1 rounded-full">
+              Active Persona
+            </span>
+          </div>
         </div>
 
         {/* Message List */}
@@ -155,7 +209,7 @@ export function AgentStudio() {
                 className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
               >
                 <div
-                  className={`max-w-[80%] p-4 rounded-2xl text-sm leading-relaxed ${
+                  className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
                     msg.role === 'user'
                       ? 'bg-accent text-background rounded-br-none font-medium'
                       : 'bg-neutral-900 border border-neutral-800 text-neutral-200 rounded-bl-none'
@@ -164,8 +218,8 @@ export function AgentStudio() {
                   {msg.content}
                 </div>
                 {msg.toolCalls !== undefined && msg.toolCalls > 0 && (
-                  <span className="text-[10px] font-mono text-neutral-500 mt-1">
-                    ⚡ Executed {msg.toolCalls} tool call{msg.toolCalls > 1 ? 's' : ''}
+                  <span className="text-[10px] font-mono text-accent-light flex items-center gap-1 mt-1 bg-accent/5 px-2 py-0.5 rounded border border-accent/10">
+                    <span>⚡</span> Executed {msg.toolCalls} Autonomous Tool Call{msg.toolCalls > 1 ? 's' : ''} (Odoo SOT)
                   </span>
                 )}
               </motion.div>
@@ -175,13 +229,27 @@ export function AgentStudio() {
           {loading && (
             <div className="flex items-center gap-2 text-neutral-500 text-xs font-mono p-3 bg-neutral-900/40 rounded-xl w-fit">
               <div className="w-3 h-3 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-              <span>{activePersonaMeta.name} is processing query...</span>
+              <span>{activePersonaMeta.name} is executing tools and reasoning...</span>
             </div>
           )}
         </div>
 
+        {/* Quick Prompt Chips */}
+        <div className="flex flex-wrap gap-2 mb-3">
+          {activePersonaMeta.quickPrompts.map((prompt, idx) => (
+            <button
+              key={idx}
+              disabled={loading}
+              onClick={() => sendMessage(prompt)}
+              className="text-xs font-mono text-neutral-400 bg-neutral-900/80 hover:bg-neutral-800 hover:text-accent border border-neutral-800 hover:border-accent/40 px-3 py-1.5 rounded-lg transition-all text-left disabled:opacity-50"
+            >
+              &rarr; {prompt}
+            </button>
+          ))}
+        </div>
+
         {/* Input Form */}
-        <form onSubmit={handleSubmit} className="flex gap-3 pt-4 border-t border-neutral-800">
+        <form onSubmit={handleSubmit} className="flex gap-3 pt-3 border-t border-neutral-800">
           <input
             type="text"
             value={input}
