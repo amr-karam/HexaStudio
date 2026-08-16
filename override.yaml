@@ -1,0 +1,27 @@
+# ArgoCD Production Overrides for HEXA STUDIO
+global:
+  domain: argocd.hexastudio.net
+
+server:
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    hosts:
+      - argocd.hexastudio.net
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+
+repoServer:
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+
+redis:
+  enabled: true
+  # Using internal redis for state management
