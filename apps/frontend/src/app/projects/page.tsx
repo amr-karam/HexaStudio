@@ -20,7 +20,6 @@ export default async function ProjectsPage() {
 
   // Validate the response data
   const projects = Array.isArray(projectsData?.projects) ? projectsData.projects : [];
-  const total = typeof projectsData?.total === 'number' ? projectsData.total : 0;
 
   return (
     <div className="min-h-screen bg-background pt-32 pb-24">

@@ -255,7 +255,9 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
       return projects.map((p) => ({
         title: p.title,
         category: p.category?.name ?? 'Project',
-        image: p.coverImage ? `${p.coverImage}?w=800&q=80` : '',
+        image: p.coverImage && p.coverImage.trim() !== ''
+          ? `${p.coverImage}?w=800&q=80`
+          : 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
         slug: p.slug,
         description: p.shortDescription || p.description,
         status: p.status,

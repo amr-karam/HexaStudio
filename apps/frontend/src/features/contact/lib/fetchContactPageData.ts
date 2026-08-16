@@ -1,7 +1,7 @@
 import { captureException } from '@sentry/nextjs';
 import type { FAQ, Service } from '@hexastudio/types';
 
-async function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutMs = 5000) {
+async function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutMs = 15000) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {

@@ -25,15 +25,15 @@ export function AppProviders({ children }: { children: ReactNode }) {
                   {children}
                 </MotionPolicyProvider>
               </CurrencyProvider>
-            <Toaster
-              position="bottom-right"
-              richColors
-              closeButton
-              theme="dark"
-            />
-          </AuthProvider>
-        </Providers>
-      </MotionConfig>
+              <Toaster
+                position="bottom-right"
+                richColors
+                closeButton
+                theme="dark"
+              />
+            </AuthProvider>
+          </Providers>
+        </MotionConfig>
       </QualityProvider>
     </LocaleProvider>
   );

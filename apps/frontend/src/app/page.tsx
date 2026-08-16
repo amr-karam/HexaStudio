@@ -3,7 +3,6 @@ import { HomeChapterRail } from "@/features/portfolio/components/HomeChapterRail
 import { HomePageDynamic } from "@/features/portfolio/components/HomePageDynamic";
 import { StudioSection } from "@/features/portfolio/components/StudioSection";
 import { fetchProjects } from "@/features/portfolio/lib/fetchProjects";
-import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 /** ISR: 1h background refresh + on-demand via /api/revalidate (Sprint 15 P9).
     * Pages prerender at build (gracefully empty when backend is down); deploy
@@ -47,17 +46,10 @@ export default async function HomePage() {
       
       <HomeChapterRail />
       <HomeHeroStatic />
-      <ErrorBoundary fallback={
-        <div className="flex flex-col items-center justify-center py-20">
-          <p className="text-neutral-500">We're having trouble loading the homepage content.</p>
-          <p className="text-neutral-400 text-sm mt-2">Please refresh or try again later.</p>
-        </div>
-      }>
-        <HomePageDynamic
-          featuredProject={featuredProject}
-          projects={projects}
-        />
-      </ErrorBoundary>
+      <HomePageDynamic
+        featuredProject={featuredProject}
+        projects={projects}
+      />
       <StudioSection />
     </div>
   );
