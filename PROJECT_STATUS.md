@@ -25,7 +25,7 @@
 
 | Gate | Target | Status | Result |
 |---|---|---|---|
-| **Backend Tests** | 374 total | `374 / 374` | ✅ PASS |
+| **Backend Tests** | 378 total | `378 / 378` | ✅ PASS |
 | **Frontend Tests** | 351 total | `351 / 351` | ✅ PASS |
 | **Mobile Tests** | 25 passing | `25 / 25` | ✅ PASS |
 | **Frontend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
@@ -36,7 +36,7 @@
 - **Current Phase**: Phase 4 / Release Candidate & Live Operations (v2.2.1)
 - **Active Workspace Quality Gates**:
   - `apps/frontend`: 48 suites / 351 tests passed (100%), 50 routes compiled, 0 errors, 0 warnings
-  - `apps/backend`: 45 suites / 374 tests passed (100%), 0 errors, 0 warnings
+  - `apps/backend`: 45 suites / 378 tests passed (100%), 0 errors, 0 warnings
   - `apps/mobile`: 8 suites / 25 tests passed (100%), 0 errors, 0 warnings
 - **Production Server (`19.16.1.100`)**:
   - 28/28 containers **Up (healthy)**

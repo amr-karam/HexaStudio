@@ -1,5 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { OdooService } from './odoo.service';
+import { ToolDefinition } from '../agents/decorators/tool-definition.decorator';
+import { ToolAuthorization } from '../agents/decorators/tool-authorization.decorator';
 import {
   OdooLead,
   OdooProject,
@@ -1227,5 +1229,69 @@ export class OdooApiService {
         timestamp: new Date().toISOString(),
       };
     }
+  }
+
+  // --- Autonomous Agent Tools (ADR-0010) ---
+
+  @ToolDefinition({
+    name: 'get_executive_metrics',
+    description: 'Get high-level executive studio metrics across CRM leads, active projects, unpaid invoices, and open support tickets from Odoo ERP',
+    parameters: {
+      type: 'object',
+      properties: {},
+      required: [],
+    },
+  })
+  @ToolAuthorization({ requiresAuth: true, requiresHitl: false })
+  async getExecutiveDashboardTool(): Promise<OdooHubExecutiveDashboard> {
+    return this.getExecutiveDashboard();
+  }
+
+  @ToolDefinition({
+    name: 'search_crm_leads',
+    description: 'Search and list CRM leads and prospective client inquiries from Odoo ERP',
+    parameters: {
+      type: 'object',
+      properties: {
+        limit: { type: 'number', description: 'Max leads to return (default 10)' },
+      },
+      required: [],
+    },
+  })
+  @ToolAuthorization({ requiresAuth: true, requiresHitl: false })
+  async searchLeadsTool(params?: { limit?: number }): Promise<OdooLead[]> {
+    return this.getLeads(params?.limit ?? 10, 0);
+  }
+
+  @ToolDefinition({
+    name: 'search_invoices',
+    description: 'Search client invoices, totals, and payment status from Odoo accounting',
+    parameters: {
+      type: 'object',
+      properties: {
+        limit: { type: 'number', description: 'Max invoices to return (default 10)' },
+      },
+      required: [],
+    },
+  })
+  @ToolAuthorization({ requiresAuth: true, requiresHitl: false })
+  async searchInvoicesTool(params?: { limit?: number }): Promise<OdooInvoice[]> {
+    return this.getInvoices(params?.limit ?? 10, 0);
+  }
+
+  @ToolDefinition({
+    name: 'search_helpdesk_tickets',
+    description: 'Search support tickets and open customer service issues from Odoo ERP',
+    parameters: {
+      type: 'object',
+      properties: {
+        limit: { type: 'number', description: 'Max tickets to return (default 10)' },
+      },
+      required: [],
+    },
+  })
+  @ToolAuthorization({ requiresAuth: true, requiresHitl: false })
+  async searchHelpdeskTicketsTool(params?: { limit?: number }): Promise<OdooHelpdeskTicket[]> {
+    return this.getHelpdeskTickets(params?.limit ?? 10, 0);
   }
 }

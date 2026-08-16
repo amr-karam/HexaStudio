@@ -241,6 +241,41 @@ describe('OdooApiService', () => {
     });
   });
 
+  describe('Agent Tools (ADR-0010)', () => {
+    it('getExecutiveDashboardTool delegates to getExecutiveDashboard', async () => {
+      mockOdooService.searchRead.mockResolvedValue([]);
+      mockOdooService.execute.mockResolvedValue([]);
+
+      const result = await service.getExecutiveDashboardTool();
+      expect(result).toHaveProperty('crm');
+      expect(result).toHaveProperty('finance');
+    });
+
+    it('searchLeadsTool delegates to getLeads', async () => {
+      const leads = [{ id: 1, name: 'Lead 1' }];
+      mockOdooService.execute.mockResolvedValueOnce(leads);
+
+      const result = await service.searchLeadsTool({ limit: 5 });
+      expect(result).toEqual(leads);
+    });
+
+    it('searchInvoicesTool delegates to getInvoices', async () => {
+      const invoices = [{ id: 1, name: 'INV/001' }];
+      mockOdooService.execute.mockResolvedValueOnce(invoices);
+
+      const result = await service.searchInvoicesTool({ limit: 5 });
+      expect(result).toEqual(invoices);
+    });
+
+    it('searchHelpdeskTicketsTool delegates to getHelpdeskTickets', async () => {
+      const tickets = [{ id: 1, name: 'Ticket 1' }];
+      mockOdooService.execute.mockResolvedValueOnce(tickets);
+
+      const result = await service.searchHelpdeskTicketsTool({ limit: 5 });
+      expect(result).toEqual(tickets);
+    });
+  });
+
   describe('getHealth', () => {
     it('should return ok when ping succeeds', async () => {
       mockOdooService.ping.mockResolvedValueOnce(true);
