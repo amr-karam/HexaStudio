@@ -5,6 +5,7 @@ import type {
   OdooLead,
   OdooProject,
   OdooInvoice,
+  OdooInvoiceLine,
   OdooPipelineSummary,
   OdooPartner,
   OdooMilestone,
@@ -12,15 +13,21 @@ import type {
   OdooCompany,
   OdooQuotation,
   OdooActivity,
+  OdooHelpdeskTeam,
+  OdooHelpdeskTeamDetail,
   OdooSalesTeam,
   OdooSalesTeamDetail,
   OdooDepartment,
   OdooDepartmentDetail,
   OdooJournalEntry,
+  OdooAccountJournal,
+  OdooBankStatement,
   OdooPayment,
   OdooBankAccount,
   OdooKnowledgeArticle,
+  OdooKnowledgeCategory,
   OdooMailMessage,
+  OdooMailNotification,
   OdooHubExecutiveDashboard,
   OdooSendEmailData,
   SyncStatusResponse,
@@ -241,16 +248,30 @@ export const odooApi = {
   // Accounting (read-only)
   getJournalEntries: (dateFrom?: string, dateTo?: string, limit = 50, offset = 0) =>
     request<OdooJournalEntry[]>(`/accounting/journal-entries?limit=${limit}&offset=${offset}${dateFrom ? `&dateFrom=${encodeURIComponent(dateFrom)}` : ''}${dateTo ? `&dateTo=${encodeURIComponent(dateTo)}` : ''}`),
+  getInvoiceLines: (invoiceId: number) =>
+    request<OdooInvoiceLine[]>(`/accounting/invoices/${invoiceId}/lines`),
+  getJournals: (limit = 50, offset = 0) =>
+    request<OdooAccountJournal[]>(`/accounting/journals?limit=${limit}&offset=${offset}`),
+  getBankStatements: (limit = 50, offset = 0) =>
+    request<OdooBankStatement[]>(`/accounting/bank-statements?limit=${limit}&offset=${offset}`),
   getPayments: (dateFrom?: string, dateTo?: string, limit = 50, offset = 0) =>
     request<OdooPayment[]>(`/accounting/payments?limit=${limit}&offset=${offset}${dateFrom ? `&dateFrom=${encodeURIComponent(dateFrom)}` : ''}${dateTo ? `&dateTo=${encodeURIComponent(dateTo)}` : ''}`),
   getBanks: (limit = 50, offset = 0) =>
     request<OdooBankAccount[]>(`/accounting/banks?limit=${limit}&offset=${offset}`),
 
-  // Knowledge Articles (read + write)
+  // Helpdesk Teams
+  getHelpdeskTeams: () =>
+    request<OdooHelpdeskTeam[]>('/helpdesk/teams'),
+  getHelpdeskTeamDetail: (id: number) =>
+    request<OdooHelpdeskTeamDetail>(`/helpdesk/teams/${id}`),
+
+  // Knowledge Articles (read + write) & Categories
   getKnowledgeArticles: (limit = 50, offset = 0) =>
     request<OdooKnowledgeArticle[]>(`/knowledge/articles?limit=${limit}&offset=${offset}`),
   getKnowledgeArticleDetail: (id: number) =>
     request<OdooKnowledgeArticle>(`/knowledge/articles/${id}`),
+  getKnowledgeCategories: () =>
+    request<OdooKnowledgeCategory[]>('/knowledge/categories'),
   createKnowledgeArticle: (data: { name: string; body?: string; category_id?: number }) =>
     mutate<{ id: number; success: boolean }>('/knowledge', 'POST', data),
   updateKnowledgeArticle: (id: number, data: { name?: string; body?: string; category_id?: number }) =>
@@ -258,13 +279,15 @@ export const odooApi = {
   archiveKnowledgeArticle: (id: number) =>
     mutate<{ success: boolean }>(`/knowledge/${id}`, 'DELETE'),
 
-  // Email Integration (mail.mail)
+  // Email & Notifications Integration
   getEmails: (filter: 'inbox' | 'sent' | 'all' = 'all', limit = 50, offset = 0) =>
     request<OdooMailMessage[]>(`/emails?filter=${filter}&limit=${limit}&offset=${offset}`),
   getEmailDetail: (id: number) =>
     request<OdooMailMessage>(`/emails/${id}`),
   sendEmail: (data: OdooSendEmailData) =>
     mutate<{ id: number; success: boolean }>('/emails', 'POST', data),
+  getNotifications: (partnerId?: number, limit = 50, offset = 0) =>
+    request<OdooMailNotification[]>(`/notifications?limit=${limit}&offset=${offset}${partnerId ? `&partnerId=${partnerId}` : ''}`),
 
   // Executive Dashboard (aggregated SOT payload)
   getExecutiveDashboard: () =>
