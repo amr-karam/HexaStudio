@@ -27,27 +27,6 @@ export function AnimationDebug() {
     setMounted(true);
     if (process.env.NODE_ENV !== 'development') return;
 
-    // Log animation policy state to console
-    console.group('🎬 HEXA Animation Debug');
-    console.log('reducedMotion (raw):', rawReducedMotion);
-    console.log('finePointer (raw):  ', rawFinePointer);
-    console.log('animationsEnabled:  ', policy.animationsEnabled);
-    console.log('staticMode:         ', policy.staticMode);
-    console.log('paused (user):      ', policy.paused);
-    console.log('reducedMotion (policy):', policy.reducedMotion);
-    console.log('quality tier:       ', tier.level);
-    console.log('particle count:     ', tier.level === 'high' ? '65K' : tier.level === 'medium' ? '16K' : 'disabled');
-    console.log('bloom enabled:      ', tier.level === 'high');
-    console.log('cursor force:       ', policy.finePointer && !policy.staticMode);
-    console.log('simulation active:  ', policy.animationsEnabled && tier.level !== 'low');
-    try {
-      console.log('localStorage pause: ', localStorage.getItem('hexa:animations-paused'));
-    } catch {
-      console.log('localStorage:       unavailable');
-    }
-    console.log('matchMedia reduced: ', window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-    console.log('matchMedia pointer: ', window.matchMedia('(pointer: fine)').matches);
-    console.groupEnd();
 
     // Test GSAP load
     void import('gsap').then(

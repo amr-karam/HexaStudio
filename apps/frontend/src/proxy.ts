@@ -13,10 +13,6 @@ export default function proxy(request: NextRequest) {
 
   response.headers.set('X-Request-ID', requestId);
 
-  if (process.env.NODE_ENV === 'development') {
-    console.log(`[${requestId}] ${request.method} ${request.nextUrl.pathname}`);
-  }
-
   return response;
 }
 

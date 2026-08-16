@@ -538,3 +538,43 @@ docker compose -f docker-compose.prod.yml up -d --build backend
 ### Notes
 - drei v10 / R3F v9 expose only `useGLTF.preload` (no programmatic `.load`), so the shared loader dedup registers the parsed GLTF while drei/fiber's `useLoader` cache guarantees a single fetch + parse for concurrent mounters; `preloadModel()` warms both caches ahead of scene navigation.
 - Performance impact (LCP/TBT, 3D transition smoothness) is being audited by the performance engineer.
+
+---
+
+## 2026-08-16 — Prod Bugfix Deploy (Blue/Green) + Cloudflare Tunnel Recovery — COMPLETE
+
+**Status:** ✅ Deployed & live-verified
+
+### Part 1 — Bugfix deployment (green slot)
+Deployed via direct server run: `SOT=green docker compose -f docker-compose.prod.yml up -d --build --no-deps backend frontend cms` (build ~25 min, log `/tmp/deploy-build.log`). All 3 green containers healthy; blue slot auto-removed by compose project labels. Deployed commits (GitHub `origin/main` = `b91096df`):
+- `34b3e3f` — backend: `OptionalJwtAuthGuard` (401 → 200 `{data:null}` for `/api/users/me`)
+- `b7ff7ee` — frontend: `useAuth` optional-auth handling
+- `baf88f5c` — frontend: image URLs → absolute `files.hexastudio.net` (fixes `_next/image` 403)
+- `cf4bb5e` — MinIO public bucket config
+
+### Part 2 — Cloudflare Tunnel outage + recovery
+**Cause:** all tunnels deleted in the dashboard (last delete `7a926c67` at 15:23:30Z); site down (Error 1000 / 530 / 000). **Recovery (all via Cloudflare API):**
+1. Created new tunnel `50ac8f11-475d-420f-bd79-a5c3c3752f97` (`hexastudio-tunnel`, `config_src: cloudflare`) and pushed ingress config v1 (18 hostnames → `http://traefik:80` + catch-all 503).
+2. Updated all 12 tunnel CNAMEs in zone `214e4603a28f73d7279946baf820f5ed` → `50ac8f11...cfargotunnel.com` (proxied).
+3. Updated `CLOUDFLARE_TUNNEL_TOKEN` in server `.env` (base64-wrap transfer to avoid quoting corruption — **warning:** a mangled wrap wrote a 456-byte token; verify with `wc -c` = 240) and recreated the `cloudflared` container.
+4. Logs confirm `Registered tunnel connection` × 4; tunnel API status `healthy`.
+
+### Live Verification
+| Test | Result |
+|------|--------|
+| `https://hexastudio.net/` | ✅ HTTP 200 |
+| `https://api.hexastudio.net/api/health` | ✅ 200 (`dependencies.odoo: ok`) |
+| `GET /api/users/me` (anonymous) | ✅ 200 (was 401) |
+| `files.hexastudio.net/uploads/*.jpg` (villa/desert/forest) | ✅ 200 `image/jpeg` (was 403) |
+| `https://cms.hexastudio.net/admin` / `odoo.hexastudio.net/web/login` | ✅ 200 |
+| ISR revalidate (`x-revalidate-secret`) | ✅ 200 `{"ok":true,"revalidated":{"paths":["/"]}}` |
+| Local `.env` | Updated to new tunnel token |
+
+### Key Learnings
+- `docker compose restart` does **not** re-read `.env`; use `up -d --force-recreate` after token changes. A shell-exported `CLOUDFLARE_TUNNEL_TOKEN` (if present) overrides `.env` — check `env | grep CLOUDFLARE`.
+- Old-token sessions keep serving after a token refresh; only *new* registrations fail (`Invalid tunnel secret`). Container was failing while manual processes (pre-refresh) stayed connected.
+- Tunnel tokens can be retrieved/created entirely via API (`GET /accounts/{acct}/cfd_tunnel/{id}/token`); dashboard token rotations invalidate prior tokens.
+
+### Open Items (unchanged)
+- CI `deploy-production` deadlock (`build-storybook` → retired `packages/ui`); GitLab pipelines 92/93 (user commits `64372d0f`/`d8fdac6f`, GitLab-only, not deployed).
+- Odoo webhook 401 spam (HMAC secret misalignment).

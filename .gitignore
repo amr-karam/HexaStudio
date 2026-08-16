@@ -197,3 +197,17 @@ scrub_secret.py
 
 # Backup files
 *.bak
+
+# JWT token files and minting scripts (NEVER commit - contain production secrets)
+token.txt
+generate_token*.js
+
+# CMS admin scripts with hardcoded credentials
+apps/cms/get_admin_user.js
+apps/cms/scripts/debug_permissions.js
+
+# API test scripts that use live tokens
+test_api.sh
+
+# Content API token minting script
+generate_content_token.js
