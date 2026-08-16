@@ -53,24 +53,43 @@ export function useAssetLoader(url: string) {
     
     const processModel = async () => {
       try {
-        // 1. Integrate three-mesh-bvh for spatial optimization
-        // We traverse the scene and compute BVH for all meshes
-        gltf.scene.traverse((obj) => {
+        // Avoid re-processing cached models
+        if (gltf.scene.userData?.isProcessed) return;
+
+        // 1. Collect all children to avoid modification issues during iteration
+        const children = [...gltf.scene.children];
+        
+        // 2. Remove children from scene to stagger GPU upload
+        // This prevents the '<primitive />' from adding everything in one frame,
+        // which would otherwise cause a massive long task during the first render.
+        gltf.scene.clear();
+
+        // 3. Staggered Processing & Injection
+        for (let i = 0; i < children.length; i++) {
+          const obj = children[i];
+          
           if ((obj as Mesh).isMesh) {
             const mesh = obj as Mesh;
-            // computeBVH is added to BufferGeometry by three-mesh-bvh
+            // Compute BVH on the main thread but staggered to avoid blocking the event loop
             const geom = mesh.geometry as unknown as { computeBVH?: () => void };
-            if (geom && typeof geom.computeBVH === 'function') {
+            if (geom?.computeBVH) {
               geom.computeBVH();
             }
           }
-        });
 
-        // 2. Delegate heavy post-processing to the Web Worker
+          // Inject back into the scene graph
+          gltf.scene.add(obj);
+
+          // Yield to main thread every 2 meshes to keep frame times well under 16ms (60fps)
+          // This eliminates long tasks by distributing the GPU upload and BVH work.
+          if (i % 2 === 0) {
+            await new Promise((resolve) => requestAnimationFrame(resolve));
+          }
+        }
+
+        // 4. Delegate heavy post-processing to the Web Worker
         const worker = ModelWorkerManager.getInstance();
         
-        // We extract the position buffers from the first mesh to demonstrate 
-        // worker-based processing of geometry metadata without blocking the main thread.
         const positionBuffers: Float32Array[] = [];
         gltf.scene.traverse((obj) => {
           if ((obj as Mesh).isMesh && positionBuffers.length === 0) {
@@ -87,6 +106,9 @@ export function useAssetLoader(url: string) {
           // Transfer the buffer to the worker to avoid cloning overhead
           await worker.api.computeBVH(Comlink.transfer(activeBuffer, [activeBuffer.buffer]));
         }
+
+        // Mark as processed to avoid redundant loops on re-mount
+        gltf.scene.userData.isProcessed = true;
 
         // Finally, register with the resource loader
         await resourceLoader.loadResource('models', url, async () => gltf, { priority: 'high' });

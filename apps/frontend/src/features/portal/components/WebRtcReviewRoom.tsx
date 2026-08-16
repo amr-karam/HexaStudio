@@ -8,9 +8,10 @@
  */
 
 import React, { useState } from 'react';
-
-type LightingPreset = 'golden_hour' | 'daylight' | 'twilight' | 'cyberpunk';
-type MaterialPreset = 'obsidian_glass' | 'brushed_titanium' | 'fluted_marble' | 'smoked_oak';
+import { useDesignerStore } from '@/features/scene/store/designer-store';
+import type { LightingPreset, MaterialPreset } from '@/features/scene/store/designer-store';
+import { LIGHTING_PRESETS as LIGHTING_CONFIGS } from '@/features/scene/config/lighting-presets';
+import { MATERIAL_PRESETS as MATERIAL_CONFIGS } from '@/features/scene/config/material-presets';
 
 interface ReviewRemark {
   id: string;
@@ -24,31 +25,39 @@ interface ReviewRemark {
 const LIGHTING_PRESETS: Array<{ id: LightingPreset; name: string; icon: string; desc: string }> = [
   { id: 'golden_hour', name: 'Dawn Amber', icon: '🌅', desc: 'Warm 3200K cinematic directional keylight' },
   { id: 'daylight', name: 'Studio Daylight', icon: '☀️', desc: '5500K neutral diffused architectural light' },
-  { id: 'twilight', name: 'Twilight Dusk', icon: '🌆', desc: 'Deep sapphire ambient with warm specular rims' },
   { id: 'cyberpunk', name: 'Cyber Minimal', icon: '🌌', desc: 'High-contrast neon specular with moody shadows' },
+  { id: 'gallery', name: 'Gallery Pinpoint', icon: '🏛️', desc: 'Neutral pin-point museum spotlight presentation' },
 ];
 
 const MATERIAL_PRESETS: Array<{ id: MaterialPreset; name: string; color: string; desc: string }> = [
-  { id: 'obsidian_glass', name: 'Obsidian Glass', color: 'bg-neutral-900 border-neutral-700', desc: 'High-gloss dark dielectric specular' },
+  { id: 'obsidian_marble', name: 'Obsidian Marble', color: 'bg-neutral-900 border-neutral-700', desc: 'High-gloss dark dielectric specular' },
   { id: 'brushed_titanium', name: 'Brushed Titanium', color: 'bg-neutral-600 border-neutral-400', desc: 'Anisotropic metallic sheen' },
-  { id: 'fluted_marble', name: 'Fluted Marble', color: 'bg-neutral-200 border-neutral-300', desc: 'Subsurface scattering calcite white' },
-  { id: 'smoked_oak', name: 'Smoked Oak', color: 'bg-amber-900/80 border-amber-800', desc: 'Deep biophilic organic grain' },
+  { id: 'raw_concrete', name: 'Raw Concrete', color: 'bg-neutral-400 border-neutral-300', desc: 'Subsurface scattering calcite white' },
+  { id: 'warm_oak', name: 'Warm Oak', color: 'bg-amber-900/80 border-amber-800', desc: 'Deep biophilic organic grain' },
 ];
 
 export function WebRtcReviewRoom() {
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [isVideoOff, setIsVideoOff] = useState(false);
-  const [isScreenSharing, setIsScreenSharing] = useState(false);
+  const [isScreenSharing, setIsScreenSharing] = useState(true);
   const [isCallActive, setIsCallActive] = useState(true);
-  const [activeLighting, setActiveLighting] = useState<LightingPreset>('golden_hour');
-  const [activeMaterial, setActiveMaterial] = useState<MaterialPreset>('obsidian_glass');
   const [activeTab, setActiveTab] = useState<'stream' | 'spatial' | 'remarks'>('stream');
+
+  // Connect to Zustand Designer Store for live 3D synchronization
+  const activeLighting = useDesignerStore((state) => state.activeLighting);
+  const activeMaterial = useDesignerStore((state) => state.activeMaterial);
+  const setLighting = useDesignerStore((state) => state.setLighting);
+  const setMaterial = useDesignerStore((state) => state.setMaterial);
+
+  const lightingConfig = LIGHTING_CONFIGS[activeLighting] ?? LIGHTING_CONFIGS.daylight;
+  const materialConfig = MATERIAL_CONFIGS[activeMaterial] ?? MATERIAL_CONFIGS.obsidian_marble;
+
   const [remarks, setRemarks] = useState<ReviewRemark[]>([
     {
       id: 'r1',
       author: 'Marcus Vance',
       role: 'architect',
-      text: 'Switched northern glazing facade to Obsidian Glass for glare mitigation.',
+      text: 'Switched northern glazing facade to Obsidian Marble for glare mitigation.',
       timestamp: '14:22',
       spatialTag: 'Camera 01 · Facade',
     },
@@ -132,14 +141,37 @@ export function WebRtcReviewRoom() {
       {activeTab === 'stream' && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Main Stream (Architect / 3D Canvas Stream) */}
-          <div className="md:col-span-2 relative aspect-video bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden flex items-center justify-center group">
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10 pointer-events-none" />
+          <div className="md:col-span-2 relative aspect-video bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden flex flex-col items-center justify-center group">
+            {/* Ambient Lighting Gradient based on Active Preset */}
+            <div
+              className="absolute inset-0 transition-all duration-700 pointer-events-none opacity-40"
+              style={{
+                background: `radial-gradient(ellipse at center, ${lightingConfig.directionalColor}22 0%, ${lightingConfig.ambientColor}11 60%, #000000 100%)`,
+              }}
+            />
 
             {isScreenSharing ? (
-              <div className="text-center space-y-2 z-20">
-                <span className="text-4xl">🖥️</span>
-                <p className="text-xs font-semibold text-accent">Synchronized 3D Viewport Stream Active</p>
-                <p className="text-[10px] font-mono text-neutral-400">Atmosphere: {activeLighting} &bull; Material: {activeMaterial}</p>
+              <div className="text-center space-y-3 z-20 p-6">
+                {/* Visual Representation of the 3D Material Synthesis Swatch in the Canvas */}
+                <div className="flex justify-center items-center gap-4">
+                  <div
+                    className="w-16 h-16 rounded-2xl border border-white/20 shadow-2xl transition-all duration-500 transform group-hover:scale-105 flex items-center justify-center"
+                    style={{
+                      backgroundColor: materialConfig.color,
+                      boxShadow: `0 0 30px ${lightingConfig.directionalColor}33`,
+                    }}
+                  >
+                    <span className="text-lg">🏛️</span>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-xs font-semibold text-accent">Synchronized 3D Viewport Stream Active</p>
+                  <p className="text-[10px] font-mono text-neutral-300 mt-1">
+                    Preset: <span className="text-accent">{activeLighting}</span> &bull; Material:{' '}
+                    <span className="text-accent">{activeMaterial}</span> &bull; 60 FPS WebGL
+                  </p>
+                </div>
               </div>
             ) : isVideoOff ? (
               <div className="text-center space-y-2 z-20">
@@ -151,7 +183,9 @@ export function WebRtcReviewRoom() {
             ) : (
               <div className="w-full h-full bg-neutral-900 flex flex-col items-center justify-center text-xs text-neutral-400 space-y-2">
                 <span>[Live WebRTC Video Feed — 1080p60 WebGL Canvas Stream]</span>
-                <span className="text-[10px] font-mono text-accent-light">Lighting: {activeLighting} | Material: {activeMaterial}</span>
+                <span className="text-[10px] font-mono text-accent-light">
+                  Lighting: {activeLighting} | Material: {activeMaterial}
+                </span>
               </div>
             )}
 
@@ -183,7 +217,7 @@ export function WebRtcReviewRoom() {
           <div>
             <div className="flex justify-between items-center mb-3">
               <h4 className="text-xs font-mono uppercase tracking-widest text-accent">Generative Lighting Synthesis</h4>
-              <span className="text-[10px] font-mono text-neutral-500">Real-Time HDRI &amp; Keylight Engine</span>
+              <span className="text-[10px] font-mono text-neutral-500">Real-Time HDRI &amp; Keylight Rig</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {LIGHTING_PRESETS.map((preset) => {
@@ -191,7 +225,7 @@ export function WebRtcReviewRoom() {
                 return (
                   <button
                     key={preset.id}
-                    onClick={() => setActiveLighting(preset.id)}
+                    onClick={() => setLighting(preset.id)}
                     className={`p-4 rounded-xl border text-left transition-all ${
                       isActive
                         ? 'bg-accent/15 border-accent text-foreground shadow-lg'
@@ -221,7 +255,7 @@ export function WebRtcReviewRoom() {
                 return (
                   <button
                     key={preset.id}
-                    onClick={() => setActiveMaterial(preset.id)}
+                    onClick={() => setMaterial(preset.id)}
                     className={`p-4 rounded-xl border text-left transition-all ${
                       isActive
                         ? 'bg-accent/15 border-accent text-foreground shadow-lg'
