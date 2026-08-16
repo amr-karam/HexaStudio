@@ -121,6 +121,13 @@ const nextConfig: NextConfig = {
       { source: "/portfolio/:path*", destination: "/projects/:path*", permanent: true },
     ];
   },
+  async rewrites() {
+    return [
+      // Browsers unconditionally request /favicon.ico regardless of the
+      // <link rel="icon"> declaration — serve the SVG icon instead of a 404.
+      { source: "/favicon.ico", destination: "/favicon.svg" },
+    ];
+  },
   images: {
     remotePatterns: [
       {
