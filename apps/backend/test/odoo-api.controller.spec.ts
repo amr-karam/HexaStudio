@@ -33,6 +33,13 @@ const mockOdooApiService = {
   updateMilestone: vi.fn(),
   getSalesOrders: vi.fn(),
   getInvoices: vi.fn(),
+  getInvoiceLines: vi.fn(),
+  getHelpdeskTeams: vi.fn(),
+  getHelpdeskTeamDetail: vi.fn(),
+  getKnowledgeCategories: vi.fn(),
+  getMailNotifications: vi.fn(),
+  getAccountJournals: vi.fn(),
+  getBankStatements: vi.fn(),
   getHealth: vi.fn(),
 };
 
@@ -663,6 +670,90 @@ describe('OdooApiController', () => {
       expect(res.status).toBe(200);
       expect(res.body).toEqual(invoices);
       expect(mockOdooApiService.getInvoices).toHaveBeenCalledWith(50, 0);
+    });
+
+    // GET /odoo/accounting/invoices/:id/lines
+    it('GET /odoo/accounting/invoices/:id/lines returns invoice line items', async () => {
+      const lines = [{ id: 10, name: '3D Exterior Render', price_total: 8000 }];
+      mockOdooApiService.getInvoiceLines.mockResolvedValueOnce(lines);
+
+      const res = await request(app.getHttpServer()).get('/odoo/accounting/invoices/5/lines');
+
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual(lines);
+      expect(mockOdooApiService.getInvoiceLines).toHaveBeenCalledWith(5);
+    });
+
+    // GET /odoo/helpdesk/teams
+    it('GET /odoo/helpdesk/teams returns support teams', async () => {
+      const teams = [{ id: 1, name: 'Architectural Support', ticketCount: 3 }];
+      mockOdooApiService.getHelpdeskTeams.mockResolvedValueOnce(teams);
+
+      const res = await request(app.getHttpServer()).get('/odoo/helpdesk/teams');
+
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual(teams);
+      expect(mockOdooApiService.getHelpdeskTeams).toHaveBeenCalled();
+    });
+
+    // GET /odoo/helpdesk/teams/:id
+    it('GET /odoo/helpdesk/teams/:id returns support team detail', async () => {
+      const teamDetail = { id: 1, name: 'Architectural Support', recentTickets: [] };
+      mockOdooApiService.getHelpdeskTeamDetail.mockResolvedValueOnce(teamDetail);
+
+      const res = await request(app.getHttpServer()).get('/odoo/helpdesk/teams/1');
+
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual(teamDetail);
+      expect(mockOdooApiService.getHelpdeskTeamDetail).toHaveBeenCalledWith(1);
+    });
+
+    // GET /odoo/knowledge/categories
+    it('GET /odoo/knowledge/categories returns knowledge categories', async () => {
+      const categories = [{ id: 1, name: 'Technical Docs', articleCount: 8 }];
+      mockOdooApiService.getKnowledgeCategories.mockResolvedValueOnce(categories);
+
+      const res = await request(app.getHttpServer()).get('/odoo/knowledge/categories');
+
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual(categories);
+      expect(mockOdooApiService.getKnowledgeCategories).toHaveBeenCalled();
+    });
+
+    // GET /odoo/notifications
+    it('GET /odoo/notifications returns mail notifications', async () => {
+      const notifications = [{ id: 1, is_read: false }];
+      mockOdooApiService.getMailNotifications.mockResolvedValueOnce(notifications);
+
+      const res = await request(app.getHttpServer()).get('/odoo/notifications?partnerId=12');
+
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual(notifications);
+      expect(mockOdooApiService.getMailNotifications).toHaveBeenCalledWith(12, 50, 0);
+    });
+
+    // GET /odoo/accounting/journals
+    it('GET /odoo/accounting/journals returns journals', async () => {
+      const journals = [{ id: 1, name: 'Customer Invoices', code: 'INV' }];
+      mockOdooApiService.getAccountJournals.mockResolvedValueOnce(journals);
+
+      const res = await request(app.getHttpServer()).get('/odoo/accounting/journals');
+
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual(journals);
+      expect(mockOdooApiService.getAccountJournals).toHaveBeenCalledWith(50, 0);
+    });
+
+    // GET /odoo/accounting/bank-statements
+    it('GET /odoo/accounting/bank-statements returns bank statements', async () => {
+      const statements = [{ id: 1, name: 'BNK/2026/01', balance_end_real: 150000 }];
+      mockOdooApiService.getBankStatements.mockResolvedValueOnce(statements);
+
+      const res = await request(app.getHttpServer()).get('/odoo/accounting/bank-statements');
+
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual(statements);
+      expect(mockOdooApiService.getBankStatements).toHaveBeenCalledWith(50, 0);
     });
   });
 

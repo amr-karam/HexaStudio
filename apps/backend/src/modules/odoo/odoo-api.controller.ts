@@ -407,6 +407,21 @@ export class OdooApiController {
     return { success: true };
   }
 
+  // --- Helpdesk Teams ---
+
+  @Get('helpdesk/teams')
+  @ApiOperation({ summary: 'List all Helpdesk / Support teams' })
+  async getHelpdeskTeams() {
+    return this.odooApi.getHelpdeskTeams();
+  }
+
+  @Get('helpdesk/teams/:id')
+  @ApiOperation({ summary: 'Get Helpdesk team detail with recent tickets' })
+  @ApiParam({ name: 'id', type: Number })
+  async getHelpdeskTeamDetail(@Param('id') id: string) {
+    return this.odooApi.getHelpdeskTeamDetail(parseInt(id, 10));
+  }
+
   // --- Employees / HR ---
 
   @Get('employees')
@@ -465,6 +480,12 @@ export class OdooApiController {
   @ApiParam({ name: 'id', type: Number })
   async getKnowledgeArticleDetail(@Param('id') id: string) {
     return this.odooApi.getKnowledgeArticleDetail(parseInt(id, 10));
+  }
+
+  @Get('knowledge/categories')
+  @ApiOperation({ summary: 'List knowledge categories with article counts' })
+  async getKnowledgeCategories() {
+    return this.odooApi.getKnowledgeCategories();
   }
 
   // --- Calendar Events ---
@@ -603,6 +624,13 @@ export class OdooApiController {
     );
   }
 
+  @Get('accounting/invoices/:id/lines')
+  @ApiOperation({ summary: 'List invoice line items for a specific invoice' })
+  @ApiParam({ name: 'id', type: Number })
+  async getInvoiceLines(@Param('id') id: string) {
+    return this.odooApi.getInvoiceLines(parseInt(id, 10));
+  }
+
   @Get('accounting/banks')
   @ApiOperation({ summary: 'List bank accounts with balances' })
   @ApiQuery({ name: 'limit', required: false, type: Number })
@@ -612,6 +640,34 @@ export class OdooApiController {
     @Query('offset') offset?: string,
   ) {
     return this.odooApi.getAccountBanks(
+      limit ? parseInt(limit, 10) : 50,
+      offset ? parseInt(offset, 10) : 0,
+    );
+  }
+
+  @Get('accounting/journals')
+  @ApiOperation({ summary: 'List accounting journals' })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
+  async getAccountJournals(
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+  ) {
+    return this.odooApi.getAccountJournals(
+      limit ? parseInt(limit, 10) : 50,
+      offset ? parseInt(offset, 10) : 0,
+    );
+  }
+
+  @Get('accounting/bank-statements')
+  @ApiOperation({ summary: 'List bank statements' })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
+  async getBankStatements(
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+  ) {
+    return this.odooApi.getBankStatements(
       limit ? parseInt(limit, 10) : 50,
       offset ? parseInt(offset, 10) : 0,
     );
@@ -676,6 +732,25 @@ export class OdooApiController {
   async sendEmail(@Body() data: { to: string; subject: string; body: string; partnerIds?: number[] }) {
     const id = await this.odooApi.sendEmail(data);
     return { id, success: true };
+  }
+
+  // --- Notifications ---
+
+  @Get('notifications')
+  @ApiOperation({ summary: 'List mail notifications for partners' })
+  @ApiQuery({ name: 'partnerId', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
+  async getMailNotifications(
+    @Query('partnerId') partnerId?: string,
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+  ) {
+    return this.odooApi.getMailNotifications(
+      partnerId ? parseInt(partnerId, 10) : undefined,
+      limit ? parseInt(limit, 10) : 50,
+      offset ? parseInt(offset, 10) : 0,
+    );
   }
 
   // --- Executive Hub Dashboard Aggregator ---

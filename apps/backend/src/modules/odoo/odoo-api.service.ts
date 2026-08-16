@@ -4,6 +4,7 @@ import {
   OdooLead,
   OdooProject,
   OdooInvoice,
+  OdooInvoiceLine,
   OdooPipelineSummary,
   OdooPartner,
   OdooMilestone,
@@ -12,11 +13,15 @@ import {
   OdooQuotation,
   OdooActivity,
   OdooHelpdeskTicket,
+  OdooHelpdeskTeam,
+  OdooHelpdeskTeamDetail,
   OdooEmployee,
   OdooTimesheet,
   OdooKnowledgeArticle,
+  OdooKnowledgeCategory,
   OdooCalendarEvent,
   OdooMailMessage,
+  OdooMailNotification,
   OdooDocument,
   OdooHubExecutiveDashboard,
   OdooSalesTeam,
@@ -24,6 +29,8 @@ import {
   OdooDepartment,
   OdooDepartmentDetail,
   OdooJournalEntry,
+  OdooAccountJournal,
+  OdooBankStatement,
   OdooPayment,
   OdooBankAccount,
   OdooSendEmailData,
@@ -229,6 +236,20 @@ export class OdooApiService {
       'search_read',
       [[['move_type', '=', 'out_invoice']], ['name', 'invoice_date', 'partner_id', 'amount_total', 'amount_residual', 'payment_state', 'state'], offset, limit, 'invoice_date desc'],
     )) as unknown as OdooInvoice[];
+  }
+
+  async getInvoiceLines(invoiceId: number): Promise<OdooInvoiceLine[]> {
+    return (await this.odooService.execute<Record<string, unknown>[]>(
+      'account.move.line',
+      'search_read',
+      [
+        [['move_id', '=', invoiceId], ['display_type', 'not in', ['line_section', 'line_note']]],
+        ['name', 'product_id', 'quantity', 'price_unit', 'price_subtotal', 'price_total', 'tax_ids', 'account_id'],
+        0,
+        100,
+        'id asc',
+      ],
+    )) as unknown as OdooInvoiceLine[];
   }
 
   async getSalesOrders(limit = 50, offset = 0): Promise<Record<string, unknown>[]> {
@@ -451,6 +472,67 @@ export class OdooApiService {
     return this.odooService.write('helpdesk.ticket', [id], data);
   }
 
+  // --- Helpdesk Teams (helpdesk.team) ---
+
+  async getHelpdeskTeams(): Promise<OdooHelpdeskTeam[]> {
+    const teams = (await this.odooService.execute<Record<string, unknown>[]>(
+      'helpdesk.team',
+      'search_read',
+      [
+        [],
+        ['name', 'description', 'member_ids', 'company_id', 'color'],
+        0,
+        100,
+        'name asc',
+      ],
+    )) as unknown as OdooHelpdeskTeam[];
+
+    const enriched: OdooHelpdeskTeam[] = await Promise.all(
+      teams.map(async (team) => {
+        try {
+          const ticketCount = await this.odooService.searchCount(
+            'helpdesk.ticket',
+            [['team_id', '=', team.id]],
+          );
+          return { ...team, ticketCount };
+        } catch {
+          return { ...team, ticketCount: 0 };
+        }
+      }),
+    );
+
+    return enriched;
+  }
+
+  async getHelpdeskTeamDetail(teamId: number): Promise<OdooHelpdeskTeamDetail> {
+    const results = await this.odooService.execute<Record<string, unknown>[]>(
+      'helpdesk.team',
+      'search_read',
+      [
+        [['id', '=', teamId]],
+        ['name', 'description', 'member_ids', 'company_id', 'color'],
+      ],
+    );
+    if (!results.length) throw new Error(`Helpdesk Team #${teamId} not found`);
+
+    const team = results[0] as unknown as OdooHelpdeskTeamDetail;
+
+    const recentTickets = (await this.odooService.execute<Record<string, unknown>[]>(
+      'helpdesk.ticket',
+      'search_read',
+      [
+        [['team_id', '=', teamId]],
+        ['name', 'partner_id', 'stage_id', 'user_id', 'priority', 'description', 'create_date', 'close_date'],
+        0,
+        10,
+        'create_date desc',
+      ],
+    )) as unknown as OdooHelpdeskTicket[];
+
+    team.recentTickets = recentTickets;
+    return team;
+  }
+
   // --- Employees / HR ---
 
   async getEmployees(limit = 50, offset = 0): Promise<OdooEmployee[]> {
@@ -530,6 +612,36 @@ export class OdooApiService {
     return results[0] as unknown as OdooKnowledgeArticle;
   }
 
+  async getKnowledgeCategories(): Promise<OdooKnowledgeCategory[]> {
+    const categories = (await this.odooService.execute<Record<string, unknown>[]>(
+      'knowledge.category',
+      'search_read',
+      [
+        [],
+        ['name', 'parent_id', 'child_ids'],
+        0,
+        100,
+        'name asc',
+      ],
+    )) as unknown as OdooKnowledgeCategory[];
+
+    const enriched: OdooKnowledgeCategory[] = await Promise.all(
+      categories.map(async (cat) => {
+        try {
+          const articleCount = await this.odooService.searchCount(
+            'knowledge.article',
+            [['category_id', '=', cat.id]],
+          );
+          return { ...cat, articleCount };
+        } catch {
+          return { ...cat, articleCount: 0 };
+        }
+      }),
+    );
+
+    return enriched;
+  }
+
   // --- Calendar Events ---
 
   async getCalendarEvents(limit = 50, offset = 0): Promise<OdooCalendarEvent[]> {
@@ -571,6 +683,25 @@ export class OdooApiService {
 
   async postMailMessage(data: Record<string, unknown>): Promise<number> {
     return this.odooService.create('mail.message', data);
+  }
+
+  async getMailNotifications(partnerId?: number, limit = 50, offset = 0): Promise<OdooMailNotification[]> {
+    const domain: unknown[] = [];
+    if (partnerId) {
+      domain.push(['res_partner_id', '=', partnerId]);
+    }
+
+    return (await this.odooService.execute<Record<string, unknown>[]>(
+      'mail.notification',
+      'search_read',
+      [
+        domain,
+        ['mail_message_id', 'res_partner_id', 'notification_type', 'notification_status', 'is_read', 'failure_type'],
+        offset,
+        limit,
+        'id desc',
+      ],
+    )) as unknown as OdooMailNotification[];
   }
 
   // --- Sales Teams (crm.team) ---
@@ -874,6 +1005,48 @@ export class OdooApiService {
         'name asc',
       ],
     )) as unknown as OdooBankAccount[];
+  }
+
+  /**
+   * Fetch accounting journals (account.journal).
+   *
+   * @param limit  - Max records (default 50)
+   * @param offset - Pagination offset (default 0)
+   * @returns Accounting journal records
+   */
+  async getAccountJournals(limit = 50, offset = 0): Promise<OdooAccountJournal[]> {
+    return (await this.odooService.execute<Record<string, unknown>[]>(
+      'account.journal',
+      'search_read',
+      [
+        [['active', '=', true]],
+        ['name', 'code', 'type', 'currency_id', 'company_id', 'active'],
+        offset,
+        limit,
+        'name asc',
+      ],
+    )) as unknown as OdooAccountJournal[];
+  }
+
+  /**
+   * Fetch bank statements (account.bank.statement).
+   *
+   * @param limit  - Max records (default 50)
+   * @param offset - Pagination offset (default 0)
+   * @returns Bank statement records
+   */
+  async getBankStatements(limit = 50, offset = 0): Promise<OdooBankStatement[]> {
+    return (await this.odooService.execute<Record<string, unknown>[]>(
+      'account.bank.statement',
+      'search_read',
+      [
+        [],
+        ['name', 'date', 'journal_id', 'balance_start', 'balance_end_real', 'state', 'company_id'],
+        offset,
+        limit,
+        'date desc',
+      ],
+    )) as unknown as OdooBankStatement[];
   }
 
   // --- Knowledge Write Operations (knowledge.article) ---

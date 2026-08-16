@@ -15,6 +15,7 @@ import { OdooService } from './odoo.service';
 
 const mockOdooService = {
   searchRead: vi.fn(),
+  searchCount: vi.fn(),
   execute: vi.fn(),
   create: vi.fn(),
   write: vi.fn(),
@@ -136,6 +137,107 @@ describe('OdooApiService', () => {
       mockOdooService.execute.mockResolvedValueOnce(projects);
       const result = await service.getProjects();
       expect(result).toEqual(projects);
+    });
+  });
+
+  describe('getInvoiceLines', () => {
+    it('should query account.move.line for a given invoice id', async () => {
+      const lines = [{ id: 10, name: 'Render Service', quantity: 1, price_unit: 5000, price_total: 5000 }];
+      mockOdooService.execute.mockResolvedValueOnce(lines);
+
+      const result = await service.getInvoiceLines(42);
+      expect(result).toEqual(lines);
+      expect(mockOdooService.execute).toHaveBeenCalledWith(
+        'account.move.line',
+        'search_read',
+        [
+          [['move_id', '=', 42], ['display_type', 'not in', ['line_section', 'line_note']]],
+          ['name', 'product_id', 'quantity', 'price_unit', 'price_subtotal', 'price_total', 'tax_ids', 'account_id'],
+          0,
+          100,
+          'id asc',
+        ],
+      );
+    });
+  });
+
+  describe('getHelpdeskTeams and getHelpdeskTeamDetail', () => {
+    it('should return helpdesk teams enriched with ticket counts', async () => {
+      const teams = [{ id: 1, name: 'Architecture Support' }];
+      mockOdooService.execute.mockResolvedValueOnce(teams);
+      mockOdooService.searchCount = vi.fn().mockResolvedValueOnce(5);
+
+      const result = await service.getHelpdeskTeams();
+      expect(result).toHaveLength(1);
+      expect(result[0].ticketCount).toBe(5);
+    });
+
+    it('should return team detail with recent tickets', async () => {
+      const team = [{ id: 1, name: 'Architecture Support' }];
+      const tickets = [{ id: 101, name: 'Fix 3D render glitch' }];
+      mockOdooService.execute
+        .mockResolvedValueOnce(team)
+        .mockResolvedValueOnce(tickets);
+
+      const result = await service.getHelpdeskTeamDetail(1);
+      expect(result.id).toBe(1);
+      expect(result.recentTickets).toEqual(tickets);
+    });
+  });
+
+  describe('getKnowledgeCategories', () => {
+    it('should return knowledge categories with article counts', async () => {
+      const categories = [{ id: 1, name: 'Brand Guidelines' }];
+      mockOdooService.execute.mockResolvedValueOnce(categories);
+      mockOdooService.searchCount = vi.fn().mockResolvedValueOnce(12);
+
+      const result = await service.getKnowledgeCategories();
+      expect(result).toHaveLength(1);
+      expect(result[0].articleCount).toBe(12);
+    });
+  });
+
+  describe('getMailNotifications', () => {
+    it('should fetch notifications with partner filtering', async () => {
+      const notifications = [{ id: 1, is_read: false, notification_type: 'email' }];
+      mockOdooService.execute.mockResolvedValueOnce(notifications);
+
+      const result = await service.getMailNotifications(7, 10, 0);
+      expect(result).toEqual(notifications);
+      expect(mockOdooService.execute).toHaveBeenCalledWith(
+        'mail.notification',
+        'search_read',
+        [
+          [['res_partner_id', '=', 7]],
+          ['mail_message_id', 'res_partner_id', 'notification_type', 'notification_status', 'is_read', 'failure_type'],
+          0,
+          10,
+          'id desc',
+        ],
+      );
+    });
+  });
+
+  describe('getAccountJournals and getBankStatements', () => {
+    it('should fetch active account journals', async () => {
+      const journals = [{ id: 1, name: 'Customer Invoices', code: 'INV', type: 'sale' }];
+      mockOdooService.execute.mockResolvedValueOnce(journals);
+
+      const result = await service.getAccountJournals();
+      expect(result).toEqual(journals);
+      expect(mockOdooService.execute).toHaveBeenCalledWith(
+        'account.journal',
+        'search_read',
+        [[['active', '=', true]], ['name', 'code', 'type', 'currency_id', 'company_id', 'active'], 0, 50, 'name asc'],
+      );
+    });
+
+    it('should fetch bank statements', async () => {
+      const statements = [{ id: 1, name: 'BNK1/2026/08', balance_end_real: 250000 }];
+      mockOdooService.execute.mockResolvedValueOnce(statements);
+
+      const result = await service.getBankStatements();
+      expect(result).toEqual(statements);
     });
   });
 

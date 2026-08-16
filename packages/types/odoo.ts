@@ -156,6 +156,20 @@ export interface OdooInvoice {
   state?: string;
   move_type?: string;
   payment_state?: string;
+  invoice_line_ids?: OdooInvoiceLine[];
+}
+
+export interface OdooInvoiceLine {
+  id: number;
+  move_id?: OdooIdName;
+  product_id?: OdooIdName;
+  name?: string;
+  quantity?: number;
+  price_unit?: number;
+  price_subtotal?: number;
+  price_total?: number;
+  tax_ids?: OdooIdName[];
+  account_id?: OdooIdName;
 }
 
 export interface OdooPartner {
@@ -205,11 +219,27 @@ export interface OdooHelpdeskTicket {
   name: string;
   partner_id?: OdooIdName;
   stage_id?: OdooIdName;
+  team_id?: OdooIdName;
   user_id?: OdooIdName;
   priority?: string;
   description?: string;
   create_date?: string;
   close_date?: string;
+}
+
+export interface OdooHelpdeskTeam {
+  id: number;
+  name: string;
+  description?: string;
+  member_ids?: OdooIdName[];
+  company_id?: OdooIdName;
+  ticket_count?: number;
+  ticketCount?: number;
+  color?: number;
+}
+
+export interface OdooHelpdeskTeamDetail extends OdooHelpdeskTeam {
+  recentTickets?: OdooHelpdeskTicket[];
 }
 
 export interface OdooEmployee {
@@ -245,6 +275,15 @@ export interface OdooKnowledgeArticle {
   write_date?: string;
 }
 
+export interface OdooKnowledgeCategory {
+  id: number;
+  name: string;
+  parent_id?: OdooIdName;
+  child_ids?: OdooIdName[];
+  article_count?: number;
+  articleCount?: number;
+}
+
 export interface OdooCalendarEvent {
   id: number;
   name: string;
@@ -268,6 +307,16 @@ export interface OdooMailMessage {
   model?: string;
   res_id?: number;
   message_type?: string;
+}
+
+export interface OdooMailNotification {
+  id: number;
+  mail_message_id?: OdooIdName;
+  res_partner_id?: OdooIdName;
+  notification_type?: string;
+  notification_status?: string;
+  is_read?: boolean;
+  failure_type?: string;
 }
 
 export interface OdooDocument {
@@ -378,6 +427,27 @@ export interface OdooJournalItem {
   partner_id?: OdooIdName;
   currency_id?: OdooIdName;
   amount_currency?: number;
+}
+
+export interface OdooAccountJournal {
+  id: number;
+  name: string;
+  code?: string;
+  type?: string;
+  currency_id?: OdooIdName;
+  company_id?: OdooIdName;
+  active?: boolean;
+}
+
+export interface OdooBankStatement {
+  id: number;
+  name: string;
+  date?: string;
+  journal_id?: OdooIdName;
+  balance_start?: number;
+  balance_end_real?: number;
+  state?: string;
+  company_id?: OdooIdName;
 }
 
 export interface OdooPayment {
