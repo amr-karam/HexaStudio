@@ -56,12 +56,6 @@ http:
       service: uptime-kuma
       
 
-    # AI Services
-    ai:
-      rule: "Host(`ai.hexastudio.net`)"
-      service: ai-service
-      
-
     # Auth
     auth:
       rule: "Host(`auth.hexastudio.net`)"
@@ -127,9 +121,6 @@ http:
     uptime-kuma:
       loadBalancer:
         servers: [{ url: "http://uptime-kuma:3001" }]
-    ai-service:
-      loadBalancer:
-        servers: [{ url: "http://ai-service:8080" }]
     auth-service:
       loadBalancer:
         servers: [{ url: "http://auth-service:8080" }]
