@@ -18,7 +18,9 @@ echo "Deploying to $NEXT_SOT slot..."
 export SOT=$NEXT_SOT
 
 # Pull and start
-docker compose -f docker-compose.prod.yml pull
+# --ignore-buildable: services with a build context (e.g. webhook,
+# hexa-webhook:local) have no registry image and must never be pulled.
+docker compose -f docker-compose.prod.yml pull --ignore-buildable
 SOT=$NEXT_SOT docker compose -f docker-compose.prod.yml up -d --build --no-deps backend frontend cms
 
 # Wait for health

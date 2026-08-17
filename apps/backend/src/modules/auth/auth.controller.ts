@@ -135,7 +135,7 @@ export class AuthController {
   @ApiResponse({ status: 403, description: 'CSRF token mismatch' })
   async logout(
     @Res({ passthrough: true }) res: Response,
-    @Headers('authorization') authHeader?: string,
+    @Headers('authorization') authHeader: string,
     @Body() body: { refreshToken: string },
   ) {
     const accessToken = authHeader?.replace('Bearer ', '') ?? '';
