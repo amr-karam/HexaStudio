@@ -636,6 +636,34 @@ Deployed via direct server run: `SOT=green docker compose -f docker-compose.prod
 
 ---
 
+## 2026-08-17 — Frontend Performance Remediation P1+P2 — COMPLETE
+
+**Status:** ✅ Deployed & measured (commit `833905d`, main → green slot)
+
+### 1. P1 — duplicate font CSS preload removed (FCP fix)
+- Removed `<link rel="preload" as="style">` (id `gf-preload`) + `<noscript>` stylesheet duplicate for the Google Fonts css2 sheet; kept async `media="print"` loader + inline promote script + 5 woff2 preloads.
+- Context: App Router re-emits head preload/preconnect/dns-prefetch both via RSC flight payload (`:HL`) and JSX → duplicate link sets in live HTML; Lighthouse flags the no-media duplicates as render-blocking.
+
+### 2. P2 — stale githack origins removed (hygiene)
+- `raw.githack.com` preconnect/dns-prefetch dropped from `layout.tsx`; `raw.githubusercontent.com` + `raw.githack.com` removed from CSP `script-src`/`connect-src` in `next.config.ts` (no consumers remain).
+
+### 3. Measured results (Lighthouse 13.4.1 desktop, 3-run median)
+| Metric | Pre-fix | Post-fix |
+|--------|---------|----------|
+| Score | 37 | **49** |
+| FCP | 2.65 s | **1.16 s** (back at Jul-23 baseline) |
+| LCP | 2.91 s | **2.35 s** |
+| SI | 15.2 s | **3.27 s** |
+| CLS | 0.021 | **0.006** |
+| TBT | 1.08 s | ~0.84–1.37 s (noisy, unchanged) |
+
+### 4. Notes
+- Deploy used the compose blue/green slot switch (green now live, healthy). Server repo fast-forwarded to `833905d` (tracks `gitlab/main`).
+- Remaining: LCP ~0.5 s gap + hydration burst (TBT) — see `docs/quality/LIGHTHOUSE_AUDIT_2026-08-17.md` §3.1/§5; re-profile with `@performance-engineer`.
+- Live HTML verified: no `gf-preload`, no `raw.githack`, no `<noscript>` stylesheet; CSP header clean.
+
+---
+
 ## 2026-08-16 — Follow-up Fixes: Odoo Webhook, GitLab CI, Traefik Dead Routes — COMPLETE
 
 **Status:** ✅ All live-verified

@@ -70,10 +70,30 @@ Consistently ~15 s across all runs — the animated hero canvas never satisfies 
 
 | Priority | Item | Effort | Impact | Status |
 |----------|------|--------|--------|--------|
-| P1 | Remove duplicate render-blocking font `<link>`; keep async loader | S | FCP −0.5–1.5 s | ⏳ Proposed (needs approval — `layout.tsx` on `feat/editorial-hero-cms` is actively edited by another session; apply on main) |
+| P1 | Remove duplicate render-blocking font `<link>`; keep async loader | S | FCP −0.5–1.5 s | ✅ Done (`833905d`, deployed) — FCP 2.65→1.16 s |
 | P1 | Re-profile hydration burst with `@performance-engineer` (trace: `trace-home.json.gz`) | M | TBT ↓ | ⏳ Deferred — needs specialist |
-| P2 | Remove unused `raw.githack.com` preconnect + CSP script-src/connect-src entries | S | Hygiene | ⏳ Proposed |
+| P2 | Remove unused `raw.githack.com` preconnect + CSP script-src/connect-src entries | S | Hygiene | ✅ Done (`833905d`, deployed) |
 | P3 | Verify hero autoplay vs motion-policy; document SI as non-actionable if intended | S | Doc | ⏳ Proposed |
 | P3 | Investigate pending `/api/currency/list` + `/api/users/me` fetches | M | Network hygiene | ⏳ Deferred |
+
+## 5. Remediation 1 applied — P1+P2 results (post-fix re-audit)
+
+**Commit:** main `833905d` (deployed 2026-08-17, green slot) · same tooling & preset (Lighthouse 13.4.1 desktop, 3-run median)
+
+**Fixes applied:**
+- P1 — removed the redundant `<link rel="preload" as="style">` (id `gf-preload`) for the css2 sheet and the `<noscript>` stylesheet duplicate; kept the async `media="print"` gf-css loader + inline promote script. Font head set is now: 5 woff2 preloads + 1 non-blocking stylesheet.
+- P2 — removed `raw.githack.com` preconnect/dns-prefetch from `layout.tsx` and `raw.githubusercontent.com`/`raw.githack.com` from CSP `script-src`/`connect-src` in `next.config.ts`.
+
+| Metric | Aug-17 median (pre-fix) | **Post-fix median** | Delta | Status |
+|--------|-------------------------|---------------------|-------|--------|
+| Performance score | 37 | **49** (38/49/49) | +12 | Improvement |
+| First Contentful Paint | 2.65 s | **1.16 s** (1.07/1.74/1.16) | −1.49 s | ✔ Back at Jul-23 baseline (1.06 s) |
+| Largest Contentful Paint | 2.91 s | **2.35 s** (2.35/3.51/2.29) | −0.56 s | Improvement (still ~0.5 s off Jul-23) |
+| Speed Index | 15.2 s | **3.27 s** (3.05/3.27/15.1*) | −11.9 s | Improvement (*r3 hero-animation artifact) |
+| Total Blocking Time | 1,084 ms | **1,373 ms** (837/1,373/8,755†) | ≈ | Stable runs 0.84–1.37 s vs 1.08 s baseline; †r1 = machine spike (AV/OneDrive) |
+| Cumulative Layout Shift | 0.021 | **0.006** (0.004/0.006/0.027) | −0.015 | Improvement |
+| TTFB | 140 ms | **150 ms** (137–160) | +10 ms | Fine |
+
+**Verdict:** the FCP regression is fully remediated (1.06 → 2.65 → 1.16 s). Remaining gap to the Jul-23 score (86): LCP ~0.5 s and the hydration burst (TBT ~1 s during GSAP/3D idle-boot) — tracked in §3.1; re-profile with `@performance-engineer` (trace: `trace-home.json.gz`).
 
 *Report generated 2026-08-17 by HEXA Studio orchestration session (chrome-devtools-profiling skill). Method matches the canonical 2026-07-22 template (Lighthouse 13.4.1 vs 12.x baseline — version delta noted; July medians from LIGHTHOUSE_AUDIT_2026-07-22.md §10).*
