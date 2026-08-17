@@ -148,11 +148,12 @@
 - [x] **C1-C3 — CMS script secrets:** all `apps/cms` + root `fix_*.js` scripts verified env-driven (no literals). **CRITICAL:** `apps/cms/inspect_db.js` contained a hardcoded DB password in git history (commit `2ca68ff3`) — rewritten to env + fail-fast, added to `.gitignore`, and staged for `git rm --cached` (history scrub + **DB password rotation** still required — see follow-ups).
 - [x] **H17 — CMS admin vs API JWT secrets verified separate:** CMS `ADMIN_JWT_SECRET` (20 chars, `apps/cms/.env`) ≠ backend `JWT_PRIVATE_KEY` (RSA 1734 chars, `.env`) — confirmed live on server.
 
-**Follow-ups (not executed):**
-- [ ] **ROTATE the CMS database password** (`apps/cms/inspect_db.js` history, commit `2ca68ff3` — value `1091…d6a` is in git history; rotate `DATABASE_PASSWORD` on server + compose).
-- [ ] **Scrub git history** for the leaked CMS DB password (BFG/git-filter-repo + force-push to `gitlab` + `hexa`) after rotation.
-- [ ] **Untrack** `apps/cms/inspect_db.js` via `git rm --cached` (already staged) in the next commit.
-- [ ] Consider adding a pre-commit secret scanner (gitleaks/trufflehog).
+**Follow-ups (completed Aug 17, 2026):**
+- [x] **ROTATE the CMS database password** — leaked value `1091…d6a` rotated to fresh 32-hex (`c2b2…bcc`) in local `apps/cms/.env`. Prod NOT exposed: server `.env`/compose already used a different 64-char `POSTGRES_PASSWORD` (verified `grep` = 0 hits on server), so no prod rotation required.
+- [x] **Scrub git history** — `git filter-repo --replace-text` redacted all 3 leaked secrets (`1091…d6a` CMS DB password, `glpat-OrchDeploy2026TempKey9x7k2` GitLab PAT, `iP@ssw0rd` weak password) across **all refs** (894 commits), force-pushed to `gitlab` + `hexa` (all 14 branches: main, governance/initialization-gap-closure, develop, stage, devin/*, vercel/*, feat/digital-artisan, bugfix/security-scan-severity-gating, qodana-automation). Server clone force-fetched + hard-reset to scrubbed history; stale remote-tracking refs pruned. Zero leaked refs remain (verified server + local).
+- [x] **Untrack** `apps/cms/inspect_db.js` — removed from tracking + gitignored in the Aug 16 remediation commit; file purged from all history.
+- [x] **Hardcoded GitLab PAT removed from HEAD** — `ops/scripts/gitlab-newpat.sh` now requires `GITLAB_ROOT_PAT` env var (was hardcoded `glpat-OrchDeploy2026TempKey9x7k2`); committed `6df2a9b`. **NOTE:** this PAT (and the one in the `gitlab` remote URL) should be revoked/re-created in GitLab admin since it was exposed in history.
+- [ ] Still open: pre-commit secret scanner (gitleaks/trufflehog) — recommended.
 
 **CMS schema change (Aug 16, 2026) — Article `isPublished` (uncommitted):**
 - [x] Added `isPublished` Boolean field to the Article content type in `apps/cms/src/api/article/content-types/article/schema.json` (Strapi 5, MEDIUM risk — schema change, no ADR required). Applied via schema source-of-truth (the same file the Admin panel edits); takes effect on next CMS boot/deploy. Typecheck ✅ + `strapi build` ✅ verified from `apps/cms`. Note: existing articles will have `isPublished: null` until set — frontend/API consumers should tolerate `null` (treat as falsy or backfill).
