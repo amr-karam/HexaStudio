@@ -664,6 +664,26 @@ Deployed via direct server run: `SOT=green docker compose -f docker-compose.prod
 
 ---
 
+## 2026-08-17 (2) — LCP Cascade Fix (headline no longer hidden) — COMPLETE
+
+**Status:** ✅ Deployed & verified (commit `f43ccb9`, main → green slot)
+
+### 1. Root cause
+- LCP element = `h1.sl-heading > span.block` ("Visualized."). GSAP cascade hid it (`opacity:0`, y:40) at cascade start and revealed ~1.4 s later → LCP = reveal frame (elementRenderDelay 2,267 ms in Lighthouse; invisible hero if JS stalls). Preloader not involved (skips under `navigator.webdriver`).
+
+### 2. Fix
+- `HomeHeroStatic.tsx`: headline removed from the cascade — statically visible from first paint; kicker/subline/CTA/marker keep the entrance choreography. **Visual note for designer:** headline no longer fades in.
+
+### 3. Verification (6 desktop runs, same tooling)
+- **FCP→LCP delta collapsed ~1.4 s → ~0.55 s** (448–786 ms across runs) — LCP element paints immediately after FCP; residual = webfont swap.
+- Absolute values (FCP ~1.8 s, score 39–42) inflated by host throttling: same vendor chunk evaluated 1,941 ms (morning) vs 4,166 ms (afternoon); odoo control scored 92 / FCP 444 ms in the same window. Expected clean-env LCP ≈ 1.6–1.8 s vs 2.35 s pre-fix. Re-run in quiet window or CI for final numbers.
+
+### 4. Notes
+- Gates green (lint/typecheck/49 files/357 tests via worktree junctions). Pushed to `gitlab` + `hexa`; server fast-forwarded; green slot healthy; site 200.
+- Open: TBT hydration burst (§3.1) still pending `@performance-engineer`; SI ~15 s hero-animation artifact documented as intended-visual (§3.3).
+
+---
+
 ## 2026-08-16 — Follow-up Fixes: Odoo Webhook, GitLab CI, Traefik Dead Routes — COMPLETE
 
 **Status:** ✅ All live-verified

@@ -96,4 +96,31 @@ Consistently ~15 s across all runs — the animated hero canvas never satisfies 
 
 **Verdict:** the FCP regression is fully remediated (1.06 → 2.65 → 1.16 s). Remaining gap to the Jul-23 score (86): LCP ~0.5 s and the hydration burst (TBT ~1 s during GSAP/3D idle-boot) — tracked in §3.1; re-profile with `@performance-engineer` (trace: `trace-home.json.gz`).
 
+---
+
+## 6. Remediation 2 applied — LCP cascade fix (headline no longer hidden)
+
+**Commit:** main `f43ccb9` (deployed 2026-08-17, green slot) · same tooling & preset (Lighthouse 13.4.1 desktop)
+
+**Root cause (confirmed from code + trace):** the LCP element is `h1.sl-heading > span.block` ("Visualized.") in `HomeHeroStatic.tsx`. The GSAP cascade ran `fromTo(q('[data-hero-headline]'), {y:40, opacity:0}, {y:0, opacity:1, duration:1.4}, 0.15)` — it hid the SSR-visible headline at cascade start (~hydration) and revealed it ~1.4 s later. In Lighthouse's throttled runs the LCP timestamp = the reveal frame (`largest-contentful-paint-element` insight: TTFB 273 ms + elementRenderDelay 2,267 ms). Unthrottled real browser: LCP 1,392 ms (milder but fragile). The preloader is **not** involved — it self-skips under `navigator.webdriver` (never plays in Lighthouse).
+
+**Fix applied:** the headline is removed from the cascade — it stays statically visible from first paint; kicker/subline/CTA/marker keep the cascaded entrance (visual note: headline no longer fades in).
+
+**Verification (6 desktop runs, post-fix):**
+
+| Run | Score | FCP | LCP | FCP→LCP Δ | TBT | CLS |
+|-----|-------|-----|-----|-----------|-----|-----|
+| p2-r1 | 39 | 2,076 | 2,661 | 585 | 986 | 0.051 |
+| p2-r2 | 41 | 1,831 | 2,447 | 616 | 1,729 | 0.018 |
+| p2-r3 | 41 | 1,832 | 2,429 | 597 | 3,238 | 0.023 |
+| p2-r4 | 42 | 1,841 | 2,289 | 448 | 2,955 | 0.005 |
+| p2-r5 | 40 | 1,756 | 2,542 | 786 | 3,921 | 0.016 |
+| p2-r6 | 39 | 1,898 | 2,587 | 689 | 2,480 | 0.023 |
+
+**Key evidence — FCP→LCP delta collapsed from ~1.4 s to ~0.55 s** (pre-fix deltas 1,134/1,765/1,286 ms; post-fix 448–786 ms). The LCP element now paints immediately after first contentful paint (residual ~0.5 s = webfont swap). Behavioral fix verified on the live build.
+
+**Caveat — absolute values inflated by host throttling:** post-fix runs happened in the afternoon on the i7-7820HK dev box (base 2.9 GHz, sustained-load state; software rasterization since `--disable-gpu`). Same byte-identical vendor chunk evaluated in 1,941 ms (morning, p1d runs) vs 4,166 ms (afternoon) — 2.1× host slowdown, not app change. Control: odoo login page scored 92 / FCP 444 ms in the same window (trivial page, insensitive). **Expected LCP in a clean/CI environment: ≈ FCP + 0.5 s ≈ 1.6–1.8 s** (vs 2.35 s pre-fix). Re-run for final numbers from a quiet window or CI runner.
+
+*Report generated 2026-08-17 by HEXA Studio orchestration session. Method matches the canonical 2026-07-22 template.*
+
 *Report generated 2026-08-17 by HEXA Studio orchestration session (chrome-devtools-profiling skill). Method matches the canonical 2026-07-22 template (Lighthouse 13.4.1 vs 12.x baseline — version delta noted; July medians from LIGHTHOUSE_AUDIT_2026-07-22.md §10).*
