@@ -587,13 +587,16 @@ body {
   font-style: italic;
 }
 
-/* Narrative body text — enhanced readability for storybook sections */
+/* Narrative body text — enhanced readability for storybook sections.
+   72ch keeps prose readable while allowing ~760px on wide screens so the
+   embedded homepage sections (FeaturedWork, Process, Achievements, Projects,
+   Testimonials) get more room than the old 680px column. */
 .storybook-body {
   font-family: 'Inter', system-ui, sans-serif;
   font-size: clamp(1rem, 1.4vw, 1.125rem);
   line-height: 1.8;
   color: rgba(255, 255, 255, 0.75);
-  max-width: 680px;
+  max-width: clamp(640px, 72ch, 760px);
   margin: 0 auto;
 }
 

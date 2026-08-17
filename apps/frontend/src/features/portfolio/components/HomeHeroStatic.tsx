@@ -210,7 +210,6 @@ export const HomeHeroStatic = () => {
             data-hero-headline=""
             aria-label="Living Spaces. Visualized."
             className="sl-heading sl-heading-display font-light leading-tight"
-            style={{ fontFamily: 'Cormorant Garamond, Playfair Display, Georgia, serif' }}
           >
             <span aria-hidden="true" className="block text-alabaster">
               Living

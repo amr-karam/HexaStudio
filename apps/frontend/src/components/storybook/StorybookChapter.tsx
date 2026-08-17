@@ -86,8 +86,10 @@ export function StorybookChapter({
   const idAttr = id ?? `ch-${chapterNumber}`;
 
   // Chapter intro: numeral + rules + title
+  // Mirrors .storybook-body's clamp so the intro column aligns with the
+  // narrative body column below it at every viewport width.
   const chapterIntro = (
-    <div className="relative z-10 max-w-3xl mx-auto text-center">
+    <div className="relative z-10 max-w-[clamp(640px,72ch,760px)] mx-auto text-center">
       {/* Large chapter numeral */}
       <div aria-hidden="true" className="mb-10">
         <ChapterNumeral number={chapterNumber} />

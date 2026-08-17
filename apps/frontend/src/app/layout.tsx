@@ -90,7 +90,9 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="//us.i.posthog.com" />
         {/* Hero font files — start download immediately, skipping the CSS→font
             discovery waterfall. Latin variable subsets only (Inter = body/hero,
-            Playfair Display = headings). JetBrains Mono loads on demand. */}
+            Playfair Display = headings, Cormorant Garamond = Silent Luxury
+            headings incl. italic, Jost = Silent Luxury body). JetBrains Mono
+            loads on demand. */}
         {/* eslint-disable @next/next/google-font-preconnect -- false positive: the preconnect to fonts.gstatic.com is present above; the rule does not detect it. */}
         <link
           rel="preload"
@@ -104,6 +106,30 @@ export default function RootLayout({
           as="font"
           type="font/woff2"
           href="https://fonts.gstatic.com/s/playfairdisplay/v40/nuFiD-vYSZviVYUb_rj3ij__anPXDTzYgA.woff2"
+          crossOrigin="anonymous"
+        />
+        {/* Cormorant Garamond — Silent Luxury heading font (normal + italic latin
+            subsets; italic is used by the hero headline accent word). */}
+        <link
+          rel="preload"
+          as="font"
+          type="font/woff2"
+          href="https://fonts.gstatic.com/s/cormorantgaramond/v21/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYqXtK.woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          as="font"
+          type="font/woff2"
+          href="https://fonts.gstatic.com/s/cormorantgaramond/v21/co3ZmX5slCNuHLi8bLeY9MK7whWMhyjYrEtImSo.woff2"
+          crossOrigin="anonymous"
+        />
+        {/* Jost — Silent Luxury body font (latin subset). */}
+        <link
+          rel="preload"
+          as="font"
+          type="font/woff2"
+          href="https://fonts.gstatic.com/s/jost/v20/92zatBhPNqw73oTd4g.woff2"
           crossOrigin="anonymous"
         />
         {/* Non-blocking font CSS — preloaded as stylesheet and promoted to
@@ -120,13 +146,13 @@ export default function RootLayout({
           rel="preload"
           as="style"
           id="gf-preload"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&family=Playfair+Display:wght@400..900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&family=Playfair+Display:wght@400..900&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Jost:wght@200..500&display=swap"
         />
         <link
           rel="stylesheet"
           media="print"
           id="gf-css"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&family=Playfair+Display:wght@400..900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&family=Playfair+Display:wght@400..900&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Jost:wght@200..500&display=swap"
         />
         <script
           dangerouslySetInnerHTML={{
@@ -136,7 +162,7 @@ export default function RootLayout({
         <noscript>
           <link
             rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&family=Playfair+Display:wght@400..900&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&family=Playfair+Display:wght@400..900&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Jost:wght@200..500&display=swap"
           />
         </noscript>
       </head>
