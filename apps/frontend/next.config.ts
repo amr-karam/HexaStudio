@@ -24,7 +24,7 @@ const withBundleAnalyzer = bundleAnalyzer({
 const ContentSecurityPolicy = [
   "default-src 'self'",
   // Scripts: Next.js hydration + JSON-LD need 'unsafe-inline'; React/Three.js/PostHog/Sentry need 'unsafe-eval'
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https://www.googletagmanager.com https://us.i.posthog.com https://www.gstatic.com https://static.cloudflareinsights.com https://challenges.cloudflare.com https://*.cloudflare.com https://cloudflareinsights.com https://*.posthog.com https://hexastudio.net https://*.hexastudio.net https://raw.githubusercontent.com https://raw.githack.com https://storage.hexastudio.net",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https://www.googletagmanager.com https://us.i.posthog.com https://www.gstatic.com https://static.cloudflareinsights.com https://challenges.cloudflare.com https://*.cloudflare.com https://cloudflareinsights.com https://*.posthog.com https://hexastudio.net https://*.hexastudio.net https://storage.hexastudio.net",
   // Styles: Tailwind + Google Fonts
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com",
@@ -36,7 +36,7 @@ const ContentSecurityPolicy = [
   [
     "connect-src 'self'",
     "http://api.localhost ws://api.localhost http://localhost:4000 ws://localhost:4000 http://127.0.0.1:4000 ws://127.0.0.1:4000",
-    "https://api.hexastudio.net wss://api.hexastudio.net https://*.hexastudio.net wss://*.hexastudio.net https://fonts.googleapis.com https://fonts.gstatic.com https://www.gstatic.com https://us.i.posthog.com https://us.posthog.com https://*.posthog.com https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.sentry.io https://cloudflareinsights.com https://challenges.cloudflare.com https://*.cloudflare.com https://raw.githubusercontent.com https://raw.githack.com https://storage.hexastudio.net https://*.hexastudio.net data: blob:",
+    "https://api.hexastudio.net wss://api.hexastudio.net https://*.hexastudio.net wss://*.hexastudio.net https://fonts.googleapis.com https://fonts.gstatic.com https://www.gstatic.com https://us.i.posthog.com https://us.posthog.com https://*.posthog.com https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.sentry.io https://cloudflareinsights.com https://challenges.cloudflare.com https://*.cloudflare.com https://storage.hexastudio.net https://*.hexastudio.net data: blob:",
   ].join(" "),
   "worker-src 'self' blob: https://*.cloudflare.com",
   "child-src 'self' blob: https://challenges.cloudflare.com https://*.cloudflare.com",
