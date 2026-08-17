@@ -22,6 +22,9 @@ export async function fetchProjects(locale?: string): Promise<ProjectResponse> {
 
     const params = new URLSearchParams();
     if (locale) params.set('locale', locale);
+    // Filter published projects OR legacy projects (null)
+    params.set('filters[$or][0][isPublished][$eq]', 'true');
+    params.set('filters[$or][1][isPublished][$null]', 'true');
     const query = params.toString();
 
     const response = await fetchWithTimeout(`${baseUrl}/api/projects${query ? `?${query}` : ''}`, {

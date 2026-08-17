@@ -1,4 +1,5 @@
-import { HomeHeroStatic } from "@/features/portfolio/components/HomeHeroStatic";
+
+import { HeroEditorial } from "@/components/hero/HeroEditorial";
 import { HomeChapterRail } from "@/features/portfolio/components/HomeChapterRail";
 import { HomePageDynamic } from "@/features/portfolio/components/HomePageDynamic";
 import { StudioSection } from "@/features/portfolio/components/StudioSection";
@@ -44,9 +45,9 @@ export default async function HomePage() {
       <div className="sl-vignette" aria-hidden="true" />
       {/* Subtle warm radial glow */}
       <div className="absolute inset-0 gradient-radial-gold opacity-20 pointer-events-none" aria-hidden="true" />
-
+      
       <HomeChapterRail />
-      <HomeHeroStatic />
+      <HeroEditorial />
       <GlobalErrorBoundary>
         <HomePageDynamic
           featuredProject={featuredProject}
@@ -57,3 +58,4 @@ export default async function HomePage() {
     </div>
   );
 }
+
