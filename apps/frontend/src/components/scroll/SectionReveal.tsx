@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { getGsap } from '@/lib/gsap';
-import { onIdle } from '@/lib/idle';
+import { scheduleIdle } from '@/lib/idle';
 import { GSAP_EASING } from '@/lib/motion/tokens';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { useQualityTier } from '@/providers/quality-provider';
@@ -17,6 +17,30 @@ interface SectionRevealProps {
    * slide over the pinned one.
    */
   distance?: number;
+}
+
+/**
+ * Shared, throttled ScrollTrigger.refresh() safety net — module-level
+ * singleton. Pin setup now runs through one batched idle queue (up to ~5s
+ * post-hydration instead of per-instance 1.2s timeouts), so a fast early
+ * scroll can pass a section before its pin exists. One throttled
+ * refresh-on-scroll/resize keeps the pin math honest if that happens.
+ */
+let refreshBound = false;
+let refreshTimer: ReturnType<typeof setTimeout> | undefined;
+
+function bindRefreshSafetyNet(refresh: () => void): void {
+  if (refreshBound) return;
+  refreshBound = true;
+  const schedule = () => {
+    if (refreshTimer) return;
+    refreshTimer = setTimeout(() => {
+      refreshTimer = undefined;
+      refresh();
+    }, 250);
+  };
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
 }
 
 /** Retreat transform of the pinned section while it is being covered. */
@@ -67,7 +91,7 @@ export const SectionReveal = ({ children, className, distance = 1 }: SectionReve
     let ctx: { revert: () => void } | null = null;
     let removeLoadListener: (() => void) | null = null;
 
-    const cancelIdle = onIdle(() => {
+    const cancelIdle = scheduleIdle(() => {
     void (async () => {
       const [gsap, scrollTriggerModule] = await Promise.all([
         getGsap(),
@@ -75,6 +99,7 @@ export const SectionReveal = ({ children, className, distance = 1 }: SectionReve
       ]);
       if (cancelled) return;
       const { ScrollTrigger } = scrollTriggerModule;
+      bindRefreshSafetyNet(() => ScrollTrigger.refresh());
 
       ctx = gsap.context(() => {
         const start = () =>
@@ -138,7 +163,7 @@ export const SectionReveal = ({ children, className, distance = 1 }: SectionReve
         removeLoadListener = () => window.removeEventListener('load', refresh);
       }
     })();
-    }, 1200);
+    });
 
     return () => {
       cancelled = true;
