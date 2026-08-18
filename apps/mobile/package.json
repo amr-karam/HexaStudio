@@ -10,7 +10,7 @@
     "web": "expo start --web",
     "lint": "eslint src __tests__",
     "typecheck": "tsc --noEmit",
-    "test": "jest"
+    "test": "npx --yes jest@29.7.0"
   },
   "dependencies": {
     "@hexastudio/types": "*",

@@ -142,8 +142,8 @@ const FILE_UPLOADS_DAILY = [2, 1, 3, 0, 2, 1, 4, 1, 2, 0, 3, 2, 1, 0, 2, 3, 1, 2
 
 const BUDGET_SEGMENTS: BudgetSegment[] = [
   { label: 'Paid', percentage: 50, color: 'url(#goldGradient)' },
-  { label: 'Outstanding', percentage: 25, color: '#D4AF37' },
-  { label: 'Remaining', percentage: 25, color: '#2A2A2E' },
+  { label: 'Outstanding', percentage: 25, color: 'var(--color-gold)' },
+  { label: 'Remaining', percentage: 25, color: 'var(--color-slate)' },
 ];
 
 const ACTIVITY_HEATMAP_DATA: HeatmapCell[] = (() => {
@@ -633,13 +633,13 @@ function ResponseTimeChart({ reduced }: { reduced: boolean }) {
         >
           <defs>
             <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#A8862E" />
-              <stop offset="50%" stopColor="#D4AF37" />
-              <stop offset="100%" stopColor="#E5C76B" />
+              <stop offset="0%" stopColor="var(--color-gold-deep)" />
+              <stop offset="50%" stopColor="var(--color-gold)" />
+              <stop offset="100%" stopColor="var(--color-gold-bright)" />
             </linearGradient>
             <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#D4AF37" stopOpacity="0.15" />
-              <stop offset="100%" stopColor="#D4AF37" stopOpacity="0" />
+              <stop offset="0%" stopColor="var(--color-gold)" stopOpacity="0.15" />
+              <stop offset="100%" stopColor="var(--color-gold)" stopOpacity="0" />
             </linearGradient>
           </defs>
 
@@ -653,7 +653,7 @@ function ResponseTimeChart({ reduced }: { reduced: boolean }) {
                 x2={chartWidth - paddingX}
                 y1={y}
                 y2={y}
-                stroke="#2A2A2E"
+                stroke="var(--color-slate)"
                 strokeWidth="0.5"
                 strokeDasharray="3,3"
               />
@@ -689,8 +689,8 @@ function ResponseTimeChart({ reduced }: { reduced: boolean }) {
               cx={pt.x}
               cy={pt.y}
               r="3"
-              fill="#0F0F10"
-              stroke="#D4AF37"
+              fill="var(--color-obsidian)"
+              stroke="var(--color-gold)"
               strokeWidth="1.5"
               initial={{ opacity: 0, scale: 0 }}
               animate={reduced
@@ -835,8 +835,8 @@ function BudgetDonut({ reduced }: { reduced: boolean }) {
           <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
             <defs>
               <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#D4AF37" />
-                <stop offset="100%" stopColor="#E5C76B" />
+                <stop offset="0%" stopColor="var(--color-gold)" />
+                <stop offset="100%" stopColor="var(--color-gold-bright)" />
               </linearGradient>
             </defs>
 
@@ -846,7 +846,7 @@ function BudgetDonut({ reduced }: { reduced: boolean }) {
               cy="50"
               r={radius}
               fill="none"
-              stroke="#1A1A1E"
+              stroke="var(--color-slate)"
               strokeWidth="8"
             />
 
@@ -875,7 +875,7 @@ function BudgetDonut({ reduced }: { reduced: boolean }) {
               cy="50"
               r={radius}
               fill="none"
-              stroke="#D4AF37"
+              stroke="var(--color-gold)"
               strokeWidth="8"
               strokeLinecap="round"
               strokeDasharray={`${outstandingArc} ${circumference - outstandingArc}`}
@@ -1058,3 +1058,4 @@ export function AnalyticsView() {
     </div>
   );
 }
+

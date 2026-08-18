@@ -357,7 +357,7 @@ export const portalApi = {
 /*  Fallback / Mock Data (used when API is unreachable)                       */
 /* -------------------------------------------------------------------------- */
 
-export const MOCK_PROJECTS: PortalProject[] = [
+export const MOCK_PROJECTS: PortalProject[] = process.env.NODE_ENV === 'development' ? [
   {
     id: 1,
     name: 'Horizon Villa',
@@ -375,5 +375,5 @@ export const MOCK_PROJECTS: PortalProject[] = [
       { id: 7, name: 'Client Review', date: '2026-12-01', completed: false, description: 'Final presentation and approval' },
     ],
   },
-];
+] : [];
 

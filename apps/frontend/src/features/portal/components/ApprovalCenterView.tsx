@@ -208,7 +208,7 @@ export function ApprovalCenterView() {
     if (dashboardData?.pendingApprovals && dashboardData.pendingApprovals.length > 0) {
       setApprovals(dashboardData.pendingApprovals as PendingApproval[]);
       setDataSource('live');
-    } else if (approvals.length === 0) {
+    } else if (approvals.length === 0 && process.env.NODE_ENV === 'development') {
       setApprovals(INITIAL_APPROVALS);
       setDataSource('demo');
     }
@@ -525,3 +525,4 @@ export function ApprovalCenterView() {
     </div>
   );
 }
+

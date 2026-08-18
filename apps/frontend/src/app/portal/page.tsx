@@ -100,7 +100,10 @@ async function fetchDashboardData(): Promise<DashboardData> {
   try {
     return await portalApi.getDashboard();
   } catch {
-    return MOCK_FALLBACK_DASHBOARD;
+    if (process.env.NODE_ENV === 'development') {
+      return MOCK_FALLBACK_DASHBOARD;
+    }
+    throw new Error('Failed to load dashboard data');
   }
 }
 

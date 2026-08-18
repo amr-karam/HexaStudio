@@ -125,7 +125,10 @@ async function fetchInvoices(): Promise<InvoiceItem[]> {
     const data = await portalApi.getInvoices();
     return data.map(mapInvoice);
   } catch {
-    return FALLBACK_INVOICES;
+    if (process.env.NODE_ENV === 'development') {
+      return FALLBACK_INVOICES;
+    }
+    throw new Error('Failed to load invoices');
   }
 }
 
@@ -719,4 +722,5 @@ export function FinanceCenterView() {
     </div>
   );
 }
+
 

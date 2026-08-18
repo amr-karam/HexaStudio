@@ -377,7 +377,9 @@ export function DocumentCenterView() {
   const documentItems: DocumentItem[] =
     activeProjectId && !isError
       ? docs.map((doc) => mapToDocumentItem(doc, user?.username))
-      : FALLBACK_DOCUMENTS;
+      : process.env.NODE_ENV === 'development'
+        ? FALLBACK_DOCUMENTS
+        : [];
 
   const filteredDocs = documentItems.filter((doc) => {
     const matchesFolder = activeFolder === 'all' || doc.folder === activeFolder;
@@ -991,3 +993,4 @@ export function DocumentCenterView() {
     </div>
   );
 }
+

@@ -101,14 +101,14 @@ export class OdooService implements OnModuleInit {
         resolve(false);
       }, 5000);
 
-      this.client.methodCall('version', [], (error, value) => {
+      this.client.methodCall('version', [], ((error, value) => {
         clearTimeout(timer);
         if (error || !value) {
           resolve(false);
         } else {
           resolve(true);
         }
-      });
+      }) as xmlrpc.MethodCallback);
     });
   }
 
@@ -129,10 +129,10 @@ export class OdooService implements OnModuleInit {
     for (let attempt = 0; attempt <= this.MAX_RETRIES; attempt++) {
       try {
         const result = await new Promise<number>((resolve, reject) => {
-          this.client.methodCall('authenticate', [db, username, password, {}], (error, value) => {
-            if (error) reject(error);
-            else resolve(value);
-          });
+          this.client.methodCall('authenticate', [db, username, password, {}], ((error, value) => {
+            if (error) reject(error as Error);
+            else resolve(value as number);
+          }) as xmlrpc.MethodCallback);
         });
 
         this.uid = result;
@@ -163,16 +163,16 @@ export class OdooService implements OnModuleInit {
           const env = getEnv();
           const password = env.ODOO_PASSWORD;
           const db = env.ODOO_DB;
-          this.objectClient.methodCall('execute_kw', [db, this.uid!, password, model, method, args], (error, value) => {
+          this.objectClient.methodCall('execute_kw', [db, this.uid!, password, model, method, args], ((error, value) => {
             if (error) {
               if (this.isAuthError(error)) {
                 this.uid = null;
               }
-              reject(error);
+              reject(error as Error);
             } else {
               resolve(value as T);
             }
-          });
+          }) as xmlrpc.MethodCallback);
         });
       } catch (error) {
         lastError = error;
