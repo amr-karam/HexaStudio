@@ -1,6 +1,5 @@
-import { NextResponse } from 'next/server';
-import { authenticatedFetch } from '@/lib/api-client';
-import { API_BASE_URL } from '@/config/constants';
+import { NextRequest, NextResponse } from 'next/server';
+import { proxyToBackend } from '@/lib/bff';
 
 /**
  * Change Order Agreement — BFF proxy to the NestJS portal service.
@@ -10,7 +9,7 @@ import { API_BASE_URL } from '@/config/constants';
  * creation is claimed here: the backend never creates or claims to create an
  * Odoo quotation, and this route never fabricates integration status.
  */
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { title, impactAmount, description } = body as {
@@ -26,36 +25,14 @@ export async function POST(request: Request) {
       );
     }
 
-    const response = await authenticatedFetch(
-      `${API_BASE_URL}/api/v1/portal/contracts/generate`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title,
-          impactAmount: impactAmount ?? '',
-          description,
-        }),
-        signal: AbortSignal.timeout(15000),
+    return proxyToBackend('/api/v1/portal/contracts/generate', request, {
+      method: 'POST',
+      body: {
+        title,
+        impactAmount: impactAmount ?? '',
+        description,
       },
-    );
-
-    if (response.ok) {
-      const data: unknown = await response.json();
-      return NextResponse.json(data);
-    }
-
-    if (response.status === 401 || response.status === 403) {
-      return NextResponse.json(
-        { error: 'Unauthorized — sign in to the client portal to generate contracts' },
-        { status: 401 },
-      );
-    }
-
-    return NextResponse.json(
-      { error: 'Contract generation failed on the backend' },
-      { status: 502 },
-    );
+    });
   } catch {
     return NextResponse.json(
       {

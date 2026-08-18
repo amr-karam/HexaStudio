@@ -348,9 +348,7 @@ export function ModelFusionStudio() {
                 )}
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  {(streamEnabled ? candidates : response?.candidates ?? []).map((candidate) => {
-                    const uiCandidate = isCandidateState(candidate) ? candidate : { ...candidate, rank: candidate.rank ?? 0 } as CandidateState;
-                    return (
+                  {(streamEnabled ? candidates : response?.candidates ?? []).map((candidate) => (
                     <button
                       key={candidate.model}
                       type="button"
@@ -367,8 +365,7 @@ export function ModelFusionStudio() {
                       {candidate.failure && <span className="text-[10px] font-mono text-red-400 block">Failed</span>}
                       {streamEnabled && candidate.error && <span className="text-[10px] font-mono text-red-400 block">{candidate.error}</span>}
                     </button>
-                    );
-                  })}
+                  ))}
                 </div>
 
                 <div className="p-6 bg-obsidian/80 border border-border/30 rounded-2xl backdrop-blur-md">
@@ -379,9 +376,8 @@ export function ModelFusionStudio() {
                     {streamEnabled ? (activeCandidate?.content ?? '') : (activeCandidate?.content ?? response?.fused.content ?? '')}
                   </p>
                   {!streamEnabled && response && (() => {
-                    const uiCandidate = activeCandidate;
-                    if (!uiCandidate) return null;
-                    const candidate = isCandidateState(uiCandidate) ? uiCandidate : { ...uiCandidate } as CandidateState;
+                    if (!activeCandidate) return null;
+                    const candidate = isCandidateState(activeCandidate) ? activeCandidate : { ...activeCandidate } as CandidateState;
                     return (
                       <div className="mt-4 space-y-3">
                         <div className="flex gap-3">

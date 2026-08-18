@@ -493,7 +493,7 @@ export function FinanceCenterView() {
           <LedgerEmptyState reduced={reduced} />
         ) : (
           <div className="overflow-x-auto" role="table" aria-label="Invoices and milestone statements">
-            <div className="min-w-[860px]">
+            <div className="min-w-[640px]">
               {/* Column headers */}
               <div
                 role="row"
@@ -719,3 +719,4 @@ export function FinanceCenterView() {
     </div>
   );
 }
+
