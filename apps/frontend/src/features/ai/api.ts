@@ -83,6 +83,7 @@ export interface FusionCandidateUI {
   latencyMs: number;
   failure?: boolean;
   error?: string;
+  status?: 'pending' | 'running' | 'done' | 'error';
 }
 
 export interface FusionResponseUI {
@@ -169,15 +170,46 @@ export interface FusionErrorStreamEvent {
   payload: { message: string };
 }
 
+export interface FusionCandidateErrorStreamEvent {
+  type: 'candidate_error';
+  payload: { model: string; error?: string };
+}
+
 export type FusionStreamEvent =
   | FusionStreamStart
   | FusionCandidateStreamEvent
   | FusionCandidateMetaStreamEvent
   | FusionCandidateDeltaStreamEvent
   | FusionCandidateDoneStreamEvent
+  | FusionCandidateErrorStreamEvent
   | FusionResultStreamEvent
   | FusionDoneStreamEvent
   | FusionErrorStreamEvent;
+
+function parseStreamEvent(eventName: string, data: string): FusionStreamEvent {
+  const parsed = JSON.parse(data);
+
+  switch (eventName) {
+    case 'meta':
+      return { type: 'meta', payload: parsed as FusionStreamStart['payload'] };
+    case 'candidate_start':
+      return { type: 'candidate_start', payload: parsed as FusionCandidateStreamEvent['payload'] };
+    case 'candidate_meta':
+      return { type: 'candidate_meta', payload: parsed as FusionCandidateMetaStreamEvent['payload'] };
+    case 'candidate_delta':
+      return { type: 'candidate_delta', payload: parsed as FusionCandidateDeltaStreamEvent['payload'] };
+    case 'candidate_done':
+      return { type: 'candidate_done', payload: parsed as FusionCandidateDoneStreamEvent['payload'] };
+    case 'result':
+      return { type: 'result', payload: parsed as FusionResultStreamEvent['payload'] };
+    case 'done':
+      return { type: 'done', payload: parsed as FusionDoneStreamEvent['payload'] };
+    case 'error':
+      return { type: 'error', payload: parsed as FusionErrorStreamEvent['payload'] };
+    default:
+      return { type: 'error', payload: { message: `Unknown stream event: ${eventName}` } };
+  }
+}
 
 export async function* runFusionStream(
   payload: FusionRequestPayload,
@@ -230,8 +262,7 @@ export async function* runFusionStream(
           continue;
         }
 
-        const parsed = JSON.parse(data) as FusionStreamEvent['payload'];
-        yield { type: eventName as FusionStreamEvent['type'], payload: parsed };
+        yield parseStreamEvent(eventName, data);
       }
     }
   } finally {

@@ -1,8 +1,21 @@
 'use client';
 
-import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { runFusion, runFusionStream, FusionResponseUI, FusionStreamEvent } from '@/features/ai/api';
+import { useState } from 'react';
+import {
+  runFusion,
+  runFusionStream,
+  FusionResponseUI,
+  FusionStreamEvent,
+  type FusionStreamStart,
+  type FusionCandidateStreamEvent,
+  type FusionCandidateMetaStreamEvent,
+  type FusionCandidateDeltaStreamEvent,
+  type FusionCandidateDoneStreamEvent,
+  type FusionCandidateErrorStreamEvent,
+  type FusionResultStreamEvent,
+  type FusionErrorStreamEvent,
+} from '@/features/ai/api';
 
 interface CandidateState {
   model: string;
@@ -25,7 +38,7 @@ export function ModelFusionStudio() {
   const [selectedCandidate, setSelectedCandidate] = useState<string | null>(null);
   const [streamEnabled, setStreamEnabled] = useState(true);
   const [candidates, setCandidates] = useState<CandidateState[]>([]);
-  const [streamMeta, setStreamMeta] = useState<FusionStreamEvent | null>(null);
+  const [streamMeta, setStreamMeta] = useState<{ mode: 'best' | 'merge'; models: string[] } | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,7 +49,7 @@ export function ModelFusionStudio() {
     setCandidates([]);
     setStreamMeta(null);
 
-    const parsedModels = models.split(',').map(m => m.trim()).filter(Boolean);
+    const parsedModels = models.split(',').map((m) => m.trim()).filter(Boolean);
     const payload = {
       messages: [
         { role: 'system', content: 'You are a HEXA STUDIO architectural intelligence assistant.' },
@@ -50,33 +63,7 @@ export function ModelFusionStudio() {
     if (streamEnabled) {
       try {
         for await (const event of runFusionStream(payload)) {
-          if (event.type === 'meta') {
-            setStreamMeta(event);
-            setCandidates(parsedModels.map(model => ({ model, provider: '', content: '', score: 0, latencyMs: 0, failure: false, status: 'pending' })));
-          } else if (event.type === 'candidate_start') {
-            setCandidates(prev => prev.map(c => c.model === event.payload.model ? { ...c, status: 'running' as const } : c));
-          } else if (event.type === 'candidate_meta') {
-            setCandidates(prev => prev.map(c => c.model === event.payload.model ? { ...c, provider: event.payload.provider } : c));
-          } else if (event.type === 'candidate_delta') {
-            setCandidates(prev => prev.map(c => c.model === event.payload.model ? { ...c, content: c.content + event.payload.text } : c));
-          } else if (event.type === 'candidate_done') {
-            const { model, provider, content, latencyMs, usage } = event.payload;
-            const score = 0;
-            setCandidates(prev => prev.map(c => c.model === model ? { model, provider, content, latencyMs, score, failure: false, status: 'done' as const } : c));
-          } else if (event.type === 'candidate_error') {
-            const { model, error: err } = event.payload;
-            setCandidates(prev => prev.map(c => c.model === model ? { ...c, failure: true, error: err ?? 'Failed', status: 'error' as const } : c));
-          } else if (event.type === 'result') {
-            setResponse({
-              fused: event.payload.fused,
-              candidates: [],
-              winnerScore: event.payload.winnerScore,
-              telemetry: event.payload.telemetry,
-            });
-            setSelectedCandidate(event.payload.fused.model);
-          } else if (event.type === 'error') {
-            setError(event.payload.message ?? 'Fusion failed');
-          }
+          handleStreamEvent(event, parsedModels);
         }
       } catch (err: unknown) {
         setError(err instanceof Error ? err.message : 'Fusion failed');
@@ -97,9 +84,82 @@ export function ModelFusionStudio() {
     }
   };
 
+  const handleStreamEvent = (event: FusionStreamEvent, parsedModels: string[]) => {
+    if (event.type === 'meta') {
+      const v = event as FusionStreamStart;
+      setStreamMeta({ mode: v.payload.mode, models: v.payload.models });
+      setCandidates(
+        parsedModels.map((model) => ({
+          model,
+          provider: '',
+          content: '',
+          score: 0,
+          latencyMs: 0,
+          failure: false,
+          status: 'pending' as const,
+        })),
+      );
+    } else if (event.type === 'candidate_start') {
+      const v = event as FusionCandidateStreamEvent;
+      setCandidates((prev) =>
+        prev.map((c) => (c.model === v.payload.model ? { ...c, status: 'running' as const } : c)),
+      );
+    } else if (event.type === 'candidate_meta') {
+      const v = event as FusionCandidateMetaStreamEvent;
+      setCandidates((prev) =>
+        prev.map((c) => (c.model === v.payload.model ? { ...c, provider: v.payload.provider } : c)),
+      );
+    } else if (event.type === 'candidate_delta') {
+      const v = event as FusionCandidateDeltaStreamEvent;
+      setCandidates((prev) =>
+        prev.map((c) => (c.model === v.payload.model ? { ...c, content: c.content + v.payload.text } : c)),
+      );
+    } else if (event.type === 'candidate_done') {
+      const v = event as FusionCandidateDoneStreamEvent;
+      setCandidates((prev) =>
+        prev.map((c) =>
+          c.model === v.payload.model
+            ? {
+                model: v.payload.model,
+                provider: v.payload.provider,
+                content: v.payload.content,
+                latencyMs: v.payload.latencyMs,
+                score: 0,
+                failure: false,
+                status: 'done' as const,
+              }
+            : c,
+        ),
+      );
+    } else if (event.type === 'candidate_error') {
+      const v = event as FusionCandidateErrorStreamEvent;
+      setCandidates((prev) =>
+        prev.map((c) =>
+          c.model === v.payload.model
+            ? { ...c, failure: true, error: v.payload.error ?? 'Failed', status: 'error' as const }
+            : c,
+        ),
+      );
+    } else if (event.type === 'result') {
+      const v = event as FusionResultStreamEvent;
+      setResponse({
+        fused: v.payload.fused,
+        candidates: [],
+        winnerScore: v.payload.winnerScore,
+        telemetry: v.payload.telemetry,
+      });
+      setSelectedCandidate(v.payload.fused.model);
+    } else if (event.type === 'done') {
+      // Fusion complete — no-op, result already set
+    } else if (event.type === 'error') {
+      const v = event as FusionErrorStreamEvent;
+      setError(v.payload.message ?? 'Fusion failed');
+    }
+  };
+
   const activeCandidate = streamEnabled
-    ? candidates.find(c => c.model === selectedCandidate) ?? candidates[0]
-    : response?.candidates.find(c => c.model === selectedCandidate);
+    ? candidates.find((c) => c.model === selectedCandidate) ?? candidates[0]
+    : response?.candidates.find((c) => c.model === selectedCandidate);
 
   return (
     <div className="w-full max-w-7xl mx-auto p-6 md:p-12 artisan-glass text-foreground border border-border/30 rounded-2xl shadow-2xl relative overflow-hidden">
@@ -155,7 +215,7 @@ export function ModelFusionStudio() {
             </div>
             <button
               type="button"
-              onClick={() => setStreamEnabled(value => !value)}
+              onClick={() => setStreamEnabled((value) => !value)}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-colors duration-200 ${streamEnabled ? 'bg-accent text-background' : 'bg-obsidian text-text-secondary border border-border/30'}`}
             >
               {streamEnabled ? 'On' : 'Off'}
@@ -202,11 +262,11 @@ export function ModelFusionStudio() {
                   <div className="grid grid-cols-2 gap-3">
                     <div className="p-3 bg-obsidian-raised rounded-xl border border-border/20">
                       <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest block mb-1">Mode</span>
-                      <p className="text-xl font-mono text-foreground">{streamMeta.payload.mode}</p>
+                      <p className="text-xl font-mono text-foreground">{streamMeta.mode}</p>
                     </div>
                     <div className="p-3 bg-obsidian-raised rounded-xl border border-border/20">
                       <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest block mb-1">Models</span>
-                      <p className="text-xl font-mono text-foreground">{streamMeta.payload.models.length}</p>
+                      <p className="text-xl font-mono text-foreground">{streamMeta.models.length}</p>
                     </div>
                   </div>
                 )}
@@ -245,7 +305,7 @@ export function ModelFusionStudio() {
                       <span className="text-[10px] font-mono text-text-secondary block">Score: {candidate.score}</span>
                       <span className="text-[10px] font-mono text-text-secondary block">Latency: {candidate.latencyMs} ms</span>
                       {streamEnabled && (
-                        <span className="text-[10px] font-mono text-text-secondary block mt-1">Status: {candidate.status ?? 'pending'}</span>
+                        <span className="text-[10px] font-mono text-text-secondary block mt-1">Status: {candidate.status}</span>
                       )}
                       {candidate.failure && <span className="text-[10px] font-mono text-red-400 block">Failed</span>}
                       {streamEnabled && candidate.error && <span className="text-[10px] font-mono text-red-400 block">{candidate.error}</span>}
@@ -255,10 +315,10 @@ export function ModelFusionStudio() {
 
                 <div className="p-6 bg-obsidian/80 border border-border/30 rounded-2xl backdrop-blur-md">
                   <span className="text-[10px] font-mono text-accent uppercase tracking-[0.3em] block mb-2">
-                    {streamEnabled ? (activeCandidate?.model ?? '...') : (activeCandidate?.model ?? response.fused.model)}
+                    {streamEnabled ? (activeCandidate?.model ?? '...') : (activeCandidate?.model ?? response?.fused.model ?? '...')}
                   </span>
                   <p className="text-sm text-text-secondary leading-relaxed whitespace-pre-wrap font-light">
-                    {streamEnabled ? (activeCandidate?.content ?? '') : (activeCandidate?.content ?? response.fused.content)}
+                    {streamEnabled ? (activeCandidate?.content ?? '') : (activeCandidate?.content ?? response?.fused.content ?? '')}
                   </p>
                 </div>
               </motion.div>
