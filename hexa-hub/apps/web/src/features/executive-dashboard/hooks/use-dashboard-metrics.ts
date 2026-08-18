@@ -147,38 +147,38 @@ export const useDashboardMetrics = () => {
     };
 
     const handleUserJoined = (user: ActiveUsersResponse["users"][0]) => {
-      setActiveUsers((prev) => ({
-        ...prev,
-        users: [...prev.users, user],
-        total: prev.total + 1,
-      }));
+      setActiveUsers({
+        ...metrics.activeUsers,
+        users: [...metrics.activeUsers.users, user],
+        total: metrics.activeUsers.total + 1,
+        lastUpdated: new Date().toISOString(),
+      });
     };
 
     const handleUserLeft = (userId: string) => {
-      setActiveUsers((prev) => ({
-        ...prev,
-        users: prev.users.filter((u) => u.id !== userId),
-        total: prev.total - 1,
-      }));
+      setActiveUsers({
+        ...metrics.activeUsers,
+        users: metrics.activeUsers.users.filter((u) => u.id !== userId),
+        total: metrics.activeUsers.total - 1,
+        lastUpdated: new Date().toISOString(),
+      });
     };
 
     const handleProjectUpdated = (project: ProjectsResponse["inProgress"][0]) => {
-      setProjects((prev) => {
-        const existingIndex = prev.inProgress.findIndex((p) => p.id === project.id);
-        let updatedProjects;
+      const existingIndex = metrics.projects.inProgress.findIndex((p) => p.id === project.id);
+      let updatedProjects: ProjectsResponse["inProgress"];
 
-        if (existingIndex >= 0) {
-          updatedProjects = [...prev.inProgress];
-          updatedProjects[existingIndex] = project;
-        } else {
-          updatedProjects = [project, ...prev.inProgress];
-        }
+      if (existingIndex >= 0) {
+        updatedProjects = [...metrics.projects.inProgress];
+        updatedProjects[existingIndex] = project;
+      } else {
+        updatedProjects = [project, ...metrics.projects.inProgress];
+      }
 
-        return {
-          ...prev,
-          inProgress: updatedProjects,
-          totalProjects: prev.totalProjects + (existingIndex < 0 ? 1 : 0),
-        };
+      setProjects({
+        ...metrics.projects,
+        inProgress: updatedProjects,
+        lastUpdated: new Date().toISOString(),
       });
     };
 
@@ -232,12 +232,6 @@ export const useDashboardMetrics = () => {
     refetchInterval: POLLING_INTERVALS.metrics,
     refetchOnWindowFocus: true,
     retry: 3,
-    onSuccess: (data) => {
-      setActiveUsers(data);
-    },
-    onError: (error) => {
-      setError(`Failed to load active users: ${error.message}`);
-    },
   });
 
   const {
@@ -251,12 +245,6 @@ export const useDashboardMetrics = () => {
     refetchInterval: POLLING_INTERVALS.projects,
     refetchOnWindowFocus: true,
     retry: 3,
-    onSuccess: (data) => {
-      setProjects(data);
-    },
-    onError: (error) => {
-      setError(`Failed to load projects: ${error.message}`);
-    },
   });
 
   const {
@@ -270,12 +258,6 @@ export const useDashboardMetrics = () => {
     refetchInterval: POLLING_INTERVALS.revenue,
     refetchOnWindowFocus: true,
     retry: 3,
-    onSuccess: (data) => {
-      setRevenue(data);
-    },
-    onError: (error) => {
-      setError(`Failed to load revenue: ${error.message}`);
-    },
   });
 
   const {
@@ -289,12 +271,6 @@ export const useDashboardMetrics = () => {
     refetchInterval: POLLING_INTERVALS.copilot,
     refetchOnWindowFocus: true,
     retry: 3,
-    onSuccess: (data) => {
-      setCopilotUsage(data);
-    },
-    onError: (error) => {
-      setError(`Failed to load copilot usage: ${error.message}`);
-    },
   });
 
   // ========== Computed Metrics ==========

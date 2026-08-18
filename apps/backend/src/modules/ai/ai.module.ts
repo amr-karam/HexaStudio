@@ -24,6 +24,7 @@ import { StorageModule } from '../storage/storage.module';
 import { VectorModule } from '../vector/vector.module';
 import { ModelFusionService } from './model-fusion.service';
 import { ModelFusionController } from './model-fusion.controller';
+import { ModelFusionStreamController } from './model-fusion-stream.controller';
 
 /**
  * AIModule
@@ -50,6 +51,7 @@ import { ModelFusionController } from './model-fusion.controller';
     SpatialSynthesisController,
     AiIntelligenceController,
     ModelFusionController,
+    ModelFusionStreamController,
   ],
   providers: [
     AiChatService,

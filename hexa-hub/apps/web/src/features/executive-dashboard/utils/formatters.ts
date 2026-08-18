@@ -183,7 +183,7 @@ export const formatStatus = (
 // ========== Color Formatting ==========
 export const getStatusColor = (
   status: string,
-  type: "user" | "project" | "revenue" = "user"
+  type: "user" | "project" | "revenue" | "copilot" = "user"
 ): string => {
   const colorMap: Record<string, Record<string, string>> = {
     user: {
@@ -202,6 +202,10 @@ export const getStatusColor = (
       paid: COLORS.accent.success,
       pending: COLORS.accent.warning,
       overdue: COLORS.accent.danger,
+    },
+    copilot: {
+      active: COLORS.accent.success,
+      inactive: COLORS.text.muted,
     },
   };
 

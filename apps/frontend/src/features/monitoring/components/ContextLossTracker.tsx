@@ -41,8 +41,6 @@ export function ContextLossTracker() {
   
   // Track context loss events
   useEffect(() => {
-    let handler: EventListener;
-    
     if (state === "lost" || state === "recovering" || state === "fallback") {
       setIsAttemptingRecovery(true);
       
@@ -114,7 +112,7 @@ export function ContextLossTracker() {
   );
   
   // Render event item
-  const renderEvent = (event: any, index: number) => (
+  const renderEvent = (event: { timestamp: Date; state: string; recovered?: boolean }, index: number) => (
     <div key={index} className="flex items-center gap-2">
       <span className={cn("w-2 h-2 rounded-full", event.recovered ? "bg-green-500" : "bg-red-500")}></span>
       <span className="text-muted-foreground">

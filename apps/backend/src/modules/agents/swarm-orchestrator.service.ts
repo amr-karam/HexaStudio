@@ -2,7 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { EventBus } from '../realtime/event-bus.service';
 import { AgentsService } from './agents.service';
 import { SlackService } from '../webhooks/slack.service';
-import { ModelFusionService, FusionMode } from '../ai/model-fusion.service';
+import { ModelFusionService } from '../ai/model-fusion.service';
 
 interface ApprovalPayload {
   projectId: string;

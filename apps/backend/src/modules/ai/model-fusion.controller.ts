@@ -22,7 +22,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { ModelFusionService, FusionRequest, FusionResponse } from './model-fusion.service';
+import { ModelFusionService, FusionResponse } from './model-fusion.service';
 
 class FusionMessageDto {
   @IsString()

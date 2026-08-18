@@ -1,11 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { AiChatService, ChatCompletionResult } from './ai-chat.service';
+import { AiChatService } from './ai-chat.service';
 import { TokenUsageService } from './token-usage.service';
 
 export interface FusionCandidate {
   provider: string;
   model: string;
-  result: ChatCompletionResult;
+  result: {
+    content: string;
+    model: string;
+    provider: string;
+    usage?: { promptTokens?: number; completionTokens?: number };
+  };
   score: number;
   rank: number;
   latencyMs: number;
@@ -133,6 +138,147 @@ export class ModelFusionService {
     };
   }
 
+  async *streamFusion(request: FusionRequest): AsyncGenerator<{ type: string; payload: unknown }> {
+    const mode = request.mode ?? 'best';
+    const models = request.models ?? this.resolveDefaultModels();
+    const weights = { ...this.defaultWeights, ...request.weights };
+    const started = Date.now();
+    const candidates: FusionCandidate[] = [];
+
+    yield { type: 'meta', payload: { mode, models, weights } };
+
+    const streamResults = models.map((model, idx) => this.streamCandidate(request, model, idx));
+
+    for await (const stream of streamResults) {
+      for await (const event of stream) {
+        if (event.type === 'candidate_done') {
+          const payload = event.payload as {
+            model: string;
+            provider: string;
+            content: string;
+            latencyMs: number;
+            usage?: { promptTokens?: number; completionTokens?: number };
+          };
+          candidates.push({
+            provider: payload.provider,
+            model: payload.model,
+            result: {
+              content: payload.content,
+              model: payload.model,
+              provider: payload.provider,
+              usage: payload.usage,
+            },
+            score: 0,
+            rank: 0,
+            latencyMs: payload.latencyMs,
+            failure: false,
+          });
+        }
+
+        yield { type: event.type, payload: event.payload };
+      }
+    }
+
+    const successful = candidates.filter(c => !c.failure);
+    const scored = successful.map(candidate => ({
+      ...candidate,
+      score: this.scoreCandidate(candidate, weights),
+    }));
+
+    scored.sort((a, b) => b.score - a.score);
+    for (let i = 0; i < scored.length; i++) scored[i].rank = i + 1;
+
+    const winner = scored[0] ?? candidates[0];
+    const fusedContent = mode === 'merge' ? this.mergeCandidates(scored) : winner.result.content;
+    const totalLatencyMs = Date.now() - started;
+
+    yield {
+      type: 'result',
+      payload: {
+        fused: {
+          content: fusedContent,
+          model: winner.result.model,
+          provider: winner.result.provider,
+          mode,
+        },
+        winnerScore: scored[0]?.score ?? 0,
+        telemetry: {
+          totalCandidates: models.length,
+          successfulCandidates: successful.length,
+          failedCandidates: candidates.filter(c => c.failure).length,
+          totalLatencyMs,
+          winnerLatencyMs: winner.latencyMs,
+        },
+      },
+    };
+
+    await this.recordFusionTelemetry({
+      mode,
+      models,
+      candidates,
+      winner,
+      totalLatencyMs,
+      weights,
+    });
+
+    yield { type: 'done', payload: {} };
+  }
+
+  private async *streamCandidate(
+    request: FusionRequest,
+    model: string,
+    index: number,
+  ): AsyncGenerator<{ type: string; payload: unknown }> {
+    let provider = 'unknown';
+    let finalContent = '';
+    let latencyMs = 0;
+    const started = Date.now();
+    let usage: { promptTokens?: number; completionTokens?: number } = {};
+
+    yield { type: 'candidate_start', payload: { model, index } };
+
+    try {
+      for await (const event of this.aiChat.streamChat({
+        messages: request.messages,
+        model,
+        temperature: request.temperature,
+        maxTokens: request.maxTokens,
+        responseFormat: request.responseFormat,
+      })) {
+        if (event.type === 'meta') {
+          provider = event.provider;
+          yield { type: 'candidate_meta', payload: { model, provider: event.provider, maxTokens: event.maxTokens } };
+        } else if (event.type === 'reasoning') {
+          yield { type: 'candidate_reasoning', payload: { model, text: event.text } };
+        } else if (event.type === 'delta') {
+          finalContent += event.text;
+          yield { type: 'candidate_delta', payload: { model, text: event.text } };
+        } else if (event.type === 'usage') {
+          usage = { promptTokens: event.promptTokens, completionTokens: event.completionTokens };
+        } else if (event.type === 'error') {
+          yield { type: 'candidate_error', payload: { model, error: event.message } };
+          return;
+        }
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      yield { type: 'candidate_error', payload: { model, error: message } };
+      return;
+    }
+
+    latencyMs = Date.now() - started;
+    yield {
+      type: 'candidate_done',
+      payload: {
+        model,
+        provider,
+        content: finalContent,
+        latencyMs,
+        usage,
+      },
+    };
+  }
+
   private async runCandidate(request: FusionRequest, model: string): Promise<FusionCandidate> {
     const started = Date.now();
     const result = await this.aiChat.complete({
@@ -174,7 +320,7 @@ export class ModelFusionService {
     return Number((listRatio * 10 + paragraphRatio * 10).toFixed(2));
   }
 
-  private mergeCandidates(candidates: Array<{ result: ChatCompletionResult; score: number }>): string {
+  private mergeCandidates(candidates: Array<{ result: { content: string }; score: number }>): string {
     if (!candidates.length) return '';
     const unique = new Map<string, { content: string; score: number }>();
 
@@ -227,13 +373,12 @@ export class ModelFusionService {
   }): Promise<void> {
     try {
       const successful = context.candidates.filter(c => !c.failure);
-      const failed = context.candidates.filter(c => c.failure);
 
       for (const candidate of successful) {
         const usage = candidate.result.usage ?? {};
         const totalTokens = (usage.promptTokens ?? 0) + (usage.completionTokens ?? 0);
         await this.tokenUsage.recordUsage({
-          provider: candidate.provider as any,
+          provider: candidate.provider as 'openai' | 'gemini' | 'freetheai',
           model: candidate.model,
           method: 'fusion',
           promptTokens: usage.promptTokens ?? 0,
@@ -243,7 +388,7 @@ export class ModelFusionService {
       }
 
       this.logger.log(
-        `Fusion telemetry: mode=${context.mode}, total=${context.candidates.length}, success=${successful.length}, fail=${failed.length}, latencyMs=${context.totalLatencyMs}, winner=${context.winner.model}`
+        `Fusion telemetry: mode=${context.mode}, total=${context.candidates.length}, success=${successful.length}, fail=${context.candidates.filter(c => c.failure).length}, latencyMs=${context.totalLatencyMs}, winner=${context.winner.model}`
       );
     } catch (error) {
       this.logger.warn(`Fusion telemetry recording failed: ${error}`);

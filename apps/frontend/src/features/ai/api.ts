@@ -112,3 +112,129 @@ export async function runFusion(payload: FusionRequestPayload): Promise<FusionRe
   if (!res.ok) throw new Error('Fusion request failed');
   return res.json();
 }
+
+export interface FusionStreamStart {
+  type: 'meta';
+  payload: { mode: 'best' | 'merge'; models: string[]; weights?: FusionRequestPayload['weights'] };
+}
+
+export interface FusionCandidateStreamEvent {
+  type: 'candidate_start';
+  payload: { model: string; index: number };
+}
+
+export interface FusionCandidateMetaStreamEvent {
+  type: 'candidate_meta';
+  payload: { model: string; provider: string; maxTokens: number };
+}
+
+export interface FusionCandidateDeltaStreamEvent {
+  type: 'candidate_delta';
+  payload: { model: string; text: string };
+}
+
+export interface FusionCandidateDoneStreamEvent {
+  type: 'candidate_done';
+  payload: {
+    model: string;
+    provider: string;
+    content: string;
+    latencyMs: number;
+    usage?: { promptTokens?: number; completionTokens?: number };
+  };
+}
+
+export interface FusionResultStreamEvent {
+  type: 'result';
+  payload: {
+    fused: { content: string; model: string; provider: string; mode: 'best' | 'merge' };
+    winnerScore: number;
+    telemetry: {
+      totalCandidates: number;
+      successfulCandidates: number;
+      failedCandidates: number;
+      totalLatencyMs: number;
+      winnerLatencyMs: number;
+    };
+  };
+}
+
+export interface FusionDoneStreamEvent {
+  type: 'done';
+  payload: Record<string, never>;
+}
+
+export interface FusionErrorStreamEvent {
+  type: 'error';
+  payload: { message: string };
+}
+
+export type FusionStreamEvent =
+  | FusionStreamStart
+  | FusionCandidateStreamEvent
+  | FusionCandidateMetaStreamEvent
+  | FusionCandidateDeltaStreamEvent
+  | FusionCandidateDoneStreamEvent
+  | FusionResultStreamEvent
+  | FusionDoneStreamEvent
+  | FusionErrorStreamEvent;
+
+export async function* runFusionStream(
+  payload: FusionRequestPayload,
+): AsyncGenerator<FusionStreamEvent> {
+  const res = await fetch(`${API_BASE.replace('/multimodal', '')}/fusion/stream`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    throw new Error('Fusion stream request failed');
+  }
+
+  if (!res.body) {
+    throw new Error('Fusion stream response body is unavailable');
+  }
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) {
+        break;
+      }
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() ?? '';
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith(':')) {
+          continue;
+        }
+
+        if (!trimmed.startsWith('event: ') || !trimmed.includes('\ndata: ')) {
+          continue;
+        }
+
+        const eventLine = trimmed.split('\n')[0] ?? '';
+        const dataLine = trimmed.split('\n').find((segment) => segment.startsWith('data: ')) ?? '';
+        const eventName = eventLine.replace('event: ', '').trim();
+        const data = dataLine.replace('data: ', '').trim();
+
+        if (!eventName || !data) {
+          continue;
+        }
+
+        const parsed = JSON.parse(data) as FusionStreamEvent['payload'];
+        yield { type: eventName as FusionStreamEvent['type'], payload: parsed };
+      }
+    }
+  } finally {
+    reader.releaseLock();
+  }
+}

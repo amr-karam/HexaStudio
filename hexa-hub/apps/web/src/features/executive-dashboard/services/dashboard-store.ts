@@ -114,23 +114,29 @@ export const useDashboardStore = create<DashboardState>((set) => ({
   // ========== Metrics Setters ==========
   setMetrics: (metrics) => set({ metrics }),
 
-  setActiveUsers: (activeUsers) =>
-    set((state) => ({
-      metrics: {
-        ...state.metrics,
-        activeUsers,
-        lastUpdated: new Date().toISOString(),
-      },
-    })),
+  setActiveUsers: (activeUsers: ActiveUsersResponse | ((prev: ActiveUsersResponse) => ActiveUsersResponse)) =>
+    set((state) => {
+      const updated = typeof activeUsers === 'function' ? activeUsers(state.metrics.activeUsers) : activeUsers;
+      return {
+        metrics: {
+          ...state.metrics,
+          activeUsers: updated,
+          lastUpdated: new Date().toISOString(),
+        },
+      };
+    }),
 
-  setProjects: (projects) =>
-    set((state) => ({
-      metrics: {
-        ...state.metrics,
-        projects,
-        lastUpdated: new Date().toISOString(),
-      },
-    })),
+  setProjects: (projects: ProjectsResponse | ((prev: ProjectsResponse) => ProjectsResponse)) =>
+    set((state) => {
+      const updated = typeof projects === 'function' ? projects(state.metrics.projects) : projects;
+      return {
+        metrics: {
+          ...state.metrics,
+          projects: updated,
+          lastUpdated: new Date().toISOString(),
+        },
+      };
+    }),
 
   setRevenue: (revenue) =>
     set((state) => ({

@@ -4,9 +4,14 @@ import { ModelFusionService } from './model-fusion.service';
 import { AiChatService } from './ai-chat.service';
 import { TokenUsageService } from './token-usage.service';
 
+type FusionStreamEvent = { type: string; payload: unknown };
+
+interface FusedPayload {
+  fused?: { content?: string };
+}
+
 describe('ModelFusionService', () => {
   let service: ModelFusionService;
-  let aiChat: AiChatService;
   let tokenUsage: TokenUsageService;
 
   const createCompletion = (model: string, content: string) =>
@@ -30,6 +35,12 @@ describe('ModelFusionService', () => {
                 : 'Detailed answer with bullets.\n- Step 1\n- Step 2\n- Step 3';
               return createCompletion(model ?? 'default', text);
             }),
+            streamChat: vi.fn().mockImplementation(async function* () {
+              yield { type: 'meta', model: 'gemma-4-12b-it-qat', provider: 'local', maxTokens: 1200 };
+              yield { type: 'delta', text: 'Streamed ' };
+              yield { type: 'delta', text: 'answer.' };
+              yield { type: 'usage', promptTokens: 10, completionTokens: 20 };
+            }),
             selectModelFor: vi.fn().mockReturnValue({ model: 'gemma-4-12b-it-qat', reasoning: 'complex' }),
             isAvailable: true,
             provider: 'local',
@@ -46,7 +57,6 @@ describe('ModelFusionService', () => {
     }).compile();
 
     service = module.get(ModelFusionService);
-    aiChat = module.get(AiChatService);
     tokenUsage = module.get(TokenUsageService);
   });
 
@@ -122,5 +132,61 @@ describe('ModelFusionService', () => {
     const failedCandidate = response.candidates.find(c => c.model === 'model-b');
     expect(failedCandidate?.failure).toBe(true);
     expect(response.fused.content).not.toBe('');
+  });
+
+  it('should stream candidate deltas and final fused result', async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        ModelFusionService,
+        {
+          provide: AiChatService,
+          useValue: {
+            streamChat: vi.fn().mockImplementation(async function* () {
+              yield { type: 'meta', model: 'model-x', provider: 'local', maxTokens: 1200 };
+              yield { type: 'delta', text: 'Hello ' };
+              yield { type: 'delta', text: 'world.' };
+              yield { type: 'usage', promptTokens: 5, completionTokens: 10 };
+            }),
+            complete: vi.fn().mockResolvedValue({
+              content: 'Detailed answer with bullets.\n- Step 1\n- Step 2\n- Step 3',
+              model: 'model-y',
+              provider: 'local',
+              usage: { promptTokens: 10, completionTokens: 20 },
+            }),
+            selectModelFor: vi.fn().mockReturnValue({ model: 'model-y', reasoning: 'complex' }),
+            isAvailable: true,
+            provider: 'local',
+            model: 'model-y',
+          },
+        },
+        {
+          provide: TokenUsageService,
+          useValue: {
+            recordUsage: vi.fn().mockResolvedValue(undefined),
+          },
+        },
+      ],
+    }).compile();
+
+    const fusionService = module.get(ModelFusionService);
+    const events: FusionStreamEvent[] = [];
+
+    for await (const event of fusionService.streamFusion({
+      messages: [{ role: 'user', content: 'Stream fusion test.' }],
+      models: ['model-x', 'model-y'],
+      mode: 'best',
+    })) {
+      events.push(event);
+    }
+
+    const types = events.map(event => event.type);
+    expect(types).toContain('meta');
+    expect(types).toContain('candidate_start');
+    expect(types).toContain('candidate_delta');
+    expect(types).toContain('candidate_done');
+    expect(types).toContain('result');
+
+    const fused = events.find(event => event.type === 'result')?.payload as FusedPayload | undefined;
+    expect(fused?.fused?.content ?? '').toContain('world');
   });
 });
