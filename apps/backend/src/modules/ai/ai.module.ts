@@ -22,6 +22,8 @@ import { MinIOVisionService } from './minio-vision.listener';
 import { AiIntelligenceController } from './ai-intelligence.controller';
 import { StorageModule } from '../storage/storage.module';
 import { VectorModule } from '../vector/vector.module';
+import { ModelFusionService } from './model-fusion.service';
+import { ModelFusionController } from './model-fusion.controller';
 
 /**
  * AIModule
@@ -47,6 +49,7 @@ import { VectorModule } from '../vector/vector.module';
     AiChatController,
     SpatialSynthesisController,
     AiIntelligenceController,
+    ModelFusionController,
   ],
   providers: [
     AiChatService,
@@ -66,6 +69,7 @@ import { VectorModule } from '../vector/vector.module';
     MinIOVisionService,
     LeadScoringService,
     TimelinePredictorService,
+    ModelFusionService,
   ],
   exports: [
     AiChatService,
@@ -85,6 +89,7 @@ import { VectorModule } from '../vector/vector.module';
     MinIOVisionService,
     LeadScoringService,
     TimelinePredictorService,
+    ModelFusionService,
   ],
 })
 export class AIModule {}
