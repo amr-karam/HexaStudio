@@ -1,1443 +1,124 @@
-# HEXA STUDIO — ENGINEERING GOVERNANCE
-
-**Version:** 1.1.0  
-**Status:** Active  
-**Authority:** Highest project-level authority  
-**Repository:** HEXA STUDIO  
-**DevOps Source of Truth:** GitLab CE  
-**Governance Model:** AI-Agent-First, Production-Grade  
-
----
-
-# 1. PURPOSE
-
-This document defines the engineering governance system for HEXA STUDIO.
-
-It establishes the rules under which the project is:
-
-- Architected
-- Designed
-- Developed
-- Reviewed
-- Tested
-- Secured
-- Optimized
-- Documented
-- Deployed
-- Maintained
-- Extended by AI agents
-
-This document is not merely documentation.
-
-It is the **Engineering Operating System of HEXA STUDIO**.
-
-Every human developer and AI agent working on the project must operate within this governance system.
-
-### References
-
-**Normative / Engineering:**
-- ISO/IEC/IEEE 12207 — Software life cycle processes
-- NIST Secure Software Development Framework (SSDF)
-
-**Official:**
-- GitLab Documentation
-- Git documentation
-
----
-
-# 2. PROJECT MISSION
-
-HEXA STUDIO is a premium architecture visualization and digital studio platform.
-
-The platform is intended to combine:
-
-- World-class architecture studio presentation
-- Architectural portfolio
-- Project storytelling
-- Architectural visualization
-- Cinematic media
-- 3D/WebGL experiences
-- CMS-driven content
-- Client-facing experiences
-- Lead generation
-- Analytics
-- Scalable production infrastructure
-- AI-assisted development
-
-The final product must feel like a **world-class architecture visualization studio**, not a generic agency template.
-
-### Success Principles
-
-The product should communicate:
-
-- Architectural intelligence
-- Visual sophistication
-- Technical excellence
-- Premium positioning
-- Strong art direction
-- Trust
-- Precision
-- Performance
-- Accessibility
-
-### References
-
-**Benchmark / Inspiration:**
-- ArchDaily
-- Dezeen
-- Architizer
-- Divisare
-- DBOX
-- MIR
-- Brick Visual
-- Beauty and the Bit
-- TMRW
-
-**Design Research:**
-- Awwwards
-- SiteInspire
-- CSS Design Awards
-- Godly
-
-These references are inspiration sources only and do not define HEXA STUDIO's identity.
-
----
-
-# 3. GOVERNANCE PRINCIPLES
-
-These principles are non-negotiable.
-
-## 3.1 Architecture First
-
-Major architectural decisions must be understood before implementation.
-
-No significant architecture change may be introduced silently.
-
-When a decision affects system structure, create an ADR.
-
-### References
-
-- Architecture Decision Records — ADR documentation
-- ISO/IEC/IEEE 42010 — Architecture description
-- NIST SSDF
-
----
-
-## 3.2 Quality Over Speed
-
-Development speed must never be prioritized over:
-
-- Correctness
-- Security
-- Maintainability
-- Performance
-- Accessibility
-- Reliability
-
-Fast development is valuable only when the result remains production-grade.
-
-### References
-
-- ISO/IEC 25010 — Software quality model
-- NIST SSDF
-- OWASP Software Assurance Maturity Model (SAMM)
-
----
-
-## 3.3 Production Mindset
-
-Every feature must be considered production software.
-
-Avoid temporary hacks that silently become permanent architecture.
-
-Prototype code must be clearly identified.
-
-### References
-
-- Twelve-Factor App
-- ISO/IEC/IEEE 12207
-- NIST SSDF
-
----
-
-## 3.4 Security by Default
-
-Security is part of implementation.
-
-It is not a final-stage checklist.
-
-### References
-
-- OWASP Top 10
-- OWASP ASVS
-- OWASP Cheat Sheet Series
-- NIST SSDF
-
----
-
-## 3.5 Performance by Default
-
-Performance must be considered before introducing:
-
-- Large dependencies
-- Heavy animations
-- Video
-- WebGL
-- Large images
-- Client-side JavaScript
-- Third-party services
-
-### References
-
-- web.dev
-- Chrome Developers
-- Core Web Vitals
-- MDN Web Performance documentation
-
----
-
-## 3.6 Accessibility by Default
-
-Accessibility is a product requirement.
-
-It is not optional polish.
-
-### References
-
-- WCAG 2.2
-- WAI-ARIA
-- W3C Web Accessibility Initiative
-- MDN Accessibility
-
----
-
-## 3.7 Documentation as Code
-
-Important decisions must be:
-
-- Written
-- Version controlled
-- Reviewable
-- Kept synchronized with implementation
-
-### References
-
-- GitLab Documentation
-- ISO/IEC/IEEE 12207
-- Architecture Decision Records
-
----
-
-## 3.8 AI Governance
-
-AI agents are engineering participants.
-
-They must follow the same quality, security, architecture, and review requirements as human developers.
-
-### References
-
-- NIST AI Risk Management Framework
-- NIST SSDF
-- OWASP AI Security and Governance guidance
-
----
-
-## 3.9 Don't Guess — Verify
-
-AI agents must never invent:
-
-- APIs
-- Configuration options
-- Framework behavior
-- Security behavior
-- Deployment behavior
-- Package capabilities
-
-If uncertain:
-
-```text
-STOP
-↓
-VERIFY
-↓
-UNDERSTAND
-↓
-IMPLEMENT
-```
-
-### References
-
-- Official documentation of the technology being used
-- Official specifications
-- MDN
-- W3C
-- NIST SSDF
-
----
-
-# 4. AUTHORITY HIERARCHY
-
-When instructions conflict, the following hierarchy determines authority:
-
-```text
-GOVERNANCE.md
-        ↓
-ARCHITECTURE.md
-        ↓
-ADR/
-        ↓
-PRODUCT.md
-        ↓
-DESIGN_SYSTEM.md
-        ↓
-ENGINEERING_STANDARDS.md
-        ↓
-SECURITY.md
-        ↓
-PERFORMANCE.md
-        ↓
-ACCESSIBILITY.md
-        ↓
-SEO.md
-        ↓
-docs/product/DELIVERY.md
-        ↓
-ROADMAP.md
-        ↓
-PROJECT_STATUS.md
-        ↓
-Sprint specifications
-        ↓
-Agent task instructions
-```
-
-Higher-level rules override lower-level instructions.
-
-### Operating Model
-
-Work flows through the AI-agent operating hierarchy (see `docs/adr/010-operating-model.md`):
-
-```text
-GOVERNANCE.md
-        ↓
-ORCHESTRATOR
-        ↓
-ARCHITECT | BUILDER | REVIEWER
-        ↓
-GitLab Merge Request
-        ↓
-CI/CD
-        ↓
-Staging
-        ↓
-Production
-```
-
-- **ORCHESTRATOR** coordinates: decompose → parallel dispatch → sequential chains → quality gate → consolidate.
-- **ARCHITECT** owns architecture integrity and ADRs.
-- **BUILDER** leads implementation across Frontend / Backend / CMS / Three.js.
-- **REVIEWER** gates on QA / Security / Performance / SEO before merge.
-- Role definitions live in `.ai/agents/` (including `.ai/agents/orchestrator.md`).
-
-If a conflict is discovered:
-
-1. Do not silently choose.
-2. Identify the conflict.
-3. Follow the higher authority.
-4. Document the conflict.
-5. Create an ADR when the conflict represents an architectural decision.
-
-### References
-
-- Architecture Decision Records
-- ISO/IEC/IEEE 42010
-- GitLab Code Review / Merge Request practices
-- `docs/adr/010-operating-model.md` — AI-Agent Operating Model
-- `.ai/agents/*.md` — Agent role definitions
-
----
-
-# 5. OFFICIAL REFERENCES & KNOWLEDGE SOURCES
-
-The following references form the official external technical knowledge base for HEXA STUDIO.
-
-They do not override repository-specific architecture decisions.
-
-Repository implementation and accepted ADRs remain authoritative for project-specific decisions.
-
----
-
-## 5.1 Next.js
-
-Official reference:
-
-**Next.js Documentation**
-
-Use for:
-
-- App Router
-- Server Components
-- Client Components
-- Routing
-- Metadata
-- Image optimization
-- Font optimization
-- Caching
-- Rendering
-- Dynamic imports
-- Deployment
-
-### References
-
-- Next.js Documentation
-- Next.js API Reference
-- Next.js Architecture Documentation
-
----
-
-## 5.2 React
-
-Use for:
-
-- Components
-- Hooks
-- Rendering
-- Server/client boundaries
-- Performance
-- Accessibility
-
-### References
-
-- React Documentation
-- React API Reference
-- React Server Components documentation
-
----
-
-## 5.3 TypeScript
-
-Use for:
-
-- Strict typing
-- Type design
-- Generics
-- Utility types
-- Compiler configuration
-
-### References
-
-- TypeScript Handbook
-- TypeScript TSConfig Reference
-
-### Reference Priority
-
-When researching technical implementation:
-
-1. Repository implementation
-2. Repository documentation
-3. Accepted ADRs
-4. Official documentation for the installed version
-5. Official specifications / standards
-6. Primary technical sources
-7. Trusted secondary sources
-8. General web sources
-
-Never allow a random blog post to override official documentation or an accepted ADR.
-
----
-
-# 6. UI & DESIGN TECHNOLOGY
-
-## Tailwind CSS
-
-Use for utility-based styling and design-system implementation.
-
-## shadcn/ui
-
-Use as a component foundation where appropriate.
-
-Neither technology defines the HEXA STUDIO visual identity.
-
-### References
-
-**Official:**
-- Tailwind CSS Documentation
-- shadcn/ui Documentation
-- CSS Specifications
-- MDN CSS
-
----
-
-# 7. 3D & MOTION
-
-Three-dimensional and motion technologies are treated as high-cost capabilities.
-
-Potential technologies include:
-
-- Three.js
-- React Three Fiber
-- Drei
-- GSAP
-- Motion
-- Lenis
-
-Use them only when they improve the experience.
-
-Never introduce motion merely because it is technically possible.
-
-### References
-
-**Official:**
-- Three.js Documentation
-- React Three Fiber Documentation
-- Drei Documentation
-- GSAP Documentation
-- Motion Documentation
-- Lenis Documentation
-
-**Standards:**
-- WCAG 2.2 — Animation / Motion considerations
-- MDN Web APIs
-- web.dev Performance
-
----
-
-# 8. BACKEND ARCHITECTURE
-
-The backend must prioritize:
-
-- Clear module boundaries
-- Dependency injection
-- Validation
-- Authentication
-- Authorization
-- Observability
-- Error handling
-- Testing
-- API contracts
-
-### Primary technology
-
-NestJS.
-
-### References
-
-**Official:**
-- NestJS Documentation
-- Node.js Documentation
-
-**API:**
-- OpenAPI Specification
-
-**Security:**
-- OWASP ASVS
-- OWASP API Security Top 10
-
----
-
-# 9. CMS ARCHITECTURE
-
-Strapi is used as the CMS layer where appropriate.
-
-Use it for:
-
-- Content modeling
-- REST APIs
-- GraphQL where justified
-- Authentication
-- Media
-- Content management
-- Editorial workflows
-
-The frontend must not become tightly coupled to Strapi internals.
-
-Content access should be abstracted where practical.
-
-### References
-
-**Official:**
-- Strapi Documentation
-- Strapi REST API documentation
-- Strapi GraphQL documentation
-
-**Architecture:**
-- Twelve-Factor App
-- OpenAPI Specification
-
----
-
-# 10. DATABASE ARCHITECTURE
-
-PostgreSQL is the primary relational database.
-
-Database design must consider:
-
-- Schema integrity
-- Constraints
-- Indexes
-- Transactions
-- Query performance
-- Migrations
-- Backup
-- Recovery
-- Data lifecycle
-
-### Rules
-
-Never use application code as a substitute for database integrity where database constraints are appropriate.
-
-### References
-
-**Official:**
-- PostgreSQL Documentation
-
-**Engineering:**
-- PostgreSQL Performance Documentation
-- OWASP Database Security guidance
-
----
-
-# 11. CACHE & BACKGROUND SYSTEMS
-
-Redis may be used for:
-
-- Caching
-- Rate limiting
-- Temporary state
-- Queues/background jobs where appropriate
-
-Redis must not become the primary persistent business-data store.
-
-### References
-
-**Official:**
-- Redis Documentation
-
-**Security:**
-- Redis Security Documentation
-- OWASP guidance
-
----
-
-# 12. INFRASTRUCTURE
-
-Known infrastructure:
-
-```text
-Ubuntu
-Docker
-Docker Compose
-Traefik
-PostgreSQL
-Redis
-GitLab CE
-```
-
-Infrastructure must prioritize:
-
-- Reproducibility
-- Security
-- Isolation
-- Observability
-- Rollback
-- Maintainability
-
-### References
-
-**Official:**
-- Docker Documentation
-- Docker Compose Documentation
-- Traefik Documentation
-- Ubuntu Server Documentation
-
-**Architecture:**
-- Twelve-Factor App
-
-**Security:**
-- OWASP
-- CIS Benchmarks where applicable
-
----
-
-# 13. GITLAB CE & DEVOPS
-
-GitLab CE is the project's DevOps source of truth.
-
-Use:
-
-- Repository
-- Issues
-- Merge Requests
-- GitLab CI/CD
-- GitLab Runner
-- Container Registry
-- Environments
-- Releases
-- Variables
-- Security scanning
-
-GitHub Actions must not be used as the project's CI/CD system.
-
-Production branches must be protected.
-
-### References
-
-**Official:**
-- GitLab Documentation
-- GitLab CI/CD Documentation
-- GitLab Runner Documentation
-- GitLab Container Registry Documentation
-- GitLab Security Documentation
-
----
-
-# 14. WEB STANDARDS
-
-Web implementation must follow established standards.
-
-### References
-
-**Normative:**
-- W3C
-- WHATWG HTML Standard
-- ECMAScript Specification
-
-**Technical:**
-- MDN Web Docs
-
-When standards and framework abstractions differ, understand the underlying web behavior before making architectural decisions.
-
----
-
-# 15. ACCESSIBILITY
-
-The application must support:
-
-- Keyboard navigation
-- Screen readers
-- Focus management
-- Semantic HTML
-- Accessible forms
-- Color contrast
-- Reduced motion
-- Responsive text
-- Accessible interactive components
-
-### Minimum expectation
-
-Target WCAG 2.1 AAA where practical.
-
-### References
-
-**Normative:**
-- WCAG 2.2
-- WAI-ARIA
-- W3C Accessibility Guidelines
-
-**Implementation:**
-- MDN Accessibility
-- web.dev Accessibility
-
----
-
-# 16. SEO
-
-SEO must be implemented intentionally.
-
-Consider:
-
-- Metadata
-- Canonical URLs
-- Open Graph
-- Structured data
-- Sitemap
-- Robots
-- Semantic HTML
-- Crawlability
-- Performance
-
-SEO must never compromise accessibility or UX.
-
-### References
-
-**Official:**
-- Google Search Central
-- Google Search Console documentation
-
-**Structured Data:**
-- Schema.org
-
-**Web Standards:**
-- W3C
-- MDN
-
----
-
-# 17. PERFORMANCE
-
-Performance is an architectural concern.
-
-Consider:
-
-- Server rendering
-- Streaming
-- Caching
-- Image optimization
-- Font optimization
-- Code splitting
-- Lazy loading
-- CDN
-- WebGL cost
-- Animation cost
-- Third-party scripts
-
-Avoid unnecessary JavaScript.
-
-Avoid unnecessary network requests.
-
-Avoid unoptimized media.
-
-### Performance targets
-
-```text
-LCP < 2.5s
-INP < 200ms
-CLS < 0.1
-```
-
-These are target budgets, not guarantees.
-
-### References
-
-**Official / Primary:**
-- web.dev
-- Chrome Developers
-- Core Web Vitals documentation
-- MDN Performance
-
----
-
-# 18. SECURITY
-
-Security requirements include:
-
-- Never commit secrets.
-- Never expose credentials.
-- Validate external input.
-- Enforce authorization server-side.
-- Use secure authentication.
-- Protect internal services.
-- Rate-limit sensitive endpoints.
-- Keep dependencies updated.
-- Log relevant security events.
-- Maintain auditability.
-
-PostgreSQL and Redis must not be publicly exposed unnecessarily.
-
-### References
-
-**Normative / Industry:**
-- OWASP Top 10
-- OWASP ASVS
-- OWASP API Security Top 10
-- OWASP Cheat Sheet Series
-- NIST SSDF
-
-**Platform:**
-- Node.js Security Best Practices
-
----
-
-# 19. ARCHITECTURE GOVERNANCE
-
-The system should remain as simple as possible while supporting the product requirements.
-
-Do not introduce:
-
-- Microservices
-- Kubernetes
-- Additional databases
-- Additional frameworks
-- Additional infrastructure
-
-without justification.
-
-Complexity must have a measurable reason to exist.
-
-### References
-
-- ISO/IEC/IEEE 42010
-- Twelve-Factor App
-- NIST SSDF
-- Architecture Decision Records
-
----
-
-# 20. FRONTEND ARCHITECTURE
-
-The frontend must prioritize:
-
-- Server-first rendering where appropriate
-- Minimal client-side JavaScript
-- Component reuse
-- Feature isolation
-- Clear data boundaries
-- Typed APIs
-- Accessibility
-- Performance
-- Progressive enhancement
-
-Client Components must have a reason to exist.
-
-Do not make entire pages client-rendered without justification.
-
-### References
-
-**Official:**
-- Next.js Documentation
-- React Documentation
-- TypeScript Documentation
-
-**Performance:**
-- web.dev
-- Chrome Developers
-
-**Accessibility:**
-- WCAG 2.2
-- MDN
-
----
-
-# 21. API GOVERNANCE
-
-APIs must have:
-
-- Clear contracts
-- Validation
-- Authentication where required
-- Authorization
-- Error handling
-- Versioning strategy where appropriate
-- Documentation
-- Observability
-
-### References
-
-- OpenAPI Specification
-- NestJS Documentation
-- OWASP API Security Top 10
-- MDN HTTP Documentation
-
----
-
-# 22. THREE.JS / WEBGL GOVERNANCE
-
-Three.js/WebGL is a high-cost capability.
-
-Rules:
-
-- Lazy-load where appropriate.
-- Avoid unnecessary render loops.
-- Minimize GPU workload.
-- Optimize textures.
-- Optimize geometry.
-- Consider device capabilities.
-- Provide graceful fallbacks.
-- Support reduced motion.
-- Avoid blocking initial rendering.
-- Monitor memory usage.
-
-Three.js code should remain isolated from ordinary application logic where practical.
-
-### References
-
-**Official:**
-- Three.js Documentation
-- Three.js Examples
-- React Three Fiber Documentation
-- Drei Documentation
-
-**Performance:**
-- web.dev
-- Chrome DevTools Performance documentation
-
-**Accessibility:**
-- WCAG 2.2
-
----
-
-# 23. DEPENDENCY GOVERNANCE
-
-Before adding a dependency evaluate:
-
-- Why it is required
-- Existing alternatives
-- Bundle impact
-- Security
-- Maintenance
-- License
-- Compatibility
-- Long-term cost
-
-The agent must consult the dependency's official documentation.
-
-Do not add dependencies for trivial functionality.
-
-### References
-
-- npm Documentation
-- Node.js Documentation
-- OSV.dev
-- GitHub Advisory Database
-- OWASP Dependency guidance
-- OpenSSF guidance
-
----
-
-# 24. DATA GOVERNANCE
-
-Data must be handled according to sensitivity.
-
-Never:
-
-- Log secrets
-- Log credentials
-- Expose private information
-- Store unnecessary sensitive information
-- Copy production data into development environments without justification
-
-Database migrations must be reversible where practical.
-
-### References
-
-- OWASP
-- NIST Privacy Framework
-- PostgreSQL Documentation
-- GDPR principles where legally applicable
-
----
-
-# 25. OBSERVABILITY
-
-Production systems should provide appropriate:
-
-- Logs
-- Metrics
-- Health checks
-- Error tracking
-- Tracing where justified
-- Infrastructure monitoring
-
-Observability must be proportional to system complexity.
-
-### References
-
-**Official:**
-- OpenTelemetry Documentation
-- Prometheus Documentation
-- Grafana Documentation
-
-**Architecture:**
-- Twelve-Factor App
-
----
-
 # 26. DESIGN SYSTEM GOVERNANCE
 
-The design system must provide centralized definitions for:
+## Rule
 
-- Typography
-- Colors
-- Spacing
-- Grid
-- Components
-- Motion
-- Icons
-- Breakpoints
-- States
-- Accessibility
+The design system must provide centralized, non-conflicting definitions for typography, colors, spacing, grid, components, motion, icons, breakpoints, states, and accessibility.
 
-Rules:
+## Rationale
 
-- No random colors.
-- No random typography.
-- No inconsistent spacing.
-- No arbitrary component variants.
-- No duplicated tokens.
-- No page-specific design systems.
+Random design decisions accumulate into inconsistency, maintenance cost, and brand dilution.
 
-The design system must support:
+## Required Practice
 
-- Desktop
-- Tablet
-- Mobile
-- LTR
-- RTL
-- Reduced motion
-- Accessibility
+- No random colors, typography, spacing, variants, duplicated tokens, or page-specific design systems.
+- Support desktop, tablet, mobile, LTR, RTL, reduced motion, and accessibility.
 
-### References
+## References
 
-**Technical:**
-- CSS Design Specifications
-- MDN CSS
+**Normative:**
 - WCAG 2.2
 
-**Design Systems:**
+**Official:**
+- CSS Specifications
+- MDN CSS
 - Material Design guidance
 - W3C Design System accessibility principles
 
-**Inspiration:**
+**Benchmark / Inspiration:**
 - SiteInspire
 - Minimal Gallery
 - Awwwards
 
-Inspiration does not override HEXA STUDIO's own design system.
+## Validation
+
+- Design tokens are centralized.
+- Inspections reject ad-hoc values outside the token system.
 
 ---
 
 # 27. DESIGN INSPIRATION & BENCHMARKS
 
-These sources exist for visual research.
+## Rule
 
-They are not implementation authorities.
+Design references are for research and benchmarking only. They are not templates and must not be copied.
 
-HEXA STUDIO maintains a curated collection of high-quality design references.
+## Rationale
 
-These websites are inspiration and benchmarking sources, **NOT templates to copy**.
+Copying reference sites removes HEXA STUDIO's originality and violates brand and legal standards.
 
-AI agents may study them to understand:
+## Required Practice
 
-- Art direction
-- Typography
-- Layout composition
-- Grid systems
-- Editorial design
-- Navigation patterns
-- Portfolio presentation
-- Project storytelling
-- Motion design
-- Interaction design
-- Micro-interactions
-- Page transitions
-- Image treatment
-- Video presentation
-- 3D/WebGL experiences
-- Responsive behavior
-- Creative development techniques
+- Study references to extract principles, not reproduce implementations.
+- Apply the Design Research Rules and Design Reference Matrix.
+- Never copy source code, HTML, CSS, assets, exact layouts, animations, or interactions.
 
-The objective is to learn design principles and patterns, then create an original HEXA STUDIO experience.
+## References
 
-### Web Design
+**Benchmark / Inspiration:**
+- Web Design: Awwwards, CSS Design Awards, SiteInspire, Godly, Minimal Gallery, Land-book, One Page Love
+- Architecture: ArchDaily, Dezeen, Divisare, Architizer
+- Architectural Visualization: DBOX, Brick Visual, MIR, Beauty and the Bit, TMRW
+- Creative Technology: Locomotive, Active Theory, Resn, Hello Monday / DEPT®
+- Typography: Typewolf, Fonts In Use
+- Creative Development: Codrops, Three.js Examples
 
-**A. Awwwards**
+## Validation
 
-Award-winning web design, creative direction, interaction design, motion, experimental layouts, studio websites, digital experiences.
-
-Focus on the highest-quality agency, architecture, creative studio, and portfolio experiences.
-
-**B. CSS Design Awards**
-
-Creative websites, UI inspiration, motion, interaction, experimental web layouts, frontend creativity.
-
-**C. SiteInspire**
-
-Editorial layouts, typography, minimal websites, portfolio structures, navigation, grid systems, visual hierarchy.
-
-**D. Godly**
-
-Modern digital experiences, creative interactions, typography, experimental layouts, contemporary web design.
-
-**E. Minimal Gallery**
-
-Minimalism, typography, white space, editorial composition, navigation, visual hierarchy.
-
-**F. Land-book**
-
-Landing page composition, branding, layout systems, typography, modern web patterns.
-
-**G. One Page Love**
-
-Landing page structures, hero sections, CTA patterns, content hierarchy, simple interaction patterns.
-
-### Architecture / Architectural Visualization References
-
-These sources are particularly relevant to HEXA STUDIO's visual identity.
-
-**H. ArchDaily**
-
-Architectural presentation, project storytelling, photography, project metadata, architectural editorial structure, project categorization.
-
-Do not copy editorial content.
-
-**I. Dezeen**
-
-Architecture editorial design, typography, image-driven storytelling, architectural presentation, project discovery.
-
-**J. Divisare**
-
-Architecture-focused visual presentation, image grids, project archives, minimal editorial interfaces.
-
-**K. Architizer**
-
-Architecture project discovery, project metadata, portfolio structures, architectural categorization.
-
-### Architecture Visualization / CGI References
-
-Use as benchmarks for the visual quality and presentation standards of architectural visualization.
-
-**L. DBOX**
-
-- Architectural visualization
-- Cinematic presentation
-- Art direction
-- Image sequencing
-- Luxury presentation
-
-**M. Brick Visual**
-
-- Architectural CGI
-- Visual storytelling
-- Project presentation
-- Cinematic imagery
-- Portfolio organization
-
-**N. MIR**
-
-- Architectural visualization
-- Art direction
-- Image composition
-- Atmosphere
-- Cinematic storytelling
-
-**O. Beauty and the Bit**
-
-- Architectural visualization
-- Art direction
-- Cinematic imagery
-- Portfolio presentation
-- Visual storytelling
-
-**P. TMRW**
-
-- Architectural visualization
-- Digital art direction
-- Cinematic presentation
-- Contemporary portfolio design
-
-### Creative Digital Studios
-
-Use to study how premium creative studios present themselves digitally.
-
-**Q. Locomotive**
-
-- Motion
-- Interaction
-- Page transitions
-- Creative development
-- Storytelling
-
-**R. Active Theory**
-
-- WebGL
-- 3D
-- Interactive experiences
-- Experimental interaction
-- Creative technology
-
-**S. Resn**
-
-- Experimental digital experiences
-- WebGL
-- Art direction
-- Motion
-- Interaction
-
-**T. Hello Monday / DEPT®**
-
-- Digital art direction
-- Storytelling
-- Motion
-- Typography
-- Interactive experiences
-
-### Typography & Design System Inspiration
-
-**U. Typewolf**
-
-- Typography
-- Font pairing
-- Type hierarchy
-- Editorial typography
-
-**V. Fonts In Use**
-
-- Real-world typography references
-- Editorial systems
-- Brand typography
-- Font combinations
-
-### Creative Development / WebGL
-
-**W. Codrops**
-
-- Experimental interaction
-- CSS techniques
-- WebGL
-- Motion
-- Creative frontend experiments
-
-Use as a technical inspiration source, not for blindly copying implementations.
-
-**X. Three.js Examples**
-
-- WebGL capabilities
-- Rendering techniques
-- Materials
-- Lighting
-- Post-processing
-- Interaction
-
-### Design Research Rules
-
-When researching design inspiration, the agent should:
-
-1. Identify the design problem.
-2. Review multiple references.
-3. Identify recurring successful patterns.
-4. Explain why the pattern works.
-5. Determine whether it fits HEXA STUDIO.
-6. Adapt the underlying principle.
-7. Create an original implementation.
-8. Document major design decisions when appropriate.
-
-Never select a design simply because it looks impressive.
-
-Evaluate:
-
-- Usability
-- Performance
-- Accessibility
-- Brand fit
-- Content hierarchy
-- Responsiveness
-- Maintainability
-
-### Design Reference Matrix
-
-Evaluate inspiration across:
-
-| Category | Study |
-|---|---|
-| Art Direction | Visual identity and atmosphere |
-| Typography | Type scale and hierarchy |
-| Layout | Grid and composition |
-| Navigation | IA and interaction |
-| Motion | Timing and easing |
-| Portfolio | Project discovery |
-| Storytelling | Narrative structure |
-| 3D | WebGL and interaction |
-| Media | Image/video treatment |
-| UX | User flow |
-| Responsive | Mobile/tablet behavior |
-| Accessibility | Inclusive interaction |
-| Performance | Asset/rendering strategy |
-
-### HEXA STUDIO Design Principle
-
-References are inputs, not destinations.
-
-The final HEXA STUDIO design must be:
-
-- Original
-- Architectural
-- Cinematic
-- Minimal
-- Premium
-- Editorial
-- Technically sophisticated
-- Fast
-- Accessible
-- Responsive
-
-The agent must never attempt to make HEXA STUDIO look like one specific reference website.
-
-Instead, combine validated principles from multiple references into a unique visual language.
-
-### References
-
-**Benchmark / Inspiration only.**
-
-These sources must never be treated as authoritative implementation documentation.
+- Design reviews answer the 10-point review requirement.
+- Implementation traces to extracted principles, not copied sites.
 
 ---
 
 # 28. DESIGN INSPIRATION RULES
 
-The correct workflow is:
+## Rule
 
-```text
-Design Problem
-      ↓
-Research Multiple References
-      ↓
-Identify Patterns
-      ↓
-Extract Principles
-      ↓
-Evaluate Brand Fit
-      ↓
-Evaluate UX
-      ↓
-Evaluate Accessibility
-      ↓
-Evaluate Performance
-      ↓
-Create Original Direction
-      ↓
-Implement
-```
+Research must follow a disciplined workflow from problem to original implementation.
 
-Never:
+## Rationale
 
-```text
-Reference
-      ↓
-Copy
-```
+Selecting designs because they look impressive produces inconsistent user experience and brand drift.
 
-Never copy:
+## Required Practice
 
-- Source code
-- HTML structure
-- CSS
-- Assets
-- Images
-- Videos
-- Logos
-- Brand identity
-- Proprietary content
-- Exact layouts
-- Exact animations
-- Exact interactions
+- Identify the design problem.
+- Review multiple references.
+- Extract principles.
+- Evaluate brand fit, UX, accessibility, performance, and maintainability.
+- Create an original implementation.
+- Document major design decisions.
 
-The objective is to understand **why a design works**, not to reproduce it.
+## References
 
-### References
-
+**Normative:**
 - WIPO Copyright guidance
 - Creative Commons guidance where applicable
+
+**Benchmark / Inspiration:**
 - Awwwards
 - SiteInspire
 - ArchDaily
 - Dezeen
 
+## Validation
+
+- Design decisions are documented with extracted principles and tradeoffs.
+
 ---
 
 # 29. DESIGN REVIEW
 
-Before approving a major visual direction, the Design Agent must answer:
+## Rule
 
+Before approving a major visual direction, the Design Agent must answer the 10-point review.
+
+## Rationale
+
+Unreviewed visual direction risks brand inconsistency, performance regression, and accessibility failure.
+
+## Required Practice
+
+Answer:
 1. What problem does this design solve?
 2. Which references influenced it?
 3. What principles were extracted?
@@ -1449,83 +130,45 @@ Before approving a major visual direction, the Design Agent must answer:
 9. Is it accessible?
 10. Is it maintainable?
 
-The final design must stand on its own without depending on the reference websites.
+## References
 
-### Design Research Rule
-
-When visual uncertainty exists:
-
-```text
-Define Design Problem
-      ↓
-Review Multiple References
-      ↓
-Extract Principles
-      ↓
-Evaluate Brand Fit
-      ↓
-Evaluate UX
-      ↓
-Evaluate Accessibility
-      ↓
-Evaluate Performance
-      ↓
-Create Original Direction
-```
-
-Do not copy individual websites.
-
-### References
-
+**Normative:**
 - WCAG 2.2
+
+**Official:**
 - web.dev
+- Material Design accessibility guidance
+
+**Benchmark / Inspiration:**
 - Awwwards
 - SiteInspire
-- Material Design accessibility guidance
+
+## Validation
+
+- No major visual direction merges without documented review answers.
 
 ---
 
 # 30. VERSION-AWARE RESEARCH
 
-Before using technical documentation:
+## Rule
 
-1. Determine the installed version.
-2. Prefer documentation matching that version.
-3. Do not blindly use newer major-version documentation.
-4. Identify breaking changes.
-5. Verify compatibility.
-6. Do not silently upgrade dependencies.
+Before using technical documentation, agents must determine the installed version and prefer matching documentation.
 
-Example:
+## Rationale
 
-```text
-Project:
-Next.js 16.2.11.x
+Applying newer-version behavior to older dependencies creates silent breakage.
 
-Do not automatically implement:
-Next.js 16.x behavior
-```
+## Required Practice
 
-If an upgrade is required:
+- Check installed versions before implementing framework behavior.
+- Document breaking changes.
+- Do not silently upgrade dependencies.
+- Use ADRs and migration plans for required upgrades.
 
-```text
-STOP
-↓
-Assess impact
-↓
-Document
-↓
-Create ADR
-↓
-Plan migration
-↓
-Test
-↓
-Implement
-```
+## References
 
-### References
-
+**Official:**
 - Official documentation for each installed technology
 - npm package metadata
 - Node.js release documentation
@@ -1533,968 +176,1032 @@ Implement
 - React release notes
 - Strapi release notes
 
+## Validation
+
+- Version mismatches are documented before implementation.
+
 ---
 
 # 31. RESEARCH PROTOCOL
 
-When technical uncertainty exists:
+## Rule
 
-```text
-Don't Guess
-    ↓
-Identify Exact Question
-    ↓
-Inspect Repository
-    ↓
-Check Installed Version
-    ↓
-Check Official Documentation
-    ↓
-Check Official Specification
-    ↓
-Check Trusted Primary Sources
-    ↓
-Implement
-```
+When technical uncertainty exists, agents must research and verify before implementing.
 
-If reliable information cannot be verified:
+## Rationale
 
-**Do not fabricate an answer.**
+Fabricated APIs, configuration, or framework behavior become production defects.
 
-State the uncertainty.
+## Required Practice
 
-### References
+- Inspect the repository first.
+- Check installed versions.
+- Check official documentation and specifications.
+- State uncertainty explicitly when verification fails.
 
+## References
+
+**Normative:**
 - NIST SSDF
+
+**Official:**
 - MDN
 - W3C
 - Official framework documentation
+
+## Validation
+
+- No unsupported claim is accepted without a verifiable source.
 
 ---
 
 # 32. AI AGENT GOVERNANCE
 
-HEXA STUDIO may use multiple specialized AI agents.
+## Rule
 
-Recommended roles:
+HEXA STUDIO uses specialized AI agent roles with explicit missions, responsibilities, allowed actions, forbidden actions, required checks, documentation requirements, and handoff rules.
 
-```text
-Architect
-Frontend
-Backend
-CMS
-Design
-ThreeJS
-DevOps
-Security
-QA
-Performance
-SEO
-Reviewer
-Release
-```
+## Rationale
 
-Each agent must have:
+Unstructured agent behavior creates architecture drift, security gaps, and inconsistent quality.
 
-- Mission
-- Responsibilities
-- Allowed actions
-- Forbidden actions
-- Required checks
-- Documentation requirements
-- Handoff rules
+## Required Practice
 
-### References
+- Maintain role definitions in `.ai/agents/`.
+- Assign risk-appropriate review chains.
+- Keep agent behavior traceable to governance rules.
 
-- NIST AI RMF
+## References
+
+**Normative:**
+- NIST AI Risk Management Framework
 - NIST SSDF
+
+**Official:**
 - OWASP AI Security guidance
+
+## Validation
+
+- Agents operate from documented roles and handoff rules.
+- Agent work products include documentation and validation records.
 
 ---
 
 # 33. AI AGENT OPERATING RULES
 
-Every AI agent MUST:
+## Rule
 
-1. Read `GOVERNANCE.md`.
-2. Read relevant architecture documentation.
-3. Read relevant ADRs.
-4. Read `PROJECT_STATUS.md`.
-5. Inspect affected code.
-6. Determine risk.
-7. Consult relevant references.
-8. Create a plan for non-trivial work.
-9. Implement incrementally.
-10. Run validation.
-11. Review its work.
-12. Update documentation.
-13. Update project status.
-14. Commit or prepare a Merge Request.
+Every AI agent must follow a consistent operating sequence before and after implementation.
 
-### References
+## Rationale
 
+Consistent sequencing prevents skipped governance steps and unreviewed changes.
+
+## Required Practice
+
+For every implementation request:
+1. Read `GOVERNANCE.md`
+2. Read relevant architecture documentation
+3. Read relevant ADRs
+4. Read `PROJECT_STATUS.md`
+5. Inspect affected code
+6. Determine risk
+7. Consult relevant references
+8. Create a plan for non-trivial work
+9. Implement incrementally
+10. Run validation
+11. Review its work
+12. Update documentation
+13. Update project status
+14. Commit or prepare a Merge Request
+
+## References
+
+**Normative:**
 - NIST SSDF
+
+**Official:**
 - GitLab Merge Request documentation
 - OWASP SAMM
+
+## Validation
+
+- Agent commits include linked documentation and validation results.
 
 ---
 
 # 34. AI AGENT FORBIDDEN ACTIONS
 
+## Rule
+
+Agents must not perform actions that bypass governance, quality, or security controls.
+
+## Rationale
+
+These actions create unreviewed risk and undermine production readiness.
+
+## Required Practice
+
 Agents MUST NOT:
+- Change architecture silently
+- Invent APIs or configuration
+- Introduce dependencies without justification
+- Delete working functionality without approval
+- Disable tests or TypeScript checks
+- Use `any` as an escape hatch
+- Commit secrets
+- Bypass security or authorization
+- Push directly to protected production branches
+- Deploy untested code
+- Hide or fabricate failures
+- Treat design inspiration as implementation authority
 
-- Change architecture silently.
-- Invent APIs.
-- Invent configuration.
-- Introduce dependencies without justification.
-- Delete working functionality without approval.
-- Disable tests to make CI pass.
-- Disable TypeScript checks.
-- Use `any` as an escape hatch.
-- Commit secrets.
-- Bypass security controls.
-- Bypass authorization.
-- Push directly to protected production branches.
-- Deploy untested code.
-- Hide failures.
-- Fabricate progress.
-- Claim tests passed when they did not run.
-- Treat design inspiration as implementation authority.
+## References
 
-### References
-
+**Normative:**
 - NIST SSDF
 - OWASP ASVS
+
+**Official:**
 - GitLab Protected Branches
 - GitLab Merge Requests
+
+## Validation
+
+- Violations are treated as incidents and documented.
 
 ---
 
 # 35. AGENT HANDOFF MODEL
 
-Recommended workflow:
+## Rule
 
-```text
-Request
-   ↓
-Architect
-   ↓
-Planner
-   ↓
-Builder
-   ↓
-Self Review
-   ↓
-QA
-   ↓
-Security Review
-   ↓
-Performance Review
-   ↓
-Reviewer
-   ↓
-GitLab Merge Request
-   ↓
-GitLab CI
-   ↓
-Staging
-   ↓
-Approval
-   ↓
-Production
-```
+Work flows through a defined handoff chain, with review depth determined by risk.
 
-Not every task requires every role.
+## Rationale
 
-Risk determines the review chain.
+Structured handoffs prevent unreviewed changes from reaching production.
 
-### References
+## Required Practice
 
+- Use Request → Architect → Planner → Builder → Self Review → QA → Security Review → Performance Review → Reviewer → Merge Request → CI/CD → Staging → Approval → Production.
+- Not every task requires every role.
+- Document exceptions.
+
+## References
+
+**Official:**
 - GitLab Merge Request workflows
+- GitLab CI/CD
+
+**Normative:**
 - NIST SSDF
 - OWASP SAMM
+
+## Validation
+
+- High-risk changes include documented review evidence.
 
 ---
 
 # 36. RISK LEVELS
 
-## LOW
+## Rule
 
-Examples:
+Risk determines required review depth and documentation burden.
 
-- Documentation
-- Copy
-- Minor styling
-- Small UI fixes
+## Rationale
 
-## MEDIUM
+Uniform review for trivial and critical changes wastes time or misses risk.
 
-Examples:
+## Required Practice
 
-- New components
-- API changes
-- Database queries
-- New dependencies
-- CMS schema changes
-
-## HIGH
-
-Examples:
-
-- Authentication
-- Authorization
-- Database migrations
-- Infrastructure
-- Deployment
-- Security
-- Architecture
-- Data deletion
+Classify work as:
+- LOW: documentation, copy, minor styling, small UI fixes
+- MEDIUM: new components, API changes, database queries, new dependencies, CMS schema changes
+- HIGH: authentication, authorization, database migrations, infrastructure, deployment, security, architecture, data deletion
 
 HIGH-risk work requires additional review and explicit documentation.
 
-### References
+## References
 
+**Normative:**
 - NIST Risk Management Framework
 - OWASP ASVS
 - NIST SSDF
+
+## Validation
+
+- Risk classification is stated before implementation begins.
 
 ---
 
 # 37. ADR GOVERNANCE
 
-Create:
+## Rule
 
-```text
-ADR/
-0000-template.md
-```
+Major architectural decisions MUST use Architecture Decision Records.
 
-Each ADR must contain:
+## Rationale
 
-- Title
-- Status
-- Date
-- Context
-- Problem
-- Decision
-- Alternatives considered
-- Consequences
-- Migration
-- Rollback
+ADRs preserve context, alternatives, and consequences for future maintainers and agents.
 
-Statuses:
+## Required Practice
 
-- Proposed
-- Accepted
-- Rejected
-- Superseded
+- Use `docs/adr/0000-template.md`.
+- Each ADR includes title, status, date, context, problem, decision, alternatives, consequences, migration, and rollback.
+- Statuses: Proposed, Accepted, Rejected, Superseded.
 
-Major architectural decisions MUST use ADRs.
+## References
 
-### References
-
-- Architecture Decision Records
+**Normative:**
+- Architecture Decision Records methodology
 - ISO/IEC/IEEE 42010
 - ISO/IEC/IEEE 12207
+
+## Validation
+
+- Every significant architecture change links to an ADR.
 
 ---
 
 # 38. CHANGE MANAGEMENT
 
-For significant changes document:
+## Rule
 
-```text
-Why?
-What?
-Impact?
-Risk?
-Rollback?
-Tests?
-Documentation?
-```
+Significant changes must document why, what, impact, risk, rollback, tests, and documentation updates.
 
-Architecture changes require ADRs.
+## Rationale
 
-Security changes require security review.
+Undocumented changes become irreversible debt in production systems.
 
-Database changes require migration and rollback planning.
+## Required Practice
 
-Infrastructure changes require deployment verification.
+- Architecture changes require ADRs.
+- Security changes require security review.
+- Database changes require migration and rollback planning.
+- Infrastructure changes require deployment verification.
 
-### References
+## References
 
+**Normative:**
 - NIST SSDF
 - ISO/IEC/IEEE 12207
+
+**Official:**
 - GitLab Merge Requests
 - ADR methodology
+
+## Validation
+
+- Change records exist for non-trivial modifications.
 
 ---
 
 # 39. GIT & BRANCH GOVERNANCE
 
-Recommended flow:
+## Rule
 
-```text
-main
-  ↓
-feature/*
-  ↓
-Merge Request
-  ↓
-CI
-  ↓
-Review
-  ↓
-Merge
-```
+Use GitLab Flow with protected branches and merge requests for significant changes.
 
-Production branches must be protected.
+## Rationale
 
-Significant changes must go through Merge Requests.
+Protected branches and reviewed merge requests are the primary defense against unreviewed production changes.
 
-### References
+## Required Practice
 
+- Follow `main` → `feature/*` → Merge Request → CI → Review → Merge.
+- Protect production branches.
+- Require merge requests for significant changes.
+
+## References
+
+**Official:**
 - Git Documentation
 - GitLab Protected Branches
 - GitLab Merge Requests
 - GitLab CI/CD
 
+## Validation
+
+- Production branches have protection rules.
+- No direct pushes to protected branches are accepted.
+
 ---
 
 # 40. SPRINT GOVERNANCE
 
-Every Sprint must define:
+## Rule
 
-- Objective
-- Scope
-- Non-goals
-- Dependencies
-- Risks
-- Acceptance criteria
-- Validation criteria
-- Deliverables
+Every sprint must define objective, scope, non-goals, dependencies, risks, acceptance criteria, validation criteria, and deliverables.
 
-Do not allow uncontrolled scope creep.
+## Rationale
 
-New work goes to the backlog unless required to unblock the current Sprint.
+Uncontrolled scope creep degrades quality and predictability.
 
-### References
+## Required Practice
 
+- Track work in GitLab Issues and Milestones.
+- New work goes to backlog unless required to unblock the current sprint.
+
+## References
+
+**Official:**
 - Agile Manifesto
 - Scrum Guide
 - GitLab Issues / Milestones
+
+## Validation
+
+- Active work has documented sprint alignment.
 
 ---
 
 # 41. DEFINITION OF DONE
 
-A task is not complete because code exists.
+## Rule
 
-A task is complete when the applicable requirements have been satisfied:
+A task is complete only when applicable requirements are satisfied, not merely when code exists.
 
-```text
-Implementation
-+
-Tests
-+
-Lint
-+
-Typecheck
-+
-Security checks
-+
-Performance checks
-+
-Documentation
-+
-PROJECT_STATUS update
-+
-Git commit / Merge Request
-```
+## Rationale
 
-Not every check is required for every trivial change.
+Incomplete tasks accumulate as hidden technical debt and reliability risk.
 
-The agent must determine which checks apply and report them.
+## Required Practice
 
-### References
+Confirm, as applicable:
+- Implementation
+- Tests
+- Lint
+- Typecheck
+- Security checks
+- Performance checks
+- Documentation
+- `PROJECT_STATUS` update
+- Git commit / Merge Request
 
+## References
+
+**Normative:**
 - NIST SSDF
-- GitLab CI/CD
 - ISO/IEC 25010
+
+**Official:**
+- GitLab CI/CD
+
+## Validation
+
+- Merge requests include a documented Definition of Done checklist.
 
 ---
 
 # 42. TESTING GOVERNANCE
 
-Testing must be proportional to risk.
+## Rule
 
-Where appropriate, use:
+Testing must be proportional to risk and validate behavior, not merely implementation details.
 
-- Unit tests
-- Integration tests
-- API tests
-- Component tests
-- End-to-end tests
-- Accessibility tests
-- Performance tests
-- Security tests
-- Smoke tests
+## Rationale
 
-Tests must validate behavior, not merely implementation details.
+Insufficient or brittle testing misses defects; excessive testing wastes time.
 
-### References
+## Required Practice
 
+- Use unit, integration, API, component, end-to-end, accessibility, performance, security, and smoke tests where appropriate.
+- Cover authentication, authorization, contact form, client project access, CMS content retrieval, navigation, responsive behavior, and production health checks.
+
+## References
+
+**Official:**
 - Vitest / Jest official documentation where applicable
 - Playwright Documentation
 - Testing Library Documentation
+
+**Normative:**
 - OWASP Testing Guide
 - WCAG 2.2
 - web.dev
+
+## Validation
+
+- Critical flows have test coverage.
+- CI reports test results.
 
 ---
 
 # 43. PROJECT STATUS GOVERNANCE
 
-`PROJECT_STATUS.md` must accurately show:
+## Rule
 
-- Current phase
-- Current Sprint
-- Completed work
-- Active work
-- Blockers
-- Risks
-- Technical debt
-- Architecture changes
-- Next actions
+`PROJECT_STATUS.md` must accurately reflect current phase, sprint, completed work, active work, blockers, risks, technical debt, architecture changes, and next actions.
 
-Never fabricate progress.
+## Rationale
 
-### References
+Fabricated or stale status misleads agents, reviewers, and stakeholders.
 
+## Required Practice
+
+- Update status after substantive changes.
+- Never fabricate progress.
+- Use GitLab Issues and Milestones as operational sources of truth.
+
+## References
+
+**Official:**
 - GitLab Issues
 - GitLab Milestones
+
+**Normative:**
 - Agile Manifesto
 - Scrum Guide
+
+## Validation
+
+- Status documents match branch and issue state.
 
 ---
 
 # 44. RELEASE GOVERNANCE
 
-Production releases must:
+## Rule
 
-- Pass GitLab CI
-- Have a known version
-- Have release notes
-- Have rollback instructions
-- Have health checks
-- Have smoke tests
+Production releases must pass CI, have a known version, release notes, rollback instructions, health checks, and smoke tests.
 
-Never deploy known broken builds.
+## Rationale
 
-### References
+Releases without verification and rollback capability create outage risk.
 
+## Required Practice
+
+- Never deploy known broken builds.
+- Use immutable artifact tags.
+- Verify health after deployment.
+
+## References
+
+**Official:**
 - GitLab Releases
 - GitLab CI/CD
+
+**Normative:**
 - Twelve-Factor App
 - NIST SSDF
+
+## Validation
+
+- Releases include smoke-test evidence.
 
 ---
 
 # 45. INCIDENT GOVERNANCE
 
-For production incidents:
+## Rule
 
-```text
-Detect
-↓
-Contain
-↓
-Restore
-↓
-Verify
-↓
-Document
-↓
-Root Cause
-↓
-Corrective Actions
-```
+Incidents follow Detect → Contain → Restore → Verify → Document → Root Cause → Corrective Actions, and must not be hidden.
 
-Incidents must not be hidden.
+## Rationale
 
-Repeated incidents must result in corrective engineering work.
+Hidden incidents recur; documented incidents improve system resilience.
 
-### References
+## Required Practice
 
+- Record incidents transparently.
+- Drive repeated incidents to corrective engineering work.
+
+## References
+
+**Official:**
 - Google SRE principles
-- NIST Incident Response guidance
 - OpenTelemetry
 - Prometheus
 - Grafana
+
+**Normative:**
+- NIST Incident Response guidance
+
+## Validation
+
+- Incident records exist for production-impacting events.
 
 ---
 
 # 46. DOCUMENTATION GOVERNANCE
 
-Documentation must be:
+## Rule
 
-- Version controlled
-- Accurate
-- Concise
-- Discoverable
-- Updated with architectural changes
+Documentation must be version controlled, accurate, concise, discoverable, and kept synchronized with implementation.
 
-Outdated documentation is technical debt.
+## Rationale
 
-### Documentation Manifest
+Outdated documentation is technical debt that misleads agents and developers.
 
-GOVERNANCE.md is the manifest for the documentation tree. Each governance section maps to a `docs/<area>/` folder containing a README manifest that indexes the canonical content, which lives directly in that `docs/<area>/` folder (migrated from the former `HEXA-Vision-Playbook/` per ADR-011):
+## Required Practice
 
-| Governance area | Manifest |
-|-----------------|----------|
-| Architecture | `docs/architecture/README.md` |
-| Decisions (ADR) | `docs/adr/README.md` |
-| Product | `docs/product/README.md` |
-| Design | `docs/design/README.md` |
-| Engineering | `docs/engineering/README.md` |
-| Security | `docs/security/README.md` |
-| Performance | `docs/performance/README.md` |
-| Accessibility | `docs/accessibility/README.md` |
-| SEO | `docs/seo/README.md` |
-| DevOps | `docs/devops/README.md` |
+- Update documentation with architectural changes.
+- Use manifests under `docs/<area>/README.md` where applicable.
+- Treat documentation as code.
 
-### References
+## References
 
-- GitLab Documentation
+**Normative:**
 - ISO/IEC/IEEE 12207
-- Architecture Decision Records
-- `docs/<area>/README.md` — documentation manifests
+- Architecture Decision Records methodology
+
+**Official:**
+- GitLab Documentation
+
+## Validation
+
+- Documentation manifests index current content.
+- Stale manifests are updated or removed.
 
 ---
 
 # 47. BACKUP & RECOVERY
 
-Production data must have an appropriate backup and recovery strategy.
+## Rule
 
-Consider:
+Production data must have backup frequency, retention, encryption, restore testing, disaster recovery, RPO, and RTO strategy.
 
-- Backup frequency
-- Retention
-- Encryption
-- Restore testing
-- Disaster recovery
-- Recovery Point Objective (RPO)
-- Recovery Time Objective (RTO)
+## Rationale
 
-A backup that has never been restored successfully must not be considered fully validated.
+Untested backups are not valid recovery assets.
 
-### References
+## Required Practice
 
+- Define backup cadence.
+- Test restore procedures.
+- Document RPO and RTO targets.
+
+## References
+
+**Official:**
 - PostgreSQL Backup and Restore Documentation
 - Docker Documentation
 - Ubuntu Server Documentation
+
+**Normative:**
 - NIST Contingency Planning guidance
+
+## Validation
+
+- Backup validation includes successful restore evidence.
 
 ---
 
 # 48. SECRETS & CONFIGURATION
 
-Secrets must never be stored in:
+## Rule
 
-- Source code
-- Public repositories
-- Docker images
-- Client-side bundles
-- Documentation
+Secrets must never be stored in source code, public repositories, Docker images, client-side bundles, or documentation.
 
-Use appropriate secret management mechanisms.
+## Rationale
 
-Environment-specific configuration must be separated from application code.
+Exposed secrets create immediate security and compliance risk.
 
-### References
+## Required Practice
 
-- GitLab CI/CD Variables
-- Docker Secrets
+- Use GitLab CI/CD variables, Docker Secrets, or approved secret management.
+- Separate environment-specific configuration from application code.
+
+## References
+
+**Normative:**
 - OWASP Secrets Management guidance
 - NIST SSDF
 - Twelve-Factor App
+
+**Official:**
+- GitLab CI/CD Variables
+- Docker Secrets
+
+## Validation
+
+- Secret scanning runs in CI.
+- No secrets appear in committed files.
 
 ---
 
 # 49. DEPLOYMENT GOVERNANCE
 
-Deployment must be reproducible.
+## Rule
 
-The deployment process should provide:
+Deployment must be reproducible, versioned, environment-separated, and include health checks, rollback, logs, monitoring, and smoke tests.
 
-- Versioned artifacts
-- Environment separation
-- Health checks
-- Rollback capability
-- Logs
-- Monitoring
-- Smoke tests
+## Rationale
 
-Production deployment must not depend on undocumented manual steps.
+Non-reproducible deployments create unrecoverable production states.
 
-### References
+## Required Practice
 
+- Avoid undocumented manual steps.
+- Verify health after deployment.
+- Maintain rollback capability.
+
+## References
+
+**Official:**
 - Docker Documentation
 - GitLab CI/CD
 - Traefik Documentation
+
+**Normative:**
 - Twelve-Factor App
 - NIST SSDF
+
+## Validation
+
+- Deployment steps are documented and repeatable.
 
 ---
 
 # 50. CONTENT & MEDIA GOVERNANCE
 
-Architectural imagery and media are core product assets.
+## Rule
 
-Media must be:
+Architectural imagery and media must be optimized, properly sized, responsively delivered, accessibly treated, properly licensed, and properly attributed.
 
-- Optimized
-- Properly sized
-- Responsively delivered
-- Accessible where appropriate
-- Properly licensed
-- Properly attributed where required
+## Rationale
 
-Do not use copyrighted third-party assets without appropriate rights.
+Media quality directly affects performance, accessibility, brand perception, and legal compliance.
 
-### References
+## Required Practice
 
+- Deliver responsive variants.
+- Optimize images and video.
+- Do not use copyrighted third-party assets without rights.
+
+## References
+
+**Official:**
 - MDN Images
 - web.dev Image Performance
 - W3C Accessibility
 - WIPO Copyright guidance
 
+## Validation
+
+- Media assets include optimization and licensing checks.
+
 ---
 
 # 51. RESPONSIVE GOVERNANCE
 
-The experience must be designed intentionally for:
+## Rule
 
-- Large desktop
-- Desktop
-- Tablet
-- Mobile
-- Touch interaction
-- Keyboard interaction
+The experience must be designed intentionally for large desktop, desktop, tablet, mobile, touch, and keyboard interaction.
 
-Responsive behavior must not simply be a scaled-down desktop version.
+## Rationale
 
-Important layouts must be validated at realistic viewport sizes.
+Scaled-down desktop experiences fail on mobile and harm usability.
 
-### References
+## Required Practice
 
+- Validate important layouts at realistic viewport sizes.
+- Do not treat mobile as an afterthought.
+
+## References
+
+**Official:**
 - MDN Responsive Design
 - web.dev Responsive Design
+
+**Normative:**
 - WCAG 2.2
+
+## Validation
+
+- Critical flows are validated at target viewport sizes.
 
 ---
 
 # 52. MOTION & REDUCED MOTION
 
-Motion should communicate:
+## Rule
 
-- Hierarchy
-- Spatial relationships
-- State changes
-- Navigation
-- Brand personality
+Motion must communicate hierarchy, state, navigation, or brand personality, and must respect reduced-motion preferences.
 
-Avoid decorative motion that creates unnecessary cognitive or performance cost.
+## Rationale
 
-Users who prefer reduced motion must receive an appropriate experience.
+Decorative motion creates cognitive cost, performance cost, and accessibility failures.
 
-### References
+## Required Practice
 
+- Avoid motion without purpose.
+- Provide reduced-motion alternatives.
+
+## References
+
+**Normative:**
 - WCAG 2.2
 - W3C Media Queries
 - MDN `prefers-reduced-motion`
+
+**Official:**
 - web.dev
+
+## Validation
+
+- Motion behavior is reviewed for reduced-motion users.
 
 ---
 
 # 53. BROWSER COMPATIBILITY
 
-The application must define supported browsers based on actual product requirements.
+## Rule
 
-Do not add browser-specific hacks without justification.
+Supported browsers must be defined by product requirements, and experimental APIs must include fallbacks where required.
 
-When using experimental browser APIs, provide appropriate fallbacks where required.
+## Rationale
 
-### References
+Browser-specific hacks without justification create maintenance burden and inconsistent behavior.
 
+## Required Practice
+
+- Define supported browsers explicitly.
+- Avoid undocumented compatibility assumptions.
+
+## References
+
+**Official:**
 - MDN Browser Compatibility Data
 - Can I Use
 - Web Platform Tests
 - WHATWG
 
+## Validation
+
+- Browser support decisions are documented.
+
 ---
 
 # 54. THIRD-PARTY SERVICES
 
-Third-party services must be evaluated for:
+## Rule
 
-- Security
-- Privacy
-- Performance
-- Availability
-- Cost
-- Vendor lock-in
-- Failure behavior
+Third-party services must be evaluated for security, privacy, performance, availability, cost, vendor lock-in, and failure behavior.
 
-Do not make a critical product function depend on an unnecessary external service.
+## Rationale
 
-### References
+Unreviewed dependencies on external services create availability and security risk.
 
+## Required Practice
+
+- Do not make critical product functions depend on unnecessary external services.
+- Document failure behavior and fallback plans.
+
+## References
+
+**Normative:**
 - NIST SSDF
 - OWASP Third-Party Components guidance
 - Twelve-Factor App
+
+## Validation
+
+- Third-party integrations include documented risk assessment.
 
 ---
 
 # 55. TECHNICAL DEBT
 
-Technical debt must be:
+## Rule
 
-- Identified
-- Documented
-- Prioritized
-- Tracked
+Technical debt must be identified, documented, prioritized, and tracked.
 
-Do not normalize permanent workarounds.
+## Rationale
 
-When technical debt creates security, reliability, or performance risk, it becomes higher priority.
+Unmanaged debt becomes structural risk in security, reliability, and performance.
 
-### References
+## Required Practice
 
+- Record debt explicitly.
+- Prioritize remediation when risk rises.
+- Do not normalize permanent workarounds.
+
+## References
+
+**Normative:**
 - ISO/IEC 25010
 - NIST SSDF
+
+**Official:**
 - Agile engineering practices
+
+## Validation
+
+- Technical debt is visible and reviewed regularly.
 
 ---
 
 # 56. GOVERNANCE CHANGE POLICY
 
-`GOVERNANCE.md` itself must not be changed casually.
+## Rule
 
-Changes require:
+`GOVERNANCE.md` must not be changed casually.
 
-1. Clear justification.
-2. Impact assessment.
-3. Review of AI-agent behavior.
-4. Review of architecture impact.
-5. Documentation.
-6. Version update where appropriate.
-7. Review before adoption.
+## Rationale
 
-Changes that materially alter project governance should have an ADR.
+Casual governance changes destabilize AI-agent behavior, architecture decisions, and review standards.
 
-### References
+## Required Practice
 
+- Provide clear justification and impact assessment.
+- Review AI-agent behavior, architecture impact, and documentation.
+- Create an ADR for material governance changes.
+
+## References
+
+**Normative:**
 - ISO/IEC/IEEE 42010
 - ISO/IEC/IEEE 12207
 - ADR methodology
+
+## Validation
+
+- Governance changes are documented and reviewed before adoption.
 
 ---
 
 # 57. INITIALIZATION REQUIREMENTS
 
-When this Governance System is introduced:
+## Rule
 
-1. Inspect the complete repository.
-2. Inspect current architecture.
-3. Inspect package versions.
-4. Inspect infrastructure.
-5. Inspect GitLab CI/CD.
-6. Inspect existing documentation.
-7. Identify conflicts.
-8. Create governance structure.
-9. Create ADR infrastructure.
-10. Create AI-agent role definitions.
-11. Create workflows.
-12. Create checklists.
-13. Create templates.
-14. Create `PROJECT_STATUS.md`.
-15. Do not begin unrelated feature development.
-16. Do not redesign the application as part of governance initialization.
-17. Do not perform an architectural migration as part of governance initialization.
+Governance initialization must inspect the repository, create required structure, and avoid unrelated feature work or migrations.
 
-At completion, report:
+## Rationale
 
-- Files created
-- Files modified
-- Current architecture
-- Current technology versions
-- Detected conflicts
-- Missing infrastructure
-- Governance gaps
-- Recommended next phase
-- References consulted
-- Validation performed
+Initialization must establish stable foundations without disturbing existing application behavior.
 
-### References
+## Required Practice
 
+- Inspect repository, architecture, packages, infrastructure, CI/CD, and documentation.
+- Create governance, ADR, agent, workflow, checklist, template, and status artifacts.
+- Do not begin unrelated feature development, application redesign, or architectural migration during initialization.
+
+## References
+
+**Normative:**
 - ISO/IEC/IEEE 12207
 - NIST SSDF
+
+**Official:**
 - GitLab Documentation
 - ADR methodology
+
+## Validation
+
+- Initialization reports list files created/modified, conflicts, gaps, and recommended next phase.
 
 ---
 
 # 58. KIMI / OPENCODE OPERATING MODE
 
-Kimi and OpenCode are implementation agents operating under this governance system.
+## Rule
 
-They must not interpret a user request as permission to violate governance.
+Implementation agents must operate under this governance system and may not interpret user requests as permission to violate governance.
+
+## Rationale
+
+Agents must preserve architectural and quality guarantees even under pressure to deliver quickly.
+
+## Required Practice
 
 For every implementation request:
-
-```text
-Read Governance
-      ↓
-Read Architecture
-      ↓
-Read ADRs
-      ↓
-Read Project Status
-      ↓
-Inspect Code
-      ↓
-Determine Risk
-      ↓
-Research / Verify
-      ↓
-Plan
-      ↓
-Implement
-      ↓
-Validate
-      ↓
-Review
-      ↓
-Document
-      ↓
-Update Status
-      ↓
-Commit / Merge Request
-```
+1. Read Governance
+2. Read Architecture
+3. Read ADRs
+4. Read Project Status
+5. Inspect Code
+6. Determine Risk
+7. Research / Verify
+8. Plan
+9. Implement
+10. Validate
+11. Review
+12. Document
+13. Update Status
+14. Commit / Merge Request
 
 If a requested change conflicts with governance:
+1. Stop
+2. Explain conflict
+3. Identify affected rule
+4. Evaluate alternatives
+5. Create ADR if required
+6. Request / Await Architectural Decision
 
-```text
-STOP
-↓
-Explain Conflict
-↓
-Identify Affected Rule
-↓
-Evaluate Alternatives
-↓
-Create ADR if Required
-↓
-Request / Await Architectural Decision
-```
+## References
 
-Never silently violate governance.
-
-### References
-
+**Normative:**
 - NIST SSDF
 - NIST AI RMF
+
+**Official:**
 - GitLab Merge Requests
 - OWASP SAMM
+
+## Validation
+
+- Agent outputs include governance alignment statements and evidence.
 
 ---
 
 # 59. FINAL GOVERNANCE RULE
 
-The repository itself must become self-governing.
+## Rule
 
-A new developer or AI agent should be able to clone the repository and understand:
+The repository must become self-governing.
 
-- What HEXA STUDIO is
-- Why it exists
-- How it is architected
-- How it should be developed
-- How it should be tested
-- How it should be deployed
-- What decisions have been made
-- What must not be changed casually
-- What is currently being built
-- What remains to be built
-- Which official references should be consulted
-- How design inspiration should be evaluated
-- How AI agents are expected to operate
+## Rationale
 
-The goal is not to create a large documentation folder.
+A self-governing repository enables consistent development by humans and agents without repeated instruction.
 
-The goal is to create a **living engineering operating system for HEXA STUDIO**.
+## Required Practice
+
+- Preserve institutional knowledge in documentation, ADRs, and status files.
+- Keep documentation truthful and current.
+- Never treat production as an experiment.
+
+## Validation
+
+- A new developer or agent can understand purpose, architecture, standards, history, and constraints from the repository alone.
 
 ---
 
 # 60. GOVERNANCE QUALITY GATE
 
-Before accepting any significant implementation, verify:
+## Rule
 
-```text
-[ ] Governance rules followed
-[ ] Architecture reviewed
-[ ] ADR created if required
-[ ] Correct technology version verified
-[ ] Official documentation consulted where required
-[ ] Security implications reviewed
-[ ] Performance implications reviewed
-[ ] Accessibility implications reviewed
-[ ] Responsive behavior reviewed
-[ ] SEO implications reviewed where applicable
-[ ] Tests completed
-[ ] CI passed
-[ ] Documentation updated
-[ ] PROJECT_STATUS updated
-[ ] Rollback considered where applicable
-[ ] Merge Request reviewed
-```
+Before accepting significant implementation, the governance quality gate must be verified.
 
-### References
+## Rationale
 
+A single checklist prevents skipped security, performance, accessibility, SEO, testing, documentation, and review requirements.
+
+## Required Practice
+
+Verify before merge:
+- [ ] Governance rules followed
+- [ ] Architecture reviewed
+- [ ] ADR created if required
+- [ ] Correct technology version verified
+- [ ] Official documentation consulted where required
+- [ ] Security implications reviewed
+- [ ] Performance implications reviewed
+- [ ] Accessibility implications reviewed
+- [ ] Responsive behavior reviewed
+- [ ] SEO implications reviewed where applicable
+- [ ] Tests completed
+- [ ] CI passed
+- [ ] Documentation updated
+- [ ] PROJECT_STATUS updated
+- [ ] Rollback considered where applicable
+- [ ] Merge Request reviewed
+
+## References
+
+**Normative:**
 - NIST SSDF
 - OWASP ASVS
 - WCAG 2.2
 - web.dev
-- GitLab CI/CD
 - ISO/IEC 25010
+
+**Official:**
+- GitLab CI/CD
+
+## Validation
+
+- Significant merge requests include a completed quality gate record.
 
 ---
 
 # 61. GOVERNANCE STATUS
 
-This document represents the current governing rules of HEXA STUDIO.
+## Rule
 
-It should evolve with the project.
+This document represents the current governing rules and must evolve intentionally.
 
-However:
+## Rationale
 
-**Change must be intentional.**
+Governance that does not evolve becomes obsolete; governance that changes arbitrarily becomes unreliable.
 
-**Architecture must be explicit.**
+## Required Practice
 
-**Security must be continuous.**
+- Change must be intentional.
+- Architecture must be explicit.
+- Security must be continuous.
+- Performance must be measured.
+- Accessibility must be respected.
+- Design must be original.
+- AI must be governed.
+- Documentation must remain truthful.
+- Production must never be treated as an experiment.
 
-**Performance must be measured.**
+## Validation
 
-**Accessibility must be respected.**
-
-**Design must be original.**
-
-**AI must be governed.**
-
-**Documentation must remain truthful.**
-
-**Production must never be treated as an experiment.**
+- Changes to governance are justified, reviewed, and versioned.
 
 ---
 
@@ -2502,7 +1209,8 @@ However:
 
 | Version | Date | Summary |
 |---|---|---|
-| 1.1.0 | 2026-08-08 | Merged governance draft v1.0.0 (64-section revision) into the active 61-section document. Added: Reference Priority (§5), full design-inspiration catalog A–X with per-source guidance (§27), Design Research Rules + Design Reference Matrix + HEXA STUDIO Design Principle (§27), aligned never-copy list (§28), Design Review closing requirement (§29). All existing top-level sections and references retained. |
+| 1.2.0 | 2026-08-18 | Rebuilt into governance-spec format. Every technical section now carries Rule, Rationale, Required Practice, References, and Validation. Reference taxonomy enforced: Normative / Official / Benchmark / Inspiration. |
+| 1.1.0 | 2026-08-08 | Merged governance draft into active 61-section document; added design-inspiration catalog A–X, design research rules, review requirement. |
 | 1.0.0 | — | Initial governance system. |
 
 ---
