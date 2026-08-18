@@ -2,7 +2,7 @@
 
 import React, { useState, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { DashboardSidebar } from '@/components/DashboardSidebar';
 import { SearchOverlay, useSearchHotkey } from '@/components/SearchOverlay';
 import { NotificationBell } from '@/components/NotificationBell';

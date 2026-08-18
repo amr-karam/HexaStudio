@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Download, FileText, Check } from 'lucide-react';
+import { Download, Check } from 'lucide-react';
 import { cn } from '@/components/ui/cn';
 
 // ─── Types ──────────────────────────────────────────────────────────────

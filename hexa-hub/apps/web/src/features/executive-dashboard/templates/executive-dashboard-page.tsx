@@ -1,13 +1,30 @@
+"use client";
+
 /**
  * Executive Dashboard Page Template
  * Main page component for the executive dashboard
  */
 
 import { motion } from "framer-motion";
+import dynamic from "next/dynamic";
 import { DashboardLayout } from "./dashboard-layout";
 import { RealTimeMetricsPanel } from "../organisms/real-time-metrics-panel";
-import { RevenueChart } from "../molecules/revenue-chart";
 import { useDashboardMetrics } from "../hooks/use-dashboard-metrics";
+
+// Recharts (v3) pulls in react-redux/@reduxjs/toolkit which breaks under
+// Turbopack SSR module evaluation in this Next 16 app. Load the chart
+// client-only to keep it out of the server render graph.
+const RevenueChart = dynamic(
+  () => import("../molecules/revenue-chart").then((m) => m.RevenueChart),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-[320px] flex items-center justify-center text-white/40">
+        Loading chart…
+      </div>
+    ),
+  },
+);
 
 const ExecutiveDashboardPage = () => {
   const { permissions } = useDashboardMetrics();

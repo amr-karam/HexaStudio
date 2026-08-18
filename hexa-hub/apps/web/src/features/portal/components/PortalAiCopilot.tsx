@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSocket } from '@/providers/SocketProvider';
+import Image from 'next/image';
 import { toast } from 'sonner';
-import { Mic, Send, Paperclip, X, Bot, User, Image as ImageIcon } from 'lucide-react';
+import { Mic, Send, Paperclip, X, Bot, User } from 'lucide-react';
 import { usePresence } from '@/lib/hooks/use-presence';
 
 interface Message {
@@ -16,6 +16,30 @@ interface Message {
   tags?: string[];
 }
 
+// Minimal typings for the Web Speech API (not in the standard lib DOM yet).
+interface SpeechRecognitionResultEvent {
+  results: ArrayLike<ArrayLike<{ transcript: string }>>;
+}
+interface SpeechRecognitionLike {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onstart: (() => void) | null;
+  onresult: ((event: SpeechRecognitionResultEvent) => void) | null;
+  onerror: ((event: { error: string }) => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+}
+type SpeechRecognitionCtor = new () => SpeechRecognitionLike;
+function getSpeechRecognitionCtor(): SpeechRecognitionCtor | null {
+  const w = window as unknown as {
+    SpeechRecognition?: SpeechRecognitionCtor;
+    webkitSpeechRecognition?: SpeechRecognitionCtor;
+  };
+  return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
+}
+
 export function PortalAiCopilot() {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -25,7 +49,6 @@ export function PortalAiCopilot() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { socket } = useSocket();
   const { onlineUsers } = usePresence();
 
   const scrollToBottom = () => {
@@ -59,13 +82,13 @@ export function PortalAiCopilot() {
   };
 
   const startListening = () => {
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    const Ctor = getSpeechRecognitionCtor();
+    if (!Ctor) {
       toast.error('Speech recognition not supported in your browser');
       return;
     }
 
-    const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
-    const recognition = new SpeechRecognition();
+    const recognition = new Ctor();
 
     recognition.continuous = false;
     recognition.interimResults = false;
@@ -75,13 +98,13 @@ export function PortalAiCopilot() {
       setIsListening(true);
     };
 
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
       setInputValue(transcript);
       setIsListening(false);
     };
 
-    recognition.onerror = (event: any) => {
+    recognition.onerror = () => {
       toast.error('Speech recognition error');
       setIsListening(false);
     };
@@ -95,9 +118,10 @@ export function PortalAiCopilot() {
   };
 
   const stopListening = () => {
-    const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
-    if (SpeechRecognition) {
-      SpeechRecognition.prototype.stop();
+    const Ctor = getSpeechRecognitionCtor();
+    if (Ctor) {
+      const instance = new Ctor();
+      instance.stop();
     }
     setIsListening(false);
   };
@@ -145,7 +169,7 @@ export function PortalAiCopilot() {
       };
 
       setMessages((prev) => [...prev, aiResponse]);
-    } catch (error) {
+    } catch {
       toast.error('Failed to get AI response');
     } finally {
       setIsProcessing(false);
@@ -247,9 +271,12 @@ export function PortalAiCopilot() {
             {imagePreview && (
               <div className="p-4 border-t border-[#1F1F1F] bg-[#141414]">
                 <div className="relative">
-                  <img
+                  <Image
                     src={imagePreview}
                     alt="Preview"
+                    width={128}
+                    height={128}
+                    unoptimized
                     className="w-full h-32 object-cover rounded-lg"
                   />
                   <button

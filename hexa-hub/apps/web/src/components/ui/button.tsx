@@ -1,80 +1,113 @@
 'use client';
 
 import React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 import { motion } from 'framer-motion';
-import { cn } from './cn';
-import { Spinner } from './spinner';
+import { cn } from '@/components/ui/cn';
 
-// Omit HTML event attributes that conflict with Framer Motion's custom event types
-// (onAnimationStart, onDrag, onPan, onTap, onHover — all have different signatures)
-type MotionSafeHTMLAttributes = Omit<
-  React.ButtonHTMLAttributes<HTMLButtonElement>,
-  | 'onAnimationStart'
-  | 'onDrag' | 'onDragEnd' | 'onDragStart'
-  | 'onPan' | 'onPanEnd' | 'onPanStart'
-  | 'onTap' | 'onTapCancel' | 'onTapStart'
-  | 'onHoverEnd' | 'onHoverStart'
->;
+const buttonVariants = cva(
+  cn(
+    'relative inline-flex items-center justify-center gap-2',
+    'rounded-lg font-medium tracking-tight',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+    'focus-visible:ring-offset-var(--color-void)',
+    'transition-all duration-200 ease-[var(--hexa-ease-interaction)]',
+    'disabled:pointer-events-none disabled:opacity-50',
+    'font-mono uppercase text-xs',
+  ),
+  {
+    variants: {
+      variant: {
+        primary: cn(
+          'bg-gold text-void-deep',
+          'hover:bg-gold-hover hover:shadow-gold',
+          'focus-visible:ring-gold',
+          'border-2 border-gold',
+        ),
+        secondary: cn(
+          'bg-transparent text-foreground',
+          'hover:bg-surface-elevated',
+          'focus-visible:ring-gold',
+          'border border-border',
+        ),
+        tertiary: cn(
+          'bg-transparent text-secondary',
+          'hover:bg-white/[0.03]',
+          'focus-visible:ring-gold',
+          'border border-transparent',
+        ),
+        ghost: cn(
+          'bg-transparent text-secondary',
+          'hover:bg-white/[0.03] hover:text-foreground',
+          'focus-visible:ring-gold',
+          'border border-transparent',
+        ),
+        gold: cn(
+          'bg-gold text-void-deep',
+          'hover:bg-gold-hover hover:shadow-gold',
+          'focus-visible:ring-gold',
+          'border-2 border-gold',
+        ),
+        danger: cn(
+          'bg-error/10 text-error',
+          'hover:bg-error/20',
+          'focus-visible:ring-error',
+          'border border-error/30',
+        ),
+      },
+      size: {
+        xs: 'px-3 py-1.5 text-xs',
+        sm: 'px-4 py-2 text-sm',
+        md: 'px-5 py-2.5 text-sm',
+        lg: 'px-6 py-3 text-base',
+        xl: 'px-8 py-3.5 text-lg',
+      },
+      shape: {
+        default: 'rounded-lg',
+        full: 'rounded-full',
+      },
+    },
+    defaultVariants: {
+      variant: 'primary',
+      size: 'md',
+      shape: 'default',
+    },
+  },
+);
 
-export interface ButtonProps extends MotionSafeHTMLAttributes {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
-  size?: 'sm' | 'md' | 'lg';
-  isLoading?: boolean;
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean;
 }
 
-const variantClasses: Record<NonNullable<ButtonProps['variant']>, string> = {
-  primary:
-    'bg-[#D4A843] text-[#0A0A0A] hover:bg-[#D4A843]/90 hover:shadow-[0_0_20px_rgba(212,168,67,0.15)]',
-  secondary:
-    'bg-transparent text-white border border-[#1F1F1F] hover:border-[#D4A843]/30 hover:bg-white/[0.03]',
-  ghost:
-    'bg-transparent text-neutral-400 hover:text-white hover:bg-white/[0.05]',
-  danger:
-    'bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 hover:text-red-300',
-};
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, shape, asChild = false, children, ...props }, ref) => {
+    const baseClasses = buttonVariants({ variant, size, shape, className });
 
-const sizeClasses: Record<NonNullable<ButtonProps['size']>, string> = {
-  sm: 'px-3 py-1.5 text-xs gap-1.5 rounded-lg',
-  md: 'px-5 py-2.5 text-sm gap-2 rounded-lg',
-  lg: 'px-6 py-3 text-base gap-2.5 rounded-xl',
-};
+    if (asChild) {
+      return (
+        <button ref={ref} className={baseClasses} {...props}>
+          {children}
+        </button>
+      );
+    }
 
-export function Button({
-  variant = 'primary',
-  size = 'md',
-  isLoading = false,
-  leftIcon,
-  rightIcon,
-  children,
-  className,
-  disabled,
-  ...props
-}: ButtonProps) {
-  const isDisabled = disabled || isLoading;
+    return (
+      <motion.button
+        ref={ref}
+        className={baseClasses}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        transition={{ duration: 0.15, ease: 'var(--hexa-ease-interaction)' }}
+        {...props}
+      >
+        {children}
+      </motion.button>
+    );
+  },
+);
 
-  return (
-    <motion.button
-      whileHover={!isDisabled ? { scale: 1.02 } : undefined}
-      whileTap={!isDisabled ? { scale: 0.98 } : undefined}
-      disabled={isDisabled}
-      className={cn(
-        'inline-flex items-center justify-center font-light tracking-wide transition-all duration-300',
-        'disabled:opacity-40 disabled:cursor-not-allowed',
-        variantClasses[variant],
-        sizeClasses[size],
-        className,
-      )}
-      {...props}
-    >
-      {isLoading ? (
-        <Spinner size="sm" className="border-t-[#0A0A0A] border-[#0A0A0A]/20" />
-      ) : (
-        leftIcon
-      )}
-      {children}
-      {!isLoading && rightIcon}
-    </motion.button>
-  );
-}
+Button.displayName = 'Button';
+
+export { Button, buttonVariants };

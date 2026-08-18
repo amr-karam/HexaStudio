@@ -3,9 +3,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
-  TrendingUp, TrendingDown, DollarSign, FolderKanban, Users, Target,
-  Star, Clock, AlertTriangle, CheckCircle2, ArrowUpRight, ArrowDownRight,
-  Activity, Calendar, ChevronRight,
+  TrendingUp, DollarSign, FolderKanban, Users, Target,
+  Star, CheckCircle2, ArrowUpRight, ArrowDownRight,
+  Activity, ChevronRight,
 } from 'lucide-react';
 
 // ─── Animated Counter ───────────────────────────────────────────────────────

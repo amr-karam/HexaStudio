@@ -10,8 +10,7 @@ import {
   Plus,
   ChevronRight,
   Clock,
-  User,
-  AlertCircle,
+    AlertCircle,
   Filter,
 } from 'lucide-react';
 

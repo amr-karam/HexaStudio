@@ -15,6 +15,13 @@ interface SearchResult {
   url: string;
 }
 
+interface RawSearchItem {
+  id: string | number;
+  title?: string;
+  subtitle?: string;
+  model?: string;
+}
+
 // --- Component ---
 
 export default function GlobalSearch({
@@ -58,7 +65,7 @@ export default function GlobalSearch({
       const res = await fetch('/api/v1/search?q=' + encodeURIComponent(searchQuery));
       if (res.ok) {
         const data = await res.json();
-        const mapped: SearchResult[] = (data.data || []).map((item: any) => ({
+        const mapped: SearchResult[] = (data.data || []).map((item: RawSearchItem) => ({
           id: String(item.id),
           title: item.title || 'Untitled',
           subtitle: item.subtitle || '',
@@ -73,7 +80,7 @@ export default function GlobalSearch({
         }));
         setApiResults(mapped);
       }
-    } catch (e) {
+    } catch {
       // Silently fail - keep empty results
     } finally {
       setIsSearching(false);

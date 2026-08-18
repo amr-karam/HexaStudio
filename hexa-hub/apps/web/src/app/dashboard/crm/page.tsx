@@ -5,13 +5,10 @@ import { motion } from 'framer-motion';
 import { useCrmLeads, useCrmStats } from '@/lib/hooks';
 import {
   Users,
-  Target,
-  TrendingUp,
-  Search,
+      Search,
   ChevronRight,
   Filter,
   AlertCircle,
-  type LucideIcon,
 } from 'lucide-react';
 
 export default function CrmPage() {

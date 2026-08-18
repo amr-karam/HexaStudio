@@ -6,8 +6,8 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/providers/AuthProvider';
 import axios from 'axios';
 import {
-  Users, DollarSign, Calendar, Mail, Phone, MapPin,
-  Target, TrendingUp, AlertCircle, ChevronLeft, Clock, User, Edit3, Trash2,
+  Users, DollarSign, Mail, Phone, MapPin,
+  Target, AlertCircle, ChevronLeft, User, Edit3, Trash2,
 } from 'lucide-react';
 
 interface Lead {

@@ -1,17 +1,236 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   HEXA STUDIO — GLOBAL STYLES & DESIGN TOKENS (v1.0 — canonical)
+   Single source of truth. All colors, spacing, motion, and typography
+   tokens live here as CSS custom properties consumed by Tailwind.
+───────────────────────────────────────────────────────────────────────── */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #050505;
-  --foreground: #ffffff;
-  --accent: #D4A843;
-  --obsidian: #0A0A0A;
-  --surface: #121212;
-  --border: #262626;
+/* ─── 1. BASE / CANVAS ──────────────────────────────────────────────────── */
+@layer base {
+  :root {
+    /* ─── Colors — 60/30/10 rule (void / obsidian / gold+white) ─── */
+    /* Void (60% canvas) */
+    --color-void:          #050505;
+    --color-void-deep:     #020203;
+    --color-background:    var(--color-void);
+
+    /* Obsidian & Slate (30% surfaces) */
+    --color-obsidian:      #0F0F10;
+    --color-obsidian-raised: #161618;
+    --color-slate:         #1A1A1A;
+    --color-surface:       var(--color-slate);
+
+    /* Border & dividers */
+    --color-border:        #1F1F1F;
+    --color-border-hover:  #2A2A2A;
+
+    /* Gold (10% — HEXA signature) */
+    --color-gold:          #D4AF37;
+    --color-gold-bright:   #E5C76B;
+    --color-gold-deep:     #A8862E;
+    --color-gold-hover:    #E5C76B;
+    --color-accent:        var(--color-gold);
+    --color-accent-light:  var(--color-gold-bright);
+    --color-accent-dark:   var(--color-gold-deep);
+
+    /* Semantic status colors */
+    --color-success:       #22C55E;
+    --color-warning:       #F59E0B;
+    --color-error:         #EF4444;
+    --color-info:          #3B82F6;
+
+    /* Text */
+    --color-text-primary:   #FFFFFF;
+    --color-text-secondary: #A0A0A0;
+    --color-text-tertiary:  #707075;
+    --color-text-muted:     var(--color-text-tertiary);
+    --color-foreground:     var(--color-text-primary);
+
+    /* ─── Spacing — 8px grid ─── */
+    --spacing-xs:    0.25rem;  /* 4px  */
+    --spacing-sm:    0.5rem;   /* 8px  */
+    --spacing-md:    0.75rem;  /* 12px */
+    --spacing-lg:    1rem;     /* 16px */
+    --spacing-xl:    1.5rem;   /* 24px */
+    --spacing-2xl:   2rem;     /* 32px */
+    --spacing-3xl:   3rem;     /* 48px */
+    --spacing-4xl:   4rem;     /* 64px */
+    --spacing-5xl:   6rem;     /* 96px */
+    --spacing-6xl:   8rem;     /* 128px */
+    --spacing-7xl:   12rem;    /* 192px */
+    --spacing-8xl:   16rem;    /* 256px */
+    --spacing-9xl:   20rem;    /* 320px */
+
+    /* ─── Border Radius ─── */
+    --radius-sm:     0.25rem;  /* 4px  */
+    --radius-md:     0.5rem;   /* 8px  */
+    --radius-lg:     1rem;     /* 16px */
+    --radius-xl:     1.5rem;   /* 24px */
+    --radius-2xl:    1.75rem;  /* 28px */
+    --radius-full:   9999px;
+
+    /* ─── Shadows — elevation scale ─── */
+    --shadow-elevation-0: 0 0 0 0 rgba(0, 0, 0, 0);
+    --shadow-elevation-1: 0 1px 3px 0 rgba(0, 0, 0, 0.10), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow-elevation-2: 0 4px 6px -1px rgba(0, 0, 0, 0.10), 0 2px 4px -2px rgba(0, 0, 0, 0.08);
+    --shadow-elevation-3: 0 10px 15px -3px rgba(0, 0, 0, 0.12), 0 4px 6px -4px rgba(0, 0, 0, 0.08);
+    --shadow-elevation-4: 0 20px 24px 4px rgba(0, 0, 0, 0.10), 0 8px 16px -4px rgba(0, 0, 0, 0.08);
+    --shadow-elevation-gold: 0 0 30px 0 rgba(212, 175, 55, 0.15);
+
+    /* ─── Motion — canonical easing curves ─── */
+    --hexa-ease-entrance:    0.16 1 0.3 1;
+    --hexa-ease-interaction: 0.34 1.56 0.64 1;
+    --hexa-ease-transition:  0.25 0.1 0.25 1;
+    --hexa-ease-sharp:       0.4 0 0.6 1;
+    --hexa-ease-cinematic:   0.76 0 0.24 1;
+
+    /* Duration tokens */
+    --hexa-duration-micro:    0.2s;
+    --hexa-duration-component: 0.4s;
+    --hexa-duration-scene:    0.8s;
+    --hexa-duration-transition: 0.7s;
+    --hexa-duration-page:     0.75s;
+    --hexa-duration-camera:   1.4s;
+
+    /* Stagger intervals */
+    --hexa-stagger-char:    0.03s;
+    --hexa-stagger-card:    0.08s;
+    --hexa-stagger-line:    0.05s;
+
+    /* ─── Z-Index Layers ─── */
+    --z-base:      0;
+    --z-dropdown:  1000;
+    --z-sticky:    1100;
+    --z-fixed:     1200;
+    --z-modal:     1300;
+    --z-popover:   1400;
+    --z-tooltip:   1500;
+    --z-toast:     1900;
+    --z-above:     2000;
+    --z-below:    -2000;
+
+    /* ─── Typography ─── */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-serif: 'Playfair Display', Georgia, serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+
+    --text-xs:    0.625rem;  /* 10px */
+    --text-sm:    0.8125rem; /* 13px */
+    --text-base:  0.9375rem; /* 15px */
+    --text-lg:    1.0625rem; /* 17px */
+    --text-xl:    1.1875rem; /* 19px */
+    --text-2xl:   1.5rem;    /* 24px */
+    --text-3xl:   1.875rem;  /* 30px */
+    --text-4xl:   2.4375rem; /* 39px */
+    --text-5xl:   3.75rem;   /* 60px */
+  }
+
+  /* Light mode overrides (future) */
+  [data-theme='light'] {
+    --color-void:          #F8F6F3;
+    --color-void-deep:     #FFFFFF;
+    --color-obsidian:      #F0EDE9;
+    --color-obsidian-raised: #E5E1DB;
+    --color-slate:         #D4D0CC;
+    --color-border:        #C2BEB6;
+    --color-gold:          #B8860B;
+    --color-gold-bright:   #D4AF37;
+    --color-text-primary:   #0A0A0A;
+    --color-text-secondary: #555555;
+    --color-text-tertiary:  #7A7A7E;
+    --color-foreground:     var(--color-text-primary);
+    --color-background:     var(--color-void);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-void);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    font-feature-settings: 'liga' 1, 'kern' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ─── Selection accent ─── */
+  ::selection {
+    background-color: var(--color-gold);
+    color: var(--color-void-deep);
+  }
+
+  /* ─── Scrollbar — minimal luxury ─── */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: var(--radius-full);
+    transition: background-color 0.2s var(--hexa-ease-transition);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-tertiary);
+  }
 }
 
-body {
-  background-color: var(--background);
-  color: var(--foreground);
+/* ─── 2. UTILITY OVERRIDES ────────────────────────────────────────────────── */
+@layer utilities {
+  /* Semantic color utility aliases — bridges CSS vars to Tailwind classes */
+  .text-gold { color: var(--color-gold); }
+  .text-gold-bright { color: var(--color-gold-bright); }
+  .text-gold-deep { color: var(--color-gold-deep); }
+  .bg-gold { background-color: var(--color-gold); }
+  .bg-gold-hover { background-color: var(--color-gold-hover); }
+  .bg-gold\/10 { background-color: color-mix(in srgb, var(--color-gold) 10%, transparent); }
+  .bg-gold\/5 { background-color: color-mix(in srgb, var(--color-gold) 5%, transparent); }
+  .bg-gold\/20 { background-color: color-mix(in srgb, var(--color-gold) 20%, transparent); }
+  .bg-gold\/30 { background-color: color-mix(in srgb, var(--color-gold) 30%, transparent); }
+  .border-gold { border-color: var(--color-gold); }
+  .border-gold\/20 { border-color: color-mix(in srgb, var(--color-gold) 20%, transparent); }
+  .border-gold\/30 { border-color: color-mix(in srgb, var(--color-gold) 30%, transparent); }
+  .shadow-gold { box-shadow: var(--shadow-elevation-gold); }
+  .shadow-card { box-shadow: var(--shadow-elevation-3); }
+  .shadow-elevated { box-shadow: var(--shadow-elevation-2); }
+  .bg-surface { background-color: var(--color-surface); }
+  .bg-surface-elevated { background-color: var(--color-obsidian-raised); }
+  .bg-obsidian { background-color: var(--color-obsidian); }
+  .bg-void-deep { background-color: var(--color-void-deep); }
+  .border-border { border-color: var(--color-border); }
+  .border-border\/30 { border-color: color-mix(in srgb, var(--color-border) 30%, transparent); }
+  .border-border\/50 { border-color: color-mix(in srgb, var(--color-border) 50%, transparent); }
+  .bg-background { background-color: var(--color-background); }
+  .text-foreground { color: var(--color-foreground); }
+  .text-secondary { color: var(--color-text-secondary); }
+  .text-tertiary { color: var(--color-text-tertiary); }
+  .text-muted { color: var(--color-text-muted); }
+
+  /* ─── Custom transition timings using HEXA ease tokens ─── */
+  .transition-ease-entrance { transition-timing-function: var(--hexa-ease-entrance); }
+  .transition-ease-interaction { transition-timing-function: var(--hexa-ease-interaction); }
+  .transition-ease-sharp { transition-timing-function: var(--hexa-ease-sharp); }
+  .transition-ease-cinematic { transition-timing-function: var(--hexa-ease-cinematic); }
+
+  /* ─── Glassmorphism helpers ─── */
+  .glass {
+    background: color-mix(in srgb, var(--color-obsidian) 60%, transparent);
+    backdrop-filter: blur(20px);
+    border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
+  }
+  .glass-card {
+    background: color-mix(in srgb, var(--color-obsidian) 70%, transparent);
+    backdrop-filter: blur(24px);
+    border: 1px solid color-mix(in srgb, var(--color-border) 40%, transparent);
+  }
 }

@@ -2,7 +2,6 @@
 
 import React, { useEffect } from 'react';
 import { RefreshCw } from 'lucide-react';
-import * as Sentry from '@sentry/nextjs';
 
 export default function ErrorPage({
   error,
@@ -12,7 +11,10 @@ export default function ErrorPage({
   reset: () => void;
 }) {
   useEffect(() => {
-    Sentry.captureException(error);
+    // Telemetry hook: capture the error via the configured error reporter.
+    // Sentry was removed during the Next 16 / React 19 alignment (its peer
+    // range excludes Next 16). Wire a supported reporter here if needed.
+    console.error('Application error:', error);
   }, [error]);
 
   return (

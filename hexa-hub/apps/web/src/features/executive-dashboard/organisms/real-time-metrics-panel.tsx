@@ -6,7 +6,6 @@
 import { motion } from "framer-motion";
 import { useDashboardMetrics } from "../hooks/use-dashboard-metrics";
 import { QuickStatsGrid } from "../molecules/quick-stats-grid";
-import { LoadingSpinner } from "../atoms/loading-spinner";
 import { ErrorMessage } from "../atoms/error-message";
 import { Users, Briefcase, DollarSign, Bot, Activity } from "lucide-react";
 

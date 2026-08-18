@@ -1,4 +1,6 @@
-import { ReactNode, useEffect, Fragment } from 'react';
+"use client";
+
+import { ReactNode, useEffect } from 'react';
 /**
  * Executive Dashboard Zustand Store
  * Centralized state management with premium TypeScript typing
@@ -15,8 +17,7 @@ import {
   DashboardFilters,
   DashboardPermissions,
   UserRole,
-  ErrorResponse,
-} from "../types/dashboard-types";
+  } from "../types/dashboard-types";
 import { ROLE_PERMISSIONS } from "../config/dashboard-config";
 
 // ========== Initial State ==========

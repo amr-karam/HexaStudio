@@ -15,8 +15,7 @@ import {
   PieChart,
   Pie,
   LabelList,
-  Legend,
-  RadialBarChart,
+    RadialBarChart,
   RadialBar,
 } from 'recharts';
 import { cn } from '@/components/ui/cn';
@@ -375,7 +374,6 @@ interface ProjectProgressGaugeProps {
 
 function SingleGauge({ data: project }: { data: ProjectProgressData }) {
   const chartData = [{ name: 'Progress', value: project.progress, fill: COLORS.gold }];
-  const remaining = [{ name: 'Remaining', value: 100 - project.progress, fill: COLORS.border }];
 
   return (
     <div className="flex flex-col items-center">

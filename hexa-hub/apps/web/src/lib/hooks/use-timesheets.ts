@@ -7,12 +7,23 @@ import type { ListParams } from './use-odoo-query';
 
 const KEYS = { timesheets: 'timesheets', stats: 'timesheets-stats' } as const;
 
+/** Minimal shape for a timesheet entry mutation payload. */
+export interface TimesheetInput {
+  employee_id?: number | string;
+  project_id?: number | string;
+  task_id?: number | string;
+  name?: string;
+  unit_amount?: number;
+  date?: string;
+  [key: string]: unknown;
+}
+
 export function useTimesheets(filters?: ListParams) {
   return useOdooList(KEYS.timesheets, '/odoo/timesheets', filters);
 }
 
 export function useCreateTimesheet() {
-  return useOdooMutation<any, any>('/odoo/timesheets', 'POST', { invalidateKeys: [KEYS.timesheets, KEYS.stats] });
+  return useOdooMutation<TimesheetInput, TimesheetInput>('/odoo/timesheets', 'POST', { invalidateKeys: [KEYS.timesheets, KEYS.stats] });
 }
 
 export function useTimesheetStats(filters?: { dateFrom?: string; dateTo?: string }) {

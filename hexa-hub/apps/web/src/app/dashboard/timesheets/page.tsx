@@ -144,7 +144,6 @@ export default function TimesheetsPage() {
   const typedStats = stats as { total_hours?: number; total_entries?: number; unique_employees?: number } | undefined;
   const totalHours = typedStats?.total_hours ?? resolvedEntries.reduce((sum, e) => sum + (e.hours || 0), 0);
   const statsEntries = typedStats?.total_entries ?? resolvedTotal;
-  const uniqueEmployees = typedStats?.unique_employees;
 
   return (
     <div className="p-8 md:p-10 lg:p-12 min-h-screen">

@@ -14,8 +14,7 @@ import {
   ArrowDown,
   CornerDownLeft,
   TrendingUp,
-  Loader2,
-  AlertCircle,
+    AlertCircle,
   Hash,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';

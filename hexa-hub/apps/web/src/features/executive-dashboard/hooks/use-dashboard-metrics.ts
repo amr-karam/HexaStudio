@@ -3,6 +3,8 @@
  * Real-time metrics with premium error handling and performance optimization
  */
 
+"use client";
+
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { io, Socket } from "socket.io-client";
@@ -14,12 +16,10 @@ import {
   RevenueSummary, 
   CopilotUsage, 
   DashboardMetrics,
-  SocketEvents,
-  SocketEventName,
-  ErrorResponse,
+      ErrorResponse,
   ApiResponse
 } from "../types/dashboard-types";
-import { POLLING_INTERVALS, REALTIME_UPDATE_INTERVAL } from "../config/dashboard-config";
+import { POLLING_INTERVALS } from "../config/dashboard-config";
 import { formatCurrency, formatNumber, formatPercentage } from "../utils/formatters";
 
 // ========== API Endpoints ==========
@@ -95,7 +95,6 @@ export const useDashboardMetrics = () => {
     setProjects,
     setRevenue,
     setCopilotUsage,
-    setChannelActivity,
     setLastUpdated,
     setError,
     resetMetrics,
@@ -343,7 +342,7 @@ export const useDashboardMetrics = () => {
         queryClient.invalidateQueries({ queryKey: ["dashboard", "copilot"] }),
       ]);
       setLastUpdated(new Date().toISOString());
-    } catch (error) {
+    } catch {
       setError("Failed to refresh all data");
     }
   }, [queryClient, setError, setLastUpdated]);

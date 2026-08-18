@@ -5,7 +5,8 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useDashboardStore } from "./dashboard-store";
-import { ReactNode } from "react";
+import type { UserRole } from "../types/dashboard-types";
+import { ReactNode, useEffect } from "react";
 
 interface DashboardProviderProps {
   children: ReactNode;
@@ -27,13 +28,13 @@ export const DashboardProvider = ({ children }: DashboardProviderProps) => {
   // Initialize user role from localStorage or default to viewer
   const setUserRole = useDashboardStore((state) => state.setUserRole);
 
-  // Load user role from localStorage on initial render
-  if (typeof window !== "undefined") {
+  // Load user role from localStorage on mount (client-only)
+  useEffect(() => {
     const savedRole = localStorage.getItem("dashboardRole");
     if (savedRole) {
-      setUserRole(savedRole as any);
+      setUserRole(savedRole as UserRole);
     }
-  }
+  }, [setUserRole]);
 
   return (
     <QueryClientProvider client={queryClient}>

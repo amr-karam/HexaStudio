@@ -108,7 +108,7 @@ function AnimatedCounter({ value, prefix = '', suffix = '', duration = 1.5 }: {
   return <span ref={ref}>{formatted}</span>;
 }
 
-function BarChart({ data, title, color = '#D4A843' }: {
+function BarChart({ data, title, color: _color = '#D4A843' }: {
   data: { name: string; value: number; color: string; label?: string }[];
   title: string;
   color?: string;
@@ -116,7 +116,6 @@ function BarChart({ data, title, color = '#D4A843' }: {
   const max = Math.max(...data.map(d => d.value));
   const chartH = 200;
   const barWidth = 40;
-  const spacing = 20;
 
   return (
     <div className="bg-[#141414] border border-[#1F1F1F] rounded-2xl p-5">
@@ -168,7 +167,7 @@ export default function SalesLandingPage() {
         setStats(statsRes.data);
         setRecentOrders(ordersRes.data);
         setPipelineStages(pipelineRes.data);
-      } catch {}
+      } catch { /* no-op */ }
       finally {
         setIsLoading(false);
       }

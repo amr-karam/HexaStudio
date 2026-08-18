@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { LayoutDashboard, BrainCircuit, TrendingUp, Users, AlertCircle, FolderKanban } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import { useAuth } from '@/providers/AuthProvider';
-import ExecutiveDashboard from './page';
+import './page';
 
 export default function ExecutiveLayout({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();

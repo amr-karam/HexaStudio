@@ -2,8 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Bot, User as UserIcon, Sparkles, Loader2, Settings, History, Star } from 'lucide-react';
-import ChatMessage from '@/components/ChatMessage';
+import { Send, Bot, User as Settings, History, Star } from 'lucide-react';
 import TypingDots from '@/components/TypingDots';
 import apiClient from '@/lib/api';
 
@@ -14,12 +13,6 @@ interface Message {
   role: 'user' | 'assistant';
   content: string;
   timestamp: string;
-}
-
-interface AiResponse {
-  id: string;
-  content: string;
-  usage?: { promptTokens: number; completionTokens: number };
 }
 
 // ─── Suggested Prompts ──────────────────────────────────────────────────────
@@ -265,7 +258,7 @@ export default function AiAssistantPage() {
               <h2 className="text-sm font-medium text-white">Recent Chats</h2>
             </div>
             <div className="overflow-y-auto">
-              {messages.slice().reverse().map((msg, i) => {
+              {messages.slice().reverse().map((msg) => {
                 if (msg.role !== 'user') return null;
                 return (
                   <motion.button

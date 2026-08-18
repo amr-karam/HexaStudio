@@ -13,11 +13,25 @@ interface ProjectSummary {
   status: string;
 }
 
+interface ClientNotification {
+  id: string;
+  userId?: string;
+  message?: string;
+  type?: string;
+  read?: boolean;
+  [key: string]: unknown;
+}
+
+interface SocketNotification {
+  userId?: string;
+  [key: string]: unknown;
+}
+
 export default function ClientDashboard() {
   const { token, user } = useAuth();
   const { socket } = useSocket();
   const [projects, setProjects] = useState<ProjectSummary[]>([]);
-  const [notifications, setNotifications] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<ClientNotification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,9 +59,9 @@ export default function ClientDashboard() {
   useEffect(() => {
     if (!socket) return;
 
-    socket.on('notification', (notification: any) => {
+    socket.on('notification', (notification: SocketNotification) => {
       if (notification.userId === user?.id) {
-        setNotifications((prev) => [notification, ...prev]);
+        setNotifications((prev) => [notification as ClientNotification, ...prev]);
       }
     });
 

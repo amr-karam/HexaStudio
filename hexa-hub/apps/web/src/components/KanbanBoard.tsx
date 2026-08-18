@@ -98,8 +98,7 @@ function TaskCard({ task, onDragStart, onClick }: { task: KanbanTask; onDragStar
 function KanbanColumnComponent({
   column,
   tasks,
-  onTaskMove,
-  onTaskClick,
+    onTaskClick,
   onDragStart,
   onDrop,
 }: {

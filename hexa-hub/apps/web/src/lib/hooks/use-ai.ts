@@ -15,7 +15,7 @@ import {
   useQueryClient,
   type QueryKey,
 } from '@tanstack/react-query';
-import { get, post } from '@/lib/api';
+import { post } from '@/lib/api';
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 

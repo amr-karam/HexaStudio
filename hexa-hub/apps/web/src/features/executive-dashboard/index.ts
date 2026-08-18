@@ -23,7 +23,9 @@ export { ErrorMessage } from "./atoms/error-message";
 
 // Molecules
 export { QuickStatsGrid } from "./molecules/quick-stats-grid";
-export { RevenueChart } from "./molecules/revenue-chart";
+// NOTE: RevenueChart is intentionally NOT re-exported here — it is loaded
+// client-only via dynamic(ssr:false) in executive-dashboard-page.tsx because
+// recharts (v3) drags in react-redux which breaks Turbopack SSR evaluation.
 
 // Organisms
 export { RealTimeMetricsPanel } from "./organisms/real-time-metrics-panel";

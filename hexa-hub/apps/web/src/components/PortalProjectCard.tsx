@@ -3,8 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
-  FolderKanban, Calendar, CheckCircle2, TrendingUp, DollarSign,
-  AlertTriangle, User, Clock, Target,
+  FolderKanban,   Target,
 } from 'lucide-react';
 
 // ─── Types ────────────────────────────────────────────────────────────────

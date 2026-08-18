@@ -5,9 +5,8 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/providers/AuthProvider';
 import axios from 'axios';
 import {
-  FolderKanban, Calendar, CheckCircle2, Clock, User, MessageCircle, FileText, Download,
-  AlertCircle, TrendingUp,
-} from 'lucide-react';
+  FolderKanban, Calendar, CheckCircle2, MessageCircle, FileText, Download,
+  } from 'lucide-react';
 import PortalProjectCard from '@/components/PortalProjectCard';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -65,37 +64,6 @@ const MOCK_DELIVERABLES: Deliverable[] = [
 ];
 
 // ─── Components ─────────────────────────────────────────────────────────────
-
-function StatusBadge({ status }: { status: string }) {
-  const config = {
-    planning: { label: 'Planning', color: 'bg-blue-500/10 text-blue-400' },
-    active: { label: 'Active', color: 'bg-emerald-500/10 text-emerald-400' },
-    review: { label: 'In Review', color: 'bg-amber-500/10 text-amber-400' },
-    completed: { label: 'Completed', color: 'bg-purple-500/10 text-purple-400' },
-  };
-  const c = config[status as keyof typeof config] || config.planning;
-  return <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${c.color}`}>{c.label}</span>;
-}
-
-function BudgetProgress({ budget, spent }: { budget: number; spent: number }) {
-  const pct = (spent / budget) * 100;
-  return (
-    <div className="space-y-1">
-      <div className="flex justify-between text-[11px]">
-        <span className="text-[#888]">Budget: ${budget.toLocaleString()}</span>
-        <span className="text-[#888]">Spent: ${spent.toLocaleString()}</span>
-      </div>
-      <div className="h-1.5 bg-[#1F1F1F] rounded-full overflow-hidden">
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: `${Math.min(pct, 100)}%` }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className={`h-full rounded-full ${pct > 90 ? 'bg-red-500' : pct > 70 ? 'bg-amber-500' : 'bg-emerald-500'}`}
-        />
-      </div>
-    </div>
-  );
-}
 
 // ─── Page ───────────────────────────────────────────────────────────────────
 

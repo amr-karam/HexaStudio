@@ -69,7 +69,6 @@ export function InvoicePDF({ data, printMode = false }: InvoicePDFProps) {
   const borderColor = printMode ? '#e5e5e5' : '#1F1F1F';
   const surfaceBg = printMode ? '#f9fafb' : '#0A0A0A';
   const gold = '#D4A843';
-  const headerHeight = printMode ? '120px' : '140px';
 
   return (
     <div

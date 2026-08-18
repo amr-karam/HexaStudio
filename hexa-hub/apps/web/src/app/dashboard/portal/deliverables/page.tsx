@@ -5,9 +5,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/providers/AuthProvider';
 import axios from 'axios';
 import {
-  FileText, CheckCircle2, XCircle, Clock, User,
-  Download, Upload, ExternalLink,
-} from 'lucide-react';
+  FileText, CheckCircle2, XCircle,   Download, } from 'lucide-react';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -88,24 +86,6 @@ export default function PortalDeliverablesPage() {
     };
     if (token) fetchData();
   }, [token, api]);
-
-  const handleApprove = async (id: string) => {
-    try {
-      await api().put(`/portal/deliverables/${id}/approve`);
-      setDeliverables(prev => prev.map(d => 
-        d.id === id ? { ...d, status: 'approved' } : d
-      ));
-    } catch {}
-  };
-
-  const handleReject = async (id: string) => {
-    try {
-      await api().put(`/portal/deliverables/${id}/reject`);
-      setDeliverables(prev => prev.map(d => 
-        d.id === id ? { ...d, status: 'rejected' } : d
-      ));
-    } catch {}
-  };
 
   const getStatusColor = (status: Deliverable['status']) => {
     if (status === 'approved') return 'bg-emerald-500/10 text-emerald-400';

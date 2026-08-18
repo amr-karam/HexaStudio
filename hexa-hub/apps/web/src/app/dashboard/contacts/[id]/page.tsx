@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/providers/AuthProvider';
 import axios from 'axios';
 import {
-  User, Mail, Phone, MapPin, Building2, Globe,
+  Mail, Phone, MapPin, Building2, Globe,
   AlertCircle, ChevronLeft, Edit3, FileText, FolderKanban, Clock,
 } from 'lucide-react';
 

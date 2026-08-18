@@ -106,17 +106,7 @@ function formatTime(isoStr: string): string {
   return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 }
 
-function formatLastSeen(isoStr: string): string {
-  if (!isoStr) return '';
-  const date = new Date(isoStr);
-  const now = new Date();
-  const diff = now.getTime() - date.getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return 'Just now';
-  if (mins < 60) return `${mins}m ago`;
-  if (mins < 1440) return `${Math.floor(mins / 60)}h ago`;
-  return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-}
+
 
 // ─── Loading Skeleton ───────────────────────────────────────────────────────
 

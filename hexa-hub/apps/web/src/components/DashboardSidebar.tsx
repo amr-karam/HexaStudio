@@ -13,8 +13,7 @@ import {
   CheckSquare,
   Folder,
   MessageSquare,
-  Hash,
-  Bell,
+    Bell,
   Settings,
   ShieldCheck,
   TrendingUp,
@@ -27,8 +26,7 @@ import {
   Clock,
   BookOpen,
   Bot,
-  Sparkles,
-  Briefcase,
+    Briefcase,
   Search,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';

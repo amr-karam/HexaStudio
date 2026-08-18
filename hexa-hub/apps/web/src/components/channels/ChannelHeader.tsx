@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { Hash, Lock } from 'lucide-react';
-import { PresenceIndicator } from '@/components/PresenceTypingIndicators';
 import type { Channel } from '@/lib/hooks/use-channels';
 
 interface Props {

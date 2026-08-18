@@ -16,8 +16,7 @@ import {
   Filter,
   ChevronRight,
   Calendar,
-  Clock,
-  Briefcase,
+    Briefcase,
 } from 'lucide-react';
 import type { OdooProject, ProjectType, ProjectStatus } from '@hexa-hub/types';
 

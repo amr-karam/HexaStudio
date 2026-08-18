@@ -19,10 +19,8 @@ import {
   FileAudio,
   FileArchive,
   ChevronDown,
-  Loader2,
-  AlertCircle,
-  CheckCircle2,
-} from 'lucide-react';
+    AlertCircle,
+  } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import axios from 'axios';
 import { useAuth } from '@/providers/AuthProvider';
@@ -294,7 +292,7 @@ function UploadModal({ isOpen, onClose, onUploadComplete, projects }: UploadModa
         setIsUploading(false);
 
         onUploadComplete();
-      } catch (err) {
+      } catch {
         toast.error('Upload failed', `Could not upload ${file.name}. Please try again.`);
         setUploadingIndex(-1);
         setUploadProgress(0);
@@ -562,7 +560,6 @@ function UploadModal({ isOpen, onClose, onUploadComplete, projects }: UploadModa
 
 export default function DocumentsPage() {
   const { token } = useAuth();
-  const { toast } = useToast();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [projects, setProjects] = useState<ProjectOption[]>([]);
   const [isLoading, setIsLoading] = useState(true);

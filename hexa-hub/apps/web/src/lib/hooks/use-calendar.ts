@@ -5,6 +5,15 @@ import type { ListParams } from './use-odoo-query';
 
 const KEYS = { events: 'calendar-events', event: 'calendar-event' } as const;
 
+/** Minimal shape for a calendar event mutation payload. */
+export interface CalendarEventInput {
+  name?: string;
+  start?: string;
+  stop?: string;
+  description?: string;
+  [key: string]: unknown;
+}
+
 export function useCalendarEvents(filters?: ListParams) {
   return useOdooList(KEYS.events, '/odoo/calendar/events', filters);
 }
@@ -14,11 +23,11 @@ export function useCalendarEvent(id?: string | number) {
 }
 
 export function useCreateEvent() {
-  return useOdooMutation<any, any>('/odoo/calendar/events', 'POST', { invalidateKeys: [KEYS.events] });
+  return useOdooMutation<CalendarEventInput, CalendarEventInput>('/odoo/calendar/events', 'POST', { invalidateKeys: [KEYS.events] });
 }
 
 export function useUpdateEvent(id?: string | number) {
-  return useOdooMutation<any, any>(`/odoo/calendar/events/${id}`, 'PATCH', { invalidateKeys: [KEYS.events, KEYS.event] });
+  return useOdooMutation<CalendarEventInput, CalendarEventInput>(`/odoo/calendar/events/${id}`, 'PATCH', { invalidateKeys: [KEYS.events, KEYS.event] });
 }
 
 export function useDeleteEvent(id?: string | number) {

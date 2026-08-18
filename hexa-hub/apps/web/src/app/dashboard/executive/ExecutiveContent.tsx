@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useAuth } from '@/providers/AuthProvider';
+
 import {
   useCrmStats,
   useProjectStats,
@@ -19,8 +19,7 @@ import {
   DollarSign,
   Clock,
   Target,
-  Zap,
-  Activity,
+    Activity,
   ChevronRight,
   BarChart3,
   RefreshCw,
@@ -104,22 +103,7 @@ function PipelineSkeleton() {
   );
 }
 
-function ActivitySkeleton() {
-  return (
-    <div className="p-8 bg-surface border border-border rounded-3xl animate-pulse">
-      <div className="h-6 bg-neutral-800 rounded w-40 mb-6" />
-      {Array.from({ length: 4 }).map((_, i) => (
-        <div key={i} className="flex items-start gap-4 py-4 border-b border-border/30 last:border-0">
-          <div className="w-8 h-8 bg-neutral-800 rounded-full" />
-          <div className="flex-1 space-y-2">
-            <div className="h-3 bg-neutral-800 rounded w-3/4" />
-            <div className="h-2 bg-neutral-800 rounded w-1/2" />
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
+
 
 // ─── Metric Card Component ──────────────────────────────────────────────────
 
@@ -511,29 +495,24 @@ function AiInsightsSection({
 // ─── Executive Dashboard Page ───────────────────────────────────────────────
 
 export default function ExecutiveContent() {
-  const { user } = useAuth();
-
   // ── Data Hooks ──────────────────────────────────────────────────────────
 
   const {
     data: crmStats,
     isLoading: crmLoading,
     isError: crmError,
-    refetch: refetchCrm,
   } = useCrmStats();
 
   const {
     data: projectStats,
     isLoading: projectLoading,
     isError: projectError,
-    refetch: refetchProjects,
   } = useProjectStats();
 
   const {
     data: salesStats,
     isLoading: salesLoading,
     isError: salesError,
-    refetch: refetchSales,
   } = useSalesStats();
 
   const {

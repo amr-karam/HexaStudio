@@ -8,8 +8,7 @@ import {
   Database,
   Cloud,
   CheckCircle2,
-  AlertCircle,
-  Clock,
+    Clock,
   XCircle,
 } from 'lucide-react';
 

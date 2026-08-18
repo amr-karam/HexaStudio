@@ -4,11 +4,9 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useContacts, useClients } from '@/lib/hooks';
 import {
-  Contact,
-  Search,
+    Search,
   ChevronRight,
-  Building2,
-  User,
+    User,
   AlertCircle,
 } from 'lucide-react';
 import { ExportButton } from '@/components/ExportButton';

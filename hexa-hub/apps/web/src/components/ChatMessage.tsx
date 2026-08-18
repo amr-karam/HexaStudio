@@ -64,7 +64,6 @@ function renderMarkdown(text: string): React.ReactNode {
 
   let inCodeBlock = false;
   let codeContent = '';
-  let codeLanguage = '';
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
@@ -73,7 +72,6 @@ function renderMarkdown(text: string): React.ReactNode {
     if (line.trim().startsWith('```')) {
       if (!inCodeBlock) {
         inCodeBlock = true;
-        codeLanguage = line.trim().slice(3).trim();
         codeContent = '';
         continue;
       } else {
@@ -90,7 +88,6 @@ function renderMarkdown(text: string): React.ReactNode {
           </pre>,
         );
         codeContent = '';
-        codeLanguage = '';
         continue;
       }
     }

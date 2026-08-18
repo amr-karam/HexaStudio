@@ -5,10 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/providers/AuthProvider';
 import axios from 'axios';
 import {
-  CheckCircle2, XCircle, Clock, FileText, Plus, Filter, ChevronRight, ShieldCheck,
+  CheckCircle2, XCircle, Clock, FileText, Plus, ShieldCheck,
   FileSignature, Receipt, ClipboardCheck, AlertTriangle,
 } from 'lucide-react';
-import { SkeletonCard, SkeletonText, SkeletonPageHeader } from '@/components/Skeleton';
+import { SkeletonText, SkeletonPageHeader } from '@/components/Skeleton';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -55,7 +55,7 @@ export default function ApprovalsPage() {
   const api = useCallback(() => axios.create({ baseURL: API_URL, headers: { Authorization: `Bearer ${token}` } }), [token]);
 
   const fetchApprovals = useCallback(async () => {
-    try { const r = await api().get('/approvals'); setApprovals(r.data); } catch {} finally { setIsLoading(false); }
+    try { const r = await api().get('/approvals'); setApprovals(r.data); } catch { /* no-op */ } finally { setIsLoading(false); }
   }, [api]);
 
   useEffect(() => { if (token) fetchApprovals(); }, [token, fetchApprovals]);

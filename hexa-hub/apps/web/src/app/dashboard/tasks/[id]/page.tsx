@@ -6,8 +6,8 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/providers/AuthProvider';
 import axios from 'axios';
 import {
-  CheckSquare, Calendar, Clock, User, CheckCircle2,
-  AlertCircle, ChevronLeft, Edit3, Trash2, FolderKanban, Target,
+  Calendar, Clock, User, CheckCircle2,
+  AlertCircle, ChevronLeft, Edit3, FolderKanban, Target,
 } from 'lucide-react';
 
 interface Task {

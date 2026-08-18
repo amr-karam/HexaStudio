@@ -44,8 +44,8 @@ const usePresenceStore = create<PresenceStore>((set) => ({
 
   removeOnlineUser: (userId) =>
     set((state) => {
-      // eslint-disable-next-line no-unused-vars
-      const { [userId]: _removed, ...rest } = state.onlineUserMap;
+      const rest = { ...state.onlineUserMap };
+      delete rest[userId];
       return { onlineUserMap: rest };
     }),
 
@@ -123,7 +123,7 @@ export function usePresence(): UsePresenceReturn {
       requestedRef.current = false;
     };
     // We intentionally only depend on `socket` identity.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [socket]);
 
   // ── Socket connection status ────────────────────────────────────────────
@@ -152,7 +152,7 @@ export function usePresence(): UsePresenceReturn {
       socket.off('connect', handleConnect);
       socket.off('disconnect', handleDisconnect);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [socket]);
 
   // ── Derived values ─────────────────────────────────────────────────────

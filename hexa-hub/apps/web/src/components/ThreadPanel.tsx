@@ -94,12 +94,9 @@ export function ThreadPanel({ parentMessage, channelId, onClose }: ThreadPanelPr
     }
   };
 
-  const isOwnMessage = parentMessage.senderId === user?.id;
-
   return (
     <AnimatePresence>
-      {true && (
-        <div className="absolute inset-0 z-20 flex">
+      <div className="absolute inset-0 z-20 flex">
           {/* Overlay */}
           <motion.div
             variants={overlayVariants}
@@ -246,7 +243,7 @@ export function ThreadPanel({ parentMessage, channelId, onClose }: ThreadPanelPr
             </form>
           </motion.div>
         </div>
-      )}
+      )
     </AnimatePresence>
   );
 }

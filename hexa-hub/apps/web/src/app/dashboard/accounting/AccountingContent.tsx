@@ -21,8 +21,7 @@ import {
   Search,
   AlertCircle,
   ChevronRight,
-  ChevronDown,
-  type LucideIcon,
+    type LucideIcon,
 } from 'lucide-react';
 
 // ─── Types ──────────────────────────────────────────────────────────────────

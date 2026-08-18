@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ['@hexa-hub/types'],
+  transpilePackages: ['@hexa-hub/types', 'recharts', 'react-smooth', 'react-redux', '@reduxjs/toolkit'],
   images: {
     remotePatterns: [
       {

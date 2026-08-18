@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { get } from '@/lib/api';
-import { AtSign, Users, Shield } from 'lucide-react';
+import { Users, Shield } from 'lucide-react';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 

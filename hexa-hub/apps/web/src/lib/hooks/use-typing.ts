@@ -137,7 +137,6 @@ function useTypingBase(
       }
       isTypingRef.current = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, roomId]);
 
   return { typingUsers, startTyping, stopTyping };
