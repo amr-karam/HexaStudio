@@ -1,21 +1,19 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { NextRequest } from 'next/server';
 
-// The route handler imports @/lib/api-client which imports @sentry/nextjs.
-// Its CJS build requires next/constants, which cannot be resolved from the
-// root-hoisted @sentry/nextjs in this monorepo (next is nested under
-// apps/frontend/node_modules). This proxy route's contract is about validation
-// + backend forwarding, so stub the SDK surface used by the handler graph.
+// The route handler graph no longer imports @sentry/nextjs (BFF proxies use
+// src/lib/bff), but the stub is kept for resilience against future imports.
 vi.mock('@sentry/nextjs', () => ({
   captureException: vi.fn(),
 }));
 
 /**
  * Tests for POST /api/v1/ai/spatial-synthesis/voice proxy route.
- * Covers validation, backend forwarding, and graceful 502 degradation.
+ * Covers validation, backend forwarding, and honest upstream error handling.
  */
 
-function makeVoiceRequest(body: unknown): Request {
-  return new Request('http://localhost/api/v1/ai/spatial-synthesis/voice', {
+function makeVoiceRequest(body: unknown): NextRequest {
+  return new NextRequest('http://localhost/api/v1/ai/spatial-synthesis/voice', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
@@ -115,12 +113,13 @@ describe('POST /api/v1/ai/spatial-synthesis/voice', () => {
     expect(body.error).toBeDefined();
   });
 
-  it('returns 502 when the backend responds with an error', async () => {
+  it('passes through the upstream error status honestly instead of fabricating', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
         ok: false,
         status: 500,
+        json: async () => ({ error: 'Internal Server Error' }),
       }),
     );
 
@@ -128,8 +127,63 @@ describe('POST /api/v1/ai/spatial-synthesis/voice', () => {
 
     const response = await POST(makeVoiceRequest({ audioData: 'AAAA', mimeType: 'audio/webm' }));
 
-    expect(response.status).toBe(502);
+    expect(response.status).toBe(500);
     const body = (await response.json()) as { error: string };
-    expect(body.error).toBeDefined();
+    expect(body.error).toBe('Internal Server Error');
+  });
+
+  it('forwards a 401 from the backend without fabricating a response', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: false,
+        status: 401,
+        json: async () => ({ message: 'Unauthorized' }),
+      }),
+    );
+
+    const { POST } = await import('@/app/api/v1/ai/spatial-synthesis/voice/route');
+
+    const response = await POST(makeVoiceRequest({ audioData: 'AAAA', mimeType: 'audio/webm' }));
+
+    expect(response.status).toBe(401);
+    const body = (await response.json()) as { error: string };
+    expect(body.error).toBe('Unauthorized');
+  });
+
+  it('forwards the auth_token cookie from the incoming request to the backend', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ transcription: 'test', brief: {} }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    vi.stubEnv('NEXT_PUBLIC_API_URL', 'https://backend.example.com');
+
+    const request = new NextRequest(
+      'http://localhost/api/v1/ai/spatial-synthesis/voice',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Cookie: 'auth_token=eyJhbGciOiJSUzI1NiJ9.test; another=ignored',
+        },
+        body: JSON.stringify({ audioData: 'AAAA', mimeType: 'audio/webm' }),
+      },
+    );
+
+    const { POST } = await import('@/app/api/v1/ai/spatial-synthesis/voice/route');
+
+    const response = await POST(request);
+
+    expect(response.status).toBe(200);
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://backend.example.com/api/v1/ai/spatial-synthesis/voice',
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({
+          Cookie: 'auth_token=eyJhbGciOiJSUzI1NiJ9.test',
+        }),
+      }),
+    );
   });
 });

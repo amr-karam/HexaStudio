@@ -8,11 +8,15 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from '../users/entities/user-role.enum';
 import { AccountingService } from './accounting.service';
 
 @ApiTags('Accounting')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE)
 @Controller('accounting')
 export class AccountingController {
   constructor(private readonly accountingService: AccountingService) {}

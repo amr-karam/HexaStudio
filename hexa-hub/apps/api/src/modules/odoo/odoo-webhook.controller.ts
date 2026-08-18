@@ -1,30 +1,23 @@
-import { Controller, Post, Body, Headers, HttpCode, HttpStatus, Logger, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, BadRequestException, UseGuards } from '@nestjs/common';
 import { OdooWebhookService, WebhookPayload } from './odoo-webhook.service';
-import { OdooService } from './odoo.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from '../users/entities/user-role.enum';
 
 @Controller('odoo')
 export class OdooWebhookController {
-  private readonly logger = new Logger(OdooWebhookController.name);
-
   constructor(
     private readonly webhookService: OdooWebhookService,
-    private readonly odooService: OdooService,
   ) {}
 
   @Post('webhook')
   @HttpCode(HttpStatus.OK)
   async handleWebhook(
     @Body() body: WebhookPayload,
-    @Headers('x-odoo-signature') signature: string,
   ) {
-    // Verify signature
-    if (signature) {
-      const bodyStr = JSON.stringify(body);
-      if (!this.odooService.verifyWebhookSignature(bodyStr, signature)) {
-        this.logger.warn('Invalid webhook signature received');
-        throw new UnauthorizedException('Invalid webhook signature');
-      }
-    }
+    // Signature verification is enforced by OdooWebhookSignatureMiddleware,
+    // which verifies the HMAC over the raw request body (see odoo.module.ts).
 
     // Validate payload
     if (!body.model || !body.id || !body.action) {
@@ -40,12 +33,16 @@ export class OdooWebhookController {
   }
 
   @Post('sync/trigger')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE)
   @HttpCode(HttpStatus.OK)
   async triggerSync(@Body() body: { model?: string }) {
     return this.webhookService.triggerSync(body.model);
   }
 
   @Post('sync/state')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE)
   @HttpCode(HttpStatus.OK)
   async getSyncState() {
     return { data: this.webhookService.getSyncState() };

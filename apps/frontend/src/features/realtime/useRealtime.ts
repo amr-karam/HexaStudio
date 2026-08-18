@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
+import { getAccessToken } from '@/lib/api-client';
 
 const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
@@ -41,12 +42,14 @@ type EventHandlers = {
 
 export function useRealtime(projectId: string | null, handlers: EventHandlers = {}) {
   const socketRef = useRef<Socket | null>(null);
+  const token = getAccessToken();
 
   useEffect(() => {
-    if (!projectId) return;
+    if (!projectId || !token) return;
 
     const socket = io(`${SOCKET_URL}/realtime`, {
       transports: ['websocket', 'polling'],
+      auth: { token },
     });
 
     socketRef.current = socket;
@@ -91,7 +94,7 @@ export function useRealtime(projectId: string | null, handlers: EventHandlers = 
       }
       socketRef.current = null;
     };
-  }, [projectId]);
+  }, [projectId, token]);
 
   const sendAnnotation = useCallback((annotation: AnnotationPayload) => {
     socketRef.current?.emit('annotation:add', { projectId, annotation });

@@ -142,17 +142,51 @@ export function OptimizedCanvas({
   onPerformanceIssue?: (fps: number) => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const frameCountRef = useRef(0);
   const lastTimeRef = useRef(performance.now());
   const fpsRef = useRef(60);
+  // The FPS loop runs only while the canvas is on-screen AND the tab is
+  // visible; both conditions are rare-changing, so React state is safe.
+  const [isCanvasActive, setIsCanvasActive] = useState(true);
 
   useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsCanvasActive(entry.isIntersecting),
+      { threshold: 0 },
+    );
+    observer.observe(container);
+
+    const onVisibilityChange = () => setIsCanvasActive(!document.hidden);
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    return () => {
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Paused while the canvas is off-screen or the tab is hidden; the loop
+    // restarts when the active state flips back to true.
+    if (!isCanvasActive || document.hidden) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    let animationFrameId: number;
+    // Fresh measurement window on resume: a paused loop accumulated no
+    // frames, so elapsed time since the last flush would skew the first
+    // FPS readout (and could false-trigger the performance alert).
+    frameCountRef.current = 0;
+    lastTimeRef.current = performance.now();
+
+    let animationFrameId: number | null = null;
 
     const measureFPS = () => {
+      animationFrameId = null;
       frameCountRef.current++;
       const currentTime = performance.now();
       const elapsed = currentTime - lastTimeRef.current;
@@ -176,12 +210,15 @@ export function OptimizedCanvas({
     animationFrameId = requestAnimationFrame(measureFPS);
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
     };
-  }, [onPerformanceIssue]);
+  }, [isCanvasActive, onPerformanceIssue]);
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+    <div ref={containerRef} style={{ position: 'relative', width: '100%', height: '100%' }}>
       <canvas
         ref={canvasRef}
         style={{

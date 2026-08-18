@@ -5,10 +5,13 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { EventBus } from './event-bus.service';
 import { TransformReasoningService } from '../ai/transform-reasoning.service';
+import { AuthService } from '../auth/auth.service';
+import { ProjectsService } from '../projects/projects.service';
+import type { User } from '@hexastudio/types';
 
 interface AnnotationEvent {
   projectId: string;
@@ -28,7 +31,12 @@ interface ApprovalEvent {
   phaseId: string;
   action: 'submit' | 'approve' | 'reject' | 'revision';
   comment?: string;
+}
+
+interface ApprovalUpdateEvent extends ApprovalEvent {
+  actor: string;
   userId: string;
+  timestamp: string;
 }
 
 /** Payload for relaying a WebRTC SDP offer. */
@@ -64,8 +72,20 @@ interface WebRTCPeerLeavePayload {
   projectId: string;
 }
 
+// Same comma-split, trimmed list logic as main.ts. Wildcard ('*') is NOT used here
+// because credentials:true combined with a wildcard origin is invalid and insecure.
+// Read directly from process.env (not getEnv()) because decorator arguments are
+// evaluated at module load — calling getEnv() here would cache the env snapshot
+// before bootstrap/test setup finishes, starving later getEnv() consumers.
+const corsOrigins = (process.env.CORS_ORIGINS ?? 'http://localhost:3000,https://hexastudio.net,https://www.hexastudio.net')
+  .split(',')
+  .map((origin: string) => origin.trim());
+
 @WebSocketGateway({
-  cors: { origin: '*', credentials: true },
+  cors: {
+    origin: corsOrigins,
+    credentials: true,
+  },
   namespace: '/realtime',
 })
 @Injectable()
@@ -76,6 +96,8 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
   constructor(
     private readonly eventBus: EventBus,
     private readonly transformReasoningService: TransformReasoningService,
+    private readonly authService: AuthService,
+    private readonly projectsService: ProjectsService,
   ) {}
 
   @WebSocketServer()
@@ -85,9 +107,22 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
     this.logger.log('RealtimeGateway initialized — event bus ready');
   }
 
-  handleConnection(client: Socket) {
-    this.clientRooms.set(client.id, new Set());
-    this.logger.log(`Client connected: ${client.id}`);
+  async handleConnection(client: Socket) {
+    try {
+      const token = client.handshake.auth?.token || client.handshake.headers?.authorization?.split(' ')[1];
+      if (!token) {
+        this.logger.warn(`Connection rejected: No token provided for socket ${client.id}`);
+        client.disconnect();
+        return;
+      }
+      const user = await this.authService.validateToken(token);
+      client.data.user = user;
+      this.clientRooms.set(client.id, new Set());
+      this.logger.log(`Client connected to realtime socket: ${client.id} (User: ${user.username})`);
+    } catch {
+      this.logger.error(`Connection rejected: Invalid token for socket ${client.id}`);
+      client.disconnect();
+    }
   }
 
   handleDisconnect(client: Socket) {
@@ -102,9 +137,18 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
   }
 
   @SubscribeMessage('join-project')
-  handleJoinProject(client: Socket, projectId: string) {
+  async handleJoinProject(client: Socket, projectId: string) {
+    const user = client.data.user as User | undefined;
+    if (!user) throw new UnauthorizedException('Authentication required');
+
+    try {
+      await this.projectsService.getProjectBySlug(projectId);
+    } catch {
+      throw new UnauthorizedException('Project not found or access denied');
+    }
+
     const room = `project:${projectId}`;
-    client.join(room);
+    await client.join(room);
     const rooms = this.clientRooms.get(client.id);
     if (rooms) rooms.add(room);
     this.logger.log(`Client ${client.id} joined ${room}`);
@@ -138,10 +182,27 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
 
   @SubscribeMessage('approval:action')
   handleApprovalAction(client: Socket, payload: ApprovalEvent) {
+    const user = client.data.user as User | undefined;
+    if (!user) throw new UnauthorizedException('Authentication required');
+
+    // Only staff (admin/editor — the "architect" tier) may perform approval actions.
+    if (user.role !== 'admin' && user.role !== 'editor') {
+      throw new UnauthorizedException('Only staff can perform approval actions');
+    }
+
     const room = `project:${payload.projectId}`;
-    client.to(room).emit('approval:update', payload);
-    this.eventBus.emit('approval:action', payload);
-    return { event: 'approval:update', data: payload };
+    const approvalUpdate: ApprovalUpdateEvent = {
+      projectId: payload.projectId,
+      phaseId: payload.phaseId,
+      action: payload.action,
+      comment: payload.comment,
+      actor: user.username,
+      userId: user.id,
+      timestamp: new Date().toISOString(),
+    };
+    client.to(room).emit('approval:update', approvalUpdate);
+    this.eventBus.emit('approval:action', approvalUpdate);
+    return { event: 'approval:update', data: approvalUpdate };
   }
 
   @SubscribeMessage('presence:join')

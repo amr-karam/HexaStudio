@@ -14,6 +14,8 @@ import { VectorSyncService } from '../src/modules/vector/vector-sync.service';
 import { VectorModule } from '../src/modules/vector/vector.module';
 import { EventBus } from '../src/modules/realtime/event-bus.service';
 import { TransformReasoningService } from '../src/modules/ai/transform-reasoning.service';
+import { AuthService } from '../src/modules/auth/auth.service';
+import { ProjectsService } from '../src/modules/projects/projects.service';
 import { RedisModule } from '../src/modules/storage/redis.module';
 import { SecurityModule } from '../src/modules/security/security.module';
 
@@ -105,12 +107,26 @@ describe('HealthModule', () => {
       .useValue(mockEventBus)
       .overrideProvider(VectorSyncService)
       .useValue(mockVectorSyncService)
-      // RealtimeGateway now depends on TransformReasoningService, which is not
-      // part of this test graph (AIModule is not imported). useMocker supplies
-      // the mock in the global core module so it resolves from RealtimeModule.
+      // RealtimeGateway now depends on TransformReasoningService, AuthService and
+      // ProjectsService, none of which are part of this test graph (AIModule is not
+      // imported). useMocker supplies the mocks in the global core module so they
+      // resolve from RealtimeModule.
       .useMocker((token) => {
         if (token === TransformReasoningService) {
           return { transformVoiceTo3D: vi.fn() };
+        }
+        if (token === AuthService) {
+          return {
+            validateToken: vi.fn().mockResolvedValue({
+              id: '1',
+              email: 'test@hexastudio.net',
+              username: 'test-user',
+              role: 'admin',
+            }),
+          };
+        }
+        if (token === ProjectsService) {
+          return { getProjectBySlug: vi.fn().mockResolvedValue({ slug: 'test-project' }) };
         }
         return undefined;
       })

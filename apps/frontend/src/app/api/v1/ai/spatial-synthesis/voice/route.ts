@@ -3,58 +3,37 @@
  *
  * Accepts a base64-encoded voice clip and its mime type, forwards it to the
  * NestJS BFF voice transcription + spatial brief endpoint, and returns the
- * synthesized `{ transcription, brief }` payload. When the backend is
- * unreachable it degrades to a graceful 502 response so the client can fall
- * back to text prompts. No secrets are stored here — GEMINI_API_KEY lives
- * server-side in NestJS only.
+ * synthesized `{ transcription, brief }` payload. Upstream failures surface
+ * honestly (401/403/5xx pass through; unreachable backend yields 502).
+ * No secrets are stored here — GEMINI_API_KEY lives server-side in NestJS only.
  */
 
-import { NextResponse } from 'next/server';
-import { authenticatedFetch } from '@/lib/api-client';
-import { API_BASE_URL } from '@/config/constants';
+import { NextRequest, NextResponse } from 'next/server';
+import { proxyToBackend } from '@/lib/bff';
 
-export async function POST(request: Request) {
+interface VoiceSynthesisBody {
+  audioData?: unknown;
+  mimeType?: unknown;
+}
+
+export async function POST(request: NextRequest) {
+  let body: VoiceSynthesisBody;
   try {
-    const body = await request.json();
-    const { audioData, mimeType } = body as {
-      audioData?: string;
-      mimeType?: string;
-    };
-
-    if (typeof audioData !== 'string' || audioData.trim().length === 0) {
-      return NextResponse.json({ error: 'audioData is required' }, { status: 400 });
-    }
-
-    if (typeof mimeType !== 'string' || mimeType.trim().length === 0) {
-      return NextResponse.json({ error: 'mimeType is required' }, { status: 400 });
-    }
-
-    // Attempt calling the NestJS BFF voice synthesis endpoint with authentication
-    try {
-      const response = await authenticatedFetch(`${API_BASE_URL}/api/v1/ai/spatial-synthesis/voice`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ audioData, mimeType }),
-        signal: AbortSignal.timeout(30000),
-      });
-
-      if (response.ok) {
-        const data: unknown = await response.json();
-        return NextResponse.json(data);
-      }
-    } catch (error) {
-      // Degrade gracefully when the backend voice service is offline or times out
-      console.warn('Backend voice service unavailable:', error);
-    }
-
-    return NextResponse.json(
-      {
-        error:
-          'Voice spatial synthesis is temporarily unavailable. Please try again shortly or use the text prompt instead.',
-      },
-      { status: 502 },
-    );
+    body = (await request.json()) as VoiceSynthesisBody;
   } catch {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
   }
+
+  if (typeof body.audioData !== 'string' || body.audioData.trim().length === 0) {
+    return NextResponse.json({ error: 'audioData is required' }, { status: 400 });
+  }
+
+  if (typeof body.mimeType !== 'string' || body.mimeType.trim().length === 0) {
+    return NextResponse.json({ error: 'mimeType is required' }, { status: 400 });
+  }
+
+  return proxyToBackend('/api/v1/ai/spatial-synthesis/voice', request, {
+    body: { audioData: body.audioData, mimeType: body.mimeType },
+    timeoutMs: 30_000,
+  });
 }

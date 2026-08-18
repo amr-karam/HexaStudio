@@ -3,6 +3,7 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useXRStore } from '../store/xr-store';
+import { getAccessToken } from '@/lib/api-client';
 
 const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
@@ -20,14 +21,18 @@ interface CollabPeerJoined {
 
 export function useCollaboration(projectId: string | null, user: string, mode: 'ar' | 'vr' | null) {
   const socketRef = useRef<Socket | null>(null);
+  const token = getAccessToken();
   const upsertCollaborator = useXRStore((s) => s.upsertCollaborator);
   const removeCollaborator = useXRStore((s) => s.removeCollaborator);
   const setCollabConnected = useXRStore((s) => s.setCollabConnected);
 
   useEffect(() => {
-    if (!projectId || !mode) return;
+    if (!projectId || !mode || !token) return;
 
-    const socket = io(`${SOCKET_URL}/realtime`, { transports: ['websocket', 'polling'] });
+    const socket = io(`${SOCKET_URL}/realtime`, {
+      transports: ['websocket', 'polling'],
+      auth: { token },
+    });
     socketRef.current = socket;
 
     socket.on('connect', () => {
@@ -74,7 +79,7 @@ export function useCollaboration(projectId: string | null, user: string, mode: '
       socketRef.current = null;
       setCollabConnected(false);
     };
-  }, [projectId, user, mode, upsertCollaborator, removeCollaborator, setCollabConnected]);
+  }, [projectId, user, mode, token, upsertCollaborator, removeCollaborator, setCollabConnected]);
 
   const sendCursor = useCallback(
     (position: { x: number; y: number; z: number }, rotation?: { x: number; y: number; z: number; w: number }) => {

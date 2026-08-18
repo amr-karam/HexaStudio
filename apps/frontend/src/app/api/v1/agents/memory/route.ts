@@ -1,35 +1,24 @@
-import { NextResponse } from 'next/server';
-import { authenticatedFetch } from '@/lib/api-client';
-import { API_BASE_URL } from '@/config/constants';
+import { NextRequest } from 'next/server';
+import { proxyToBackend } from '@/lib/bff';
 
-export async function DELETE(request: Request) {
+interface ClearMemoryBody {
+  sessionId?: unknown;
+  persona?: unknown;
+}
+
+export async function DELETE(request: NextRequest) {
+  let body: ClearMemoryBody;
   try {
-    const body = await request.json().catch(() => ({}));
-    const { sessionId, persona } = body;
-
-    try {
-      const response = await authenticatedFetch(`${API_BASE_URL}/api/v1/agents/memory`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sessionId: sessionId || 'default',
-          persona: persona || 'general',
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        return NextResponse.json(data);
-      }
-    } catch (err) {
-      console.warn('Backend agent memory clear failed:', err);
-    }
-
-    return NextResponse.json({ ok: true, sessionId: sessionId || 'default', persona: persona || 'general' });
-  } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to clear agent memory', details: String(error) },
-      { status: 500 }
-    );
+    body = (await request.json()) as ClearMemoryBody;
+  } catch {
+    body = {};
   }
+
+  return proxyToBackend('/api/v1/agents/memory', request, {
+    method: 'DELETE',
+    body: {
+      sessionId: typeof body.sessionId === 'string' ? body.sessionId : 'default',
+      persona: typeof body.persona === 'string' ? body.persona : 'general',
+    },
+  });
 }

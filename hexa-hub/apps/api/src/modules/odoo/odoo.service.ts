@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import * as crypto from 'crypto';
 import axios, { AxiosInstance } from 'axios';
 
 export interface OdooSearchOptions {
@@ -432,12 +433,16 @@ export class OdooService {
 
   verifyWebhookSignature(body: string, signature: string): boolean {
     if (!this.webhookSecret) {
-      this.logger.warn('ODOO_WEBHOOK_SECRET not configured — skipping verification');
-      return true;
+      // Fail closed: without a configured secret the signature can never be
+      // trusted, so the webhook must be rejected.
+      this.logger.error('ODOO_WEBHOOK_SECRET not configured — rejecting webhook');
+      return false;
     }
 
-    const crypto = require('crypto');
     const expected = crypto.createHmac('sha256', this.webhookSecret).update(body).digest('hex');
+    if (signature.length !== expected.length) {
+      return false;
+    }
     return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
   }
 }
