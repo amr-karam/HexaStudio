@@ -1,6 +1,6 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** August 15, 2026 — verified against live repo (all 3 gates 0/0)
+**Last Updated:** August 18, 2026 — O1/O2 perf wave + post-O2 Lighthouse audit recorded (docs-only commit; gates per Aug-17 verified runs)
 **Version:** 2.2.0
 **Authority Level:** 13 (Production)
 **Current Phase:** Production-Ready — Quad-Track Feature Delivery & Silent Luxury Design System (DEPLOYED)
@@ -719,5 +719,47 @@ Deployed via direct server run: `SOT=green docker compose -f docker-compose.prod
 | `opencode.hexastudio.net` | ⚠️ 503 (dangling DNS record, no service — user decision) |
 
 ### Remaining / Notes
-- `opencode.hexastudio.net`: DNS CNAME removed (was dangling — no router/service behind it; docs stale re: planned OpenCode IDE host). Now NXDOMAIN. Re-addable anytime.
+- `opencode.hexastudio.net`: DNS CNAME removed (was dangling — no router/service behind it). Now NXDOMAIN. Re-addable anytime.
 - Deploy pipeline is ready; trigger manually in GitLab when next deploy is wanted.
+
+---
+
+## 2026-08-18 — O1/O2 Performance Wave + Post-O2 Lighthouse Audit — COMPLETE
+
+**Status:** ✅ O1 + O2 deployed to green slot (`gitlab/main` + `hexa/main` @ `cea9132`); post-O2 re-measurement + Lighthouse audit recorded; docs-only commit (this entry).
+
+### 1. Performance wave (frontend, green slot)
+
+- **O1 (`e69d7ae`)** — ScrollTrigger idle init batched into a single idle queue; kills the timed-out `requestIdleCallback` long-task burst. **Measured: TBT 3,384 ms (pre-O1) → 294 ms (post-O1)** (unthrottled real-browser trace).
+- **O2 (`cea9132`)** — Preloader counter writes via ref `textContent` — zero per-frame React re-renders during the preloader animation.
+
+### 2. Post-O2 re-measurement
+
+- CDP trace on `https://hexastudio.net` (reload): **bfcache-restored session** (3 bfcache events, no paint marks) → not a valid cold-load TBT sample. Leaf-level task analysis of the captured window: **0 main-thread tasks > 50 ms** (no long tasks in the restored session).
+- **Verdict:** cold-load TBT needs a clean navigation trace (bfcache disabled) — queued as follow-up for the next quiet window/CI run. O1's 294 ms figure stands as the last valid cold-load measurement; no regression observed post-O2.
+
+### 3. Lighthouse audit (desktop, 2026-08-18)
+
+| Category | Score |
+|----------|-------|
+| Accessibility | **95** (3 failures, unchanged class from Aug-17) |
+| Best Practices | **100** |
+| SEO | **100** |
+| Agentic Browsing | **100** |
+| CLS | **0.021** (score 100) |
+
+Performance category not returned by this run (first attempt timed out; retry emitted non-perf categories) — re-run queued.
+
+### 4. Accessibility failures (all LOW risk, frontend)
+
+1. **`color-contrast`** — 9px eyebrow `text-neutral-500` + footer/nav links `text-neutral-600` on dark backgrounds (below 4.5:1).
+2. **`heading-order`** — `h4` in homepage sections skipping heading levels.
+3. **`label-content-name-mismatch`** — link with `aria-label="Start a Project"` whose visible text differs (homepage "Start a Project" card → `/contact`).
+
+**Follow-up:** dispatch `@accessibility-engineer` for token-level contrast + heading-order + label-name fixes.
+
+### 5. Notes
+
+- Docs-only change — no code gates re-run required. Branch `docs/perf-o1-o2-audit` (off `gitlab/main` @ `cea9132`) → fast-forward to `gitlab/main` + `hexa/main`; server repo synced (no rebuild needed for docs-only).
+- **Security follow-up (from earlier audit):** `gitlab` remote URL embeds a PAT — revoke/re-create in GitLab admin.
+- Honcho (`dev-session`) work-state advanced: post-O2 measurement + Lighthouse audit recorded; next: a11y remediation wave.
