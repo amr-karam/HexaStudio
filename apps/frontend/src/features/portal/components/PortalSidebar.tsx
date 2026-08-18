@@ -77,7 +77,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   };
 
   return (
-    <div className="relative flex h-full flex-col bg-surface border-r border-border/30 overflow-hidden">
+    <div className="relative flex h-full flex-col bg-surface/75 backdrop-blur-2xl border-r border-border/20 overflow-hidden">
       {/* Gold radial aura — barely visible atelier top-light */}
       <div
         aria-hidden="true"
@@ -238,9 +238,11 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 export function PortalSidebar() {
   return (
     <aside
-      className="hidden lg:flex fixed left-0 top-0 bottom-0 w-60 z-40"
+      className="hidden lg:flex fixed left-0 top-0 bottom-0 w-60 z-20"
       aria-label="Portal sidebar"
     >
+      {/* Glassmorphic backdrop — lets the ambient glow pass through */}
+      <div className="absolute inset-0 -z-10 bg-surface/70 backdrop-blur-2xl" aria-hidden="true" />
       <SidebarContent />
     </aside>
   );

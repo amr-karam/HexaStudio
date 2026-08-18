@@ -65,7 +65,7 @@ export const QuickStatsGrid = () => {
         value={metrics?.copilotDailyActive || "--"}
         subtitle="Daily active users"
         icon={<Bot className="w-5 h-5" />}
-        variant="secondary"
+        variant="info"
         size="lg"
         isLoading={isLoading}
       />
@@ -73,7 +73,7 @@ export const QuickStatsGrid = () => {
       {/* Channel Activity */}
       <MetricCard
         title="Channel Activity"
-        value={metrics?.channelActivityCount || "--"}
+        value={metrics?.channelActivity?.[0]?.activeNow || "--"}
         subtitle="Active channels"
         icon={<Activity className="w-5 h-5" />}
         variant="warning"

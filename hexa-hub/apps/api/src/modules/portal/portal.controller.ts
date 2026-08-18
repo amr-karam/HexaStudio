@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, ParseIntPipe, Query, Param } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PortalService } from './portal.service';
 import { PortalCopilotService } from './portal-copilot.service';

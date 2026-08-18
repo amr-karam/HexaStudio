@@ -21,6 +21,7 @@ export interface ActiveUsersResponse {
   users: ActiveUser[];
   activeInLastHour: number;
   peakToday: number;
+  lastUpdated?: string;
 }
 
 // ========== Projects ==========
@@ -43,6 +44,7 @@ export interface ProjectsResponse {
   totalProjects: number;
   completedThisMonth: number;
   revenueThisMonth: number;
+  lastUpdated?: string;
 }
 
 // ========== Revenue ==========
@@ -54,6 +56,7 @@ export interface RevenueSummary {
   paidPercentage: number;
   pendingPercentage: number;
   currency: string;
+  lastUpdated?: string;
 }
 
 export interface RevenueChartData {
@@ -71,6 +74,7 @@ export interface CopilotUsage {
   avgSessionDuration: number;
   featuresUsed: string[];
   satisfactionScore: number;
+  lastUpdated?: string;
 }
 
 export interface CopilotFeature {
@@ -103,7 +107,8 @@ export interface DashboardMetrics {
   revenue: RevenueSummary;
   copilot: CopilotUsage;
   channelActivity: ChannelActivity[];
-  lastUpdated: string;
+  error?: string;
+  lastUpdated?: string;
 }
 
 export interface DashboardChartData {

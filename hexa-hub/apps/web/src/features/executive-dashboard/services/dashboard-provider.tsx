@@ -4,11 +4,11 @@
  */
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useDashboardStore } from "./dashboard-store";
+import { ReactNode } from "react";
 
 interface DashboardProviderProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 // Create query client with default options
@@ -39,7 +39,7 @@ export const DashboardProvider = ({ children }: DashboardProviderProps) => {
     <QueryClientProvider client={queryClient}>
       {children}
       {/* Only include devtools in development */}
-      {process.env.NODE_ENV === "development" && <ReactQueryDevtools initialIsOpen={false} />}
+      {false}
     </QueryClientProvider>
   );
 };

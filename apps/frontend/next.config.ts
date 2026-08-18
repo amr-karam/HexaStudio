@@ -79,7 +79,17 @@ const nextConfig: NextConfig = {
     removeConsole: process.env.NODE_ENV === "production",
   },
   experimental: {
-    optimizePackageImports: ["three", "@react-three/fiber", "@react-three/drei"],
+    optimizePackageImports: [
+      "three",
+      "@react-three/fiber",
+      "@react-three/drei",
+      "lucide-react",
+      "framer-motion",
+      "clsx",
+      "tailwind-merge",
+      "sonner",
+      "@reduxjs/toolkit",
+    ],
     // Inline page CSS directly into the HTML — removes the render-blocking
     // stylesheet request from the critical path (FCP). HTML is served
     // no-store through Cloudflare, so separate CSS caching buys little here.
@@ -156,6 +166,8 @@ const nextConfig: NextConfig = {
     return [
       { source: "/portfolio", destination: "/projects", permanent: true },
       { source: "/portfolio/:path*", destination: "/projects/:path*", permanent: true },
+      { source: "/work", destination: "/projects", permanent: true },
+      { source: "/work/:path*", destination: "/projects/:path*", permanent: true },
     ];
   },
   async rewrites() {

@@ -1,16 +1,17 @@
+
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
   <defs>
     <linearGradient id="top" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#7C3AED"/>
-      <stop offset="100%" stop-color="#6D28D9"/>
+      <stop offset="0%" stop-color="#E5C78A"/>
+      <stop offset="100%" stop-color="#C9A96E"/>
     </linearGradient>
     <linearGradient id="left" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38BDF8"/>
-      <stop offset="100%" stop-color="#0EA5E9"/>
+      <stop offset="0%" stop-color="#C9A96E"/>
+      <stop offset="100%" stop-color="#A68A5A"/>
     </linearGradient>
     <linearGradient id="right" x1="100%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#A855F7"/>
-      <stop offset="100%" stop-color="#9333EA"/>
+      <stop offset="0%" stop-color="#A68A5A"/>
+      <stop offset="100%" stop-color="#856B43"/>
     </linearGradient>
   </defs>
   <!-- Top face -->
@@ -20,3 +21,4 @@
   <!-- Right face -->
   <polygon points="85,35 50,55 50,85 85,65" fill="url(#right)"/>
 </svg>
+

@@ -28,7 +28,6 @@ export class AuthService {
     const isMatch = await bcrypt.compare(pass, user.password);
     if (!isMatch) throw new UnauthorizedException('Invalid credentials');
 
-    // If 2FA is enabled, require second factor
     if (user.twoFactorEnabled) {
       const tempToken = this.jwtService.sign(
         { sub: user.id, purpose: '2fa-pending' },
@@ -87,13 +86,11 @@ export class AuthService {
     );
     if (!user) throw new NotFoundException('User not found');
 
-    // Need to fetch the secret (it's stored with select: false)
     const userWithSecret = await this.usersService.findByEmail(user.email);
     if (!userWithSecret || !userWithSecret.twoFactorSecret) {
       throw new BadRequestException('No 2FA secret found. Generate one first via POST /auth/2fa/generate.');
     }
 
-    // Verify the token is valid against the pending secret
     const verified = speakeasy.totp.verify({
       secret: userWithSecret.twoFactorSecret,
       encoding: 'base32',
@@ -107,7 +104,6 @@ export class AuthService {
 
     await this.usersService.update(userId, { twoFactorEnabled: true });
 
-    // Generate recovery codes (8 alphanumeric codes)
     const recoveryCodes = Array.from({ length: 8 }, () =>
       Array.from({ length: 10 }, () =>
         'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.charAt(
@@ -115,9 +111,6 @@ export class AuthService {
         ),
       ).join(''),
     );
-
-    // In production, store hashed recovery codes in DB for verification
-    // For now, return them to the user once (must be saved securely by client)
 
     return { enabled: true, recoveryCodes };
   }
@@ -135,7 +128,6 @@ export class AuthService {
     tempToken: string,
     token: string,
   ): Promise<{ access_token: string; user: { id: string; email: string; fullName: string; role: string } }> {
-    // Verify the temp token (first-factor proof)
     let tempPayload: { sub: string; purpose: string };
     try {
       tempPayload = this.jwtService.verify<{ sub: string; purpose: string }>(tempToken);
@@ -147,7 +139,6 @@ export class AuthService {
       throw new UnauthorizedException('Invalid temporary token.');
     }
 
-    // Fetch user with 2FA secret
     const user = await this.usersService.findByEmail(
       (await this.usersService.findById(userId))?.email || '',
     );
@@ -157,7 +148,6 @@ export class AuthService {
       throw new BadRequestException('2FA is not configured for this user.');
     }
 
-    // Verify TOTP token
     const verified = speakeasy.totp.verify({
       secret: user.twoFactorSecret,
       encoding: 'base32',
@@ -169,7 +159,6 @@ export class AuthService {
       throw new UnauthorizedException('Invalid 2FA token.');
     }
 
-    // Issue full JWT
     const payload = { sub: user.id, email: user.email, role: user.role };
     return {
       access_token: this.jwtService.sign(payload),
@@ -181,8 +170,6 @@ export class AuthService {
       },
     };
   }
-
-  // ─── Internal 2FA verification (used by enable flow) ─────────────────────
 
   async verifyTwoFactorToken(userId: string, token: string): Promise<boolean> {
     const user = await this.usersService.findById(userId);
@@ -199,12 +186,28 @@ export class AuthService {
     });
   }
 
-  // ─── Set secret (used by generate endpoint) ──────────────────────────────
-
   async setTwoFactorSecret(userId: string, secret: string): Promise<void> {
     await this.usersService.update(userId, {
       twoFactorSecret: secret,
       twoFactorEnabled: false,
     });
+  }
+
+  // ─── Token Validation (for WebSocket gateways) ────────────────────────────
+
+  async validateToken(token: string): Promise<{ id: string; email: string; name?: string; role?: string; currentWorkspaceId?: string; avatar?: string } | null> {
+    try {
+      const payload = this.jwtService.verify<{ sub: string; email: string; role?: string; currentWorkspaceId?: string; name?: string; avatar?: string }>(token);
+      return {
+        id: payload.sub,
+        email: payload.email || '',
+        name: payload.name,
+        role: payload.role,
+        currentWorkspaceId: payload.currentWorkspaceId,
+        avatar: payload.avatar,
+      };
+    } catch {
+      return null;
+    }
   }
 }

@@ -17,7 +17,7 @@ export function validateEnv(): Env {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const messages = error.errors.map(e => `  - ${e.path.join('.')}: ${e.message}`).join('\n');
+      const messages = error.issues.map(e => `  - ${e.path.join('.')}: ${e.message}`).join('\n');
       console.error(`❌ Invalid environment variables:\n${messages}`);
       if (process.env.NODE_ENV === 'production') {
         throw new Error('Invalid environment configuration');

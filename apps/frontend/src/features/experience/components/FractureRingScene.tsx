@@ -2,7 +2,7 @@
 
 import { useRef, useMemo, useEffect } from 'react';
 import type { MotionValue } from 'framer-motion';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { Environment } from '@react-three/drei';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import { Group, TorusGeometry, BufferAttribute, MeshStandardMaterial, DoubleSide, ACESFilmicToneMapping } from 'three';
@@ -128,7 +128,6 @@ function RingGroup({ scrollProgress, finePointer }: FractureRingSceneProps) {
   const groupRef = useRef<Group>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
   const rotationRef = useRef({ x: 0, y: 0 });
-  useThree();
 
   useEffect(() => {
     if (!finePointer) return;

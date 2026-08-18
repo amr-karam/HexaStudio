@@ -53,7 +53,8 @@
     "axios": "^1.18.1",
     "framer-motion": "^11.18.2",
     "lucide-react": "^0.460.0",
-    "react-error-boundary": "^6.1.2"
+    "react-error-boundary": "^6.1.2",
+    "tui": "^1.0.0"
   },
   "devDependencies": {
     "@axe-core/react": "^4.12.1",
@@ -92,5 +93,8 @@
   "optionalDependencies": {
     "@rolldown/binding-linux-x64-gnu": "1.2.2",
     "@rolldown/binding-win32-x64-msvc": "1.2.2"
+  },
+  "allowScripts": {
+    "tui@1.0.0": true
   }
 }

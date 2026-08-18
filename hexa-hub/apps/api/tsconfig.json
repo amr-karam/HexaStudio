@@ -18,9 +18,19 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@hexa-hub/types": ["../../packages/types/src"]
+      "@/*": [
+        "src/*"
+      ],
+      "@hexa-hub/types": [
+        "../../packages/types/src"
+      ]
     }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

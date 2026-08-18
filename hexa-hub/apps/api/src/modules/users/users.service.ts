@@ -55,9 +55,11 @@ export class UsersService {
   async update(id: string, data: Partial<User>): Promise<void> {
     await this.userRepository.update(id, data);
     
-    // Clear caches for this user
+    // Clear caches for this user — fetch first to get the email for cache invalidation
+    const user = await this.userRepository.findOne({ where: { id } });
     await this.cacheManager.del(this.cacheManager.generateKey('user:id', id));
-    // Note: We don't have the email here, so we can't clear the email cache directly
-    // In a production app, you might want to fetch the user first to get the email
+    if (user?.email) {
+      await this.cacheManager.del(this.cacheManager.generateKey('user:email', user.email));
+    }
   }
 }

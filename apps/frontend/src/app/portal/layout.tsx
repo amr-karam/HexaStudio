@@ -16,19 +16,29 @@ export default function PortalLayout({
 }) {
   return (
     <PortalThemeProvider>
-      <div className="min-h-screen bg-background text-foreground flex">
-        {/* Desktop Sidebar */}
-        <PortalSidebar />
+      <div className="min-h-screen bg-[#0a0a0a] text-foreground flex relative overflow-hidden">
+        {/* Dynamic Ambient Light - Follows the "Silent Luxury" theme */}
+        <div className="fixed inset-0 pointer-events-none">
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-gold/10 blur-[120px] animate-pulse" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-gold/5 blur-[120px]" />
+        </div>
+
+        {/* Desktop Sidebar - Now Glassmorphic */}
+        <div className="z-20">
+          <PortalSidebar />
+        </div>
 
         {/* Mobile Sidebar Drawer */}
         <PortalMobileSidebar />
 
-        {/* Top Bar */}
-        <PortalTopBar />
+        {/* Top Bar - Now Floating Glass */}
+        <div className="fixed top-0 right-0 left-0 z-30">
+          <PortalTopBar />
+        </div>
 
-        {/* Main Content Area */}
-        <main className="flex-1 lg:pl-60 pt-16 min-h-screen flex flex-col">
-          <div className="flex-1 px-6 md:px-12 py-10 max-w-7xl w-full mx-auto">
+        {/* Main Content Area - Liquid Layout */}
+        <main className="flex-1 lg:pl-64 pt-20 min-h-screen flex flex-col relative z-10">
+          <div className="flex-1 px-6 md:px-16 py-12 w-full max-w-[1600px] mx-auto transition-all duration-500 ease-in-out">
             {children}
           </div>
         </main>

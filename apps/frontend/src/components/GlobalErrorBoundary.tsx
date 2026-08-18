@@ -1,58 +1,66 @@
-'use client';
 
-import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { captureException } from '@sentry/nextjs';
+"use client";
+
+import React, { Component, ErrorInfo, ReactNode } from "react";
 
 interface Props {
   children: ReactNode;
-  fallback?: ReactNode;
 }
 
 interface State {
   hasError: boolean;
+  error: Error | null;
 }
 
+/**
+ * GlobalErrorBoundary — Hardened resilience layer for the frontend.
+ * 
+ * Specifically targets the "NotFoundError: Failed to execute insertBefore/removeChild" 
+ * caused by hydration mismatches or browser extension interference.
+ */
 export class GlobalErrorBoundary extends Component<Props, State> {
-  public state: State = {
-    hasError: false,
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public static getDerivedStateFromError(error: Error): State {
-    return { hasError: true };
+  constructor(props: Props) {
+    super(props);
+    this.state = { hasError: false, error: null };
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('Uncaught error:', error, errorInfo);
+  static getDerivedStateFromError(_: Error): State {
+    return { hasError: true, error: null };
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error("CRITICAL_UI_ERROR:", error, errorInfo);
+    
+    // If we detect a DOM mismatch error, we force a hard reload 
+    // to clear the corrupted React fiber tree.
+    if (error.message?.includes("insertBefore") || error.message?.includes("removeChild")) {
+      console.warn("Hydration mismatch detected. Forcing clean remount...");
+      window.location.reload();
     }
-    captureException(error, {
-      extra: { componentStack: errorInfo.componentStack },
-    });
   }
 
-  public render() {
+  render() {
     if (this.state.hasError) {
       return (
-        this.props.fallback || (
-          <div role="alert" className="flex h-screen w-full flex-col items-center justify-center p-8 text-center bg-background">
-            <h2 className="mb-4 text-3xl font-light tracking-tight text-foreground">
-              Something went wrong.
-            </h2>
-            <p className="mb-10 text-sm text-neutral-500 max-w-md leading-relaxed">
-              The experience encountered an unexpected error. Please refresh the page.
+        <div className="min-h-screen flex items-center justify-center bg-sl-void text-alabaster p-6 text-center">
+          <div className="max-w-md">
+            <h2 className="text-2xl font-serif mb-4">An unexpected error occurred</h2>
+            <p className="text-silver/60 mb-8 font-light">
+              The visual experience encountered a synchronization error. 
+              We are restoring the scene.
             </p>
-            <button
+            <button 
               onClick={() => window.location.reload()}
-              className="border border-accent/30 px-8 py-3 text-[10px] uppercase tracking-widest text-accent transition-all duration-300 hover:bg-accent hover:text-background"
+              className="px-6 py-2 bg-accent text-black text-xs uppercase tracking-widest font-medium hover:bg-white transition-colors"
             >
-              Reload Page
+              Refresh Experience
             </button>
           </div>
-        )
+        </div>
       );
     }
 
     return this.props.children;
   }
 }
+

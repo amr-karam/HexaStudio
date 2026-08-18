@@ -22,7 +22,7 @@ http:
       rule: "Host(`cms.hexastudio.net`)"
       service: cms
       middlewares:
-        - security-headers
+        - web-app-security-headers
 
     # ERP / Odoo
     odoo:
@@ -30,7 +30,7 @@ http:
       service: odoo
       middlewares:
         - forwarded-headers
-        - security-headers
+        - web-app-security-headers
 
     # Storage / Files
     files:
@@ -44,14 +44,14 @@ http:
       rule: "Host(`files-console.hexastudio.net`)"
       service: minio-console
       middlewares:
-        - security-headers
+        - web-app-security-headers
 
     # Monitoring (Grafana)
     monitor:
       rule: "Host(`grafana.hexastudio.net`)"
       service: grafana
       middlewares:
-        - security-headers
+        - web-app-security-headers
 
     # Monitoring (Prometheus)
     prometheus:
@@ -66,14 +66,14 @@ http:
       service: alertmanager
       middlewares:
         - traefik-auth
-        - security-headers
+        - web-app-security-headers
 
     # Uptime
     uptime:
       rule: "Host(`uptime.hexastudio.net`)"
       service: uptime-kuma
       middlewares:
-        - security-headers
+        - web-app-security-headers
 
     # Auth
     auth:
@@ -184,7 +184,7 @@ http:
           X-Forwarded-Proto: "https"
           X-Forwarded-Ssl: "on"
 
-    # Security headers applied at the proxy edge (non-frontend services).
+    # Security headers applied at the proxy edge (non-frontend API / headless services).
     # The Next.js frontend sets its own tailored CSP via next.config.ts; adding
     # a proxy-level CSP there would duplicate headers, so `website` is exempt.
     # Baseline per docs/security/SECURITY_BASELINE.md §Security Headers.
@@ -197,3 +197,15 @@ http:
           Referrer-Policy: "strict-origin-when-cross-origin"
           Permissions-Policy: "camera=(), microphone=(), geolocation=(), xr-spatial-tracking=(self)"
           Content-Security-Policy: "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+
+    # Security headers for web applications & admin portals (Odoo ERP, Strapi CMS, MinIO Console, Grafana, Uptime Kuma)
+    # Allows necessary inline scripts/eval, styles, WebSockets, and media/blob assets required by their client runtimes.
+    web-app-security-headers:
+      headers:
+        customResponseHeaders:
+          Strict-Transport-Security: "max-age=31536000; includeSubDomains; preload"
+          X-Content-Type-Options: "nosniff"
+          X-Frame-Options: "SAMEORIGIN"
+          Referrer-Policy: "strict-origin-when-cross-origin"
+          Permissions-Policy: "camera=(), microphone=(), geolocation=(), xr-spatial-tracking=(self)"
+          Content-Security-Policy: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' wss: ws: https:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"

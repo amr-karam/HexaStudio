@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Search, FolderKanban, Users, FileText, MessageSquare, Clock, ChevronRight } from 'lucide-react';
+import { X, Search, FolderKanban, Users, FileText, MessageSquare, ChevronRight } from 'lucide-react';
 import { cn } from '@/components/ui/cn';
 
-// ─── Types ──────────────────────────────────────────────────────────────────
+// --- Types ---
 
 interface SearchResult {
   id: string;
@@ -15,22 +15,31 @@ interface SearchResult {
   url: string;
 }
 
-// ─── Component ──────────────────────────────────────────────────────────────
+// --- Component ---
 
 export default function GlobalSearch({
   open,
   onClose,
-  results = [],
   className,
 }: {
   open: boolean;
   onClose: () => void;
-  results?: SearchResult[];
   className?: string;
 }) {
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(-1);
-  const inputRef = React.useRef<HTMLInputElement>(null);
+  const [apiResults, setApiResults] = useState<SearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Reset state when closed
+  useEffect(() => {
+    if (!open) {
+      setQuery('');
+      setActiveIndex(-1);
+      setApiResults([]);
+    }
+  }, [open]);
 
   // Focus input on open
   useEffect(() => {
@@ -39,28 +48,60 @@ export default function GlobalSearch({
     }
   }, [open]);
 
-  // Reset state when closed
-  useEffect(() => {
-    if (!open) {
-      setQuery('');
-      setActiveIndex(-1);
+  const fetchResults = useCallback(async (searchQuery: string) => {
+    if (!searchQuery.trim()) {
+      setApiResults([]);
+      return;
     }
-  }, [open]);
+    setIsSearching(true);
+    try {
+      const res = await fetch('/api/v1/search?q=' + encodeURIComponent(searchQuery));
+      if (res.ok) {
+        const data = await res.json();
+        const mapped: SearchResult[] = (data.data || []).map((item: any) => ({
+          id: String(item.id),
+          title: item.title || 'Untitled',
+          subtitle: item.subtitle || '',
+          category: item.model?.includes('project') ? 'project'
+            : item.model?.includes('task') ? 'task'
+            : item.model?.includes('document') ? 'document'
+            : 'contact',
+          url: item.model?.includes('project') ? '/dashboard/projects/' + item.id
+            : item.model?.includes('task') ? '/dashboard/tasks/' + item.id
+            : item.model?.includes('document') ? '/dashboard/documents/' + item.id
+            : '/dashboard/contacts/' + item.id,
+        }));
+        setApiResults(mapped);
+      }
+    } catch (e) {
+      // Silently fail - keep empty results
+    } finally {
+      setIsSearching(false);
+    }
+  }, []);
+
+  // Debounced search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchResults(query);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [query, fetchResults]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setActiveIndex(prev => Math.min(prev + 1, results.length - 1));
+      setActiveIndex(prev => Math.min(prev + 1, apiResults.length - 1));
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       setActiveIndex(prev => Math.max(prev - 1, -1));
-    } else if (e.key === 'Enter' && activeIndex >= 0 && results[activeIndex]) {
-      window.location.href = results[activeIndex].url;
+    } else if (e.key === 'Enter' && activeIndex >= 0 && apiResults[activeIndex]) {
+      window.location.href = apiResults[activeIndex].url;
       onClose();
     } else if (e.key === 'Escape') {
       onClose();
     }
-  }, [activeIndex, results, onClose]);
+  }, [activeIndex, apiResults, onClose]);
 
   const getCategoryIcon = (category: SearchResult['category']) => {
     const icons = {
@@ -95,27 +136,7 @@ export default function GlobalSearch({
     return colors[category];
   };
 
-  // Mock results for demo
-  const mockResults: SearchResult[] = [
-    { id: '1', title: 'Brand Refresh v2', subtitle: 'Sarah Chen', category: 'project', url: '/dashboard/projects/1' },
-    { id: '2', title: 'Q3 Financial Report', subtitle: 'John Doe', category: 'document', url: '/dashboard/documents/2' },
-    { id: '3', title: 'Weekly Team Standup', subtitle: 'Alice Williams', category: 'message', url: '/dashboard/messages/3' },
-    { id: '4', title: 'API Integration', subtitle: 'Bob Johnson', category: 'task', url: '/dashboard/tasks/4' },
-    { id: '5', title: 'Mike Johnson', subtitle: 'TechCorp Solutions', category: 'contact', url: '/dashboard/contacts/5' },
-    { id: '6', title: 'Design System Update', subtitle: 'Design Team', category: 'project', url: '/dashboard/projects/6' },
-    { id: '7', title: 'Onboarding Checklist', subtitle: 'HR Dept', category: 'document', url: '/dashboard/documents/7' },
-    { id: '8', title: 'Meeting with Client', subtitle: 'Sarah Chen', category: 'message', url: '/dashboard/messages/8' },
-  ];
-
-  const filteredResults = query
-    ? mockResults.filter(r =>
-      r.title.toLowerCase().includes(query.toLowerCase()) ||
-      r.subtitle.toLowerCase().includes(query.toLowerCase()) ||
-      r.category.toLowerCase().includes(query.toLowerCase())
-    )
-    : [];
-
-  const displayResults = query ? filteredResults : mockResults.slice(0, 4);
+  const displayResults = query ? apiResults : [];
 
   return (
     <AnimatePresence>
@@ -158,7 +179,12 @@ export default function GlobalSearch({
 
               {/* Results */}
               <div className="max-h-96 overflow-y-auto">
-                {query && filteredResults.length === 0 ? (
+                {isSearching ? (
+                  <div className="p-6 text-center">
+                    <div className="w-8 h-8 border-2 border-[#D4A843]/30 border-t-[#D4A843] rounded-full animate-spin mx-auto mb-2" />
+                    <p className="text-sm text-[#555]">Searching...</p>
+                  </div>
+                ) : query && displayResults.length === 0 ? (
                   <div className="p-6 text-center">
                     <Search size={40} className="text-[#333] mx-auto mb-2" />
                     <p className="text-sm text-[#555]">No results found for &ldquo;{query}&rdquo;</p>
@@ -204,9 +230,9 @@ export default function GlobalSearch({
               <div className="p-3 border-t border-[#1F1F1F] bg-[#0A0A0A]">
                 <div className="flex items-center justify-between px-3 text-[10px] text-[#555]">
                   <div className="flex items-center gap-3">
-                    <span>Press ↭ to navigate</span>
-                    <span>↵ to select</span>
-                    <span>esc to close</span>
+                    <span>Press ArrowDown/Up to navigate</span>
+                    <span>Enter to select</span>
+                    <span>Esc to close</span>
                   </div>
                   <div className="text-[#666]">
                     {displayResults.length} result{displayResults.length !== 1 ? 's' : ''}

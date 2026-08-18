@@ -89,4 +89,4 @@ const ExecutiveDashboardPage = () => {
   );
 };
 
-export default ExecutiveDashboardPage;
+export { ExecutiveDashboardPage };

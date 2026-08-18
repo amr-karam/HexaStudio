@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { AIService } from '../ai/services/ai.service';
 
-interface CopilotQuery {
+export interface CopilotQuery {
   imageUrl?: string;
   audioBase64?: string;
   text: string;
@@ -13,7 +13,7 @@ interface CopilotQuery {
   };
 }
 
-interface CopilotResponse {
+export interface CopilotResponse {
   answer: string;
   sources: string[];
   confidence: number;

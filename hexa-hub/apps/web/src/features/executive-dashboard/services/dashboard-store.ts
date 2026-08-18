@@ -1,3 +1,4 @@
+import { ReactNode, useEffect, Fragment } from 'react';
 /**
  * Executive Dashboard Zustand Store
  * Centralized state management with premium TypeScript typing
@@ -25,12 +26,14 @@ const initialMetrics: DashboardMetrics = {
     users: [],
     activeInLastHour: 0,
     peakToday: 0,
+    lastUpdated: new Date().toISOString(),
   },
   projects: {
     inProgress: [],
     totalProjects: 0,
     completedThisMonth: 0,
     revenueThisMonth: 0,
+    lastUpdated: new Date().toISOString(),
   },
   revenue: {
     paid: 0,
@@ -40,6 +43,7 @@ const initialMetrics: DashboardMetrics = {
     paidPercentage: 0,
     pendingPercentage: 0,
     currency: "USD",
+    lastUpdated: new Date().toISOString(),
   },
   copilot: {
     dailyActiveUsers: 0,
@@ -48,8 +52,10 @@ const initialMetrics: DashboardMetrics = {
     avgSessionDuration: 0,
     featuresUsed: [],
     satisfactionScore: 0,
+    lastUpdated: new Date().toISOString(),
   },
   channelActivity: [],
+  error: undefined,
   lastUpdated: new Date().toISOString(),
 };
 
@@ -196,4 +202,14 @@ export const selectError = (state: DashboardState) => state.error;
 
 // ========== Store Exports ==========
 export type DashboardStore = ReturnType<typeof useDashboardStore>;
+
+
+export function DashboardProvider({ children }: { children: ReactNode }) {
+  // Initialize the store with default values on mount
+  useEffect(() => {
+    useDashboardStore.getState().setLastUpdated(String(Date.now()));
+  }, []);
+  return children;
+}
+
 export type DashboardStateSelector<T> = (state: DashboardState) => T;
