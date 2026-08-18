@@ -12,6 +12,10 @@ export function setAccessToken(token: string | null): void {
   _accessToken = token;
 }
 
+export function getAccessToken(): string | null {
+  return _accessToken;
+}
+
 export function setRefreshToken(token: string | null): void {
   _refreshToken = token;
 }
@@ -97,6 +101,16 @@ export async function authenticatedFetch(
   }
 
   return response;
+}
+
+
+/**
+ * Extracts Authorization header from an incoming Request
+ * to be forwarded to internal backend services.
+ */
+export function getForwardedHeaders(request: Request): HeadersInit {
+  const authHeader = request.headers.get('Authorization');
+  return authHeader ? { Authorization: authHeader } : {};
 }
 
 // ─── Internal helpers ─────────────────────────────────────────────────────────

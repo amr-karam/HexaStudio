@@ -7,7 +7,9 @@ import * as Sentry from '@sentry/node';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
-  const app = await NestFactory.create(AppModule);
+  // rawBody: true — required by OdooWebhookSignatureMiddleware so the HMAC
+  // signature is verified over the exact raw request bytes (not re-serialized JSON).
+  const app = await NestFactory.create(AppModule, { rawBody: true });
 
   // ─── SENTRY INITIALIZATION ────────────────────────────────────────────────
   if (process.env.SENTRY_DSN) {
@@ -17,14 +19,13 @@ async function bootstrap() {
       tracesSampleRate: parseFloat(process.env.SENTRY_TRACES_SAMPLE_RATE || '0.1'),
       profilesSampleRate: parseFloat(process.env.SENTRY_PROFILES_SAMPLE_RATE || '0.1'),
       attachStacktrace: true,
+      integrations: [Sentry.expressIntegration()],
     });
-    
-    // Request handler to capture all requests and errors
-    app.use(Sentry.Handlers.requestHandler());
-    
-    // Error handler to capture unhandled exceptions
-    app.use(Sentry.Handlers.errorHandler());
-    
+
+    // Request tracing is handled by expressIntegration; this registers the
+    // error handler that captures unhandled exceptions (Sentry v10 API).
+    Sentry.setupExpressErrorHandler(app);
+
     logger.log('Sentry error tracking initialized');
   } else {
     logger.log('Sentry DSN not provided - error tracking disabled');
@@ -65,7 +66,10 @@ async function bootstrap() {
   }));
 
   // ─── Swagger / OpenAPI Documentation ─────────────────────────────────────
-  const swaggerConfig = new DocumentBuilder()
+  // Disabled by default in production; opt-in via ENABLE_SWAGGER=true.
+  const swaggerEnabled = process.env.ENABLE_SWAGGER === 'true' || process.env.NODE_ENV !== 'production';
+  if (swaggerEnabled) {
+    const swaggerConfig = new DocumentBuilder()
     .setTitle('HEXA Hub API v1')
     .setDescription(
       '## HEXA Hub — Internal Collaboration Platform API (v1)\n\n' +
@@ -141,13 +145,16 @@ async function bootstrap() {
       .swagger-ui .info .title { font-size: 1.8em; }
     `,
   });
+  }
 
   // ─── Start Server ─────────────────────────────────────────────────────────
   const port = process.env.PORT || 3000;
   await app.listen(port);
 
   logger.log(`HEXA Hub API v1 is running on: http://localhost:${port}/api/v1`);
-  logger.log(`Swagger docs available at: http://localhost:${port}/api/docs`);
+  if (swaggerEnabled) {
+    logger.log(`Swagger docs available at: http://localhost:${port}/api/docs`);
+  }
   logger.log(`Legacy /api requests will be redirected to /api/v1`);
 }
 

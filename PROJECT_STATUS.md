@@ -658,3 +658,38 @@ Deployed via direct server run: `SOT=green docker compose -f docker-compose.prod
 ### Remaining / Notes
 - `opencode.hexastudio.net`: DNS CNAME removed (was dangling — no router/service behind it; docs stale re: planned OpenCode IDE host). Now NXDOMAIN. Re-addable anytime.
 - Deploy pipeline is ready; trigger manually in GitLab when next deploy is wanted.
+
+---
+
+## 2026-08-17 — Security & Performance Remediation Wave (Review-Driven) — COMPLETE
+
+**Status:** ✅ All items completed & verified; gates green
+
+**Completed (all verified):**
+- [x] **C1 — Realtime gateway auth** (`apps/backend/src/modules/realtime/realtime.gateway.ts`): CORS allowlist via `CORS_ORIGINS` (no wildcard), JWT handshake auth on all connections, `join-project` gated by auth + project existence, `approval:action` staff-only (admin/editor) with server-derived actor (client `payload.actor` ignored).
+- [x] **C2 — Odoo webhook HMAC verification** (hexa-hub): raw-body HMAC via express `rawBody` + `odoo-webhook-signature.middleware` (fail-closed; 401 on missing/invalid signature); `sync/trigger` + `sync/state` now `JwtAuthGuard` + `RolesGuard` (SUPER_ADMIN, EMPLOYEE); `verifyWebhookSignature` fail-closed + length-guarded `timingSafeEqual`.
+- [x] **C3 — BFF proxies rewritten** (`apps/frontend`): new `src/lib/bff.ts` (`auth_token` cookie forwarding + Bearer fallback, honest 502/4xx pass-through, zero fabrication); 7 proxies rewritten (spatial-synthesis, voice, generate-brief, agents/[persona], agents/memory, copilot/query, copilot/multimodal-query).
+- [x] **C4 — Multimodal proxies added:** 5 missing BFF proxies (analyze-architecture, analyze-3d-scene, analyze-material, compare-designs, extract-bim) — all verified to exist upstream.
+- [x] **A1 — Executive brief + V2 contracts/generate:** now proxy REAL backend endpoints (`portal.controller.ts:257/277`) with auth; fabricated invoices/SO refs removed.
+- [x] **F1 — GeminiLiveCritique honesty fix:** fake canned AI observation removed; honest "Preview — simulated output, no AI connected" label; per-frame `setState` throttled (direct DOM writes + 200ms state).
+- [x] **M9/M10/M11 — hexa-hub role guards:** `RolesGuard` (SUPER_ADMIN, EMPLOYEE) on employees/documents/accounting controllers (client role blocked from PII/documents/financials).
+- [x] **Backend access control:** `requests.controller` IDOR fixed (client scoped to own email), `findAllAdmin` @Roles('admin'), PATCH status @Roles('admin','editor'); storage backups bucket removed from user-facing presign enums.
+- [x] **V1 — Preview route open-redirect closed:** path allowlist, rejects `//`, `\`, `:`.
+- [x] **Sentry tunnel hardening:** `SENTRY_TUNNEL_TOKEN` header or same-origin check; error detail leak removed.
+- [x] **Perf — ReadingProgress rewritten:** scroll-driven, cached `docHeight`, direct DOM writes, 200ms aria throttle (no per-frame reflow/render); `deferred-scene-loader` `measureFPS` gated by IntersectionObserver + visibility; `scripts/check-font-preloads.mjs` added to frontend lint chain (all 5 preloads verified matching served latin URLs); `PERFORMANCE.md` §3 appended.
+- [x] **Realtime client handshake:** `useRealtime.ts` + `useCollaboration.ts` now send auth token (`getAccessToken()` added to `api-client.ts`).
+- [x] **hexa-hub Swagger gated:** `ENABLE_SWAGGER`/`NODE_ENV` conditional.
+
+**Gates (verified):** frontend lint 0/0 + design tokens + font check, typecheck clean, **51 files / 371 tests**; backend lint 0/0, typecheck clean, **46 files / 386 tests**.
+
+**Follow-ups:**
+- hexa-hub API baseline broken: `cache.service.ts` + `minio.service.ts` never committed (typecheck fails at baseline; 3 jest suites fail to compile); `ai.service.ts:240` pre-existing lint error (unused `audioBase64`).
+- ~20 hexa-hub controllers still `JwtAuthGuard`-only (crm, sales, tasks, projects, contacts, activities, helpdesk, knowledge, timesheets, approvals, calendar, search, channels) — role audit follow-up.
+- `ODOO_WEBHOOK_SECRET` missing from `.env`/`.env.example` — webhooks hard-401 until configured.
+- hexa-hub CORS `allowedHeaders` lacks `x-odoo-signature` (browser preflight only).
+- Realtime `join-project` checks existence not membership (no membership model — ADR candidate); presence/collab events still trust client-supplied user name (cosmetic spoofing).
+- `usePortalSocket.ts` sends no handshake token — verify portal gateway auth expectations.
+- In-memory access token: sockets don't reconnect after hard reload until refresh — pre-existing gap.
+- `hexa-hub/apps/api/package-lock.json` half-written untracked — regenerate or delete.
+- `apps/frontend/src/providers/webgl-context-provider.tsx` untracked (typecheck noise).
+- Working tree contains ~50 uncommitted files (this wave + pre-existing user work: page.tsx, HeroEditorial, HomeHero, GlobalErrorBoundary, SafeHydration, cms scripts, favicon/logo, traefik, lighthouse, sentry bump) — commit decision pending.
