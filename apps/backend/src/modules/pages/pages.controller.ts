@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Query, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { PagesService } from './pages.service';
-import type { Page, PageResponse } from '@hexastudio/types';
+import type { Page, PageResponse, EditorialHero } from '@hexastudio/types';
 
 @ApiTags('Pages')
 @Controller({ path: 'pages', version: ['1', VERSION_NEUTRAL] })
@@ -24,6 +24,14 @@ export class PagesController {
       limit ? parseInt(limit, 10) : 20,
       locale,
     );
+  }
+
+  @Get('editorial-hero')
+  @ApiOperation({ summary: 'Get the editorial hero configured for a page (by slug)' })
+  @ApiQuery({ name: 'slug', required: true, type: String, description: 'Page slug, e.g. "blog"' })
+  @ApiResponse({ status: 200, description: 'Editorial hero, or null when none configured' })
+  async editorialHero(@Query('slug') slug: string): Promise<EditorialHero | null> {
+    return this.pagesService.getEditorialHero(slug);
   }
 
   @Get(':slug')

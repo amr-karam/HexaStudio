@@ -2,10 +2,24 @@
 'use client';
 
 import Link from 'next/link';
+import type { EditorialHero } from '@hexastudio/types';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { EASE, DURATION } from '@/lib/motion';
 import { cn } from '@/lib/utils';
 import { motion, useReducedMotion } from 'framer-motion';
+
+/** Default hero copy — used when no CMS hero is configured. */
+const DEFAULT_HERO: Required<Omit<EditorialHero, 'accentWord'>> & { accentWord?: string } = {
+  eyebrow: 'Chapter 01 — Vision',
+  title: 'Raw\nVision,\nRendered.',
+  accentWord: undefined,
+  subtitle:
+    'Worlds composed from light and restraint — spatial narratives for brands that demand presence over noise.',
+  primaryCtaLabel: 'Enter the Work',
+  primaryCtaHref: '/projects',
+  secondaryCtaLabel: 'The Atelier',
+  secondaryCtaHref: '/studio',
+};
 
 /**
  * HeroEditorial — CH. I VISION (Editorial Asymmetry variant)
@@ -15,16 +29,20 @@ import { motion, useReducedMotion } from 'framer-motion';
  * ring motif bleeding off the top-right corner — negative space becomes
  * the active design element.
  *
+ * Content is CMS-driven via the `hero` prop (fetched from Strapi); when no
+ * hero is provided it renders the built-in default copy.
+ *
  * - In-flow (`relative`, not `fixed`) so downstream content is never covered.
  * - Motion collapses under `prefers-reduced-motion` / motion policy.
  * - Design-token colors only (sl-void, accent, ink) — no raw hex.
  * - Fully declarative entrance (no scroll listeners, no JS timers).
  */
-export function HeroEditorial() {
+export function HeroEditorial({ hero }: { hero?: Partial<EditorialHero> }) {
   const reduced = useReducedMotion();
   const { staticMode } = useMotionPolicy();
 
   const animate = staticMode || reduced;
+  const h = { ...DEFAULT_HERO, ...hero } as typeof DEFAULT_HERO;
 
   /** Staggered entrance — each layer reveals in sequence. */
   const reveal = (delay: number) =>
@@ -35,6 +53,30 @@ export function HeroEditorial() {
           animate: { opacity: 1, y: 0 },
           transition: { duration: DURATION.scene, ease: EASE.entrance, delay },
         };
+
+  /**
+   * Title rendering, in priority order:
+   *  1. accentWord present → inline-italicize that word within the title.
+   *  2. otherwise → split on newlines into stacked lines; any line ending with
+   *     a comma is rendered as the gold italic accent line (editorial convention).
+   */
+  const renderTitle = () => {
+    if (h.accentWord) {
+      const [before, after] = h.title.split(h.accentWord);
+      return (
+        <>
+          {before}
+          <span className="italic text-accent/90">{h.accentWord}</span>
+          {after}
+        </>
+      );
+    }
+    return h.title.split('\n').map((line, i) => (
+      <span key={i} className="block">
+        {line.endsWith(',') ? <span className="italic text-accent/90">{line}</span> : line}
+      </span>
+    ));
+  };
 
   return (
     <section
@@ -93,7 +135,7 @@ export function HeroEditorial() {
           {...reveal(0.2)}
           className="mb-6 max-w-md font-mono text-[11px] uppercase leading-relaxed tracking-[0.3em] text-accent/80 md:text-xs"
         >
-          Chapter 01 — Vision
+          {h.eyebrow}
         </motion.p>
 
         <motion.h1
@@ -102,24 +144,19 @@ export function HeroEditorial() {
             'max-w-[14ch] font-serif text-[clamp(3.5rem,12vw,10.5rem)] leading-[0.85] tracking-tight text-sl-ink',
           )}
         >
-          Raw
-          <br />
-          <span className="italic text-accent/90">Vision,</span>
-          <br />
-          Rendered.
+          {renderTitle()}
         </motion.h1>
 
         <motion.p
           {...reveal(0.45)}
           className="mt-8 max-w-xl text-sm leading-relaxed text-sl-ink/60 md:text-base"
         >
-          Worlds composed from light and restraint — spatial narratives for
-          brands that demand presence over noise.
+          {h.subtitle}
         </motion.p>
 
         <motion.div {...reveal(0.6)} className="mt-10 flex flex-wrap items-center gap-6">
           <Link
-            href="/projects"
+            href={h.primaryCtaHref}
             className={cn(
               'group inline-flex items-center gap-3 border border-accent/40 px-6 py-3',
               'font-mono text-[11px] uppercase tracking-[0.3em] text-accent',
@@ -127,7 +164,7 @@ export function HeroEditorial() {
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-sl-void',
             )}
           >
-            Enter the Work
+            {h.primaryCtaLabel}
             <span
               aria-hidden="true"
               className="inline-block transition-transform duration-500 group-hover:translate-x-1"
@@ -136,17 +173,19 @@ export function HeroEditorial() {
             </span>
           </Link>
 
-          <Link
-            href="/studio"
-            className={cn(
-              'font-mono text-[11px] uppercase tracking-[0.3em] text-sl-ink/50',
-              'underline decoration-accent/30 underline-offset-8 decoration-1',
-              'transition-colors duration-500 hover:text-sl-ink hover:decoration-accent',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-sl-void',
-            )}
-          >
-            The Atelier
-          </Link>
+          {h.secondaryCtaLabel && h.secondaryCtaHref && (
+            <Link
+              href={h.secondaryCtaHref}
+              className={cn(
+                'font-mono text-[11px] uppercase tracking-[0.3em] text-sl-ink/50',
+                'underline decoration-accent/30 underline-offset-8 decoration-1',
+                'transition-colors duration-500 hover:text-sl-ink hover:decoration-accent',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-sl-void',
+              )}
+            >
+              {h.secondaryCtaLabel}
+            </Link>
+          )}
         </motion.div>
       </div>
 

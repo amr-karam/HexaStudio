@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { fetchArticles } from '@/features/blog/lib/fetchArticles';
+import { fetchEditorialHero } from '@/features/blog/lib/fetchEditorialHero';
 import { BlogPageContent } from '@/features/blog/components/BlogPageContent';
+import { HeroEditorial } from '@/components/hero/HeroEditorial';
 
 export const revalidate = 3600;
 
@@ -28,6 +30,14 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function BlogPage() {
-  const data = await fetchArticles();
-  return <BlogPageContent articles={data.articles} />;
+  const [data, hero] = await Promise.all([
+    fetchArticles(),
+    fetchEditorialHero('blog'),
+  ]);
+  return (
+    <>
+      <HeroEditorial hero={hero ?? undefined} />
+      <BlogPageContent articles={data.articles} showHeader={false} />
+    </>
+  );
 }

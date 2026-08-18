@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import type { Page, PageResponse, RichTextBlock } from '@hexastudio/types';
+import type { Page, PageResponse, RichTextBlock, EditorialHero } from '@hexastudio/types';
 import { getEnv } from '../../config/env';
 
 interface StrapiMedia {
@@ -114,8 +114,52 @@ export class PagesService {
       content: (attrs.content as RichTextBlock[]) ?? [],
       excerpt: attrs.excerpt as string | undefined,
       featuredImage: mapMedia(attrs.featuredImage as StrapiMedia, this.cmsUrl),
+      editorialHero: this.mapEditorialHero(attrs.editorialHero as Record<string, unknown> | undefined),
       seoTitle: attrs.seoTitle as string | undefined,
       seoDescription: attrs.seoDescription as string | undefined,
     };
+  }
+
+  private mapEditorialHero(attrs: Record<string, unknown> | undefined): EditorialHero | null {
+    if (!attrs) return null;
+    const title = attrs.title as string | undefined;
+    if (!title) return null;
+    return {
+      eyebrow: attrs.eyebrow as string | undefined,
+      title,
+      accentWord: attrs.accentWord as string | undefined,
+      subtitle: attrs.subtitle as string | undefined,
+      primaryCtaLabel: attrs.primaryCtaLabel as string | undefined,
+      primaryCtaHref: attrs.primaryCtaHref as string | undefined,
+      secondaryCtaLabel: attrs.secondaryCtaLabel as string | undefined,
+      secondaryCtaHref: attrs.secondaryCtaHref as string | undefined,
+    };
+  }
+
+  /**
+   * Returns the editorial hero for a CMS page (by slug), or null when the page
+   * has no hero configured. Used to drive the HeroEditorial component.
+   */
+  async getEditorialHero(slug: string): Promise<EditorialHero | null> {
+    try {
+      const response = await firstValueFrom(
+        this.httpService.get(`${this.cmsUrl}/api/pages`, {
+          headers: this.cmsHeaders,
+          params: {
+            populate: '*',
+            'filters[slug][$eq]': slug,
+          },
+        }),
+      );
+      const items = response.data?.data;
+      if (!items || items.length === 0) return null;
+      return this.mapEditorialHero(
+        ((items[0].attributes ?? items[0]) as Record<string, unknown>).editorialHero as
+          | Record<string, unknown>
+          | undefined,
+      );
+    } catch {
+      return null;
+    }
   }
 }

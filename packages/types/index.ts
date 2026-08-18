@@ -403,6 +403,23 @@ export interface PageMedia {
   alternativeText?: string;
 }
 
+export interface EditorialHero {
+  /** Small mono eyebrow above the title, e.g. "Chapter 01 — Vision". */
+  eyebrow?: string;
+  /** Main display title. Supports a single newline to split lines. */
+  title: string;
+  /** Optional italic accent word rendered inside the title (overrides line split if set). */
+  accentWord?: string;
+  /** Supporting paragraph below the title. */
+  subtitle?: string;
+  /** Primary CTA label + href. */
+  primaryCtaLabel?: string;
+  primaryCtaHref?: string;
+  /** Secondary CTA label + href. */
+  secondaryCtaLabel?: string;
+  secondaryCtaHref?: string;
+}
+
 export interface Page {
   id: number;
   slug: string;
@@ -410,6 +427,7 @@ export interface Page {
   content: RichTextBlock[];
   excerpt?: string;
   featuredImage?: PageMedia;
+  editorialHero?: EditorialHero | null;
   seoTitle?: string;
   seoDescription?: string;
 }

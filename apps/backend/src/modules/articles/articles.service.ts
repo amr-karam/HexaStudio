@@ -76,6 +76,7 @@ export class ArticlesService {
         params: {
           'populate': '*',
           'filters[slug][$eq]': slug,
+          'filters[isPublished][$eq]': true,
           ...(locale ? { locale } : {}),
         },
       }),

@@ -16,6 +16,8 @@ const SPRING_TRANSITION = { type: 'spring' as const, stiffness: 120, damping: 20
 
 interface BlogPageContentProps {
   articles: Article[];
+  /** When false, skip the inline editorial header (e.g. a HeroEditorial is mounted above). */
+  showHeader?: boolean;
 }
 
 /**
@@ -175,7 +177,7 @@ const FALLBACK_ARTICLES: Article[] = [
   },
 ];
 
-export function BlogPageContent({ articles }: BlogPageContentProps) {
+export function BlogPageContent({ articles, showHeader = true }: BlogPageContentProps) {
   // demilie.ru / cuberto DNA: velocity shear on the blog card grid.
   const { staticMode } = useMotionPolicy();
   const finePointer = useFinePointer();
@@ -199,7 +201,8 @@ export function BlogPageContent({ articles }: BlogPageContentProps) {
       </div>
 
       <div className="relative z-10 px-8 md:px-16">
-        {/* ── Header ──────────────────────────────────────────────────────────── */}
+        {/* ── Header (skipped when a HeroEditorial is mounted above) ──────────── */}
+        {showHeader && (
         <header className="mb-28 md:mb-36 relative">
           {/* Ornamental rule above eyebrow */}
           <div className="mb-8" aria-hidden="true">
@@ -242,6 +245,7 @@ export function BlogPageContent({ articles }: BlogPageContentProps) {
             <OrnamentalRule />
           </div>
         </header>
+        )}
 
         {/* ── Article Grid ────────────────────────────────────────────────────── */}
         <motion.div
