@@ -518,7 +518,7 @@ export function PortalAiCopilot({
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             className={cn(
-              'fixed right-0 top-0 bottom-0 w-full max-w-md bg-neutral-900 border-l border-neutral-800 text-neutral-100 z-50 flex flex-col shadow-2xl',
+              'fixed right-0 top-0 bottom-0 w-full max-w-md bg-surface border-l border-border text-foreground z-50 flex flex-col shadow-2xl',
               isDragOver && 'border-amber-500/50',
             )}
           >
@@ -831,5 +831,6 @@ export function PortalAiCopilot({
     </AnimatePresence>
   );
 }
+
 
 

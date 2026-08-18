@@ -8,6 +8,7 @@ import { Logger, ValidationPipe, VersioningType, VERSION_NEUTRAL } from "@nestjs
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import helmet from "helmet";
 import * as Sentry from "@sentry/node";
+import cookieParser from "cookie-parser";
 import { AppModule } from "./app.module";
 import { GlobalExceptionFilter } from "./core/filters/global-exception.filter";
 import { getEnv } from "./config/env";
@@ -28,6 +29,7 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
 
   app.use(helmet());
+  app.use(cookieParser());
   app.setGlobalPrefix("api");
   // URI versioning enabled — dual-path: /api/v1/* (versioned) and /api/* (VERSION_NEUTRAL backward compat).
   // Controllers declare version: ['1', VERSION_NEUTRAL] so both URL patterns resolve.

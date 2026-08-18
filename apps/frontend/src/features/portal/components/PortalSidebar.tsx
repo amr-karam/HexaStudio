@@ -190,7 +190,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         <div className="relative border-t border-border/20 p-4">
           <div className="flex items-center gap-3 mb-3">
             {/* Gold-ring avatar */}
-            <div className="relative w-9 h-9 rounded-full bg-accent/10 border border-accent/40 ring-1 ring-accent/20 flex items-center justify-center shrink-0">
+            <div className="relative w-10 h-10 rounded-full bg-accent/10 border border-accent/40 ring-1 ring-accent/20 flex items-center justify-center shrink-0">
               <span className="text-xs font-mono text-accent uppercase">
                 {user.email?.charAt(0) ?? 'U'}
               </span>
@@ -238,7 +238,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 export function PortalSidebar() {
   return (
     <aside
-      className="hidden lg:flex fixed left-0 top-0 bottom-0 w-60 z-20"
+      className="hidden lg:flex fixed left-0 top-0 bottom-0 w-[85vw] max-w-[280px] z-20"
       aria-label="Portal sidebar"
     >
       {/* Glassmorphic backdrop — lets the ambient glow pass through */}
@@ -283,7 +283,7 @@ export function PortalMobileSidebar() {
               duration: reducedMotion ? DURATION.micro : DURATION.component,
               ease: reducedMotion ? EASE.sharp : EASE.entrance,
             }}
-            className="fixed left-0 top-0 bottom-0 w-60 z-50 lg:hidden"
+            className="fixed left-0 top-0 bottom-0 w-[85vw] max-w-[280px] z-50 lg:hidden"
             aria-label="Portal sidebar"
           >
             <SidebarContent onNavigate={() => setSidebarOpen(false)} />

@@ -109,6 +109,10 @@ interface PortalDashboardData {
   upcoming: BackendUpcomingItems;
   pendingApprovals: BackendPendingApproval[];
   notifications: BackendNotificationsSummary;
+  companyName?: string;
+  activeProjectName?: string;
+  activeProjectStage?: string;
+  overallProgressPercentage?: number;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -231,9 +235,9 @@ export function mapDashboardResponse(
   const outstandingInvoices: DashboardData['outstandingInvoices'] = [];
 
   return {
-    companyName: 'HEXA Studio',
-    activeProjectName: 'Active Project',
-    activeProjectStage: 'In Progress',
+    companyName: raw.companyName ?? 'HEXA Studio',
+    activeProjectName: raw.activeProjectName ?? 'Active Project',
+    activeProjectStage: raw.activeProjectStage ?? 'In Progress',
     overallProgressPercentage: 0,
     nextMilestoneName,
     nextMilestoneDueDate,
@@ -372,3 +376,4 @@ export const MOCK_PROJECTS: PortalProject[] = [
     ],
   },
 ];
+

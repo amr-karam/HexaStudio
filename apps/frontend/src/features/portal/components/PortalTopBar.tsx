@@ -62,10 +62,19 @@ export function PortalTopBar() {
         {/* Mobile hamburger */}
         <button
           onClick={toggleSidebar}
-          className="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg text-neutral-400 hover:text-foreground hover:bg-white/[0.03] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          className="lg:hidden flex items-center justify-center w-11 h-11 rounded-lg text-neutral-400 hover:text-foreground hover:bg-white/[0.03] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           aria-label="Toggle navigation menu"
         >
           <Icon name="menu" size={20} />
+        </button>
+
+        {/* Mobile search button */}
+        <button
+          onClick={() => setCommandPaletteOpen(true)}
+          className="sm:hidden flex items-center justify-center w-11 h-11 rounded-lg text-neutral-400 hover:text-foreground hover:bg-white/[0.03] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          aria-label="Open search"
+        >
+          <Icon name="search" size={20} />
         </button>
 
         {/* Command palette trigger */}
@@ -102,7 +111,7 @@ export function PortalTopBar() {
         {/* Theme toggle */}
         <button
           onClick={toggleTheme}
-          className="flex items-center justify-center w-10 h-10 rounded-lg text-neutral-400 hover:text-foreground hover:bg-white/[0.03] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          className="flex items-center justify-center w-11 h-11 rounded-lg text-neutral-400 hover:text-foreground hover:bg-white/[0.03] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
         >
           {!prefersReduced ? (
@@ -144,3 +153,4 @@ export function PortalTopBar() {
     </header>
   );
 }
+

@@ -44,22 +44,26 @@ export function usePortalSocket(projectId = 'horizon-villa', userName = 'Client 
       setIsConnected(false);
     });
 
-    socket.on('cursor_updated', (data: RemoteCursor) => {
+    const onCursorUpdated = (data: RemoteCursor) => {
       setRemoteCursors((prev) => ({
         ...prev,
         [data.socketId]: data,
       }));
-    });
+    };
+    socket.on('cursor_updated', onCursorUpdated);
 
-    socket.on('approval_changed', (data: { approvalId: string; status: string; actor: string; timestamp: string }) => {
+    const onApprovalChanged = (data: { approvalId: string; status: string; actor: string; timestamp: string }) => {
       const msg = `Approval ${data.approvalId} was updated to '${data.status}' by ${data.actor}`;
       setLiveNotifications((prev) => [
         { id: Date.now().toString(), message: msg, timestamp: data.timestamp },
         ...prev,
       ]);
-    });
+    };
+    socket.on('approval_changed', onApprovalChanged);
 
     return () => {
+      socket.off('cursor_updated', onCursorUpdated);
+      socket.off('approval_changed', onApprovalChanged);
       socket.disconnect();
     };
   }, [projectId, userName]);

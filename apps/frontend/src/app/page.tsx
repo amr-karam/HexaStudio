@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { HomeHero } from "@/features/portfolio/components/HomeHero";
-import { HomeHeroStatic } from "@/features/portfolio/components/HomeHeroStatic";
 import { HomeChapterRail } from "@/features/portfolio/components/HomeChapterRail";
 import { HomePageDynamic } from "@/features/portfolio/components/HomePageDynamic";
 import { StudioSection } from "@/features/portfolio/components/StudioSection";
