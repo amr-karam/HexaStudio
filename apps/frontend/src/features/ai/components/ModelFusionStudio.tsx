@@ -2,7 +2,18 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { runFusion, FusionResponseUI } from '@/features/ai/api';
+import { runFusion, runFusionStream, FusionResponseUI, FusionStreamEvent } from '@/features/ai/api';
+
+interface CandidateState {
+  model: string;
+  provider: string;
+  content: string;
+  score: number;
+  latencyMs: number;
+  failure: boolean;
+  error?: string;
+  status: 'pending' | 'running' | 'done' | 'error';
+}
 
 export function ModelFusionStudio() {
   const [query, setQuery] = useState('');
@@ -12,6 +23,9 @@ export function ModelFusionStudio() {
   const [error, setError] = useState<string | null>(null);
   const [response, setResponse] = useState<FusionResponseUI | null>(null);
   const [selectedCandidate, setSelectedCandidate] = useState<string | null>(null);
+  const [streamEnabled, setStreamEnabled] = useState(true);
+  const [candidates, setCandidates] = useState<CandidateState[]>([]);
+  const [streamMeta, setStreamMeta] = useState<FusionStreamEvent | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,17 +33,61 @@ export function ModelFusionStudio() {
     setError(null);
     setResponse(null);
     setSelectedCandidate(null);
+    setCandidates([]);
+    setStreamMeta(null);
+
+    const parsedModels = models.split(',').map(m => m.trim()).filter(Boolean);
+    const payload = {
+      messages: [
+        { role: 'system', content: 'You are a HEXA STUDIO architectural intelligence assistant.' },
+        { role: 'user', content: query },
+      ],
+      models: parsedModels,
+      mode,
+      maxTokens: 1200,
+    };
+
+    if (streamEnabled) {
+      try {
+        for await (const event of runFusionStream(payload)) {
+          if (event.type === 'meta') {
+            setStreamMeta(event);
+            setCandidates(parsedModels.map(model => ({ model, provider: '', content: '', score: 0, latencyMs: 0, failure: false, status: 'pending' })));
+          } else if (event.type === 'candidate_start') {
+            setCandidates(prev => prev.map(c => c.model === event.payload.model ? { ...c, status: 'running' as const } : c));
+          } else if (event.type === 'candidate_meta') {
+            setCandidates(prev => prev.map(c => c.model === event.payload.model ? { ...c, provider: event.payload.provider } : c));
+          } else if (event.type === 'candidate_delta') {
+            setCandidates(prev => prev.map(c => c.model === event.payload.model ? { ...c, content: c.content + event.payload.text } : c));
+          } else if (event.type === 'candidate_done') {
+            const { model, provider, content, latencyMs, usage } = event.payload;
+            const score = 0;
+            setCandidates(prev => prev.map(c => c.model === model ? { model, provider, content, latencyMs, score, failure: false, status: 'done' as const } : c));
+          } else if (event.type === 'candidate_error') {
+            const { model, error: err } = event.payload;
+            setCandidates(prev => prev.map(c => c.model === model ? { ...c, failure: true, error: err ?? 'Failed', status: 'error' as const } : c));
+          } else if (event.type === 'result') {
+            setResponse({
+              fused: event.payload.fused,
+              candidates: [],
+              winnerScore: event.payload.winnerScore,
+              telemetry: event.payload.telemetry,
+            });
+            setSelectedCandidate(event.payload.fused.model);
+          } else if (event.type === 'error') {
+            setError(event.payload.message ?? 'Fusion failed');
+          }
+        }
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Fusion failed');
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
 
     try {
-      const data = await runFusion({
-        messages: [
-          { role: 'system', content: 'You are a HEXA STUDIO architectural intelligence assistant.' },
-          { role: 'user', content: query },
-        ],
-        models: models.split(',').map(m => m.trim()).filter(Boolean),
-        mode,
-        maxTokens: 1200,
-      });
+      const data = await runFusion(payload);
       setResponse(data);
       setSelectedCandidate(data.fused.model);
     } catch (err: unknown) {
@@ -39,7 +97,9 @@ export function ModelFusionStudio() {
     }
   };
 
-  const activeCandidate = response?.candidates.find(c => c.model === selectedCandidate);
+  const activeCandidate = streamEnabled
+    ? candidates.find(c => c.model === selectedCandidate) ?? candidates[0]
+    : response?.candidates.find(c => c.model === selectedCandidate);
 
   return (
     <div className="w-full max-w-7xl mx-auto p-6 md:p-12 artisan-glass text-foreground border border-border/30 rounded-2xl shadow-2xl relative overflow-hidden">
@@ -88,6 +148,19 @@ export function ModelFusionStudio() {
               <option value="merge">Merge</option>
             </select>
           </div>
+          <div className="flex items-center justify-between rounded-xl border border-border/30 bg-obsidian-raised px-4 py-3">
+            <div>
+              <p className="text-[11px] font-mono uppercase tracking-widest text-text-secondary">Live Stream</p>
+              <p className="text-xs text-text-muted mt-1 font-light">Show candidate deltas as they arrive</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setStreamEnabled(value => !value)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-colors duration-200 ${streamEnabled ? 'bg-accent text-background' : 'bg-obsidian text-text-secondary border border-border/30'}`}
+            >
+              {streamEnabled ? 'On' : 'Off'}
+            </button>
+          </div>
           <button
             type="submit"
             disabled={loading}
@@ -96,7 +169,7 @@ export function ModelFusionStudio() {
             {loading ? (
               <>
                 <div className="w-4 h-4 border-2 border-background border-t-transparent rounded-full animate-spin" />
-                Fusing Models...
+                {streamEnabled ? 'Streaming Fusion...' : 'Fusing Models...'}
               </>
             ) : (
               'Run Fusion'
@@ -110,40 +183,57 @@ export function ModelFusionStudio() {
             {loading && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col items-center justify-center py-32 text-text-secondary gap-4">
                 <div className="w-10 h-10 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-                <p className="text-xs font-mono uppercase tracking-[0.35em] text-accent">Running multi-model analysis...</p>
+                <p className="text-xs font-mono uppercase tracking-[0.35em] text-accent">
+                  {streamEnabled ? 'Streaming multi-model analysis...' : 'Running multi-model analysis...'}
+                </p>
               </motion.div>
             )}
 
-            {!loading && !response && (
+            {!loading && !response && candidates.length === 0 && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col items-center justify-center h-full text-center py-32 text-text-muted">
                 <p className="text-xs font-mono uppercase tracking-[0.3em]">Awaiting fusion request</p>
                 <p className="text-xs text-text-muted/70 mt-2 font-light">Submit a query to compare model outputs.</p>
               </motion.div>
             )}
 
-            {!loading && response && (
+            {(streamEnabled ? candidates.length > 0 : !loading && !!response) && (
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3 bg-obsidian-raised rounded-xl border border-border/20">
-                    <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest block mb-1">Mode</span>
-                    <p className="text-xl font-mono text-foreground">{response.fused.mode}</p>
+                {streamEnabled && streamMeta && (
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3 bg-obsidian-raised rounded-xl border border-border/20">
+                      <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest block mb-1">Mode</span>
+                      <p className="text-xl font-mono text-foreground">{streamMeta.payload.mode}</p>
+                    </div>
+                    <div className="p-3 bg-obsidian-raised rounded-xl border border-border/20">
+                      <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest block mb-1">Models</span>
+                      <p className="text-xl font-mono text-foreground">{streamMeta.payload.models.length}</p>
+                    </div>
                   </div>
-                  <div className="p-3 bg-obsidian-raised rounded-xl border border-border/20">
-                    <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest block mb-1">Winner Score</span>
-                    <p className="text-xl font-mono text-accent">{response.winnerScore}</p>
+                )}
+
+                {!streamEnabled && response && (
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3 bg-obsidian-raised rounded-xl border border-border/20">
+                      <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest block mb-1">Mode</span>
+                      <p className="text-xl font-mono text-foreground">{response.fused.mode}</p>
+                    </div>
+                    <div className="p-3 bg-obsidian-raised rounded-xl border border-border/20">
+                      <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest block mb-1">Winner Score</span>
+                      <p className="text-xl font-mono text-accent">{response.winnerScore}</p>
+                    </div>
+                    <div className="p-3 bg-obsidian-raised rounded-xl border border-border/20">
+                      <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest block mb-1">Latency</span>
+                      <p className="text-xl font-mono text-foreground">{response.telemetry.totalLatencyMs} ms</p>
+                    </div>
+                    <div className="p-3 bg-obsidian-raised rounded-xl border border-border/20">
+                      <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest block mb-1">Candidates</span>
+                      <p className="text-xl font-mono text-foreground">{response.telemetry.successfulCandidates}/{response.telemetry.totalCandidates}</p>
+                    </div>
                   </div>
-                  <div className="p-3 bg-obsidian-raised rounded-xl border border-border/20">
-                    <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest block mb-1">Latency</span>
-                    <p className="text-xl font-mono text-foreground">{response.telemetry.totalLatencyMs} ms</p>
-                  </div>
-                  <div className="p-3 bg-obsidian-raised rounded-xl border border-border/20">
-                    <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest block mb-1">Candidates</span>
-                    <p className="text-xl font-mono text-foreground">{response.telemetry.successfulCandidates}/{response.telemetry.totalCandidates}</p>
-                  </div>
-                </div>
+                )}
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  {response.candidates.map((candidate) => (
+                  {(streamEnabled ? candidates : response?.candidates ?? []).map((candidate) => (
                     <button
                       key={candidate.model}
                       type="button"
@@ -151,18 +241,24 @@ export function ModelFusionStudio() {
                       className={`text-left p-3 rounded-xl border transition-colors ${selectedCandidate === candidate.model ? 'border-accent bg-accent/10' : 'border-border/30 bg-obsidian-raised hover:border-accent/50'}`}
                     >
                       <span className="text-[11px] font-mono text-accent uppercase tracking-widest block mb-1">{candidate.model}</span>
-                      <span className="text-[10px] font-mono text-text-muted block mb-2">{candidate.provider}</span>
+                      <span className="text-[10px] font-mono text-text-muted block mb-2">{candidate.provider || '...'}</span>
                       <span className="text-[10px] font-mono text-text-secondary block">Score: {candidate.score}</span>
                       <span className="text-[10px] font-mono text-text-secondary block">Latency: {candidate.latencyMs} ms</span>
+                      {streamEnabled && (
+                        <span className="text-[10px] font-mono text-text-secondary block mt-1">Status: {candidate.status ?? 'pending'}</span>
+                      )}
                       {candidate.failure && <span className="text-[10px] font-mono text-red-400 block">Failed</span>}
+                      {streamEnabled && candidate.error && <span className="text-[10px] font-mono text-red-400 block">{candidate.error}</span>}
                     </button>
                   ))}
                 </div>
 
                 <div className="p-6 bg-obsidian/80 border border-border/30 rounded-2xl backdrop-blur-md">
-                  <span className="text-[10px] font-mono text-accent uppercase tracking-[0.3em] block mb-2">{activeCandidate?.model ?? response.fused.model}</span>
+                  <span className="text-[10px] font-mono text-accent uppercase tracking-[0.3em] block mb-2">
+                    {streamEnabled ? (activeCandidate?.model ?? '...') : (activeCandidate?.model ?? response.fused.model)}
+                  </span>
                   <p className="text-sm text-text-secondary leading-relaxed whitespace-pre-wrap font-light">
-                    {activeCandidate?.content ?? response.fused.content}
+                    {streamEnabled ? (activeCandidate?.content ?? '') : (activeCandidate?.content ?? response.fused.content)}
                   </p>
                 </div>
               </motion.div>

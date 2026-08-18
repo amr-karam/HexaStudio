@@ -39,3 +39,5 @@ export const isValidEmail = (email: string): boolean => {
 export const clamp = (val: number, min: number, max: number): number => {
   return Math.max(min, Math.min(max, val));
 };
+
+export * from './seo';

@@ -306,9 +306,36 @@ export class ModelFusionService {
     const lengthScore = Math.min(text.length / 400, 20) * (w.quality ?? 1);
     const latencyScore = Math.max(0, 20 - candidate.latencyMs / 1000) * (w.latency ?? 1);
     const structureScore = this.estimateStructureQuality(text) * (w.structure ?? 1);
+    const reasoningScore = this.estimateReasoningQuality(text) * (w.quality ?? 1);
     const nonEmptyScore = text.trim().length > 0 ? 40 : 0;
 
-    return Number((lengthScore + latencyScore + structureScore + nonEmptyScore).toFixed(2));
+    return Number((lengthScore + latencyScore + structureScore + reasoningScore + nonEmptyScore).toFixed(2));
+  }
+
+  private estimateReasoningQuality(text: string): number {
+    const lower = text.toLowerCase();
+    if (!lower.trim()) return 0;
+
+    const reasoningMarkers = [
+      /step\s*\d+/i,
+      /reason(ing)?\s*:/i,
+      /because|therefore|thus|hence|consequently/i,
+      /hypothesis|evidence|analysis|conclusion/i,
+      /pros\s*(and|&|\+)\s*cons|advantages?\s*(and|&|\+)\s*disadvantages?/i,
+      /compare|contrast|evaluate|assess|trade-?off/i,
+      /first|second|third|finally|ultimately/i,
+      /confidence|probability|likely|unlikely|certain/i,
+      /assume|presume|given|consider/i,
+      /because\s+this|due\s+to|as\s+a\s+result/i,
+      /key\s+(point|factor|reason|insight|takeaway)/i,
+    ];
+
+    const markerHits = reasoningMarkers.reduce((count, regex) => count + (regex.test(lower) ? 1 : 0), 0);
+    const lines = text.split(/\n+/).filter(line => line.trim().length > 0);
+    const reasoningLineRatio = lines.filter(line => reasoningMarkers.some(regex => regex.test(line))).length / Math.max(lines.length, 1);
+    const depthScore = Math.min(markerHits * 1.5, 15) + reasoningLineRatio * 10;
+
+    return Number(Math.min(depthScore, 20).toFixed(2));
   }
 
   private estimateStructureQuality(text: string): number {
