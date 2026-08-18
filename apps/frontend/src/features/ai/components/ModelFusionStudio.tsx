@@ -2,35 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-interface FusionCandidateUI {
-  model: string;
-  provider: string;
-  content: string;
-  score: number;
-  rank: number;
-  latencyMs: number;
-  failure?: boolean;
-  error?: string;
-}
-
-interface FusionResponseUI {
-  fused: {
-    content: string;
-    model: string;
-    provider: string;
-    mode: 'best' | 'merge';
-  };
-  candidates: FusionCandidateUI[];
-  winnerScore: number;
-  telemetry: {
-    totalCandidates: number;
-    successfulCandidates: number;
-    failedCandidates: number;
-    totalLatencyMs: number;
-    winnerLatencyMs: number;
-  };
-}
+import { runFusion, FusionResponseUI } from '@/features/ai/api';
 
 export function ModelFusionStudio() {
   const [query, setQuery] = useState('');
@@ -41,7 +13,7 @@ export function ModelFusionStudio() {
   const [response, setResponse] = useState<FusionResponseUI | null>(null);
   const [selectedCandidate, setSelectedCandidate] = useState<string | null>(null);
 
-  const runFusion = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -49,22 +21,15 @@ export function ModelFusionStudio() {
     setSelectedCandidate(null);
 
     try {
-      const res = await fetch('/api/v1/ai/fusion', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [
-            { role: 'system', content: 'You are a HEXA STUDIO architectural intelligence assistant.' },
-            { role: 'user', content: query },
-          ],
-          models: models.split(',').map(m => m.trim()).filter(Boolean),
-          mode,
-          maxTokens: 1200,
-        }),
+      const data = await runFusion({
+        messages: [
+          { role: 'system', content: 'You are a HEXA STUDIO architectural intelligence assistant.' },
+          { role: 'user', content: query },
+        ],
+        models: models.split(',').map(m => m.trim()).filter(Boolean),
+        mode,
+        maxTokens: 1200,
       });
-
-      if (!res.ok) throw new Error('Fusion request failed');
-      const data = (await res.json()) as FusionResponseUI;
       setResponse(data);
       setSelectedCandidate(data.fused.model);
     } catch (err: unknown) {
@@ -89,7 +54,7 @@ export function ModelFusionStudio() {
         </p>
       </div>
 
-      <form onSubmit={runFusion} className="grid grid-cols-1 lg:grid-cols-12 gap-6 relative z-10">
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-6 relative z-10">
         <div className="lg:col-span-4 space-y-4">
           <div>
             <label className="block text-[11px] font-mono uppercase tracking-[0.25em] text-text-secondary mb-2">Query</label>

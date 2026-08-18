@@ -61,3 +61,54 @@ export async function extractBIM(imageData: string, mimeType = 'image/png'): Pro
   if (!res.ok) throw new Error('BIM extraction failed');
   return res.json();
 }
+
+export interface FusionRequestPayload {
+  messages: Array<{ role: string; content: string }>;
+  models?: string[];
+  mode?: 'best' | 'merge';
+  maxTokens?: number;
+  weights?: {
+    quality?: number;
+    latency?: number;
+    structure?: number;
+  };
+}
+
+export interface FusionCandidateUI {
+  provider: string;
+  model: string;
+  content: string;
+  score: number;
+  rank: number;
+  latencyMs: number;
+  failure?: boolean;
+  error?: string;
+}
+
+export interface FusionResponseUI {
+  fused: {
+    content: string;
+    model: string;
+    provider: string;
+    mode: 'best' | 'merge';
+  };
+  candidates: FusionCandidateUI[];
+  winnerScore: number;
+  telemetry: {
+    totalCandidates: number;
+    successfulCandidates: number;
+    failedCandidates: number;
+    totalLatencyMs: number;
+    winnerLatencyMs: number;
+  };
+}
+
+export async function runFusion(payload: FusionRequestPayload): Promise<FusionResponseUI> {
+  const res = await fetch(`${API_BASE.replace('/multimodal', '')}/fusion`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error('Fusion request failed');
+  return res.json();
+}

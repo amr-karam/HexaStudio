@@ -1,5 +1,5 @@
 import React from 'react';
-import { MultimodalAnalyzer } from '@/features/ai';
+import { MultimodalAnalyzer, ModelFusionStudio } from '@/features/ai';
 
 export const metadata = {
   title: 'AI Multimodal Studio | HEXA Client Portal',
@@ -17,6 +17,7 @@ export default function PortalAIPage() {
       </div>
 
       <MultimodalAnalyzer />
+      <ModelFusionStudio />
     </div>
   );
 }

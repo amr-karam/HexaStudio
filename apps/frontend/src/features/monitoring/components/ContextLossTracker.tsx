@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useWebGLContext } from "@/engine/webgl/WebGLContextProvider";
 import { Card } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/Button";
+import { ShimmerSkeleton } from "@/components/ui/ShimmerSkeleton";
+import { cn } from "@/lib/utils";
 
 /**
  * ContextLossTracker — Tracks and displays WebGL context loss events.
@@ -39,6 +41,8 @@ export function ContextLossTracker() {
   
   // Track context loss events
   useEffect(() => {
+    let handler: EventListener;
+    
     if (state === "lost" || state === "recovering" || state === "fallback") {
       setIsAttemptingRecovery(true);
       
@@ -60,7 +64,7 @@ export function ContextLossTracker() {
   useEffect(() => {
     if (state === "ready" || state === "recovering") {
       setLossEvents(prev => prev.map(e =>
-        e.timestamp.getTime() === new Date(lossEvents[0]?.timestamp || Date.now()).getTime()
+        e.timestamp.getTime() >= new Date(lossEvents[0]?.timestamp || Date.now()).getTime()
           ? { ...e, recovered: true }
           : e
       ));
@@ -94,39 +98,49 @@ export function ContextLossTracker() {
     
     if (diff < 1000) return "just now";
     if (diff < 60 * 1000) return `${Math.floor(diff / 1000)}s ago`;
-    if (diff < 60 * 60 * 1000) return `${Math.floor(diff / (60 * 1000))}m ago`;
-    if (diff < 24 * 60 * 60 * 1000) return `${Math.floor(diff / (60 * 60 * 1000))}h ago`;
+    if (diff < 60 * 60 * 1000) return `${Math.floor(diff / (60 * 60 * 1000))}h ago`;
+    if (diff < 24 * 60 * 60 * 1000) return `${Math.floor(diff / (24 * 60 * 60 * 1000))}d ago`;
     return `${Math.floor(diff / (24 * 60 * 60 * 1000))}d ago`;
   };
+  
+  // Render recovery status badge
+  const recoveryBadge = (
+    <span className={cn(
+      "inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium",
+      state === "lost" ? "bg-red-100 text-red-800" : state === "recovering" ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800"
+    )}>
+      {state}
+    </span>
+  );
+  
+  // Render event item
+  const renderEvent = (event: any, index: number) => (
+    <div key={index} className="flex items-center gap-2">
+      <span className={cn("w-2 h-2 rounded-full", event.recovered ? "bg-green-500" : "bg-red-500")}></span>
+      <span className="text-muted-foreground">
+        {formatTimestamp(event.timestamp)} - {"recovered" in event ? (event.recovered ? "✓ recovered" : "× failed") : event.state}
+      </span>
+    </div>
+  );
   
   return (
     <Card className="p-4 space-y-3 max-w-lg">
       <h4 className="font-medium text-sm">Context Loss Tracker</h4>
       
       <div className="flex items-center gap-2 mb-2">
-        <span className={`px-2 py-0.5 text-xs rounded ${state === "lost" ? "bg-red-100 text-red-800" : state === "recovering" ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800"}`}>{state}</span>
+        {recoveryBadge}
         <span className="text-xs text-muted-foreground capitalize">{formatTimestamp(new Date())}</span>
       </div>
       
       {lossEvents.length > 0 && (
         <div className="space-y-1 text-xs text-muted-foreground">
-          {lossEvents.map((event, index) => (
-            <div key={index} className="flex items-center gap-2">
-              <span className={`w-2 h-2 rounded-full ${event.recovered ? "bg-green-500" : "bg-red-500"}`} />
-              <span className="text-muted-foreground">
-                {formatTimestamp(event.timestamp)} - {event.recovered ? "✓ recovered" : "× failed"}
-              </span>
-            </div>
-          ))}
+          {lossEvents.map(renderEvent)}
         </div>
       )}
       
       {isAttemptingRecovery && (
         <div className="flex items-center gap-2">
-          <svg className="animate-spin h-3 w-3" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-          </svg>
+          <ShimmerSkeleton variant="circle" className="h-3 w-3" />
           <span className="text-sm text-muted-foreground">Attempting recovery...</span>
         </div>
       )}
