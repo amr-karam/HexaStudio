@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { cn } from '@/components/ui/cn';
-import { hexaEasing } from '@/lib/motion/tokens';
 
 export interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: 'text' | 'circular' | 'rectangular';

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, CheckCircle2, AlertCircle, AlertTriangle, Info } from 'lucide-react';
 import { cn } from '@/components/ui/cn';
 
-// ─── Types ──────────────────────────────────────────────────────────────────
+/* ─── Types ────────────────────────────────────────────────────────────────── */
 
 type ToastType = 'success' | 'error' | 'warning' | 'info';
 
@@ -29,7 +29,7 @@ interface ToastContextValue {
   dismissAll: () => void;
 }
 
-// ─── Context ─────────────────────────────────────────────────────────────────
+/* ─── Context ─────────────────────────────────────────────────────────────── */
 
 const ToastContext = React.createContext<ToastContextValue | undefined>(undefined);
 
@@ -41,7 +41,7 @@ export function useToast(): ToastContextValue {
   return context;
 }
 
-// ─── Provider ────────────────────────────────────────────────────────────────
+/* ─── Provider ─────────────────────────────────────────────────────────────── */
 
 const DEFAULT_DURATION = 5000;
 const MAX_TOASTS = 6;
@@ -67,12 +67,11 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 
   const addToast = useCallback(
     (type: ToastType, title: string, description?: string, duration?: number) => {
-      const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
       const toast: ToastItem = { id, type, title, description, duration, createdAt: Date.now() };
 
       setToasts((prev) => {
         const next = [...prev, toast];
-        // Keep only the latest MAX_TOASTS
         if (next.length > MAX_TOASTS) {
           const removed = next.slice(0, next.length - MAX_TOASTS);
           removed.forEach((t) => {
@@ -87,7 +86,6 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         return next;
       });
 
-      // Auto-dismiss
       const ms = duration ?? DEFAULT_DURATION;
       const timer = setTimeout(() => dismiss(id), ms);
       timersRef.current.set(id, timer);
@@ -95,8 +93,6 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     [dismiss],
   );
 
-  // Cleanup all timers on unmount
-   
   useEffect(() => {
     return () => {
       const currentTimers = timersRef.current;
@@ -120,7 +116,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-// ─── Toast Container ─────────────────────────────────────────────────────────
+/* ─── Toast Container ─────────────────────────────────────────────────────── */
 
 const iconMap: Record<ToastType, React.ElementType> = {
   success: CheckCircle2,
@@ -129,31 +125,18 @@ const iconMap: Record<ToastType, React.ElementType> = {
   info: Info,
 };
 
-const colorMap: Record<ToastType, { border: string; bg: string; icon: string; glow: string }> = {
-  success: {
-    border: 'border-emerald-500/20',
-    bg: 'bg-emerald-500/5',
-    icon: 'text-emerald-400',
-    glow: 'shadow-[0_0_20px_rgba(16,185,129,0.08)]',
-  },
-  error: {
-    border: 'border-red-500/20',
-    bg: 'bg-red-500/5',
-    icon: 'text-red-400',
-    glow: 'shadow-[0_0_20px_rgba(239,68,68,0.08)]',
-  },
-  warning: {
-    border: 'border-amber-500/20',
-    bg: 'bg-amber-500/5',
-    icon: 'text-amber-400',
-    glow: 'shadow-[0_0_20px_rgba(245,158,11,0.08)]',
-  },
-  info: {
-    border: 'border-blue-500/20',
-    bg: 'bg-blue-500/5',
-    icon: 'text-blue-400',
-    glow: 'shadow-[0_0_20px_rgba(59,130,246,0.08)]',
-  },
+const iconColorMap: Record<ToastType, string> = {
+  success: 'text-success',
+  error: 'text-error',
+  warning: 'text-warning',
+  info: 'text-info',
+};
+
+const progressColorMap: Record<ToastType, string> = {
+  success: 'bg-success/60',
+  error: 'bg-error/60',
+  warning: 'bg-warning/60',
+  info: 'bg-info/60',
 };
 
 function ToastContainer({
@@ -165,7 +148,7 @@ function ToastContainer({
 }) {
   return (
     <div
-      className="fixed top-4 right-4 z-[200] flex flex-col gap-2.5 max-w-sm w-full pointer-events-none"
+      className="fixed bottom-4 right-4 z-toast flex flex-col gap-2.5 max-w-sm w-full pointer-events-none"
       aria-live="polite"
       aria-label="Notifications"
     >
@@ -178,7 +161,7 @@ function ToastContainer({
   );
 }
 
-// ─── Toast Card ──────────────────────────────────────────────────────────────
+/* ─── Toast Card ─�─────────────────────────────────────────────────────────── */
 
 function ToastCard({
   toast,
@@ -188,7 +171,6 @@ function ToastCard({
   onDismiss: (id: string) => void;
 }) {
   const Icon = iconMap[toast.type];
-  const colors = colorMap[toast.type];
   const [isHovered, setIsHovered] = useState(false);
   const [progress, setProgress] = useState(100);
   const duration = toast.duration ?? DEFAULT_DURATION;
@@ -203,11 +185,9 @@ function ToastCard({
 
     intervalRef.current = setInterval(() => {
       if (pausedRef.current) return;
-
       const elapsed = Date.now() - startTimeRef.current;
       const remaining = Math.max(0, 100 - (elapsed / remainingRef.current) * 100);
       setProgress(remaining);
-
       if (remaining <= 0) {
         if (intervalRef.current) clearInterval(intervalRef.current);
         onDismiss(toast.id);
@@ -219,12 +199,9 @@ function ToastCard({
     };
   }, [toast.id, duration, onDismiss]);
 
-  // Pause timer on hover
   const handleMouseEnter = () => {
     setIsHovered(true);
     pausedRef.current = true;
-    const elapsed = Date.now() - startTimeRef.current;
-    remainingRef.current = remainingRef.current - elapsed;
   };
 
   const handleMouseLeave = () => {
@@ -242,29 +219,27 @@ function ToastCard({
         opacity: 0,
         x: 80,
         scale: 0.9,
-        transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] },
+        transition: { duration: 0.2, ease: 'var(--hexa-ease-sharp)' },
       }}
       transition={{
         duration: 0.35,
-        ease: [0.16, 1, 0.3, 1],
+        ease: 'var(--hexa-ease-entrance)',
       }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className={cn(
         'relative overflow-hidden rounded-xl border backdrop-blur-xl p-4 pointer-events-auto',
-        'bg-[#0D0D0D]/95',
-        colors.border,
-        colors.glow,
+        'bg-surface-elevated/95 border-border',
       )}
     >
       {/* Background gradient accent */}
       <div
         className={cn(
           'absolute inset-0 opacity-[0.03]',
-          toast.type === 'success' && 'bg-gradient-to-br from-emerald-500 to-transparent',
-          toast.type === 'error' && 'bg-gradient-to-br from-red-500 to-transparent',
-          toast.type === 'warning' && 'bg-gradient-to-br from-amber-500 to-transparent',
-          toast.type === 'info' && 'bg-gradient-to-br from-blue-500 to-transparent',
+          toast.type === 'success' && 'bg-gradient-to-br from-success to-transparent',
+          toast.type === 'error' && 'bg-gradient-to-br from-error to-transparent',
+          toast.type === 'warning' && 'bg-gradient-to-br from-warning to-transparent',
+          toast.type === 'info' && 'bg-gradient-to-br from-info to-transparent',
         )}
       />
 
@@ -273,19 +248,19 @@ function ToastCard({
         <div
           className={cn(
             'w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5',
-            colors.bg,
+            'bg-white/[0.03]',
           )}
         >
-          <Icon size={16} className={colors.icon} />
+          <Icon size={16} className={iconColorMap[toast.type]} aria-hidden="true" />
         </div>
 
         {/* Content */}
         <div className="flex-1 min-w-0 pt-0.5">
-          <p className="text-[13px] font-medium text-white leading-tight">
+          <p className="text-[13px] font-medium text-foreground leading-tight">
             {toast.title}
           </p>
           {toast.description && (
-            <p className="text-[11px] text-neutral-400 mt-1 font-light leading-relaxed">
+            <p className="text-[11px] text-secondary font-light mt-1 leading-relaxed">
               {toast.description}
             </p>
           )}
@@ -297,7 +272,7 @@ function ToastCard({
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           className={cn(
-            'p-1 rounded-md text-neutral-600 hover:text-white transition-colors shrink-0',
+            'p-1 rounded-md text-tertiary hover:text-foreground transition-colors shrink-0',
             isHovered ? 'opacity-100' : 'opacity-0',
           )}
           aria-label="Dismiss notification"
@@ -309,13 +284,7 @@ function ToastCard({
       {/* Progress bar */}
       <div className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-white/[0.04]">
         <motion.div
-          className={cn(
-            'h-full',
-            toast.type === 'success' && 'bg-emerald-500/60',
-            toast.type === 'error' && 'bg-red-500/60',
-            toast.type === 'warning' && 'bg-amber-500/60',
-            toast.type === 'info' && 'bg-blue-500/60',
-          )}
+          className={cn('h-full', progressColorMap[toast.type])}
           style={{ width: `${progress}%` }}
           transition={{ duration: 0.03, ease: 'linear' }}
         />

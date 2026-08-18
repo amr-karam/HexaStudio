@@ -1,13 +1,11 @@
 // ─── HEXA Hub — i18n Configuration ────────────────────────────────────────
-// i18next setup with English (en) and Arabic (ar) locales.
-// Arabic uses RTL direction. Language preference is persisted in localStorage.
+// Type definitions, locale info, and helper utilities for
+// English (en) and Arabic (ar) locales.
+// Arabic uses RTL direction. Language preference is persisted in sessionStorage.
 //
-// NOTE: i18n dependencies not yet installed. Run:
-//   npm install i18next react-i18next i18next-browser-languagedetector
-// Then replace this stub with the full implementation.
+// The i18next instance is initialized in src/lib/i18n/i18n.ts
+// and should be imported once in the root layout.
 // ───────────────────────────────────────────────────────────────────────────
-
-'use client';
 
 // ─── Supported Locales ────────────────────────────────────────────────────
 
@@ -39,40 +37,65 @@ export const LOCALE_MAP: Record<SupportedLocale, LocaleInfo> = {
   },
 };
 
-// ─── Stub: useTranslation ─────────────────────────────────────────────────
+// ─── Storage Key ───────────────────────────────────────────────────────────
 
-export function useTranslation() {
-  return {
-    t: (key: string) => key,
-    i18n: {
-      language: 'en',
-      changeLanguage: () => Promise.resolve(),
-    },
-  };
+export const LANG_STORAGE_KEY = 'hexa_language';
+
+// ─── Helpers (framework-agnostic) ─────────────────────────────────────────
+
+/** Returns the text direction for the given locale. */
+export function getDirection(locale?: SupportedLocale): 'ltr' | 'rtl' {
+  const resolved = locale ?? 'en';
+  return LOCALE_MAP[resolved]?.dir ?? 'ltr';
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────
+/** Applies the dir and lang attributes to <html>. */
+export function applyDocumentDirection(locale?: SupportedLocale): void {
+  if (typeof document === 'undefined') return;
+  const dir = getDirection(locale);
+  const lang = locale ?? 'en';
+  document.documentElement.dir = dir;
+  document.documentElement.lang = lang;
+}
 
+/**
+ * Returns the current locale from the i18next instance or sessionStorage.
+ * Safe to call in SSR (returns 'en').
+ */
 export function getCurrentLocale(): SupportedLocale {
   if (typeof window === 'undefined') return 'en';
-  const stored = localStorage.getItem('hexa_language');
-  if (stored && SUPPORTED_LOCALES.includes(stored as SupportedLocale)) {
-    return stored as SupportedLocale;
+  // Import from react-i18next — the instance is set up by i18n.ts
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { i18n: i18nInstance } = require('react-i18next');
+  const lang = i18nInstance?.language || sessionStorage.getItem(LANG_STORAGE_KEY) || 'en';
+  if (SUPPORTED_LOCALES.includes(lang as SupportedLocale)) {
+    return lang as SupportedLocale;
   }
   return 'en';
 }
 
-export function getDirection(locale?: SupportedLocale): 'ltr' | 'rtl' {
-  const resolved = locale ?? getCurrentLocale();
-  return LOCALE_MAP[resolved]?.dir ?? 'ltr';
+/**
+ * Switches the active language and persists it to sessionStorage.
+ * Also updates the document dir/lang attributes.
+ */
+export async function changeLanguage(locale: SupportedLocale): Promise<void> {
+  if (typeof window !== 'undefined') {
+    sessionStorage.setItem(LANG_STORAGE_KEY, locale);
+    applyDocumentDirection(locale);
+  }
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { i18n: i18nInstance } = require('react-i18next');
+  await i18nInstance?.changeLanguage(locale);
 }
 
-export function applyDocumentDirection(locale?: SupportedLocale): void {
-  if (typeof document === 'undefined') return;
-  const dir = getDirection(locale);
-  document.documentElement.dir = dir;
-  document.documentElement.lang = locale ?? getCurrentLocale();
-}
+const i18n = {
+  SUPPORTED_LOCALES,
+  LOCALE_MAP,
+  LANG_STORAGE_KEY,
+  getCurrentLocale,
+  getDirection,
+  applyDocumentDirection,
+  changeLanguage,
+};
 
-const i18n = { useTranslation };
 export default i18n;

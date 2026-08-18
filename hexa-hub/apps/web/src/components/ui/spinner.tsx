@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { cn } from './cn';
+import { cn } from '@/components/ui/cn';
 
 export interface SpinnerProps {
   size?: 'sm' | 'md' | 'lg';
@@ -21,7 +21,7 @@ export function Spinner({ size = 'md', className }: SpinnerProps) {
       role="status"
       aria-label="Loading"
       className={cn(
-        'rounded-full border-[#1F1F1F] border-t-[#D4A843]',
+        'rounded-full border-border border-t-gold',
         sizeMap[size],
         className,
       )}

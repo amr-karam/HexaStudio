@@ -3,75 +3,105 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { cn } from '@/components/ui/cn';
+import { Button } from '@/components/ui/button';
+import { hexaEasing, hexaDuration } from '@/lib/motion/tokens';
 
-interface ErrorFallbackProps {
+export interface ErrorFallbackProps {
+  /** Error object from React's error boundary. */
   error?: Error | null;
+  /** Reset handler from React's error boundary. */
+  resetErrorBoundary?: () => void;
+  /** Optional override message. */
   message?: string;
-  onRetry?: () => void;
+  /** Whether to show the "Go Home" button. */
   showHomeButton?: boolean;
+  /** Additional class names. */
+  className?: string;
 }
 
+/**
+ * Fallback component rendered when the ErrorBoundary catches an error.
+ * Uses design-system tokens and provides a polished error state with
+ * retry and home navigation options.
+ */
 export function ErrorFallback({
   error,
+  resetErrorBoundary,
   message,
-  onRetry,
   showHomeButton = true,
+  className,
 }: ErrorFallbackProps) {
-  const router = useRouter();
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  const displayMessage = message || error?.message || 'An unexpected error occurred.';
 
-  const errorMessage =
-    message || error?.message || 'An unexpected error occurred. Please try again.';
+  const handleRetry = () => {
+    if (resetErrorBoundary) {
+      resetErrorBoundary();
+    } else {
+      window.location.reload();
+    }
+  };
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="min-h-[400px] flex items-center justify-center p-8"
+      transition={{ duration: hexaDuration.component, ease: hexaEasing.entrance }}
+      className={cn('min-h-[400px] flex items-center justify-center p-8', className)}
+      role="alert"
+      aria-live="assertive"
     >
       <div className="text-center max-w-md">
-        {/* Error icon with gold accent */}
         <div className="relative mx-auto mb-6">
-          <div className="w-20 h-20 rounded-2xl bg-[#D4A843]/10 border border-[#D4A843]/20 flex items-center justify-center">
-            <AlertTriangle size={32} className="text-[#D4A843]" />
+          <div
+            className={cn(
+              'w-20 h-20 rounded-2xl flex items-center justify-center',
+              'bg-gold/10 border border-gold/20',
+            )}
+          >
+            <AlertTriangle size={32} className="text-gold" aria-hidden="true" />
           </div>
         </div>
 
-        <h2 className="text-xl font-serif font-light text-white mb-3">
+        <h1 className="text-2xl font-serif font-light text-foreground mb-3">
           Something went wrong
-        </h2>
+        </h1>
 
-        <p className="text-sm text-[#888] font-light mb-8 max-w-xs mx-auto leading-relaxed">
-          {errorMessage}
+        <p className="text-secondary font-light mb-8">
+          {displayMessage}
+          {isDevelopment && error && (
+            <details className="mt-4 text-left">
+              <summary className="cursor-pointer text-xs text-tertiary">Show error details</summary>
+              <pre className="mt-2 text-[10px] text-tertiary whitespace-pre-wrap break-all">
+                {error.message}
+              </pre>
+            </details>
+          )}
         </p>
 
-        <div className="flex items-center justify-center gap-3">
-          {onRetry && (
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={onRetry}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-[#D4A843] text-[#0A0A0A] rounded-xl text-sm font-medium hover:bg-[#D4A843]/90 hover:shadow-[0_0_24px_rgba(212,168,67,0.2)] transition-all duration-200"
-            >
-              <RefreshCw size={15} />
-              Try Again
-            </motion.button>
-          )}
-
+        <div className="flex gap-3 justify-center">
+          <Button
+            variant="primary"
+            size="md"
+            onClick={handleRetry}
+            aria-label="Retry after error"
+          >
+            <RefreshCw size={14} />
+            Try Again
+          </Button>
           {showHomeButton && (
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => router.push('/dashboard')}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-[#1F1F1F] text-[#888] rounded-xl text-sm font-medium border border-[#262626] hover:text-white hover:border-[#444] transition-all duration-200"
-            >
-              <Home size={15} />
-              Go Home
-            </motion.button>
+            <Button variant="secondary" size="md" asChild>
+              <a href="/dashboard" aria-label="Go to dashboard">
+                <Home size={14} />
+                Go Home
+              </a>
+            </Button>
           )}
         </div>
       </div>
     </motion.div>
   );
 }
+
+export default ErrorFallback;

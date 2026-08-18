@@ -2,58 +2,54 @@
 
 import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { motion } from 'framer-motion';
+import { motion, type HTMLMotionProps } from 'framer-motion';
 import { cn } from '@/components/ui/cn';
+import { hexaEasing } from '@/lib/motion/tokens';
 
 const buttonVariants = cva(
   cn(
     'relative inline-flex items-center justify-center gap-2',
-    'rounded-lg font-medium tracking-tight',
-    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-    'focus-visible:ring-offset-var(--color-void)',
-    'transition-all duration-200 ease-[var(--hexa-ease-interaction)]',
+    'rounded-lg font-mono text-xs font-medium tracking-wider uppercase',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold',
+    'focus-visible:ring-offset-2 focus-visible:ring-offset-void',
+    'transition-all duration-200 ease-(--hexa-ease-interaction)',
     'disabled:pointer-events-none disabled:opacity-50',
-    'font-mono uppercase text-xs',
+    'will-change-transform',
   ),
   {
     variants: {
       variant: {
         primary: cn(
           'bg-gold text-void-deep',
-          'hover:bg-gold-hover hover:shadow-gold',
-          'focus-visible:ring-gold',
+          'hover:bg-gold-hover hover:shadow-gold gold-glow-hover',
           'border-2 border-gold',
         ),
         secondary: cn(
           'bg-transparent text-foreground',
           'hover:bg-surface-elevated',
-          'focus-visible:ring-gold',
           'border border-border',
         ),
         tertiary: cn(
           'bg-transparent text-secondary',
-          'hover:bg-white/[0.03]',
-          'focus-visible:ring-gold',
+          'hover:text-foreground',
           'border border-transparent',
         ),
         ghost: cn(
           'bg-transparent text-secondary',
           'hover:bg-white/[0.03] hover:text-foreground',
-          'focus-visible:ring-gold',
           'border border-transparent',
         ),
         gold: cn(
           'bg-gold text-void-deep',
-          'hover:bg-gold-hover hover:shadow-gold',
-          'focus-visible:ring-gold',
+          'hover:bg-gold-hover hover:shadow-gold gold-glow-hover',
           'border-2 border-gold',
         ),
         danger: cn(
           'bg-error/10 text-error',
           'hover:bg-error/20',
-          'focus-visible:ring-error',
           'border border-error/30',
         ),
+        link: cn('bg-transparent text-gold hover:text-gold-bright underline'),
       },
       size: {
         xs: 'px-3 py-1.5 text-xs',
@@ -76,33 +72,58 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof HTMLMotionProps<'button'>>,
+    Omit<HTMLMotionProps<'button'>, 'children'>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  isLoading?: boolean;
+  children?: React.ReactNode;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, shape, asChild = false, children, ...props }, ref) => {
+  (
+    { className, variant, size, shape, asChild = false, isLoading = false, children, disabled, ...props },
+    ref,
+  ) => {
     const baseClasses = buttonVariants({ variant, size, shape, className });
+    const isDisabled = disabled || isLoading;
 
     if (asChild) {
-      return (
-        <button ref={ref} className={baseClasses} {...props}>
-          {children}
-        </button>
-      );
+      return React.isValidElement(children)
+        ? React.cloneElement(children as React.ReactElement<Record<string, unknown>>, {
+            className: cn(baseClasses, (children.props as { className?: string }).className),
+            disabled: isDisabled,
+            ...props,
+          })
+        : <button ref={ref} className={baseClasses} disabled={isDisabled}>{children}</button>;
     }
 
     return (
       <motion.button
         ref={ref}
         className={baseClasses}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        transition={{ duration: 0.15, ease: 'var(--hexa-ease-interaction)' }}
+        whileHover={isDisabled ? undefined : { scale: 1.02 }}
+        whileTap={isDisabled ? undefined : { scale: 0.98 }}
+        transition={{
+          duration: 0.15,
+          ease: hexaEasing.interaction,
+        }}
+        disabled={isDisabled}
         {...props}
       >
-        {children}
+        {isLoading && (
+          <motion.span
+            className="absolute inset-0 flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+          </motion.span>
+        )}
+        <span className={cn('flex items-center gap-2', isLoading && 'invisible')}>
+          {children}
+        </span>
       </motion.button>
     );
   },

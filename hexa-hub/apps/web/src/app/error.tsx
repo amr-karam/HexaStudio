@@ -1,39 +1,24 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { RefreshCw } from 'lucide-react';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
-export default function ErrorPage({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
-  useEffect(() => {
-    // Telemetry hook: capture the error via the configured error reporter.
-    // Sentry was removed during the Next 16 / React 19 alignment (its peer
-    // range excludes Next 16). Wire a supported reporter here if needed.
-    console.error('Application error:', error);
-  }, [error]);
-
+export default function NotFound() {
   return (
-    <div className="min-h-screen bg-[#050505] flex items-center justify-center p-8">
+    <div className="min-h-screen bg-background flex items-center justify-center p-8">
       <div className="text-center max-w-md">
-        <div className="w-20 h-20 rounded-2xl bg-red-500/10 flex items-center justify-center mx-auto mb-6">
-          <RefreshCw size={32} className="text-red-400" />
-        </div>
-        <h1 className="text-2xl font-serif font-light text-white mb-3">Application Error</h1>
-        <p className="text-[#888] font-light mb-8">
-          A critical error occurred. Please try again or contact support if the issue persists.
+        <div className="text-8xl font-serif font-light text-gold/20 mb-6">404</div>
+        <h1 className="text-2xl font-serif font-light text-foreground mb-3">Page Not Found</h1>
+        <p className="text-secondary font-light mb-8">
+          The page you are looking for does not exist or has been moved.
         </p>
-        <button
-          onClick={reset}
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#D4A843] text-[#0A0A0A] rounded-lg text-sm font-medium hover:bg-[#D4A843]/90 transition-all"
-        >
-          <RefreshCw size={14} />
-          Try Again
-        </button>
+        <Link href="/dashboard" passHref>
+          <Button variant="primary" size="md" aria-label="Go to dashboard">
+            <ArrowLeft size={14} />
+            Back to Dashboard
+          </Button>
+        </Link>
       </div>
     </div>
   );

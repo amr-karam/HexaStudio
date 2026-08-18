@@ -3,7 +3,8 @@
 import React, { useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
-import { cn } from './cn';
+import { cn } from '@/components/ui/cn';
+import { Button } from '@/components/ui/button';
 
 export interface ModalProps {
   open: boolean;
@@ -13,6 +14,8 @@ export interface ModalProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
   children: React.ReactNode;
   className?: string;
+  closeOnEscape?: boolean;
+  closeOnOutsideClick?: boolean;
 }
 
 const sizeClasses: Record<NonNullable<ModalProps['size']>, string> = {
@@ -30,68 +33,77 @@ export function Modal({
   size = 'md',
   children,
   className,
+  closeOnEscape = true,
+  closeOnOutsideClick = true,
 }: ModalProps) {
   const handleEscape = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape' && closeOnEscape) onClose();
     },
-    [onClose],
+    [onClose, closeOnEscape],
   );
 
   useEffect(() => {
     if (open) {
       document.addEventListener('keydown', handleEscape);
       document.body.style.overflow = 'hidden';
+      document.body.style.width = 'calc(100% - 1px)'; /* prevents scrollbar jump */
     }
     return () => {
       document.removeEventListener('keydown', handleEscape);
       document.body.style.overflow = '';
+      document.body.style.width = '';
     };
   }, [open, handleEscape]);
 
   return (
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-modal flex items-center justify-center p-4">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.2, ease: 'var(--hexa-ease-sharp)' }}
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={onClose}
+            onClick={closeOnOutsideClick ? onClose : undefined}
           />
 
           {/* Panel */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            initial={{ opacity: 0, scale: 0.96, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            exit={{ opacity: 0, scale: 0.96, y: 8 }}
+            transition={{ duration: 0.25, ease: 'var(--hexa-ease-entrance)' }}
             className={cn(
-              'relative w-full bg-[#141414] border border-[#1F1F1F] rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.5)]',
+              'relative w-full border border-border shadow-card',
+              'bg-surface-elevated rounded-2xl',
               sizeClasses[size],
               className,
             )}
           >
             {/* Header */}
             {(title || description) && (
-              <div className="flex items-start justify-between p-6 pb-4 border-b border-[#1F1F1F]/50">
+              <div className="flex items-start justify-between p-6 pb-4 border-b border-border/50">
                 <div>
                   {title && (
-                    <h2 className="text-lg font-serif font-light text-white">{title}</h2>
+                    <h2 className="text-lg font-serif font-light text-foreground">{title}</h2>
                   )}
                   {description && (
-                    <p className="text-sm text-[#666] font-light mt-1">{description}</p>
+                    <p className="text-sm text-secondary font-light mt-1">{description}</p>
                   )}
                 </div>
-                <button
+                <Button
+                  variant="ghost"
+                  size="xs"
+                  shape="full"
                   onClick={onClose}
-                  className="p-1.5 rounded-lg text-[#555] hover:text-white hover:bg-white/[0.05] transition-all duration-200"
+                  aria-label="Close modal"
+                  className="h-7 w-7 p-1.5"
                 >
-                  <X size={18} />
-                </button>
+                  <X size={16} />
+                </Button>
               </div>
             )}
 
@@ -99,9 +111,10 @@ export function Modal({
             {!title && !description && (
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 p-1.5 rounded-lg text-[#555] hover:text-white hover:bg-white/[0.05] transition-all duration-200 z-10"
+                className="absolute top-4 right-4 z-10 p-1.5 rounded-lg text-tertiary hover:text-foreground hover:bg-white/[0.03] transition-all"
+                aria-label="Close modal"
               >
-                <X size={18} />
+                <X size={16} />
               </button>
             )}
 

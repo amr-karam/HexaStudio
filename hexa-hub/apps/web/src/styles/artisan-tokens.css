@@ -1,0 +1,83 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   HEXA STUDIO — Artisan Tokens
+   Hand-crafted, refined values that extend the system tokens above.
+   These are used for elements that need a touch of premium craftsmanship.
+───────────────────────────────────────────────────────────────────────── */
+
+/* ─── Gold Gradient Presets ─── */
+.gold-gradient {
+  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-bright) 100%);
+}
+
+.gold-gradient-reverse {
+  background: linear-gradient(135deg, var(--color-gold-bright) 0%, var(--color-gold) 100%);
+}
+
+.gold-gradient-subtle {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--color-gold) 5%, transparent) 0%, transparent 100%);
+}
+
+/* ─── Gold Text Gradient ─── */
+.text-gold-gradient {
+  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-bright) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+
+/* ─── Surface Elevation ─── */
+.surface-elevated {
+  background: color-mix(in srgb, var(--color-obsidian-raised) 90%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-border) 40%, transparent);
+}
+
+/* ─── Gold Accent Lines ─── */
+.gold-underline {
+  position: relative;
+}
+.gold-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-gold) 0%, transparent 100%);
+  border-radius: 1px;
+}
+
+/* ─── Cinematic Grid Pattern ─── */
+.cinematic-grid {
+  background-image:
+    linear-gradient(
+      color-mix(in srgb, var(--color-border) 15%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--color-border) 15%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 32px 32px;
+}
+
+/* ─── Focus Ring ─── */
+.focus-gold:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+/* ─── Gold Glow Effect (subtle) ─── */
+.gold-glow {
+  box-shadow: 0 0 30px 0 color-mix(in srgb, var(--color-gold) 20%, transparent);
+}
+
+.gold-glow-hover:hover {
+  box-shadow: 0 0 40px 0 color-mix(in srgb, var(--color-gold) 30%, transparent);
+}
+
+/* ─── Scrollbar Thumb — Gold Tint ─── */
+.scroll-accent::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--color-gold) 25%, transparent) 0%, color-mix(in srgb, var(--color-gold) 15%, transparent) 100%);
+}

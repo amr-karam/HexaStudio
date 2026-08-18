@@ -2,11 +2,12 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui';
-import { Input } from '@/components/ui';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { useAuth } from '@/providers/AuthProvider';
+import { hexaEasing, hexaDuration } from '@/lib/motion/tokens';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -35,29 +36,62 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-obsidian flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background Atmosphere */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-gold/10 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-gold/5 blur-[120px] rounded-full" />
+      <div
+        className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none"
+        aria-hidden="true"
+      >
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-gold/5 blur-[120px] rounded-full animate-pulse-gold" />
+        <div
+          className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-gold/3 blur-[120px] rounded-full animate-pulse-gold-slow"
+          style={{ animationDelay: '0.5s' }}
+        />
       </div>
+
+      {/* Cinematic grid overlay */}
+      <div
+        className="pointer-events-none absolute inset-0 cinematic-grid opacity-30"
+        aria-hidden="true"
+      />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        transition={{
+          duration: hexaDuration.component,
+          ease: hexaEasing.entrance,
+        }}
         className="relative z-10 w-full max-w-md"
       >
+        {/* Logo + Tagline */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-serif font-light text-white mb-2">
-            Welcome to <span className="text-gold">HUB</span>
-          </h1>
-          <p className="text-neutral-500 font-light text-sm tracking-widest uppercase">
+          <div className="mb-6 flex items-center justify-center gap-3">
+            <div className="relative h-10 w-10">
+              <div className="absolute inset-0 rounded-xl bg-gold/20" />
+              <div className="relative flex h-full w-full items-center justify-center rounded-xl border border-gold/30">
+                <span className="font-mono text-xs font-bold text-gold tracking-widest">
+                  HX
+                </span>
+              </div>
+            </div>
+            <h1 className="text-3xl font-serif font-light text-foreground">
+              Welcome to <span className="text-gold">HUB</span>
+            </h1>
+          </div>
+          <p className="text-tertiary font-light text-sm tracking-widest uppercase">
             Enterprise Workspace
           </p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-5">
+        {/* Login Form */}
+        <motion.form
+          onSubmit={handleLogin}
+          className="space-y-5"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2, duration: hexaDuration.component, ease: hexaEasing.entrance }}
+        >
           <Input
             label="Email Address"
             type="email"
@@ -65,6 +99,8 @@ export default function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="email@hexastudio.net"
             required
+            autoComplete="email"
+            autoFocus
           />
 
           <Input
@@ -74,13 +110,14 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
             required
+            autoComplete="current-password"
           />
 
           {error && (
             <motion.p
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-sm text-red-400 text-center font-light"
+              className="text-sm text-error text-center font-light"
             >
               {error}
             </motion.p>
@@ -88,15 +125,18 @@ export default function LoginPage() {
 
           <Button
             type="submit"
+            variant="primary"
             size="lg"
             isLoading={isLoading}
-            className="w-full uppercase tracking-widest"
+            className="w-full tracking-widest"
+            aria-label="Sign in to HEXA Hub"
           >
-            {isLoading ? 'Authenticating...' : 'Enter Workspace'}
+            {isLoading ? 'Authenticating…' : 'Enter Workspace'}
           </Button>
-        </form>
+        </motion.form>
 
-        <p className="text-center mt-8 text-xs text-[#444] font-light">
+        {/* Footer */}
+        <p className="text-center mt-8 text-xs text-tertiary font-light">
           HEXA Studio &copy; {new Date().getFullYear()}
         </p>
       </motion.div>

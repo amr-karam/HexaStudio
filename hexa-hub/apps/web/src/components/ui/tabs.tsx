@@ -1,14 +1,15 @@
 'use client';
 
-import React, {  } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { cn } from './cn';
+import { cn } from '@/components/ui/cn';
 
 export interface Tab {
   id: string;
   label: string;
   icon?: React.ReactNode;
   count?: number;
+  disabled?: boolean;
 }
 
 export interface TabsProps {
@@ -19,6 +20,11 @@ export interface TabsProps {
   className?: string;
 }
 
+const underlineActiveCls = 'text-foreground';
+const underlineInactiveCls = 'text-tertiary hover:text-secondary';
+const pillsActiveCls = 'bg-gold/10 text-gold border-gold/30';
+const pillsInactiveCls = 'text-tertiary hover:text-secondary hover:bg-white/[0.03] border-border';
+
 export function Tabs({
   tabs,
   activeTab,
@@ -27,7 +33,11 @@ export function Tabs({
   className,
 }: TabsProps) {
   return (
-    <div className={cn('flex items-center gap-1', className)}>
+    <div
+      className={cn('flex items-center gap-1', className)}
+      role="tablist"
+      aria-label="Tabs"
+    >
       {tabs.map((tab) => {
         const isActive = activeTab === tab.id;
 
@@ -35,12 +45,15 @@ export function Tabs({
           return (
             <button
               key={tab.id}
-              onClick={() => onChange(tab.id)}
+              onClick={() => !tab.disabled && onChange(tab.id)}
+              disabled={tab.disabled}
+              role="tab"
+              aria-selected={isActive}
               className={cn(
-                'relative px-4 py-2 text-sm font-light tracking-wide rounded-lg transition-all duration-300',
-                isActive
-                  ? 'bg-[#D4A843]/10 text-[#D4A843]'
-                  : 'text-[#666] hover:text-neutral-300 hover:bg-white/[0.03]',
+                'relative px-4 py-2 text-sm font-light tracking-wide rounded-lg border',
+                'transition-all duration-200 ease-[var(--hexa-ease-interaction)]',
+                isActive ? pillsActiveCls : pillsInactiveCls,
+                'disabled:opacity-50 disabled:cursor-not-allowed',
               )}
             >
               <span className="flex items-center gap-2">
@@ -51,8 +64,8 @@ export function Tabs({
                     className={cn(
                       'text-[10px] px-1.5 py-0.5 rounded-full',
                       isActive
-                        ? 'bg-[#D4A843]/20 text-[#D4A843]'
-                        : 'bg-[#1F1F1F] text-[#555]',
+                        ? 'bg-gold/20 text-gold'
+                        : 'bg-border text-tertiary',
                     )}
                   >
                     {tab.count}
@@ -67,10 +80,15 @@ export function Tabs({
         return (
           <button
             key={tab.id}
-            onClick={() => onChange(tab.id)}
+            onClick={() => !tab.disabled && onChange(tab.id)}
+            disabled={tab.disabled}
+            role="tab"
+            aria-selected={isActive}
             className={cn(
-              'relative px-4 py-2.5 text-sm font-light tracking-wide transition-colors duration-300',
-              isActive ? 'text-white' : 'text-[#666] hover:text-neutral-300',
+              'relative px-4 py-2.5 text-sm font-light tracking-wide',
+              'transition-colors duration-200 ease-[var(--hexa-ease-interaction)]',
+              isActive ? underlineActiveCls : underlineInactiveCls,
+              'disabled:opacity-50 disabled:cursor-not-allowed',
             )}
           >
             <span className="flex items-center gap-2">
@@ -80,7 +98,7 @@ export function Tabs({
                 <span
                   className={cn(
                     'text-[10px] px-1.5 py-0.5 rounded-full',
-                    isActive ? 'bg-[#D4A843]/20 text-[#D4A843]' : 'bg-[#1F1F1F] text-[#555]',
+                    isActive ? 'bg-gold/20 text-gold' : 'bg-border text-tertiary',
                   )}
                 >
                   {tab.count}
@@ -89,8 +107,8 @@ export function Tabs({
             </span>
             {isActive && (
               <motion.div
-                layoutId="tab-underline"
-                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-[#D4A843] rounded-full"
+                layoutId="hexastudio-tab-underline"
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-gold rounded-full"
                 transition={{ type: 'spring', stiffness: 380, damping: 30 }}
               />
             )}

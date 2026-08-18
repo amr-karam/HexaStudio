@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import '@/lib/i18n/i18n';
 import { AuthProvider } from '@/providers/AuthProvider';
 import { QueryProvider } from '@/providers/QueryProvider';
 import { SocketProvider } from '@/providers/SocketProvider';
