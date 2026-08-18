@@ -16,6 +16,8 @@ export interface FusionCandidate {
   latencyMs: number;
   failure?: boolean;
   error?: string;
+  reasoningConfidence?: number;
+  reasoningChain?: string[];
 }
 
 export type FusionMode = 'best' | 'merge';
@@ -49,6 +51,8 @@ export interface FusionResponse {
     failedCandidates: number;
     totalLatencyMs: number;
     winnerLatencyMs: number;
+    avgReasoningConfidence?: number;
+    winnerReasoningConfidence?: number;
   };
 }
 
@@ -101,6 +105,8 @@ export class ModelFusionService {
     const scored = successful.map(candidate => ({
       ...candidate,
       score: this.scoreCandidate(candidate, weights),
+      reasoningConfidence: this.computeReasoningConfidence(candidate.result.content),
+      reasoningChain: this.extractReasoningChain(candidate.result.content),
     }));
 
     scored.sort((a, b) => b.score - a.score);
@@ -109,6 +115,10 @@ export class ModelFusionService {
     const winner = scored[0] ?? candidates[0];
     const fusedContent = mode === 'merge' ? this.mergeCandidates(scored) : winner.result.content;
     const totalLatencyMs = Date.now() - started;
+    const successfulScored = scored.filter(candidate => !candidate.failure);
+    const avgReasoningConfidence = successfulScored.length
+      ? Number((successfulScored.reduce((sum, candidate) => sum + (candidate.reasoningConfidence ?? 0), 0) / successfulScored.length).toFixed(2))
+      : undefined;
 
     await this.recordFusionTelemetry({
       mode,
@@ -126,7 +136,11 @@ export class ModelFusionService {
         provider: winner.result.provider,
         mode,
       },
-      candidates: [...candidates].sort((a, b) => a.rank - b.rank || a.model.localeCompare(b.model)),
+      candidates: [...candidates].sort((a, b) => a.rank - b.rank || a.model.localeCompare(b.model)).map(candidate => ({
+        ...candidate,
+        reasoningConfidence: candidate.reasoningConfidence ?? this.computeReasoningConfidence(candidate.result.content),
+        reasoningChain: candidate.reasoningChain ?? this.extractReasoningChain(candidate.result.content),
+      })),
       winnerScore: scored[0]?.score ?? 0,
       telemetry: {
         totalCandidates: models.length,
@@ -134,6 +148,8 @@ export class ModelFusionService {
         failedCandidates: candidates.filter(c => c.failure).length,
         totalLatencyMs,
         winnerLatencyMs: winner.latencyMs,
+        avgReasoningConfidence,
+        winnerReasoningConfidence: winner.reasoningConfidence,
       },
     };
   }
@@ -183,6 +199,8 @@ export class ModelFusionService {
     const scored = successful.map(candidate => ({
       ...candidate,
       score: this.scoreCandidate(candidate, weights),
+      reasoningConfidence: this.computeReasoningConfidence(candidate.result.content),
+      reasoningChain: this.extractReasoningChain(candidate.result.content),
     }));
 
     scored.sort((a, b) => b.score - a.score);
@@ -191,6 +209,10 @@ export class ModelFusionService {
     const winner = scored[0] ?? candidates[0];
     const fusedContent = mode === 'merge' ? this.mergeCandidates(scored) : winner.result.content;
     const totalLatencyMs = Date.now() - started;
+    const successfulScored = scored.filter(candidate => !candidate.failure);
+    const avgReasoningConfidence = successfulScored.length
+      ? Number((successfulScored.reduce((sum, candidate) => sum + (candidate.reasoningConfidence ?? 0), 0) / successfulScored.length).toFixed(2))
+      : undefined;
 
     yield {
       type: 'result',
@@ -201,6 +223,18 @@ export class ModelFusionService {
           provider: winner.result.provider,
           mode,
         },
+        candidates: scored.map((candidate) => ({
+          model: candidate.model,
+          provider: candidate.provider,
+          content: candidate.result.content,
+          score: candidate.score,
+          rank: candidate.rank,
+          latencyMs: candidate.latencyMs,
+          failure: candidate.failure,
+          error: candidate.error,
+          reasoningConfidence: candidate.reasoningConfidence,
+          reasoningChain: candidate.reasoningChain,
+        })),
         winnerScore: scored[0]?.score ?? 0,
         telemetry: {
           totalCandidates: models.length,
@@ -208,6 +242,8 @@ export class ModelFusionService {
           failedCandidates: candidates.filter(c => c.failure).length,
           totalLatencyMs,
           winnerLatencyMs: winner.latencyMs,
+          avgReasoningConfidence,
+          winnerReasoningConfidence: winner.reasoningConfidence,
         },
       },
     };
@@ -345,6 +381,35 @@ export class ModelFusionService {
     const paragraphRatio = lines.filter(line => line.trim().length > 80).length / Math.max(lines.length, 1);
 
     return Number((listRatio * 10 + paragraphRatio * 10).toFixed(2));
+  }
+
+  private computeReasoningConfidence(text: string): number {
+    if (!text.trim()) return 0;
+    const markers = [
+      /step\s*\d+/i,
+      /reason(ing)?\s*:/i,
+      /because|therefore|thus|hence|consequently/i,
+      /hypothesis|evidence|analysis|conclusion/i,
+      /pros\s*(and|&|\+)\s*cons|advantages?\s*(and|&|\+)\s*disadvantages?/i,
+      /compare|contrast|evaluate|assess|trade-?off/i,
+      /first|second|third|finally|ultimately/i,
+      /confidence|probability|likely|unlikely|certain/i,
+      /assume|presume|given|consider/i,
+      /because\s+this|due\s+to|as\s+a\s+result/i,
+      /key\s+(point|factor|reason|insight|takeaway)/i,
+    ];
+    const hits = markers.reduce((count, regex) => count + (regex.test(text) ? 1 : 0), 0);
+    const lines = text.split(/\n+/).filter(line => line.trim().length > 0);
+    const ratio = lines.filter(line => markers.some(regex => regex.test(line))).length / Math.max(lines.length, 1);
+    const score = Math.min(hits * 1.5, 15) + ratio * 10;
+    return Number(Math.min(score, 20).toFixed(2));
+  }
+
+  private extractReasoningChain(text: string): string[] {
+    if (!text.trim()) return [];
+    const lines = text.split(/\n+/).map(line => line.trim()).filter(Boolean);
+    const chain = lines.filter(line => /step\s*\d+/i.test(line) || /^\d+\./.test(line) || /reason(ing)?\s*:/i.test(line));
+    return chain.slice(0, 20);
   }
 
   private mergeCandidates(candidates: Array<{ result: { content: string }; score: number }>): string {

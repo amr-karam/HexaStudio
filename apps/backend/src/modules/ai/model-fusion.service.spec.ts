@@ -72,6 +72,9 @@ describe('ModelFusionService', () => {
     expect(response.fused.content).toContain('- Step 1');
     expect(response.winnerScore).toBeGreaterThan(0);
     expect(tokenUsage.recordUsage).toHaveBeenCalledTimes(2);
+    expect(typeof response.telemetry.avgReasoningConfidence).toBe('number');
+    expect(typeof response.telemetry.winnerReasoningConfidence).toBe('number');
+    expect(response.candidates.some(candidate => Array.isArray(candidate.reasoningChain) && candidate.reasoningChain.length > 0)).toBe(true);
   });
 
   it('should merge outputs in merge mode and deduplicate identical candidates', async () => {

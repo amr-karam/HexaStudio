@@ -26,6 +26,13 @@ interface CandidateState {
   failure: boolean;
   error?: string;
   status: 'pending' | 'running' | 'done' | 'error';
+  reasoningConfidence?: number;
+  reasoningChain?: string[];
+  rank?: number;
+}
+
+function isCandidateState(candidate: CandidateState | FusionResponseUI['candidates'][number]): candidate is CandidateState {
+  return (candidate as CandidateState).status !== undefined;
 }
 
 export function ModelFusionStudio() {
@@ -85,81 +92,121 @@ export function ModelFusionStudio() {
   };
 
   const handleStreamEvent = (event: FusionStreamEvent, parsedModels: string[]) => {
-    if (event.type === 'meta') {
-      const v = event as FusionStreamStart;
-      setStreamMeta({ mode: v.payload.mode, models: v.payload.models });
-      setCandidates(
-        parsedModels.map((model) => ({
-          model,
-          provider: '',
-          content: '',
-          score: 0,
-          latencyMs: 0,
-          failure: false,
-          status: 'pending' as const,
-        })),
-      );
-    } else if (event.type === 'candidate_start') {
-      const v = event as FusionCandidateStreamEvent;
-      setCandidates((prev) =>
-        prev.map((c) => (c.model === v.payload.model ? { ...c, status: 'running' as const } : c)),
-      );
-    } else if (event.type === 'candidate_meta') {
-      const v = event as FusionCandidateMetaStreamEvent;
-      setCandidates((prev) =>
-        prev.map((c) => (c.model === v.payload.model ? { ...c, provider: v.payload.provider } : c)),
-      );
-    } else if (event.type === 'candidate_delta') {
-      const v = event as FusionCandidateDeltaStreamEvent;
-      setCandidates((prev) =>
-        prev.map((c) => (c.model === v.payload.model ? { ...c, content: c.content + v.payload.text } : c)),
-      );
-    } else if (event.type === 'candidate_done') {
-      const v = event as FusionCandidateDoneStreamEvent;
-      setCandidates((prev) =>
-        prev.map((c) =>
-          c.model === v.payload.model
-            ? {
-                model: v.payload.model,
-                provider: v.payload.provider,
-                content: v.payload.content,
-                latencyMs: v.payload.latencyMs,
-                score: 0,
-                failure: false,
-                status: 'done' as const,
-              }
-            : c,
-        ),
-      );
-    } else if (event.type === 'candidate_error') {
-      const v = event as FusionCandidateErrorStreamEvent;
-      setCandidates((prev) =>
-        prev.map((c) =>
-          c.model === v.payload.model
-            ? { ...c, failure: true, error: v.payload.error ?? 'Failed', status: 'error' as const }
-            : c,
-        ),
-      );
-    } else if (event.type === 'result') {
-      const v = event as FusionResultStreamEvent;
-      setResponse({
-        fused: v.payload.fused,
-        candidates: [],
-        winnerScore: v.payload.winnerScore,
-        telemetry: v.payload.telemetry,
-      });
-      setSelectedCandidate(v.payload.fused.model);
-    } else if (event.type === 'done') {
-      // Fusion complete — no-op, result already set
-    } else if (event.type === 'error') {
-      const v = event as FusionErrorStreamEvent;
-      setError(v.payload.message ?? 'Fusion failed');
+    switch (event.type) {
+      case 'meta': {
+        const v = event as FusionStreamStart;
+        setStreamMeta({ mode: v.payload.mode, models: v.payload.models });
+        setCandidates(
+          parsedModels.map((model) => ({
+            model,
+            provider: '',
+            content: '',
+            score: 0,
+            latencyMs: 0,
+            failure: false,
+            status: 'pending' as const,
+            reasoningConfidence: undefined,
+            reasoningChain: [],
+            rank: undefined,
+          })),
+        );
+        break;
+      }
+      case 'candidate_start': {
+        const v = event as FusionCandidateStreamEvent;
+        setCandidates((prev) =>
+          prev.map((c) => (c.model === v.payload.model ? { ...c, status: 'running' as const } : c)),
+        );
+        break;
+      }
+      case 'candidate_meta': {
+        const v = event as FusionCandidateMetaStreamEvent;
+        setCandidates((prev) =>
+          prev.map((c) => (c.model === v.payload.model ? { ...c, provider: v.payload.provider } : c)),
+        );
+        break;
+      }
+      case 'candidate_delta': {
+        const v = event as FusionCandidateDeltaStreamEvent;
+        setCandidates((prev) =>
+          prev.map((c) => (c.model === v.payload.model ? { ...c, content: c.content + v.payload.text } : c)),
+        );
+        break;
+      }
+      case 'candidate_done': {
+        const v = event as FusionCandidateDoneStreamEvent;
+        setCandidates((prev) =>
+          prev.map((c) =>
+            c.model === v.payload.model
+              ? {
+                  model: v.payload.model,
+                  provider: v.payload.provider,
+                  content: v.payload.content,
+                  latencyMs: v.payload.latencyMs,
+                  score: 0,
+                  failure: false,
+                  status: 'done' as const,
+                  reasoningConfidence: undefined,
+                  reasoningChain: [],
+                  rank: undefined,
+                }
+              : c,
+          ),
+        );
+        break;
+      }
+      case 'candidate_error': {
+        const v = event as FusionCandidateErrorStreamEvent;
+        setCandidates((prev) =>
+          prev.map((c) =>
+            c.model === v.payload.model
+              ? { ...c, failure: true, error: v.payload.error ?? 'Failed', status: 'error' as const }
+              : c,
+          ),
+        );
+        break;
+      }
+      case 'result': {
+        const v = event as FusionResultStreamEvent;
+        setResponse({
+          fused: v.payload.fused,
+          candidates: [],
+          winnerScore: v.payload.winnerScore,
+          telemetry: v.payload.telemetry,
+        });
+        setSelectedCandidate(v.payload.fused.model);
+        break;
+      }
+      case 'done': {
+        break;
+      }
+      case 'error': {
+        const v = event as FusionErrorStreamEvent;
+        setError(v.payload.message ?? 'Fusion failed');
+        break;
+      }
     }
   };
 
   const activeCandidate = streamEnabled
     ? candidates.find((c) => c.model === selectedCandidate) ?? candidates[0]
     : response?.candidates.find((c) => c.model === selectedCandidate);
+
+  const renderReasoningChain = (chain: string[] = []) => {
+    if (!chain.length) return null;
+    return (
+      <div className="mt-2">
+        <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest block mb-1">Reasoning Chain</span>
+        <ul className="space-y-1">
+          {chain.slice(0, 5).map((item, idx) => (
+            <li key={idx} className="text-[11px] font-mono text-text-secondary">
+              {idx + 1}. {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
 
   return (
     <div className="w-full max-w-7xl mx-auto p-6 md:p-12 artisan-glass text-foreground border border-border/30 rounded-2xl shadow-2xl relative overflow-hidden">
@@ -170,7 +217,7 @@ export function ModelFusionStudio() {
           Multi-Model <span className="italic text-accent">Analysis Studio</span>
         </h2>
         <p className="text-sm text-text-secondary mt-2 max-w-2xl font-light leading-relaxed">
-          Run multiple models side-by-side, analyze outputs, and fuse the best result.
+          Run multiple models side-by-side, analyze outputs, and fuse the best result with reasoning-aware scoring.
         </p>
       </div>
 
@@ -289,11 +336,21 @@ export function ModelFusionStudio() {
                       <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest block mb-1">Candidates</span>
                       <p className="text-xl font-mono text-foreground">{response.telemetry.successfulCandidates}/{response.telemetry.totalCandidates}</p>
                     </div>
+                    <div className="p-3 bg-obsidian-raised rounded-xl border border-border/20">
+                      <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest block mb-1">Avg Reasoning</span>
+                      <p className="text-xl font-mono text-foreground">{response.telemetry.avgReasoningConfidence ?? '—'}</p>
+                    </div>
+                    <div className="p-3 bg-obsidian-raised rounded-xl border border-border/20">
+                      <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest block mb-1">Winner Reasoning</span>
+                      <p className="text-xl font-mono text-accent">{response.telemetry.winnerReasoningConfidence ?? '—'}</p>
+                    </div>
                   </div>
                 )}
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  {(streamEnabled ? candidates : response?.candidates ?? []).map((candidate) => (
+                  {(streamEnabled ? candidates : response?.candidates ?? []).map((candidate) => {
+                    const uiCandidate = isCandidateState(candidate) ? candidate : { ...candidate, rank: candidate.rank ?? 0 } as CandidateState;
+                    return (
                     <button
                       key={candidate.model}
                       type="button"
@@ -304,13 +361,14 @@ export function ModelFusionStudio() {
                       <span className="text-[10px] font-mono text-text-muted block mb-2">{candidate.provider || '...'}</span>
                       <span className="text-[10px] font-mono text-text-secondary block">Score: {candidate.score}</span>
                       <span className="text-[10px] font-mono text-text-secondary block">Latency: {candidate.latencyMs} ms</span>
-                      {streamEnabled && (
+                      {streamEnabled && isCandidateState(candidate) && (
                         <span className="text-[10px] font-mono text-text-secondary block mt-1">Status: {candidate.status}</span>
                       )}
                       {candidate.failure && <span className="text-[10px] font-mono text-red-400 block">Failed</span>}
                       {streamEnabled && candidate.error && <span className="text-[10px] font-mono text-red-400 block">{candidate.error}</span>}
                     </button>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 <div className="p-6 bg-obsidian/80 border border-border/30 rounded-2xl backdrop-blur-md">
@@ -320,6 +378,26 @@ export function ModelFusionStudio() {
                   <p className="text-sm text-text-secondary leading-relaxed whitespace-pre-wrap font-light">
                     {streamEnabled ? (activeCandidate?.content ?? '') : (activeCandidate?.content ?? response?.fused.content ?? '')}
                   </p>
+                  {!streamEnabled && response && (() => {
+                    const uiCandidate = activeCandidate;
+                    if (!uiCandidate) return null;
+                    const candidate = isCandidateState(uiCandidate) ? uiCandidate : { ...uiCandidate } as CandidateState;
+                    return (
+                      <div className="mt-4 space-y-3">
+                        <div className="flex gap-3">
+                          <div className="p-3 bg-obsidian-raised rounded-xl border border-border/20 flex-1">
+                            <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest block mb-1">Reasoning Confidence</span>
+                            <p className="text-xl font-mono text-accent">{candidate.reasoningConfidence ?? '—'}</p>
+                          </div>
+                          <div className="p-3 bg-obsidian-raised rounded-xl border border-border/20 flex-1">
+                            <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest block mb-1">Rank</span>
+                            <p className="text-xl font-mono text-foreground">{candidate.rank ?? '—'}</p>
+                          </div>
+                        </div>
+                        {renderReasoningChain(candidate.reasoningChain)}
+                      </div>
+                    );
+                  })()}
                 </div>
               </motion.div>
             )}

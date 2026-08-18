@@ -84,6 +84,8 @@ export interface FusionCandidateUI {
   failure?: boolean;
   error?: string;
   status?: 'pending' | 'running' | 'done' | 'error';
+  reasoningConfidence?: number;
+  reasoningChain?: string[];
 }
 
 export interface FusionResponseUI {
@@ -101,6 +103,8 @@ export interface FusionResponseUI {
     failedCandidates: number;
     totalLatencyMs: number;
     winnerLatencyMs: number;
+    avgReasoningConfidence?: number;
+    winnerReasoningConfidence?: number;
   };
 }
 
