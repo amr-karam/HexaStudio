@@ -1,10 +1,10 @@
 
-import { HeroEditorial } from "@/components/hero/HeroEditorial";
 import { HomeChapterRail } from "@/features/portfolio/components/HomeChapterRail";
 import { HomePageDynamic } from "@/features/portfolio/components/HomePageDynamic";
 import { StudioSection } from "@/features/portfolio/components/StudioSection";
 import { fetchProjects } from "@/features/portfolio/lib/fetchProjects";
 import { GlobalErrorBoundary } from "@/components/GlobalErrorBoundary";
+import { HomeHero } from "@/features/portfolio/components/HomeHero";
 
 /** ISR: 1h background refresh + on-demand via /api/revalidate (Sprint 15 P9).
     * Pages prerender at build (gracefully empty when backend is down); deploy
@@ -47,7 +47,7 @@ export default async function HomePage() {
       <div className="absolute inset-0 gradient-radial-gold opacity-20 pointer-events-none" aria-hidden="true" />
       
       <HomeChapterRail />
-      <HeroEditorial />
+      <HomeHero />
       <GlobalErrorBoundary>
         <HomePageDynamic
           featuredProject={featuredProject}
