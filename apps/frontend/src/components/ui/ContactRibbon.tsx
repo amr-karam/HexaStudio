@@ -22,7 +22,10 @@ const REPEATS = 8;
  *   the pause doubles as the "ready to click" state.
  * - Animates `transform: translateX` only; linear easing is the explicit
  *   ambient-loop exception.
- * - Marquee copies are aria-hidden; the link carries one accessible name.
+ * - Marquee copies are aria-hidden siblings of the link; the link is an
+ *   inset overlay carrying one accessible name (aria-label), so the repeated
+ *   visible ribbon text never pollutes the accessible name computation
+ *   (WCAG 2.5.3 label-content-name-mismatch).
  */
 export const ContactRibbon = () => {
   const { t } = useLocale();
@@ -42,16 +45,17 @@ export const ContactRibbon = () => {
     'flex items-center gap-8 whitespace-nowrap text-4xl md:text-6xl font-serif font-light uppercase tracking-tight transition-colors duration-500';
 
   return (
-    <Link
-      href="/contact"
-      aria-label={label}
-      data-cursor="explore"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
-      className="group block overflow-hidden border-b border-border/30 bg-surface py-10 md:py-14 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent"
-    >
+    <div className="group relative overflow-hidden border-b border-border/30 bg-surface py-10 md:py-14">
+      <Link
+        href="/contact"
+        aria-label={label}
+        data-cursor="explore"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        className="absolute inset-0 z-10 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent"
+      />
       {isStatic ? (
         <span aria-hidden="true" className="flex justify-center px-6">
           <span className={`${itemClass} text-foreground group-hover:text-accent group-focus-visible:text-accent`}>
@@ -64,7 +68,7 @@ export const ContactRibbon = () => {
       ) : (
         <motion.span
           aria-hidden="true"
-          className="flex w-max gap-8"
+          className="flex w-max gap-8 pointer-events-none"
           animate={{ x: ['0%', '-50%'] }}
           transition={{
             x: {
@@ -84,6 +88,6 @@ export const ContactRibbon = () => {
           ))}
         </motion.span>
       )}
-    </Link>
+    </div>
   );
 };

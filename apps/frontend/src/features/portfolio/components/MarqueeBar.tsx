@@ -93,14 +93,14 @@ export const MarqueeBar = () => {
     return (
       <section className="py-16 bg-surface border-y border-border/20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-8 md:px-16">
-          <p className="text-[9px] uppercase tracking-[0.5em] text-neutral-500 mb-8 text-center font-mono">
+          <p className="text-[9px] uppercase tracking-[0.5em] text-text-secondary mb-8 text-center font-mono">
             Featured In
           </p>
           <div className="flex flex-wrap justify-center gap-x-10 gap-y-4">
             {brands.map((name) => (
               <span
                 key={name}
-                className="text-xs text-neutral-600 tracking-widest uppercase font-light"
+                className="text-xs text-text-secondary tracking-widest uppercase font-light"
               >
                 {name}
               </span>
@@ -119,7 +119,7 @@ export const MarqueeBar = () => {
       onFocus={handleFocus}
       onBlur={handleBlur}
     >
-      <p className="text-[9px] uppercase tracking-[0.5em] text-neutral-500 mb-8 text-center font-mono">
+      <p className="text-[9px] uppercase tracking-[0.5em] text-text-secondary mb-8 text-center font-mono">
         Featured In
       </p>
       <div className="relative">
@@ -138,7 +138,7 @@ export const MarqueeBar = () => {
               {brands.map((name) => (
                 <span
                   key={name}
-                  className="text-sm text-neutral-600 hover:text-neutral-300 tracking-[0.3em] uppercase font-light transition-colors duration-500 whitespace-nowrap"
+                  className="text-sm text-text-secondary hover:text-foreground tracking-[0.3em] uppercase font-light transition-colors duration-500 whitespace-nowrap"
                 >
                   {name}
                 </span>

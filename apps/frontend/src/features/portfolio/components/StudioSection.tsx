@@ -72,17 +72,17 @@ export const StudioSection = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-12">
             <div className="flex flex-col gap-3 group cursor-default">
-              <h4 className="text-xs uppercase tracking-[0.3em] text-foreground group-hover:text-accent transition-colors duration-500">
+              <h3 className="text-xs uppercase tracking-[0.3em] text-foreground group-hover:text-accent transition-colors duration-500">
                 Immersion
-              </h4>
+              </h3>
               <p className="text-xs text-neutral-500 font-light leading-relaxed">
                 Interactive 3D environments powered by R3F, enabling intuitive exploration.
               </p>
             </div>
             <div className="flex flex-col gap-3 group cursor-default">
-              <h4 className="text-xs uppercase tracking-[0.3em] text-foreground group-hover:text-accent transition-colors duration-500">
+              <h3 className="text-xs uppercase tracking-[0.3em] text-foreground group-hover:text-accent transition-colors duration-500">
                 Fidelity
-              </h4>
+              </h3>
               <p className="text-xs text-neutral-500 font-light leading-relaxed">
                 8K photorealistic rendering with a focus on material authenticity.
               </p>
