@@ -69,13 +69,19 @@ function announceIntroComplete() {
 export function CinematicPreloader() {
   const reducedMotion = useReducedMotion();
   const [phase, setPhase] = useState<PreloaderPhase>('hidden');
-  const [displayCount, setDisplayCount] = useState(0);
   const progress = useMotionValue(0);
   const goldScaleX = useTransform(progress, [0, 100], [0, 1]);
   const hasFinished = useRef(false);
+  const counterRef = useRef<HTMLSpanElement>(null);
 
+  // Counter writes go straight to the DOM — per-frame React state updates
+  // here were re-rendering the whole preloader subtree every animation
+  // frame (~143-207ms Layout each; the last two long tasks in the load
+  // trace). textContent keeps the tabular mono count visually identical.
   useMotionValueEvent(progress, 'change', (v) => {
-    setDisplayCount(Math.min(100, Math.round(v)));
+    const el = counterRef.current;
+    if (!el) return;
+    el.textContent = String(Math.min(100, Math.round(v))).padStart(3, '0');
   });
 
   const beginExit = useCallback(() => {
@@ -272,9 +278,12 @@ export function CinematicPreloader() {
             />
           </div>
 
-          {/* Mono counter — bottom right */}
-          <span className="absolute bottom-8 right-8 font-mono text-sm tabular-nums tracking-[0.3em] text-accent">
-            {String(displayCount).padStart(3, '0')}
+          {/* Mono counter — bottom right (textContent-driven, no re-renders) */}
+          <span
+            ref={counterRef}
+            className="absolute bottom-8 right-8 font-mono text-sm tabular-nums tracking-[0.3em] text-accent"
+          >
+            000
           </span>
 
           {/* Progress hairline — bottom, tied to real load progress */}
