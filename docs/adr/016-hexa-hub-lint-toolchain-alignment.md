@@ -1,4 +1,4 @@
-# ADR-015: Align hexa-hub ESLint Toolchain to Flat Config (drop `eslint-plugin-react`)
+# ADR-016: Align hexa-hub ESLint Toolchain to Flat Config (drop `eslint-plugin-react`)
 
 ## Status
 Accepted
