@@ -10,7 +10,73 @@
 #   PROD_SERVER_IP   — production server IP (19.16.1.100)
 
 stages:
+  - test
   - deploy
+
+test-backend:
+  stage: test
+  image: node:20-bullseye
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}-backend
+    paths:
+      - apps/backend/node_modules/.cache
+  before_script:
+    - cd apps/backend
+    - npm ci
+    - npm run test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "feat/editorial-hero-cms"
+
+test-frontend:
+  stage: test
+  image: node:20-bullseye
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}-frontend
+    paths:
+      - apps/frontend/node_modules/.cache
+  before_script:
+    - cd apps/frontend
+    - npm ci
+    - npm run lint
+    - npm run typecheck
+    - npm run test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "feat/editorial-hero-cms"
+
+test-hexahub-api:
+  stage: test
+  image: node:20-bullseye
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}-hexahub-api
+    paths:
+      - hexa-hub/apps/api/node_modules/.cache
+  before_script:
+    - cd hexa-hub/apps/api
+    - npm ci
+    - npm run test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "feat/editorial-hero-cms"
+
+test-hexahub-web:
+  stage: test
+  image: node:20-bullseye
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}-hexahub-web
+    paths:
+      - hexa-hub/apps/web/node_modules/.cache
+  before_script:
+    - cd hexa-hub/apps/web
+    - npm ci
+    - npm run lint
+    - npm run typecheck
+    - npm run build
+    - npm run test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "feat/editorial-hero-cms"
 
 deploy-production:
   stage: deploy
