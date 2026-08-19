@@ -65,7 +65,7 @@
     "axe-core": "^4.13.0",
     "caniuse-lite": "^1.0.30001806",
     "jest-axe": "^11.0.0",
-    "react-test-renderer": "19.1.0",
+    "react-test-renderer": "^19.2.8",
     "turbo": "^2.10.4"
   },
   "overrides": {
