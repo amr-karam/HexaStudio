@@ -12,8 +12,6 @@ import {
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { AgentOrchestrator } from './agents.service';
 import { z } from 'zod';
-import { Observable, from } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
 
 // ─── DTOs ───────────────────────────────────────────────────────────────────
 
@@ -64,33 +62,54 @@ export class AgentsController {
   }
 
   /**
-   * GET /ai/agents/stream?query=hello
+   * GET /ai/agents/stream?query=hello&agentName=erp-analyst
    * Streaming chat via SSE — returns real-time agent events.
    */
   @Sse('stream')
-  streamChat(@Req() req: unknown, @Query('query') query: string): Observable<MessageEvent> {
+  async *streamChat(
+    @Req() req: unknown,
+    @Query('query') query: string,
+    @Query('agentName') agentName?: string,
+  ): AsyncGenerator<MessageEvent> {
     const userId = (req as { user: { id: string } }).user.id;
     const sessionId = `session_${userId}`;
 
-    return from(
-      this.orchestrator.streamChat(query, userId, sessionId),
-    ).pipe(
-      map((chunk) => ({
+    if (!query) {
+      yield {
         data: JSON.stringify({
-          type: 'message.chunk',
-          agentName: 'auto',
-          content: chunk,
+          type: 'error',
+          error: 'Query parameter is required',
         }),
-      })),
-      catchError((error: unknown) => [
-        {
-          data: JSON.stringify({
-            type: 'error',
-            error: error instanceof Error ? error.message : 'Unknown error',
-          }),
+      };
+      return;
+    }
+
+    try {
+      for await (const chunk of this.orchestrator.streamChat(
+        query,
+        userId,
+        sessionId,
+        undefined,
+        (evt) => {
+          // Events are emitted via the generator; the frontend picks up chunks
         },
-      ]),
-    );
+      )) {
+        yield {
+          data: JSON.stringify({
+            type: 'message.chunk',
+            agentName: agentName ?? 'auto',
+            content: chunk,
+          }),
+        };
+      }
+    } catch (error) {
+      yield {
+        data: JSON.stringify({
+          type: 'error',
+          error: error instanceof Error ? error.message : 'Unknown error',
+        }),
+      };
+    }
   }
 
   /**
