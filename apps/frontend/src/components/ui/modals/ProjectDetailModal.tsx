@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { REDUCED_TRANSITION, makeTransition, modalPanel, overlay } from '@/lib/motion';
 import { useHEXAMotion } from '@/hooks/useHEXAMotion';
+import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
 
 interface ModalProject {
   title: string;
@@ -32,6 +33,18 @@ export const ProjectDetailModal = ({ isOpen, onClose, project }: ProjectDetailMo
   const previouslyFocused = useRef<HTMLElement | null>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const { reduced } = useHEXAMotion();
+
+  // Escape key closes the modal (replaces ad-hoc listener)
+  useKeyboardShortcut('Escape', () => {
+    if (isOpen) onClose();
+  }, {
+    // Allow Escape to work when inputs are focused
+    ignoreInput: false,
+    // Match original document target for cross-browser consistency
+    target: 'document',
+    // Prevent accidental navigation
+    preventDefault: true
+  });
 
   const trapFocus = useCallback(
     (e: KeyboardEvent) => {
@@ -59,16 +72,6 @@ export const ProjectDetailModal = ({ isOpen, onClose, project }: ProjectDetailMo
   useEffect(() => {
     if (!isOpen) return;
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-        return;
-      }
-      trapFocus(e);
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-
     // Body scroll lock
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -89,7 +92,6 @@ export const ProjectDetailModal = ({ isOpen, onClose, project }: ProjectDetailMo
     });
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = prevOverflow;
 
       // Remove inert
@@ -101,7 +103,7 @@ export const ProjectDetailModal = ({ isOpen, onClose, project }: ProjectDetailMo
       // Restore focus
       previouslyFocused.current?.focus();
     };
-  }, [isOpen, onClose, trapFocus]);
+  }, [isOpen]);
 
   const panelVariants = reduced
     ? {

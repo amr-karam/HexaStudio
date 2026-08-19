@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, type DependencyList } from 'react';
+import { useRef, useEffect } from 'react';
 
 /**
  * Attaches an event listener to a DOM element (or `window`/`document`)
@@ -108,8 +108,7 @@ export function useEvent(
       handlerRef.current(event);
     };
 
-    const listenerOptions: boolean | AddEventListenerOptions =
-      passive || once ? { passive, once, capture } : capture;
+    const listenerOptions: AddEventListenerOptions = { passive, once, capture };
 
     element.addEventListener(eventName, listener, listenerOptions);
 

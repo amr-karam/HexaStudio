@@ -200,7 +200,7 @@ export const HomeHeroStatic = () => {
       >
         <span
           data-hero-kicker=""
-          className="mb-5 block text-[10px] uppercase tracking-[0.35em] text-silver/70 font-medium"
+          className="sl-kicker mb-5 block text-[10px] uppercase tracking-[0.3em]"
         >
           Architectural Vision
         </span>

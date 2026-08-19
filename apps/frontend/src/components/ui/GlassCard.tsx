@@ -17,11 +17,13 @@ interface GlassCardProps {
   hover?: boolean;
   /** Rendered semantic element. Defaults to 'div'. */
   as?: GlassCardElement;
+  /** Optional accessible name when rendered as an interactive region. */
+  'aria-label'?: string;
 }
 
 const VARIANT_CLASSES: Record<GlassCardVariant, string> = {
   default: 'glass',
-  elevated: 'glass shadow-[0_8px_40px_-12px_rgba(212,175,55,0.0)]',
+  elevated: 'glass shadow-[0_8px_40px_-20px_rgba(212,175,55,0.0)]',
   subtle: 'bg-white/[0.01] border border-white/[0.03]',
 };
 
@@ -43,6 +45,7 @@ export const GlassCard = ({
   variant = 'default',
   hover = true,
   as = 'div',
+  'aria-label': ariaLabel,
 }: GlassCardProps) => {
   const reducedMotion = useReducedMotion();
   const MotionTag = motion[as];
@@ -63,8 +66,8 @@ export const GlassCard = ({
           scale: 1.01,
           boxShadow:
             variant === 'elevated'
-              ? '0 20px 60px -20px rgba(212, 175, 55, 0.25)'
-              : '0 12px 48px -16px rgba(212, 175, 55, 0.15)',
+              ? '0 20px 60px -20px var(--color-gold-25)'
+              : '0 12px 48px -16px var(--color-gold-15)',
         },
         transition: {
           duration: DURATION.component,
@@ -74,7 +77,7 @@ export const GlassCard = ({
     : {};
 
   return (
-    <MotionTag className={baseClass} {...motionProps}>
+    <MotionTag className={baseClass} {...motionProps} aria-label={ariaLabel}>
       {children}
     </MotionTag>
   );

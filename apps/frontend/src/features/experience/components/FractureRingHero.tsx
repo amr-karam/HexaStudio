@@ -17,7 +17,7 @@ function StaticFracturePoster() {
       aria-hidden="true"
       style={{
         background:
-          'radial-gradient(ellipse 65% 45% at 50% 42%, rgba(255, 77, 0, 0.10) 0%, rgba(255, 77, 0, 0.04) 40%, transparent 70%), #0A0A0A',
+          'radial-gradient(ellipse 65% 45% at 50% 42%, color-mix(in srgb, var(--color-accent) 10%, transparent) 0%, color-mix(in srgb, var(--color-accent) 4%, transparent) 40%, transparent 70%), var(--color-sl-void)',
       }}
     />
   );

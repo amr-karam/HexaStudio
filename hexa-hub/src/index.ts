@@ -1,1 +1,1 @@
-export { McpBridge } from './src/bridge';
+export { McpBridge } from './bridge';

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Send, Bot, History, Settings, CheckCircle } from 'lucide-react';
 
 const SUGGESTED_PROMPTS = [
@@ -214,7 +214,7 @@ export default function DevPreviewPage() {
                         </span>
                       ))}
                     </div>
-                  ))}
+                  )}
 
                   <div className="flex items-center justify-end gap-2 mt-2 text-[10px] text-tertiary">
                     <span>{msg.timestamp.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>

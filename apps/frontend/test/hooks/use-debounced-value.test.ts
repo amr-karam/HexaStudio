@@ -48,19 +48,27 @@ describe('useDebouncedValue', () => {
     expect(result.current).toBe('c');
   });
 
-  it('works with objects and arrays', () => {
-    const { result, rerender } = renderHook(({ value }) => useDebouncedValue(value, 200), {
-      initialProps: { value: { count: 0 } },
-    });
+  it('works with objects', () => {
+    const { result, rerender } = renderHook(
+      ({ value }) => useDebouncedValue(value, 200),
+      { initialProps: { value: { count: 0 } } },
+    );
     expect(result.current).toEqual({ count: 0 });
 
     rerender({ value: { count: 5 } });
     act(() => vi.advanceTimersByTime(200));
     expect(result.current).toEqual({ count: 5 });
+  });
 
-    rerender({ value: [1, 2, 3] });
-    act(() => vi.advanceTimersByTime(200));
+  it('works with arrays', () => {
+    const { result, rerender } = renderHook(({ value }) => useDebouncedValue(value, 200), {
+      initialProps: { value: [1, 2, 3] },
+    });
     expect(result.current).toEqual([1, 2, 3]);
+
+    rerender({ value: [4, 5, 6] });
+    act(() => vi.advanceTimersByTime(200));
+    expect(result.current).toEqual([4, 5, 6]);
   });
 
   it('uses default delay of 300ms when not specified', () => {

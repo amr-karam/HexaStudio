@@ -19,7 +19,7 @@ export function DiamondBullet({ className }: { className?: string }) {
       fill="none"
       className={className}
       aria-hidden="true"
-      style={{ color: 'rgba(212, 175, 55, 0.6)' }}
+      style={{ color: 'var(--color-gold-60)' }}
     >
       <path
         d="M4 0.5L7.5 4L4 7.5L0.5 4L4 0.5Z"
@@ -40,7 +40,7 @@ export function OrnamentalRule({ className }: { className?: string }) {
         display: 'flex',
         alignItems: 'center',
         gap: '12px',
-        color: 'rgba(212, 175, 55, 0.5)',
+        color: 'var(--color-gold-50)',
       }}
     >
       <span style={{ flex: 1, height: '1px', background: 'currentColor' }} />
@@ -64,7 +64,7 @@ export function DoubleRule({ className }: { className?: string }) {
         flexDirection: 'column',
         alignItems: 'center',
         gap: '5px',
-        color: 'rgba(212, 175, 55, 0.3)',
+        color: 'var(--color-gold-30)',
       }}
     >
       <span style={{ width: '48px', height: '1px', background: 'currentColor' }} />
@@ -92,7 +92,7 @@ export function CornerFlourish({
       className={className}
       style={{
         transform: `rotate(${rotation}deg)`,
-        color: 'rgba(212, 175, 55, 0.28)',
+        color: 'var(--color-gold-28)',
       }}
       aria-hidden="true"
     >
@@ -131,7 +131,7 @@ export function PageBorderSVG({ className }: { className?: string }) {
         position: 'absolute',
         inset: 0,
         pointerEvents: 'none',
-        color: 'rgba(212, 175, 55, 0.1)',
+        color: 'var(--color-gold-10)',
       }}
     >
       {/* Outer frame */}
@@ -168,7 +168,7 @@ export function ChapterNumeral({
         fontSize: 'clamp(3rem, 8vw, 6rem)',
         fontWeight: 400,
         lineHeight: 1,
-        color: 'rgba(212, 175, 55, 0.18)',
+        color: 'var(--color-gold-18)',
         display: 'block',
         letterSpacing: '-0.02em',
       }}

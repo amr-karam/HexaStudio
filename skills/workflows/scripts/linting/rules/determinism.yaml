@@ -1,0 +1,217 @@
+rules:
+  # Workflow code runs inside a determinism sandbox and is replayed on
+  # recovery.  Non-deterministic operations break replay.  These rules
+  # flag non-deterministic stdlib calls inside `@workflow.define` classes
+  # (the workflow classes).  Activities and plain helper classes are exempt.
+
+  - id: no-datetime-now-in-workflow
+    patterns:
+      - pattern-either:
+          - pattern: datetime.now(...)
+          - pattern: datetime.datetime.now(...)
+          - pattern: datetime.utcnow(...)
+          - pattern: datetime.datetime.utcnow(...)
+      - pattern-either:
+          - pattern-inside: |
+              @workflow.define(...)
+              class $CLASS:
+                  ...
+          - pattern-inside: |
+              @workflows.workflow.define(...)
+              class $CLASS:
+                  ...
+    message: >-
+      Use `workflow.now()` instead of `datetime.now()` in workflow code.
+      Workflows must be deterministic — `datetime.now()` returns
+      different values on replay, breaking the execution history.
+    severity: ERROR
+    languages: [python]
+    metadata:
+      category: determinism
+      fix: Replace with `workflow.now()` from `mistralai.workflows`
+
+  - id: no-uuid4-in-workflow
+    patterns:
+      - pattern-either:
+          - pattern: uuid.uuid4(...)
+          - pattern: uuid4(...)
+      - pattern-either:
+          - pattern-inside: |
+              @workflow.define(...)
+              class $CLASS:
+                  ...
+          - pattern-inside: |
+              @workflows.workflow.define(...)
+              class $CLASS:
+                  ...
+    message: >-
+      Use `workflow.uuid4()` instead of `uuid.uuid4()` in workflow code.
+      Standard UUID generation is non-deterministic and breaks replay.
+    severity: ERROR
+    languages: [python]
+    metadata:
+      category: determinism
+      fix: Replace with `workflow.uuid4()` from `mistralai.workflows`
+
+  - id: no-random-in-workflow
+    patterns:
+      - pattern-either:
+          - pattern: random.random(...)
+          - pattern: random.randint(...)
+          - pattern: random.choice(...)
+          - pattern: random.shuffle(...)
+          - pattern: random.sample(...)
+          - pattern: random.uniform(...)
+          - pattern: random.randrange(...)
+          - pattern: random.gauss(...)
+      - pattern-either:
+          - pattern-inside: |
+              @workflow.define(...)
+              class $CLASS:
+                  ...
+          - pattern-inside: |
+              @workflows.workflow.define(...)
+              class $CLASS:
+                  ...
+    message: >-
+      Use `workflow.random()` instead of the `random` module in workflow
+      code. Standard random functions are non-deterministic and break
+      replay.
+    severity: ERROR
+    languages: [python]
+    metadata:
+      category: determinism
+      fix: Replace with `workflow.random()` from `mistralai.workflows`
+
+  - id: no-os-env-in-workflow
+    patterns:
+      - pattern-either:
+          - pattern: os.environ
+          - pattern: os.environ[...]
+          - pattern: os.environ.get(...)
+          - pattern: os.getenv(...)
+          - pattern: os.getcwd(...)
+          - pattern: os.listdir(...)
+          - pattern: os.path.exists(...)
+      - pattern-either:
+          - pattern-inside: |
+              @workflow.define(...)
+              class $CLASS:
+                  ...
+          - pattern-inside: |
+              @workflows.workflow.define(...)
+              class $CLASS:
+                  ...
+    message: >-
+      Do not access `os.environ`, `os.getenv()`, `os.getcwd()`, or
+      filesystem functions in workflow code. Environment variables and
+      filesystem state can differ between replays. Read config in an
+      activity and pass it as workflow input, or use dependency injection.
+    severity: ERROR
+    languages: [python]
+    metadata:
+      category: determinism
+      fix: Move to an activity or use dependency injection (Depends)
+
+  - id: no-time-in-workflow
+    patterns:
+      - pattern-either:
+          - pattern: time.time(...)
+          - pattern: time.monotonic(...)
+          - pattern: time.sleep(...)
+      - pattern-either:
+          - pattern-inside: |
+              @workflow.define(...)
+              class $CLASS:
+                  ...
+          - pattern-inside: |
+              @workflows.workflow.define(...)
+              class $CLASS:
+                  ...
+    message: >-
+      Do not use `time.time()`, `time.monotonic()`, or `time.sleep()`
+      in workflow code. Use `workflow.now()` for timestamps and
+      `asyncio.sleep()` for delays (which is durable and survives
+      replays).
+    severity: ERROR
+    languages: [python]
+    metadata:
+      category: determinism
+      fix: Use `workflow.now()` for time, `asyncio.sleep()` for delays
+
+  - id: no-hashlib-in-workflow
+    patterns:
+      - pattern-either:
+          - pattern: hashlib.sha256(...)
+          - pattern: hashlib.sha512(...)
+          - pattern: hashlib.md5(...)
+          - pattern: hashlib.sha1(...)
+          - pattern: hashlib.new(...)
+          - pattern: hashlib.pbkdf2_hmac(...)
+      - pattern-either:
+          - pattern-inside: |
+              @workflow.define(...)
+              class $CLASS:
+                  ...
+          - pattern-inside: |
+              @workflows.workflow.define(...)
+              class $CLASS:
+                  ...
+    message: >-
+      Cryptographic operations are CPU-intensive and can exceed the
+      2-second limit between activities. Move hashing to an activity:
+        @activity()
+        async def hash_data(data: bytes) -> str:
+            return hashlib.sha256(data).hexdigest()
+    severity: WARNING
+    languages: [python]
+    metadata:
+      category: determinism
+      fix: Move cryptographic operations to an activity
+
+  - id: no-global-in-workflow
+    patterns:
+      - pattern: global $VAR
+      - pattern-either:
+          - pattern-inside: |
+              @workflow.define(...)
+              class $CLASS:
+                  ...
+          - pattern-inside: |
+              @workflows.workflow.define(...)
+              class $CLASS:
+                  ...
+    message: >-
+      Do not use `global` in workflow code. Modifying global variables
+      is non-deterministic — the global state may differ between
+      replays. Store state on `self` or pass it through activities.
+    severity: ERROR
+    languages: [python]
+    metadata:
+      category: determinism
+      fix: Use `self.field` for workflow state, or pass data via activities
+
+  - id: no-model-validate-in-workflow
+    patterns:
+      - pattern: $MODEL.model_validate(...)
+      - pattern-either:
+          - pattern-inside: |
+              @workflow.define(...)
+              class $CLASS:
+                  ...
+          - pattern-inside: |
+              @workflows.workflow.define(...)
+              class $CLASS:
+                  ...
+    message: >-
+      Pydantic `.model_validate()` can be CPU-intensive on large
+      payloads and may exceed the 2-second limit between activities.
+      Move heavy validation to an activity:
+        @activity()
+        async def validate(data: dict) -> MyModel:
+            return MyModel.model_validate(data)
+    severity: WARNING
+    languages: [python]
+    metadata:
+      category: determinism
+      fix: Move validation to an activity

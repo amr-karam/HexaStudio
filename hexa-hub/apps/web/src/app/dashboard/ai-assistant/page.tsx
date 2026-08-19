@@ -2,7 +2,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Bot, History, Settings, CheckCircle } from 'lucide-react';
+import { Send, Bot, History, Settings, CheckCircle, AlertTriangle } from 'lucide-react';
+import { toast } from 'sonner';
 import TypingDots from '@/components/TypingDots';
 import { useAgentChat } from '@/features/ai-agents/hooks/use-agent-chat';
 import { AgentBadge, AgentSelector, ToolCallIndicator, FollowUpSuggestions } from '@/features/ai-agents/components';
@@ -10,14 +11,14 @@ import { AgentBadge, AgentSelector, ToolCallIndicator, FollowUpSuggestions } fro
 // ─── Suggested Prompts ──────────────────────────────────────────────────────
 
 const SUGGESTED_PROMPTS = [
-  'Summarize my active projects',
-  'What tasks are overdue?',
-  'Show me Q3 revenue vs budget',
-  'Find related documents',
-  'Analyze team productivity',
-  'Generate project timeline',
-  'Create a lead for Acme Corp',
-  'What are our top CRM opportunities?',
+  { text: 'Summarize my active projects', category: 'projects' },
+  { text: 'What tasks are overdue?', category: 'projects' },
+  { text: 'Show me Q3 revenue vs budget', category: 'erp' },
+  { text: 'Find related documents', category: 'knowledge' },
+  { text: 'Analyze team productivity', category: 'projects' },
+  { text: 'Generate project timeline', category: 'projects' },
+  { text: 'Create a lead for Acme Corp', category: 'sales' },
+  { text: 'What are our top CRM opportunities?', category: 'sales' },
 ];
 
 // ─── Follow-up Suggestions Generator ────────────────────────────────────────
@@ -63,6 +64,7 @@ export default function AiAssistantPage() {
     isProcessing,
     sendMessage,
     selectAgent,
+    clearConversation,
     currentQuery,
     toolCalls,
   } = useAgentChat();
@@ -70,6 +72,7 @@ export default function AiAssistantPage() {
   const [inputValue, setInputValue] = useState('');
   const [showHistory, setShowHistory] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [agentsLoaded, setAgentsLoaded] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -80,6 +83,11 @@ export default function AiAssistantPage() {
       inputRef.current?.focus();
     }
   }, [currentQuery]);
+
+  // Mark agents as loaded once the fetch resolves (success or fallback)
+  useEffect(() => {
+    if (agents.length > 0) setAgentsLoaded(true);
+  }, [agents]);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -126,17 +134,29 @@ export default function AiAssistantPage() {
         className="border-b border-border bg-void-deep px-4 py-3 flex items-center justify-between"
       >
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-gold/10">
+          <motion.div
+            className="w-8 h-8 rounded-xl flex items-center justify-center bg-gold/10"
+            whileHover={{ scale: 1.1, rotate: 5 }}
+          >
             <Bot size={18} className="text-gold" />
-          </div>
+          </motion.div>
           <div>
             <h1 className="text-base font-serif font-light text-foreground">AI Assistant</h1>
             <p className="text-[11px] text-tertiary">Ask me about your projects, tasks, and data</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {/* Agent Selector */}
-          {agents.length > 0 && (
+          {/* Agent Selector with loading state */}
+          {!agentsLoaded && agents.length === 0 ? (
+            <motion.div
+              className="flex items-center gap-2 bg-surface border border-border rounded-xl px-3 py-2 text-sm text-tertiary min-w-[160px]"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              <div className="w-5 h-5 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
+              <span>Loading agents…</span>
+            </motion.div>
+          ) : (
             <AgentSelector
               agents={agents}
               selected={selectedAgent}
@@ -150,6 +170,17 @@ export default function AiAssistantPage() {
           >
             <History size={16} />
           </button>
+          {messages.length > 0 && (
+            <button
+              onClick={clearConversation}
+              className="p-2 rounded-lg text-tertiary hover:text-error hover:bg-white/[0.03] transition-colors"
+              title="Clear conversation"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18M9 6V3h6v3M4 10h16l-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 10z" />
+              </svg>
+            </button>
+          )}
           <button
             onClick={() => setShowSettings(!showSettings)}
             className="p-2 rounded-lg text-tertiary hover:text-foreground hover:bg-white/[0.03] transition-colors"
@@ -163,6 +194,29 @@ export default function AiAssistantPage() {
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4">
         <div className="max-w-3xl mx-auto">
+          {messages.length === 0 && !isProcessing && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="flex flex-col items-center text-center mt-16"
+            >
+              <motion.div
+                animate={{ rotate: [0, 5, -5, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <Bot size={48} className="text-gold/30" />
+              </motion.div>
+              <h2 className="text-xl font-serif font-light text-foreground mt-4">
+                Hermes AI Assistant
+              </h2>
+              <p className="text-sm text-tertiary mt-2 max-w-md">
+                I'm here to help with your projects, tasks, finances, CRM data, and knowledge base.
+                Ask me anything or try one of the suggested prompts below.
+              </p>
+            </motion.div>
+          )}
+
           {messages.map((msg, i) => {
             const isUser = msg.role === 'user';
             return (
@@ -209,7 +263,7 @@ export default function AiAssistantPage() {
 
                   <div className="flex items-center justify-end gap-2 mt-2 text-[10px] text-tertiary">
                     <span>{msg.timestamp.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
-                    {isUser && <CheckCircle size={10} className="text-gold" />}
+                    {isUser && <CheckCircle size={12} className="text-gold" />}
                   </div>
                 </div>
               </motion.div>
@@ -258,22 +312,45 @@ export default function AiAssistantPage() {
           transition={{ delay: 0.3 }}
           className="px-4 pb-4"
         >
-          <p className="text-[11px] text-tertiary mb-3 uppercase tracking-[0.2em]">Ask me to</p>
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-1 h-3 bg-gold rounded-full" />
+            <p className="text-[11px] text-tertiary uppercase tracking-[0.2em]">Suggested prompts</p>
+          </div>
           <div className="flex flex-wrap gap-2">
-            {SUGGESTED_PROMPTS.map((prompt, i) => (
+            {SUGGESTED_PROMPTS.map((prompt, i) => {
+              const categoryColors: Record<string, { border: string; hoverBorder: string; hoverText: string; bg: string }> = {
+                erp: { border: 'var(--color-info)', hoverBorder: 'var(--color-info)', hoverText: 'var(--color-info)', bg: 'rgba(59, 130, 246, 0.1)' },
+                projects: { border: 'var(--color-gold)', hoverBorder: 'var(--color-gold)', hoverText: 'var(--color-gold)', bg: 'rgba(212, 175, 55, 0.1)' },
+                sales: { border: 'var(--color-metric-emerald)', hoverBorder: 'var(--color-metric-emerald)', hoverText: 'var(--color-metric-emerald)', bg: 'rgba(52, 211, 153, 0.1)' },
+                knowledge: { border: 'var(--color-metric-violet)', hoverBorder: 'var(--color-metric-violet)', hoverText: 'var(--color-metric-violet)', bg: 'rgba(167, 139, 250, 0.1)' },
+              };
+              const colors = categoryColors[prompt.category] || { border: 'var(--color-border)', hoverBorder: 'var(--color-border)', hoverText: 'var(--color-text-primary)', bg: 'transparent' };
+              return (
               <motion.button
-                key={prompt}
+                key={prompt.text}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 + i * 0.05 }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => handleSuggestedPrompt(prompt)}
-                className="px-3 py-1.5 rounded-full text-xs text-tertiary bg-surface border border-border hover:bg-border transition-colors"
+                onClick={() => handleSuggestedPrompt(prompt.text)}
+                className="px-3 py-1.5 rounded-full text-xs text-tertiary bg-surface border transition-all"
+                style={{
+                  borderColor: `${colors.border}30`,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = colors.hoverBorder;
+                  e.currentTarget.style.color = colors.hoverText;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = `${colors.border}30`;
+                  e.currentTarget.style.color = 'var(--color-text-tertiary)';
+                }}
               >
-                {prompt}
+                {prompt.text}
               </motion.button>
-            ))}
+              );
+            })}
           </div>
         </motion.div>
       )}
@@ -303,7 +380,9 @@ export default function AiAssistantPage() {
           </div>
           <div className="flex items-center justify-between mt-2 text-[10px] text-tertiary">
             <span>⌘K to focus, Shift+Enter for new line</span>
-            <span>{inputValue.length}/500</span>
+            <span className={inputValue.length > 480 ? 'text-warning' : inputValue.length > 450 ? 'text-warning/70' : ''}>
+              {inputValue.length}/500
+            </span>
           </div>
         </div>
       </footer>

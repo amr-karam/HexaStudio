@@ -12,11 +12,19 @@ describe('useEvent', () => {
 
     const { unmount } = renderHook(() => useEvent('resize', handler, { target: 'window' }));
 
-    expect(addSpy).toHaveBeenCalledWith('resize', expect.any(Function), false);
+    expect(addSpy).toHaveBeenCalledWith('resize', expect.any(Function), {
+      passive: false,
+      once: false,
+      capture: false,
+    });
 
     unmount();
 
-    expect(removeSpy).toHaveBeenCalledWith('resize', expect.any(Function), false);
+    expect(removeSpy).toHaveBeenCalledWith('resize', expect.any(Function), {
+      passive: false,
+      once: false,
+      capture: false,
+    });
   });
 
   it('attaches a document event listener', () => {
@@ -26,11 +34,19 @@ describe('useEvent', () => {
 
     const { unmount } = renderHook(() => useEvent('visibilitychange', handler, { target: 'document' }));
 
-    expect(addSpy).toHaveBeenCalledWith('visibilitychange', expect.any(Function), false);
+    expect(addSpy).toHaveBeenCalledWith('visibilitychange', expect.any(Function), {
+      passive: false,
+      once: false,
+      capture: false,
+    });
 
     unmount();
 
-    expect(removeSpy).toHaveBeenCalledWith('visibilitychange', expect.any(Function), false);
+    expect(removeSpy).toHaveBeenCalledWith('visibilitychange', expect.any(Function), {
+      passive: false,
+      once: false,
+      capture: false,
+    });
   });
 
   it('calls the handler when the event fires', () => {
@@ -74,7 +90,11 @@ describe('useEvent', () => {
     const ref = { current: document.createElement('div') };
     renderHook(() => useEvent('click', handler, { target: ref }));
 
-    expect(addSpy).toHaveBeenCalledWith('click', expect.any(Function), false);
+    expect(addSpy).toHaveBeenCalledWith('click', expect.any(Function), {
+      passive: false,
+      once: false,
+      capture: false,
+    });
   });
 
   it('supports passive and once options', () => {
@@ -124,6 +144,10 @@ describe('useEvent', () => {
 
     unmount();
 
-    expect(removeSpy).toHaveBeenCalledWith('keydown', expect.any(Function), false);
+    expect(removeSpy).toHaveBeenCalledWith('keydown', expect.any(Function), {
+      passive: false,
+      once: false,
+      capture: false,
+    });
   });
 });

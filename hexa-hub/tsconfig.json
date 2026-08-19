@@ -17,5 +17,8 @@
     "allowSyntheticDefaultImports": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  // WIP: src/mcp-server.ts imports placeholder packages ('mcp-server', '@mcpserver/stdio') that do not
+  // exist on npm and implements a fictional API. It is not referenced by any entry point (real stdio
+  // entry: src/mcp-stdio.ts). Excluded from build until rewritten against @modelcontextprotocol/sdk.
+  "exclude": ["node_modules", "dist", "src/mcp-server.ts"]
 }

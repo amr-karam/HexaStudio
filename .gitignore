@@ -213,3 +213,6 @@ test_api.sh
 # Content API token minting script
 generate_content_token.js
 fix_*.js
+
+# Firecrawl CLI cache (local job data, install-check artifacts)
+.firecrawl/

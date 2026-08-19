@@ -26,6 +26,7 @@ import { StatCard } from '@/features/portal/components/StatCard';
 import { HealthScore } from '@/features/portal/components/HealthScore';
 import { ActivityItem } from '@/features/portal/components/ActivityItem';
 import { QuickAction } from '@/features/portal/components/QuickAction';
+import { DashboardSkeleton } from '@/features/portal/components/DashboardSkeleton';
 import { Icon } from '@/features/portal/components/PortalIcons';
 import { createDynamicComponent } from '@/lib/dynamic-component';
 import type { PortalAiCopilotProps } from '@/features/portal/components/PortalAiCopilot';
@@ -268,15 +269,21 @@ export default function PortalDashboardPage() {
     }
   }, [user, router]);
 
-  const { data = MOCK_FALLBACK_DASHBOARD } = useQuery<DashboardData>({
+  const { data, isLoading, isError } = useQuery<DashboardData>({
     queryKey: ['portal-dashboard'],
     queryFn: fetchDashboardData,
   });
+
+  const dashboardData = data ?? (isError ? MOCK_FALLBACK_DASHBOARD : undefined);
 
   /* Derived greeting — personalized by first name or username */
   const displayName = user?.username
     ? user.username.split(' ')[0]
     : 'there';
+
+  if (isLoading || !dashboardData) {
+    return <DashboardSkeleton />;
+  }
 
   return (
     <div className="space-y-8 pb-12" role="main" aria-label="Portal Dashboard">
@@ -329,7 +336,6 @@ export default function PortalDashboardPage() {
                   role="status"
                   aria-label="Project is live"
                 >
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-50" />
                   <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
                 </span>
                 <span className="text-[11px] uppercase tracking-widest font-mono text-neutral-500">
@@ -337,7 +343,7 @@ export default function PortalDashboardPage() {
                 </span>
                 <span className="text-neutral-700">·</span>
                 <span className="text-[11px] font-mono text-neutral-500">
-                  {data.companyName}
+                  {dashboardData.companyName}
                 </span>
               </div>
 
@@ -363,12 +369,12 @@ export default function PortalDashboardPage() {
                 Welcome back, {displayName}
               </p>
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-light text-foreground tracking-tight leading-tight">
-                {data.activeProjectName}
+                {dashboardData.activeProjectName}
               </h1>
               <p className="text-sm text-neutral-400 mt-2">
                 Current Stage:{' '}
                 <span className="text-accent font-semibold">
-                  {data.activeProjectStage}
+                  {dashboardData.activeProjectStage}
                 </span>
               </p>
             </motion.div>
@@ -386,7 +392,7 @@ export default function PortalDashboardPage() {
                 </p>
                 <div className="flex items-baseline justify-between mt-1.5">
                   <p className="text-2xl font-serif font-light text-foreground">
-                    {data.overallProgressPercentage}%
+                    {dashboardData.overallProgressPercentage}%
                   </p>
                   <span className="text-[10px] font-mono text-emerald-400">
                     On Schedule
@@ -395,15 +401,15 @@ export default function PortalDashboardPage() {
                 <div
                   className="w-full bg-white/[0.04] h-1 rounded-full mt-2.5 overflow-hidden"
                   role="progressbar"
-                  aria-valuenow={data.overallProgressPercentage}
+                  aria-valuenow={dashboardData.overallProgressPercentage}
                   aria-valuemin={0}
                   aria-valuemax={100}
-                  aria-label={`Overall progress: ${data.overallProgressPercentage}%`}
+                  aria-label={`Overall progress: ${dashboardData.overallProgressPercentage}%`}
                 >
                   <motion.div
                     className="bg-accent h-full rounded-full"
-                    initial={prefersReduced ? { width: `${data.overallProgressPercentage}%` } : { width: '0%' }}
-                    animate={{ width: `${data.overallProgressPercentage}%` }}
+                    initial={prefersReduced ? { width: `${dashboardData.overallProgressPercentage}%` } : { width: '0%' }}
+                    animate={{ width: `${dashboardData.overallProgressPercentage}%` }}
                     transition={
                       prefersReduced
                         ? { duration: 0.01 }
@@ -419,12 +425,12 @@ export default function PortalDashboardPage() {
                   Next Milestone
                 </p>
                 <p className="text-sm font-semibold text-foreground mt-1.5 line-clamp-1">
-                  {data.nextMilestoneName}
+                  {dashboardData.nextMilestoneName}
                 </p>
                 <div className="flex items-center gap-1 mt-1.5">
                   <Icon name="milestone" size={11} className="text-accent" />
                   <p className="text-[11px] font-mono text-accent">
-                    Due {data.nextMilestoneDueDate}
+                    Due {dashboardData.nextMilestoneDueDate}
                   </p>
                 </div>
               </div>
@@ -435,7 +441,7 @@ export default function PortalDashboardPage() {
                   Pending Approvals
                 </p>
                 <p className="text-2xl font-serif font-light text-accent mt-1.5">
-                  {data.pendingApprovals.length}
+                  {dashboardData.pendingApprovals.length}
                 </p>
                 <p className="text-[11px] text-neutral-500 mt-1">
                   Requires Sign-off
@@ -448,10 +454,10 @@ export default function PortalDashboardPage() {
                   Project Health
                 </p>
                 <p className="text-2xl font-serif font-light text-emerald-400 mt-1.5">
-                  {data.healthScore.score} <span className="text-sm text-neutral-600">/ 100</span>
+                  {dashboardData.healthScore.score} <span className="text-sm text-neutral-600">/ 100</span>
                 </p>
                 <p className="text-[11px] text-emerald-400/80 mt-1">
-                  {data.healthScore.status}
+                  {dashboardData.healthScore.status}
                 </p>
               </div>
             </motion.div>
@@ -469,7 +475,7 @@ export default function PortalDashboardPage() {
           animate="visible"
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
         >
-          {data.stats.map((stat, idx) => (
+          {dashboardData.stats.map((stat, idx) => (
             <StatCard key={stat.label} stat={stat} index={idx} />
           ))}
         </motion.div>
@@ -498,15 +504,14 @@ export default function PortalDashboardPage() {
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-3">
                   <span className="relative flex h-2.5 w-2.5" aria-hidden="true">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-40" />
                     <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-accent" />
                   </span>
                   <h2 className="text-base font-bold text-foreground">
                     Pending Approvals
                   </h2>
-                  {data.pendingApprovals.length > 0 && (
+                  {dashboardData.pendingApprovals.length > 0 && (
                     <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-accent/10 text-accent">
-                      {data.pendingApprovals.length}
+                      {dashboardData.pendingApprovals.length}
                     </span>
                   )}
                 </div>
@@ -523,7 +528,7 @@ export default function PortalDashboardPage() {
               </div>
 
               <AnimatePresence mode="popLayout">
-                {data.pendingApprovals.length > 0 ? (
+                {dashboardData.pendingApprovals.length > 0 ? (
                   <motion.div
                     key="approvals-list"
                     className="space-y-3"
@@ -532,7 +537,7 @@ export default function PortalDashboardPage() {
                     exit="exit"
                     variants={staggerContainer(STAGGER.component, 0)}
                   >
-                    {data.pendingApprovals.map((approval, idx) => (
+                    {dashboardData.pendingApprovals.map((approval, idx) => (
                       <ApprovalCard
                         key={approval.id}
                         approval={approval}
@@ -578,14 +583,14 @@ export default function PortalDashboardPage() {
               aria-label="Activity timeline"
             >
               {/* Vertical timeline connector line */}
-              {data.activity.length > 1 && (
+              {dashboardData.activity.length > 1 && (
                 <div
                   className="absolute left-[7px] top-3 bottom-3 w-px bg-border/30"
                   aria-hidden="true"
                 />
               )}
 
-              {data.activity.map((item, idx) => (
+              {dashboardData.activity.map((item, idx) => (
                 <motion.li
                   key={item.id}
                   variants={fadeLift}
@@ -629,7 +634,7 @@ export default function PortalDashboardPage() {
               variants={staggerContainer(STAGGER.component, 0.05)}
               initial="hidden"
               animate="visible"
-              className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"
             >
               <motion.div variants={fadeLift} custom={prefersReduced}>
                 <QuickAction
@@ -641,26 +646,42 @@ export default function PortalDashboardPage() {
               </motion.div>
               <motion.div variants={fadeLift} custom={prefersReduced}>
                 <QuickAction
+                  icon="box"
+                  label="3D Live Review"
+                  description="WebRTC spatial collaboration & pins"
+                  onClick={() => router.push('/portal/review')}
+                />
+              </motion.div>
+              <motion.div variants={fadeLift} custom={prefersReduced}>
+                <QuickAction
+                  icon="check-circle"
+                  label="Approvals & Contracts"
+                  description="E-signatures and deliverable sign-offs"
+                  onClick={() => router.push('/portal/approvals')}
+                />
+              </motion.div>
+              <motion.div variants={fadeLift} custom={prefersReduced}>
+                <QuickAction
                   icon="folder-kanban"
-                  label="Documents"
-                  description="Browse all project files and deliverables"
+                  label="Documents Vault"
+                  description="Browse 8K renders and CAD assets"
                   onClick={() => router.push('/portal/documents')}
                 />
               </motion.div>
               <motion.div variants={fadeLift} custom={prefersReduced}>
                 <QuickAction
                   icon="dollar-sign"
-                  label="Finance"
+                  label="Finance & Invoices"
                   description="Invoices, payments, and billing history"
                   onClick={() => router.push('/portal/finance')}
                 />
               </motion.div>
               <motion.div variants={fadeLift} custom={prefersReduced}>
                 <QuickAction
-                  icon="help-circle"
-                  label="Support"
-                  description="Get help or submit a support request"
-                  onClick={() => router.push('/portal/support')}
+                  icon="sparkles"
+                  label="AI Spatial Studio"
+                  description="Multimodal prompts and render analysis"
+                  onClick={() => router.push('/portal/ai')}
                 />
               </motion.div>
             </motion.div>
@@ -689,18 +710,18 @@ export default function PortalDashboardPage() {
                   'backdrop-blur-sm',
                 )}
               >
-                <HealthScore data={data.healthScore} />
+                <HealthScore data={dashboardData.healthScore} />
               </div>
             </div>
 
             {/* Metric Breakdown Bars */}
-            {data.healthScore.metricBreakdown && (
+            {dashboardData.healthScore.metricBreakdown && (
               <div className="mt-6 space-y-3" aria-label="Health metric breakdown">
                 {METRIC_KEYS.map((key, idx) => (
                   <MetricBar
                     key={key}
                     label={METRIC_LABELS[key]}
-                    value={data.healthScore.metricBreakdown![key]}
+                    value={dashboardData.healthScore.metricBreakdown![key]}
                     delay={0.5 + idx * 0.1}
                     prefersReduced={prefersReduced}
                   />
@@ -718,15 +739,15 @@ export default function PortalDashboardPage() {
               <h2 className="text-base font-bold text-foreground">
                 Upcoming Meetings
               </h2>
-              {data.upcomingMeetings.length > 0 && (
+              {dashboardData.upcomingMeetings.length > 0 && (
                 <span className="text-[10px] font-mono text-neutral-500">
-                  {data.upcomingMeetings.length} scheduled
+                  {dashboardData.upcomingMeetings.length} scheduled
                 </span>
               )}
             </div>
 
             <AnimatePresence mode="popLayout">
-              {data.upcomingMeetings.length > 0 ? (
+              {dashboardData.upcomingMeetings.length > 0 ? (
                 <motion.div
                   key="meetings-list"
                   className="space-y-3"
@@ -737,7 +758,7 @@ export default function PortalDashboardPage() {
                   role="list"
                   aria-label="Meeting list"
                 >
-                  {data.upcomingMeetings.map((meeting, idx) => (
+                  {dashboardData.upcomingMeetings.map((meeting, idx) => (
                     <div key={meeting.id} role="listitem">
                       <MeetingCard
                         meeting={meeting}
@@ -772,7 +793,7 @@ export default function PortalDashboardPage() {
       <PortalAiCopilot
         isOpen={copilotOpen}
         onClose={() => setCopilotOpen(false)}
-        projectName={data.activeProjectName}
+        projectName={dashboardData.activeProjectName}
       />
     </div>
   );
@@ -810,7 +831,6 @@ function ApprovalCard({
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 mb-1">
           <span className="relative flex h-2 w-2 shrink-0" aria-hidden="true">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-40" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
           </span>
           <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-accent/10 text-accent">

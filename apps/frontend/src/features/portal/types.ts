@@ -207,7 +207,7 @@ export interface CopilotMessage {
 /*  Command Palette & Nav                                                     */
 /* -------------------------------------------------------------------------- */
 
-export type CommandCategory = 'projects' | 'documents' | 'invoices' | 'messages' | 'settings';
+export type CommandCategory = 'projects' | 'documents' | 'invoices' | 'messages' | 'settings' | 'approvals' | 'review' | 'copilot';
 
 export interface CommandItem {
   id: string;

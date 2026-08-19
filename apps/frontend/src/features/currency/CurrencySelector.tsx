@@ -8,6 +8,7 @@ import {
   useId,
   type KeyboardEvent,
 } from 'react';
+import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCurrencyStore, type CurrencyOption } from './currency-store';
 import { useLocale } from '@/i18n/LocaleProvider';
@@ -217,19 +218,13 @@ export function CurrencySelector() {
         closePanel();
       }
     };
-    const handleEscape = (e: globalThis.KeyboardEvent) => {
-      if (e.key === 'Escape') closePanel();
-    };
-    // Delay listener to avoid immediate closure
-    const timer = setTimeout(() => {
-      document.addEventListener('mousedown', handleClick);
-      document.addEventListener('keydown', handleEscape);
-    }, 0);
-    return () => {
-      clearTimeout(timer);
-      document.removeEventListener('mousedown', handleClick);
-      document.removeEventListener('keydown', handleEscape);
-    };
+    // Escape key closes the panel (replaces ad-hoc listener)
+    useKeyboardShortcut('Escape', () => closePanel(), {
+      // Escape may need to work even when focus is in the search input
+      ignoreInput: false,
+      // Register on document like the original code
+      target: 'document',
+    });
   }, [isOpen, closePanel]);
 
   /* ---- Keyboard nav within dropdown ---- */

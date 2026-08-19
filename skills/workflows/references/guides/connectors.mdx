@@ -1,0 +1,178 @@
+---
+id: connectors
+title: Connectors
+sidebar_position: 8
+---
+
+# Connectors in Workflows
+
+Connectors let workflows call external services (GitHub, Notion, Slack, ...) using credentials managed by the Mistral Connectors platform. The workflow **declares** which connectors it needs; the platform resolves credentials and drives any OAuth flow automatically. The same code works whether the connector uses a bearer/PAT token or OAuth2. **You never put secrets in workflow code**.
+
+Connectors ship in the Mistral plugin:
+
+```bash
+uv add 'mistralai-workflows[mistralai]'
+```
+
+### Discovering configured connectors
+
+The `name` you pass to `connector(...)` must match a connector already configured for the workspace, don't guess them ever! To see the configured connectors and their exact names, run:
+
+```bash
+uv run python -c "from dotenv import load_dotenv; load_dotenv(); import os; from mistralai.client import Mistral; print(*[c.name for c in Mistral(api_key=os.environ['MISTRAL_API_KEY']).beta.connectors.list().items], sep='\n')"
+```
+
+For a connector's tools, use `list_tools` (returns a plain list, not `.items`) and don't guess them even if you think you know how they must be called!:
+
+```bash
+uv run python -c "from dotenv import load_dotenv; load_dotenv(); import os; from mistralai.client import Mistral; print(*[t.name for t in Mistral(api_key=os.environ['MISTRAL_API_KEY']).beta.connectors.list_tools(connector_id_or_name='github_app')], sep='\n')"
+```
+
+Each tool also has `.jsonschema` for its `arguments` (add `t.jsonschema` to the print when you need it).
+(You only need these calls to figure out how to write the code. Don't put these snippets in the workflow itself.)
+
+## Declaring connectors in a workflow
+
+Three pieces wire a connector in:
+
+1. `connector("name")` — declares a **connector slot**.
+2. `@uses_connectors(...)` — attaches slots to the workflow class; apply it **after** `@workflow.define` (on the line below).
+3. `Depends(slot)` — injects a `ToolCallClient` into an activity.
+
+```python
+import pydantic
+import mistralai.workflows as workflows
+from mistralai.workflows import Depends
+from mistralai.workflows.plugins.mistralai.connectors import (
+    ToolCallClient,
+    connector,
+    uses_connectors,
+)
+
+github = connector("github_app")
+
+
+class CreateIssueInput(pydantic.BaseModel):
+    owner: str
+    repo: str
+    title: str
+    body: str
+
+
+@workflows.activity(name="create-github-issue")
+async def create_github_issue(
+    owner: str,
+    repo: str,
+    title: str,
+    body: str,
+    client: ToolCallClient = Depends(github),
+) -> None:
+    await client.call_tool(
+        tool_name="issue_write",
+        arguments={
+            "method": "create",
+            "owner": owner,
+            "repo": repo,
+            "title": title,
+            "body": body,
+        },
+    )
+
+
+@workflows.workflow.define(name="github-issue-creator")
+@uses_connectors(github)
+class GitHubIssueCreatorWorkflow:
+    @workflows.workflow.entrypoint
+    async def run(self, prompt: CreateIssueInput) -> None:
+        await create_github_issue(prompt.owner, prompt.repo, prompt.title, prompt.body)
+```
+
+Watch out for:
+
+- **Import path** is `mistralai.workflows.plugins.mistralai.connectors` (repeated `mistralai`), not `...plugins.connectors`.
+- **`@uses_connectors` is required** and sits **below** `@workflow.define`. Without it, credentials are never resolved and `call_tool` fails.
+- A `ToolCallClient` only works **inside an activity** (it resolves credentials from the workflow context at call time). A failed call raises `ConnectorToolCallError` (non-retryable).
+- **Tool names and argument schemas are connector-specific** (e.g. GitHub's `issue_write`, Notion's `notion-create-pages`) and aren't inferable from the SDK types. Discover them with `client.beta.connectors.list_tools_async(connector_id_or_name=...)` or take them from the task — don't guess.
+- **No special worker setup** — the Mistral plugin auto-registers the connector auth interceptor; run on a normal worker.
+
+### `connector(...)` parameters
+
+| Parameter | Default | Purpose |
+| --- | --- | --- |
+| `name` (positional) | — | Must match a connector configured for the workspace; discover via `client.beta.connectors.list_async()`. |
+| `auto_auth` | `True` | Run the OAuth preflight before the workflow starts. |
+| `credentials_name` | `None` | Pin a specific named credential set; otherwise the user's default is used. |
+| `allow_mcp_ui` | `False` | Surface an MCP tool's `_meta.ui.resourceUri` as a side app in Vibe after a matching tool call (fire-and-forget — the workflow doesn't wait for or consume the result). |
+
+## Acting as the user (on-behalf-of)
+
+A connector call runs as one of two identities:
+
+- **The triggering user** — set `on_behalf_of=True` on `@workflow.define`, and the connector uses the credentials *that user* authorized (their GitHub, their Notion, ...).
+- **The worker** (default) — the connector uses the worker's own stored credentials: one shared service identity for every run.
+
+```python
+@workflows.workflow.define(name="github-issue-creator", on_behalf_of=True)
+@uses_connectors(github)
+class GitHubIssueCreatorWorkflow:
+    ...
+```
+
+Fall back to worker credentials (omit `on_behalf_of`) when there's no triggering user or you deliberately want one shared identity. Caveats (platform-enforced):
+
+- **Needs a triggering user.** Starting an `on_behalf_of=True` workflow without a user session is rejected (`403 "On-behalf-of workflows require user identity"`). For the same reason it **can't be combined with `schedules`** — the SDK raises at definition time, since a scheduled run has no triggering user.
+- **Restricted to Mistral-internal orgs.** Registering an `on_behalf_of=True` workflow returns `403 "on_behalf workflows are currently restricted to Mistral-internal organizations"` unless the org is internal or the `ON_BEHALF_WORKFLOWS_ENABLED` feature flag is enabled.
+
+## Connectors in durable agents
+
+Pass slots to an `Agent` via `connectors=[...]` so it can call connector tools autonomously. Keep `@uses_connectors` on the workflow. See the [Durable Agents](durable-agents.mdx) guide for agent/runner output handling.
+
+```python
+import mistralai.workflows as workflows
+from mistralai.workflows.plugins.mistralai import Agent, Runner
+from mistralai.workflows.plugins.mistralai.connectors import connector, uses_connectors
+
+github = connector("github_app")
+
+
+@workflows.workflow.define(name="github-agent")
+@uses_connectors(github)
+class GitHubAgentWorkflow:
+    @workflows.workflow.entrypoint
+    async def run(self, repo: str) -> str:
+        agent = Agent(
+            name="github-pr-lister",
+            model="mistral-medium-latest",
+            instructions=f"List recent pull requests on {repo}.",
+            connectors=[github],  # connector tools available to the agent
+        )
+        outputs = await Runner.run(agent=agent, inputs=f"Summarize PRs on {repo}.")
+        return await extract_text(outputs)
+```
+
+OAuth and credential resolution still happen automatically.
+
+## Running a connector workflow
+
+You usually don't run these by hand, they're triggered from Studio/the UI (which shows the OAuth prompt) or by whatever starts the workflow. To trigger one **from Python** when it may need OAuth, use `execute_with_connector_auth_async` (`mistralai.extra.workflows`): it surfaces the auth URL via an `on_auth_required(state)` callback and resumes automatically once the user authorizes. For plain execution without OAuth, see the [Python SDK](../getting-started/python-sdk.mdx) guide.
+
+## Common errors
+
+| Symptom | Cause / fix |
+| --- | --- |
+| `RuntimeError: No workflow context available` | `ToolCallClient` used outside an activity. Inject via `Depends` and call tools inside an `@activity`. |
+| Credentials never resolve / `call_tool` fails | Missing `@uses_connectors`, or the connector `name` doesn't match a configured connector (check `client.beta.connectors.list_async()`). |
+| `ConnectorAuthTimeout` | OAuth not completed within 10 minutes. Re-run and authorize promptly. |
+| `ConnectorToolCallError` | The connector tool rejected the call — check `tool_name` and the `arguments` schema. |
+| `ImportError` for connectors | Install the extra: `uv add 'mistralai-workflows[mistralai]'`; import from `mistralai.workflows.plugins.mistralai.connectors`. |
+
+## Quick reference
+
+| Symbol | Import from | Use |
+| --- | --- | --- |
+| `connector(name, *, auto_auth, credentials_name, allow_mcp_ui)` | `mistralai.workflows.plugins.mistralai.connectors` | Declare a connector slot. |
+| `uses_connectors(*slots)` | same | Class decorator; attach slots (after `@workflow.define`). |
+| `ToolCallClient` / `.call_tool(tool_name, arguments)` | same | Call connector tools from an activity (inject via `Depends`). |
+| `Agent(..., connectors=[...])` | `mistralai.workflows.plugins.mistralai` | Give a durable agent connector tools. |
+| `execute_with_connector_auth_async(...)` | `mistralai.extra.workflows` | Run a connector workflow from Python, handling OAuth (trigger-side, not needed to build a workflow). |
+| `client.beta.connectors.list_async()` / `list_tools_async(connector_id_or_name=)` | `mistralai` client | Discover configured connectors and their tool names/schemas. |

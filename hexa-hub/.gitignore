@@ -46,3 +46,5 @@ docker/data/
 # logs
 logs/
 *.log
+
+test-sessions/

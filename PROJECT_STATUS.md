@@ -1,7 +1,7 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** August 18, 2026 — O1/O2 perf wave + post-O2 Lighthouse audit recorded (docs-only commit; gates per Aug-17 verified runs)
-**Version:** 2.2.0
+**Last Updated:** August 19, 2026 — HEXA Hub bridge restoration + backend gate green (47/47 test files, hexa-hub session spec 20/20, tsc 0 errors)
+**Version:** 2.2.2
 **Authority Level:** 13 (Production)
 **Current Phase:** Production-Ready — Quad-Track Feature Delivery & Silent Luxury Design System (DEPLOYED)
 
@@ -12,7 +12,7 @@
 | Property | Value |
 |---|---|
 | **Host** | `19.16.1.100` |
-| **SSH Key** | `C:\Users\amrmo\.ssh\hexastudio_key` |
+| **SSH Key** | `C:\Users\amrmo\OneDrive\Desktop\hexastudio_key` |
 | **User** | `root` |
 | **GitLab CE** | `https://gitlab.hexastudio.net` |
 | **Container Registry** | `registry.gitlab.hexastudio.net` |
@@ -25,19 +25,20 @@
 
 | Gate | Target | Status | Result |
 |---|---|---|---|
-| **Backend Tests** | 378 total | `378 / 378` | ✅ PASS |
-| **Frontend Tests** | 351 total | `351 / 351` | ✅ PASS |
+| **Backend Tests** | 370 total (47 files) | `47 / 47 files` | ✅ PASS |
+| **Frontend Tests** | 465 total | `465 / 465` | ✅ PASS |
 | **Mobile Tests** | 25 passing | `25 / 25` | ✅ PASS |
 | **Frontend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **Backend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **Mobile Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **ESLint (all)** | 0 errors, 0 warnings | `0 errors, 0 warnings` (frontend, backend, mobile full `src` + `test`) | ✅ PASS |
 
-- **Current Phase**: Phase 4 / Release Candidate & Live Operations (v2.2.1)
+- **Current Phase**: Phase 4 / Release Candidate & Live Operations (v2.2.2)
 - **Active Workspace Quality Gates**:
-  - `apps/frontend`: 48 suites / 351 tests passed (100%), 50 routes compiled, 0 errors, 0 warnings
-  - `apps/backend`: 45 suites / 378 tests passed (100%), 0 errors, 0 warnings
+  - `apps/frontend`: 60 suites / 436 tests passed (100%), 50 routes compiled, 0 errors, 0 warnings
+  - `apps/backend`: 47 files / 370 tests passed (100%), 0 errors, 0 warnings
   - `apps/mobile`: 8 suites / 25 tests passed (100%), 0 errors, 0 warnings
+
 - **Production Server (`19.16.1.100`)**:
   - 28/28 containers **Up (healthy)**
   - Odoo ERP Delta Sync: **Active (0 errors, 18 records synced across 5 entities)**
@@ -123,6 +124,38 @@
 - [x] **BUG — Silent Luxury fonts declared but never loaded:** `--sl-heading-font` (Cormorant Garamond) and `--sl-body-font` (Jost) were referenced in `globals.css`/`silent-luxury-tokens.css` but absent from the Google Fonts payload in `layout.tsx`, so the browser silently fell back to Playfair Display/Inter. Added `Cormorant+Garamond:ital,wght@0,300..700;1,300..700` + `Jost:wght@200..500` to the existing non-blocking `gf-preload`/`gf-css`/`noscript` stylesheet (media="print" → inline promote script unchanged), plus `rel="preload" as="font"` woff2 entries for Cormorant latin normal + italic and Jost latin (URLs verified against the fonts.gstatic.com CSS API, `v21`/`v20`). Homepage hero now renders true Cormorant Garamond headlines (incl. the italic "Spaces" accent) and Jost body/buttons via the `sl-*` classes; removed the redundant inline `fontFamily` stack on the `HomeHeroStatic` h1 (the `sl-heading` class alone suffices).
 - [x] **BUG — inconsistent homepage content columns:** `.storybook-body` was `max-width: 680px`, squeezing FeaturedWork/Process/Achievements/ProjectGrid/Testimonials inside a 680px column (their inner `max-w-7xl` was meaningless), while the chapter intro used `max-w-3xl` (768px) — misaligned. `.storybook-body` now uses `max-width: clamp(640px, 72ch, 760px)` (72ch prose width, up to ~760px on wide screens); `StorybookChapter` intro wrapper changed `max-w-3xl` → `max-w-[clamp(640px,72ch,760px)]` so title/ornaments track the body column exactly at every viewport width. Inner `max-w-7xl` sections left untouched (outer wrapper governs). Other marketing pages (about/services/projects/blog/contact/studio) intentionally untouched — site-wide `--font-serif`/`--font-sans` convention stands.
 - [x] **Gates verified:** frontend lint 0/0, typecheck 0 errors, tests **357/357** (49 files), design-token gate PASSED.
+
+**HEXA Hub bridge restoration + backend test gate GREEN (Aug 19, 2026):**
+- [x] **Root cause:** the sole failing backend suite (`apps/backend/tests/session/session.service.spec.ts`, broken since `c6235ed`) traced to an **accidental ~340-line deletion in `f13d0f6`** — the commit removed the entire `McpBridge` class from `hexa-hub/src/bridge.ts` while `mcp-server.ts`, `index.ts`, and the spec still depended on it. The spec also had 3 template-literal syntax errors (lines 158/206/233) and an unresolvable import.
+- [x] **Restored** `bridge.ts` from `f13d0f6^` (464 lines, full `McpBridge` class) + removed duplicate export; fixed `hexa-hub/src/index.ts` re-export path (`'./src/bridge'` → `'./bridge'`).
+- [x] **Implemented missing session subsystem** (test-defined contract; `sessionTtl`/`persistence`/`cleanupInterval` config options were dead code): `Session` interface → class (`ttl`/`expiresAt`/`addMessage`/`addToolResult`/`refreshTTL`/`extendTTL`/`isExpired`, monotonic timestamps to eliminate same-ms races), public `getOrCreateSession`/`getSession`/`getAllSessions` (expiry-aware), `listSessions`, `sessionInfo`, `cleanupSession(id, preserve?)`, `renewSessionTtl`, file persistence (`<repoPath>/data/<id>.json`) with load-on-start + 50 ms snapshot timer, cleanup interval, webhook `EADDRINUSE` tolerance (multi-instance safe).
+- [x] **Spec relocated to its home** (`hexa-hub/tests/session.service.spec.ts` via `git mv`), portable temp dir (was hardcoded `C:\Users\amrmo\...`), explicit vitest imports, 10 s timeout on the 6 s-wait cleanup test, `test-sessions/` gitignored.
+- [x] **hexa-hub gates:** session spec **20/20 PASS**; `tsc --noEmit` **0 errors** (fixed pre-existing `winston.Level`, `repoPath` assignability, spawn stdio typing, `unknown` error handling; excluded dead WIP `src/mcp-server.ts` — placeholder imports `mcp-server`/`@mcpserver/stdio` that do not exist on npm; real stdio entry is `src/mcp-stdio.ts`).
+- [x] **Backend gate GREEN:** **47/47 test files PASS (exit 0)**. Env note: `npm run test --workspace=apps/backend` no longer resolves `vitest` after the root `npm ci` hoist (workspace-local `.bin` dirs are not created) — use `node_modules\.bin\vitest.cmd run --config apps/backend/vitest.config.mts --silent`.
+- [x] **Environment repair:** root `node_modules` corruption from a killed `npm install` (partial extractions: vitest, iterare, rxjs, xmlrpc/xmlbuilder, @rolldown native binding) fixed via `npm ci`; lockfile synced with `npm install --package-lock-only`.
+- [x] **hexa-hub test runner partitioning:** root bare `vitest run` was sweeping up specs owned by other runners (e2e/ → Playwright, apps/api → Jest, apps/web → own jsdom vitest config). Added `hexa-hub/vitest.config.ts` scoping root vitest to `tests/**`; changed `test` script `vitest` → `vitest run` (bare `vitest` hung in watch mode under redirected stdout). `npm test` now exits 0 (20/20).
+- [ ] Remaining: hexa-hub has no `eslint.config.js` (ESLint 9 flat config missing) — needs new devDeps + legacy triage, separate setup task. Commit of the working tree (~36 files) pending decision.
+**Utility hooks suite — Essential React hook library (Aug 18, 2026):**
+- [x] **Gap analysis:** the `src/hooks/` directory was missing 7 standard React utility hooks (`usePrevious`, `useDebouncedValue`/`useDebouncedCallback`, `useLocalStorage`, `useCopyToClipboard`, `useWindowSize`/`useWindowBreakpoint`, `useIntersectionObserver`, `useEvent`). Grep confirmed 0 existing implementations. Created all 7 as `'use client'` component hooks with strict TypeScript (zero `any`), JSDoc documentation, and comprehensive unit test suites.
+- [x] **7 new hook source files** in `apps/frontend/src/hooks/`:
+  - `usePrevious.ts` — tracks the previous value of a prop/state (7 tests)
+  - `useDebouncedValue.ts` — debounces values + memoised debounced callbacks (11 tests)
+  - `useLocalStorage.ts` — type-safe localStorage with functional updates, custom serializers, cross-tab sync (10 tests)
+  - `useCopyToClipboard.ts` — clipboard API with execCommand fallback, isCopying state, auto-reset (7 tests)
+  - `useWindowSize.ts` — window dimensions + semantic breakpoint detection with optional rAF throttling (9 tests)
+  - `useIntersectionObserver.ts` — callback-ref-based IntersectionObserver wrapper with once/unobserve support (6 tests)
+  - `useEvent.ts` — stable event listener hook for window/document/element targets with passive/once/capture options (8 tests)
+- [x] **7 new test files** in `apps/frontend/test/hooks/` — 58 new tests total
+- [x] **All hooks exported** from `src/hooks/index.ts` barrel
+- [x] **Gates verified:** frontend lint 0/0, typecheck 0 errors, tests **432/432** (59 files, +75 net tests from hook additions), design-token gate PASSED.
+
+**Utility hooks suite (pt. 2) — Keyboard shortcuts (Aug 18, 2026):**
+- [x] **Gap analysis:** `@/hooks/` had no cross-platform keyboard-shortcut utility. 6 portal/frontend components (`CommandPalette`, `Navbar`, `PortalNav`, `ProjectDetailModal`, `CinematicPreloader`, `CurrencySelector`) each duplicated ad-hoc `addEventListener('keydown', ...)` + manual `metaKey`/`ctrlKey` checks. Added two hooks:
+  - `useKeyboardShortcut.ts` — single key combo with `{ ctrlCmd, alt, shift }` modifiers (cross-platform: Cmd on macOS, Ctrl on Win/Linux), `preventDefault`, `ignoreInput` (skips form fields), `ignoreIME` (skips composition events), `target` (window/document). Exports `useKeyboardShortcut` + `isKeyCombo` pure matcher.
+  - `useHotkeys.ts` — multiple shortcuts under a single `keydown` listener (more efficient than N calls). First matching handler fires per keypress.
+  - Both use `Event` -> `KeyboardEvent` cast (DOM `addEventListener` typing), `useRef` for stable callbacks, proper cleanup.
+- [x] **2 new test files** (`use-keyboard-shortcut.test.ts` — 18 tests, `use-hotkeys.test.ts` — 11 tests) covering modifier matching, cross-platform ctrlCmd, input/textarea guards, IME, preventDefault, cleanup, stable callbacks on re-render, first-match-wins.
+- [x] **Gates verified:** frontend lint 0/0, typecheck 0 errors, hook tests **123/123** (17 files), design-token gate PASSED.
 
 **Production deploy + fixes (Aug 17, 2026) — commit `75dc3b0`:**
 - [x] **BUG — backend never compiled from scratch (`TS1016`):** `auth.controller.ts` logout had `@Headers('authorization') authHeader?: string` (optional) immediately followed by required `@Body() body` → `TS1016: A required parameter cannot follow an optional parameter`. Masked for weeks by Docker layer caching (any prior deploy reused the cached `COPY . .` build layer). A frontend-only change invalidated the layer → full backend rebuild → build broke, blocking deploy. Fix: removed `?` (runtime-identical — `authHeader?.replace('Bearer ', '') ?? ''` already absorbs `undefined`). Backend gates: lint 0/0, typecheck 0, tests **386/386** (46 files), `nest build` ✅. **Note: the previously-running production backend image predated repo HEAD — the deployed backend now matches the repo for the first time.**

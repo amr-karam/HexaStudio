@@ -41,7 +41,7 @@ export const StudioSection = () => {
             whileHover={{ opacity: 1 }}
             className="absolute bottom-8 start-8 end-8 p-6 bg-black/40 backdrop-blur-xl border border-white/10 text-white transition-opacity duration-500 pointer-events-none"
           >
-            <p className="text-[10px] uppercase tracking-[0.3em] text-gold mb-2 font-mono">Technical Spec</p>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-accent/60 mb-2 font-mono">Technical Spec</p>
             <p className="text-xs font-light leading-relaxed opacity-80">
               Utilizing OctaneRender & Unreal Engine 5 for real-time photorealistic light simulation.
             </p>

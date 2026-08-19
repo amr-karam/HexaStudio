@@ -20,11 +20,11 @@ interface HealthScoreProps {
   className?: string;
 }
 
-function getScoreColor(score: number): { stroke: string; text: string; glow: string } {
-  if (score > 80) return { stroke: 'var(--color-accent)', text: 'text-accent', glow: 'rgba(var(--color-accent-rgb), 0.1)' };
-  if (score > 60) return { stroke: 'var(--color-neutral-400)', text: 'text-neutral-400', glow: 'rgba(var(--color-neutral-400-rgb), 0.1)' };
-  if (score > 40) return { stroke: 'var(--color-neutral-500)', text: 'text-neutral-500', glow: 'rgba(var(--color-neutral-500-rgb), 0.1)' };
-  return { stroke: 'var(--color-danger)', text: 'text-danger', glow: 'rgba(var(--color-danger-rgb), 0.1)' };
+function getScoreColor(score: number): { text: string; glow: string } {
+  if (score > 80) return { text: 'text-accent', glow: 'rgba(var(--color-accent-rgb), 0.1)' };
+  if (score > 60) return { text: 'text-neutral-400', glow: 'rgba(var(--color-neutral-400-rgb), 0.1)' };
+  if (score > 40) return { text: 'text-neutral-500', glow: 'rgba(var(--color-neutral-500-rgb), 0.1)' };
+  return { text: 'text-danger', glow: 'rgba(var(--color-danger-rgb), 0.1)' };
 }
 
 function getStatusLabel(score: number): string {
@@ -91,11 +91,12 @@ export function HealthScore({ data, className }: HealthScoreProps) {
             cy="60"
             r={CIRCLE_RADIUS}
             fill="none"
-            stroke={colors.stroke}
+            stroke="currentColor"
             strokeWidth="3"
             strokeLinecap="butt"
             strokeDasharray={CIRCLE_CIRCUMFERENCE}
             strokeDashoffset={animatedOffset}
+            className={colors.text}
             style={{
               transition: prefersReduced
                 ? 'none'

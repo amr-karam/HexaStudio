@@ -8,11 +8,12 @@
  * beautiful scale + fade animation.
  */
 
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { usePortalStore } from '../store';
+import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
 import { Icon, type IconName } from './PortalIcons';
 import { overlay, modalPanel } from '@/lib/motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -26,6 +27,16 @@ const COMMAND_ITEMS: CommandItem[] = [
   // Projects
   { id: 'projects', category: 'projects', label: 'View Projects', description: 'Browse all active projects', href: '/portal/projects', icon: 'folder-kanban' },
   { id: 'project-detail', category: 'projects', label: 'Project Details', description: 'View project progress and milestones', href: '/portal/projects', icon: 'eye' },
+
+  // Approvals & Signatures
+  { id: 'approvals', category: 'approvals', label: 'Approval Center', description: 'Pending client approvals and sign-offs', href: '/portal/approvals', icon: 'file-check' },
+  { id: 'contracts', category: 'approvals', label: 'Contracts & Sign-Offs', description: 'E-signature contracts & audit trail', href: '/portal/approvals', icon: 'shield-check' },
+
+  // 3D Live Review Room
+  { id: 'review-room', category: 'review', label: '3D Live Review Room', description: 'WebRTC spatial collaboration & pins', href: '/portal/review', icon: 'box' },
+
+  // AI Spatial Copilot
+  { id: 'copilot', category: 'copilot', label: 'AI Spatial Copilot', description: 'Multimodal design assistance & intelligence', href: '/portal/copilot', icon: 'sparkles' },
 
   // Documents
   { id: 'documents', category: 'documents', label: 'View Documents', description: 'Browse your document vault', href: '/portal/documents', icon: 'file-text' },
@@ -46,6 +57,9 @@ const COMMAND_ITEMS: CommandItem[] = [
 
 const CATEGORY_LABELS: Record<CommandCategory, string> = {
   projects: 'Projects',
+  approvals: 'Approvals & Contracts',
+  review: '3D Review Room',
+  copilot: 'Spatial Intelligence',
   documents: 'Documents',
   invoices: 'Invoices',
   messages: 'Messages',
@@ -54,6 +68,9 @@ const CATEGORY_LABELS: Record<CommandCategory, string> = {
 
 const CATEGORY_ICONS: Record<CommandCategory, IconName> = {
   projects: 'folder-kanban',
+  approvals: 'file-check',
+  review: 'box',
+  copilot: 'sparkles',
   documents: 'file-text',
   invoices: 'receipt',
   messages: 'message-square',
@@ -158,6 +175,11 @@ export function CommandPalette() {
   // Flat list for keyboard navigation
   const flatResults = useMemo(() => results, [results]);
 
+  const selectedId = useMemo(
+    () => (flatResults[selectedIndex] ? `cmd-item-${flatResults[selectedIndex].id}` : undefined),
+    [flatResults, selectedIndex],
+  );
+
   // Focus input on open
   useEffect(() => {
     if (isCommandPaletteOpen) {
@@ -170,17 +192,7 @@ export function CommandPalette() {
     }
   }, [isCommandPaletteOpen]);
 
-  // Keyboard shortcut: Ctrl/Cmd+K
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setCommandPaletteOpen(!isCommandPaletteOpen);
-      }
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [isCommandPaletteOpen, setCommandPaletteOpen]);
+  useKeyboardShortcut('k', () => setCommandPaletteOpen(!isCommandPaletteOpen), { ctrlCmd: true });
 
   // Navigate with arrow keys
   const handleKeyDown = useCallback(
@@ -268,6 +280,8 @@ export function CommandPalette() {
                 placeholder="Type a command or search..."
                 className="flex-1 h-14 bg-transparent text-foreground text-sm placeholder:text-neutral-600 outline-none"
                 aria-label="Search commands"
+                aria-controls="command-palette-list"
+                aria-activedescendant={selectedId}
                 autoComplete="off"
               />
               <kbd className="text-[10px] font-mono text-neutral-600 border border-border/30 rounded px-1.5 py-0.5">
@@ -276,7 +290,7 @@ export function CommandPalette() {
             </div>
 
             {/* Results */}
-            <div ref={listRef} className="max-h-80 overflow-y-auto p-2" role="listbox">
+            <div ref={listRef} id="command-palette-list" className="max-h-80 overflow-y-auto p-2" role="listbox">
               {flatResults.length === 0 ? (
                 <div className="py-12 text-center">
                   <p className="text-sm text-neutral-500">No results found</p>
@@ -301,6 +315,7 @@ export function CommandPalette() {
                         <button
                           key={item.id}
                           data-index={globalIndex}
+                          id={`cmd-item-${item.id}`}
                           role="option"
                           aria-selected={isSelected}
                           onClick={() => handleSelect(item)}

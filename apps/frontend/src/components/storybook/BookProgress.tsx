@@ -105,15 +105,15 @@ export function BookProgress() {
                 height: '22px',
                 borderRadius: '1px',
                 border: isActive
-                  ? '1.5px solid rgba(212, 175, 55, 0.7)'
+                  ? '1.5px solid var(--color-gold-70)'
                   : '1px solid rgba(255,255,255,0.12)',
                 background: isActive
-                  ? 'rgba(212, 175, 55, 0.12)'
+                  ? 'var(--color-gold-12)'
                   : isCompleted
-                  ? 'rgba(212, 175, 55, 0.08)'
+                  ? 'var(--color-gold-8)'
                   : 'rgba(255,255,255,0.03)',
                 boxShadow: isActive
-                  ? '0 0 12px rgba(212, 175, 55, 0.15)'
+                  ? '0 0 12px var(--color-gold-15)'
                   : 'none',
                 transition: 'all 0.4s var(--hexa-ease-entrance)',
                 transform: isActive ? 'translateX(-2px)' : 'translateX(0)',
@@ -130,8 +130,8 @@ export function BookProgress() {
                     right: '-3px',
                     width: '8px',
                     height: '8px',
-                    borderRight: '1px solid rgba(212, 175, 55, 0.3)',
-                    borderBottom: '1px solid rgba(212, 175, 55, 0.3)',
+                    borderRight: '1px solid var(--color-gold-30)',
+                    borderBottom: '1px solid var(--color-gold-30)',
                     background: 'rgba(0,0,0,0.3)',
                     transform: 'rotate(45deg)',
                   }}
@@ -146,7 +146,7 @@ export function BookProgress() {
                   width: '10px',
                   height: '1px',
                   background: isActive
-                    ? 'rgba(212, 175, 55, 0.4)'
+                    ? 'var(--color-gold-40)'
                     : 'rgba(255,255,255,0.08)',
                 }}
               />
@@ -158,7 +158,7 @@ export function BookProgress() {
                   width: '8px',
                   height: '1px',
                   background: isActive
-                    ? 'rgba(212, 175, 55, 0.25)'
+                    ? 'var(--color-gold-25)'
                     : 'rgba(255,255,255,0.06)',
                 }}
               />
@@ -172,7 +172,7 @@ export function BookProgress() {
                 letterSpacing: '0.08em',
                 textTransform: 'uppercase',
                 color: isActive
-                  ? 'rgba(212, 175, 55, 0.9)'
+                  ? 'var(--color-gold-90)'
                   : isCompleted
                   ? 'rgba(255,255,255,0.4)'
                   : 'rgba(255,255,255,0.2)',

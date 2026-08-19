@@ -3,37 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>HEXA Studio — AI Assistant Style Preview</title>
+  <title>HEXA Studio — AI Assistant Live Preview</title>
   <style>
-    /* ═══════════════════════════════════════════════════════════════════
-       HEXA STUDIO — Design Token System (v1.0)
-       ═══════════════════════════════════════════════════════════════════ */
     :root {
-      /* Canvas (60% — dark void) */
       --color-void:          #050505;
       --color-void-deep:     #020203;
       --color-surface:       #1A1A1A;
       --color-border:        #1F1F1F;
       --color-border-hover:  #2A2A2A;
-
-      /* Gold (10% — HEXA signature) */
       --color-gold:          #D4AF37;
       --color-gold-bright:   #E5C76B;
-
-      /* Semantic colors */
-      --color-success:       #22C55E;
       --color-info:          #3B82F6;
+      --color-success:       #22C55E;
       --color-warning:       #F59E0B;
       --color-error:         #EF4444;
-
-      /* Agent colors */
       --color-metric-amber:  #FBBF24;
       --color-metric-emerald:#34D399;
       --color-metric-violet: #A78BFA;
-      --color-metric-teal:   #22D3EE;
-      --color-metric-red:    #F87171;
-
-      /* Text */
       --color-text-primary:  #FFFFFF;
       --color-text-secondary: #A0A0A0;
       --color-text-tertiary:  #707075;
@@ -43,257 +29,777 @@
     body {
       background: var(--color-void-deep);
       color: var(--color-text-primary);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       overflow: hidden;
     }
 
-    /* ═══════════════════════════════════════════════════════════════════
-       Utility Classes
-       ═══════════════════════════════════════════════════════════════════ */
     .bg-void-deep  { background-color: var(--color-void-deep); }
     .bg-surface    { background-color: var(--color-surface); }
     .bg-gold       { background-color: var(--color-gold); }
-    .bg-gold-10    { background-color: color-mix(in srgb, var(--color-gold) 10%, transparent); }
-    .bg-info-10    { background-color: color-mix(in srgb, var(--color-info) 10%, transparent); }
-    .border-border  { border-color: var(--color-border); }
-    .border-gold-50 { border-color: color-mix(in srgb, var(--color-gold) 50%, transparent); }
+    .border-border { border-color: var(--color-border); }
     .text-foreground { color: var(--color-text-primary); }
     .text-tertiary   { color: var(--color-text-tertiary); }
     .text-gold       { color: var(--color-gold); }
     .text-info       { color: var(--color-info); }
-    .text-secondary  { color: var(--color-text-secondary); }
+    .text-success    { color: var(--color-success); }
 
-    /* ═══════════════════════════════════════════════════════════════════
-       Layout
-       ═══════════════════════════════════════════════════════════════════ */
     .app-container { display: flex; flex-direction: column; height: 100vh; }
-    .header       { border-bottom: 1px solid var(--color-border); background: var(--color-void-deep); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
-    .messages     { flex: 1; overflow-y: auto; padding: 16px; }
-    .msg-wrapper  { max-width: 768px; margin: 0 auto; }
-    .footer       { border-top: 1px solid var(--color-border); background: var(--color-void-deep); padding: 16px; }
 
-    /* ═══════════════════════════════════════════════════════════════════
-       Message Bubbles
-       ═══════════════════════════════════════════════════════════════════ */
-    .msg          { margin-bottom: 24px; max-width: 80%; border-radius: 24px; padding: 12px 16px; }
-    .msg-user     { background: var(--color-gold); color: var(--color-void-deep); border-radius-bottom-right: 6px; margin-left: auto; }
-    .msg-bot      { background: var(--color-surface); border: 1px solid var(--color-border); border-radius-bottom-left: 6px; }
+    /* ─── Header ─� */
+    .header {
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-void-deep);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .header-icon {
+      width: 32px; height: 32px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      background: color-mix(in srgb, var(--color-gold) 10%, transparent);
+      transition: transform 0.2s;
+    }
+    .header-icon:hover { transform: scale(1.1) rotate(5deg); }
+    .header-title { font-family: 'Playfair Display', Georgia, serif; font-size: 16px; font-weight: 300; }
+    .header-subtitle { font-size: 11px; color: var(--color-text-tertiary); }
 
-    /* Agent Badge */
-    .agent-badge  { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent); }
+    .header-actions { display: flex; align-items: center; gap: 8px; }
+    .header-btn {
+      padding: 8px; border-radius: 8px;
+      color: var(--color-text-tertiary);
+      border: none; cursor: pointer;
+      transition: all 0.2s; background: transparent;
+    }
+    .header-btn:hover {
+      color: var(--color-text-primary);
+      background: rgba(255,255,255,0.03);
+    }
+
+    /* ─── Agent Selector Dropdown ── */
+    .agent-selector {
+      position: relative;
+      display: inline-block;
+    }
+    .selector-trigger {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--color-border);
+      font-size: 13px;
+      background: var(--color-void-deep);
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      min-width: 160px;
+      transition: all 0.2s;
+    }
+    .selector-trigger:hover { border-color: var(--color-border-hover); }
+    .selector-trigger:focus-within { border-color: color-mix(in srgb, var(--color-gold) 50%, transparent); outline: none; }
+
+    .selector-trigger .badge {
+      width: 20px; height: 20px; border-radius: 9999px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px;
+    }
+    .selector-trigger .badge.erp    { background: color-mix(in srgb, var(--color-metric-amber) 20%, transparent); color: var(--color-metric-amber); border: 1px solid color-mix(in srgb, var(--color-metric-amber) 40%, transparent); }
+    .selector-trigger .badge.sales  { background: color-mix(in srgb, var(--color-metric-emerald) 20%, transparent); color: var(--color-metric-emerald); border: 1px solid color-mix(in srgb, var(--color-metric-emerald) 40%, transparent); }
+    .selector-trigger .badge.knowledge { background: color-mix(in srgb, var(--color-metric-violet) 20%, transparent); color: var(--color-metric-violet); border: 1px solid color-mix(in srgb, var(--color-metric-violet) 40%, transparent); }
+
+    .dropdown-chevron { margin-left: auto; transition: transform 0.2s; }
+    .dropdown-open .dropdown-chevron { transform: rotate(180deg); }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      margin-top: 4px;
+      z-index: 100;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      opacity: 0;
+      transform: scale(0.95) translateY(-4px);
+      transition: all 0.15s ease-out;
+      pointer-events: none;
+    }
+    .agent-selector.open .dropdown-menu {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      pointer-events: auto;
+    }
+
+    .dropdown-search {
+      position: relative;
+      padding: 8px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .dropdown-search input {
+      width: 100%;
+      background: var(--color-void-deep);
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      padding: 4px 28px 4px 8px;
+      font-size: 11px;
+      color: var(--color-text-primary);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .dropdown-search input:focus { border-color: color-mix(in srgb, var(--color-gold) 50%, transparent); }
+    .dropdown-search .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 12px; height: 12px;
+      color: var(--color-text-tertiary);
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .dropdown-item:hover { background: rgba(255,255,255,0.03); }
+    .dropdown-item .item-badge {
+      width: 20px; height: 20px; border-radius: 9999px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px;
+    }
+    .dropdown-item .item-label { font-size: 12px; color: var(--color-text-primary); }
+    .dropdown-item .item-desc { font-size: 10px; color: var(--color-text-tertiary); margin-top: 2px; }
+    .dropdown-item .item-check { margin-left: auto; width: 14px; height: 14px; color: var(--color-gold); }
+    .dropdown-item .item-flex { flex: 1; }
+
+    /* ─── Messages ── */
+    .messages { flex: 1; overflow-y: auto; padding: 16px; }
+    .msg-wrapper { max-width: 768px; margin: 0 auto; }
+
+    .msg { margin-bottom: 24px; max-width: 80%; border-radius: 24px; padding: 12px 16px; }
+    .msg-user {
+      background: var(--color-gold);
+      color: var(--color-void-deep);
+      border-bottom-right-radius: 6px;
+      margin-left: auto;
+    }
+    .msg-bot {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-bottom-left-radius: 6px;
+    }
+
+    .agent-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
+    }
+    .badge-circle {
+      width: 20px; height: 20px; border-radius: 9999px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px;
+    }
     .badge-erp    { background: color-mix(in srgb, var(--color-metric-amber) 20%, transparent); color: var(--color-metric-amber); border: 1px solid color-mix(in srgb, var(--color-metric-amber) 40%, transparent); }
     .badge-project{ background: color-mix(in srgb, var(--color-info) 20%, transparent); color: var(--color-info); border: 1px solid color-mix(in srgb, var(--color-info) 40%, transparent); }
     .badge-sales  { background: color-mix(in srgb, var(--color-metric-emerald) 20%, transparent); color: var(--color-metric-emerald); border: 1px solid color-mix(in srgb, var(--color-metric-emerald) 40%, transparent); }
     .badge-knowledge { background: color-mix(in srgb, var(--color-metric-violet) 20%, transparent); color: var(--color-metric-violet); border: 1px solid color-mix(in srgb, var(--color-metric-violet) 40%, transparent); }
-    .badge-circle { width: 20px; height: 20px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-size: 10px; }
 
-    /* Source tags */
-    .source-tag   { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 9999px; background: color-mix(in srgb, var(--color-info) 10%, transparent); color: var(--color-info); margin: 4px 4px 0 0; }
+    .badge-label { font-size: 11px; color: var(--color-text-tertiary); }
+    .badge-confidence { font-size: 10px; color: var(--color-text-tertiary); margin-left: auto; }
 
-    /* ═══════════════════════════════════════════════════════════════════
-       Suggested Prompts
-       ═══════════════════════════════════════════════════════════════════ */
+    .source-tag {
+      display: inline-block; font-size: 10px;
+      padding: 2px 8px; border-radius: 9999px;
+      background: color-mix(in srgb, var(--color-info) 10%, transparent);
+      color: var(--color-info);
+      margin: 4px 4px 0 0;
+    }
+
+    .timestamp {
+      display: flex; align-items: center; justify-content: flex-end;
+      gap: 4px; margin-top: 8px; font-size: 10px; color: var(--color-text-tertiary);
+    }
+
+    /* ─── Prompt Chips ── */
     .prompt-chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 16px; padding-bottom: 0; }
-    .prompt-chip  { padding: 6px 12px; border-radius: 9999px; font-size: 12px; color: var(--color-tertiary); background: var(--color-surface); border: 1px solid var(--color-border); transition: all 0.2s; cursor: pointer; }
-    .prompt-chip:hover { background: var(--color-border); color: var(--color-text-primary); }
+    .prompt-label {
+      font-size: 10px; color: var(--color-text-tertiary);
+      margin-bottom: 12px;
+      text-transform: uppercase; letter-spacing: 0.2em;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .prompt-label .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--color-gold); }
+    .prompt-chip {
+      padding: 6px 12px; border-radius: 9999px; font-size: 12px;
+      color: var(--color-text-tertiary);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      transition: all 0.2s; cursor: pointer;
+    }
+    .prompt-chip:hover {
+      transform: translateY(-1px);
+    }
 
-    /* ═══════════════════════════════════════════════════════════════════
-       Follow-up Suggestions
-       ═══════════════════════════════════════════════════════════════════ */
-    .followups    { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 16px 16px 16px; }
-    .followup-chip { padding: 6px 12px; border-radius: 9999px; font-size: 12px; color: var(--color-tertiary); background: var(--color-surface); border: 1px solid var(--color-border); transition: all 0.2s; cursor: pointer; }
-    .followup-chip:hover { background: var(--color-border); color: var(--color-text-primary); }
+    /* Category colors for prompt chips */
+    .prompt-chip.erp {
+      border-color: color-mix(in srgb, var(--color-info) 30%, transparent);
+      color: var(--color-text-secondary);
+    }
+    .prompt-chip.erp:hover {
+      background: color-mix(in srgb, var(--color-info) 10%, transparent);
+      border-color: var(--color-info);
+      color: var(--color-info);
+    }
+    .prompt-chip.projects {
+      border-color: color-mix(in srgb, var(--color-gold) 30%, transparent);
+    }
+    .prompt-chip.projects:hover {
+      background: color-mix(in srgb, var(--color-gold) 10%, transparent);
+      border-color: var(--color-gold);
+      color: var(--color-gold);
+    }
+    .prompt-chip.sales {
+      border-color: color-mix(in srgb, var(--color-metric-emerald) 30%, transparent);
+    }
+    .prompt-chip.sales:hover {
+      background: color-mix(in srgb, var(--color-metric-emerald) 10%, transparent);
+      border-color: var(--color-metric-emerald);
+      color: var(--color-metric-emerald);
+    }
+    .prompt-chip.knowledge {
+      border-color: color-mix(in srgb, var(--color-metric-violet) 30%, transparent);
+    }
+    .prompt-chip.knowledge:hover {
+      background: color-mix(in srgb, var(--color-metric-violet) 10%, transparent);
+      border-color: var(--color-metric-violet);
+      color: var(--color-metric-violet);
+    }
 
-    /* ═══════════════════════════════════════════════════════════════════
-       Tool Call Indicator
-       ═══════════════════════════════════════════════════════════════════ */
-    .tool-call    { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--color-tertiary); padding: 4px 0; }
+    /* ─── Follow-up Suggestions ── */
+    .followups { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 16px 16px 16px; }
+    .followup-chip {
+      padding: 6px 12px; border-radius: 9999px; font-size: 12px;
+      color: var(--color-text-tertiary);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-color: color-mix(in srgb, var(--color-gold) 20%, transparent);
+      transition: all 0.2s; cursor: pointer;
+    }
+    .followup-chip:hover {
+      background: color-mix(in srgb, var(--color-gold) 10%, transparent);
+      border-color: var(--color-gold);
+      color: var(--color-gold);
+    }
+
+    /* ─── Tool Call & Typing ── */
+    .tool-call {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; color: var(--color-text-tertiary);
+      padding: 4px 0;
+    }
     .tool-spinner { animation: spin 1s linear infinite; font-size: 14px; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    /* ═══════════════════════════════════════════════════════════════════
-       Typing Dots
-       ═══════════════════════════════════════════════════════════════════ */
-    .typing-dots { display: flex; align-items: center; gap: 4px; }
-    .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-text-tertiary); animation: pulse-dot 0.8s ease-in-out infinite; }
-    @keyframes pulse-dot { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+    .typing-dots { display: flex; align-items: center; gap: 4px; margin-bottom: 12px; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-text-tertiary); }
+    .dot-0 { animation: pulse-dot 1.4s ease-in-out infinite both; }
+    .dot-1 { animation: pulse-dot 1.4s ease-in-out 0.16s infinite both; }
+    .dot-2 { animation: pulse-dot 1.4s ease-in-out 0.32s infinite both; }
+    @keyframes pulse-dot { 0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); } 40% { opacity: 1; transform: scale(1); } }
 
-    /* ═══════════════════════════════════════════════════════════════════
-       Send Button
-       ═══════════════════════════════════════════════════════════════════ */
-    .send-btn     { padding: 12px; border-radius: 24px; background: var(--color-gold); color: var(--color-void-deep); border: none; cursor: pointer; transition: transform 0.1s; }
+    /* ─── Input & Footer ── */
+    .footer { border-top: 1px solid var(--color-border); background: var(--color-void-deep); padding: 16px; }
+    .input-area { display: flex; align-items: flex-end; gap: 8px; max-width: 768px; margin: 0 auto; }
+    .input-field {
+      flex: 1; background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 24px; padding: 12px 16px;
+      color: var(--color-text-primary); font-size: 14px;
+      resize: none; outline: none; width: 100%;
+      font-family: inherit; transition: border-color 0.2s;
+    }
+    .input-field:focus { border-color: color-mix(in srgb, var(--color-gold) 50%, transparent); }
+    .send-btn {
+      padding: 12px; border-radius: 24px;
+      background: var(--color-gold); color: var(--color-void-deep);
+      border: none; cursor: pointer;
+      transition: transform 0.1s;
+    }
     .send-btn:hover { transform: scale(1.05); }
     .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .send-btn svg { width: 18px; height: 18px; }
+    .input-hint {
+      display: flex; justify-content: space-between;
+      margin-top: 8px; font-size: 10px; color: var(--color-text-tertiary);
+    }
+    .char-count { color: var(--color-gold); }
 
-    /* ═══════════════════════════════════════════════════════════════════
-       Input Area
-       ═══════════════════════════════════════════════════════════════════ */
-    .input-area   { display: flex; align-items: flex-end; gap: 8px; max-width: 768px; margin: 0 auto; }
-    .input-field  { flex: 1; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 24px; padding: 12px 16px; color: var(--color-text-primary); font-size: 14px; resize: none; outline: none; }
-    .input-field:focus { border-color: color-mix(in srgb, var(--color-gold) 50%, transparent); }
+    /* ─── Settings Modal ── */
+    .settings-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(5, 5, 5, 0.6); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100; opacity: 0; pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .settings-overlay.visible { opacity: 1; pointer-events: auto; }
+    .settings-panel {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 24px;
+      padding: 24px;
+      width: 100%;
+      max-width: 400px;
+    }
+    .settings-select {
+      width: 100%; background: var(--color-void-deep);
+      border: 1px solid var(--color-border);
+      border-radius: 8px; padding: 8px 12px;
+      color: var(--color-text-primary); font-size: 14px;
+    }
 
-    /* ═══════════════════════════════════════════════════════════════════
-       History Panel
-       ═══════════════════════════════════════════════════════════════════ */
-    .history-panel { position: fixed; top: 0; right: 0; height: 100vh; width: 320px; background: var(--color-surface); border-left: 1px solid var(--color-border); z-index: 40; padding-top: 16px; }
-    .history-item  { padding: 12px 16px; border-bottom: 1px solid var(--color-border); cursor: pointer; }
-    .history-item:hover { background: color-mix(in srgb, var(--color-white) 3%, transparent); }
-    .history-time  { font-size: 10px; color: var(--color-tertiary); margin-top: 4px; }
-
-    /* ═══════════════════════════════════════════════════════════════════
-       Settings Modal
-       ═══════════════════════════════════════════════════════════════════ */
-    .settings-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(5, 5, 5, 0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 50; }
-    .settings-panel   { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 24px; padding: 24px; width: 100%; max-width: 400px; }
-    .settings-select  { width: 100%; background: var(--color-void-deep); border: 1px solid var(--color-border); border-radius: 8px; padding: 8px 12px; color: var(--color-text-primary); font-size: 14px; }
-
-    /* ═══════════════════════════════════════════════════════════════════
-       Icon Sizes
-       ═══════════════════════════════════════════════════════════════════ */
-    .icon-18 { width: 18px; height: 18px; }
-    .icon-16 { width: 16px; height: 16px; }
+    /* ─── History Panel ── */
+    .history-panel {
+      position: fixed; top: 0; right: 0; height: 100vh;
+      width: 320px; background: var(--color-surface);
+      border-left: 1px solid var(--color-border);
+      z-index: 50; padding-top: 16px;
+      transform: translateX(100%);
+      transition: transform 0.2s;
+    }
+    .history-panel.visible { transform: translateX(0); }
+    .history-item {
+      padding: 12px 16px; border-bottom: 1px solid var(--color-border);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .history-item:hover { background: rgba(255,255,255,0.03); }
+    .history-time { font-size: 10px; color: var(--color-text-tertiary); margin-top: 4px; }
   </style>
 </head>
 <body>
   <div class="app-container">
     <!-- Header -->
     <header class="header">
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <div style="width: 32px; height: 32px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: color-mix(in srgb, var(--color-gold) 10%, transparent);">
-          <!-- Bot icon -->
-          <svg class="icon-18" viewBox="0 0 24 24" fill="none" stroke="var(--color-gold)" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 9h8M8 13h8M8 17h8"/></svg>
+      <div class="header-left">
+        <div class="header-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke="currentColor">
+            <rect x="3" y="5" width="18" height="14" rx="2"/>
+            <path d="M8 9h8M8 13h8M8 17h8"/>
+          </svg>
         </div>
         <div>
-          <h1 style="font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 300; color: var(--color-text-primary);">AI Assistant</h1>
-          <p style="font-size: 11px; color: var(--color-text-tertiary);">Ask me about your projects, tasks, and data</p>
+          <h1 class="header-title">AI Assistant</h1>
+          <p class="header-subtitle">Ask me about your projects, tasks, and data</p>
         </div>
       </div>
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <!-- Agent Selector -->
-        <div style="display: flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--color-border); font-size: 12px;">
-          <span>📊</span>
-          <span>erp-analyst</span>
-          <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-tertiary)" stroke-width="2"><path d="M6 9v6M18 9v6M9 6l3 3 3-3"/></svg>
+      <div class="header-actions">
+        <!-- Agent Selector with custom dropdown -->
+        <div class="agent-selector" id="agentSelector">
+          <div class="selector-trigger dropdown-closed" id="selectorTrigger">
+            <div class="badge erp" id="selectorBadge">📊</div>
+            <span id="selectorLabel">ERP Analyst</span>
+            <svg class="dropdown-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </div>
+          <div class="dropdown-menu" id="dropdownMenu">
+            <div class="dropdown-search">
+              <svg class="search-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 21l-4.34-4.34"/>
+                <circle cx="11" cy="11" r="8"/>
+              </svg>
+              <input type="text" placeholder="Search agents..." />
+            </div>
+            <div class="dropdown-item" onclick="selectAgent('knowledge-agent')">
+              <div class="badge knowledge">📚</div>
+              <div class="item-flex">
+                <div class="item-label">Knowledge Agent</div>
+                <div class="item-desc">Information retrieval and knowledge search</div>
+              </div>
+            </div>
+            <div class="dropdown-item selected" onclick="selectAgent('erp-analyst')">
+              <div class="badge erp">📊</div>
+              <div class="item-flex">
+                <div class="item-label">ERP Analyst</div>
+                <div class="item-desc">Odoo ERP data and financial analysis</div>
+              </div>
+              <svg class="item-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 6L9 17l-5-5"/>
+              </svg>
+            </div>
+            <div class="dropdown-item" onclick="selectAgent('project-assistant')">
+              <div class="badge" style="background: color-mix(in srgb, var(--color-info) 20%, transparent); color: var(--color-info); border: 1px solid color-mix(in srgb, var(--color-info) 40%, transparent);">📋</div>
+              <div class="item-flex">
+                <div class="item-label">Project Assistant</div>
+                <div class="item-desc">Project and task management</div>
+              </div>
+            </div>
+            <div class="dropdown-item" onclick="selectAgent('sales-agent')">
+              <div class="badge sales">💼</div>
+              <div class="item-flex">
+                <div class="item-label">Sales Agent</div>
+                <div class="item-desc">CRM and sales operations</div>
+              </div>
+            </div>
+          </div>
         </div>
-        <button style="padding: 8px; border-radius: 8px; color: var(--color-tertiary); hover:color: var(--color-text-primary); border: none; cursor: pointer; transition: all 0.2s;" title="History">
-          <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l2 2"/><path d="M12 16h.01"/></svg>
+        <button class="header-btn" title="History" onclick="toggleHistory()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 8v4l2 2"/>
+          </svg>
         </button>
-        <button style="padding: 8px; border-radius: 8px; color: var(--color-tertiary); hover:color: var(--color-text-primary); border: none; cursor: pointer; transition: all 0.2s;" title="Settings">
-          <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="12"/><path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>
+        <button class="header-btn" title="Settings" onclick="toggleSettings()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="12"/>
+            <circle cx="12" cy="12" r="4"/>
+          </svg>
         </button>
       </div>
     </header>
 
     <!-- Messages -->
-    <div class="messages">
-      <div class="msg-wrapper">
-        <!-- User Message -->
-        <div class="msg msg-user">
-          Show me Q3 revenue vs budget
-          <div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 4px; font-size: 10px; color: var(--color-void-deep);">
-            <span>8:42 PM</span>
-          </div>
-        </div>
-
-        <!-- Assistant Message (from ERP Analyst) -->
-        <div class="msg msg-bot">
-          <div class="agent-badge badge-erp">
-            <div class="badge-circle" style="background: color-mix(in srgb, var(--color-metric-amber) 20%, transparent); color: var(--color-metric-amber); border: 1px solid color-mix(in srgb, var(--color-metric-amber) 40%, transparent);">📊</div>
-            <span style="font-size: 11px; color: var(--color-text-tertiary);">erp-analyst</span>
-            <span style="font-size: 10px; color: var(--color-text-tertiary); margin-left: auto;">95% confident</span>
-          </div>
-          <p style="font-size: 14px; line-height: 1.5;">Q3 revenue was €1.2M, representing a 5% increase above budget of €1.14M.<br>Top performing segments:<br>• Enterprise contracts: €850K (exceeded by 12%)<br>• Mid-market: €350K (on target)</p>
-          <div style="margin-top: 8px;">
-            <span class="source-tag">odoo.account.move</span>
-            <span class="source-tag">crm.pipeline</span>
-          </div>
-          <div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 8px; font-size: 10px; color: var(--color-text-tertiary);">
-            <span>8:42 PM</span>
-          </div>
-        </div>
-
-        <!-- Assistant Message (from Sales Agent) -->
-        <div class="msg msg-bot">
-          <div class="agent-badge badge-sales">
-            <div class="badge-circle" style="background: color-mix(in srgb, var(--color-metric-emerald) 20%, transparent); color: var(--color-metric-emerald); border: 1px solid color-mix(in srgb, var(--color-metric-emerald) 40%, transparent);">💼</div>
-            <span style="font-size: 11px; color: var(--color-text-tertiary);">sales-agent</span>
-            <span style="font-size: 10px; color: var(--color-text-tertiary); margin-left: auto;">88% confident</span>
-          </div>
-          <p style="font-size: 14px; line-height: 1.5;">Regarding your CRM opportunities: you have 3 open deals worth a total of €425K.<br>• Acme Corp — €180K (proposal sent)<br>• Beta Labs — €150K (negotiation)<br>• Gamma Industries — €95K (follow-up scheduled)</p>
-          <div style="margin-top: 8px;">
-            <span class="source-tag">crm.lead</span>
-          </div>
-          <div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 8px; font-size: 10px; color: var(--color-text-tertiary);">
-            <span>8:43 PM</span>
-          </div>
-        </div>
-
-        <!-- Bot is typing with tool call indicators -->
-        <div class="msg msg-bot">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+    <div class="messages" id="messagesContainer">
+      <div class="msg-wrapper" id="msgWrapper">
+        <div id="messagesList"></div>
+        <div id="typingIndicator" style="display:none;">
+          <div class="msg msg-bot">
             <div class="typing-dots">
-              <div class="dot" style="animation-delay: 0s;"></div>
-              <div class="dot" style="animation-delay: 0.2s;"></div>
-              <div class="dot" style="animation-delay: 0.4s;"></div>
+              <div class="dot dot-0"></div>
+              <div class="dot dot-1"></div>
+              <div class="dot dot-2"></div>
             </div>
-          </div>
-          <div style="margin-top: 8px; space-y: 4px;">
-            <div class="tool-call">
-              <span class="tool-spinner">🔧</span>
-              <span>agent → calling odoo_search_read</span>
-            </div>
-            <div class="tool-call">
-              <span class="tool-spinner">🔧</span>
-              <span>agent → calling postgres_query</span>
-            </div>
+            <div id="toolCallsContainer" style="display:none; margin-top: 8px;"></div>
           </div>
         </div>
+        <div class="followups" id="followupsContainer"></div>
       </div>
 
-      <!-- Follow-up Suggestions -->
-      <div class="followups">
-        <div class="followup-chip">Show expense breakdown</div>
-        <div class="followup-chip">Compare with last quarter</div>
-        <div class="followup-chip">Export to CSV</div>
+      <!-- Suggested Prompts with categories -->
+      <div class="prompt-chips" id="promptChips">
+        <div class="prompt-label"><span class="dot"></span>Suggested prompts</div>
+        <div class="prompt-chip projects" onclick="sendPrompt('Summarize my active projects')">Summarize my active projects</div>
+        <div class="prompt-chip projects" onclick="sendPrompt('What tasks are overdue?')">What tasks are overdue?</div>
+        <div class="prompt-chip erp" onclick="sendPrompt('Show me Q3 revenue vs budget')">Show me Q3 revenue vs budget</div>
+        <div class="prompt-chip knowledge" onclick="sendPrompt('Find related documents')">Find related documents</div>
+        <div class="prompt-chip projects" onclick="sendPrompt('Analyze team productivity')">Analyze team productivity</div>
+        <div class="prompt-chip projects" onclick="sendPrompt('Generate project timeline')">Generate project timeline</div>
+        <div class="prompt-chip sales" onclick="sendPrompt('Create a lead for Acme Corp')">Create a lead for Acme Corp</div>
+        <div class="prompt-chip sales" onclick="sendPrompt('What are our top CRM opportunities?')">What are our top CRM opportunities?</div>
       </div>
-
-      <!-- Suggested Prompts (shown when no messages) -->
-      <!--
-      <div style="padding: 16px; padding-bottom: 0;">
-        <p style="font-size: 10px; color: var(--color-text-tertiary); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.2em;">Ask me to</p>
-        <div class="prompt-chips">
-          <div class="prompt-chip">Summarize my active projects</div>
-          <div class="prompt-chip">What tasks are overdue?</div>
-          <div class="prompt-chip">Show me Q3 revenue vs budget</div>
-          <div class="prompt-chip">Find related documents</div>
-          <div class="prompt-chip">Analyze team productivity</div>
-          <div class="prompt-chip">Generate project timeline</div>
-          <div class="prompt-chip">Create a lead for Acme Corp</div>
-          <div class="prompt-chip">What are our top CRM opportunities?</div>
-        </div>
-      </div>
-      -->
     </div>
 
     <!-- Input -->
     <footer class="footer">
       <div class="input-area">
         <textarea
+          id="messageInput"
           placeholder="Type your message..."
           rows="1"
-          class="input-field"
-          style="font-size: 14px; color: var(--color-text-primary); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 24px; padding: 12px 16px; max-width: 560px;"
+          maxlength="500"
+          oninput="updateCharCount()"
+          onkeydown="handleKey(event)"
         ></textarea>
-        <button class="send-btn">
-          <!-- Send icon -->
-          <svg class="icon-18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><path d="M12 12L2 7v10h10z"/><path d="M2 17l10-10v10z"/></svg>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <path d="M12 12L2 7v10h10z"/>
+            <path d="M2 17l10-10v10z"/>
+          </svg>
         </button>
       </div>
-      <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 10px; color: var(--color-text-tertiary);">
+      <div class="input-hint">
         <span>⌘K to focus, Shift+Enter for new line</span>
-        <span>0/500</span>
+        <span id="charCount">0/500</span>
       </div>
     </footer>
+
+    <!-- History Panel -->
+    <div class="history-panel" id="historyPanel">
+      <div style="padding: 16px; border-bottom: 1px solid var(--color-border);">
+        <h2 style="font-size: 14px; font-weight: 500; color: var(--color-text-primary);">Recent Chats</h2>
+      </div>
+      <div id="historyList"></div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="settings-overlay" id="settingsOverlay" onclick="toggleSettings()">
+      <div class="settings-panel" onclick="event.stopPropagation()">
+        <h2 style="font-size: 18px; font-family: 'Playfair Display', Georgia, serif; font-weight: 300; color: var(--color-text-primary); margin-bottom: 20px;">AI Settings</h2>
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 6px;">Agent</label>
+          <select class="settings-select" id="settingsAgentSelect">
+            <option value="auto">Auto-detect (recommended)</option>
+            <option value="knowledge-agent">📚 Knowledge Agent</option>
+            <option value="erp-analyst" selected>📊 ERP Analyst</option>
+            <option value="project-assistant">📋 Project Assistant</option>
+            <option value="sales-agent">💼 Sales Agent</option>
+          </select>
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 6px;">Temperature</label>
+          <input type="range" min="0" max="1" step="0.1" value="0.4" style="width: 100%; accent-color: var(--color-gold);" />
+        </div>
+        <div style="margin-bottom: 24px;">
+          <label style="display: block; font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 6px;">Code Mode</label>
+          <button style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 6px; background: var(--color-void-deep); border: 1px solid var(--color-border); color: var(--color-text-tertiary); font-size: 13px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 14.5V10a4 4 0 0 0-4-4v4a2 2 0 0 1 2 2z"/>
+              <path d="M4 18v.5a2.5 2.5 0 0 0 2.5 2.5H14"/>
+            </svg>
+            <span>Enable</span>
+          </button>
+        </div>
+        <button onclick="toggleSettings()" style="width: 100%; padding: 10px 16px; border-radius: 8px; background: var(--color-gold); color: var(--color-void-deep); border: none; font-weight: 500; cursor: pointer; transition: transform 0.1s;">
+          Save Settings
+        </button>
+      </div>
+    </div>
   </div>
+
+  <script>
+    let messageCount = 0;
+    let currentAgent = 'erp-analyst';
+
+    const AGENT_CONFIG = {
+      'erp-analyst': { emoji: '📊', color: 'var(--color-metric-amber)', label: 'ERP Analyst' },
+      'project-assistant': { emoji: '📋', color: 'var(--color-info)', label: 'Project Assistant' },
+      'sales-agent': { emoji: '💼', color: 'var(--color-metric-emerald)', label: 'Sales Agent' },
+      'knowledge-agent': { emoji: '📚', color: 'var(--color-metric-violet)', label: 'Knowledge Agent' },
+    };
+
+    const AGENT_RESPONSES = {
+      'erp-analyst': [
+        { text: "Q3 revenue was €1.2M, representing a 5% increase above budget of €1.14M.\nTop performing segments:\n• Enterprise contracts: €850K (exceeded by 12%)\n• Mid-market: €350K (on target)\n• Small business: €50K (at risk)", sources: ['odoo.account.move', 'crm.pipeline'], confidence: 0.96 },
+        { text: "Expense breakdown for Q3:\n• Cloud infrastructure: €45K\n• Salaries: €680K\n• Marketing: €190K\n• Tools & software: €23K\nTotal expenses: €938K — 3.7% under budget", sources: ['odoo.account.move'], confidence: 0.93 },
+        { text: "Here's the Q3 vs Q2 comparison:\n\nQ3: Revenue €1.2M | Expenses €938K | Profit €262K (21.8% margin)\nQ2: Revenue €980K | Expenses €890K | Profit €90K (9.2% margin)\n\nRevenue grew 22% quarter-over-quarter. Expenses were well-controlled. The profit margin improved from 9.2% to 21.8%.", sources: ['odoo.account.move', 'crm.pipeline'], confidence: 0.91 },
+      ],
+      'project-assistant': [
+        { text: "You have 5 active projects:\n\n1. Website Redesign — 75% complete, due Oct 15\n2. Mobile App v2.0 — 40% complete, due Dec 1\n3. CRM Migration — 90% complete, due Sep 20\n4. Brand Refresh — 30% complete, due Jan 15\n5. Data Pipeline — 60% complete, due Nov 30", sources: ['projects.project'], confidence: 0.89 },
+        { text: "Overdue tasks:\n• Fix payment webhook timeout (assigned to Alex, 5 days overdue)\n• Update Q3 pricing docs (assigned to Sam, 3 days overdue)\n• Client onboarding for Acme Corp (assigned to Priya, 2 days overdue)", sources: ['projects.project', 'workspaces.task'], confidence: 0.87 },
+        { text: "Project timeline for Q4:\n\nPhase 1 (Oct): Mobile App v2.0 launch, Website Redesign completion\nPhase 2 (Nov): Brand Refresh kickoff, Data Pipeline testing\nPhase 3 (Dec): CRM Migration go-live, Mobile App release", sources: ['projects.project'], confidence: 0.84 },
+      ],
+      'sales-agent': [
+        { text: "Your CRM pipeline:\n\nStage 1 (Qualification): 8 leads, €180K\nStage 2 (Proposal): 3 deals, €210K\nStage 3 (Negotiation): 2 deals, €95K\nStage 4 (Closed Won): 5 deals, €340K this quarter\n\nTotal pipeline: €825K | Closed this quarter: €340K", sources: ['crm.lead'], confidence: 0.92 },
+        { text: "Top opportunities this month:\n1. Acme Corp — €180K — proposal sent, follow-up scheduled\n2. Beta Labs — €150K — negotiation phase, terms being finalized\n3. Gamma Industries — €95K — demo completed, awaiting budget approval", sources: ['crm.lead'], confidence: 0.88 },
+        { text: "Created lead for Acme Corp:\n• Name: Acme Corp\n• Contact: Sarah Chen, sarah@acme.com\n• Value: €180K\n• Stage: New (Lead)\n• Assigned to: Sales Team\n\nThe lead has been created and the sales team will follow up within 24h.", sources: ['crm.lead'], confidence: 0.95 },
+      ],
+      'knowledge-agent': [
+        { text: "I found 3 documents related to Q3 planning:\n\n1. \"Q3 Budget Allocation.pdf\" — Updated budget with departmental breakdowns\n2. \"Q3 Marketing Campaign Results.xlsx\" — Campaign ROI analysis\n3. \"Q3 Technical Roadmap.md\" — Engineering milestones and deliverables", sources: ['strapi.documents', 'qdrant.knowledge'], confidence: 0.82 },
+        { text: "Here's what I know about team productivity trends:\n\nBased on 127 project records, team velocity has improved 18% YoY.\nThe top performing team (Engineering) averaged 42 story points/week.\nBottlenecks typically occur during sprint hand-offs between Design and Engineering.", sources: ['workspaces.task', 'qdrant.knowledge'], confidence: 0.79 },
+      ],
+    };
+
+    const AGENT_TOOLS = {
+      'erp-analyst': ['odoo_search_read', 'postgres_query'],
+      'project-assistant': ['postgres_query'],
+      'sales-agent': ['odoo_search_read'],
+      'knowledge-agent': ['qdrant_search', 'strapi_search'],
+    };
+
+    function updateCharCount() {
+      const input = document.getElementById('messageInput');
+      const count = document.getElementById('charCount');
+      count.textContent = input.value.length + '/500';
+      if (input.value.length > 450) count.classList.add('char-count');
+      else count.classList.remove('char-count');
+    }
+
+    function handleKey(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    }
+
+    function toggleHistory() {
+      const panel = document.getElementById('historyPanel');
+      const list = document.getElementById('historyList');
+      panel.classList.toggle('visible');
+      if (panel.classList.contains('visible')) {
+        list.innerHTML = '';
+        const userMessages = Array.from(document.querySelectorAll('.msg-user'));
+        userMessages.forEach(msg => {
+          const text = msg.querySelector('p').textContent;
+          const time = msg.querySelector('.timestamp span').textContent;
+          const item = document.createElement('div');
+          item.className = 'history-item';
+          item.innerHTML = `<div style="font-size:12px;color:var(--color-text-primary);font-weight:500;">${text}</div><div class="history-time">${time}</div>`;
+          item.onclick = () => { document.getElementById('messageInput').value = text; updateCharCount(); document.getElementById('historyPanel').classList.remove('visible'); };
+          list.appendChild(item);
+        });
+      }
+    }
+
+    function toggleSettings() {
+      const overlay = document.getElementById('settingsOverlay');
+      overlay.classList.toggle('visible');
+    }
+
+    function toggleAgentSelector() {
+      const selector = document.getElementById('agentSelector');
+      selector.classList.toggle('open');
+    }
+
+    function selectAgent(agentName) {
+      currentAgent = agentName;
+      const config = AGENT_CONFIG[agentName];
+      const badge = document.getElementById('selectorBadge');
+      const label = document.getElementById('selectorLabel');
+      badge.textContent = config.emoji;
+      badge.className = 'badge ' + agentName.replace('-agent','').replace('-analyst','').replace('-assistant','') + (agentName === 'erp-analyst' ? ' erp' : agentName === 'sales-agent' ? ' sales' : agentName === 'knowledge-agent' ? ' knowledge' : '');
+      label.textContent = config.label;
+      document.getElementById('agentSelector').classList.remove('open');
+      // Update selected state in dropdown
+      document.querySelectorAll('.dropdown-item').forEach(item => item.classList.remove('selected'));
+      event.currentTarget.classList.add('selected');
+    }
+
+    function addAgentMessage(text, agentName, sources, confidence) {
+      const msgList = document.getElementById('messagesList');
+      const config = AGENT_CONFIG[agentName] || AGENT_CONFIG['knowledge-agent'];
+      const timeStr = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      const agentClass = agentName === 'erp-analyst' ? 'badge-erp' : agentName === 'project-assistant' ? 'badge-project' : agentName === 'sales-agent' ? 'badge-sales' : 'badge-knowledge';
+
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'msg msg-bot';
+      msgDiv.innerHTML = `
+        <div class="agent-badge ${agentClass}">
+          <div class="badge-circle" style="background: ${config.color}20; color: ${config.color}; border: 1px solid ${config.color}40;">${config.emoji}</div>
+          <span class="badge-label">${agentName.replace(/-/g, ' ')}</span>
+          <span class="badge-confidence">${Math.round(confidence * 100)}% confident</span>
+        </div>
+        <p style="font-size: 14px; line-height: 1.5; white-space: pre-line;">${text}</p>
+        ${sources ? `<div style="margin-top: 8px;">${sources.map(s => `<span class="source-tag">${s}</span>`).join('')}</div>` : ''}
+        <div class="timestamp"><span>${timeStr}</span></div>
+      `;
+      msgList.appendChild(msgDiv);
+      scrollToBottom();
+    }
+
+    function addFollowUps(agentName) {
+      const container = document.getElementById('followupsContainer');
+      container.innerHTML = '';
+      let suggestions = [];
+      if (agentName === 'erp-analyst') suggestions = ['Show expense breakdown', 'Compare with last quarter', 'Export to CSV'];
+      else if (agentName === 'project-assistant') suggestions = ['Create a new task', 'Show team workload', 'List overdue items'];
+      else if (agentName === 'sales-agent') suggestions = ['Create a new lead', 'Show pipeline by stage', 'Generate a proposal'];
+      else suggestions = ['Tell me more', 'Show related documents', 'What else can you help with?'];
+
+      suggestions.forEach(s => {
+        const chip = document.createElement('div');
+        chip.className = 'followup-chip';
+        chip.textContent = s;
+        chip.onclick = () => sendPrompt(s);
+        container.appendChild(chip);
+      });
+    }
+
+    function showTyping(agentName) {
+      const typing = document.getElementById('typingIndicator');
+      const toolContainer = document.getElementById('toolCallsContainer');
+      typing.style.display = 'block';
+
+      const tools = AGENT_TOOLS[agentName] || ['odoo_search_read'];
+      toolContainer.style.display = 'block';
+      toolContainer.innerHTML = '';
+      tools.forEach(tool => {
+        const tc = document.createElement('div');
+        tc.className = 'tool-call';
+        tc.innerHTML = `<span class="tool-spinner">🔧</span><span>agent → calling ${tool}</span>`;
+        toolContainer.appendChild(tc);
+      });
+      scrollToBottom();
+    }
+
+    function hideTyping() {
+      document.getElementById('typingIndicator').style.display = 'none';
+      document.getElementById('toolCallsContainer').style.display = 'none';
+    }
+
+    function scrollToBottom() {
+      const container = document.querySelector('.messages');
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function sendPrompt(prompt) {
+      document.getElementById('messageInput').value = prompt;
+      updateCharCount();
+      sendMessage();
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const message = input.value.trim();
+      if (!message || document.getElementById('sendBtn').disabled) return;
+
+      document.getElementById('promptChips').style.display = 'none';
+      document.getElementById('followupsContainer').innerHTML = '';
+
+      const msgList = document.getElementById('messagesList');
+      const timeStr = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+      // Add user message
+      const userDiv = document.createElement('div');
+      userDiv.className = 'msg msg-user';
+      userDiv.innerHTML = `<p style="font-size: 14px; line-height: 1.5;">${message}</p><div class="timestamp"><span>${timeStr}</span></div>`;
+      msgList.appendChild(userDiv);
+      scrollToBottom();
+
+      // Clear input and disable button
+      input.value = '';
+      updateCharCount();
+      document.getElementById('sendBtn').disabled = true;
+      document.getElementById('sendBtn').style.opacity = '0.5';
+
+      // Show typing + tools
+      showTyping(currentAgent);
+
+      // Simulate thinking
+      setTimeout(() => {
+        hideTyping();
+        const responses = AGENT_RESPONSES[currentAgent] || AGENT_RESPONSES['knowledge-agent'];
+        const response = responses[Math.floor(Math.random() * responses.length)];
+        addAgentMessage(response.text, currentAgent, response.sources, response.confidence);
+        document.getElementById('sendBtn').disabled = false;
+        document.getElementById('sendBtn').style.opacity = '1';
+        addFollowUps(currentAgent);
+      }, 2000 + Math.random() * 1000);
+    }
+
+    // Close agent selector when clicking outside
+    document.addEventListener('click', function(e) {
+      const selector = document.getElementById('agentSelector');
+      if (!selector.contains(e.target)) {
+        selector.classList.remove('open');
+      }
+    });
+
+    // Focus input on load
+    window.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('messageInput').focus();
+    });
+
+    // Keyboard shortcut
+    document.addEventListener('keydown', function(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        document.getElementById('messageInput').focus();
+      }
+    });
+  </script>
 </body>
 </html>

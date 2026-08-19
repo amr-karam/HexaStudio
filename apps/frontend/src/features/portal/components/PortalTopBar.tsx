@@ -104,51 +104,51 @@ export function PortalTopBar() {
         <div className="hidden xl:block">
           <OdooSyncStatusWidget />
         </div>
-      </div>
 
-      {/* Right: theme toggle, notifications, avatar */}
-      <div className="flex items-center gap-3">
-        {/* Theme toggle */}
-        <button
-          onClick={toggleTheme}
-          className="flex items-center justify-center w-11 h-11 rounded-lg text-neutral-400 hover:text-foreground hover:bg-white/[0.03] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-          aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-        >
-          {!prefersReduced ? (
-            <motion.div
-              key={theme}
-              initial={{ rotate: -90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              transition={{ duration: DURATION.micro, ease: EASE.entrance }}
-            >
+        {/* Right: theme toggle, notifications, avatar */}
+        <div className="flex items-center gap-3">
+          {/* Theme toggle */}
+          <button
+            onClick={toggleTheme}
+            className="flex items-center justify-center w-11 h-11 rounded-lg text-neutral-400 hover:text-foreground hover:bg-white/[0.03] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+          >
+            {!prefersReduced ? (
+              <motion.div
+                key={theme}
+                initial={{ rotate: -90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                transition={{ duration: DURATION.micro, ease: EASE.entrance }}
+              >
+                <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={18} />
+              </motion.div>
+            ) : (
               <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={18} />
-            </motion.div>
-          ) : (
-            <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={18} />
-          )}
-        </button>
+            )}
+          </button>
 
-        {/* WebXR AR QuickLook Projection */}
-        <div className="hidden md:block">
-          <WebXRArButton />
-        </div>
-
-        {/* Luxury Language Switcher (EN/AR) */}
-        <LocaleSwitcher />
-
-        {/* Real-time Notification Center */}
-        <NotificationCenter />
-
-        {/* User avatar */}
-        {user && (
-          <div className="flex items-center gap-2 ml-1">
-            <div className="w-8 h-8 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center">
-              <span className="text-[10px] font-mono text-accent uppercase">
-                {user.email?.charAt(0) ?? 'U'}
-              </span>
-            </div>
+          {/* WebXR AR QuickLook Projection */}
+          <div className="hidden md:block">
+            <WebXRArButton />
           </div>
-        )}
+
+          {/* Luxury Language Switcher (EN/AR) */}
+          <LocaleSwitcher />
+
+          {/* Real-time Notification Center */}
+          <NotificationCenter />
+
+          {/* User avatar */}
+          {user && (
+            <div className="flex items-center gap-2 ml-1">
+              <div className="w-8 h-8 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center">
+                <span className="text-[10px] font-mono text-accent uppercase">
+                  {user.email?.charAt(0) ?? 'U'}
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );

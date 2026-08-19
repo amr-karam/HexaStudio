@@ -1,6 +1,0 @@
-{
-    "editor.defaultFormatter": "vscode.markdown-language-features",
-    "[jsonc]": {
-        "editor.defaultFormatter": "vscode.json-language-features"
-    }
-}

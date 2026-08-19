@@ -82,7 +82,7 @@ The system is production-ready.
 | Typecheck | `npx tsc --noEmit --skipLibCheck` | ✅ 0 errors |
 | Build | `npx next build` | ✅ 36/36 pages generated |
 | Lint | `npx eslint "src/**/*.{ts,tsx}" --max-warnings=0` | ✅ 0 warnings |
-| Tests | `npx vitest run` | ✅ 22/22 pass (3 suites) |
+| Tests | `npx vitest run` | ✅ 46/46 pass (6 suites) |
 
 ### Color Token Compliance
 
@@ -150,6 +150,12 @@ The system is production-ready.
 - ✅ Created REST + SSE endpoints for agent chat
 - ✅ Built React frontend hook (useAgentChat) with SSE streaming
 - ✅ Created 4 UI components (AgentSelector, AgentBadge, ToolCallIndicator, FollowUpSuggestions)
+- ✅ Added empty state welcome screen with animated Bot icon to ai-assistant page
+- ✅ Added agent loading spinner state in AgentSelector header
+- ✅ Added clear conversation button with confirm toast
+- ✅ Added character count warning color when approaching 500-char limit
+- ✅ Fixed CheckCircle icon size in messages (10→12px for visibility)
+- ✅ Enhanced static dev-preview HTML with full AgentSelector dropdown, category-colored prompt chips, settings modal, and history panel
 - ✅ Migrated ai-assistant page and PortalAiCopilot to agent system
 - ✅ Replaced all hardcoded hex colors with Tailwind design tokens
 - ✅ Added 24 unit/integration tests (17 backend + 22 frontend, all passing)

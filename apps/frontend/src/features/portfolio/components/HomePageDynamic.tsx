@@ -59,7 +59,7 @@ function ChapterEpigraph({ text }: { text: string }) {
   return (
     <blockquote className="mb-12 md:mb-16 text-center">
       <OrnamentalRule className="mb-6" />
-      <p className="storybook-body italic" style={{ color: 'rgba(212, 175, 55, 0.65)' }}>
+      <p className="storybook-body italic" style={{ color: 'var(--color-gold-65)' }}>
         {text}
       </p>
       <OrnamentalRule className="mt-6" />
@@ -103,6 +103,7 @@ function StorybookWrappedSection({
   epigraph,
   children,
   id,
+  proseWidth = 'default',
 }: {
   chapterNumber: number;
   chapterTitle: string;
@@ -110,12 +111,18 @@ function StorybookWrappedSection({
   epigraph?: string;
   children: ReactNode;
   id: string;
+  proseWidth?: 'default' | 'wide';
 }) {
+  const proseClass =
+    proseWidth === 'wide'
+      ? 'w-full max-w-7xl'
+      : 'max-w-[760px] mx-auto';
+
   return (
     <StorybookChapter chapterNumber={chapterNumber} chapterTitle={chapterTitle} id={id}>
       {leadIn && <ChapterLeadIn text={leadIn} />}
       {epigraph && <ChapterEpigraph text={epigraph} />}
-      <div className="storybook-body">
+      <div className={`storybook-body ${proseClass}`}>
         {children}
       </div>
     </StorybookChapter>
@@ -135,6 +142,7 @@ export function HomePageDynamic({ featuredProject, projects }: HomePageDynamicPr
           id="ch-craft"
           leadIn="Every world begins as a question of light — where it falls, what it touches, and what it leaves behind."
           epigraph="How a single vision becomes a rendered world — the disciplines, the tools, the hand."
+          proseWidth="default"
         >
           <FeaturedWork project={featuredProject} />
         </StorybookWrappedSection>
@@ -148,6 +156,7 @@ export function HomePageDynamic({ featuredProject, projects }: HomePageDynamicPr
           id="ch-method"
           leadIn="From the first sketch to the final frame — a discipline carried across every project, large or small."
           epigraph="From first sketch to final frame — the process that carries every project."
+          proseWidth="default"
         >
           <ProcessSection />
           <ChapterDivider />
@@ -163,6 +172,7 @@ export function HomePageDynamic({ featuredProject, projects }: HomePageDynamicPr
           id="ch-proof"
           leadIn="The work, laid out on its own terms — a selection of built and imagined worlds."
           epigraph="The work speaks — a selection of built and imagined worlds."
+          proseWidth="wide"
         >
           <ProjectGrid projects={projects} />
           <ChapterDivider />

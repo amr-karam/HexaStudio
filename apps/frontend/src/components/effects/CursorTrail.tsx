@@ -78,7 +78,10 @@ export default function CursorTrail() {
 
         ctx.beginPath();
         ctx.arc(dot.x, dot.y, dot.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(212, 175, 55, ${dot.opacity * dot.life})`;
+        const goldRgb = getComputedStyle(document.documentElement)
+          .getPropertyValue('--color-gold-rgb')
+          .trim() || '212, 175, 55';
+        ctx.fillStyle = `rgba(${goldRgb}, ${dot.opacity * dot.life})`;
         ctx.fill();
       }
 

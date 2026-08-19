@@ -50,10 +50,12 @@ export function ActivityItem({ item, className }: ActivityItemProps) {
   const config = ACTIVITY_CONFIG[item.type];
 
   return (
-    <div
+    <button
+      type="button"
       className={cn(
-        'flex items-start gap-3 p-3 rounded-lg border-l-2',
+        'flex items-start gap-3 p-3 rounded-lg border-l-2 w-full text-left',
         'hover:bg-white/[0.02] transition-colors duration-200',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
         config.borderColor,
         className,
       )}
@@ -79,6 +81,6 @@ export function ActivityItem({ item, className }: ActivityItemProps) {
           </span>
         </div>
       </div>
-    </div>
+    </button>
   );
 }

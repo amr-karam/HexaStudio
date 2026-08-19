@@ -1,0 +1,116 @@
+rules:
+  # All I/O must be performed in activities.  Workflow code may be
+  # replayed, and I/O operations would violate determinism or cause
+  # duplicate side effects.
+
+  - id: no-file-io-in-workflow
+    patterns:
+      - pattern-either:
+          - pattern: open(...)
+          - pattern: aiofiles.open(...)
+      - pattern-either:
+          - pattern-inside: |
+              @workflow.define(...)
+              class $CLASS:
+                  ...
+          - pattern-inside: |
+              @workflows.workflow.define(...)
+              class $CLASS:
+                  ...
+    message: >-
+      Do not perform file I/O in workflow code. Move file operations
+      to an activity:
+        @activity()
+        async def read_file(path: str) -> str:
+            async with aiofiles.open(path) as f:
+                return await f.read()
+    severity: ERROR
+    languages: [python]
+    metadata:
+      category: io
+      fix: Move file I/O to an activity function
+
+  - id: no-http-client-in-workflow
+    patterns:
+      - pattern-either:
+          - pattern: httpx.AsyncClient(...)
+          - pattern: httpx.Client(...)
+          - pattern: aiohttp.ClientSession(...)
+      - pattern-either:
+          - pattern-inside: |
+              @workflow.define(...)
+              class $CLASS:
+                  ...
+          - pattern-inside: |
+              @workflows.workflow.define(...)
+              class $CLASS:
+                  ...
+    message: >-
+      Do not make HTTP calls in workflow code. Move all HTTP/API calls
+      to an activity:
+        @activity()
+        async def call_api(url: str) -> dict:
+            async with httpx.AsyncClient() as client:
+                resp = await client.get(url)
+                return resp.json()
+    severity: ERROR
+    languages: [python]
+    metadata:
+      category: io
+      fix: Move HTTP calls to an activity function
+
+  - id: no-db-in-workflow
+    patterns:
+      - pattern-either:
+          - pattern: await $CONN.execute(...)
+          - pattern: await $CONN.fetch(...)
+          - pattern: await $CONN.fetchone(...)
+          - pattern: await $CONN.fetchall(...)
+          - pattern: await $CONN.fetchrow(...)
+          - pattern: await $CONN.query(...)
+          - pattern: await $CONN.commit(...)
+          - pattern: $CONN.commit(...)
+      - pattern-either:
+          - pattern-inside: |
+              @workflow.define(...)
+              class $CLASS:
+                  ...
+          - pattern-inside: |
+              @workflows.workflow.define(...)
+              class $CLASS:
+                  ...
+    message: >-
+      Do not perform database operations in workflow code. Move all
+      database queries to an activity. Use dependency injection
+      (Depends) to provide the connection:
+        @activity()
+        async def query_db(
+            q: str,
+            conn: Connection = Depends(get_connection),
+        ) -> list[dict]:
+            return await conn.fetch(q)
+    severity: ERROR
+    languages: [python]
+    metadata:
+      category: io
+      fix: Move database operations to an activity function
+
+  - id: no-sync-requests-library
+    pattern-either:
+      - pattern: requests.get(...)
+      - pattern: requests.post(...)
+      - pattern: requests.put(...)
+      - pattern: requests.delete(...)
+      - pattern: requests.patch(...)
+      - pattern: requests.head(...)
+      - pattern: requests.request(...)
+    message: >-
+      The `requests` library is synchronous and blocks the event loop.
+      Use `httpx.AsyncClient` instead:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url)
+    severity: ERROR
+    languages: [python]
+    metadata:
+      category: async
+      fix: Replace `requests` with `httpx.AsyncClient`

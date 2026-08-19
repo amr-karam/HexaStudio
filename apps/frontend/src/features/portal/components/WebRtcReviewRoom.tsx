@@ -25,7 +25,7 @@ interface ReviewRemark {
 const LIGHTING_PRESETS: Array<{ id: LightingPreset; name: string; icon: string; desc: string }> = [
   { id: 'golden_hour', name: 'Dawn Amber', icon: '🌅', desc: 'Warm 3200K cinematic directional keylight' },
   { id: 'daylight', name: 'Studio Daylight', icon: '☀️', desc: '5500K neutral diffused architectural light' },
-  { id: 'cyberpunk', name: 'Cyber Minimal', icon: '🌌', desc: 'High-contrast neon specular with moody shadows' },
+  { id: 'cyberpunk', name: 'Cyber Minimal', icon: '🌌', desc: 'High-contrast specular with moody shadows' },
   { id: 'gallery', name: 'Gallery Pinpoint', icon: '🏛️', desc: 'Neutral pin-point museum spotlight presentation' },
 ];
 
@@ -91,270 +91,327 @@ export function WebRtcReviewRoom() {
   };
 
   return (
-    <div className="bg-neutral-950/90 border border-neutral-800 rounded-3xl p-6 shadow-2xl backdrop-blur-2xl text-neutral-100 space-y-6">
+    <div className="bg-obsidian/90 border border-white/10 rounded-3xl p-6 md:p-8 shadow-[0_25px_60px_rgba(0,0,0,0.8),0_0_30px_rgba(212,175,55,0.06)] backdrop-blur-2xl text-foreground space-y-6 relative overflow-hidden">
+      {/* Ambient background glow */}
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-accent/5 blur-[160px] rounded-full pointer-events-none" aria-hidden="true" />
+
       {/* Room Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-neutral-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-border/20 relative z-10">
         <div>
-          <div className="flex items-center space-x-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-            <h3 className="text-sm font-bold text-neutral-100">Live WebRTC &amp; Spatial 3D Review Room</h3>
+          <div className="flex items-center space-x-2.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)] animate-pulse" />
+            <h3 className="text-sm font-semibold tracking-wide text-foreground">
+              Live WebRTC &amp; Spatial 3D Review Room
+            </h3>
           </div>
-          <p className="text-xs text-neutral-400 mt-0.5">Project: Villa Horizon — Horizon 3 Synchronized Canvas</p>
+          <p className="text-xs text-text-secondary mt-1 font-light">
+            Project: <span className="text-foreground font-normal">Villa Horizon</span> &bull; Synchronized WebGL Review Session
+          </p>
         </div>
 
-        <div className="flex items-center space-x-2">
-          {/* Sub-view tabs */}
-          <div className="flex bg-neutral-900 border border-neutral-800 p-0.5 rounded-xl text-xs">
+        <div className="flex items-center space-x-3">
+          {/* Sub-view switcher tabs */}
+          <div className="flex bg-obsidian-raised border border-white/10 p-1 rounded-xl text-xs">
             <button
               onClick={() => setActiveTab('stream')}
-              className={`px-3 py-1 rounded-lg transition-all ${
-                activeTab === 'stream' ? 'bg-accent text-background font-medium' : 'text-neutral-400 hover:text-neutral-200'
+              className={`px-3.5 py-1.5 rounded-lg transition-all duration-200 cursor-pointer ${
+                activeTab === 'stream'
+                  ? 'bg-accent text-background font-medium shadow-md'
+                  : 'text-text-secondary hover:text-foreground'
               }`}
             >
-              Stream
+              3D Stream
             </button>
             <button
               onClick={() => setActiveTab('spatial')}
-              className={`px-3 py-1 rounded-lg transition-all ${
-                activeTab === 'spatial' ? 'bg-accent text-background font-medium' : 'text-neutral-400 hover:text-neutral-200'
+              className={`px-3.5 py-1.5 rounded-lg transition-all duration-200 cursor-pointer ${
+                activeTab === 'spatial'
+                  ? 'bg-accent text-background font-medium shadow-md'
+                  : 'text-text-secondary hover:text-foreground'
               }`}
             >
-              ✨ Spatial AI
+              Spatial AI
             </button>
             <button
               onClick={() => setActiveTab('remarks')}
-              className={`px-3 py-1 rounded-lg transition-all ${
-                activeTab === 'remarks' ? 'bg-accent text-background font-medium' : 'text-neutral-400 hover:text-neutral-200'
+              className={`px-3.5 py-1.5 rounded-lg transition-all duration-200 cursor-pointer ${
+                activeTab === 'remarks'
+                  ? 'bg-accent text-background font-medium shadow-md'
+                  : 'text-text-secondary hover:text-foreground'
               }`}
             >
-              💬 Remarks ({remarks.length})
+              Remarks ({remarks.length})
             </button>
           </div>
 
-          <span className="bg-neutral-900 border border-neutral-800 px-3 py-1 rounded-full text-emerald-400 text-xs font-mono">
-            🔒 E2EE Active
+          <span className="bg-obsidian-raised border border-emerald-500/30 px-3 py-1.5 rounded-full text-emerald-400 text-xs font-mono flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            E2EE
           </span>
         </div>
       </div>
 
       {/* Main Content Area */}
       {activeTab === 'stream' && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 relative z-10">
           {/* Main Stream (Architect / 3D Canvas Stream) */}
-          <div className="md:col-span-2 relative aspect-video bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden flex flex-col items-center justify-center group">
-            {/* Ambient Lighting Gradient based on Active Preset */}
-            <div
-              className="absolute inset-0 transition-all duration-700 pointer-events-none opacity-40"
-              style={{
-                background: `radial-gradient(ellipse at center, ${lightingConfig.directionalColor}22 0%, ${lightingConfig.ambientColor}11 60%, #000000 100%)`,
-              }}
-            />
+          <div className="md:col-span-2 relative aspect-video bg-void border border-white/10 rounded-2xl overflow-hidden flex flex-col items-center justify-center group shadow-2xl">
 
-            {isScreenSharing ? (
-              <div className="text-center space-y-3 z-20 p-6">
-                {/* Visual Representation of the 3D Material Synthesis Swatch in the Canvas */}
-                <div className="flex justify-center items-center gap-4">
-                  <div
-                    className="w-16 h-16 rounded-2xl border border-white/20 shadow-2xl transition-all duration-500 transform group-hover:scale-105 flex items-center justify-center"
-                    style={{
-                      backgroundColor: materialConfig.color,
-                      boxShadow: `0 0 30px ${lightingConfig.directionalColor}33`,
-                    }}
-                  >
-                    <span className="text-lg">🏛️</span>
+              {/* Dynamic Preset Atmosphere Background */}
+              <div
+                className="absolute inset-0 transition-all duration-700 pointer-events-none opacity-40"
+                style={{
+                  background: `radial-gradient(ellipse at center, ${lightingConfig.directionalColor}22 0%, ${lightingConfig.ambientColor}11 60%, #000000 100%)`,
+                }}
+              />
+
+              {/* Viewport Top HUD Overlay */}
+              <div className="absolute top-3 inset-x-3 z-20 flex items-center justify-between pointer-events-none">
+                <div className="flex items-center gap-2 bg-void/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
+                  <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-foreground">
+                    CAM_01 &bull; NORTH FACADE
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 bg-void/80 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10 font-mono text-[10px] text-text-secondary">
+                  <span>60 FPS</span>
+                  <span className="text-neutral-600">&bull;</span>
+                  <span>4K WebGL</span>
+                </div>
+              </div>
+
+              {isScreenSharing ? (
+                <div className="text-center space-y-4 z-20 p-6">
+                  {/* Interactive Swatch Center Indicator */}
+                  <div className="flex justify-center items-center gap-4">
+                    <div
+                      className="w-16 h-16 rounded-2xl border border-white/20 shadow-2xl transition-transform duration-500 transform group-hover:scale-105 flex items-center justify-center relative"
+                      style={{
+                        backgroundColor: materialConfig.color,
+                        boxShadow: `0 0 35px ${lightingConfig.directionalColor}44`,
+                      }}
+                    >
+                      <div className="w-2 h-2 rotate-45 bg-accent shadow-[0_0_8px_rgba(212,175,55,0.9)]" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-xs font-medium text-accent tracking-wide">
+                      Synchronized 3D Viewport Live Stream
+                    </p>
+                    <p className="text-[11px] font-mono text-text-secondary mt-1">
+                      Lighting: <span className="text-foreground">{activeLighting}</span> &bull; Material:{' '}
+                      <span className="text-foreground">{activeMaterial}</span>
+                    </p>
                   </div>
                 </div>
+              ) : isVideoOff ? (
+                <div className="text-center space-y-3 z-20">
+                  <div className="w-16 h-16 rounded-full bg-accent/20 border border-accent/40 flex items-center justify-center text-accent text-xl font-bold mx-auto shadow-lg">
+                    MV
+                  </div>
+                  <p className="text-xs font-medium text-text-secondary">Marcus Vance (Lead Architect)</p>
+                </div>
+              ) : (
+                <div className="w-full h-full bg-void flex flex-col items-center justify-center text-xs text-text-secondary space-y-2">
+                  <span>[Live WebRTC Video Feed — 1080p60 WebGL Canvas Stream]</span>
+                  <span className="text-[10px] font-mono text-accent">
+                    Lighting: {activeLighting} | Material: {activeMaterial}
+                  </span>
+                </div>
+              )}
 
-                <div>
-                  <p className="text-xs font-semibold text-accent">Synchronized 3D Viewport Stream Active</p>
-                  <p className="text-[10px] font-mono text-neutral-300 mt-1">
-                    Preset: <span className="text-accent">{activeLighting}</span> &bull; Material:{' '}
-                    <span className="text-accent">{activeMaterial}</span> &bull; 60 FPS WebGL
-                  </p>
-                </div>
+              {/* Bottom Host Badge */}
+              <div className="absolute bottom-3 left-3 z-20 flex items-center space-x-2 text-[11px] bg-void/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
+                <span className="font-semibold text-accent">Marcus Vance</span>
+                <span className="text-neutral-500">&bull;</span>
+                <span className="text-text-secondary font-light">Host (Lead Architect)</span>
               </div>
-            ) : isVideoOff ? (
-              <div className="text-center space-y-2 z-20">
-                <div className="w-16 h-16 rounded-full bg-accent/20 border border-accent/40 flex items-center justify-center text-accent text-xl font-bold mx-auto">
-                  MV
+            </div>
+
+            {/* Client Video Participant Card */}
+            <div className="relative aspect-video md:aspect-auto bg-obsidian-raised border border-white/10 rounded-2xl overflow-hidden flex flex-col items-center justify-center shadow-lg">
+              <div className="text-center space-y-3">
+                <div className="w-14 h-14 rounded-full bg-accent/15 border border-accent/30 flex items-center justify-center text-accent text-sm font-bold mx-auto shadow-md">
+                  HC
                 </div>
-                <p className="text-xs font-semibold text-neutral-300">Marcus Vance (Lead Architect)</p>
-              </div>
-            ) : (
-              <div className="w-full h-full bg-neutral-900 flex flex-col items-center justify-center text-xs text-neutral-400 space-y-2">
-                <span>[Live WebRTC Video Feed — 1080p60 WebGL Canvas Stream]</span>
-                <span className="text-[10px] font-mono text-accent-light">
-                  Lighting: {activeLighting} | Material: {activeMaterial}
+                <p className="text-xs font-medium text-foreground">Horizon Capital</p>
+                <span className="inline-block px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-mono text-text-secondary">
+                  Active Participant
                 </span>
               </div>
-            )}
-
-            <div className="absolute bottom-3 left-3 z-20 flex items-center space-x-2 text-[11px] text-neutral-200">
-              <span className="font-bold text-accent">Marcus Vance</span>
-              <span className="text-neutral-500">&bull;</span>
-              <span className="text-neutral-400">Host (Architect)</span>
-            </div>
-          </div>
-
-          {/* Client Video Participant */}
-          <div className="relative aspect-video md:aspect-auto bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden flex items-center justify-center">
-            <div className="text-center space-y-2">
-              <div className="w-12 h-12 rounded-full bg-accent/20 border border-accent/40 flex items-center justify-center text-accent text-sm font-bold mx-auto">
-                HC
+              <div className="absolute bottom-3 left-3 flex items-center space-x-2 text-[10px] text-text-secondary bg-void/60 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/5">
+                <span>Client Audio / Video</span>
               </div>
-              <p className="text-xs font-semibold text-neutral-300">Horizon Capital (Client)</p>
-            </div>
-            <div className="absolute bottom-3 left-3 flex items-center space-x-2 text-[10px] text-neutral-300">
-              <span>Client Participant</span>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {activeTab === 'spatial' && (
-        <div className="space-y-6">
-          {/* Spatial Lighting Presets */}
-          <div>
-            <div className="flex justify-between items-center mb-3">
-              <h4 className="text-xs font-mono uppercase tracking-widest text-accent">Generative Lighting Synthesis</h4>
-              <span className="text-[10px] font-mono text-neutral-500">Real-Time HDRI &amp; Keylight Rig</span>
+        {activeTab === 'spatial' && (
+          <div className="space-y-6 relative z-10">
+            {/* Spatial Lighting Presets */}
+            <div>
+              <div className="flex justify-between items-center mb-3">
+                <h4 className="text-xs font-mono uppercase tracking-widest text-accent">
+                  Generative Lighting Synthesis
+                </h4>
+                <span className="text-[10px] font-mono text-text-muted">Real-Time HDRI &amp; Keylight Rig</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                {LIGHTING_PRESETS.map((preset) => {
+                  const isActive = activeLighting === preset.id;
+                  return (
+                    <button
+                      key={preset.id}
+                      onClick={() => setLighting(preset.id)}
+                      className={`p-4 rounded-2xl border text-left transition-all duration-300 cursor-pointer ${
+                        isActive
+                          ? 'bg-accent/10 border-accent text-foreground shadow-[0_0_20px_rgba(212,175,55,0.2)]'
+                          : 'bg-obsidian-raised border-white/5 text-text-secondary hover:border-white/20 hover:text-foreground'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="text-base">{preset.icon}</span>
+                        <span className="text-sm font-medium text-foreground">{preset.name}</span>
+                      </div>
+                      <p className="text-[11px] text-text-secondary mt-1 leading-snug font-light">{preset.desc}</p>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              {LIGHTING_PRESETS.map((preset) => {
-                const isActive = activeLighting === preset.id;
-                return (
-                  <button
-                    key={preset.id}
-                    onClick={() => setLighting(preset.id)}
-                    className={`p-4 rounded-xl border text-left transition-all ${
-                      isActive
-                        ? 'bg-accent/15 border-accent text-foreground shadow-lg'
-                        : 'bg-neutral-900/60 border-neutral-800 text-neutral-400 hover:border-neutral-700 hover:text-neutral-200'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-lg">{preset.icon}</span>
-                      <span className="text-sm font-medium text-foreground">{preset.name}</span>
+
+            {/* Material Synthesis Swatches */}
+            <div>
+              <div className="flex justify-between items-center mb-3">
+                <h4 className="text-xs font-mono uppercase tracking-widest text-accent">
+                  PBR Architectural Materials
+                </h4>
+                <span className="text-[10px] font-mono text-text-muted">Procedural Roughness &amp; Specular</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                {MATERIAL_PRESETS.map((preset) => {
+                  const isActive = activeMaterial === preset.id;
+                  return (
+                    <button
+                      key={preset.id}
+                      onClick={() => setMaterial(preset.id)}
+                      className={`p-4 rounded-2xl border text-left transition-all duration-300 cursor-pointer ${
+                        isActive
+                          ? 'bg-accent/10 border-accent text-foreground shadow-[0_0_20px_rgba(212,175,55,0.2)]'
+                          : 'bg-obsidian-raised border-white/5 text-text-secondary hover:border-white/20 hover:text-foreground'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 mb-1.5">
+                        <span className={`w-4 h-4 rounded-full border ${preset.color}`} />
+                        <span className="text-sm font-medium text-foreground">{preset.name}</span>
+                      </div>
+                      <p className="text-[11px] text-text-secondary mt-1 leading-snug font-light">{preset.desc}</p>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'remarks' && (
+          <div className="space-y-4 relative z-10">
+            <div className="space-y-2.5 max-h-64 overflow-y-auto pr-2">
+              {remarks.map((r) => (
+                <div
+                  key={r.id}
+                  className="p-3.5 rounded-2xl bg-obsidian-raised border border-white/5 flex justify-between items-start hover:border-white/15 transition-colors duration-200"
+                >
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-accent">{r.author}</span>
+                      <span className="text-[10px] font-mono text-text-muted">{r.timestamp}</span>
+                      <span className="text-[9px] font-mono text-text-secondary bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
+                        {r.spatialTag}
+                      </span>
                     </div>
-                    <p className="text-[11px] text-neutral-400 mt-1 leading-snug">{preset.desc}</p>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Material Synthesis Swatches */}
-          <div>
-            <div className="flex justify-between items-center mb-3">
-              <h4 className="text-xs font-mono uppercase tracking-widest text-accent">PBR Architectural Materials</h4>
-              <span className="text-[10px] font-mono text-neutral-500">Procedural Roughness &amp; Specular</span>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              {MATERIAL_PRESETS.map((preset) => {
-                const isActive = activeMaterial === preset.id;
-                return (
-                  <button
-                    key={preset.id}
-                    onClick={() => setMaterial(preset.id)}
-                    className={`p-4 rounded-xl border text-left transition-all ${
-                      isActive
-                        ? 'bg-accent/15 border-accent text-foreground shadow-lg'
-                        : 'bg-neutral-900/60 border-neutral-800 text-neutral-400 hover:border-neutral-700 hover:text-neutral-200'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className={`w-4 h-4 rounded-full border ${preset.color}`} />
-                      <span className="text-sm font-medium text-foreground">{preset.name}</span>
-                    </div>
-                    <p className="text-[11px] text-neutral-400 mt-1 leading-snug">{preset.desc}</p>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'remarks' && (
-        <div className="space-y-4">
-          <div className="space-y-2 max-h-60 overflow-y-auto pr-2 scrollbar-thin">
-            {remarks.map((r) => (
-              <div key={r.id} className="p-3 rounded-xl bg-neutral-900/70 border border-neutral-800 flex justify-between items-start">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-accent">{r.author}</span>
-                    <span className="text-[10px] font-mono text-neutral-500">{r.timestamp}</span>
-                    <span className="text-[9px] font-mono text-neutral-400 bg-neutral-800 px-2 py-0.5 rounded">
-                      {r.spatialTag}
-                    </span>
+                    <p className="text-xs text-foreground mt-1.5 font-light leading-relaxed">{r.text}</p>
                   </div>
-                  <p className="text-xs text-neutral-200 mt-1">{r.text}</p>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            <form onSubmit={handleAddRemark} className="flex gap-2.5 pt-3 border-t border-border/20">
+              <input
+                type="text"
+                value={newRemark}
+                onChange={(e) => setNewRemark(e.target.value)}
+                placeholder="Add spatial design review remark or feedback..."
+                className="flex-1 bg-obsidian-raised border border-white/10 focus:border-accent focus:ring-1 focus:ring-accent text-foreground px-4 py-3 rounded-xl text-xs outline-none transition-all duration-200"
+              />
+              <button
+                type="submit"
+                disabled={!newRemark.trim()}
+                className="px-5 py-3 bg-accent text-background font-mono text-xs uppercase tracking-wider font-semibold rounded-xl hover:bg-accent-light disabled:opacity-40 transition-all duration-200 cursor-pointer shadow-md"
+              >
+                Post
+              </button>
+            </form>
           </div>
+        )}
 
-          <form onSubmit={handleAddRemark} className="flex gap-2 pt-2 border-t border-neutral-800">
-            <input
-              type="text"
-              value={newRemark}
-              onChange={(e) => setNewRemark(e.target.value)}
-              placeholder="Add design review remark or feedback..."
-              className="flex-1 bg-neutral-900 border border-neutral-800 focus:border-accent text-foreground px-4 py-2.5 rounded-xl text-xs outline-none"
-            />
-            <button
-              type="submit"
-              disabled={!newRemark.trim()}
-              className="px-4 py-2.5 bg-accent text-background font-mono text-xs uppercase tracking-wider rounded-xl hover:opacity-90 disabled:opacity-40"
-            >
-              Post Remark
-            </button>
-          </form>
-        </div>
-      )}
 
-      {/* WebRTC Call Controls Bar */}
-      <div className="flex flex-wrap items-center justify-between pt-3 border-t border-neutral-800 gap-3">
-        <div className="flex flex-wrap items-center gap-2">
+      {/* WebRTC Call Controls Action Bar */}
+      <div className="flex flex-wrap items-center justify-between pt-4 border-t border-border/20 gap-3 relative z-10">
+        <div className="flex flex-wrap items-center gap-2.5">
           {/* Mute Toggle */}
           <button
             onClick={() => setIsAudioMuted(!isAudioMuted)}
-            className={`px-4 py-2.5 rounded-xl text-xs font-medium transition-all ${
-              isAudioMuted ? 'bg-red-500/20 border border-red-500/40 text-red-400' : 'bg-neutral-900 border border-neutral-800 text-neutral-200 hover:bg-neutral-800'
+            className={`px-4 py-2.5 rounded-xl text-xs font-mono transition-all duration-200 flex items-center gap-2 cursor-pointer ${
+              isAudioMuted
+                ? 'bg-red-500/15 border border-red-500/40 text-red-400'
+                : 'bg-obsidian-raised border border-white/10 text-foreground hover:border-white/20'
             }`}
           >
-            {isAudioMuted ? '🎙️ Unmute' : '🎙️ Mute'}
+            <span className={`w-2 h-2 rounded-full ${isAudioMuted ? 'bg-red-400' : 'bg-emerald-400'}`} />
+            {isAudioMuted ? 'Unmute Mic' : 'Mute Mic'}
           </button>
 
           {/* Video Toggle */}
           <button
             onClick={() => setIsVideoOff(!isVideoOff)}
-            className={`px-4 py-2.5 rounded-xl text-xs font-medium transition-all ${
-              isVideoOff ? 'bg-red-500/20 border border-red-500/40 text-red-400' : 'bg-neutral-900 border border-neutral-800 text-neutral-200 hover:bg-neutral-800'
+            className={`px-4 py-2.5 rounded-xl text-xs font-mono transition-all duration-200 flex items-center gap-2 cursor-pointer ${
+              isVideoOff
+                ? 'bg-red-500/15 border border-red-500/40 text-red-400'
+                : 'bg-obsidian-raised border border-white/10 text-foreground hover:border-white/20'
             }`}
           >
-            {isVideoOff ? '📹 Start Video' : '📹 Stop Video'}
+            <span className={`w-2 h-2 rounded-full ${isVideoOff ? 'bg-red-400' : 'bg-emerald-400'}`} />
+            {isVideoOff ? 'Start Camera' : 'Stop Camera'}
           </button>
 
           {/* Screen / 3D Canvas Share */}
           <button
             onClick={() => setIsScreenSharing(!isScreenSharing)}
-            className={`px-4 py-2.5 rounded-xl text-xs font-medium transition-all ${
-              isScreenSharing ? 'bg-accent text-background font-bold' : 'bg-neutral-900 border border-neutral-800 text-neutral-200 hover:bg-neutral-800'
+            className={`px-4 py-2.5 rounded-xl text-xs font-mono transition-all duration-200 flex items-center gap-2 cursor-pointer ${
+              isScreenSharing
+                ? 'bg-accent/15 border border-accent text-accent font-semibold shadow-[0_0_15px_rgba(212,175,55,0.2)]'
+                : 'bg-obsidian-raised border border-white/10 text-text-secondary hover:text-foreground'
             }`}
           >
-            🖥️ {isScreenSharing ? 'Stop 3D Share' : 'Share 3D Viewport'}
+            <span>{isScreenSharing ? 'Stop 3D Broadcast' : 'Share 3D Viewport'}</span>
           </button>
         </div>
 
         {/* End Call Button */}
         <button
           onClick={() => setIsCallActive(!isCallActive)}
-          className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-medium transition-all"
+          className={`px-5 py-2.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all duration-200 cursor-pointer ${
+            isCallActive
+              ? 'bg-red-600/90 hover:bg-red-600 text-white shadow-lg'
+              : 'bg-emerald-600/90 hover:bg-emerald-600 text-white shadow-lg'
+          }`}
         >
-          {isCallActive ? 'Leave Meeting' : 'Rejoin Meeting'}
+          {isCallActive ? 'Leave Session' : 'Rejoin Session'}
         </button>
       </div>
     </div>
   );
 }
+

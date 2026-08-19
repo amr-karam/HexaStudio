@@ -74,20 +74,19 @@ describe('useCopyToClipboard', () => {
   });
 
   it('falls back to execCommand when navigator.clipboard is unavailable', async () => {
-    // Remove clipboard API.
+    // Remove clipboard API before rendering.
     Object.defineProperty(navigator, 'clipboard', {
       value: undefined,
       writable: true,
       configurable: true,
     });
 
-    // jsdom doesn't implement execCommand — define it before spying.
+    // jsdom doesn't implement execCommand — define it before the test.
     document.execCommand = vi.fn().mockReturnValue(true);
     const execSpy = vi.spyOn(document, 'execCommand');
-    const appendSpy = vi.spyOn(document.body, 'appendChild').mockImplementation(() => void 0);
-    const removeSpy = vi.spyOn(document.body, 'removeChild').mockImplementation(() => void 0);
-    const selectSpy = vi.spyOn(HTMLTextAreaElement.prototype, 'select').mockImplementation(() => undefined);
 
+    // Render the hook with real DOM (so React's container works). The
+    // fallback path will create/remove a textarea element directly.
     const { result } = renderHook(() => useCopyToClipboard());
 
     let success: boolean;
@@ -98,11 +97,6 @@ describe('useCopyToClipboard', () => {
     expect(execSpy).toHaveBeenCalledWith('copy');
     expect(success!).toBe(true);
     expect(result.current.status).toBe('copied');
-
-    execSpy.mockRestore();
-    appendSpy.mockRestore();
-    removeSpy.mockRestore();
-    selectSpy.mockRestore();
   });
 
   it('sets error status when copy fails', async () => {

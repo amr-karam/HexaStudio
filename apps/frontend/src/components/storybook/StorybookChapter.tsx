@@ -122,7 +122,7 @@ export function StorybookChapter({
       data-storybook-chapter=""
       className="storybook-page-padding page-shadow storybook-border relative overflow-hidden"
       style={{
-        background: 'linear-gradient(180deg, rgba(26,22,18,0.38) 0%, rgba(15,13,10,0.55) 100%)',
+        background: 'linear-gradient(180deg, color-mix(in srgb, var(--color-sl-obsidian) 80%, var(--color-background) 20%) 0%, color-mix(in srgb, var(--color-sl-obsidian) 90%, var(--color-background) 10%) 100%)',
       }}
     >
       {/* Double border frame */}

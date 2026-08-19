@@ -28,6 +28,25 @@
   --color-gold-bright: #E5C76B;
   --color-gold-deep: #A8862E;
   --color-gold-rgb: 212, 175, 55;
+  /* Canonical gold opacity tokens — use these instead of hardcoded rgba() */
+  --color-gold-5: rgba(212, 175, 55, 0.05);
+  --color-gold-8: rgba(212, 175, 55, 0.08);
+  --color-gold-10: rgba(212, 175, 55, 0.1);
+  --color-gold-12: rgba(212, 175, 55, 0.12);
+  --color-gold-15: rgba(212, 175, 55, 0.15);
+  --color-gold-18: rgba(212, 175, 55, 0.18);
+  --color-gold-20: rgba(212, 175, 55, 0.2);
+  --color-gold-25: rgba(212, 175, 55, 0.25);
+  --color-gold-28: rgba(212, 175, 55, 0.28);
+  --color-gold-30: rgba(212, 175, 55, 0.3);
+  --color-gold-40: rgba(212, 175, 55, 0.4);
+  --color-gold-50: rgba(212, 175, 55, 0.5);
+  --color-gold-60: rgba(212, 175, 55, 0.6);
+  --color-gold-65: rgba(212, 175, 55, 0.65);
+  --color-gold-70: rgba(212, 175, 55, 0.7);
+  --color-gold-80: rgba(212, 175, 55, 0.8);
+  --color-gold-85: rgba(212, 175, 55, 0.85);
+  --color-gold-90: rgba(212, 175, 55, 0.9);
   --color-text-primary: #FFFFFF;
   --color-text-secondary: #A0A0A0;
   --color-text-muted: #6A6A6E;

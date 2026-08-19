@@ -160,8 +160,8 @@ export function DocumentUpload({ projectId, documents, onDocumentsChange }: Docu
             staticMode
               ? {}
               : {
-                  borderColor: isDragging ? 'rgba(212, 175, 55, 0.6)' : 'rgba(255, 255, 255, 0.08)',
-                  backgroundColor: isDragging ? 'rgba(212, 175, 55, 0.05)' : 'transparent',
+                  borderColor: isDragging ? 'var(--color-gold-60)' : 'rgba(255, 255, 255, 0.08)',
+                  backgroundColor: isDragging ? 'var(--color-gold-5)' : 'transparent',
                 }
           }
           className={cn(

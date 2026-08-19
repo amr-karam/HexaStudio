@@ -1,0 +1,114 @@
+rules:
+  - id: no-temporalio-import
+    pattern-either:
+      - pattern: import temporalio
+      - pattern: import temporalio.$MOD
+      - pattern: from temporalio import $X
+      - pattern: from temporalio.$MOD import $X
+    message: >-
+      Do not import `temporalio` directly. The workflows SDK re-exports
+      everything you need: `workflow.now()`, `workflow.uuid4()`,
+      `workflow.random()`, `workflow.wait_condition()`,
+      `workflow.continue_as_new()`, `WorkflowError`, `ActivityError`,
+      `ParentClosePolicy`, etc.
+      Use `from mistralai.workflows import ...` instead.
+    severity: ERROR
+    languages: [python]
+    metadata:
+      category: import
+      fix: Replace with the equivalent import from `mistralai.workflows`
+
+  - id: top-level-httpx-import
+    patterns:
+      - pattern: import httpx
+      - pattern-not-inside: |
+          def $F(...):
+              ...
+      - pattern-not-inside: |
+          async def $F(...):
+              ...
+    message: >-
+      Avoid top-level `import httpx`. The determinism sandbox re-imports
+      modules, and top-level imports with side effects can cause issues.
+      Import httpx inside your activity function instead:
+        @activity()
+        async def call_api(url: str) -> dict:
+            import httpx
+            async with httpx.AsyncClient() as client: ...
+    severity: WARNING
+    languages: [python]
+    metadata:
+      category: import
+      fix: Move `import httpx` inside the activity function body
+
+  - id: top-level-requests-import
+    patterns:
+      - pattern-either:
+          - pattern: import requests
+          - pattern: from requests import $X
+      - pattern-not-inside: |
+          def $F(...):
+              ...
+      - pattern-not-inside: |
+          async def $F(...):
+              ...
+    message: >-
+      Do not use the `requests` library. It is synchronous and blocks
+      the event loop. Use `httpx.AsyncClient` instead, imported inside
+      your activity function.
+    severity: WARNING
+    languages: [python]
+    metadata:
+      category: import
+      fix: Remove `requests` and use `httpx.AsyncClient` in activities
+
+  - id: top-level-aiohttp-import
+    patterns:
+      - pattern-either:
+          - pattern: import aiohttp
+          - pattern: from aiohttp import $X
+      - pattern-not-inside: |
+          def $F(...):
+              ...
+      - pattern-not-inside: |
+          async def $F(...):
+              ...
+    message: >-
+      Avoid top-level `import aiohttp`. Import it inside your activity
+      function to avoid sandbox re-import issues.
+    severity: WARNING
+    languages: [python]
+    metadata:
+      category: import
+      fix: Move the import inside the activity function body
+
+  - id: top-level-mistral-client-import
+    patterns:
+      - pattern-either:
+          - pattern: import mistralai.client
+          - pattern: import mistralai.client.$SUB
+          - pattern: from mistralai.client import $X
+          - pattern: from mistralai.client.$SUB import $X
+      - pattern-not-inside: |
+          def $F(...):
+              ...
+      - pattern-not-inside: |
+          async def $F(...):
+              ...
+      - pattern-not-inside: |
+          with workflows.workflow.unsafe.imports_passed_through():
+              ...
+      - pattern-not-inside: |
+          with workflow.unsafe.imports_passed_through():
+              ...
+    message: >-
+      Avoid a top-level import from `mistralai.client` (the raw SDK). It pulls in
+      `httpx`, which the determinism sandbox rejects when it re-imports the workflow
+      module — the worker then fails to validate the workflow at startup. Prefer the
+      Mistral AI plugin activities (`mistralai_chat_complete`, `mistralai_ocr`, ...);
+      if you genuinely need the raw client, import it inside the activity that uses it.
+    severity: ERROR
+    languages: [python]
+    metadata:
+      category: import
+      fix: Use a plugin activity, or import `mistralai.client` inside the activity body

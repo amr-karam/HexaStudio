@@ -32,7 +32,7 @@ export function QuickAction({ icon, label, description, onClick, className }: Qu
           ? undefined
           : {
               y: -3,
-              boxShadow: '0 12px 40px -12px rgba(212, 175, 55, 0.2)',
+              boxShadow: '0 12px 40px -12px var(--color-gold-20)',
             }
       }
       whileTap={prefersReduced ? undefined : { scale: 0.98 }}

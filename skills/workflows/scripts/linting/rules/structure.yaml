@@ -1,0 +1,120 @@
+rules:
+  # Structural issues: missing annotations, wrong argument types,
+  # missing required parameters.
+
+  - id: missing-entrypoint-return-type
+    patterns:
+      - pattern-either:
+          - pattern: |
+              @workflow.entrypoint
+              async def $METHOD(self, ...):
+                  ...
+          - pattern: |
+              @workflows.workflow.entrypoint
+              async def $METHOD(self, ...):
+                  ...
+      - pattern-not: |
+          @workflow.entrypoint
+          async def $METHOD(self, ...) -> $RET:
+              ...
+      - pattern-not: |
+          @workflows.workflow.entrypoint
+          async def $METHOD(self, ...) -> $RET:
+              ...
+    message: >-
+      Workflow entrypoint is missing a return type annotation.
+      All entrypoint parameters and the return type must be annotated
+      or the workflow will fail validation at registration time.
+      Add `-> ReturnType` to the function signature.
+    severity: ERROR
+    languages: [python]
+    metadata:
+      category: structure
+      fix: Add a return type annotation (e.g. `-> str`, `-> dict`)
+
+  - id: missing-activity-return-type
+    patterns:
+      - pattern-either:
+          - pattern: |
+              @activity(...)
+              async def $FUNC(...):
+                  ...
+          - pattern: |
+              @workflows.activity(...)
+              async def $FUNC(...):
+                  ...
+      - pattern-not: |
+          @activity(...)
+          async def $FUNC(...) -> $RET:
+              ...
+      - pattern-not: |
+          @workflows.activity(...)
+          async def $FUNC(...) -> $RET:
+              ...
+    message: >-
+      Activity is missing a return type annotation. All activity
+      parameters and the return type must be annotated or the activity
+      will fail validation at registration time.
+      Add `-> ReturnType` to the function signature.
+    severity: ERROR
+    languages: [python]
+    metadata:
+      category: structure
+      fix: Add a return type annotation (e.g. `-> dict`, `-> str`)
+
+  - id: workflow-define-missing-name
+    pattern-either:
+      - pattern: |
+          @workflow.define()
+          class $C:
+              ...
+      - pattern: |
+          @workflows.workflow.define()
+          class $C:
+              ...
+    message: >-
+      `@workflow.define()` requires a `name` argument (since SDK v3).
+      Without it the workflow cannot be registered.
+      Example: `@workflow.define(name="my-workflow")`
+    severity: ERROR
+    languages: [python]
+    metadata:
+      category: structure
+      fix: Add `name="my-workflow-name"` to the decorator
+
+  - id: wait-for-input-no-timeout
+    patterns:
+      - pattern: self.wait_for_input(...)
+      - pattern-not: self.wait_for_input(..., timeout=..., ...)
+    message: >-
+      `wait_for_input()` without a `timeout` can block indefinitely
+      if the user never responds. Always pass a timeout:
+        await self.wait_for_input(
+            ChatInput(), timeout=timedelta(minutes=5)
+        )
+    severity: WARNING
+    languages: [python]
+    metadata:
+      category: structure
+      fix: Add `timeout=timedelta(minutes=N)` parameter
+
+  - id: enforce-determinism-false
+    pattern-either:
+      - pattern: |
+          @workflow.define(..., enforce_determinism=False, ...)
+          class $C:
+              ...
+      - pattern: |
+          @workflows.workflow.define(..., enforce_determinism=False, ...)
+          class $C:
+              ...
+    message: >-
+      Determinism enforcement is disabled for this workflow. The sandbox
+      catches non-determinism at dev time — disabling it means replay
+      failures surface only in production. Only disable temporarily
+      while migrating legacy workflows.
+    severity: WARNING
+    languages: [python]
+    metadata:
+      category: structure
+      fix: Remove `enforce_determinism=False` and fix determinism issues

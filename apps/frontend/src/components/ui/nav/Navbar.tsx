@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useLocale } from '@/i18n/LocaleProvider';
+import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
 import dynamic from 'next/dynamic';
 import { Magnetic } from '@/components/ui/Magnetic';
 import { useHEXAMotion } from '@/hooks/useHEXAMotion';
@@ -141,13 +142,17 @@ export const Navbar = () => {
   }, [isMenuOpen]);
 
   // Focus trap inside mobile menu
-  useEffect(() => {
+useEffect(() => {
+    // ✅ ESCAPE → closes menu
+    useKeyboardShortcut('Escape', () => {
+      if (isMenuOpen) {
+        setIsMenuOpen(false);
+      }
+    }, { target: 'document' });
+
+    // 🔄 TAB TRAP → for keyboard navigation inside menu
     if (!isMenuOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setIsMenuOpen(false);
-        return;
-      }
       if (e.key !== 'Tab') return;
       const menu = document.getElementById('mobile-menu');
       if (!menu) return;

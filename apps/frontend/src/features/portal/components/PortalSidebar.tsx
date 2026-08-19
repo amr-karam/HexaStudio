@@ -35,6 +35,7 @@ const PORTAL_NAV_SECTIONS: PortalNavSection[] = [
     items: [
       { label: 'Dashboard', href: '/portal', icon: 'layout-dashboard' },
       { label: 'Projects', href: '/portal/projects', icon: 'folder-kanban' },
+      { label: '3D Live Review', href: '/portal/review', icon: 'box' },
     ],
   },
   {
@@ -43,6 +44,7 @@ const PORTAL_NAV_SECTIONS: PortalNavSection[] = [
       { label: 'Approvals', href: '/portal/approvals', icon: 'check-circle' },
       { label: 'Documents', href: '/portal/documents', icon: 'file-text' },
       { label: 'Finance', href: '/portal/finance', icon: 'receipt' },
+      { label: 'AI Studio', href: '/portal/ai', icon: 'sparkles' },
     ],
   },
   {
@@ -238,7 +240,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 export function PortalSidebar() {
   return (
     <aside
-      className="hidden lg:flex fixed left-0 top-0 bottom-0 w-[85vw] max-w-[280px] z-20"
+      className="hidden lg:flex fixed left-0 top-0 bottom-0 w-[85vw] max-w-[256px] z-20"
       aria-label="Portal sidebar"
     >
       {/* Glassmorphic backdrop — lets the ambient glow pass through */}

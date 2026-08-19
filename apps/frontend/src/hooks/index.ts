@@ -21,3 +21,9 @@ export type { WindowSize, WindowBreakpoint } from './useWindowSize';
 export { useIntersectionObserver } from './useIntersectionObserver';
 export type { ObservedEntry, IntersectionObserverOptions } from './useIntersectionObserver';
 export { useEvent } from './useEvent';
+
+// ── Keyboard shortcuts ──────────────────────────────────
+export { useKeyboardShortcut, isKeyCombo } from './useKeyboardShortcut';
+export type { KeyboardShortcutOptions } from './useKeyboardShortcut';
+export { useHotkeys } from './useHotkeys';
+export type { Hotkey } from './useHotkeys';

@@ -5,10 +5,11 @@ import { useQualityTier } from "@/providers/quality-provider";
 import { useMotionPolicy } from "@/hooks/useMotionPolicy";
 import { useFinePointer } from "@/hooks/useFinePointer";
 import { FractureRingHero } from "@/features/experience/components/FractureRingHero";
+import { HomeHeroStatic } from "./HomeHeroStatic";
 
 /**
  * HomeHero — Orchestrator for the CH. I VISION hero section.
- * 
+ *
  * Wraps the 3D FractureRingHero and provides the necessary
  * environmental and quality context.
  */
@@ -17,8 +18,12 @@ export function HomeHero() {
   const { staticMode, animationsEnabled } = useMotionPolicy();
   const finePointer = useFinePointer();
 
+  if (staticMode || !animationsEnabled) {
+    return <HomeHeroStatic />;
+  }
+
   return (
-    <FractureRingHero 
+    <FractureRingHero
       qualityTier={tier}
       staticMode={staticMode}
       finePointer={finePointer}
