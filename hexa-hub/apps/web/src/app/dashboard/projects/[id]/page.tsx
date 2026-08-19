@@ -86,7 +86,7 @@ export default function ProjectWorkspacePage({ params }: { params: { id: string 
         </div>
 
         {/* Tab bar skeleton */}
-        <div className="flex gap-1 border-b border-[#1F1F1F] mb-6">
+        <div className="flex gap-1 border-b border-border mb-6">
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="px-5 py-3">
               <SkeletonText width="80px" className="h-4" />
@@ -104,7 +104,7 @@ export default function ProjectWorkspacePage({ params }: { params: { id: string 
         {/* Kanban columns skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="bg-[#141414] border border-[#1F1F1F] rounded-2xl p-4 space-y-3">
+            <div key={i} className="bg-surface border border-border rounded-2xl p-4 space-y-3">
               <SkeletonText width="60%" className="h-5" />
               {Array.from({ length: 3 }).map((_, j) => (
                 <SkeletonCard key={j} lines={2} className="p-4" />
@@ -120,31 +120,31 @@ export default function ProjectWorkspacePage({ params }: { params: { id: string 
     <div className="min-h-screen">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="p-8 md:p-10 pb-0">
-        <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-[#666] mb-3">
+        <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-tertiary mb-3">
           <LayoutDashboard size={13} />
           <span>Workspace / {workspace?.name}</span>
           {workspace?.status && (
-            <span className={`px-2 py-0.5 rounded text-[10px] font-medium ${workspace.status === 'active' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-neutral-500/10 text-neutral-400'}`}>
+            <span className={`px-2 py-0.5 rounded text-[10px] font-medium ${workspace.status === 'active' ? 'bg-success/10 text-success' : 'bg-neutral-500/10 text-tertiary'}`}>
               {workspace.status}
             </span>
           )}
         </div>
-        <h1 className="text-4xl font-serif font-light text-white mb-2">{workspace?.name}</h1>
-        <p className="text-neutral-500 font-light text-base max-w-3xl mb-6">{workspace?.description}</p>
+        <h1 className="text-4xl font-serif font-light text-foreground mb-2">{workspace?.name}</h1>
+        <p className="text-tertiary font-light text-base max-w-3xl mb-6">{workspace?.description}</p>
 
         {/* Meta badges */}
         <div className="flex items-center gap-6 mb-8">
           {workspace?.client && (
-            <span className="flex items-center gap-1.5 text-[12px] text-[#888]"><Users size={13} />{workspace.client.fullName}</span>
+            <span className="flex items-center gap-1.5 text-[12px] text-tertiary"><Users size={13} />{workspace.client.fullName}</span>
           )}
           {workspace?.date_start && (
-            <span className="flex items-center gap-1.5 text-[12px] text-[#888]"><Calendar size={13} />{new Date(workspace.date_start).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+            <span className="flex items-center gap-1.5 text-[12px] text-tertiary"><Calendar size={13} />{new Date(workspace.date_start).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
           )}
-          <span className="flex items-center gap-1.5 text-[12px] text-[#888]"><CheckCircle2 size={13} />{tasks.length} tasks</span>
+          <span className="flex items-center gap-1.5 text-[12px] text-tertiary"><CheckCircle2 size={13} />{tasks.length} tasks</span>
         </div>
 
         {/* Tab Bar */}
-        <div className="flex gap-1 border-b border-[#1F1F1F]">
+        <div className="flex gap-1 border-b border-border">
           {TABS.map((tab) => {
             const Icon = tab.icon;
             const active = activeTab === tab.id;
@@ -153,7 +153,7 @@ export default function ProjectWorkspacePage({ params }: { params: { id: string 
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-5 py-3 text-sm font-light transition-all border-b-2 -mb-px ${
-                  active ? 'border-[#D4A843] text-[#D4A843]' : 'border-transparent text-[#555] hover:text-[#888]'
+                  active ? 'border-gold text-gold' : 'border-transparent text-tertiary hover:text-tertiary'
                 }`}
               >
                 <Icon size={15} />
@@ -168,17 +168,17 @@ export default function ProjectWorkspacePage({ params }: { params: { id: string 
       <div className="p-4 md:p-6">
         {activeTab === 'overview' ? (
           <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <div className="p-6 bg-[#141414] border border-[#1F1F1F] rounded-2xl">
-              <span className="text-[10px] uppercase tracking-widest text-[#555] mb-3 block">Total Tasks</span>
-              <span className="text-3xl font-serif font-light text-white">{tasks.length}</span>
+            <div className="p-6 bg-surface border border-border rounded-2xl">
+              <span className="text-[10px] uppercase tracking-widest text-tertiary mb-3 block">Total Tasks</span>
+              <span className="text-3xl font-serif font-light text-foreground">{tasks.length}</span>
             </div>
-            <div className="p-6 bg-[#141414] border border-[#1F1F1F] rounded-2xl">
-              <span className="text-[10px] uppercase tracking-widest text-[#555] mb-3 block">In Progress</span>
-              <span className="text-3xl font-serif font-light text-blue-400">{tasks.filter(t => t.status === 'IN_PROGRESS').length}</span>
+            <div className="p-6 bg-surface border border-border rounded-2xl">
+              <span className="text-[10px] uppercase tracking-widest text-tertiary mb-3 block">In Progress</span>
+              <span className="text-3xl font-serif font-light text-info">{tasks.filter(t => t.status === 'IN_PROGRESS').length}</span>
             </div>
-            <div className="p-6 bg-[#141414] border border-[#1F1F1F] rounded-2xl">
-              <span className="text-[10px] uppercase tracking-widest text-[#555] mb-3 block">Completed</span>
-              <span className="text-3xl font-serif font-light text-emerald-400">{tasks.filter(t => t.status === 'DONE').length}</span>
+            <div className="p-6 bg-surface border border-border rounded-2xl">
+              <span className="text-[10px] uppercase tracking-widest text-tertiary mb-3 block">Completed</span>
+              <span className="text-3xl font-serif font-light text-success">{tasks.filter(t => t.status === 'DONE').length}</span>
             </div>
           </motion.div>
         ) : activeTab === 'kanban' ? (

@@ -35,10 +35,10 @@ interface KanbanBoardProps {
 // ─── Priority Config ────────────────────────────────────────────────────────
 
 const PRIORITY: Record<string, { bg: string; text: string; label: string }> = {
-  urgent: { bg: 'bg-red-500/10', text: 'text-red-400', label: 'Urgent' },
+  urgent: { bg: 'bg-error/10', text: 'text-error', label: 'Urgent' },
   high: { bg: 'bg-amber-500/10', text: 'text-amber-400', label: 'High' },
-  normal: { bg: 'bg-blue-500/10', text: 'text-blue-400', label: 'Normal' },
-  low: { bg: 'bg-neutral-800', text: 'text-neutral-500', label: 'Low' },
+  normal: { bg: 'bg-info/10', text: 'text-info', label: 'Normal' },
+  low: { bg: 'bg-surface', text: 'text-tertiary', label: 'Low' },
 };
 
 // ─── Task Card ──────────────────────────────────────────────────────────────
@@ -58,12 +58,12 @@ function TaskCard({ task, onDragStart, onClick }: { task: KanbanTask; onDragStar
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="bg-[#141414] border border-[#1F1F1F] rounded-xl p-4 hover:border-[#D4A843]/20 transition-colors group"
+        className="bg-surface border border-border rounded-xl p-4 hover:border-gold/20 transition-colors group"
       >
         <div className="flex items-start gap-2.5">
-          <GripVertical size={13} className="text-[#333] group-hover:text-[#555] mt-0.5 shrink-0 transition-colors" />
+          <GripVertical size={13} className="text-tertiary group-hover:text-tertiary mt-0.5 shrink-0 transition-colors" />
           <div className="flex-1 min-w-0">
-            <p className="text-sm text-white font-light leading-snug mb-2 group-hover:text-[#D4A843] transition-colors">
+            <p className="text-sm text-foreground font-light leading-snug mb-2 group-hover:text-gold transition-colors">
               {task.title}
             </p>
             <div className="flex items-center gap-2 flex-wrap">
@@ -73,7 +73,7 @@ function TaskCard({ task, onDragStart, onClick }: { task: KanbanTask; onDragStar
                 </span>
               )}
               {task.assignee && (
-                <span className="flex items-center gap-1 text-[10px] text-[#555]">
+                <span className="flex items-center gap-1 text-[10px] text-tertiary">
                   <User size={10} />
                   {task.assignee.fullName}
                 </span>
@@ -82,7 +82,7 @@ function TaskCard({ task, onDragStart, onClick }: { task: KanbanTask; onDragStar
             {task.labels && task.labels.length > 0 && (
               <div className="flex items-center gap-1.5 mt-2">
                 {task.labels.map((l) => (
-                  <span key={l} className="w-2 h-2 rounded-full bg-[#D4A843]/40" />
+                  <span key={l} className="w-2 h-2 rounded-full bg-gold/40" />
                 ))}
               </div>
             )}
@@ -115,18 +115,18 @@ function KanbanColumnComponent({
 
   return (
     <div
-      className="flex flex-col bg-[#0E0E0E] border border-[#1F1F1F] rounded-2xl min-h-[400px] w-72 shrink-0"
+      className="flex flex-col bg-void-deep border border-border rounded-2xl min-h-[400px] w-72 shrink-0"
       onDragOver={(e) => { e.preventDefault(); setIsOver(true); }}
       onDragLeave={() => setIsOver(false)}
       onDrop={(e) => { setIsOver(false); onDrop(e, column.id); }}
     >
       {/* Column Header */}
-      <div className={`flex items-center justify-between px-5 py-4 border-b border-[#1F1F1F] ${isOver ? 'bg-[#D4A843]/5' : ''} transition-colors rounded-t-2xl`}>
+      <div className={`flex items-center justify-between px-5 py-4 border-b border-border ${isOver ? 'bg-gold/5' : ''} transition-colors rounded-t-2xl`}>
         <div className="flex items-center gap-2.5">
           <Icon size={15} className={column.color} />
-          <h3 className="text-xs font-medium uppercase tracking-[0.1em] text-white">{column.label}</h3>
+          <h3 className="text-xs font-medium uppercase tracking-[0.1em] text-foreground">{column.label}</h3>
         </div>
-        <span className="text-[10px] text-[#555] bg-[#1A1A1A] px-2 py-0.5 rounded-full tabular-nums">{count}</span>
+        <span className="text-[10px] text-tertiary bg-surface px-2 py-0.5 rounded-full tabular-nums">{count}</span>
       </div>
 
       {/* Tasks */}
@@ -137,7 +137,7 @@ function KanbanColumnComponent({
           ))}
         </AnimatePresence>
         {tasks.length === 0 && (
-          <div className="flex items-center justify-center h-24 text-[11px] text-[#444] font-light">
+          <div className="flex items-center justify-center h-24 text-[11px] text-tertiary font-light">
             Drop tasks here
           </div>
         )}
@@ -149,10 +149,10 @@ function KanbanColumnComponent({
 // ─── Default Columns ────────────────────────────────────────────────────────
 
 export const DEFAULT_COLUMNS: KanbanColumn[] = [
-  { id: 'TODO', label: 'To Do', color: 'text-neutral-400', icon: AlertCircle },
-  { id: 'IN_PROGRESS', label: 'In Progress', color: 'text-blue-400', icon: Clock },
-  { id: 'REVIEW', label: 'Review', color: 'text-[#D4A843]', icon: AlertCircle },
-  { id: 'DONE', label: 'Done', color: 'text-emerald-400', icon: CheckCircle2 },
+  { id: 'TODO', label: 'To Do', color: 'text-tertiary', icon: AlertCircle },
+  { id: 'IN_PROGRESS', label: 'In Progress', color: 'text-info', icon: Clock },
+  { id: 'REVIEW', label: 'Review', color: 'text-gold', icon: AlertCircle },
+  { id: 'DONE', label: 'Done', color: 'text-success', icon: CheckCircle2 },
 ];
 
 // ─── KanbanBoard ────────────────────────────────────────────────────────────
@@ -175,7 +175,7 @@ export function KanbanBoard({ columns = DEFAULT_COLUMNS, tasks, onTaskMove, onTa
     return (
       <div className="flex gap-4 overflow-x-auto p-4">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="w-72 h-96 bg-[#0E0E0E] border border-[#1F1F1F] rounded-2xl animate-pulse" />
+          <div key={i} className="w-72 h-96 bg-void-deep border border-border rounded-2xl animate-pulse" />
         ))}
       </div>
     );

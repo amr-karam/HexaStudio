@@ -47,7 +47,7 @@ export function TypingDots({ className, size = 'md' }: TypingDotsProps) {
     <div
       className={cn(
         'inline-flex items-center rounded-2xl rounded-tl-md',
-        'bg-[#141414] border border-[#1F1F1F]',
+        'bg-surface border border-border',
         gap,
         padding,
         className,
@@ -63,7 +63,7 @@ export function TypingDots({ className, size = 'md' }: TypingDotsProps) {
           initial="initial"
           animate="animate"
           className={cn(
-            'rounded-full bg-[#D4A843]/70',
+            'rounded-full bg-gold/70',
             dotSize,
           )}
         />

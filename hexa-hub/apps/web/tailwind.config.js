@@ -36,6 +36,14 @@ module.exports = {
         warning: '#F59E0B',
         error: '#EF4444',
         info: '#3B82F6',
+        /* ── Metric / data colors ── */
+        metricBlue: '#60A5FA',
+        metricAmber: '#FBBF24',
+        metricViolet: '#A78BFA',
+        metricEmerald: '#34D399',
+        metricTeal: '#22D3EE',
+        metricRed: '#F87171',
+        metricTertiary: '#9CA3AF',
       },
       fontFamily: {
         sans: ['var(--font-sans)'],

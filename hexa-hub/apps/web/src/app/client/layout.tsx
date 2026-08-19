@@ -64,13 +64,13 @@ function ClientSidebar({
         {/* Brand */}
         <div className="p-6 flex items-center justify-between">
           <Link href="/client">
-            <h2 className="text-xl font-serif font-light tracking-tighter text-white">
+            <h2 className="text-xl font-serif font-light tracking-tighter text-foreground">
               HEXA <span className="text-gold">CLIENT</span>
             </h2>
           </Link>
           <button
             onClick={onClose}
-            className="lg:hidden p-1.5 text-neutral-500 hover:text-white transition-colors"
+            className="lg:hidden p-1.5 text-tertiary hover:text-foreground transition-colors"
           >
             <X size={18} />
           </button>
@@ -97,7 +97,7 @@ function ClientSidebar({
                   ${
                     isActive
                       ? 'bg-gold/10 text-gold'
-                      : 'text-neutral-500 hover:bg-white/[0.03] hover:text-neutral-300'
+                      : 'text-tertiary hover:bg-white/[0.03] hover:text-secondary'
                   }
                 `}
               >
@@ -121,19 +121,19 @@ function ClientSidebar({
         {/* User Section */}
         <div className="p-4 border-t border-border">
           <div className="flex items-center gap-3 px-3 py-3 mb-3">
-            <div className="w-9 h-9 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 border border-border">
+            <div className="w-9 h-9 rounded-full bg-surface flex items-center justify-center text-tertiary border border-border">
               <User size={16} />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-medium text-white truncate">
+              <p className="text-xs font-medium text-foreground truncate">
                 {user?.fullName || 'Client'}
               </p>
-              <p className="text-[10px] text-neutral-600 uppercase tracking-widest">Client Portal</p>
+              <p className="text-[10px] text-tertiary uppercase tracking-widest">Client Portal</p>
             </div>
           </div>
           <button
             onClick={logout}
-            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-neutral-500 hover:text-red-400 transition-colors duration-300 rounded-lg hover:bg-red-500/5"
+            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-tertiary hover:text-error transition-colors duration-300 rounded-lg hover:bg-error/5"
           >
             <LogOut size={16} />
             <span className="font-light">Sign Out</span>
@@ -162,19 +162,19 @@ function ClientTopBar({ onMenuToggle }: { onMenuToggle: () => void }) {
       <div className="flex items-center gap-4">
         <button
           onClick={onMenuToggle}
-          className="lg:hidden p-2 text-neutral-500 hover:text-white transition-colors"
+          className="lg:hidden p-2 text-tertiary hover:text-foreground transition-colors"
         >
           <Menu size={20} />
         </button>
 
-        <div className="hidden lg:flex items-center gap-2 text-sm text-neutral-600">
+        <div className="hidden lg:flex items-center gap-2 text-sm text-tertiary">
           <Link href="/client" className="hover:text-gold transition-colors">
             Portal
           </Link>
           {currentPage && currentPage.href !== '/client' && (
             <>
               <ChevronRight size={12} />
-              <span className="text-neutral-400">{currentPage.label}</span>
+              <span className="text-tertiary">{currentPage.label}</span>
             </>
           )}
         </div>
@@ -182,17 +182,17 @@ function ClientTopBar({ onMenuToggle }: { onMenuToggle: () => void }) {
 
       {/* Right side */}
       <div className="flex items-center gap-3">
-        <button className="relative p-2.5 text-neutral-500 hover:text-white transition-colors rounded-xl hover:bg-white/5">
+        <button className="relative p-2.5 text-tertiary hover:text-foreground transition-colors rounded-xl hover:bg-white/5">
           <Bell size={18} />
           {/* Notification dot */}
           <span className="absolute top-2 right-2 w-2 h-2 bg-gold rounded-full" />
         </button>
 
         <div className="hidden md:flex items-center gap-3 pl-3 border-l border-border/50">
-          <div className="w-8 h-8 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 border border-border/50">
+          <div className="w-8 h-8 rounded-full bg-surface flex items-center justify-center text-tertiary border border-border/50">
             <User size={14} />
           </div>
-          <span className="text-xs text-neutral-400 font-light">
+          <span className="text-xs text-tertiary font-light">
             {user?.fullName?.split(' ')[0] || 'Client'}
           </span>
         </div>
@@ -219,14 +219,14 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-10 h-10 border-2 border-gold/20 border-t-gold rounded-full animate-spin" />
-          <p className="text-xs text-neutral-600 uppercase tracking-widest">Loading Portal</p>
+          <p className="text-xs text-tertiary uppercase tracking-widest">Loading Portal</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen bg-background text-white overflow-hidden">
+    <div className="flex h-screen bg-background text-foreground overflow-hidden">
       <ClientSidebar
         isMobileOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}

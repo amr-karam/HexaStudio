@@ -38,8 +38,8 @@ function SettingsSection({ icon: Icon, title, description, children, index }: Se
           <Icon size={18} className="text-gold" />
         </div>
         <div>
-          <h3 className="text-base font-serif font-light text-white">{title}</h3>
-          <p className="text-xs text-neutral-600 font-light">{description}</p>
+          <h3 className="text-base font-serif font-light text-foreground">{title}</h3>
+          <p className="text-xs text-tertiary font-light">{description}</p>
         </div>
       </div>
       <div className="mt-5 space-y-4">
@@ -63,7 +63,7 @@ function Field({ label, description, children }: FieldProps) {
       <div className="flex-1 min-w-0">
         <p className="text-sm text-white/80 font-light">{label}</p>
         {description && (
-          <p className="text-xs text-neutral-600 mt-0.5">{description}</p>
+          <p className="text-xs text-tertiary mt-0.5">{description}</p>
         )}
       </div>
       <div className="shrink-0">{children}</div>
@@ -129,7 +129,7 @@ export default function SettingsPage() {
         <h1 className="text-4xl font-serif font-light mb-2">
           <span className="text-gold">Settings</span>
         </h1>
-        <p className="text-neutral-500 font-light">
+        <p className="text-tertiary font-light">
           Manage your account preferences and configuration.
         </p>
 
@@ -206,7 +206,7 @@ export default function SettingsPage() {
                 className={`p-2 rounded-lg transition-all duration-200 ${
                   theme === 'dark'
                     ? 'bg-gold/10 text-gold border border-gold/30'
-                    : 'text-neutral-600 hover:text-neutral-400 border border-transparent'
+                    : 'text-tertiary hover:text-tertiary border border-transparent'
                 }`}
                 aria-label="Dark mode"
               >
@@ -217,7 +217,7 @@ export default function SettingsPage() {
                 className={`p-2 rounded-lg transition-all duration-200 ${
                   theme === 'light'
                     ? 'bg-gold/10 text-gold border border-gold/30'
-                    : 'text-neutral-600 hover:text-neutral-400 border border-transparent'
+                    : 'text-tertiary hover:text-tertiary border border-transparent'
                 }`}
                 aria-label="Light mode"
               >
@@ -240,7 +240,7 @@ export default function SettingsPage() {
             </button>
           </Field>
           <Field label="Sessions" description="Active login sessions">
-            <button className="px-3 py-1.5 text-xs text-neutral-500 border border-border rounded-lg hover:text-red-400 hover:border-red-400/30 transition-all">
+            <button className="px-3 py-1.5 text-xs text-tertiary border border-border rounded-lg hover:text-error hover:border-red-400/30 transition-all">
               Revoke All
             </button>
           </Field>
@@ -254,7 +254,7 @@ export default function SettingsPage() {
           className="flex items-center justify-end gap-4 pt-4"
         >
           {saved && (
-            <span className="text-xs text-emerald-400 font-light animate-pulse">
+            <span className="text-xs text-success font-light animate-pulse">
               Settings saved successfully.
             </span>
           )}

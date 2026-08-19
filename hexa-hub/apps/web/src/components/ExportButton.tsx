@@ -218,20 +218,20 @@ export function ExportButton({
       disabled={isButtonDisabled}
       className={cn(
         'inline-flex items-center justify-center font-light tracking-wide transition-all duration-300',
-        'bg-transparent text-neutral-400 border border-[#1F1F1F]',
-        'hover:text-[#D4A843] hover:border-[#D4A843]/30 hover:bg-white/[0.02]',
+        'bg-transparent text-tertiary border border-border',
+        'hover:text-gold hover:border-gold/30 hover:bg-white/[0.02]',
         'disabled:opacity-30 disabled:cursor-not-allowed',
         sizeClasses[size],
-        state === 'success' && 'border-[#D4A843]/40 text-[#D4A843] bg-[#D4A843]/[0.04]',
+        state === 'success' && 'border-gold/40 text-gold bg-gold/[0.04]',
         className,
       )}
       title={isEmpty ? 'No data to export' : `${resolvedLabel} (${data.length} rows)`}
       aria-label={resolvedLabel}
     >
       {state === 'loading' ? (
-        <div className="w-3.5 h-3.5 border-2 border-[#D4A843]/30 border-t-[#D4A843] rounded-full animate-spin" />
+        <div className="w-3.5 h-3.5 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
       ) : state === 'success' ? (
-        <Check size={13} className="text-emerald-400" />
+        <Check size={13} className="text-success" />
       ) : (
         <Download size={13} />
       )}

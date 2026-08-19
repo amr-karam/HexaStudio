@@ -93,29 +93,29 @@ export default function ClientDashboard() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-12"
       >
-        <h1 className="text-4xl font-serif font-light text-white mb-2">Welcome back, <span className="text-gold">{user?.fullName || 'Client'}</span></h1>
-        <p className="text-neutral-500 font-light text-lg">Your project overview at a glance.</p>
+        <h1 className="text-4xl font-serif font-light text-foreground mb-2">Welcome back, <span className="text-gold">{user?.fullName || 'Client'}</span></h1>
+        <p className="text-tertiary font-light text-lg">Your project overview at a glance.</p>
       </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
         <div className="p-8 bg-surface border border-border rounded-3xl">
           <Briefcase className="text-gold mb-4" size={32} />
-          <h3 className="text-neutral-400 text-sm uppercase tracking-widest mb-1">Active Projects</h3>
-          <div className="text-3xl font-serif text-white">{projects.length}</div>
+          <h3 className="text-tertiary text-sm uppercase tracking-widest mb-1">Active Projects</h3>
+          <div className="text-3xl font-serif text-foreground">{projects.length}</div>
         </div>
         <div className="p-8 bg-surface border border-border rounded-3xl">
           <Bell className="text-gold mb-4" size={32} />
-          <h3 className="text-neutral-400 text-sm uppercase tracking-widest mb-1">Notifications</h3>
-          <div className="text-3xl font-serif text-white">{notifications.length}</div>
+          <h3 className="text-tertiary text-sm uppercase tracking-widest mb-1">Notifications</h3>
+          <div className="text-3xl font-serif text-foreground">{notifications.length}</div>
         </div>
         <div className="p-8 bg-surface border border-border rounded-3xl">
           <FileText className="text-gold mb-4" size={32} />
-          <h3 className="text-neutral-400 text-sm uppercase tracking-widest mb-1">Documents</h3>
-          <div className="text-3xl font-serif text-white">0</div>
+          <h3 className="text-tertiary text-sm uppercase tracking-widest mb-1">Documents</h3>
+          <div className="text-3xl font-serif text-foreground">0</div>
         </div>
       </div>
 
-      <h2 className="text-2xl font-serif text-white mb-6">Your Projects</h2>
+      <h2 className="text-2xl font-serif text-foreground mb-6">Your Projects</h2>
       {projects.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {projects.map((project) => (
@@ -124,14 +124,14 @@ export default function ClientDashboard() {
               whileHover={{ scale: 1.02 }}
               className="p-6 bg-surface border border-border rounded-2xl cursor-pointer"
             >
-              <h3 className="text-lg font-medium text-white mb-2">{project.name}</h3>
-              <p className="text-sm text-neutral-500 capitalize">{project.status}</p>
+              <h3 className="text-lg font-medium text-foreground mb-2">{project.name}</h3>
+              <p className="text-sm text-tertiary capitalize">{project.status}</p>
             </motion.div>
           ))}
         </div>
       ) : (
         <div className="p-12 bg-surface border border-border rounded-3xl text-center">
-          <p className="text-neutral-500 font-light italic text-lg">
+          <p className="text-tertiary font-light italic text-lg">
             No active projects found.
           </p>
         </div>

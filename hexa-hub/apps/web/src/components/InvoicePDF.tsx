@@ -68,7 +68,7 @@ export function InvoicePDF({ data, printMode = false }: InvoicePDFProps) {
   const textMuted = printMode ? '#999999' : '#555555';
   const borderColor = printMode ? '#e5e5e5' : '#1F1F1F';
   const surfaceBg = printMode ? '#f9fafb' : '#0A0A0A';
-  const gold = '#D4A843';
+  const gold = '#D4AF37'; // PDF export — CSS var not available in print context
 
   return (
     <div

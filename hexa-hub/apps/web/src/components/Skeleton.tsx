@@ -10,7 +10,7 @@ function Shimmer({ className, style, ...rest }: { className?: string; style?: Re
     <div
       role="status"
       aria-label="Loading content"
-      className={cn('animate-pulse bg-[#1F1F1F]/60', className)}
+      className={cn('animate-pulse bg-border', className)}
       style={style}
       {...rest}
     />
@@ -28,7 +28,7 @@ export function SkeletonCard({ className, lines = 3 }: SkeletonCardProps) {
   return (
     <div
       className={cn(
-        'p-6 bg-[#141414] border border-[#1F1F1F] rounded-2xl space-y-4',
+        'p-6 bg-surface border border-border rounded-2xl space-y-4',
         className,
       )}
     >
@@ -71,12 +71,12 @@ export function SkeletonTable({
   return (
     <div
       className={cn(
-        'bg-[#141414] border border-[#1F1F1F] rounded-2xl overflow-hidden',
+        'bg-surface border border-border rounded-2xl overflow-hidden',
         className,
       )}
     >
       {/* Header */}
-      <div className="flex items-center gap-4 px-6 py-4 border-b border-[#1F1F1F]">
+      <div className="flex items-center gap-4 px-6 py-4 border-b border-border">
         {Array.from({ length: columns }).map((_, i) => (
           <Shimmer
             key={i}
@@ -90,7 +90,7 @@ export function SkeletonTable({
       {Array.from({ length: rows }).map((_, rowIdx) => (
         <div
           key={rowIdx}
-          className="flex items-center gap-4 px-6 py-4 border-b border-[#1F1F1F]/50 last:border-b-0"
+          className="flex items-center gap-4 px-6 py-4 border-b border-border last:border-b-0"
         >
           {Array.from({ length: columns }).map((_, colIdx) => (
             <Shimmer

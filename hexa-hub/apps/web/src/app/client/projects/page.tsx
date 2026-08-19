@@ -50,8 +50,8 @@ interface ClientWorkspace {
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; icon: LucideIcon }> = {
   inquiry: {
     label: 'Inquiry',
-    color: 'text-blue-400',
-    bg: 'bg-blue-500/10 border-blue-500/20',
+    color: 'text-info',
+    bg: 'bg-info/10 border-blue-500/20',
     icon: Search,
   },
   consultation: {
@@ -68,8 +68,8 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; 
   },
   active: {
     label: 'Active',
-    color: 'text-emerald-400',
-    bg: 'bg-emerald-500/10 border-emerald-500/20',
+    color: 'text-success',
+    bg: 'bg-success/10 border-emerald-500/20',
     icon: Briefcase,
   },
   on_hold: {
@@ -86,7 +86,7 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; 
   },
   archived: {
     label: 'Archived',
-    color: 'text-neutral-500',
+    color: 'text-tertiary',
     bg: 'bg-neutral-500/10 border-neutral-500/20',
     icon: Archive,
   },
@@ -144,11 +144,11 @@ function ProjectCard({
             {/* Header */}
             <div className="flex items-start justify-between mb-4">
               <div className="flex-1 min-w-0 pr-4">
-                <h3 className="text-base font-medium text-white group-hover:text-gold transition-colors duration-300 truncate">
+                <h3 className="text-base font-medium text-foreground group-hover:text-gold transition-colors duration-300 truncate">
                   {project.name}
                 </h3>
                 {project.description && (
-                  <p className="text-xs text-neutral-500 mt-1 line-clamp-2 font-light">
+                  <p className="text-xs text-tertiary mt-1 line-clamp-2 font-light">
                     {project.description}
                   </p>
                 )}
@@ -165,12 +165,12 @@ function ProjectCard({
             {/* Progress Bar */}
             <div className="mb-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] uppercase tracking-widest text-neutral-600">
+                <span className="text-[10px] uppercase tracking-widest text-tertiary">
                   Progress
                 </span>
-                <span className="text-xs text-neutral-500 font-light">{progress}%</span>
+                <span className="text-xs text-tertiary font-light">{progress}%</span>
               </div>
-              <div className="h-1.5 bg-neutral-800 rounded-full overflow-hidden">
+              <div className="h-1.5 bg-surface rounded-full overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${progress}%` }}
@@ -185,15 +185,15 @@ function ProjectCard({
               <div className="flex items-center gap-2 p-3 bg-background/50 rounded-xl border border-border/30 mb-4">
                 <Clock size={12} className="text-gold/70 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-[10px] uppercase tracking-widest text-neutral-600">
+                  <p className="text-[10px] uppercase tracking-widest text-tertiary">
                     Next Milestone
                   </p>
-                  <p className="text-xs text-neutral-400 truncate font-light mt-0.5">
+                  <p className="text-xs text-tertiary truncate font-light mt-0.5">
                     {nextMilestone.name}
                   </p>
                 </div>
                 {nextMilestone.date && (
-                  <span className="text-[10px] text-neutral-600 flex-shrink-0">
+                  <span className="text-[10px] text-tertiary flex-shrink-0">
                     {new Date(nextMilestone.date).toLocaleDateString('en-US', {
                       month: 'short',
                       day: 'numeric',
@@ -211,7 +211,7 @@ function ProjectCard({
                   year: 'numeric',
                 })}
               </span>
-              <span className="flex items-center gap-1.5 text-xs text-neutral-600 group-hover:text-gold transition-colors duration-300">
+              <span className="flex items-center gap-1.5 text-xs text-tertiary group-hover:text-gold transition-colors duration-300">
                 View Details
                 <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform duration-300" />
               </span>
@@ -230,14 +230,14 @@ function ProjectCardSkeleton() {
     <div className="p-6 bg-surface border border-border rounded-2xl animate-pulse">
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1 space-y-2">
-          <div className="h-4 bg-neutral-800 rounded w-2/3" />
-          <div className="h-3 bg-neutral-800 rounded w-full" />
+          <div className="h-4 bg-surface rounded w-2/3" />
+          <div className="h-3 bg-surface rounded w-full" />
         </div>
-        <div className="h-6 w-20 bg-neutral-800 rounded-lg" />
+        <div className="h-6 w-20 bg-surface rounded-lg" />
       </div>
-      <div className="h-1.5 bg-neutral-800 rounded-full mb-4" />
-      <div className="h-14 bg-neutral-800/50 rounded-xl mb-4" />
-      <div className="h-3 bg-neutral-800 rounded w-1/4" />
+      <div className="h-1.5 bg-surface rounded-full mb-4" />
+      <div className="h-14 bg-surface/50 rounded-xl mb-4" />
+      <div className="h-3 bg-surface rounded w-1/4" />
     </div>
   );
 }
@@ -300,10 +300,10 @@ export default function ClientProjectsPage() {
         transition={{ duration: 0.6 }}
         className="mb-10"
       >
-        <h1 className="text-3xl md:text-4xl font-serif font-light text-white mb-2">
+        <h1 className="text-3xl md:text-4xl font-serif font-light text-foreground mb-2">
           My <span className="text-gold">Projects</span>
         </h1>
-        <p className="text-neutral-500 font-light">
+        <p className="text-tertiary font-light">
           Track your project milestones, timelines, and deliverables.
         </p>
       </motion.div>
@@ -318,19 +318,19 @@ export default function ClientProjectsPage() {
         >
           {/* Search */}
           <div className="relative flex-1 max-w-md">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-600" />
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-tertiary" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search projects..."
-              className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-xl text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-gold/30 transition-colors"
+              className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-xl text-sm text-foreground placeholder-neutral-600 focus:outline-none focus:border-gold/30 transition-colors"
             />
           </div>
 
           {/* Status Filter */}
           <div className="flex items-center gap-2 flex-wrap">
-            <Filter size={14} className="text-neutral-600" />
+            <Filter size={14} className="text-tertiary" />
             {['all', ...Object.keys(statusCounts)].map((status) => (
               <button
                 key={status}
@@ -338,7 +338,7 @@ export default function ClientProjectsPage() {
                 className={`px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-widest font-medium transition-all duration-300 ${
                   filterStatus === status
                     ? 'bg-gold/10 text-gold border border-gold/20'
-                    : 'text-neutral-500 border border-border hover:border-neutral-600'
+                    : 'text-tertiary border border-border hover:border-neutral-600'
                 }`}
               >
                 {status === 'all' ? 'All' : STATUS_CONFIG[status]?.label || status}
@@ -367,8 +367,8 @@ export default function ClientProjectsPage() {
           animate={{ opacity: 1 }}
           className="p-8 bg-surface border border-red-500/20 rounded-2xl text-center"
         >
-          <AlertCircle size={32} className="mx-auto text-red-400/50 mb-3" />
-          <p className="text-neutral-400 text-sm">{error}</p>
+          <AlertCircle size={32} className="mx-auto text-error/50 mb-3" />
+          <p className="text-tertiary text-sm">{error}</p>
         </motion.div>
       )}
 
@@ -381,12 +381,12 @@ export default function ClientProjectsPage() {
           className="p-12 bg-surface border border-border rounded-3xl text-center"
         >
           <Briefcase size={40} className="mx-auto text-neutral-700 mb-4" />
-          <p className="text-neutral-500 font-light text-lg">
+          <p className="text-tertiary font-light text-lg">
             {projects.length === 0
               ? 'No active projects yet.'
               : 'No projects match your filters.'}
           </p>
-          <p className="text-neutral-600 text-sm mt-2">
+          <p className="text-tertiary text-sm mt-2">
             {projects.length === 0
               ? 'Your assigned projects will appear here.'
               : 'Try adjusting your search or filter criteria.'}

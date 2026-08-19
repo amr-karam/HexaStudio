@@ -129,7 +129,7 @@ export default function ChannelsPage() {
   // ─── Render ───────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex h-[calc(100vh-0px)] bg-[#141414] border border-[#1F1F1F] rounded-2xl overflow-hidden">
+    <div className="flex h-[calc(100vh-0px)] bg-surface border border-border rounded-2xl overflow-hidden">
       {/* Channel Sidebar */}
       <ChannelList
         channels={channels}
@@ -183,7 +183,7 @@ export default function ChannelsPage() {
                   <path d="M21 3L12 12" />
                 </svg>
               </div>
-              <p className="text-neutral-500 font-light text-sm">
+              <p className="text-tertiary font-light text-sm">
                 Select a channel to start chatting
               </p>
               <p className="text-[11px] text-neutral-700 font-light">

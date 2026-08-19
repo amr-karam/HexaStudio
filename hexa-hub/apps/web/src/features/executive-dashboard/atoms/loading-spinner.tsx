@@ -13,7 +13,7 @@ interface LoadingSpinnerProps {
 
 export const LoadingSpinner = ({
   size = "md",
-  color = "#3b82f6",
+  color = 'var(--color-info)',
   className = "",
 }: LoadingSpinnerProps) => {
   const sizeClasses = {

@@ -40,10 +40,10 @@ const DEPARTMENT_TABS: { value: Department; label: string }[] = [
 
 const DEPARTMENT_COLORS: Record<string, string> = {
   design: 'bg-violet-500/10 text-violet-400',
-  engineering: 'bg-blue-500/10 text-blue-400',
-  management: 'bg-[#D4A843]/10 text-[#D4A843]',
-  sales: 'bg-emerald-500/10 text-emerald-400',
-  admin: 'bg-neutral-500/10 text-neutral-400',
+  engineering: 'bg-info/10 text-info',
+  management: 'bg-gold/10 text-gold',
+  sales: 'bg-success/10 text-success',
+  admin: 'bg-neutral-500/10 text-tertiary',
 };
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -59,7 +59,7 @@ function getInitials(name: string): string {
 
 function getDepartmentColor(department: string): string {
   const key = department?.toLowerCase().replace(/\s+/g, '_');
-  return DEPARTMENT_COLORS[key] ?? 'bg-neutral-500/10 text-neutral-400';
+  return DEPARTMENT_COLORS[key] ?? 'bg-neutral-500/10 text-tertiary';
 }
 
 // ─── Animation Variants ─────────────────────────────────────────────────────
@@ -135,16 +135,16 @@ export default function EmployeesPage() {
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="mb-10"
       >
-        <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-neutral-500 mb-4">
+        <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-tertiary mb-4">
           <Users size={13} />
           <span>Team</span>
         </div>
         <div className="flex items-end justify-between">
           <div>
-            <h1 className="text-3xl font-serif font-light text-white mb-1">
+            <h1 className="text-3xl font-serif font-light text-foreground mb-1">
               Employees
             </h1>
-            <p className="text-[13px] text-neutral-500 font-light">
+            <p className="text-[13px] text-tertiary font-light">
               {resolvedTotal} team members
             </p>
           </div>
@@ -162,14 +162,14 @@ export default function EmployeesPage() {
         <div className="relative max-w-sm">
           <Search
             size={15}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-600"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-tertiary"
           />
           <input
             type="text"
             placeholder="Search employees..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-[#141414] border border-[#1F1F1F] rounded-lg text-sm text-white placeholder:text-neutral-600 font-light focus:outline-none focus:border-[#D4A843]/40 focus:ring-1 focus:ring-[#D4A843]/20 transition-all duration-300"
+            className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-lg text-sm text-foreground placeholder:text-tertiary font-light focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20/20 transition-all duration-300"
           />
         </div>
 
@@ -184,8 +184,8 @@ export default function EmployeesPage() {
               }}
               className={`px-3.5 py-1.5 rounded-lg text-[12px] font-light transition-all duration-200 ${
                 departmentTab === tab.value
-                  ? 'bg-[#D4A843]/10 text-[#D4A843] border border-[#D4A843]/30'
-                  : 'text-neutral-500 border border-transparent hover:text-neutral-300 hover:border-[#1F1F1F]'
+                  ? 'bg-gold/10 text-gold border border-gold/30'
+                  : 'text-tertiary border border-transparent hover:text-secondary hover:border-border'
               }`}
             >
               {tab.label}
@@ -205,39 +205,39 @@ export default function EmployeesPage() {
           {Array.from({ length: 8 }).map((_, i) => (
             <div
               key={i}
-              className="bg-[#141414] border border-[#1F1F1F] rounded-xl p-5 animate-pulse"
+              className="bg-surface border border-border rounded-xl p-5 animate-pulse"
             >
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-full bg-[#1F1F1F]" />
+                <div className="w-12 h-12 rounded-full bg-border" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-3 bg-[#1F1F1F] rounded w-24" />
-                  <div className="h-2.5 bg-[#1F1F1F] rounded w-16" />
+                  <div className="h-3 bg-border rounded w-24" />
+                  <div className="h-2.5 bg-border rounded w-16" />
                 </div>
               </div>
               <div className="space-y-2">
-                <div className="h-2 bg-[#1F1F1F] rounded w-32" />
-                <div className="h-2 bg-[#1F1F1F] rounded w-28" />
+                <div className="h-2 bg-border rounded w-32" />
+                <div className="h-2 bg-border rounded w-28" />
               </div>
             </div>
           ))}
         </div>
       ) : isError ? (
         <div className="p-16 text-center">
-          <AlertCircle size={32} className="text-red-400/60 mx-auto mb-3" />
-          <p className="text-red-400 text-sm font-light">
+          <AlertCircle size={32} className="text-error/60 mx-auto mb-3" />
+          <p className="text-error text-sm font-light">
             Failed to load employees.
           </p>
-          <p className="text-neutral-600 text-xs mt-1 font-light">
+          <p className="text-tertiary text-xs mt-1 font-light">
             Please check your connection and try again.
           </p>
         </div>
       ) : resolvedEmployees.length === 0 ? (
         <div className="p-16 text-center">
           <Users size={32} className="text-neutral-700 mx-auto mb-3" />
-          <p className="text-neutral-500 text-sm font-light">
+          <p className="text-tertiary text-sm font-light">
             No employees found.
           </p>
-          <p className="text-neutral-600 text-xs mt-1 font-light">
+          <p className="text-tertiary text-xs mt-1 font-light">
             {debouncedSearch || departmentTab !== 'all'
               ? 'Try adjusting your filters.'
               : 'Employee records will appear once synchronized with Odoo.'}
@@ -262,11 +262,11 @@ export default function EmployeesPage() {
                 onClick={() =>
                   router.push(`/dashboard/employees/${employee.id}`)
                 }
-                className="bg-[#141414] border border-[#1F1F1F] rounded-xl p-5 cursor-pointer group hover:border-[#D4A843]/20 transition-all duration-300"
+                className="bg-surface border border-border rounded-xl p-5 cursor-pointer group hover:border-gold/20 transition-all duration-300"
               >
                 {/* Avatar + Name */}
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-[#1A1A1A] border border-[#1F1F1F] flex items-center justify-center shrink-0 group-hover:border-[#D4A843]/20 transition-colors duration-300">
+                  <div className="w-12 h-12 rounded-full bg-surface border border-border flex items-center justify-center shrink-0 group-hover:border-gold/20 transition-colors duration-300">
                     {employee.avatar_url ? (
                       <Image
                         src={employee.avatar_url}
@@ -277,16 +277,16 @@ export default function EmployeesPage() {
                         unoptimized
                       />
                     ) : (
-                      <span className="text-[14px] font-medium text-neutral-400 group-hover:text-[#D4A843] transition-colors duration-200">
+                      <span className="text-[14px] font-medium text-tertiary group-hover:text-gold transition-colors duration-200">
                         {getInitials(employee.name)}
                       </span>
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="text-[15px] text-white font-light truncate group-hover:text-[#D4A843] transition-colors duration-200">
+                    <h3 className="text-[15px] text-foreground font-light truncate group-hover:text-gold transition-colors duration-200">
                       {employee.name}
                     </h3>
-                    <p className="text-[12px] text-neutral-500 font-light truncate">
+                    <p className="text-[12px] text-tertiary font-light truncate">
                       {employee.job_title || '—'}
                     </p>
                   </div>
@@ -302,21 +302,21 @@ export default function EmployeesPage() {
                 </div>
 
                 {/* Contact Info */}
-                <div className="space-y-1.5 pt-2 border-t border-[#1F1F1F]/50">
+                <div className="space-y-1.5 pt-2 border-t border-border">
                   {employee.email && (
-                    <span className="flex items-center gap-2 text-[11px] text-neutral-500 font-light truncate">
-                      <Mail size={11} className="text-neutral-600 shrink-0" />
+                    <span className="flex items-center gap-2 text-[11px] text-tertiary font-light truncate">
+                      <Mail size={11} className="text-tertiary shrink-0" />
                       {employee.email}
                     </span>
                   )}
                   {employee.phone && (
-                    <span className="flex items-center gap-2 text-[11px] text-neutral-500 font-light truncate">
-                      <Phone size={11} className="text-neutral-600 shrink-0" />
+                    <span className="flex items-center gap-2 text-[11px] text-tertiary font-light truncate">
+                      <Phone size={11} className="text-tertiary shrink-0" />
                       {employee.phone}
                     </span>
                   )}
                   {!employee.email && !employee.phone && (
-                    <span className="text-[11px] text-neutral-600 font-light">
+                    <span className="text-[11px] text-tertiary font-light">
                       No contact info
                     </span>
                   )}
@@ -335,14 +335,14 @@ export default function EmployeesPage() {
           transition={{ delay: 0.4 }}
           className="flex items-center justify-between mt-6"
         >
-          <span className="text-[12px] text-neutral-500 font-light">
+          <span className="text-[12px] text-tertiary font-light">
             Page {page} of {resolvedTotalPages} &middot; {resolvedTotal} employees
           </span>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-neutral-400 bg-[#1A1A1A] border border-[#1F1F1F] rounded-md hover:text-white hover:border-[#333] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 font-light"
+              className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-tertiary bg-surface border border-border rounded-md hover:text-foreground hover:border-border disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 font-light"
             >
               <svg
                 width="13"
@@ -364,7 +364,7 @@ export default function EmployeesPage() {
             <button
               onClick={() => setPage((p) => Math.min(resolvedTotalPages, p + 1))}
               disabled={page >= resolvedTotalPages}
-              className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-neutral-400 bg-[#1A1A1A] border border-[#1F1F1F] rounded-md hover:text-white hover:border-[#333] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 font-light"
+              className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-tertiary bg-surface border border-border rounded-md hover:text-foreground hover:border-border disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 font-light"
             >
               Next
               <svg

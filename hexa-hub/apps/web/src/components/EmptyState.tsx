@@ -34,13 +34,13 @@ export function EmptyState({
       )}
     >
       {Icon && (
-        <div className="w-16 h-16 rounded-2xl bg-[#D4A843]/10 border border-[#D4A843]/10 flex items-center justify-center mb-5">
-          <Icon size={28} className="text-[#D4A843]/60" />
+        <div className="w-16 h-16 rounded-2xl bg-gold/10 border border-gold/10 flex items-center justify-center mb-5">
+          <Icon size={28} className="text-gold/60" />
         </div>
       )}
-      <h3 className="text-base text-[#888] font-light mb-1.5">{title}</h3>
+      <h3 className="text-base text-tertiary font-light mb-1.5">{title}</h3>
       {description && (
-        <p className="text-sm text-[#555] font-light max-w-sm mb-6 leading-relaxed">
+        <p className="text-sm text-tertiary font-light max-w-sm mb-6 leading-relaxed">
           {description}
         </p>
       )}
@@ -49,7 +49,7 @@ export function EmptyState({
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={action.onClick}
-          className="px-5 py-2.5 bg-[#D4A843] text-[#0A0A0A] rounded-lg text-sm font-medium tracking-wide hover:bg-[#D4A843]/90 hover:shadow-[0_0_20px_rgba(212,168,67,0.15)] transition-all duration-200"
+          className="px-5 py-2.5 bg-gold text-void-deep rounded-lg text-sm font-medium tracking-wide hover:bg-gold/90 hover:shadow-[0_0_20px_rgba(212, 175, 55,0.15)] transition-all duration-200"
         >
           {action.label}
         </motion.button>

@@ -66,10 +66,10 @@ const services: SyncService[] = [
 ];
 
 const statusConfig: Record<string, { icon: React.ElementType; color: string; label: string }> = {
-  synced: { icon: CheckCircle2, color: 'text-emerald-400', label: 'Synced' },
-  syncing: { icon: RefreshCw, color: 'text-blue-400', label: 'Syncing...' },
-  error: { icon: XCircle, color: 'text-red-400', label: 'Error' },
-  pending: { icon: Clock, color: 'text-neutral-600', label: 'Pending' },
+  synced: { icon: CheckCircle2, color: 'text-success', label: 'Synced' },
+  syncing: { icon: RefreshCw, color: 'text-info', label: 'Syncing...' },
+  error: { icon: XCircle, color: 'text-error', label: 'Error' },
+  pending: { icon: Clock, color: 'text-tertiary', label: 'Pending' },
 };
 
 export default function SyncStatusPage() {
@@ -84,7 +84,7 @@ export default function SyncStatusPage() {
         <h1 className="text-4xl font-serif font-light mb-2">
           Sync <span className="text-gold">Status</span>
         </h1>
-        <p className="text-neutral-500 font-light">
+        <p className="text-tertiary font-light">
           Monitor data synchronization across connected services.
         </p>
         <motion.div
@@ -102,10 +102,10 @@ export default function SyncStatusPage() {
         transition={{ delay: 0.1, duration: 0.5 }}
         className="flex items-center gap-4 p-5 mb-8 bg-surface border border-border rounded-xl"
       >
-        <Activity size={20} className="text-emerald-400" />
+        <Activity size={20} className="text-success" />
         <div>
           <p className="text-sm text-white/80 font-light">All systems operational</p>
-          <p className="text-xs text-neutral-600">4 of 6 services connected</p>
+          <p className="text-xs text-tertiary">4 of 6 services connected</p>
         </div>
         <button className="ml-auto flex items-center gap-2 px-4 py-2 text-xs text-gold border border-gold/30 rounded-lg hover:bg-gold/5 transition-all">
           <RefreshCw size={12} />
@@ -126,11 +126,11 @@ export default function SyncStatusPage() {
               className="flex items-center gap-4 p-5 bg-surface border border-border rounded-xl hover:border-border/80 transition-colors"
             >
               <div className="w-9 h-9 rounded-xl bg-surface border border-border flex items-center justify-center">
-                <service.icon size={16} className="text-neutral-400" />
+                <service.icon size={16} className="text-tertiary" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm text-white/80 font-light">{service.name}</p>
-                <p className="text-xs text-neutral-600">{service.description}</p>
+                <p className="text-xs text-tertiary">{service.description}</p>
               </div>
               <div className="text-right shrink-0">
                 <div className="flex items-center gap-1.5 justify-end">
@@ -139,7 +139,7 @@ export default function SyncStatusPage() {
                     {statusConfig[service.status].label}
                   </span>
                 </div>
-                <p className="text-[10px] text-neutral-600 mt-0.5">{service.lastSync}</p>
+                <p className="text-[10px] text-tertiary mt-0.5">{service.lastSync}</p>
               </div>
             </motion.div>
           );

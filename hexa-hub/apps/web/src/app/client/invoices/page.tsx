@@ -56,7 +56,7 @@ const INVOICE_STATUS: Record<
 > = {
   draft: {
     label: 'Draft',
-    color: 'text-neutral-400',
+    color: 'text-tertiary',
     bg: 'bg-neutral-500/10 border-neutral-500/20',
     icon: FileText,
   },
@@ -68,14 +68,14 @@ const INVOICE_STATUS: Record<
   },
   paid: {
     label: 'Paid',
-    color: 'text-emerald-400',
-    bg: 'bg-emerald-500/10 border-emerald-500/20',
+    color: 'text-success',
+    bg: 'bg-success/10 border-emerald-500/20',
     icon: CheckCircle,
   },
   cancelled: {
     label: 'Cancelled',
-    color: 'text-red-400',
-    bg: 'bg-red-500/10 border-red-500/20',
+    color: 'text-error',
+    bg: 'bg-error/10 border-red-500/20',
     icon: XCircle,
   },
 };
@@ -101,14 +101,14 @@ function InvoiceCard({ invoice, index }: { invoice: Invoice; index: number }) {
           className="w-full p-5 flex items-center gap-4 text-left group"
         >
           {/* Invoice icon */}
-          <div className="w-11 h-11 rounded-xl bg-neutral-800/50 flex items-center justify-center text-neutral-500 group-hover:text-gold transition-colors flex-shrink-0">
+          <div className="w-11 h-11 rounded-xl bg-surface/50 flex items-center justify-center text-tertiary group-hover:text-gold transition-colors flex-shrink-0">
             <FileText size={18} />
           </div>
 
           {/* Details */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3">
-              <h3 className="text-sm font-medium text-white truncate">{invoice.name}</h3>
+              <h3 className="text-sm font-medium text-foreground truncate">{invoice.name}</h3>
               <span
                 className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[9px] uppercase tracking-widest font-medium flex-shrink-0 ${status.bg} ${status.color}`}
               >
@@ -118,7 +118,7 @@ function InvoiceCard({ invoice, index }: { invoice: Invoice; index: number }) {
             </div>
             <div className="flex items-center gap-3 mt-1">
               {invoice.invoice_date && (
-                <span className="text-[10px] text-neutral-600 flex items-center gap-1">
+                <span className="text-[10px] text-tertiary flex items-center gap-1">
                   <Calendar size={9} />
                   {new Date(invoice.invoice_date).toLocaleDateString('en-US', {
                     month: 'short',
@@ -131,8 +131,8 @@ function InvoiceCard({ invoice, index }: { invoice: Invoice; index: number }) {
                 <span
                   className={`text-[10px] flex items-center gap-1 ${
                     new Date(invoice.invoice_date_due) < new Date()
-                      ? 'text-red-400'
-                      : 'text-neutral-600'
+                      ? 'text-error'
+                      : 'text-tertiary'
                   }`}
                 >
                   Due{' '}
@@ -148,7 +148,7 @@ function InvoiceCard({ invoice, index }: { invoice: Invoice; index: number }) {
           {/* Amount + actions */}
           <div className="flex items-center gap-4 flex-shrink-0">
             <div className="text-right">
-              <p className="text-base font-serif text-white">
+              <p className="text-base font-serif text-foreground">
                 {symbol}
                 {invoice.amount_total.toLocaleString(undefined, {
                   minimumFractionDigits: 2,
@@ -156,7 +156,7 @@ function InvoiceCard({ invoice, index }: { invoice: Invoice; index: number }) {
                 })}
               </p>
               {invoice.amount_tax > 0 && (
-                <p className="text-[10px] text-neutral-600">
+                <p className="text-[10px] text-tertiary">
                   incl. {symbol}
                   {invoice.amount_tax.toFixed(2)} tax
                 </p>
@@ -168,7 +168,7 @@ function InvoiceCard({ invoice, index }: { invoice: Invoice; index: number }) {
                 e.stopPropagation();
                 // Placeholder download
               }}
-              className="p-2 text-neutral-600 hover:text-gold rounded-lg hover:bg-gold/5 transition-all"
+              className="p-2 text-tertiary hover:text-gold rounded-lg hover:bg-gold/5 transition-all"
               title="Download Invoice"
             >
               <Download size={16} />
@@ -188,7 +188,7 @@ function InvoiceCard({ invoice, index }: { invoice: Invoice; index: number }) {
             <div className="p-5">
               <table className="w-full">
                 <thead>
-                  <tr className="text-[10px] uppercase tracking-widest text-neutral-600">
+                  <tr className="text-[10px] uppercase tracking-widest text-tertiary">
                     <th className="text-left pb-3 font-medium">Description</th>
                     <th className="text-center pb-3 font-medium">Qty</th>
                     <th className="text-right pb-3 font-medium">Unit Price</th>
@@ -198,13 +198,13 @@ function InvoiceCard({ invoice, index }: { invoice: Invoice; index: number }) {
                 <tbody>
                   {invoice.invoice_line_ids.map((line) => (
                     <tr key={line.id} className="border-t border-border/20">
-                      <td className="py-3 text-xs text-neutral-400 font-light">{line.name}</td>
-                      <td className="py-3 text-xs text-neutral-500 text-center">{line.quantity}</td>
-                      <td className="py-3 text-xs text-neutral-500 text-right">
+                      <td className="py-3 text-xs text-tertiary font-light">{line.name}</td>
+                      <td className="py-3 text-xs text-tertiary text-center">{line.quantity}</td>
+                      <td className="py-3 text-xs text-tertiary text-right">
                         {symbol}
                         {line.price_unit.toFixed(2)}
                       </td>
-                      <td className="py-3 text-xs text-white text-right">
+                      <td className="py-3 text-xs text-foreground text-right">
                         {symbol}
                         {line.price_subtotal.toFixed(2)}
                       </td>
@@ -215,7 +215,7 @@ function InvoiceCard({ invoice, index }: { invoice: Invoice; index: number }) {
 
               {/* Totals */}
               <div className="mt-4 pt-3 border-t border-border/30 space-y-1">
-                <div className="flex justify-between text-xs text-neutral-500">
+                <div className="flex justify-between text-xs text-tertiary">
                   <span>Subtotal</span>
                   <span>
                     {symbol}
@@ -223,7 +223,7 @@ function InvoiceCard({ invoice, index }: { invoice: Invoice; index: number }) {
                   </span>
                 </div>
                 {invoice.amount_tax > 0 && (
-                  <div className="flex justify-between text-xs text-neutral-500">
+                  <div className="flex justify-between text-xs text-tertiary">
                     <span>Tax</span>
                     <span>
                       {symbol}
@@ -231,7 +231,7 @@ function InvoiceCard({ invoice, index }: { invoice: Invoice; index: number }) {
                     </span>
                   </div>
                 )}
-                <div className="flex justify-between text-sm text-white font-medium pt-1">
+                <div className="flex justify-between text-sm text-foreground font-medium pt-1">
                   <span>Total</span>
                   <span>
                     {symbol}
@@ -253,13 +253,13 @@ function InvoiceSkeleton() {
   return (
     <div className="bg-surface border border-border rounded-2xl p-5 animate-pulse">
       <div className="flex items-center gap-4">
-        <div className="w-11 h-11 bg-neutral-800 rounded-xl" />
+        <div className="w-11 h-11 bg-surface rounded-xl" />
         <div className="flex-1 space-y-2">
-          <div className="h-4 bg-neutral-800 rounded w-32" />
-          <div className="h-3 bg-neutral-800 rounded w-24" />
+          <div className="h-4 bg-surface rounded w-32" />
+          <div className="h-3 bg-surface rounded w-24" />
         </div>
-        <div className="h-6 w-20 bg-neutral-800 rounded" />
-        <div className="h-5 bg-neutral-800 rounded w-24" />
+        <div className="h-6 w-20 bg-surface rounded" />
+        <div className="h-5 bg-surface rounded w-24" />
       </div>
     </div>
   );
@@ -317,10 +317,10 @@ export default function ClientInvoicesPage() {
         transition={{ duration: 0.6 }}
         className="mb-10"
       >
-        <h1 className="text-3xl md:text-4xl font-serif font-light text-white mb-2">
+        <h1 className="text-3xl md:text-4xl font-serif font-light text-foreground mb-2">
           My <span className="text-gold">Invoices</span>
         </h1>
-        <p className="text-neutral-500 font-light">
+        <p className="text-tertiary font-light">
           Review and download your project invoices.
         </p>
       </motion.div>
@@ -336,31 +336,31 @@ export default function ClientInvoicesPage() {
           <div className="p-5 bg-surface border border-border rounded-2xl">
             <div className="flex items-center gap-2 mb-2">
               <DollarSign size={14} className="text-amber-400" />
-              <span className="text-[10px] uppercase tracking-widest text-neutral-600">
+              <span className="text-[10px] uppercase tracking-widest text-tertiary">
                 Outstanding
               </span>
             </div>
-            <p className="text-2xl font-serif text-white">
+            <p className="text-2xl font-serif text-foreground">
               €{totalOutstanding.toLocaleString(undefined, { minimumFractionDigits: 2 })}
             </p>
           </div>
           <div className="p-5 bg-surface border border-border rounded-2xl">
             <div className="flex items-center gap-2 mb-2">
-              <CheckCircle size={14} className="text-emerald-400" />
-              <span className="text-[10px] uppercase tracking-widest text-neutral-600">Paid</span>
+              <CheckCircle size={14} className="text-success" />
+              <span className="text-[10px] uppercase tracking-widest text-tertiary">Paid</span>
             </div>
-            <p className="text-2xl font-serif text-white">
+            <p className="text-2xl font-serif text-foreground">
               €{totalPaid.toLocaleString(undefined, { minimumFractionDigits: 2 })}
             </p>
           </div>
           <div className="p-5 bg-surface border border-border rounded-2xl">
             <div className="flex items-center gap-2 mb-2">
               <FileText size={14} className="text-gold" />
-              <span className="text-[10px] uppercase tracking-widest text-neutral-600">
+              <span className="text-[10px] uppercase tracking-widest text-tertiary">
                 Total Invoices
               </span>
             </div>
-            <p className="text-2xl font-serif text-white">{invoices.length}</p>
+            <p className="text-2xl font-serif text-foreground">{invoices.length}</p>
           </div>
         </motion.div>
       )}
@@ -373,7 +373,7 @@ export default function ClientInvoicesPage() {
           transition={{ delay: 0.2, duration: 0.5 }}
           className="flex items-center gap-2 mb-6 flex-wrap"
         >
-          <Filter size={14} className="text-neutral-600" />
+          <Filter size={14} className="text-tertiary" />
           {['all', 'posted', 'paid', 'draft', 'cancelled'].map((st) => (
             <button
               key={st}
@@ -381,7 +381,7 @@ export default function ClientInvoicesPage() {
               className={`px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-widest font-medium transition-all duration-300 ${
                 filterStatus === st
                   ? 'bg-gold/10 text-gold border border-gold/20'
-                  : 'text-neutral-500 border border-border hover:border-neutral-600'
+                  : 'text-tertiary border border-border hover:border-neutral-600'
               }`}
             >
               {st === 'all' ? 'All' : INVOICE_STATUS[st]?.label || st}
@@ -406,8 +406,8 @@ export default function ClientInvoicesPage() {
           animate={{ opacity: 1 }}
           className="p-8 bg-surface border border-red-500/20 rounded-2xl text-center"
         >
-          <AlertCircle size={32} className="mx-auto text-red-400/50 mb-3" />
-          <p className="text-neutral-400 text-sm">{error}</p>
+          <AlertCircle size={32} className="mx-auto text-error/50 mb-3" />
+          <p className="text-tertiary text-sm">{error}</p>
         </motion.div>
       )}
 
@@ -419,12 +419,12 @@ export default function ClientInvoicesPage() {
           className="p-12 bg-surface border border-border rounded-3xl text-center"
         >
           <DollarSign size={40} className="mx-auto text-neutral-700 mb-4" />
-          <p className="text-neutral-500 font-light text-lg">
+          <p className="text-tertiary font-light text-lg">
             {invoices.length === 0
               ? 'No invoices yet.'
               : 'No invoices match the selected filter.'}
           </p>
-          <p className="text-neutral-600 text-sm mt-2">
+          <p className="text-tertiary text-sm mt-2">
             {invoices.length === 0
               ? 'Your invoices will appear here once generated.'
               : 'Try selecting a different filter.'}

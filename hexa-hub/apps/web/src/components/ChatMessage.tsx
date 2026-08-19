@@ -80,9 +80,9 @@ function renderMarkdown(text: string): React.ReactNode {
         result.push(
           <pre
             key={`code-${i}`}
-            className="my-2 p-3 rounded-lg bg-[#0A0A0A] border border-[#1F1F1F] overflow-x-auto"
+            className="my-2 p-3 rounded-lg bg-void-deep border border-border overflow-x-auto"
           >
-            <code className="text-xs font-mono text-[#D4A843]/80 leading-relaxed whitespace-pre-wrap">
+            <code className="text-xs font-mono text-gold/80 leading-relaxed whitespace-pre-wrap">
               {codeContent.trim()}
             </code>
           </pre>,
@@ -108,7 +108,7 @@ function renderMarkdown(text: string): React.ReactNode {
     if (bulletMatch) {
       result.push(
         <div key={`bullet-${i}`} className="flex items-start gap-2 ml-1 my-0.5">
-          <span className="text-[#D4A843]/50 mt-0.5 shrink-0">•</span>
+          <span className="text-gold/50 mt-0.5 shrink-0">•</span>
           <span className="text-sm font-light leading-relaxed">
             {renderInlineMarkdown(bulletMatch[1])}
           </span>
@@ -122,7 +122,7 @@ function renderMarkdown(text: string): React.ReactNode {
     if (numberedMatch) {
       result.push(
         <div key={`num-${i}`} className="flex items-start gap-2 ml-1 my-0.5">
-          <span className="text-[#D4A843]/50 text-xs mt-0.5 shrink-0 min-w-[1.2em]">
+          <span className="text-gold/50 text-xs mt-0.5 shrink-0 min-w-[1.2em]">
             {numberedMatch[1]}.
           </span>
           <span className="text-sm font-light leading-relaxed">
@@ -146,7 +146,7 @@ function renderMarkdown(text: string): React.ReactNode {
       result.push(
         <div
           key={`h-${i}`}
-          className={cn('text-white mt-3 mb-1', sizeClass)}
+          className={cn('text-foreground mt-3 mb-1', sizeClass)}
         >
           {renderInlineMarkdown(headingMatch[1])}
         </div>,
@@ -167,9 +167,9 @@ function renderMarkdown(text: string): React.ReactNode {
     result.push(
       <pre
         key="code-unclosed"
-        className="my-2 p-3 rounded-lg bg-[#0A0A0A] border border-[#1F1F1F] overflow-x-auto"
+        className="my-2 p-3 rounded-lg bg-void-deep border border-border overflow-x-auto"
       >
-        <code className="text-xs font-mono text-[#D4A843]/80 leading-relaxed whitespace-pre-wrap">
+        <code className="text-xs font-mono text-gold/80 leading-relaxed whitespace-pre-wrap">
           {codeContent.trim()}
         </code>
       </pre>,
@@ -202,14 +202,14 @@ function renderInlineMarkdown(text: string): React.ReactNode {
     if (match[1]) {
       // **bold**
       parts.push(
-        <strong key={key++} className="font-medium text-white">
+        <strong key={key++} className="font-medium text-foreground">
           {match[2]}
         </strong>,
       );
     } else if (match[3]) {
       // *italic*
       parts.push(
-        <em key={key++} className="italic text-[#D4A843]/80">
+        <em key={key++} className="italic text-gold/80">
           {match[4]}
         </em>,
       );
@@ -218,7 +218,7 @@ function renderInlineMarkdown(text: string): React.ReactNode {
       parts.push(
         <code
           key={key++}
-          className="px-1.5 py-0.5 rounded bg-[#0A0A0A] border border-[#1F1F1F] text-xs font-mono text-[#D4A843]/80"
+          className="px-1.5 py-0.5 rounded bg-void-deep border border-border text-xs font-mono text-gold/80"
         >
           {match[6]}
         </code>,
@@ -231,7 +231,7 @@ function renderInlineMarkdown(text: string): React.ReactNode {
           href={match[9]}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[#D4A843] underline underline-offset-2 hover:text-[#D4A843]/80 transition-colors"
+          className="text-gold underline underline-offset-2 hover:text-gold/80 transition-colors"
         >
           {match[8]}
         </a>,
@@ -296,8 +296,8 @@ export function ChatMessage({
     >
       {/* Assistant avatar */}
       {!isUser && (
-        <div className="w-8 h-8 rounded-full bg-[#D4A843]/10 border border-[#D4A843]/10 flex items-center justify-center shrink-0 mt-0.5">
-          <Bot size={15} className="text-[#D4A843]" strokeWidth={1.5} />
+        <div className="w-8 h-8 rounded-full bg-gold/10 border border-gold/10 flex items-center justify-center shrink-0 mt-0.5">
+          <Bot size={15} className="text-gold" strokeWidth={1.5} />
         </div>
       )}
 
@@ -307,8 +307,8 @@ export function ChatMessage({
           className={cn(
             'rounded-2xl px-4 py-3',
             isUser
-              ? 'bg-[#D4A843] text-[#0A0A0A] rounded-tr-md'
-              : 'bg-[#141414] border border-[#1F1F1F] text-[#E5E5E5] rounded-tl-md',
+              ? 'bg-gold text-void-deep rounded-tr-md'
+              : 'bg-surface border border-border text-secondary rounded-tl-md',
           )}
         >
           {renderedContent}
@@ -318,7 +318,7 @@ export function ChatMessage({
         {timestamp && (
           <span
             className={cn(
-              'text-[10px] text-[#444] mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200',
+              'text-[10px] text-tertiary mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200',
               isUser ? 'text-right' : 'text-left',
             )}
           >
@@ -329,8 +329,8 @@ export function ChatMessage({
 
       {/* User avatar */}
       {isUser && (
-        <div className="w-8 h-8 rounded-full bg-[#1F1F1F] border border-[#2A2A2A] flex items-center justify-center shrink-0 mt-0.5">
-          <User size={14} className="text-[#888]" strokeWidth={1.5} />
+        <div className="w-8 h-8 rounded-full bg-border border border-border-hover flex items-center justify-center shrink-0 mt-0.5">
+          <User size={14} className="text-tertiary" strokeWidth={1.5} />
         </div>
       )}
     </motion.div>

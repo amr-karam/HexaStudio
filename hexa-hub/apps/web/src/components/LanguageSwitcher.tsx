@@ -101,21 +101,21 @@ export function LanguageSwitcher({
         aria-haspopup="listbox"
         className={cn(
           'flex items-center gap-2 rounded-xl transition-all duration-300',
-          'border border-[#1F1F1F] hover:border-[#D4A843]/30',
-          'bg-[#0A0A0A] text-white',
+          'border border-border hover:border-gold/30',
+          'bg-void-deep text-white',
           variant === 'full' ? 'px-4 py-2.5' : 'p-2.5',
         )}
       >
-        <Globe size={variant === 'full' ? 16 : 18} className="text-[#D4A843] shrink-0" />
+        <Globe size={variant === 'full' ? 16 : 18} className="text-gold shrink-0" />
         {variant === 'full' && (
           <>
-            <span className="text-sm font-light tracking-wide text-[#E5E5E5]">
+            <span className="text-sm font-light tracking-wide text-secondary">
               {currentInfo.nativeLabel}
             </span>
             <motion.span
               animate={{ rotate: isOpen ? 180 : 0 }}
               transition={{ duration: 0.2 }}
-              className="text-[#555] ml-0.5"
+              className="text-tertiary ml-0.5"
             >
               <svg
                 width="10"
@@ -149,7 +149,7 @@ export function LanguageSwitcher({
             aria-label="Select language"
             className={cn(
               'absolute bottom-full mb-2 left-0 min-w-[180px]',
-              'bg-[#0A0A0A] border border-[#1F1F1F] rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.4)]',
+              'bg-void-deep border border-border rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.4)]',
               'overflow-hidden z-50',
             )}
           >
@@ -166,7 +166,7 @@ export function LanguageSwitcher({
                   aria-selected={isSelected}
                   className={cn(
                     'w-full flex items-center gap-3 px-4 py-3 text-left transition-colors duration-200',
-                    isSelected && 'bg-[#D4A843]/5',
+                    isSelected && 'bg-gold/5',
                   )}
                 >
                   <span className="text-base">{info.flag}</span>
@@ -174,17 +174,17 @@ export function LanguageSwitcher({
                     <p
                       className={cn(
                         'text-sm font-light',
-                        isSelected ? 'text-white' : 'text-[#888]',
+                        isSelected ? 'text-white' : 'text-tertiary',
                       )}
                     >
                       {info.nativeLabel}
                     </p>
-                    <p className="text-[10px] text-[#555] font-light">
+                    <p className="text-[10px] text-tertiary font-light">
                       {info.label}
                     </p>
                   </div>
                   {isSelected && (
-                    <Check size={14} className="text-[#D4A843] shrink-0" />
+                    <Check size={14} className="text-gold shrink-0" />
                   )}
                 </motion.button>
               );

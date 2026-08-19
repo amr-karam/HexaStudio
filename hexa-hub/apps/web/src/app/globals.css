@@ -42,6 +42,14 @@
     --color-error:         #EF4444;
     --color-info:          #3B82F6;
 
+    /* Data/metric chart accent colors */
+    --color-metric-blue:    #60A5FA;
+    --color-metric-amber:   #FBBF24;
+    --color-metric-violet:  #A78BFA;
+    --color-metric-emerald: #34D399;
+    --color-metric-teal:    #22D3EE;
+    --color-metric-red:     #F87171;
+
     /* Text */
     --color-text-primary:   #FFFFFF;
     --color-text-secondary: #A0A0A0;

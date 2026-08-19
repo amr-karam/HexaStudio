@@ -17,12 +17,12 @@ export const COLORS = {
   
   // Premium gradient backgrounds
   gradients: {
-    primary: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-    secondary: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-    success: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
-    warning: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
-    danger: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)",
-    info: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+    primary: "linear-gradient(135deg, var(--color-info) 0%, var(--color-metric-violet) 100%)",
+    secondary: "linear-gradient(135deg, var(--color-metric-violet) 0%, var(--color-error) 100%)",
+    success: "linear-gradient(135deg, var(--color-info) 0%, var(--color-metric-teal) 100%)",
+    warning: "linear-gradient(135deg, var(--color-error) 0%, var(--color-metric-amber) 100%)",
+    danger: "linear-gradient(135deg, var(--color-error) 0%, var(--color-gold) 100%)",
+    info: "linear-gradient(135deg, var(--color-metric-teal) 0%, var(--color-gold) 100%)",
   },
   
   // Premium shadows
@@ -38,34 +38,34 @@ export const COLORS = {
   
   // Premium text colors
   text: {
-    primary: "#1f2937",
-    secondary: "#6b7280",
-    muted: "#9ca3af",
-    light: "#d1d5db",
-    dark: "#374151",
-    white: "#ffffff",
+    primary: 'var(--color-obsidian-raised)',
+    secondary: 'var(--color-tertiary)',
+    muted: 'var(--color-tertiary)',
+    light: 'var(--color-secondary)',
+    dark: 'var(--color-border)',
+    white: '#ffffff', // Used for PDF/HTML export — CSS var not available in print context
   },
   
   // Premium background colors
   background: {
-    primary: "#111827",
-    secondary: "#1f2937",
-    tertiary: "#374151",
-    surface: "#1f2937",
-    surfaceHover: "#2563eb",
-    surfaceActive: "#1d4ed8",
+    primary: 'var(--color-void-deep)',
+    secondary: 'var(--color-obsidian-raised)',
+    tertiary: 'var(--color-border)',
+    surface: 'var(--color-obsidian-raised)',
+    surfaceHover: 'var(--color-info)',
+    surfaceActive: 'var(--color-info-dark)',
     glass: "rgba(31, 41, 55, 0.5)",
     glassLight: "rgba(255, 255, 255, 0.05)",
   },
   
   // Premium accent colors
   accent: {
-    primary: "#3b82f6",
-    secondary: "#8b5cf6",
-    success: "#10b981",
-    warning: "#f59e0b",
-    danger: "#ef4444",
-    info: "#06b6d4",
+    primary: 'var(--color-info)',
+    secondary: 'var(--color-metric-violet)',
+    success: 'var(--color-success)',
+    warning: 'var(--color-warning)',
+    danger: 'var(--color-error)',
+    info: 'var(--color-info)',
   },
 };
 
@@ -148,27 +148,27 @@ export const metricCard = cva(
 export const chartConfig = {
   revenue: {
     line: {
-      stroke: "#3b82f6",
+      stroke: 'var(--color-info)',
       strokeWidth: 3,
       fill: "rgba(59, 130, 246, 0.1)",
     },
     bar: {
-      fill: "#3b82f6",
+      fill: 'var(--color-info)',
     },
   },
   projects: {
     completed: {
-      stroke: "#10b981",
+      stroke: 'var(--color-success)',
       fill: "rgba(16, 185, 129, 0.1)",
     },
     inProgress: {
-      stroke: "#f59e0b",
+      stroke: 'var(--color-warning)',
       fill: "rgba(245, 158, 11, 0.1)",
     },
   },
   copilot: {
     sessions: {
-      stroke: "#8b5cf6",
+      stroke: 'var(--color-metric-violet)',
       fill: "rgba(139, 92, 246, 0.1)",
     },
   },
@@ -314,15 +314,15 @@ export const TIME_RANGES = [
 // ========== Project Status Colors ==========
 export const PROJECT_STATUS_COLORS = {
   not_started: "text-gray-400",
-  in_progress: "text-blue-400",
+  in_progress: "text-info",
   on_hold: "text-amber-400",
-  completed: "text-emerald-400",
+  completed: "text-success",
   cancelled: "text-rose-400",
 };
 
 // ========== Revenue Status Colors ==========
 export const REVENUE_STATUS_COLORS = {
-  paid: "text-emerald-400",
+  paid: "text-success",
   pending: "text-amber-400",
   overdue: "text-rose-400",
 };

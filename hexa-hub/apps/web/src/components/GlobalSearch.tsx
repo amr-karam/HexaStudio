@@ -134,11 +134,11 @@ export default function GlobalSearch({
 
   const getCategoryColor = (category: SearchResult['category']) => {
     const colors = {
-      project: 'text-blue-400',
+      project: 'text-info',
       task: 'text-amber-400',
-      document: 'text-emerald-400',
+      document: 'text-success',
       contact: 'text-purple-400',
-      message: 'text-[#D4A843]',
+      message: 'text-gold',
     };
     return colors[category];
   };
@@ -163,10 +163,10 @@ export default function GlobalSearch({
             className={cn('fixed top-20 left-1/2 -translate-x-1/2 w-full max-w-2xl mx-auto', className)}
             onClick={e => e.stopPropagation()}
           >
-            <div className="bg-[#141414] border border-[#1F1F1F] rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.5)] overflow-hidden">
+            <div className="bg-surface border border-border rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.5)] overflow-hidden">
               {/* Search Input */}
-              <div className="relative p-4 border-b border-[#1F1F1F]">
-                <Search size={18} className="absolute left-6 top-1/2 -translate-y-1/2 text-[#555]" />
+              <div className="relative p-4 border-b border-border">
+                <Search size={18} className="absolute left-6 top-1/2 -translate-y-1/2 text-tertiary" />
                 <input
                   ref={inputRef}
                   type="text"
@@ -174,11 +174,11 @@ export default function GlobalSearch({
                   onChange={e => setQuery(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Search projects, tasks, documents, contacts..."
-                  className="w-full bg-[#0A0A0A] border border-[#1F1F1F] rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-[#555] focus:border-[#D4A843]/50 focus:outline-none transition-colors"
+                  className="w-full bg-void-deep border border-border rounded-xl pl-10 pr-4 py-3 text-sm text-foreground placeholder:text-tertiary focus:border-gold/50 focus:outline-none transition-colors"
                 />
                 <button
                   onClick={onClose}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 text-[#555] hover:text-white rounded-lg hover:bg-white/[0.03] transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 text-tertiary hover:text-foreground rounded-lg hover:bg-white/[0.03] transition-colors"
                 >
                   <X size={16} />
                 </button>
@@ -188,16 +188,16 @@ export default function GlobalSearch({
               <div className="max-h-96 overflow-y-auto">
                 {isSearching ? (
                   <div className="p-6 text-center">
-                    <div className="w-8 h-8 border-2 border-[#D4A843]/30 border-t-[#D4A843] rounded-full animate-spin mx-auto mb-2" />
-                    <p className="text-sm text-[#555]">Searching...</p>
+                    <div className="w-8 h-8 border-2 border-gold/30 border-t-gold rounded-full animate-spin mx-auto mb-2" />
+                    <p className="text-sm text-tertiary">Searching...</p>
                   </div>
                 ) : query && displayResults.length === 0 ? (
                   <div className="p-6 text-center">
-                    <Search size={40} className="text-[#333] mx-auto mb-2" />
-                    <p className="text-sm text-[#555]">No results found for &ldquo;{query}&rdquo;</p>
+                    <Search size={40} className="text-tertiary mx-auto mb-2" />
+                    <p className="text-sm text-tertiary">No results found for &ldquo;{query}&rdquo;</p>
                   </div>
                 ) : (
-                  <div className="divide-y divide-[#1F1F1F]">
+                  <div className="divide-y divide-border">
                     {displayResults.map((result, index) => {
                       const Icon = getCategoryIcon(result.category);
                       const color = getCategoryColor(result.category);
@@ -206,11 +206,11 @@ export default function GlobalSearch({
                           key={result.id}
                           href={result.url}
                           initial={{ backgroundColor: 'transparent' }}
-                          whileHover={{ backgroundColor: '#D4A843/5' }}
+                          whileHover={{ backgroundColor: 'var(--color-gold)' }}
                           onClick={() => onClose()}
                           className={cn(
                             'flex items-center gap-3 p-3 cursor-pointer transition-colors',
-                            index === activeIndex && 'bg-[#D4A843]/10 border-l-2 border-[#D4A843]'
+                            index === activeIndex && 'bg-gold/10 border-l-2 border-gold'
                           )}
                         >
                           <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center', color.replace('text-', 'bg-').replace('-400', '/10'))}>
@@ -218,14 +218,14 @@ export default function GlobalSearch({
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-1.5">
-                              <p className="text-sm font-medium text-white truncate">{result.title}</p>
+                              <p className="text-sm font-medium text-foreground truncate">{result.title}</p>
                               <span className={cn('text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded-full', color.replace('text-', 'bg-').replace('-400', '/10'), color)}>
                                 {getCategoryLabel(result.category)}
                               </span>
                             </div>
-                            <p className="text-[11px] text-[#555]">{result.subtitle}</p>
+                            <p className="text-[11px] text-tertiary">{result.subtitle}</p>
                           </div>
-                          <ChevronRight size={14} className="text-[#555] ml-2" />
+                          <ChevronRight size={14} className="text-tertiary ml-2" />
                         </motion.a>
                       );
                     })}
@@ -234,14 +234,14 @@ export default function GlobalSearch({
               </div>
 
               {/* Footer */}
-              <div className="p-3 border-t border-[#1F1F1F] bg-[#0A0A0A]">
-                <div className="flex items-center justify-between px-3 text-[10px] text-[#555]">
+              <div className="p-3 border-t border-border bg-void-deep">
+                <div className="flex items-center justify-between px-3 text-[10px] text-tertiary">
                   <div className="flex items-center gap-3">
                     <span>Press ArrowDown/Up to navigate</span>
                     <span>Enter to select</span>
                     <span>Esc to close</span>
                   </div>
-                  <div className="text-[#666]">
+                  <div className="text-tertiary">
                     {displayResults.length} result{displayResults.length !== 1 ? 's' : ''}
                   </div>
                 </div>

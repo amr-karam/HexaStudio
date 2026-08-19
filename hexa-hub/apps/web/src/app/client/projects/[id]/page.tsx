@@ -57,13 +57,13 @@ interface ClientWorkspaceDetail {
 // ─── Status Badge ───────────────────────────────────────────────────────────
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; dot: string }> = {
-  inquiry: { label: 'Inquiry', color: 'text-blue-400', dot: 'bg-blue-400' },
+  inquiry: { label: 'Inquiry', color: 'text-info', dot: 'bg-blue-400' },
   consultation: { label: 'Consultation', color: 'text-violet-400', dot: 'bg-violet-400' },
   proposal: { label: 'Proposal', color: 'text-amber-400', dot: 'bg-amber-400' },
-  active: { label: 'Active', color: 'text-emerald-400', dot: 'bg-emerald-400' },
+  active: { label: 'Active', color: 'text-success', dot: 'bg-emerald-400' },
   on_hold: { label: 'On Hold', color: 'text-orange-400', dot: 'bg-orange-400' },
   completed: { label: 'Completed', color: 'text-gold', dot: 'bg-gold' },
-  archived: { label: 'Archived', color: 'text-neutral-500', dot: 'bg-neutral-500' },
+  archived: { label: 'Archived', color: 'text-tertiary', dot: 'bg-neutral-500' },
 };
 
 // ─── Milestone Timeline ─────────────────────────────────────────────────────
@@ -77,7 +77,7 @@ function MilestoneTimeline({ milestones }: { milestones: Milestone[] }) {
     return (
       <div className="p-6 bg-surface border border-border rounded-2xl text-center">
         <Clock size={32} className="mx-auto text-neutral-700 mb-3" />
-        <p className="text-neutral-500 text-sm font-light">
+        <p className="text-tertiary text-sm font-light">
           No client-visible milestones yet.
         </p>
       </div>
@@ -106,10 +106,10 @@ function MilestoneTimeline({ milestones }: { milestones: Milestone[] }) {
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center z-10 ${
                   milestone.completed
-                    ? 'bg-emerald-500/20 text-emerald-400'
+                    ? 'bg-success/20 text-success'
                     : isNext
                     ? 'bg-gold/20 text-gold ring-2 ring-gold/30 ring-offset-2 ring-offset-background'
-                    : 'bg-neutral-800 text-neutral-600'
+                    : 'bg-surface text-tertiary'
                 }`}
               >
                 {milestone.completed ? (
@@ -123,7 +123,7 @@ function MilestoneTimeline({ milestones }: { milestones: Milestone[] }) {
               {!isLast && (
                 <div
                   className={`w-px flex-1 mt-2 ${
-                    milestone.completed ? 'bg-emerald-500/30' : 'bg-neutral-800'
+                    milestone.completed ? 'bg-success/30' : 'bg-surface'
                   }`}
                 />
               )}
@@ -142,10 +142,10 @@ function MilestoneTimeline({ milestones }: { milestones: Milestone[] }) {
                   <h4
                     className={`text-sm font-medium ${
                       milestone.completed
-                        ? 'text-neutral-400 line-through'
+                        ? 'text-tertiary line-through'
                         : isNext
                         ? 'text-white'
-                        : 'text-neutral-500'
+                        : 'text-tertiary'
                     }`}
                   >
                     {milestone.name}
@@ -156,14 +156,14 @@ function MilestoneTimeline({ milestones }: { milestones: Milestone[] }) {
                     )}
                   </h4>
                   {milestone.x_hexa_description && (
-                    <p className="text-xs text-neutral-600 mt-1 font-light">
+                    <p className="text-xs text-tertiary mt-1 font-light">
                       {milestone.x_hexa_description}
                     </p>
                   )}
                 </div>
                 <div className="text-right flex-shrink-0">
                   {milestone.completed && milestone.completed_date ? (
-                    <span className="text-[10px] text-emerald-400/70">
+                    <span className="text-[10px] text-success/70">
                       Completed{' '}
                       {new Date(milestone.completed_date).toLocaleDateString('en-US', {
                         month: 'short',
@@ -171,7 +171,7 @@ function MilestoneTimeline({ milestones }: { milestones: Milestone[] }) {
                       })}
                     </span>
                   ) : milestone.date ? (
-                    <span className="text-[10px] text-neutral-600">
+                    <span className="text-[10px] text-tertiary">
                       {new Date(milestone.date).toLocaleDateString('en-US', {
                         month: 'short',
                         day: 'numeric',
@@ -196,7 +196,7 @@ function DocumentsSection({ documents }: { documents?: Document[] }) {
     return (
       <div className="p-8 bg-surface border border-border rounded-2xl text-center">
         <Folder size={32} className="mx-auto text-neutral-700 mb-3" />
-        <p className="text-neutral-500 text-sm font-light">No documents uploaded yet.</p>
+        <p className="text-tertiary text-sm font-light">No documents uploaded yet.</p>
         <p className="text-neutral-700 text-xs mt-1">
           Project deliverables and files will appear here.
         </p>
@@ -214,12 +214,12 @@ function DocumentsSection({ documents }: { documents?: Document[] }) {
           transition={{ delay: 0.3 + i * 0.05 }}
           className="flex items-center gap-4 p-4 bg-surface border border-border rounded-xl hover:border-gold/10 transition-colors group"
         >
-          <div className="w-10 h-10 rounded-xl bg-neutral-800 flex items-center justify-center text-neutral-500">
+          <div className="w-10 h-10 rounded-xl bg-surface flex items-center justify-center text-tertiary">
             <FileText size={18} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm text-white font-light truncate">{doc.name}</p>
-            <p className="text-[10px] text-neutral-600 mt-0.5">
+            <p className="text-sm text-foreground font-light truncate">{doc.name}</p>
+            <p className="text-[10px] text-tertiary mt-0.5">
               {formatFileSize(doc.filesize)} &middot;{' '}
               {new Date(doc.create_date).toLocaleDateString('en-US', {
                 month: 'short',
@@ -227,7 +227,7 @@ function DocumentsSection({ documents }: { documents?: Document[] }) {
               })}
             </p>
           </div>
-          <button className="p-2 text-neutral-600 hover:text-gold opacity-0 group-hover:opacity-100 transition-all rounded-lg hover:bg-gold/5">
+          <button className="p-2 text-tertiary hover:text-gold opacity-0 group-hover:opacity-100 transition-all rounded-lg hover:bg-gold/5">
             <Download size={16} />
           </button>
         </motion.div>
@@ -283,15 +283,15 @@ export default function ClientProjectDetailPage({
     return (
       <div className="p-6 md:p-10 max-w-5xl mx-auto">
         <div className="animate-pulse space-y-8">
-          <div className="h-4 bg-neutral-800 rounded w-32" />
-          <div className="h-8 bg-neutral-800 rounded w-64 mb-2" />
-          <div className="h-4 bg-neutral-800 rounded w-96" />
+          <div className="h-4 bg-surface rounded w-32" />
+          <div className="h-8 bg-surface rounded w-64 mb-2" />
+          <div className="h-4 bg-surface rounded w-96" />
           <div className="grid grid-cols-3 gap-6">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="h-24 bg-neutral-800/30 rounded-2xl" />
+              <div key={i} className="h-24 bg-surface/30 rounded-2xl" />
             ))}
           </div>
-          <div className="h-64 bg-neutral-800/20 rounded-2xl" />
+          <div className="h-64 bg-surface/20 rounded-2xl" />
         </div>
       </div>
     );
@@ -303,14 +303,14 @@ export default function ClientProjectDetailPage({
       <div className="p-6 md:p-10 max-w-5xl mx-auto">
         <Link
           href="/client/projects"
-          className="inline-flex items-center gap-2 text-sm text-neutral-500 hover:text-white transition-colors mb-8"
+          className="inline-flex items-center gap-2 text-sm text-tertiary hover:text-foreground transition-colors mb-8"
         >
           <ChevronLeft size={14} />
           Back to Projects
         </Link>
         <div className="p-12 bg-surface border border-red-500/20 rounded-2xl text-center">
-          <AlertCircle size={32} className="mx-auto text-red-400/50 mb-3" />
-          <p className="text-neutral-400 text-sm">{error || 'Project not found.'}</p>
+          <AlertCircle size={32} className="mx-auto text-error/50 mb-3" />
+          <p className="text-tertiary text-sm">{error || 'Project not found.'}</p>
         </div>
       </div>
     );
@@ -335,7 +335,7 @@ export default function ClientProjectDetailPage({
       >
         <Link
           href="/client/projects"
-          className="inline-flex items-center gap-2 text-sm text-neutral-500 hover:text-white transition-colors mb-8"
+          className="inline-flex items-center gap-2 text-sm text-tertiary hover:text-foreground transition-colors mb-8"
         >
           <ChevronLeft size={14} />
           Back to Projects
@@ -351,11 +351,11 @@ export default function ClientProjectDetailPage({
       >
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl md:text-4xl font-serif font-light text-white mb-2">
+            <h1 className="text-3xl md:text-4xl font-serif font-light text-foreground mb-2">
               {workspace.name}
             </h1>
             {workspace.description && (
-              <p className="text-neutral-400 font-light max-w-2xl">
+              <p className="text-tertiary font-light max-w-2xl">
                 {workspace.description}
               </p>
             )}
@@ -377,25 +377,25 @@ export default function ClientProjectDetailPage({
         className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10"
       >
         <div className="p-5 bg-surface border border-border rounded-2xl">
-          <p className="text-[10px] uppercase tracking-widest text-neutral-600 mb-1">Progress</p>
-          <p className="text-2xl font-serif text-white">{progress}%</p>
+          <p className="text-[10px] uppercase tracking-widest text-tertiary mb-1">Progress</p>
+          <p className="text-2xl font-serif text-foreground">{progress}%</p>
         </div>
         <div className="p-5 bg-surface border border-border rounded-2xl">
-          <p className="text-[10px] uppercase tracking-widest text-neutral-600 mb-1">Milestones</p>
-          <p className="text-2xl font-serif text-white">
+          <p className="text-[10px] uppercase tracking-widest text-tertiary mb-1">Milestones</p>
+          <p className="text-2xl font-serif text-foreground">
             {completedMilestones}
-            <span className="text-sm text-neutral-600"> / {viewableMilestones.length}</span>
+            <span className="text-sm text-tertiary"> / {viewableMilestones.length}</span>
           </p>
         </div>
         <div className="p-5 bg-surface border border-border rounded-2xl">
-          <p className="text-[10px] uppercase tracking-widest text-neutral-600 mb-1">Type</p>
-          <p className="text-sm text-neutral-300 font-light capitalize mt-1">
+          <p className="text-[10px] uppercase tracking-widest text-tertiary mb-1">Type</p>
+          <p className="text-sm text-secondary font-light capitalize mt-1">
             {workspace.type?.replace(/_/g, ' ') || 'N/A'}
           </p>
         </div>
         <div className="p-5 bg-surface border border-border rounded-2xl">
-          <p className="text-[10px] uppercase tracking-widest text-neutral-600 mb-1">Started</p>
-          <p className="text-sm text-neutral-300 font-light mt-1">
+          <p className="text-[10px] uppercase tracking-widest text-tertiary mb-1">Started</p>
+          <p className="text-sm text-secondary font-light mt-1">
             {new Date(workspace.created_at).toLocaleDateString('en-US', {
               month: 'short',
               day: 'numeric',
@@ -413,12 +413,12 @@ export default function ClientProjectDetailPage({
         className="mb-10 p-6 bg-surface border border-border rounded-2xl"
       >
         <div className="flex items-center justify-between mb-3">
-          <p className="text-[10px] uppercase tracking-widest text-neutral-600">
+          <p className="text-[10px] uppercase tracking-widest text-tertiary">
             Overall Completion
           </p>
           <p className="text-xs text-gold font-medium">{progress}%</p>
         </div>
-        <div className="h-2 bg-neutral-800 rounded-full overflow-hidden">
+        <div className="h-2 bg-surface rounded-full overflow-hidden">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
@@ -439,7 +439,7 @@ export default function ClientProjectDetailPage({
         >
           <div className="flex items-center gap-3 mb-6">
             <Calendar className="text-gold" size={20} />
-            <h2 className="text-lg font-serif font-light text-white">Project Milestones</h2>
+            <h2 className="text-lg font-serif font-light text-foreground">Project Milestones</h2>
           </div>
           <MilestoneTimeline milestones={workspace.milestones || []} />
         </motion.div>
@@ -453,7 +453,7 @@ export default function ClientProjectDetailPage({
         >
           <div className="flex items-center gap-3 mb-6">
             <FileText className="text-gold" size={20} />
-            <h2 className="text-lg font-serif font-light text-white">Documents</h2>
+            <h2 className="text-lg font-serif font-light text-foreground">Documents</h2>
           </div>
           <DocumentsSection documents={workspace.documents} />
         </motion.div>

@@ -40,8 +40,8 @@ interface TypeStyle {
 const typeConfig: Record<string, TypeStyle> = {
   success: {
     icon: CheckCircle2,
-    bg: 'bg-emerald-500/10',
-    text: 'text-emerald-400',
+    bg: 'bg-success/10',
+    text: 'text-success',
     dotColor: 'bg-emerald-400',
   },
   warning: {
@@ -52,14 +52,14 @@ const typeConfig: Record<string, TypeStyle> = {
   },
   error: {
     icon: AlertCircle,
-    bg: 'bg-red-500/10',
-    text: 'text-red-400',
+    bg: 'bg-error/10',
+    text: 'text-error',
     dotColor: 'bg-red-400',
   },
   info: {
     icon: Info,
-    bg: 'bg-blue-500/10',
-    text: 'text-blue-400',
+    bg: 'bg-info/10',
+    text: 'text-info',
     dotColor: 'bg-blue-400',
   },
   message: {
@@ -71,14 +71,14 @@ const typeConfig: Record<string, TypeStyle> = {
   document: {
     icon: FileText,
     bg: 'bg-neutral-500/10',
-    text: 'text-neutral-400',
+    text: 'text-tertiary',
     dotColor: 'bg-neutral-400',
   },
   invoice: {
     icon: DollarSign,
-    bg: 'bg-[#D4A843]/10',
-    text: 'text-[#D4A843]',
-    dotColor: 'bg-[#D4A843]',
+    bg: 'bg-gold/10',
+    text: 'text-gold',
+    dotColor: 'bg-gold',
   },
   project: {
     icon: Briefcase,
@@ -94,8 +94,8 @@ const typeConfig: Record<string, TypeStyle> = {
   },
   milestone: {
     icon: Flag,
-    bg: 'bg-emerald-500/10',
-    text: 'text-emerald-400',
+    bg: 'bg-success/10',
+    text: 'text-success',
     dotColor: 'bg-emerald-400',
   },
   invite: {
@@ -109,7 +109,7 @@ const typeConfig: Record<string, TypeStyle> = {
 const defaultTypeConfig: TypeStyle = {
   icon: Bell,
   bg: 'bg-neutral-500/10',
-  text: 'text-neutral-400',
+  text: 'text-tertiary',
   dotColor: 'bg-neutral-400',
 };
 
@@ -154,7 +154,7 @@ function FilterTabs({ active, onChange, unreadCount }: FilterTabsProps) {
   ];
 
   return (
-    <div className="flex items-center gap-1.5 p-1 bg-[#0D0D0D] border border-[#1F1F1F]/40 rounded-xl">
+    <div className="flex items-center gap-1.5 p-1 bg-void-deep border border-border rounded-xl">
       {tabs.map((tab) => {
         const isActive = active === tab.key;
         const Icon = tab.icon;
@@ -167,8 +167,8 @@ function FilterTabs({ active, onChange, unreadCount }: FilterTabsProps) {
             className={cn(
               'relative flex items-center gap-2 px-4 py-2 rounded-lg text-[13px] font-light transition-all duration-200',
               isActive
-                ? 'bg-[#D4A843]/10 text-[#D4A843] shadow-[0_0_12px_rgba(212,168,67,0.08)]'
-                : 'text-neutral-500 hover:text-neutral-300',
+                ? 'bg-gold/10 text-gold shadow-[0_0_12px_rgba(212, 175, 55,0.08)]'
+                : 'text-tertiary hover:text-secondary',
             )}
           >
             <Icon size={14} />
@@ -178,8 +178,8 @@ function FilterTabs({ active, onChange, unreadCount }: FilterTabsProps) {
                 className={cn(
                   'px-1.5 py-0.5 rounded-full text-[10px] font-medium leading-none',
                   isActive
-                    ? 'bg-[#D4A843]/20 text-[#D4A843]'
-                    : 'bg-neutral-800 text-neutral-400',
+                    ? 'bg-gold/20 text-gold'
+                    : 'bg-surface text-tertiary',
                 )}
               >
                 {tab.count}
@@ -188,7 +188,7 @@ function FilterTabs({ active, onChange, unreadCount }: FilterTabsProps) {
             {isActive && (
               <motion.div
                 layoutId="filter-active-tab"
-                className="absolute inset-0 rounded-lg bg-[#D4A843]/10 border border-[#D4A843]/20"
+                className="absolute inset-0 rounded-lg bg-gold/10 border border-gold/20"
                 transition={{ type: 'spring', stiffness: 400, damping: 30 }}
               />
             )}
@@ -231,13 +231,13 @@ function EmptyState({ filter }: { filter: FilterTab }) {
     >
       <div className="relative mb-6">
         {/* Glow ring */}
-        <div className="absolute inset-0 rounded-full bg-[#D4A843]/5 blur-2xl scale-150" />
-        <div className="relative w-20 h-20 rounded-full bg-[#0D0D0D] border border-[#1F1F1F]/50 flex items-center justify-center">
-          <Icon size={28} className="text-neutral-600" />
+        <div className="absolute inset-0 rounded-full bg-gold/5 blur-2xl scale-150" />
+        <div className="relative w-20 h-20 rounded-full bg-void-deep border border-border flex items-center justify-center">
+          <Icon size={28} className="text-tertiary" />
         </div>
       </div>
-      <h3 className="text-lg font-serif text-white font-light mb-1.5">{title}</h3>
-      <p className="text-sm text-neutral-500 font-light max-w-xs text-center leading-relaxed">
+      <h3 className="text-lg font-serif text-foreground font-light mb-1.5">{title}</h3>
+      <p className="text-sm text-tertiary font-light max-w-xs text-center leading-relaxed">
         {description}
       </p>
     </motion.div>
@@ -271,9 +271,9 @@ function NotificationRow({ notification, index, onMarkRead, onDelete }: Notifica
       onMouseLeave={() => setIsHovered(false)}
       className={cn(
         'group flex items-start gap-4 px-6 py-4 transition-all duration-200',
-        'border-b border-[#1F1F1F]/20 last:border-0',
+        'border-b border-border last:border-0',
         isUnread
-          ? 'bg-[#D4A843]/[0.02] border-l-2 border-l-[#D4A843]'
+          ? 'bg-gold/[0.02] border-l-2 border-l-gold'
           : 'hover:bg-white/[0.01]',
       )}
     >
@@ -295,13 +295,13 @@ function NotificationRow({ notification, index, onMarkRead, onDelete }: Notifica
             <p
               className={cn(
                 'text-sm leading-snug',
-                isUnread ? 'text-white font-medium' : 'text-neutral-300 font-light',
+                isUnread ? 'text-foreground font-medium' : 'text-secondary font-light',
               )}
             >
               {notification.title}
             </p>
             {notification.body && (
-              <p className="text-xs text-neutral-500 mt-1 font-light leading-relaxed line-clamp-2">
+              <p className="text-xs text-tertiary mt-1 font-light leading-relaxed line-clamp-2">
                 {notification.body}
               </p>
             )}
@@ -319,7 +319,7 @@ function NotificationRow({ notification, index, onMarkRead, onDelete }: Notifica
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => onMarkRead(notification.id)}
-                className="p-1.5 rounded-lg text-neutral-600 hover:text-[#D4A843] hover:bg-white/[0.04] transition-colors"
+                className="p-1.5 rounded-lg text-tertiary hover:text-gold hover:bg-white/[0.04] transition-colors"
                 title="Mark as read"
                 aria-label="Mark as read"
               >
@@ -330,7 +330,7 @@ function NotificationRow({ notification, index, onMarkRead, onDelete }: Notifica
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => onDelete(notification.id)}
-              className="p-1.5 rounded-lg text-neutral-600 hover:text-red-400 hover:bg-red-500/5 transition-colors"
+              className="p-1.5 rounded-lg text-tertiary hover:text-error hover:bg-error/5 transition-colors"
               title="Delete"
               aria-label="Delete notification"
             >
@@ -341,12 +341,12 @@ function NotificationRow({ notification, index, onMarkRead, onDelete }: Notifica
 
         {/* Timestamp */}
         <div className="flex items-center gap-2 mt-1.5">
-          <Clock size={11} className="text-neutral-600" />
-          <span className="text-[11px] text-neutral-600 font-light">
+          <Clock size={11} className="text-tertiary" />
+          <span className="text-[11px] text-tertiary font-light">
             {notification.createdAt ? formatRelativeTime(notification.createdAt) : '—'}
           </span>
           {isUnread && (
-            <span className="w-1.5 h-1.5 rounded-full bg-[#D4A843]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-gold" />
           )}
         </div>
       </div>
@@ -423,10 +423,10 @@ export default function NotificationsPage() {
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-3">
             <h1 className="text-4xl font-serif font-light">
-              <span className="text-[#D4A843]">Notifications</span>
+              <span className="text-gold">Notifications</span>
             </h1>
             {unreadCount > 0 && (
-              <span className="px-2.5 py-1 rounded-full bg-[#D4A843]/10 text-[#D4A843] text-[11px] font-medium">
+              <span className="px-2.5 py-1 rounded-full bg-gold/10 text-gold text-[11px] font-medium">
                 {unreadCount} unread
               </span>
             )}
@@ -438,7 +438,7 @@ export default function NotificationsPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleRefresh}
-              className="p-2 rounded-lg text-neutral-500 hover:text-neutral-300 hover:bg-white/[0.04] transition-colors"
+              className="p-2 rounded-lg text-tertiary hover:text-secondary hover:bg-white/[0.04] transition-colors"
               title="Refresh"
               aria-label="Refresh notifications"
             >
@@ -452,10 +452,10 @@ export default function NotificationsPage() {
                 whileTap={{ scale: 0.98 }}
                 onClick={handleMarkAllRead}
                 disabled={markAllRead.isLoading}
-                className="flex items-center gap-2 px-4 py-2 text-xs text-[#D4A843] border border-[#D4A843]/30 rounded-lg hover:bg-[#D4A843]/5 transition-all disabled:opacity-40 font-light"
+                className="flex items-center gap-2 px-4 py-2 text-xs text-gold border border-gold/30 rounded-lg hover:bg-gold/5 transition-all disabled:opacity-40 font-light"
               >
                 {markAllRead.isLoading ? (
-                  <div className="w-3.5 h-3.5 border-2 border-[#D4A843]/30 border-t-[#D4A843] rounded-full animate-spin" />
+                  <div className="w-3.5 h-3.5 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
                 ) : (
                   <CheckCheck size={14} />
                 )}
@@ -465,7 +465,7 @@ export default function NotificationsPage() {
           </div>
         </div>
 
-        <p className="text-neutral-500 font-light text-sm">
+        <p className="text-tertiary font-light text-sm">
           {unreadCount > 0
             ? `You have ${unreadCount} unread notification${unreadCount === 1 ? '' : 's'}.`
             : 'You are all caught up.'}
@@ -476,7 +476,7 @@ export default function NotificationsPage() {
           initial={{ width: 0 }}
           animate={{ width: '100%' }}
           transition={{ delay: 0.2, duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-6 h-px bg-gradient-to-r from-[#D4A843]/60 via-[#D4A843]/20 to-transparent"
+          className="mt-6 h-px bg-gradient-to-r from-gold/60 via-gold/20 to-transparent"
         />
       </motion.div>
 
@@ -495,17 +495,17 @@ export default function NotificationsPage() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.4 }}
-        className="bg-[#0D0D0D] border border-[#1F1F1F]/40 rounded-2xl overflow-hidden"
+        className="bg-void-deep border border-border rounded-2xl overflow-hidden"
       >
         {isLoading ? (
           /* Loading skeleton */
           <div className="p-6 space-y-4">
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="flex items-start gap-4 animate-pulse">
-                <div className="w-9 h-9 rounded-full bg-neutral-800 shrink-0" />
+                <div className="w-9 h-9 rounded-full bg-surface shrink-0" />
                 <div className="flex-1 space-y-2.5">
-                  <div className="h-3.5 bg-neutral-800 rounded w-2/3" />
-                  <div className="h-2.5 bg-neutral-800 rounded w-1/2" />
+                  <div className="h-3.5 bg-surface rounded w-2/3" />
+                  <div className="h-2.5 bg-surface rounded w-1/2" />
                 </div>
               </div>
             ))}
@@ -513,18 +513,18 @@ export default function NotificationsPage() {
         ) : isError ? (
           /* Error state */
           <div className="flex flex-col items-center justify-center py-16 px-4">
-            <div className="w-16 h-16 rounded-full bg-red-500/5 border border-red-500/10 flex items-center justify-center mb-4">
-              <AlertCircle size={24} className="text-red-400/60" />
+            <div className="w-16 h-16 rounded-full bg-error/5 border border-red-500/10 flex items-center justify-center mb-4">
+              <AlertCircle size={24} className="text-error/60" />
             </div>
-            <p className="text-sm text-red-400 font-light mb-1">Failed to load notifications</p>
-            <p className="text-xs text-neutral-600 font-light mb-4">
+            <p className="text-sm text-error font-light mb-1">Failed to load notifications</p>
+            <p className="text-xs text-tertiary font-light mb-4">
               Please check your connection and try again
             </p>
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleRefresh}
-              className="px-4 py-2 text-xs text-neutral-400 border border-neutral-700 rounded-lg hover:border-neutral-500 hover:text-neutral-200 transition-all font-light"
+              className="px-4 py-2 text-xs text-tertiary border border-neutral-700 rounded-lg hover:border-neutral-500 hover:text-neutral-200 transition-all font-light"
             >
               Try Again
             </motion.button>
@@ -554,7 +554,7 @@ export default function NotificationsPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="text-center text-[11px] text-neutral-600 font-light mt-6"
+          className="text-center text-[11px] text-tertiary font-light mt-6"
         >
           Showing {resolvedNotifications.length} notification{resolvedNotifications.length === 1 ? '' : 's'}
           {filter !== 'all' && ` (${filter})`}

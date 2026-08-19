@@ -102,21 +102,21 @@ function getFileTypeInfo(mimetype: string): FileTypeInfo {
     mimetype.includes('excel') ||
     mimetype === 'text/csv'
   ) {
-    return { icon: FileSpreadsheet, color: 'text-emerald-400', label: 'Spreadsheet' };
+    return { icon: FileSpreadsheet, color: 'text-success', label: 'Spreadsheet' };
   }
   if (
     mimetype.includes('document') ||
     mimetype.includes('word') ||
     mimetype === 'text/plain'
   ) {
-    return { icon: FileText, color: 'text-blue-400', label: 'Document' };
+    return { icon: FileText, color: 'text-info', label: 'Document' };
   }
   if (
     mimetype === 'application/pdf' ||
     mimetype.includes('presentation') ||
     mimetype.includes('powerpoint')
   ) {
-    return { icon: FileText, color: 'text-red-400', label: 'Document' };
+    return { icon: FileText, color: 'text-error', label: 'Document' };
   }
   if (
     mimetype.includes('zip') ||
@@ -134,7 +134,7 @@ function getFileTypeInfo(mimetype: string): FileTypeInfo {
   ) {
     return { icon: FileCode, color: 'text-cyan-400', label: 'Code' };
   }
-  return { icon: File, color: 'text-neutral-400', label: 'File' };
+  return { icon: File, color: 'text-tertiary', label: 'File' };
 }
 
 function formatFileSize(bytes: number): string {
@@ -334,19 +334,19 @@ function UploadModal({ isOpen, onClose, onUploadComplete, projects }: UploadModa
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-lg bg-[#141414] border border-[#1F1F1F] rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
+            className="relative w-full max-w-lg bg-surface border border-border rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
           >
             {/* Header */}
-            <div className="flex items-start justify-between p-6 pb-4 border-b border-[#1F1F1F]/50">
+            <div className="flex items-start justify-between p-6 pb-4 border-b border-border">
               <div>
-                <h2 className="text-lg font-serif font-light text-white">Upload Documents</h2>
-                <p className="text-sm text-[#666] font-light mt-1">
+                <h2 className="text-lg font-serif font-light text-foreground">Upload Documents</h2>
+                <p className="text-sm text-tertiary font-light mt-1">
                   Select files and choose a project to upload them to.
                 </p>
               </div>
               <button
                 onClick={onClose}
-                className="p-1.5 rounded-lg text-[#555] hover:text-white hover:bg-white/[0.05] transition-all duration-200"
+                className="p-1.5 rounded-lg text-tertiary hover:text-foreground hover:bg-white/[0.05] transition-all duration-200"
               >
                 <X size={18} />
               </button>
@@ -356,7 +356,7 @@ function UploadModal({ isOpen, onClose, onUploadComplete, projects }: UploadModa
             <div className="p-6 space-y-5">
               {/* Project Selector */}
               <div>
-                <label className="text-[10px] uppercase tracking-[0.15em] text-[#666] font-medium ml-1 block mb-2">
+                <label className="text-[10px] uppercase tracking-[0.15em] text-tertiary font-medium ml-1 block mb-2">
                   Project
                 </label>
                 <div className="relative">
@@ -364,17 +364,17 @@ function UploadModal({ isOpen, onClose, onUploadComplete, projects }: UploadModa
                     onClick={() => setProjectDropdownOpen(!projectDropdownOpen)}
                     className={cn(
                       'w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-light transition-all duration-200',
-                      'bg-[#141414] border border-[#1F1F1F] text-white',
-                      'hover:border-[#D4A843]/30 focus:outline-none',
+                      'bg-surface border border-border text-white',
+                      'hover:border-gold/30 focus:outline-none',
                     )}
                   >
-                    <span className={selectedProject ? 'text-white' : 'text-[#555]'}>
+                    <span className={selectedProject ? 'text-white' : 'text-tertiary'}>
                       {selectedProject ? selectedProject.name : 'Select a project...'}
                     </span>
                     <ChevronDown
                       size={14}
                       className={cn(
-                        'text-[#555] transition-transform duration-200',
+                        'text-tertiary transition-transform duration-200',
                         projectDropdownOpen && 'rotate-180',
                       )}
                     />
@@ -386,10 +386,10 @@ function UploadModal({ isOpen, onClose, onUploadComplete, projects }: UploadModa
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 4 }}
                         transition={{ duration: 0.12 }}
-                        className="absolute top-full mt-1 left-0 right-0 bg-[#1A1A1A] border border-[#1F1F1F] rounded-lg shadow-lg z-20 max-h-48 overflow-y-auto"
+                        className="absolute top-full mt-1 left-0 right-0 bg-surface border border-border rounded-lg shadow-lg z-20 max-h-48 overflow-y-auto"
                       >
                         {projects.length === 0 ? (
-                          <div className="px-4 py-3 text-sm text-[#555]">No projects available.</div>
+                          <div className="px-4 py-3 text-sm text-tertiary">No projects available.</div>
                         ) : (
                           projects.map((p) => (
                             <button
@@ -401,8 +401,8 @@ function UploadModal({ isOpen, onClose, onUploadComplete, projects }: UploadModa
                               className={cn(
                                 'w-full text-left px-4 py-2.5 text-sm font-light transition-colors duration-150',
                                 selectedProjectId === p.id
-                                  ? 'bg-[#D4A843]/10 text-[#D4A843]'
-                                  : 'text-neutral-300 hover:bg-white/[0.05]',
+                                  ? 'bg-gold/10 text-gold'
+                                  : 'text-secondary hover:bg-white/[0.05]',
                               )}
                             >
                               {p.name}
@@ -425,8 +425,8 @@ function UploadModal({ isOpen, onClose, onUploadComplete, projects }: UploadModa
                 className={cn(
                   'relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-200',
                   isDragging
-                    ? 'border-[#D4A843]/50 bg-[#D4A843]/5'
-                    : 'border-[#1F1F1F] hover:border-[#2A2A2A] bg-[#0A0A0A]/30',
+                    ? 'border-gold/50 bg-gold/5'
+                    : 'border-border hover:border-border-hover bg-void-deep',
                 )}
               >
                 <input
@@ -437,11 +437,11 @@ function UploadModal({ isOpen, onClose, onUploadComplete, projects }: UploadModa
                   className="hidden"
                   accept={ALLOWED_MIME_TYPES.join(',')}
                 />
-                <Upload size={28} className="text-[#444] mx-auto mb-3" />
-                <p className="text-sm text-[#888] font-light mb-1">
+                <Upload size={28} className="text-tertiary mx-auto mb-3" />
+                <p className="text-sm text-tertiary font-light mb-1">
                   {isDragging ? 'Drop files here' : 'Drag & drop files or click to browse'}
                 </p>
-                <p className="text-[10px] text-[#555] font-light">
+                <p className="text-[10px] text-tertiary font-light">
                   PDF, images, documents, spreadsheets, archives, and more (up to 100MB)
                 </p>
               </div>
@@ -451,10 +451,10 @@ function UploadModal({ isOpen, onClose, onUploadComplete, projects }: UploadModa
                 <motion.div
                   initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500/10 border border-red-500/20"
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-error/10 border border-red-500/20"
                 >
-                  <AlertCircle size={14} className="text-red-400 shrink-0" />
-                  <p className="text-xs text-red-400 font-light">{validationError}</p>
+                  <AlertCircle size={14} className="text-error shrink-0" />
+                  <p className="text-xs text-error font-light">{validationError}</p>
                 </motion.div>
               )}
 
@@ -467,7 +467,7 @@ function UploadModal({ isOpen, onClose, onUploadComplete, projects }: UploadModa
                     exit={{ opacity: 0, height: 0 }}
                     className="space-y-2 overflow-hidden"
                   >
-                    <p className="text-[10px] uppercase tracking-[0.15em] text-[#444] font-medium">
+                    <p className="text-[10px] uppercase tracking-[0.15em] text-tertiary font-medium">
                       Selected Files ({selectedFiles.length})
                     </p>
                     <div className="max-h-48 overflow-y-auto space-y-1.5">
@@ -485,20 +485,20 @@ function UploadModal({ isOpen, onClose, onUploadComplete, projects }: UploadModa
                             className={cn(
                               'flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-colors',
                               isCurrent
-                                ? 'bg-[#D4A843]/5 border-[#D4A843]/20'
-                                : 'bg-[#0A0A0A]/20 border-[#1F1F1F]/30',
+                                ? 'bg-gold/5 border-gold/20'
+                                : 'bg-void-deep border-border',
                             )}
                           >
                             <FileIcon size={16} className={cn(typeInfo.color, 'shrink-0')} />
                             <div className="flex-1 min-w-0">
-                              <p className="text-xs text-white font-light truncate">{file.name}</p>
-                              <p className="text-[10px] text-[#555]">
+                              <p className="text-xs text-foreground font-light truncate">{file.name}</p>
+                              <p className="text-[10px] text-tertiary">
                                 {formatFileSize(file.size)}
                               </p>
                               {isCurrent && (
-                                <div className="mt-1.5 w-full h-1 bg-[#1F1F1F] rounded-full overflow-hidden">
+                                <div className="mt-1.5 w-full h-1 bg-border rounded-full overflow-hidden">
                                   <motion.div
-                                    className="h-full bg-[#D4A843] rounded-full"
+                                    className="h-full bg-gold rounded-full"
                                     initial={{ width: 0 }}
                                     animate={{ width: `${uploadProgress}%` }}
                                     transition={{ duration: 0.1 }}
@@ -507,7 +507,7 @@ function UploadModal({ isOpen, onClose, onUploadComplete, projects }: UploadModa
                               )}
                             </div>
                             {isCurrent ? (
-                              <span className="text-[10px] text-[#D4A843] font-mono">
+                              <span className="text-[10px] text-gold font-mono">
                                 {uploadProgress}%
                               </span>
                             ) : (
@@ -516,7 +516,7 @@ function UploadModal({ isOpen, onClose, onUploadComplete, projects }: UploadModa
                                   e.stopPropagation();
                                   removeFile(i);
                                 }}
-                                className="p-1 rounded-md text-[#555] hover:text-red-400 transition-colors"
+                                className="p-1 rounded-md text-tertiary hover:text-error transition-colors"
                               >
                                 <X size={13} />
                               </button>
@@ -531,10 +531,10 @@ function UploadModal({ isOpen, onClose, onUploadComplete, projects }: UploadModa
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-between px-6 py-4 border-t border-[#1F1F1F]/50 bg-[#0A0A0A]/20 rounded-b-2xl">
+            <div className="flex items-center justify-between px-6 py-4 border-t border-border bg-void-deep rounded-b-2xl">
               <button
                 onClick={onClose}
-                className="px-4 py-2 text-sm text-[#666] hover:text-white transition-colors font-light"
+                className="px-4 py-2 text-sm text-tertiary hover:text-foreground transition-colors font-light"
               >
                 Cancel
               </button>
@@ -636,11 +636,11 @@ export default function DocumentsPage() {
   const folders = Array.from(folderMap.entries()).map(([name, count]) => ({ name, count }));
 
   const folderIcons: Record<string, { icon: LucideIcon; color: string }> = {
-    Contracts: { icon: FileText, color: 'text-blue-400' },
+    Contracts: { icon: FileText, color: 'text-info' },
     Blueprints: { icon: Image, color: 'text-amber-400' },
-    Reports: { icon: FileText, color: 'text-emerald-400' },
+    Reports: { icon: FileText, color: 'text-success' },
     Proposals: { icon: File, color: 'text-violet-400' },
-    Uncategorized: { icon: Folder, color: 'text-neutral-500' },
+    Uncategorized: { icon: Folder, color: 'text-tertiary' },
     Invoices: { icon: FileText, color: 'text-rose-400' },
     Drawings: { icon: Image, color: 'text-cyan-400' },
     Presentations: { icon: FileText, color: 'text-orange-400' },
@@ -685,11 +685,11 @@ export default function DocumentsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col items-center justify-center py-24 text-center"
         >
-          <div className="w-16 h-16 rounded-2xl bg-red-500/10 flex items-center justify-center mb-5">
-            <AlertCircle size={28} className="text-red-400" />
+          <div className="w-16 h-16 rounded-2xl bg-error/10 flex items-center justify-center mb-5">
+            <AlertCircle size={28} className="text-error" />
           </div>
-          <h2 className="text-lg text-white font-light mb-1">Failed to load documents</h2>
-          <p className="text-sm text-[#666] font-light mb-6">
+          <h2 className="text-lg text-foreground font-light mb-1">Failed to load documents</h2>
+          <p className="text-sm text-tertiary font-light mb-6">
             There was an error loading your documents. Please try again.
           </p>
           <Button variant="primary" onClick={fetchDocuments}>
@@ -714,7 +714,7 @@ export default function DocumentsPage() {
         <h1 className="text-4xl font-serif font-light mb-2">
           <span className="text-gold">Documents</span>
         </h1>
-        <p className="text-neutral-500 font-light">
+        <p className="text-tertiary font-light">
           Centralized document storage for your workspace.
         </p>
         <motion.div
@@ -728,16 +728,16 @@ export default function DocumentsPage() {
       {/* Header Actions */}
       <div className="flex items-center gap-3 mb-8">
         <div className="relative flex-1">
-          <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-600" />
+          <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-tertiary" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search documents..."
-            className="w-full pl-10 pr-4 py-2.5 bg-[#141414] border border-[#1F1F1F] rounded-lg text-sm text-white placeholder-[#555] focus:outline-none focus:border-[#D4A843]/40 transition-all"
+            className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-lg text-sm text-foreground placeholder:text-tertiary focus:outline-none focus:border-gold/40 transition-all"
           />
         </div>
-        <button className="flex items-center gap-1.5 px-3 py-2.5 bg-[#141414] border border-[#1F1F1F] rounded-lg text-xs text-[#888] hover:text-white transition-colors">
+        <button className="flex items-center gap-1.5 px-3 py-2.5 bg-surface border border-border rounded-lg text-xs text-tertiary hover:text-foreground transition-colors">
           <Filter size={13} />
           Filter
         </button>
@@ -755,7 +755,7 @@ export default function DocumentsPage() {
       {folders.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
           {folders.map((folder, i) => {
-            const config = folderIcons[folder.name] ?? { icon: Folder, color: 'text-neutral-500' };
+            const config = folderIcons[folder.name] ?? { icon: Folder, color: 'text-tertiary' };
             const FolderIcon = config.icon;
             const isActive = filterFolder === folder.name;
 
@@ -772,8 +772,8 @@ export default function DocumentsPage() {
                 className={cn(
                   'p-6 rounded-2xl cursor-pointer group transition-all duration-300 border',
                   isActive
-                    ? 'bg-[#D4A843]/5 border-[#D4A843]/20'
-                    : 'bg-[#141414] border-[#1F1F1F] hover:border-[#2A2A2A]',
+                    ? 'bg-gold/5 border-gold/20'
+                    : 'bg-surface border-border hover:border-border-hover',
                 )}
               >
                 <div className="flex items-center gap-3 mb-4">
@@ -781,20 +781,20 @@ export default function DocumentsPage() {
                     className={cn(
                       'w-10 h-10 rounded-xl flex items-center justify-center border',
                       isActive
-                        ? 'bg-[#D4A843]/10 border-[#D4A843]/20'
-                        : 'bg-[#0A0A0A] border-[#1F1F1F]',
+                        ? 'bg-gold/10 border-gold/20'
+                        : 'bg-void-deep border-border',
                     )}
                   >
                     <FolderIcon size={20} className={config.color} />
                   </div>
                   <div>
-                    <p className="text-sm font-serif font-light text-white group-hover:text-gold transition-colors">
+                    <p className="text-sm font-serif font-light text-foreground group-hover:text-gold transition-colors">
                       {folder.name}
                     </p>
-                    <p className="text-xs text-neutral-600">{folder.count} files</p>
+                    <p className="text-xs text-tertiary">{folder.count} files</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-neutral-600">
+                <div className="flex items-center gap-2 text-xs text-tertiary">
                   <Download size={12} />
                   <span>{isActive ? 'Showing filtered' : 'Access folder'}</span>
                 </div>
@@ -802,7 +802,7 @@ export default function DocumentsPage() {
                   <motion.div
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}
-                    className="mt-3 h-0.5 bg-gradient-to-r from-[#D4A843]/40 to-transparent"
+                    className="mt-3 h-0.5 bg-gradient-to-r from-gold/40 to-transparent"
                   />
                 )}
               </motion.div>
@@ -818,11 +818,11 @@ export default function DocumentsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col items-center justify-center py-20 text-center"
         >
-          <div className="w-16 h-16 rounded-2xl bg-[#1A1A1A] flex items-center justify-center mb-5">
-            <Folder size={28} className="text-[#444]" />
+          <div className="w-16 h-16 rounded-2xl bg-surface flex items-center justify-center mb-5">
+            <Folder size={28} className="text-tertiary" />
           </div>
-          <h2 className="text-lg text-white font-light mb-1">No documents yet</h2>
-          <p className="text-sm text-[#666] font-light mb-6">
+          <h2 className="text-lg text-foreground font-light mb-1">No documents yet</h2>
+          <p className="text-sm text-tertiary font-light mb-6">
             Upload your first document to get started.
           </p>
           <Button variant="primary" onClick={() => setUploadOpen(true)}>
@@ -839,11 +839,11 @@ export default function DocumentsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col items-center justify-center py-16 text-center"
         >
-          <div className="w-14 h-14 rounded-2xl bg-[#1A1A1A] flex items-center justify-center mb-4">
-            <Search size={22} className="text-[#444]" />
+          <div className="w-14 h-14 rounded-2xl bg-surface flex items-center justify-center mb-4">
+            <Search size={22} className="text-tertiary" />
           </div>
-          <p className="text-sm text-[#888] font-light mb-1">No matching documents</p>
-          <p className="text-xs text-[#555] font-light">
+          <p className="text-sm text-tertiary font-light mb-1">No matching documents</p>
+          <p className="text-xs text-tertiary font-light">
             {searchQuery
               ? `No results for "${searchQuery}". Try a different search term.`
               : 'No documents in this folder.'}
@@ -853,9 +853,9 @@ export default function DocumentsPage() {
 
       {/* Documents List */}
       {filteredDocs.length > 0 && (
-        <div className="bg-[#141414] border border-[#1F1F1F] rounded-2xl overflow-hidden">
-          <div className="px-6 py-4 border-b border-[#1F1F1F]/50">
-            <p className="text-sm text-neutral-400 font-light">
+        <div className="bg-surface border border-border rounded-2xl overflow-hidden">
+          <div className="px-6 py-4 border-b border-border">
+            <p className="text-sm text-tertiary font-light">
               {filterFolder ? `${filterFolder} Documents` : 'Recent Documents'}
             </p>
           </div>
@@ -865,15 +865,15 @@ export default function DocumentsPage() {
             return (
               <div
                 key={doc.id || i}
-                className="flex items-center justify-between px-6 py-3.5 border-b border-[#1F1F1F]/30 last:border-0 hover:bg-white/[0.02] transition-colors cursor-pointer group"
+                className="flex items-center justify-between px-6 py-3.5 border-b border-border last:border-0 hover:bg-white/[0.02] transition-colors cursor-pointer group"
               >
                 <div className="flex items-center gap-3.5">
                   <DocIcon size={18} className={typeInfo.color} />
                   <div>
-                    <p className="text-sm text-white font-light group-hover:text-[#D4A843] transition-colors">
+                    <p className="text-sm text-foreground font-light group-hover:text-gold transition-colors">
                       {doc.name}
                     </p>
-                    <p className="text-[11px] text-[#555]">
+                    <p className="text-[11px] text-tertiary">
                       {doc.folderName || 'Uncategorized'}
                       {doc.projectName && ` · ${doc.projectName}`}
                       {' · '}
@@ -882,14 +882,14 @@ export default function DocumentsPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="text-[11px] text-[#555] flex items-center gap-1">
+                  <span className="text-[11px] text-tertiary flex items-center gap-1">
                     <Clock size={11} />
                     {formatTimeAgo(doc.createdAt)}
                   </span>
                   <Badge variant="default" size="sm">
                     {typeInfo.label}
                   </Badge>
-                  <button className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg text-[#555] hover:text-[#D4A843] hover:bg-white/5">
+                  <button className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg text-tertiary hover:text-gold hover:bg-white/5">
                     <Download size={15} />
                   </button>
                 </div>

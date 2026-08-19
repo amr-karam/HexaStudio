@@ -26,10 +26,10 @@ interface ProjectTimelineProps {
 // ─── Constants ──────────────────────────────────────────────────────────────
 
 const STATUS_COLORS: Record<string, { bg: string; fill: string; text: string }> = {
-  completed: { bg: 'bg-emerald-500/10', fill: 'bg-emerald-500', text: 'text-emerald-400' },
+  completed: { bg: 'bg-success/10', fill: 'bg-success', text: 'text-success' },
   in_progress: { bg: 'bg-amber-500/10', fill: 'bg-amber-500', text: 'text-amber-400' },
-  overdue: { bg: 'bg-red-500/10', fill: 'bg-red-500', text: 'text-red-400' },
-  upcoming: { bg: 'bg-neutral-500/10', fill: 'bg-neutral-500', text: 'text-neutral-400' },
+  overdue: { bg: 'bg-error/10', fill: 'bg-error', text: 'text-error' },
+  upcoming: { bg: 'bg-neutral-500/10', fill: 'bg-neutral-500', text: 'text-tertiary' },
 };
 
 const DAY_MS = 86400000;
@@ -126,36 +126,36 @@ export default function ProjectTimeline({
     <div className="relative">
       {/* Scroll Controls */}
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2 text-[11px] text-[#555]">
+        <div className="flex items-center gap-2 text-[11px] text-tertiary">
           <Calendar size={13} />
           <span>{formatDate(start)} — {formatDate(end)}</span>
         </div>
         <div className="flex items-center gap-1">
-          <button onClick={() => scroll('left')} className="p-1.5 rounded-lg hover:bg-white/[0.03] text-[#555] hover:text-white transition-colors">
+          <button onClick={() => scroll('left')} className="p-1.5 rounded-lg hover:bg-white/[0.03] text-tertiary hover:text-foreground transition-colors">
             <ChevronLeft size={16} />
           </button>
-          <button onClick={() => scroll('right')} className="p-1.5 rounded-lg hover:bg-white/[0.03] text-[#555] hover:text-white transition-colors">
+          <button onClick={() => scroll('right')} className="p-1.5 rounded-lg hover:bg-white/[0.03] text-tertiary hover:text-foreground transition-colors">
             <ChevronRight size={16} />
           </button>
         </div>
       </div>
 
       {/* Timeline Container */}
-      <div ref={scrollRef} className="overflow-x-auto rounded-2xl border border-[#1F1F1F] bg-[#0A0A0A]">
+      <div ref={scrollRef} className="overflow-x-auto rounded-2xl border border-border bg-void-deep">
         <div className="min-w-[800px]">
           {/* Month Header */}
-          <div className="relative h-10 border-b border-[#1F1F1F] bg-[#0A0A0A]">
-            <div style={{ width: LABEL_COLUMN_WIDTH }} className="absolute left-0 top-0 h-full border-r border-[#1F1F1F] flex items-center px-4">
-              <span className="text-[10px] uppercase tracking-[0.2em] text-[#555]">Task</span>
+          <div className="relative h-10 border-b border-border bg-void-deep">
+            <div style={{ width: LABEL_COLUMN_WIDTH }} className="absolute left-0 top-0 h-full border-r border-border flex items-center px-4">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-tertiary">Task</span>
             </div>
             <div className="ml-[220px] relative h-full">
               {months.map((m, i) => (
                 <div
                   key={i}
-                  className="absolute top-0 h-full flex items-center border-l border-[#1F1F1F] px-2"
+                  className="absolute top-0 h-full flex items-center border-l border-border px-2"
                   style={{ left: `${m.left}%`, width: `${m.width}%` }}
                 >
-                  <span className="text-[10px] text-[#555] font-medium tracking-wider">{m.label}</span>
+                  <span className="text-[10px] text-tertiary font-medium tracking-wider">{m.label}</span>
                 </div>
               ))}
             </div>
@@ -164,8 +164,8 @@ export default function ProjectTimeline({
           {/* Today Indicator */}
           {todayLeft >= 0 && (
             <div className="absolute top-10 bottom-0 z-10 pointer-events-none" style={{ left: `${LABEL_COLUMN_WIDTH + (todayLeft * (100 - LABEL_COLUMN_WIDTH / 8)) / 100}%` }}>
-              <div className="w-px h-full bg-[#D4A843]/40" style={{ backgroundImage: 'linear-gradient(to bottom, #D4A843 50%, transparent 50%)', backgroundSize: '1px 8px' }} />
-              <div className="absolute -top-1 -left-[5px] w-2.5 h-2.5 rounded-full bg-[#D4A843]" />
+              <div className="w-px h-full bg-gold/40" style={{ backgroundImage: 'linear-gradient(to bottom, var(--color-gold) 50%, transparent 50%)', backgroundSize: '1px 8px' }} />
+              <div className="absolute -top-1 -left-[5px] w-2.5 h-2.5 rounded-full bg-gold" />
             </div>
           )}
 
@@ -181,20 +181,20 @@ export default function ProjectTimeline({
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.05, duration: 0.4 }}
-                  className="relative flex border-b border-[#1F1F1F] last:border-b-0 hover:bg-white/[0.01] transition-colors"
+                  className="relative flex border-b border-border last:border-b-0 hover:bg-white/[0.01] transition-colors"
                   style={{ minHeight: task.isMilestone ? 40 : 48 }}
                 >
                   {/* Label Column */}
                   <div
-                    className="absolute left-0 top-0 h-full flex items-center gap-2 px-4 border-r border-[#1F1F1F] bg-[#0A0A0A] z-[5]"
+                    className="absolute left-0 top-0 h-full flex items-center gap-2 px-4 border-r border-border bg-void-deep z-[5]"
                     style={{ width: LABEL_COLUMN_WIDTH }}
                   >
                     {task.isMilestone ? (
-                      <Flag size={13} className="text-[#D4A843] shrink-0" />
+                      <Flag size={13} className="text-gold shrink-0" />
                     ) : (
                       <div className={`w-1.5 h-1.5 rounded-full ${colors.fill} shrink-0`} />
                     )}
-                    <span className="text-xs text-white font-light truncate">{task.title}</span>
+                    <span className="text-xs text-foreground font-light truncate">{task.title}</span>
                   </div>
 
                   {/* Bar Area */}
@@ -207,7 +207,7 @@ export default function ProjectTimeline({
                         className="absolute top-1/2 -translate-y-1/2 z-[2]"
                         style={{ left: barStyle.left }}
                       >
-                        <div className="w-5 h-5 rotate-45 bg-[#D4A843] rounded-sm shadow-[0_0_12px_rgba(212,168,67,0.3)]" />
+                        <div className="w-5 h-5 rotate-45 bg-gold rounded-sm shadow-[0_0_12px_rgba(212, 175, 55,0.3)]" />
                       </motion.div>
                     ) : (
                       <motion.div
@@ -251,11 +251,11 @@ export default function ProjectTimeline({
               initial={{ opacity: 0, y: 4, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 4, scale: 0.96 }}
-              className="fixed z-50 pointer-events-none bg-[#141414] border border-[#1F1F1F] rounded-xl p-3 shadow-[0_8px_32px_rgba(0,0,0,0.5)] min-w-[200px]"
+              className="fixed z-50 pointer-events-none bg-surface border border-border rounded-xl p-3 shadow-[0_8px_32px_rgba(0,0,0,0.5)] min-w-[200px]"
               style={{ left: tooltipPos.x, top: tooltipPos.y, transform: 'translate(-50%, -100%)' }}
             >
-              <p className="text-sm text-white font-medium mb-1">{task.title}</p>
-              <div className="flex items-center gap-2 text-[11px] text-[#666] mb-1">
+              <p className="text-sm text-foreground font-medium mb-1">{task.title}</p>
+              <div className="flex items-center gap-2 text-[11px] text-tertiary mb-1">
                 <Clock size={11} />
                 <span>{formatDate(new Date(task.startDate))} — {formatDate(new Date(task.endDate))}</span>
               </div>
@@ -263,10 +263,10 @@ export default function ProjectTimeline({
                 <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${colors.bg} ${colors.text}`}>
                   {task.status.replace('_', ' ')}
                 </span>
-                <span className="text-[#555]">{task.progress}% complete</span>
+                <span className="text-tertiary">{task.progress}% complete</span>
               </div>
               {task.assignee && (
-                <div className="flex items-center gap-1.5 mt-1.5 text-[11px] text-[#555]">
+                <div className="flex items-center gap-1.5 mt-1.5 text-[11px] text-tertiary">
                   <User size={11} />
                   <span>{task.assignee}</span>
                 </div>
@@ -281,12 +281,12 @@ export default function ProjectTimeline({
         {Object.entries(STATUS_COLORS).map(([key, colors]) => (
           <div key={key} className="flex items-center gap-1.5">
             <div className={`w-2.5 h-2.5 rounded-full ${colors.fill}`} />
-            <span className="text-[10px] text-[#555] capitalize">{key.replace('_', ' ')}</span>
+            <span className="text-[10px] text-tertiary capitalize">{key.replace('_', ' ')}</span>
           </div>
         ))}
         <div className="flex items-center gap-1.5 ml-auto">
-          <div className="w-3 h-3 rotate-45 bg-[#D4A843] rounded-sm" />
-          <span className="text-[10px] text-[#555]">Milestone</span>
+          <div className="w-3 h-3 rotate-45 bg-gold rounded-sm" />
+          <span className="text-[10px] text-tertiary">Milestone</span>
         </div>
       </div>
     </div>

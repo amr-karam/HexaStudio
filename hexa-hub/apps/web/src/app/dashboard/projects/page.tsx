@@ -46,22 +46,22 @@ const TYPE_CONFIG: Record<
   { label: string; bg: string; text: string }
 > = {
   residential: { label: 'Residential', bg: 'bg-violet-500/10', text: 'text-violet-400' },
-  commercial: { label: 'Commercial', bg: 'bg-blue-500/10', text: 'text-blue-400' },
+  commercial: { label: 'Commercial', bg: 'bg-info/10', text: 'text-info' },
   interior: { label: 'Interior', bg: 'bg-amber-500/10', text: 'text-amber-400' },
-  landscape: { label: 'Landscape', bg: 'bg-emerald-500/10', text: 'text-emerald-400' },
+  landscape: { label: 'Landscape', bg: 'bg-success/10', text: 'text-success' },
 };
 
 const STATUS_CONFIG: Record<
   string,
   { label: string; bg: string; text: string; dot: string }
 > = {
-  inquiry: { label: 'Inquiry', bg: 'bg-neutral-500/10', text: 'text-neutral-400', dot: 'bg-neutral-400' },
-  consultation: { label: 'Consultation', bg: 'bg-blue-500/10', text: 'text-blue-400', dot: 'bg-blue-400' },
-  proposal: { label: 'Proposal', bg: 'bg-[#D4A843]/10', text: 'text-[#D4A843]', dot: 'bg-[#D4A843]' },
-  active: { label: 'Active', bg: 'bg-emerald-500/10', text: 'text-emerald-400', dot: 'bg-emerald-400' },
+  inquiry: { label: 'Inquiry', bg: 'bg-neutral-500/10', text: 'text-tertiary', dot: 'bg-neutral-400' },
+  consultation: { label: 'Consultation', bg: 'bg-info/10', text: 'text-info', dot: 'bg-blue-400' },
+  proposal: { label: 'Proposal', bg: 'bg-gold/10', text: 'text-gold', dot: 'bg-gold' },
+  active: { label: 'Active', bg: 'bg-success/10', text: 'text-success', dot: 'bg-emerald-400' },
   on_hold: { label: 'On Hold', bg: 'bg-amber-500/10', text: 'text-amber-400', dot: 'bg-amber-400' },
   completed: { label: 'Completed', bg: 'bg-violet-500/10', text: 'text-violet-400', dot: 'bg-violet-400' },
-  archived: { label: 'Archived', bg: 'bg-neutral-800', text: 'text-neutral-500', dot: 'bg-neutral-600' },
+  archived: { label: 'Archived', bg: 'bg-surface', text: 'text-tertiary', dot: 'bg-neutral-600' },
 };
 
 const TYPE_OPTIONS: { value: string; label: string }[] = [
@@ -206,28 +206,28 @@ export default function ProjectsPage() {
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="mb-10"
       >
-        <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-[#666] mb-4">
+        <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-tertiary mb-4">
           <FolderKanban size={13} />
           <span>Projects</span>
         </div>
         <div className="flex items-end justify-between">
           <div>
-            <h1 className="text-3xl font-serif font-light text-white mb-1">
+            <h1 className="text-3xl font-serif font-light text-foreground mb-1">
               Projects
             </h1>
-            <p className="text-[13px] text-[#666] font-light">
+            <p className="text-[13px] text-tertiary font-light">
               {data?.total ?? 0} total projects
             </p>
           </div>
           <div className="flex items-center gap-2">
             {/* View Toggle */}
-            <div className="flex items-center bg-[#141414] border border-[#1F1F1F] rounded-lg p-0.5">
+            <div className="flex items-center bg-surface border border-border rounded-lg p-0.5">
               <button
                 onClick={() => setViewMode('grid')}
                 className={`p-2 rounded-md transition-all duration-200 ${
                   viewMode === 'grid'
-                    ? 'bg-[#1F1F1F] text-[#D4A843]'
-                    : 'text-[#555] hover:text-[#888]'
+                    ? 'bg-border text-gold'
+                    : 'text-tertiary hover:text-tertiary'
                 }`}
               >
                 <LayoutGrid size={15} />
@@ -236,8 +236,8 @@ export default function ProjectsPage() {
                 onClick={() => setViewMode('list')}
                 className={`p-2 rounded-md transition-all duration-200 ${
                   viewMode === 'list'
-                    ? 'bg-[#1F1F1F] text-[#D4A843]'
-                    : 'text-[#555] hover:text-[#888]'
+                    ? 'bg-border text-gold'
+                    : 'text-tertiary hover:text-tertiary'
                 }`}
               >
                 <LayoutList size={15} />
@@ -257,7 +257,7 @@ export default function ProjectsPage() {
         <div className="relative flex-1 max-w-sm">
           <Search
             size={15}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#555]"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-tertiary"
           />
           <input
             type="text"
@@ -266,13 +266,13 @@ export default function ProjectsPage() {
             onChange={(e) =>
               setFilters((prev) => ({ ...prev, search: e.target.value }))
             }
-            className="w-full pl-10 pr-4 py-2.5 bg-[#141414] border border-[#1F1F1F] rounded-lg text-sm text-white placeholder:text-[#555] font-light focus:outline-none focus:border-[#D4A843]/40 focus:ring-1 focus:ring-[#D4A843]/20 transition-all duration-300"
+            className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-lg text-sm text-foreground placeholder:text-tertiary font-light focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20/20 transition-all duration-300"
           />
         </div>
         <div className="relative">
           <Filter
             size={13}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#555] pointer-events-none"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-tertiary pointer-events-none"
           />
           <select
             value={filters.type}
@@ -283,7 +283,7 @@ export default function ProjectsPage() {
               }));
               setPage(1);
             }}
-            className="appearance-none pl-9 pr-8 py-2.5 bg-[#141414] border border-[#1F1F1F] rounded-lg text-sm text-neutral-300 font-light focus:outline-none focus:border-[#D4A843]/40 transition-all duration-300 cursor-pointer"
+            className="appearance-none pl-9 pr-8 py-2.5 bg-surface border border-border rounded-lg text-sm text-secondary font-light focus:outline-none focus:border-gold/40 transition-all duration-300 cursor-pointer"
           >
             {TYPE_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -291,12 +291,12 @@ export default function ProjectsPage() {
               </option>
             ))}
           </select>
-          <ChevronDownIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-[#555] pointer-events-none" />
+          <ChevronDownIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-tertiary pointer-events-none" />
         </div>
         <div className="relative">
           <Briefcase
             size={13}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#555] pointer-events-none"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-tertiary pointer-events-none"
           />
           <select
             value={filters.status}
@@ -307,7 +307,7 @@ export default function ProjectsPage() {
               }));
               setPage(1);
             }}
-            className="appearance-none pl-9 pr-8 py-2.5 bg-[#141414] border border-[#1F1F1F] rounded-lg text-sm text-neutral-300 font-light focus:outline-none focus:border-[#D4A843]/40 transition-all duration-300 cursor-pointer"
+            className="appearance-none pl-9 pr-8 py-2.5 bg-surface border border-border rounded-lg text-sm text-secondary font-light focus:outline-none focus:border-gold/40 transition-all duration-300 cursor-pointer"
           >
             {STATUS_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -315,29 +315,29 @@ export default function ProjectsPage() {
               </option>
             ))}
           </select>
-          <ChevronDownIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-[#555] pointer-events-none" />
+          <ChevronDownIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-tertiary pointer-events-none" />
         </div>
       </motion.div>
 
       {/* Content */}
       {isLoading ? (
         <div className="p-16 flex flex-col items-center justify-center gap-3">
-          <div className="w-6 h-6 border-2 border-[#D4A843]/30 border-t-[#D4A843] rounded-full animate-spin" />
-          <span className="text-[12px] text-[#555] font-light tracking-wide">
+          <div className="w-6 h-6 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
+          <span className="text-[12px] text-tertiary font-light tracking-wide">
             Loading projects...
           </span>
         </div>
       ) : isError ? (
         <div className="p-16 text-center">
-          <p className="text-red-400 text-sm">Failed to load projects.</p>
-          <p className="text-[#555] text-xs mt-1">
+          <p className="text-error text-sm">Failed to load projects.</p>
+          <p className="text-tertiary text-xs mt-1">
             Please check your connection and try again.
           </p>
         </div>
       ) : projects.length === 0 ? (
         <div className="p-16 text-center">
-          <FolderKanban size={32} className="text-[#333] mx-auto mb-3" />
-          <p className="text-[#555] text-sm">No projects found.</p>
+          <FolderKanban size={32} className="text-tertiary mx-auto mb-3" />
+          <p className="text-tertiary text-sm">No projects found.</p>
         </div>
       ) : viewMode === 'grid' ? (
         /* ─── Grid View ─────────────────────────────────────────────── */
@@ -364,7 +364,7 @@ export default function ProjectsPage() {
                 onClick={() =>
                   router.push(`/dashboard/projects/${project.id}`)
                 }
-                className="bg-[#141414] border border-[#1F1F1F] rounded-xl p-5 cursor-pointer group hover:border-[#D4A843]/20 transition-all duration-300"
+                className="bg-surface border border-border rounded-xl p-5 cursor-pointer group hover:border-gold/20 transition-all duration-300"
               >
                 {/* Badges */}
                 <div className="flex items-center gap-2 mb-3 flex-wrap">
@@ -388,26 +388,26 @@ export default function ProjectsPage() {
                 </div>
 
                 {/* Name */}
-                <h3 className="text-[15px] text-white font-light mb-1 group-hover:text-[#D4A843] transition-colors duration-200 truncate">
+                <h3 className="text-[15px] text-foreground font-light mb-1 group-hover:text-gold transition-colors duration-200 truncate">
                   {project.name}
                 </h3>
 
                 {/* Client */}
-                <p className="text-[12px] text-[#666] font-light mb-4 truncate">
+                <p className="text-[12px] text-tertiary font-light mb-4 truncate">
                   {project.partner_id?.[1] ?? 'No client'}
                 </p>
 
                 {/* Progress Bar */}
                 <div className="mb-3">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[10px] text-[#555] font-light uppercase tracking-wider">
+                    <span className="text-[10px] text-tertiary font-light uppercase tracking-wider">
                       Progress
                     </span>
-                    <span className="text-[11px] text-[#888] tabular-nums">
+                    <span className="text-[11px] text-tertiary tabular-nums">
                       {progress}%
                     </span>
                   </div>
-                  <div className="w-full h-1 bg-[#1F1F1F] rounded-full overflow-hidden">
+                  <div className="w-full h-1 bg-border rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${progress}%` }}
@@ -418,19 +418,19 @@ export default function ProjectsPage() {
                       }}
                       className={`h-full rounded-full ${
                         progress >= 100
-                          ? 'bg-emerald-500'
+                          ? 'bg-success'
                           : progress > 50
-                            ? 'bg-[#D4A843]'
-                            : 'bg-blue-500'
+                            ? 'bg-gold'
+                            : 'bg-info'
                       }`}
                     />
                   </div>
                 </div>
 
                 {/* Footer Meta */}
-                <div className="flex items-center justify-between pt-2 border-t border-[#1F1F1F]/50">
+                <div className="flex items-center justify-between pt-2 border-t border-border">
                   {project.date_start ? (
-                    <span className="flex items-center gap-1 text-[10px] text-[#555]">
+                    <span className="flex items-center gap-1 text-[10px] text-tertiary">
                       <Calendar size={10} />
                       {formatDate(project.date_start)}
                     </span>
@@ -439,7 +439,7 @@ export default function ProjectsPage() {
                   )}
                   <ChevronRight
                     size={14}
-                    className="text-[#333] group-hover:text-[#D4A843] transition-colors duration-200"
+                    className="text-tertiary group-hover:text-gold transition-colors duration-200"
                   />
                 </div>
               </motion.div>
@@ -452,28 +452,28 @@ export default function ProjectsPage() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="bg-[#141414] border border-[#1F1F1F] rounded-xl overflow-hidden"
+          className="bg-surface border border-border rounded-xl overflow-hidden"
         >
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#1F1F1F]">
-                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-[#555]">
+                <tr className="border-b border-border">
+                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     Project
                   </th>
-                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-[#555]">
+                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     Type
                   </th>
-                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-[#555]">
+                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     Status
                   </th>
-                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-[#555]">
+                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     Client
                   </th>
-                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-[#555]">
+                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     Progress
                   </th>
-                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-[#555]">
+                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     Start Date
                   </th>
                 </tr>
@@ -499,10 +499,10 @@ export default function ProjectsPage() {
                       onClick={() =>
                         router.push(`/dashboard/projects/${project.id}`)
                       }
-                      className="border-b border-[#1F1F1F]/50 last:border-0 hover:bg-white/[0.02] cursor-pointer transition-colors duration-200 group"
+                      className="border-b border-border last:border-0 hover:bg-white/[0.02] cursor-pointer transition-colors duration-200 group"
                     >
                       <td className="px-6 py-4">
-                        <span className="text-sm text-white font-light group-hover:text-[#D4A843] transition-colors duration-200">
+                        <span className="text-sm text-foreground font-light group-hover:text-gold transition-colors duration-200">
                           {project.name}
                         </span>
                       </td>
@@ -514,7 +514,7 @@ export default function ProjectsPage() {
                             {typeCfg.label}
                           </span>
                         ) : (
-                          <span className="text-[11px] text-[#444]">—</span>
+                          <span className="text-[11px] text-tertiary">—</span>
                         )}
                       </td>
                       <td className="px-6 py-4">
@@ -528,36 +528,36 @@ export default function ProjectsPage() {
                             {statusCfg.label}
                           </span>
                         ) : (
-                          <span className="text-[11px] text-[#444]">—</span>
+                          <span className="text-[11px] text-tertiary">—</span>
                         )}
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-sm text-[#999] font-light">
+                        <span className="text-sm text-tertiary font-light">
                           {project.partner_id?.[1] ?? '—'}
                         </span>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2.5">
-                          <div className="flex-1 max-w-[80px] h-1 bg-[#1F1F1F] rounded-full overflow-hidden">
+                          <div className="flex-1 max-w-[80px] h-1 bg-border rounded-full overflow-hidden">
                             <div
                               className={`h-full rounded-full ${
                                 progress >= 100
-                                  ? 'bg-emerald-500'
+                                  ? 'bg-success'
                                   : progress > 50
-                                    ? 'bg-[#D4A843]'
-                                    : 'bg-blue-500'
+                                    ? 'bg-gold'
+                                    : 'bg-info'
                               }`}
                               style={{ width: `${progress}%` }}
                             />
                           </div>
-                          <span className="text-[11px] text-[#666] tabular-nums">
+                          <span className="text-[11px] text-tertiary tabular-nums">
                             {progress}%
                           </span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="flex items-center gap-1.5 text-[12px] text-[#555] font-light">
-                          <Calendar size={11} className="text-[#444]" />
+                        <span className="flex items-center gap-1.5 text-[12px] text-tertiary font-light">
+                          <Calendar size={11} className="text-tertiary" />
                           {project.date_start
                             ? formatDate(project.date_start)
                             : '—'}
@@ -580,14 +580,14 @@ export default function ProjectsPage() {
           transition={{ delay: 0.4 }}
           className="flex items-center justify-between mt-6"
         >
-          <span className="text-[12px] text-[#555] font-light">
+          <span className="text-[12px] text-tertiary font-light">
             Page {page} of {totalPages} &middot; {data?.total ?? 0} projects
           </span>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-[#888] bg-[#1A1A1A] border border-[#1F1F1F] rounded-md hover:text-white hover:border-[#333] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+              className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-tertiary bg-surface border border-border rounded-md hover:text-foreground hover:border-border disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
             >
               <ChevronRight size={13} className="rotate-180" />
               Previous
@@ -595,7 +595,7 @@ export default function ProjectsPage() {
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page >= totalPages}
-              className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-[#888] bg-[#1A1A1A] border border-[#1F1F1F] rounded-md hover:text-white hover:border-[#333] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+              className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-tertiary bg-surface border border-border rounded-md hover:text-foreground hover:border-border disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
             >
               Next
               <ChevronRight size={13} />

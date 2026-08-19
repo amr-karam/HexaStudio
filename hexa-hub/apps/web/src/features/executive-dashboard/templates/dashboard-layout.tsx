@@ -90,10 +90,10 @@ export const DashboardLayout = ({ children, title }: DashboardLayoutProps) => {
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-500/20 rounded-lg">
-                <LayoutDashboard className="w-6 h-6 text-blue-400" />
+              <div className="p-2 bg-info/20 rounded-lg">
+                <LayoutDashboard className="w-6 h-6 text-info" />
               </div>
-              <h1 className="text-xl font-bold text-white">{title}</h1>
+              <h1 className="text-xl font-bold text-foreground">{title}</h1>
             </div>
             <div className="flex items-center gap-4">
               {/* Quick actions */}

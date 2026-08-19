@@ -32,7 +32,7 @@ export default function CrmPage() {
         <h1 className="text-4xl font-serif font-light mb-2">
           CRM <span className="text-gold">Pipeline</span>
         </h1>
-        <p className="text-neutral-500 font-light">
+        <p className="text-tertiary font-light">
           Manage leads, track opportunities, and monitor conversions.
         </p>
         <motion.div
@@ -46,20 +46,20 @@ export default function CrmPage() {
       {/* Stats Row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <div className="p-5 bg-surface border border-border rounded-xl">
-          <p className="text-[10px] uppercase tracking-widest text-neutral-500 mb-1">Total Leads</p>
-          <p className="text-2xl font-serif font-light text-white">
+          <p className="text-[10px] uppercase tracking-widest text-tertiary mb-1">Total Leads</p>
+          <p className="text-2xl font-serif font-light text-foreground">
             {statsLoading ? '...' : stats?.total_leads ?? 0}
           </p>
         </div>
         <div className="p-5 bg-surface border border-border rounded-xl">
-          <p className="text-[10px] uppercase tracking-widest text-neutral-500 mb-1">Conversion Rate</p>
+          <p className="text-[10px] uppercase tracking-widest text-tertiary mb-1">Conversion Rate</p>
           <p className="text-2xl font-serif font-light text-gold">
             {statsLoading ? '...' : `${stats?.conversion_rate ?? 0}%`}
           </p>
         </div>
         <div className="p-5 bg-surface border border-border rounded-xl">
-          <p className="text-[10px] uppercase tracking-widest text-neutral-500 mb-1">Avg Deal Size</p>
-          <p className="text-2xl font-serif font-light text-emerald-400">
+          <p className="text-[10px] uppercase tracking-widest text-tertiary mb-1">Avg Deal Size</p>
+          <p className="text-2xl font-serif font-light text-success">
             {statsLoading ? '...' : `€${(stats?.average_deal_size ?? 0).toLocaleString()}`}
           </p>
         </div>
@@ -67,30 +67,30 @@ export default function CrmPage() {
 
       {/* Search */}
       <div className="relative mb-6">
-        <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-600" />
+        <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-tertiary" />
         <input
           type="text"
           placeholder="Search leads..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-11 pr-4 py-3 bg-surface border border-border rounded-xl text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-gold/30 focus:ring-1 focus:ring-gold/10 transition-all"
+          className="w-full pl-11 pr-4 py-3 bg-surface border border-border rounded-xl text-sm text-foreground placeholder-neutral-600 focus:outline-none focus:border-gold/30 focus:ring-1 focus:ring-gold/10 transition-all"
         />
       </div>
 
       {/* Leads Table */}
       <div className="bg-surface border border-border rounded-2xl overflow-hidden">
         <div className="px-6 py-4 border-b border-border/50 flex items-center justify-between">
-          <p className="text-sm text-neutral-400 font-light">
+          <p className="text-sm text-tertiary font-light">
             {total > 0 ? `${total} lead${total === 1 ? '' : 's'}` : 'Leads'}
           </p>
-          <Filter size={14} className="text-neutral-600" />
+          <Filter size={14} className="text-tertiary" />
         </div>
 
         {isLoading ? (
           <div className="p-12 text-center">
             <div className="animate-pulse space-y-4">
               {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="h-12 bg-neutral-800 rounded-lg" />
+                <div key={i} className="h-12 bg-surface rounded-lg" />
               ))}
             </div>
           </div>
@@ -111,12 +111,12 @@ export default function CrmPage() {
                   <p className="text-sm text-white/80 font-light truncate">
                     {lead.contact_name || lead.name || 'Unnamed Lead'}
                   </p>
-                  <p className="text-xs text-neutral-600 truncate">
+                  <p className="text-xs text-tertiary truncate">
                     {lead.email_from || 'No email'}
                   </p>
                 </div>
                 <div className="text-right shrink-0">
-                  <p className="text-sm text-emerald-400 font-light">
+                  <p className="text-sm text-success font-light">
                     €{(lead.planned_revenue ?? 0).toLocaleString()}
                   </p>
                 </div>
@@ -127,7 +127,7 @@ export default function CrmPage() {
         ) : (
           <div className="p-12 text-center">
             <AlertCircle size={32} className="mx-auto text-neutral-700 mb-3" />
-            <p className="text-neutral-600 text-sm font-light">No leads found.</p>
+            <p className="text-tertiary text-sm font-light">No leads found.</p>
           </div>
         )}
       </div>

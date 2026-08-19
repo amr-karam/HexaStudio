@@ -36,10 +36,10 @@ const CATEGORY_TABS: { value: Category; label: string; icon: string }[] = [
 
 const CATEGORY_COLORS: Record<string, string> = {
   guides: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
-  faqs: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+  faqs: 'bg-info/10 text-info border-blue-500/20',
   policies: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-  templates: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-  reference: 'bg-neutral-500/10 text-neutral-400 border-neutral-500/20',
+  templates: 'bg-success/10 text-success border-emerald-500/20',
+  reference: 'bg-neutral-500/10 text-tertiary border-neutral-500/20',
 };
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -144,16 +144,16 @@ export default function KnowledgePage() {
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="mb-10"
       >
-        <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-neutral-500 mb-4">
+        <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-tertiary mb-4">
           <BookOpen size={13} />
           <span>Knowledge Base</span>
         </div>
         <div className="flex items-end justify-between">
           <div>
-            <h1 className="text-3xl font-serif font-light text-white mb-1">
+            <h1 className="text-3xl font-serif font-light text-foreground mb-1">
               Knowledge Base
             </h1>
-            <p className="text-[13px] text-neutral-500 font-light">
+            <p className="text-[13px] text-tertiary font-light">
               {resolvedTotal} articles
             </p>
           </div>
@@ -171,14 +171,14 @@ export default function KnowledgePage() {
         <div className="relative max-w-sm">
           <Search
             size={15}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-600"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-tertiary"
           />
           <input
             type="text"
             placeholder="Search articles..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-[#141414] border border-[#1F1F1F] rounded-lg text-sm text-white placeholder:text-neutral-600 font-light focus:outline-none focus:border-[#D4A843]/40 focus:ring-1 focus:ring-[#D4A843]/20 transition-all duration-300"
+            className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-lg text-sm text-foreground placeholder:text-tertiary font-light focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20/20 transition-all duration-300"
           />
         </div>
 
@@ -195,8 +195,8 @@ export default function KnowledgePage() {
                 }}
                 className={`px-3.5 py-1.5 rounded-lg text-[12px] font-light transition-all duration-200 ${
                   categoryTab === tab.value
-                    ? 'bg-[#D4A843]/10 text-[#D4A843] border border-[#D4A843]/30'
-                    : 'text-neutral-500 border border-transparent hover:text-neutral-300 hover:border-[#1F1F1F]'
+                    ? 'bg-gold/10 text-gold border border-gold/30'
+                    : 'text-tertiary border border-transparent hover:text-secondary hover:border-border'
                 }`}
               >
                 {tab.label}
@@ -217,32 +217,32 @@ export default function KnowledgePage() {
           {Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
-              className="bg-[#141414] border border-[#1F1F1F] rounded-xl p-5 animate-pulse"
+              className="bg-surface border border-border rounded-xl p-5 animate-pulse"
             >
-              <div className="h-5 bg-[#1F1F1F] rounded w-20 mb-3" />
-              <div className="h-4 bg-[#1F1F1F] rounded w-full mb-2" />
-              <div className="h-4 bg-[#1F1F1F] rounded w-3/4 mb-4" />
-              <div className="h-3 bg-[#1F1F1F] rounded w-24" />
+              <div className="h-5 bg-border rounded w-20 mb-3" />
+              <div className="h-4 bg-border rounded w-full mb-2" />
+              <div className="h-4 bg-border rounded w-3/4 mb-4" />
+              <div className="h-3 bg-border rounded w-24" />
             </div>
           ))}
         </div>
       ) : isError ? (
         <div className="p-16 text-center">
-          <AlertCircle size={32} className="text-red-400/60 mx-auto mb-3" />
-          <p className="text-red-400 text-sm font-light">
+          <AlertCircle size={32} className="text-error/60 mx-auto mb-3" />
+          <p className="text-error text-sm font-light">
             Failed to load articles.
           </p>
-          <p className="text-neutral-600 text-xs mt-1 font-light">
+          <p className="text-tertiary text-xs mt-1 font-light">
             Please check your connection and try again.
           </p>
         </div>
       ) : resolvedArticles.length === 0 ? (
         <div className="p-16 text-center">
           <BookOpen size={32} className="text-neutral-700 mx-auto mb-3" />
-          <p className="text-neutral-500 text-sm font-light">
+          <p className="text-tertiary text-sm font-light">
             No articles found.
           </p>
-          <p className="text-neutral-600 text-xs mt-1 font-light">
+          <p className="text-tertiary text-xs mt-1 font-light">
             {debouncedSearch || categoryTab !== 'all'
               ? 'Try adjusting your filters.'
               : 'Articles will appear once the knowledge base is populated.'}
@@ -269,7 +269,7 @@ export default function KnowledgePage() {
                 onClick={() =>
                   router.push(`/dashboard/knowledge/${article.id}`)
                 }
-                className="bg-[#141414] border border-[#1F1F1F] rounded-xl p-5 cursor-pointer group hover:border-[#D4A843]/20 transition-all duration-300 flex flex-col"
+                className="bg-surface border border-border rounded-xl p-5 cursor-pointer group hover:border-gold/20 transition-all duration-300 flex flex-col"
               >
                 {/* Category Badge */}
                 <div className="mb-3">
@@ -281,20 +281,20 @@ export default function KnowledgePage() {
                 </div>
 
                 {/* Title */}
-                <h3 className="text-[15px] text-white font-light mb-2 group-hover:text-[#D4A843] transition-colors duration-200 line-clamp-1">
+                <h3 className="text-[15px] text-foreground font-light mb-2 group-hover:text-gold transition-colors duration-200 line-clamp-1">
                   {article.title}
                 </h3>
 
                 {/* Excerpt */}
-                <p className="text-[12px] text-neutral-500 font-light leading-relaxed mb-4 line-clamp-2 flex-1">
+                <p className="text-[12px] text-tertiary font-light leading-relaxed mb-4 line-clamp-2 flex-1">
                   {article.excerpt ||
                     'No excerpt available for this article.'}
                 </p>
 
                 {/* Footer — Last Updated */}
-                <div className="flex items-center gap-1.5 pt-3 border-t border-[#1F1F1F]/50">
-                  <Clock size={11} className="text-neutral-600" />
-                  <span className="text-[11px] text-neutral-600 font-light">
+                <div className="flex items-center gap-1.5 pt-3 border-t border-border">
+                  <Clock size={11} className="text-tertiary" />
+                  <span className="text-[11px] text-tertiary font-light">
                     Updated {article.updated_at
                       ? formatRelativeDate(article.updated_at)
                       : 'recently'}
@@ -314,14 +314,14 @@ export default function KnowledgePage() {
           transition={{ delay: 0.4 }}
           className="flex items-center justify-between mt-6"
         >
-          <span className="text-[12px] text-neutral-500 font-light">
+          <span className="text-[12px] text-tertiary font-light">
             Page {page} of {resolvedTotalPages} &middot; {resolvedTotal} articles
           </span>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-neutral-400 bg-[#1A1A1A] border border-[#1F1F1F] rounded-md hover:text-white hover:border-[#333] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 font-light"
+              className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-tertiary bg-surface border border-border rounded-md hover:text-foreground hover:border-border disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 font-light"
             >
               <svg
                 width="13"
@@ -343,7 +343,7 @@ export default function KnowledgePage() {
             <button
               onClick={() => setPage((p) => Math.min(resolvedTotalPages, p + 1))}
               disabled={page >= resolvedTotalPages}
-              className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-neutral-400 bg-[#1A1A1A] border border-[#1F1F1F] rounded-md hover:text-white hover:border-[#333] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 font-light"
+              className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-tertiary bg-surface border border-border rounded-md hover:text-foreground hover:border-border disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 font-light"
             >
               Next
               <svg

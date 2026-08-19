@@ -11,9 +11,9 @@ import { FolderKanban, FileCheck, MessageSquare, AlertCircle, type LucideIcon } 
 function MetricCardSkeleton() {
   return (
     <div className="p-6 bg-surface border border-border rounded-2xl animate-pulse">
-      <div className="h-3 bg-neutral-800 rounded w-24 mb-4" />
-      <div className="h-10 bg-neutral-800 rounded w-20 mb-3" />
-      <div className="h-2 bg-neutral-800 rounded w-16" />
+      <div className="h-3 bg-surface rounded w-24 mb-4" />
+      <div className="h-10 bg-surface rounded w-20 mb-3" />
+      <div className="h-2 bg-surface rounded w-16" />
     </div>
   );
 }
@@ -90,7 +90,7 @@ function MetricCard({
       <div
         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
         style={{
-          background: `radial-gradient(ellipse at 50% 0%, ${glowColor}08 0%, transparent 70%)`,
+          background: `radial-gradient(ellipse at 50% 0%, color-mix(in srgb, ${glowColor} 8%, transparent) 0%, transparent 70%)`,
         }}
       />
 
@@ -104,7 +104,7 @@ function MetricCard({
           <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${color}`}>
             <Icon size={16} />
           </div>
-          <span className="text-[11px] uppercase tracking-[0.15em] text-neutral-500 font-medium">
+          <span className="text-[11px] uppercase tracking-[0.15em] text-tertiary font-medium">
             {label}
           </span>
         </div>
@@ -116,7 +116,7 @@ function MetricCard({
         </div>
 
         {subtitle && (
-          <p className="mt-2 text-xs text-neutral-600 font-light">{subtitle}</p>
+          <p className="mt-2 text-xs text-tertiary font-light">{subtitle}</p>
         )}
       </div>
     </motion.div>
@@ -139,13 +139,13 @@ function QuickLinks() {
       transition={{ delay: 0.5, duration: 0.6 }}
       className="p-6 bg-surface border border-border rounded-2xl"
     >
-      <h3 className="text-sm font-serif font-light text-white mb-4">Quick Access</h3>
+      <h3 className="text-sm font-serif font-light text-foreground mb-4">Quick Access</h3>
       <div className="space-y-2">
         {quickLinks.map((link) => (
           <a
             key={link.href}
             href={link.href}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-neutral-500 hover:text-gold hover:bg-gold/5 transition-all duration-200"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-tertiary hover:text-gold hover:bg-gold/5 transition-all duration-200"
           >
             <link.icon size={16} className="shrink-0" />
             <span className="font-light">{link.label}</span>
@@ -200,7 +200,7 @@ export default function DashboardPage() {
           Welcome back,{' '}
           <span className="text-gold">{user?.fullName || 'User'}</span>
         </h1>
-        <p className="text-neutral-500 font-light">
+        <p className="text-tertiary font-light">
           Here is what&apos;s happening across your workspace today.
         </p>
 
@@ -218,9 +218,9 @@ export default function DashboardPage() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-3 p-4 mb-8 bg-red-500/5 border border-red-500/20 rounded-xl"
+          className="flex items-center gap-3 p-4 mb-8 bg-error/5 border border-red-500/20 rounded-xl"
         >
-          <AlertCircle size={16} className="text-red-400 shrink-0" />
+          <AlertCircle size={16} className="text-error shrink-0" />
           <p className="text-sm text-red-300 font-light">{errorMessage}</p>
         </motion.div>
       )}
@@ -231,8 +231,8 @@ export default function DashboardPage() {
           label="Active Projects"
           value={projectStats?.active_projects ?? 0}
           icon={FolderKanban}
-          color="text-blue-400 bg-blue-500/10"
-          glowColor="#60a5fa"
+          color="text-info bg-info/10"
+          glowColor="var(--color-metric-blue)"
           index={0}
           isLoading={isLoading}
           subtitle={projectsLoading ? undefined : `${projectStats?.total_projects ?? 0} total projects`}
@@ -241,8 +241,8 @@ export default function DashboardPage() {
           label="Pending Approvals"
           value={(salesStats?.pending_quotations ?? 0) + (salesStats?.overdue_invoices ?? 0)}
           icon={FileCheck}
-          color="text-amber-400 bg-amber-500/10"
-          glowColor="#fbbf24"
+          color="text-warning bg-warning/10"
+          glowColor="var(--color-metric-amber)"
           index={1}
           isLoading={isLoading}
           subtitle={
@@ -255,8 +255,8 @@ export default function DashboardPage() {
           label="Unread Messages"
           value={unreadCount}
           icon={MessageSquare}
-          color="text-violet-400 bg-violet-500/10"
-          glowColor="#a78bfa"
+          color="text-info bg-info/10"
+          glowColor="var(--color-metric-violet)"
           index={2}
           isLoading={isLoading}
         />
@@ -274,16 +274,16 @@ export default function DashboardPage() {
           transition={{ delay: 0.6, duration: 0.6 }}
           className="lg:col-span-2 p-6 bg-surface border border-border rounded-2xl"
         >
-          <h3 className="text-sm font-serif font-light text-white mb-4">Revenue Snapshot</h3>
+          <h3 className="text-sm font-serif font-light text-foreground mb-4">Revenue Snapshot</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-[10px] uppercase tracking-widest text-neutral-600 mb-1">Total Revenue</p>
-              <p className="text-2xl font-serif font-light text-emerald-400">
+              <p className="text-[10px] uppercase tracking-widest text-tertiary mb-1">Total Revenue</p>
+              <p className="text-2xl font-serif font-light text-success">
                 {salesLoading ? '...' : `€${(salesStats?.total_revenue ?? 0).toLocaleString()}`}
               </p>
             </div>
             <div>
-              <p className="text-[10px] uppercase tracking-widest text-neutral-600 mb-1">Pending Quotations</p>
+              <p className="text-[10px] uppercase tracking-widest text-tertiary mb-1">Pending Quotations</p>
               <p className="text-2xl font-serif font-light text-gold">
                 {salesLoading ? '...' : `€${(salesStats?.total_quotation_value ?? 0).toLocaleString()}`}
               </p>

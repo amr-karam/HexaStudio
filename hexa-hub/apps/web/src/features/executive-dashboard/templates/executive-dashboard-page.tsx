@@ -44,7 +44,7 @@ const ExecutiveDashboardPage = () => {
           transition={{ delay: 0.1, duration: 0.5 }}
           className="space-y-2"
         >
-          <h1 className="text-3xl font-bold text-white">Executive Overview</h1>
+          <h1 className="text-3xl font-bold text-foreground">Executive Overview</h1>
           <p className="text-white/60">Real-time business metrics and analytics</p>
         </motion.div>
 
@@ -79,7 +79,7 @@ const ExecutiveDashboardPage = () => {
             transition={{ delay: 0.3, duration: 0.5 }}
             className="bg-gray-900/50 backdrop-blur-md rounded-2xl p-6 border border-white/10"
           >
-            <h3 className="text-xl font-semibold text-white mb-4">Project Analytics</h3>
+            <h3 className="text-xl font-semibold text-foreground mb-4">Project Analytics</h3>
             {/* Project analytics content would go here */}
             <div className="h-64 flex items-center justify-center">
               <p className="text-white/60">Project analytics visualization</p>
@@ -94,7 +94,7 @@ const ExecutiveDashboardPage = () => {
             transition={{ delay: 0.4, duration: 0.5 }}
             className="bg-gray-900/50 backdrop-blur-md rounded-2xl p-6 border border-white/10"
           >
-            <h3 className="text-xl font-semibold text-white mb-4">AI Copilot Insights</h3>
+            <h3 className="text-xl font-semibold text-foreground mb-4">AI Copilot Insights</h3>
             {/* AI copilot insights content would go here */}
             <div className="h-64 flex items-center justify-center">
               <p className="text-white/60">AI copilot usage analytics</p>

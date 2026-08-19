@@ -79,9 +79,9 @@ function useAnimatedCounter(target: number, duration = 1800, shouldAnimate = tru
 function MetricCardSkeleton() {
   return (
     <div className="p-6 bg-surface border border-border rounded-2xl animate-pulse">
-      <div className="h-3 bg-neutral-800 rounded w-24 mb-4" />
-      <div className="h-10 bg-neutral-800 rounded w-32 mb-3" />
-      <div className="h-2 bg-neutral-800 rounded w-20" />
+      <div className="h-3 bg-surface rounded w-24 mb-4" />
+      <div className="h-10 bg-surface rounded w-32 mb-3" />
+      <div className="h-2 bg-surface rounded w-20" />
     </div>
   );
 }
@@ -89,13 +89,13 @@ function MetricCardSkeleton() {
 function PipelineSkeleton() {
   return (
     <div className="p-8 bg-surface border border-border rounded-3xl animate-pulse">
-      <div className="h-6 bg-neutral-800 rounded w-48 mb-8" />
+      <div className="h-6 bg-surface rounded w-48 mb-8" />
       <div className="grid grid-cols-4 gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
           <div key={i} className="space-y-3">
-            <div className="h-3 bg-neutral-800 rounded w-20" />
-            <div className="h-8 bg-neutral-800 rounded w-12" />
-            <div className="h-2 bg-neutral-800 rounded w-full" />
+            <div className="h-3 bg-surface rounded w-20" />
+            <div className="h-8 bg-surface rounded w-12" />
+            <div className="h-2 bg-surface rounded w-full" />
           </div>
         ))}
       </div>
@@ -148,7 +148,7 @@ function MetricCard({
       <div
         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
         style={{
-          background: `radial-gradient(ellipse at 50% 0%, ${glowColor}08 0%, transparent 70%)`,
+          background: `radial-gradient(ellipse at 50% 0%, color-mix(in srgb, ${glowColor} 8%, transparent) 0%, transparent 70%)`,
         }}
       />
 
@@ -162,7 +162,7 @@ function MetricCard({
           <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${color}`}>
             <Icon size={16} />
           </div>
-          <span className="text-[11px] uppercase tracking-[0.15em] text-neutral-500 font-medium">
+          <span className="text-[11px] uppercase tracking-[0.15em] text-tertiary font-medium">
             {label}
           </span>
         </div>
@@ -179,11 +179,11 @@ function MetricCard({
           <div className="mt-3 flex items-center gap-1.5">
             <TrendingUp
               size={12}
-              className={trend >= 0 ? 'text-emerald-400' : 'text-red-400 rotate-180'}
+              className={trend >= 0 ? 'text-success' : 'text-error rotate-180'}
             />
             <span
               className={`text-[10px] font-medium ${
-                trend >= 0 ? 'text-emerald-400' : 'text-red-400'
+                trend >= 0 ? 'text-success' : 'text-error'
               }`}
             >
               {trend >= 0 ? '+' : ''}
@@ -221,10 +221,10 @@ function PipelineOverview({ data, isLoading }: { data: PipelineViewData | null; 
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
           <BarChart3 className="text-gold" size={22} />
-          <h2 className="text-lg font-serif font-light text-white">Pipeline Overview</h2>
+          <h2 className="text-lg font-serif font-light text-foreground">Pipeline Overview</h2>
         </div>
         <div className="text-right">
-          <p className="text-[10px] uppercase tracking-widest text-neutral-600">Conversion Rate</p>
+          <p className="text-[10px] uppercase tracking-widest text-tertiary">Conversion Rate</p>
           <p className="text-gold text-xl font-serif">{data.conversion_rate}%</p>
         </div>
       </div>
@@ -236,9 +236,9 @@ function PipelineOverview({ data, isLoading }: { data: PipelineViewData | null; 
           transition={{ delay: 0.7 }}
           className="group"
         >
-          <p className="text-[10px] uppercase tracking-widest text-neutral-500 mb-2">Total Leads</p>
-          <p className="text-2xl font-serif font-light text-white">{data.total_leads}</p>
-          <div className="mt-2 h-1 bg-neutral-800 rounded-full overflow-hidden">
+          <p className="text-[10px] uppercase tracking-widest text-tertiary mb-2">Total Leads</p>
+          <p className="text-2xl font-serif font-light text-foreground">{data.total_leads}</p>
+          <div className="mt-2 h-1 bg-surface rounded-full overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: '100%' }}
@@ -262,8 +262,8 @@ function PipelineOverview({ data, isLoading }: { data: PipelineViewData | null; 
             'text-violet-400',
             'text-amber-400',
             'text-orange-400',
-            'text-emerald-400',
-            'text-red-400',
+            'text-success',
+            'text-error',
           ];
 
           return (
@@ -274,13 +274,13 @@ function PipelineOverview({ data, isLoading }: { data: PipelineViewData | null; 
               transition={{ delay: 0.7 + (i + 1) * 0.05 }}
               className="group"
             >
-              <p className="text-[10px] uppercase tracking-widest text-neutral-500 mb-2 truncate">
+              <p className="text-[10px] uppercase tracking-widest text-tertiary mb-2 truncate">
                 {source.replace(/_/g, ' ')}
               </p>
               <p className={`text-2xl font-serif font-light ${stageAccents[i % stageAccents.length]}`}>
                 {count}
               </p>
-              <div className="mt-2 h-1 bg-neutral-800 rounded-full overflow-hidden">
+              <div className="mt-2 h-1 bg-surface rounded-full overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${(count / maxCount) * 100}%` }}
@@ -377,7 +377,7 @@ function ActivityFeed() {
     >
       <div className="flex items-center gap-3 mb-6">
         <Activity className="text-gold" size={22} />
-        <h2 className="text-lg font-serif font-light text-white">Recent Activity</h2>
+        <h2 className="text-lg font-serif font-light text-foreground">Recent Activity</h2>
       </div>
 
       <div className="space-y-1">
@@ -392,12 +392,12 @@ function ActivityFeed() {
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
                 item.status === 'success'
-                  ? 'bg-emerald-500/10 text-emerald-400'
+                  ? 'bg-success/10 text-success'
                   : item.status === 'warning'
                   ? 'bg-amber-500/10 text-amber-400'
                   : item.status === 'error'
-                  ? 'bg-red-500/10 text-red-400'
-                  : 'bg-blue-500/10 text-blue-400'
+                  ? 'bg-error/10 text-error'
+                  : 'bg-info/10 text-info'
               }`}
             >
               {item.status === 'success' ? (
@@ -410,9 +410,9 @@ function ActivityFeed() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm text-white/90 font-light truncate">{item.title}</p>
-              <p className="text-xs text-neutral-500 mt-0.5">{item.description}</p>
+              <p className="text-xs text-tertiary mt-0.5">{item.description}</p>
             </div>
-            <span className="text-[10px] text-neutral-600 whitespace-nowrap mt-1">
+            <span className="text-[10px] text-tertiary whitespace-nowrap mt-1">
               {formatTimestamp(item.timestamp)}
             </span>
           </motion.div>
@@ -451,8 +451,8 @@ function AiInsightsSection({
             <BrainCircuit className="text-gold" size={20} />
           </div>
           <div>
-            <h2 className="text-lg font-serif font-light text-white">HEXA Intelligence</h2>
-            <p className="text-[10px] uppercase tracking-widest text-neutral-600">
+            <h2 className="text-lg font-serif font-light text-foreground">HEXA Intelligence</h2>
+            <p className="text-[10px] uppercase tracking-widest text-tertiary">
               Powered by HEXA Studio
             </p>
           </div>
@@ -460,7 +460,7 @@ function AiInsightsSection({
         {error && (
           <button
             onClick={onRetry}
-            className="flex items-center gap-2 px-3 py-1.5 text-xs text-neutral-500 hover:text-gold border border-border hover:border-gold/30 rounded-lg transition-all"
+            className="flex items-center gap-2 px-3 py-1.5 text-xs text-tertiary hover:text-gold border border-border hover:border-gold/30 rounded-lg transition-all"
           >
             <RefreshCw size={12} />
             Retry
@@ -470,21 +470,21 @@ function AiInsightsSection({
 
       {isLoading ? (
         <div className="space-y-4 animate-pulse">
-          <div className="h-4 bg-neutral-800 rounded w-3/4" />
-          <div className="h-4 bg-neutral-800 rounded w-full" />
-          <div className="h-4 bg-neutral-800 rounded w-5/6" />
+          <div className="h-4 bg-surface rounded w-3/4" />
+          <div className="h-4 bg-surface rounded w-full" />
+          <div className="h-4 bg-surface rounded w-5/6" />
         </div>
       ) : error ? (
         <div className="text-center py-8">
-          <AlertCircle size={32} className="mx-auto text-red-400/50 mb-3" />
-          <p className="text-neutral-500 text-sm">{error}</p>
+          <AlertCircle size={32} className="mx-auto text-error/50 mb-3" />
+          <p className="text-tertiary text-sm">{error}</p>
         </div>
       ) : data ? (
-        <p className="text-neutral-400 font-light leading-relaxed italic text-base">
+        <p className="text-tertiary font-light leading-relaxed italic text-base">
           &ldquo;{data}&rdquo;
         </p>
       ) : (
-        <p className="text-neutral-600 text-sm italic font-light">
+        <p className="text-tertiary text-sm italic font-light">
           Connect AI services to see operational insights and recommendations.
         </p>
       )}
@@ -546,32 +546,32 @@ export default function ExecutiveContent() {
       value: metrics.total_revenue,
       prefix: '€',
       icon: DollarSign,
-      color: 'text-emerald-400 bg-emerald-500/10',
-      glowColor: '#34d399',
+      color: 'text-success bg-success/10',
+      glowColor: 'var(--color-metric-emerald)',
       trend: 12,
     },
     {
       label: 'Active Projects',
       value: metrics.active_projects,
       icon: FolderKanban,
-      color: 'text-blue-400 bg-blue-500/10',
-      glowColor: '#60a5fa',
+      color: 'text-info bg-info/10',
+      glowColor: 'var(--color-metric-blue)',
       trend: 8,
     },
     {
       label: 'Pending Approvals',
       value: metrics.pending_approvals,
       icon: Clock,
-      color: 'text-amber-400 bg-amber-500/10',
-      glowColor: '#fbbf24',
+      color: 'text-warning bg-warning/10',
+      glowColor: 'var(--color-metric-amber)',
       trend: -3,
     },
     {
       label: 'Open Leads',
       value: metrics.open_leads,
       icon: Target,
-      color: 'text-violet-400 bg-violet-500/10',
-      glowColor: '#a78bfa',
+      color: 'text-info bg-info/10',
+      glowColor: 'var(--color-metric-violet)',
       trend: 15,
     },
     {
@@ -579,7 +579,7 @@ export default function ExecutiveContent() {
       value: metrics.won_leads_this_month,
       icon: CheckCircle,
       color: 'text-gold bg-gold/10',
-      glowColor: '#D4A843',
+      glowColor: 'var(--color-gold)',
       trend: 22,
     },
     {
@@ -587,16 +587,16 @@ export default function ExecutiveContent() {
       value: metrics.team_efficiency,
       suffix: '%',
       icon: Users,
-      color: 'text-cyan-400 bg-cyan-500/10',
-      glowColor: '#22d3ee',
+      color: 'text-info bg-info/10',
+      glowColor: 'var(--color-metric-teal)',
       trend: 5,
     },
     {
       label: 'Unread Notifications',
       value: metrics.unread_messages,
       icon: AlertCircle,
-      color: 'text-red-400 bg-red-500/10',
-      glowColor: '#f87171',
+      color: 'text-error bg-error/10',
+      glowColor: 'var(--color-metric-red)',
       trend: -7,
     },
   ];
@@ -614,16 +614,16 @@ export default function ExecutiveContent() {
       >
         <div className="flex items-end justify-between">
           <div>
-            <h1 className="text-4xl md:text-5xl font-serif font-light text-white mb-3">
+            <h1 className="text-4xl md:text-5xl font-serif font-light text-foreground mb-3">
               Executive <span className="text-gold">Overview</span>
             </h1>
-            <p className="text-neutral-500 font-light text-lg">
+            <p className="text-tertiary font-light text-lg">
               Real-time operational health of HEXA Studio
             </p>
           </div>
           <div className="hidden md:block text-right">
-            <p className="text-[10px] uppercase tracking-widest text-neutral-600">Last Updated</p>
-            <p className="text-xs text-neutral-500 font-light mt-1">
+            <p className="text-[10px] uppercase tracking-widest text-tertiary">Last Updated</p>
+            <p className="text-xs text-tertiary font-light mt-1">
               {new Date().toLocaleDateString('en-US', {
                 weekday: 'long',
                 year: 'numeric',
@@ -648,9 +648,9 @@ export default function ExecutiveContent() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-3 p-4 mb-8 bg-red-500/5 border border-red-500/20 rounded-xl"
+          className="flex items-center gap-3 p-4 mb-8 bg-error/5 border border-red-500/20 rounded-xl"
         >
-          <AlertCircle size={16} className="text-red-400 shrink-0" />
+          <AlertCircle size={16} className="text-error shrink-0" />
           <p className="text-sm text-red-300 font-light">
             Some data sources are unavailable. Displaying cached or estimated values.
           </p>

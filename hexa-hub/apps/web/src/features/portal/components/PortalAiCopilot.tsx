@@ -142,30 +142,29 @@ export function PortalAiCopilot() {
     setIsProcessing(true);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'}/portal/copilot/multimodal-query`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'}/ai/agents/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
         body: JSON.stringify({
-          text: inputValue,
-          imageUrl: imagePreview,
+          query: inputValue,
           context: {
             projectId: 'current-project-id',
           },
         }),
       });
 
-      const data = await response.json();
+      const data = await response.json() as { response: string; metadata?: { sources?: string[]; agentName?: string } };
 
       const aiResponse: Message = {
         id: `msg-${Date.now() + 1}`,
         role: 'assistant',
-        content: data.answer,
+        content: data.response,
         timestamp: new Date(),
-        sources: data.sources,
-        tags: data.tags,
+        sources: data.metadata?.sources,
+        tags: data.metadata?.agentName ? [data.metadata.agentName] : undefined,
       };
 
       setMessages((prev) => [...prev, aiResponse]);
@@ -194,21 +193,21 @@ export function PortalAiCopilot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="w-[400px] bg-[#0D0D0D] border border-[#1F1F1F] rounded-2xl shadow-[0_16px_48px_rgba(0,0,0,0.5)] overflow-hidden"
+            className="w-[400px] bg-void-deep border border-border rounded-2xl shadow-[0_16px_48px_rgba(0,0,0,0.5)] overflow-hidden"
           >
             {/* Header */}
-            <div className="p-4 border-b border-[#1F1F1F] flex items-center justify-between">
+            <div className="p-4 border-b border-border flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-                  <Bot size={16} className="text-white" />
+                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-info to-metricTeal flex items-center justify-center">
+                  <Bot size={16} className="text-foreground" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-medium text-white">Portal AI Copilot</h3>
-                  <p className="text-[11px] text-neutral-500">Ask about projects, documents, or anything in your portal</p>
+                  <h3 className="text-sm font-medium text-foreground">Portal AI Copilot</h3>
+                  <p className="text-[11px] text-tertiary">Ask about projects, documents, or anything in your portal</p>
                 </div>
               </div>
               <button onClick={() => setIsOpen(false)} className="p-1 rounded-lg hover:bg-white/[0.05] transition-colors">
-                <X size={16} className="text-neutral-500" />
+                <X size={16} className="text-tertiary" />
               </button>
             </div>
 
@@ -216,8 +215,8 @@ export function PortalAiCopilot() {
             <div className="h-[400px] overflow-y-auto p-4 space-y-4">
               {messages.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full py-8">
-                  <Bot size={48} className="text-purple-500/20 mb-4" />
-                  <p className="text-sm text-neutral-500 text-center">
+                  <Bot size={48} className="text-info/20 mb-4" />
+                  <p className="text-sm text-tertiary text-center">
                     Hi! I'm your AI assistant. Ask me about:
                     <br />- "What's the status of Project Alpha?"
                     <br />- "Show me the latest renderings"
@@ -232,33 +231,33 @@ export function PortalAiCopilot() {
                     className={`flex gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
                     {message.role === 'assistant' && (
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
-                        <Bot size={16} className="text-white" />
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-r from-info to-metricTeal flex items-center justify-center flex-shrink-0">
+                        <Bot size={16} className="text-foreground" />
                       </div>
                     )}
                     <div
-                      className={`max-w-[80%] p-3 rounded-xl ${message.role === 'user' ? 'bg-[#D4A843]/20 text-white' : 'bg-[#1F1F1F] text-neutral-300'}`}
+                      className={`max-w-[80%] p-3 rounded-xl ${message.role === 'user' ? 'bg-gold/20 text-white' : 'bg-border text-secondary'}`}
                     >
                       <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                       {message.sources && message.sources.length > 0 && (
-                        <p className="text-[10px] text-neutral-500 mt-2">Sources: {message.sources.join(', ')}</p>
+                        <p className="text-[10px] text-tertiary mt-2">Sources: {message.sources.join(', ')}</p>
                       )}
                       {message.tags && message.tags.length > 0 && (
                         <div className="flex flex-wrap gap-1 mt-2">
                           {message.tags.map((tag, i) => (
-                            <span key={i} className="text-[10px] bg-neutral-800 px-2 py-0.5 rounded-full">
+                            <span key={i} className="text-[10px] bg-surface px-2 py-0.5 rounded-full">
                               {tag}
                             </span>
                           ))}
                         </div>
                       )}
-                      <p className="text-[10px] text-neutral-600 mt-2 text-right">
+                      <p className="text-[10px] text-tertiary mt-2 text-right">
                         {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </p>
                     </div>
                     {message.role === 'user' && (
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0">
-                        <User size={16} className="text-white" />
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-r from-info to-metricTeal flex items-center justify-center flex-shrink-0">
+                        <User size={16} className="text-foreground" />
                       </div>
                     )}
                   </div>
@@ -269,7 +268,7 @@ export function PortalAiCopilot() {
 
             {/* Image Preview */}
             {imagePreview && (
-              <div className="p-4 border-t border-[#1F1F1F] bg-[#141414]">
+              <div className="p-4 border-t border-border bg-surface">
                 <div className="relative">
                   <Image
                     src={imagePreview}
@@ -281,16 +280,16 @@ export function PortalAiCopilot() {
                   />
                   <button
                     onClick={handleRemoveImage}
-                    className="absolute top-2 right-2 p-1 bg-black/50 rounded-full hover:bg-black"
+                    className="absolute top-2 right-2 p-1 bg-void/50 rounded-full hover:bg-void"
                   >
-                    <X size={14} className="text-white" />
+                    <X size={14} className="text-foreground" />
                   </button>
                 </div>
               </div>
             )}
 
             {/* Input Area */}
-            <div className="p-4 border-t border-[#1F1F1F]">
+            <div className="p-4 border-t border-border">
               <div className="flex gap-2">
                 <label className="flex-1 relative">
                   <input
@@ -299,12 +298,12 @@ export function PortalAiCopilot() {
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder={isListening ? 'Listening...' : 'Ask AI Copilot...'}
-                    className="w-full bg-[#1F1F1F] border border-[#2F2F2F] rounded-lg px-4 py-3 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-[#D4A843]"
+                    className="w-full bg-border border border-border rounded-lg px-4 py-3 text-sm text-foreground placeholder:text-tertiaryfocus:outline-none focus:border-gold"
                     disabled={isProcessing}
                   />
                   {selectedImage && (
                     <div className="absolute top-1/2 -translate-y-1/2 right-12 flex items-center gap-2">
-                      <span className="text-[10px] bg-[#D4A843]/20 px-2 py-0.5 rounded text-[#D4A843]" >
+                      <span className="text-[10px] bg-gold/20 px-2 py-0.5 rounded text-gold" >
                         {selectedImage.name}
                       </span>
                     </div>
@@ -312,10 +311,10 @@ export function PortalAiCopilot() {
                 </label>
                 <button
                   onClick={selectedImage ? handleRemoveImage : () => document.getElementById('image-upload')?.click()}
-                  className="p-3 bg-[#1F1F1F] border border-[#2F2F2F] rounded-lg hover:bg-[#2F2F2F] transition-colors disabled:opacity-50"
+                  className="p-3 bg-border border border-border rounded-lg hover:bg-border transition-colors disabled:opacity-50"
                   disabled={isProcessing}
                 >
-                  <Paperclip size={18} className="text-neutral-400" />
+                  <Paperclip size={18} className="text-tertiary" />
                 </button>
                 <input
                   type="file"
@@ -326,20 +325,20 @@ export function PortalAiCopilot() {
                 />
                 <button
                   onClick={isListening ? stopListening : startListening}
-                  className={`p-3 rounded-lg transition-colors ${isListening ? 'bg-red-500/20 border border-red-500/50' : 'bg-[#D4A843]/20 border border-[#D4A843]/50'} hover:bg-opacity-30`}
+                  className={`p-3 rounded-lg transition-colors ${isListening ? 'bg-error/20 border border-red-500/50' : 'bg-gold/20 border border-gold/50'} hover:bg-opacity-30`}
                   disabled={isProcessing}
                 >
-                  <Mic size={18} className={isListening ? 'text-red-400' : 'text-[#D4A843]'} />
+                  <Mic size={18} className={isListening ? 'text-error' : 'text-gold'} />
                 </button>
                 <button
                   onClick={sendMessage}
-                  className="p-3 bg-[#D4A843] rounded-lg hover:bg-[#D4A843]/80 transition-colors disabled:opacity-50"
+                  className="p-3 bg-gold rounded-lg hover:bg-gold/80 transition-colors disabled:opacity-50"
                   disabled={!inputValue.trim() && !selectedImage || isProcessing}
                 >
                   <Send size={18} className="text-black" />
                 </button>
               </div>
-              <p className="text-[10px] text-neutral-600 mt-2 text-center">
+              <p className="text-[10px] text-tertiary mt-2 text-center">
                 AI may produce inaccurate information. Consider verifying important facts.
               </p>
             </div>
@@ -349,9 +348,9 @@ export function PortalAiCopilot() {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setIsOpen(true)}
-            className="w-14 h-14 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center shadow-[0_8px_24px_rgba(147,51,234,0.4)] hover:shadow-[0_12px_32px_rgba(147,51,234,0.6)] transition-all duration-300"
+            className="w-14 h-14 bg-gradient-to-br from-info to-metricTeal rounded-full flex items-center justify-center shadow-[0_8px_24px_rgba(96,165,250,0.4)] hover:shadow-[0_12px_32px_rgba(96,165,250,0.6)] transition-all duration-300"
           >
-            <Bot size={24} className="text-white" />
+            <Bot size={24} className="text-foreground" />
           </motion.button>
         )}
       </AnimatePresence>
@@ -364,14 +363,14 @@ export function PortalAiCopilot() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
-              className="flex items-center gap-2 bg-[#1F1F1F]/80 backdrop-blur-sm px-3 py-2 rounded-lg border border-[#2F2F2F]"
+              className="flex items-center gap-2 bg-border backdrop-blur-sm px-3 py-2 rounded-lg border border-border"
             >
               <div className="flex -space-x-2">
                 {[...onlineUsers].slice(0, 3).map((userId) => (
-                  <div key={userId} className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 border-2 border-[#0D0D0D]" />
+                  <div key={userId} className="w-6 h-6 rounded-full bg-gradient-to-r from-info to-metricTeal border-2 border-void-deep" />
                 ))}
               </div>
-              <span className="text-[11px] text-neutral-400">
+              <span className="text-[11px] text-tertiary">
                 {onlineUsers.size} online
               </span>
             </motion.div>

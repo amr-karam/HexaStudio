@@ -139,11 +139,11 @@ export function AiAssistant({ className }: AiAssistantProps) {
         aria-label={isOpen ? 'Close AI Assistant' : 'Open AI Assistant'}
         className={cn(
           'fixed bottom-6 right-6 z-50 flex items-center justify-center',
-          'w-14 h-14 rounded-full shadow-[0_0_30px_rgba(212,168,67,0.15)]',
+          'w-14 h-14 rounded-full shadow-[0_0_30px_rgba(212, 175, 55,0.15)]',
           'transition-all duration-500',
           isOpen
-            ? 'bg-[#1A1A1A] border border-[#1F1F1F]'
-            : 'bg-gradient-to-br from-[#D4A843] to-[#B8922E] hover:shadow-[0_0_40px_rgba(212,168,67,0.25)]',
+            ? 'bg-surface border border-border'
+            : 'bg-gradient-to-br from-gold to-gold-deep hover:shadow-[0_0_40px_rgba(212, 175, 55,0.25)]',
           className,
         )}
       >
@@ -155,7 +155,7 @@ export function AiAssistant({ className }: AiAssistantProps) {
               animate={{ opacity: 1, rotate: 0 }}
               exit={{ opacity: 0, rotate: 90 }}
             >
-              <X size={20} className="text-white" />
+              <X size={20} className="text-foreground" />
             </motion.span>
           ) : (
             <motion.span
@@ -166,7 +166,7 @@ export function AiAssistant({ className }: AiAssistantProps) {
             >
               <Sparkles
                 size={22}
-                className="text-[#0A0A0A]"
+                className="text-void-deep"
                 strokeWidth={1.5}
               />
             </motion.span>
@@ -185,21 +185,21 @@ export function AiAssistant({ className }: AiAssistantProps) {
             className={cn(
               'fixed bottom-24 right-6 z-50 w-[380px] max-w-[calc(100vw-3rem)]',
               'flex flex-col rounded-2xl overflow-hidden',
-              'bg-[#0A0A0A]/95 backdrop-blur-2xl border border-[#1F1F1F]',
-              'shadow-[0_8px_48px_rgba(0,0,0,0.5),0_0_0_1px_rgba(212,168,67,0.05)]',
+              'bg-void-deep backdrop-blur-2xl border border-border',
+              'shadow-[0_8px_48px_rgba(0,0,0,0.5),0_0_0_1px_rgba(212, 175, 55,0.05)]',
             )}
           >
             {/* ── Header ─────────────────────────────────────────────────── */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-[#1F1F1F] bg-[#0A0A0A]/80">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-border bg-void-deep">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#D4A843]/20 to-[#D4A843]/5 border border-[#D4A843]/10 flex items-center justify-center">
-                  <Sparkles size={16} className="text-[#D4A843]" strokeWidth={1.5} />
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-gold/20 to-gold border border-gold/10 flex items-center justify-center">
+                  <Sparkles size={16} className="text-gold" strokeWidth={1.5} />
                 </div>
                 <div>
-                  <p className="text-sm font-light text-white tracking-wide">
+                  <p className="text-sm font-light text-foreground tracking-wide">
                     AI Assistant
                   </p>
-                  <p className="text-[10px] text-[#555] font-light uppercase tracking-[0.1em]">
+                  <p className="text-[10px] text-tertiary font-light uppercase tracking-[0.1em]">
                     HEXA · Gemini
                   </p>
                 </div>
@@ -209,14 +209,14 @@ export function AiAssistant({ className }: AiAssistantProps) {
                   onClick={handleClear}
                   disabled={messages.length === 0}
                   aria-label="Clear conversation"
-                  className="p-2 rounded-lg text-[#555] hover:text-[#D4A843] hover:bg-white/[0.03] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="p-2 rounded-lg text-tertiary hover:text-gold hover:bg-white/[0.03] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <Trash2 size={14} />
                 </button>
                 <button
                   onClick={() => setIsOpen(false)}
                   aria-label="Close assistant"
-                  className="p-2 rounded-lg text-[#555] hover:text-white hover:bg-white/[0.05] transition-colors"
+                  className="p-2 rounded-lg text-tertiary hover:text-foreground hover:bg-white/[0.05] transition-colors"
                 >
                   <ChevronDown size={16} />
                 </button>
@@ -233,10 +233,10 @@ export function AiAssistant({ className }: AiAssistantProps) {
                   transition={{ delay: 0.1 }}
                   className="flex flex-col items-center justify-center py-12 text-center"
                 >
-                  <div className="w-12 h-12 rounded-full bg-[#D4A843]/5 border border-[#D4A843]/10 flex items-center justify-center mb-4">
-                    <Bot size={22} className="text-[#D4A843]/40" strokeWidth={1.5} />
+                  <div className="w-12 h-12 rounded-full bg-gold/5 border border-gold/10 flex items-center justify-center mb-4">
+                    <Bot size={22} className="text-gold/40" strokeWidth={1.5} />
                   </div>
-                  <p className="text-sm text-[#555] font-light max-w-[250px] leading-relaxed">
+                  <p className="text-sm text-tertiary font-light max-w-[250px] leading-relaxed">
                     Ask me anything about your projects, tasks, leads, or get
                     insights from your data.
                   </p>
@@ -259,8 +259,8 @@ export function AiAssistant({ className }: AiAssistantProps) {
                   >
                     {/* Assistant avatar */}
                     {msg.role === 'assistant' && (
-                      <div className="w-7 h-7 rounded-full bg-[#D4A843]/10 border border-[#D4A843]/10 flex items-center justify-center shrink-0 mt-0.5">
-                        <Bot size={14} className="text-[#D4A843]" strokeWidth={1.5} />
+                      <div className="w-7 h-7 rounded-full bg-gold/10 border border-gold/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <Bot size={14} className="text-gold" strokeWidth={1.5} />
                       </div>
                     )}
 
@@ -269,8 +269,8 @@ export function AiAssistant({ className }: AiAssistantProps) {
                       className={cn(
                         'max-w-[78%] rounded-2xl px-4 py-2.5 text-sm font-light leading-relaxed',
                         msg.role === 'user'
-                          ? 'bg-[#D4A843] text-[#0A0A0A] rounded-tr-md'
-                          : 'bg-[#141414] border border-[#1F1F1F] text-[#E5E5E5] rounded-tl-md',
+                          ? 'bg-gold text-void-deep rounded-tr-md'
+                          : 'bg-surface border border-border text-secondary rounded-tl-md',
                       )}
                     >
                       {msg.content}
@@ -278,8 +278,8 @@ export function AiAssistant({ className }: AiAssistantProps) {
 
                     {/* User avatar */}
                     {msg.role === 'user' && (
-                      <div className="w-7 h-7 rounded-full bg-[#1F1F1F] border border-[#2A2A2A] flex items-center justify-center shrink-0 mt-0.5">
-                        <User size={13} className="text-[#888]" strokeWidth={1.5} />
+                      <div className="w-7 h-7 rounded-full bg-border border border-border-hover flex items-center justify-center shrink-0 mt-0.5">
+                        <User size={13} className="text-tertiary" strokeWidth={1.5} />
                       </div>
                     )}
                   </motion.div>
@@ -293,13 +293,13 @@ export function AiAssistant({ className }: AiAssistantProps) {
                   animate={{ opacity: 1 }}
                   className="flex items-center gap-3"
                 >
-                  <div className="w-7 h-7 rounded-full bg-[#D4A843]/10 border border-[#D4A843]/10 flex items-center justify-center shrink-0">
-                    <Bot size={14} className="text-[#D4A843]" strokeWidth={1.5} />
+                  <div className="w-7 h-7 rounded-full bg-gold/10 border border-gold/10 flex items-center justify-center shrink-0">
+                    <Bot size={14} className="text-gold" strokeWidth={1.5} />
                   </div>
-                  <div className="flex gap-1.5 px-4 py-3 rounded-2xl rounded-tl-md bg-[#141414] border border-[#1F1F1F]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#D4A843]/60 animate-bounce [animation-delay:0ms]" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#D4A843]/60 animate-bounce [animation-delay:150ms]" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#D4A843]/60 animate-bounce [animation-delay:300ms]" />
+                  <div className="flex gap-1.5 px-4 py-3 rounded-2xl rounded-tl-md bg-surface border border-border">
+                    <span className="w-1.5 h-1.5 rounded-full bg-gold/60 animate-bounce [animation-delay:0ms]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-gold/60 animate-bounce [animation-delay:150ms]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-gold/60 animate-bounce [animation-delay:300ms]" />
                   </div>
                 </motion.div>
               )}
@@ -311,7 +311,7 @@ export function AiAssistant({ className }: AiAssistantProps) {
                   animate={{ opacity: 1 }}
                   className="text-center py-3"
                 >
-                  <p className="text-xs text-red-400 font-light">
+                  <p className="text-xs text-error font-light">
                     Something went wrong. Please try again.
                   </p>
                 </motion.div>
@@ -321,7 +321,7 @@ export function AiAssistant({ className }: AiAssistantProps) {
             </div>
 
             {/* ── Input Area ─────────────────────────────────────────────── */}
-            <div className="px-4 py-3 border-t border-[#1F1F1F] bg-[#0A0A0A]/80">
+            <div className="px-4 py-3 border-t border-border bg-void-deep">
               <div className="flex items-center gap-2">
                 <input
                   ref={inputRef}
@@ -332,9 +332,9 @@ export function AiAssistant({ className }: AiAssistantProps) {
                   placeholder="Ask HEXA anything..."
                   disabled={isLoading}
                   className={cn(
-                    'flex-1 bg-[#141414] border border-[#1F1F1F] rounded-xl px-4 py-2.5',
-                    'text-sm text-white placeholder:text-[#555] font-light',
-                    'focus:outline-none focus:border-[#D4A843]/40 focus:ring-1 focus:ring-[#D4A843]/20',
+                    'flex-1 bg-surface border border-border rounded-xl px-4 py-2.5',
+                    'text-sm text-foreground placeholder:text-tertiary font-light',
+                    'focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20/20',
                     'transition-all duration-300',
                     'disabled:opacity-40 disabled:cursor-not-allowed',
                   )}
@@ -349,8 +349,8 @@ export function AiAssistant({ className }: AiAssistantProps) {
                     'w-10 h-10 rounded-xl flex items-center justify-center shrink-0',
                     'transition-all duration-300',
                     inputValue.trim() && !isLoading
-                      ? 'bg-[#D4A843] text-[#0A0A0A] hover:bg-[#D4A843]/90'
-                      : 'bg-[#1F1F1F] text-[#555]',
+                      ? 'bg-gold text-void-deep hover:bg-gold/90'
+                      : 'bg-border text-tertiary',
                     'disabled:cursor-not-allowed',
                   )}
                 >

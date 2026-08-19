@@ -38,8 +38,8 @@ interface SearchGroup {
 
 const MODEL_CONFIG: Record<SearchableModel, { label: string; icon: LucideIcon; color: string }> = {
   'crm.lead': { label: 'CRM Leads', icon: Users, color: 'text-amber-400' },
-  'res.partner': { label: 'Contacts', icon: Contact, color: 'text-blue-400' },
-  'project.project': { label: 'Projects', icon: FolderKanban, color: 'text-emerald-400' },
+  'res.partner': { label: 'Contacts', icon: Contact, color: 'text-info' },
+  'project.project': { label: 'Projects', icon: FolderKanban, color: 'text-success' },
   'project.task': { label: 'Tasks', icon: CheckSquare, color: 'text-violet-400' },
   'sale.order': { label: 'Sales Orders', icon: TrendingUp, color: 'text-rose-400' },
   'account.move': { label: 'Invoices', icon: FileText, color: 'text-cyan-400' },
@@ -82,36 +82,36 @@ function SearchResultItem({
       className={cn(
         'flex items-center gap-3 px-4 py-3 cursor-pointer transition-all duration-150 group',
         isHighlighted
-          ? 'bg-[#D4A843]/10 border-l-[3px] border-l-[#D4A843]'
+          ? 'bg-gold/10 border-l-[3px] border-l-gold'
           : 'border-l-[3px] border-l-transparent hover:bg-white/[0.03]',
       )}
     >
       <div
         className={cn(
           'w-9 h-9 rounded-lg flex items-center justify-center shrink-0',
-          isHighlighted ? 'bg-[#D4A843]/15' : 'bg-[#1A1A1A] group-hover:bg-[#1F1F1F]',
+          isHighlighted ? 'bg-gold/15' : 'bg-surface group-hover:bg-border',
         )}
       >
         <Icon
           size={17}
           className={cn(
-            isHighlighted ? 'text-[#D4A843]' : config.color,
+            isHighlighted ? 'text-gold' : config.color,
             'transition-colors duration-150',
           )}
         />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm text-white font-light truncate">{result.title}</p>
+        <p className="text-sm text-foreground font-light truncate">{result.title}</p>
         {result.subtitle && (
-          <p className="text-[11px] text-[#555] truncate mt-0.5">{result.subtitle}</p>
+          <p className="text-[11px] text-tertiary truncate mt-0.5">{result.subtitle}</p>
         )}
       </div>
       <span
         className={cn(
           'text-[10px] uppercase tracking-[0.1em] px-2 py-0.5 rounded-full font-medium shrink-0 border',
           isHighlighted
-            ? 'bg-[#D4A843]/10 text-[#D4A843] border-[#D4A843]/20'
-            : 'bg-[#1A1A1A] text-[#555] border-[#1F1F1F]',
+            ? 'bg-gold/10 text-gold border-gold/20'
+            : 'bg-surface text-tertiary border-border',
           'transition-colors duration-150',
         )}
       >
@@ -156,11 +156,11 @@ function SearchEmptyState({
         animate={{ opacity: 1, y: 0 }}
         className="flex flex-col items-center justify-center py-16 px-8 text-center"
       >
-        <div className="w-14 h-14 rounded-2xl bg-red-500/10 flex items-center justify-center mb-4">
-          <AlertCircle size={24} className="text-red-400" />
+        <div className="w-14 h-14 rounded-2xl bg-error/10 flex items-center justify-center mb-4">
+          <AlertCircle size={24} className="text-error" />
         </div>
-        <p className="text-sm text-[#888] font-light mb-1">Search failed</p>
-        <p className="text-xs text-[#555] font-light">
+        <p className="text-sm text-tertiary font-light mb-1">Search failed</p>
+        <p className="text-xs text-tertiary font-light">
           Please try again or refine your query.
         </p>
       </motion.div>
@@ -174,11 +174,11 @@ function SearchEmptyState({
         animate={{ opacity: 1, y: 0 }}
         className="flex flex-col items-center justify-center py-16 px-8 text-center"
       >
-        <div className="w-14 h-14 rounded-2xl bg-[#1A1A1A] flex items-center justify-center mb-4">
-          <Search size={24} className="text-[#444]" />
+        <div className="w-14 h-14 rounded-2xl bg-surface flex items-center justify-center mb-4">
+          <Search size={24} className="text-tertiary" />
         </div>
-        <p className="text-sm text-[#888] font-light mb-1">No results found</p>
-        <p className="text-xs text-[#555] font-light">
+        <p className="text-sm text-tertiary font-light mb-1">No results found</p>
+        <p className="text-xs text-tertiary font-light">
           Try a different search term or check for typos.
         </p>
       </motion.div>
@@ -191,10 +191,10 @@ function SearchEmptyState({
       animate={{ opacity: 1 }}
       className="p-4"
     >
-      <p className="text-[10px] uppercase tracking-[0.2em] text-[#444] font-medium mb-3 px-2">
+      <p className="text-[10px] uppercase tracking-[0.2em] text-tertiary font-medium mb-3 px-2">
         Quick Search
       </p>
-      <p className="text-xs text-[#555] font-light px-2 mb-4">
+      <p className="text-xs text-tertiary font-light px-2 mb-4">
         Search across your entire workspace — leads, contacts, projects, tasks, and more.
       </p>
       <div className="space-y-1">
@@ -208,9 +208,9 @@ function SearchEmptyState({
             key={shortcut}
             className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/[0.02] cursor-pointer transition-colors group"
           >
-            <Search size={13} className="text-[#444] group-hover:text-[#666] transition-colors" />
-            <span className="text-sm text-[#666] font-light flex-1">{label}</span>
-            <kbd className="text-[10px] text-[#444] bg-[#1A1A1A] px-1.5 py-0.5 rounded font-mono">
+            <Search size={13} className="text-tertiary group-hover:text-tertiary transition-colors" />
+            <span className="text-sm text-tertiary font-light flex-1">{label}</span>
+            <kbd className="text-[10px] text-tertiary bg-surface px-1.5 py-0.5 rounded font-mono">
               {shortcut}
             </kbd>
           </div>
@@ -380,11 +380,11 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: -10 }}
             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-[560px] max-h-[60vh] mx-4 bg-[#141414] border border-[#1F1F1F] rounded-2xl shadow-[0_20px_80px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col"
+            className="relative w-full max-w-[560px] max-h-[60vh] mx-4 bg-surface border border-border rounded-2xl shadow-[0_20px_80px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col"
           >
             {/* Search Input */}
-            <div className="flex items-center gap-3 px-4 py-3.5 border-b border-[#1F1F1F]">
-              <Search size={17} className="text-[#555] shrink-0" />
+            <div className="flex items-center gap-3 px-4 py-3.5 border-b border-border">
+              <Search size={17} className="text-tertiary shrink-0" />
               <input
                 ref={inputRef}
                 type="text"
@@ -392,19 +392,19 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Search across your workspace..."
-                className="flex-1 bg-transparent text-sm text-white placeholder:text-[#555] font-light outline-none"
+                className="flex-1 bg-transparent text-sm text-foreground placeholder:text-tertiary font-light outline-none"
                 autoComplete="off"
                 spellCheck={false}
               />
               {query && (
                 <button
                   onClick={() => setQuery('')}
-                  className="p-1 rounded-md text-[#555] hover:text-white hover:bg-white/[0.05] transition-colors"
+                  className="p-1 rounded-md text-tertiary hover:text-foreground hover:bg-white/[0.05] transition-colors"
                 >
                   <X size={14} />
                 </button>
               )}
-              <kbd className="hidden sm:inline-flex items-center gap-0.5 text-[10px] text-[#444] bg-[#1A1A1A] px-2 py-1 rounded-md font-mono font-medium border border-[#1F1F1F]">
+              <kbd className="hidden sm:inline-flex items-center gap-0.5 text-[10px] text-tertiary bg-surface px-2 py-1 rounded-md font-mono font-medium border border-border">
                 <span className="text-[12px]">⌘</span>K
               </kbd>
             </div>
@@ -440,10 +440,10 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                       <div key={group.model}>
                         <div className="flex items-center gap-2 px-4 py-2">
                           <GroupIcon size={12} className={group.color} />
-                          <span className="text-[10px] uppercase tracking-[0.15em] text-[#444] font-semibold">
+                          <span className="text-[10px] uppercase tracking-[0.15em] text-tertiary font-semibold">
                             {group.label}
                           </span>
-                          <span className="text-[10px] text-[#333]">
+                          <span className="text-[10px] text-tertiary">
                             {group.results.length}
                           </span>
                         </div>
@@ -467,24 +467,24 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-between px-4 py-2.5 border-t border-[#1F1F1F] bg-[#0A0A0A]/30">
+            <div className="flex items-center justify-between px-4 py-2.5 border-t border-border bg-void-deep">
               <div className="flex items-center gap-4">
-                <span className="flex items-center gap-1.5 text-[10px] text-[#444]">
+                <span className="flex items-center gap-1.5 text-[10px] text-tertiary">
                   <ArrowUp size={11} />
                   <ArrowDown size={11} />
                   <span>Navigate</span>
                 </span>
-                <span className="flex items-center gap-1.5 text-[10px] text-[#444]">
+                <span className="flex items-center gap-1.5 text-[10px] text-tertiary">
                   <CornerDownLeft size={11} />
                   <span>Select</span>
                 </span>
-                <span className="flex items-center gap-1.5 text-[10px] text-[#444]">
+                <span className="flex items-center gap-1.5 text-[10px] text-tertiary">
                   <span className="text-[11px]">Esc</span>
                   <span>Close</span>
                 </span>
               </div>
               {debouncedQuery.length >= 2 && !isLoading && (
-                <span className="text-[10px] text-[#444]">
+                <span className="text-[10px] text-tertiary">
                   {flatResults.length} result{flatResults.length !== 1 ? 's' : ''}
                 </span>
               )}

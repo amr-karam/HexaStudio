@@ -41,14 +41,14 @@ export const designTokens: DesignTokens = {
   baseUnit: 4,
   colors: {
     /* Void (60% canvas) */
-    void: '#050505',
+    void: 'var(--color-void-deep)',
     voidDeep: '#020203',
     /* Obsidian & Slate (30% surfaces) */
     obsidian: '#0F0F10',
     obsidianRaised: '#161618',
     slate: '#1A1A1A',
     /* Borders */
-    border: '#1F1F1F',
+    border: 'var(--color-border)',
     borderHover: '#2A2A2A',
     /* Gold (10% — HEXA signature) */
     gold: '#D4AF37',

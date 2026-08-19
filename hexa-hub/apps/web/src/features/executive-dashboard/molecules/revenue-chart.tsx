@@ -61,7 +61,7 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
             />
             <div className="flex-1">
               <p className="text-xs text-white/60">{entry.name}</p>
-              <p className="text-sm font-medium text-white">
+              <p className="text-sm font-medium text-foreground">
                 {formatCurrency(Number(entry.value ?? 0))}
               </p>
             </div>
@@ -116,7 +116,7 @@ export const RevenueChart = ({ timeRange: _timeRange = "month" }: RevenueChartPr
 
   return (
     <div className="w-full h-full flex flex-col">
-      <h3 className="text-lg font-semibold text-white mb-4">Revenue Trend</h3>
+      <h3 className="text-lg font-semibold text-foreground mb-4">Revenue Trend</h3>
 
       <div className="flex-1 min-h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
@@ -147,7 +147,7 @@ export const RevenueChart = ({ timeRange: _timeRange = "month" }: RevenueChartPr
             />
             <Tooltip
               content={<CustomTooltip />}
-              cursor={{ stroke: "#3b82f6", strokeWidth: 2 }}
+              cursor={{ stroke: 'var(--color-info)', strokeWidth: 2 }}
               wrapperStyle={{ outline: "none" }}
             />
             <Legend content={<CustomLegend />} />

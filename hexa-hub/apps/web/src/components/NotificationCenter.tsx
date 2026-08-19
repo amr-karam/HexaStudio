@@ -37,8 +37,8 @@ const typeConfig: Record<
 > = {
   success: {
     icon: CheckCircle2,
-    bg: 'bg-emerald-500/10',
-    text: 'text-emerald-400',
+    bg: 'bg-success/10',
+    text: 'text-success',
     dotColor: 'bg-emerald-400',
   },
   warning: {
@@ -49,14 +49,14 @@ const typeConfig: Record<
   },
   error: {
     icon: AlertCircle,
-    bg: 'bg-red-500/10',
-    text: 'text-red-400',
+    bg: 'bg-error/10',
+    text: 'text-error',
     dotColor: 'bg-red-400',
   },
   info: {
     icon: Info,
-    bg: 'bg-blue-500/10',
-    text: 'text-blue-400',
+    bg: 'bg-info/10',
+    text: 'text-info',
     dotColor: 'bg-blue-400',
   },
   message: {
@@ -68,19 +68,19 @@ const typeConfig: Record<
   document: {
     icon: FileText,
     bg: 'bg-neutral-500/10',
-    text: 'text-neutral-400',
+    text: 'text-tertiary',
     dotColor: 'bg-neutral-400',
   },
   invoice: {
     icon: DollarSign,
-    bg: 'bg-[#D4A843]/10',
-    text: 'text-[#D4A843]',
-    dotColor: 'bg-[#D4A843]',
+    bg: 'bg-gold/10',
+    text: 'text-gold',
+    dotColor: 'bg-gold',
   },
   milestone: {
     icon: Flag,
-    bg: 'bg-emerald-500/10',
-    text: 'text-emerald-400',
+    bg: 'bg-success/10',
+    text: 'text-success',
     dotColor: 'bg-emerald-400',
   },
   invite: {
@@ -94,7 +94,7 @@ const typeConfig: Record<
 const defaultTypeConfig = {
   icon: Bell,
   bg: 'bg-neutral-500/10',
-  text: 'text-neutral-400',
+  text: 'text-tertiary',
   dotColor: 'bg-neutral-400',
 };
 
@@ -148,8 +148,8 @@ function NotificationItem({ notification, onMarkRead, onClose }: NotificationIte
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -8, transition: { duration: 0.15 } }}
       className={cn(
-        'w-full text-left flex items-start gap-3 px-4 py-3.5 hover:bg-white/[0.03] transition-colors duration-200 border-b border-[#1F1F1F]/30 last:border-0',
-        isUnread && 'bg-[#D4A843]/[0.03]',
+        'w-full text-left flex items-start gap-3 px-4 py-3.5 hover:bg-white/[0.03] transition-colors duration-200 border-b border-border last:border-0',
+        isUnread && 'bg-gold/[0.03]',
       )}
     >
       {/* Icon */}
@@ -167,24 +167,24 @@ function NotificationItem({ notification, onMarkRead, onClose }: NotificationIte
         <p
           className={cn(
             'text-[13px] leading-tight line-clamp-2',
-            isUnread ? 'text-white font-medium' : 'text-neutral-300 font-light',
+            isUnread ? 'text-foreground font-medium' : 'text-secondary font-light',
           )}
         >
           {notification.title}
         </p>
         {notification.body && (
-          <p className="text-[11px] text-neutral-500 mt-1 line-clamp-1 font-light">
+          <p className="text-[11px] text-tertiary mt-1 line-clamp-1 font-light">
             {notification.body}
           </p>
         )}
-        <span className="text-[10px] text-neutral-600 mt-1.5 block font-light">
+        <span className="text-[10px] text-tertiary mt-1.5 block font-light">
           {notification.createdAt ? formatTimestamp(notification.createdAt) : ''}
         </span>
       </div>
 
       {/* Unread dot */}
       {isUnread && (
-        <span className="w-2 h-2 rounded-full bg-[#D4A843] shrink-0 mt-1.5" />
+        <span className="w-2 h-2 rounded-full bg-gold shrink-0 mt-1.5" />
       )}
     </motion.button>
   );
@@ -283,7 +283,7 @@ export function NotificationCenter() {
           'relative p-2 rounded-lg transition-colors duration-300',
           isOpen
             ? 'bg-white/[0.06] text-white'
-            : 'text-neutral-400 hover:text-white hover:bg-white/[0.04]',
+            : 'text-tertiary hover:text-foreground hover:bg-white/[0.04]',
         )}
         aria-label={`Notifications${hasUnread ? ` — ${unreadCount} unread` : ''}`}
         aria-expanded={isOpen}
@@ -301,7 +301,7 @@ export function NotificationCenter() {
               transition={{ type: 'spring', stiffness: 500, damping: 30 }}
               className={cn(
                 'absolute -top-1 -right-1 flex items-center justify-center',
-                'bg-red-500 text-white text-[9px] font-bold leading-none',
+                'bg-error text-foreground text-[9px] font-bold leading-none',
                 badgeCount && badgeCount.length > 2
                   ? 'min-w-[18px] h-[18px] rounded-full px-1'
                   : 'min-w-[16px] h-[16px] rounded-full',
@@ -325,16 +325,16 @@ export function NotificationCenter() {
               duration: 0.2,
               ease: [0.16, 1, 0.3, 1],
             }}
-            className="absolute right-0 top-full mt-2 w-[380px] max-w-[calc(100vw-48px)] bg-[#0D0D0D] border border-[#1F1F1F] rounded-xl shadow-[0_16px_48px_rgba(0,0,0,0.5)] overflow-hidden z-50"
+            className="absolute right-0 top-full mt-2 w-[380px] max-w-[calc(100vw-48px)] bg-void-deep border border-border rounded-xl shadow-[0_16px_48px_rgba(0,0,0,0.5)] overflow-hidden z-50"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-[#1F1F1F]/50">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border">
               <div className="flex items-center gap-2">
-                <h3 className="text-sm font-serif text-white font-light tracking-wide">
+                <h3 className="text-sm font-serif text-foreground font-light tracking-wide">
                   Notifications
                 </h3>
                 {hasUnread && (
-                  <span className="px-2 py-0.5 rounded-full bg-[#D4A843]/10 text-[#D4A843] text-[10px] font-medium">
+                  <span className="px-2 py-0.5 rounded-full bg-gold/10 text-gold text-[10px] font-medium">
                     {unreadCount} new
                   </span>
                 )}
@@ -347,12 +347,12 @@ export function NotificationCenter() {
                     whileTap={{ scale: 0.95 }}
                     onClick={handleMarkAllRead}
                     disabled={markAllRead.isLoading}
-                    className="p-1.5 rounded-lg text-neutral-500 hover:text-[#D4A843] hover:bg-white/[0.04] transition-colors duration-200 disabled:opacity-40"
+                    className="p-1.5 rounded-lg text-tertiary hover:text-gold hover:bg-white/[0.04] transition-colors duration-200 disabled:opacity-40"
                     aria-label="Mark all as read"
                     title="Mark all as read"
                   >
                     {markAllRead.isLoading ? (
-                      <div className="w-3.5 h-3.5 border-2 border-[#D4A843]/30 border-t-[#D4A843] rounded-full animate-spin" />
+                      <div className="w-3.5 h-3.5 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
                     ) : (
                       <CheckCheck size={14} />
                     )}
@@ -362,7 +362,7 @@ export function NotificationCenter() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setIsOpen(false)}
-                  className="p-1.5 rounded-lg text-neutral-600 hover:text-neutral-400 hover:bg-white/[0.04] transition-colors duration-200"
+                  className="p-1.5 rounded-lg text-tertiary hover:text-tertiary hover:bg-white/[0.04] transition-colors duration-200"
                   aria-label="Close notifications"
                 >
                   <X size={14} />
@@ -377,10 +377,10 @@ export function NotificationCenter() {
                 <div className="py-4">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <div key={i} className="flex items-start gap-3 px-4 py-3.5 animate-pulse">
-                      <div className="w-8 h-8 rounded-full bg-neutral-800 shrink-0" />
+                      <div className="w-8 h-8 rounded-full bg-surface shrink-0" />
                       <div className="flex-1 space-y-2">
-                        <div className="h-3 bg-neutral-800 rounded w-3/4" />
-                        <div className="h-2.5 bg-neutral-800 rounded w-1/2" />
+                        <div className="h-3 bg-surface rounded w-3/4" />
+                        <div className="h-2.5 bg-surface rounded w-1/2" />
                       </div>
                     </div>
                   ))}
@@ -388,20 +388,20 @@ export function NotificationCenter() {
               ) : isError ? (
                 /* Error state */
                 <div className="flex flex-col items-center justify-center py-12 px-4">
-                  <AlertCircle size={24} className="text-red-400/60 mb-3" />
-                  <p className="text-sm text-red-400 font-light">Failed to load notifications</p>
-                  <p className="text-[11px] text-neutral-600 mt-1 font-light">
+                  <AlertCircle size={24} className="text-error/60 mb-3" />
+                  <p className="text-sm text-error font-light">Failed to load notifications</p>
+                  <p className="text-[11px] text-tertiary mt-1 font-light">
                     Please check your connection and try again
                   </p>
                 </div>
               ) : resolvedNotifications.length === 0 ? (
                 /* Empty state */
                 <div className="flex flex-col items-center justify-center py-12 px-4">
-                  <div className="w-12 h-12 rounded-full bg-neutral-800/50 flex items-center justify-center mb-3">
-                    <Bell size={20} className="text-neutral-600" />
+                  <div className="w-12 h-12 rounded-full bg-surface/50 flex items-center justify-center mb-3">
+                    <Bell size={20} className="text-tertiary" />
                   </div>
-                  <p className="text-sm text-neutral-500 font-light">All caught up</p>
-                  <p className="text-[11px] text-neutral-600 mt-1 font-light">
+                  <p className="text-sm text-tertiary font-light">All caught up</p>
+                  <p className="text-[11px] text-tertiary mt-1 font-light">
                     No new notifications
                   </p>
                 </div>
@@ -421,10 +421,10 @@ export function NotificationCenter() {
             </div>
 
             {/* Footer */}
-            <div className="border-t border-[#1F1F1F]/50">
+            <div className="border-t border-border">
               <button
                 onClick={handleViewAll}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 text-[12px] text-neutral-400 hover:text-[#D4A843] hover:bg-white/[0.02] transition-colors duration-200 font-light"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 text-[12px] text-tertiary hover:text-gold hover:bg-white/[0.02] transition-colors duration-200 font-light"
               >
                 View all notifications
                 <ChevronRight size={13} />

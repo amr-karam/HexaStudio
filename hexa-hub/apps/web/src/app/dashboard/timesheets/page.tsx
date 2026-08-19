@@ -154,20 +154,20 @@ export default function TimesheetsPage() {
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="mb-10"
       >
-        <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-neutral-500 mb-4">
+        <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-tertiary mb-4">
           <Clock size={13} />
           <span>Timesheets</span>
         </div>
         <div className="flex items-end justify-between">
           <div>
-            <h1 className="text-3xl font-serif font-light text-white mb-1">
+            <h1 className="text-3xl font-serif font-light text-foreground mb-1">
               Timesheets
             </h1>
-            <p className="text-[13px] text-neutral-500 font-light">
+            <p className="text-[13px] text-tertiary font-light">
               {resolvedTotal} time entries
             </p>
           </div>
-          <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#D4A843] text-[#0A0A0A] text-sm font-light tracking-wide rounded-lg hover:bg-[#D4A843]/90 hover:shadow-[0_0_20px_rgba(212,168,67,0.15)] transition-all duration-300">
+          <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-gold text-void-deep text-sm font-light tracking-wide rounded-lg hover:bg-gold/90 hover:shadow-[0_0_20px_rgba(212, 175, 55,0.15)] transition-all duration-300">
             <Plus size={15} />
             Log Time
           </button>
@@ -182,27 +182,27 @@ export default function TimesheetsPage() {
           transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8"
         >
-          <div className="p-5 bg-[#141414] border border-[#1F1F1F] rounded-xl">
-            <p className="text-[10px] uppercase tracking-[0.15em] text-neutral-500 mb-1.5 font-medium">
+          <div className="p-5 bg-surface border border-border rounded-xl">
+            <p className="text-[10px] uppercase tracking-[0.15em] text-tertiary mb-1.5 font-medium">
               Total Hours
             </p>
-            <p className="text-2xl font-serif font-light text-[#D4A843]">
+            <p className="text-2xl font-serif font-light text-gold">
               {formatHours(totalHours)}
             </p>
           </div>
-          <div className="p-5 bg-[#141414] border border-[#1F1F1F] rounded-xl">
-            <p className="text-[10px] uppercase tracking-[0.15em] text-neutral-500 mb-1.5 font-medium">
+          <div className="p-5 bg-surface border border-border rounded-xl">
+            <p className="text-[10px] uppercase tracking-[0.15em] text-tertiary mb-1.5 font-medium">
               Entries
             </p>
-            <p className="text-2xl font-serif font-light text-white">
+            <p className="text-2xl font-serif font-light text-foreground">
               {statsEntries}
             </p>
           </div>
-          <div className="p-5 bg-[#141414] border border-[#1F1F1F] rounded-xl">
-            <p className="text-[10px] uppercase tracking-[0.15em] text-neutral-500 mb-1.5 font-medium">
+          <div className="p-5 bg-surface border border-border rounded-xl">
+            <p className="text-[10px] uppercase tracking-[0.15em] text-tertiary mb-1.5 font-medium">
               Avg Hours/Entry
             </p>
-            <p className="text-2xl font-serif font-light text-emerald-400">
+            <p className="text-2xl font-serif font-light text-success">
               {resolvedEntries.length > 0
                 ? formatHours(Math.round((totalHours / resolvedEntries.length) * 10) / 10)
                 : '0'}
@@ -222,14 +222,14 @@ export default function TimesheetsPage() {
         <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search
             size={15}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-600"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-tertiary"
           />
           <input
             type="text"
             placeholder="Search entries..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-[#141414] border border-[#1F1F1F] rounded-lg text-sm text-white placeholder:text-neutral-600 font-light focus:outline-none focus:border-[#D4A843]/40 focus:ring-1 focus:ring-[#D4A843]/20 transition-all duration-300"
+            className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-lg text-sm text-foreground placeholder:text-tertiary font-light focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20/20 transition-all duration-300"
           />
         </div>
 
@@ -237,7 +237,7 @@ export default function TimesheetsPage() {
         <div className="relative">
           <User
             size={13}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-600 pointer-events-none"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-tertiary pointer-events-none"
           />
           <select
             value={employeeFilter}
@@ -245,7 +245,7 @@ export default function TimesheetsPage() {
               setEmployeeFilter(e.target.value);
               setPage(1);
             }}
-            className="appearance-none pl-9 pr-8 py-2.5 bg-[#141414] border border-[#1F1F1F] rounded-lg text-sm text-neutral-300 font-light focus:outline-none focus:border-[#D4A843]/40 transition-all duration-300 cursor-pointer"
+            className="appearance-none pl-9 pr-8 py-2.5 bg-surface border border-border rounded-lg text-sm text-secondary font-light focus:outline-none focus:border-gold/40 transition-all duration-300 cursor-pointer"
           >
             {EMPLOYEE_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -253,14 +253,14 @@ export default function TimesheetsPage() {
               </option>
             ))}
           </select>
-          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-600 pointer-events-none" />
+          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-tertiary pointer-events-none" />
         </div>
 
         {/* Project Filter */}
         <div className="relative">
           <Briefcase
             size={13}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-600 pointer-events-none"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-tertiary pointer-events-none"
           />
           <select
             value={projectFilter}
@@ -268,7 +268,7 @@ export default function TimesheetsPage() {
               setProjectFilter(e.target.value);
               setPage(1);
             }}
-            className="appearance-none pl-9 pr-8 py-2.5 bg-[#141414] border border-[#1F1F1F] rounded-lg text-sm text-neutral-300 font-light focus:outline-none focus:border-[#D4A843]/40 transition-all duration-300 cursor-pointer"
+            className="appearance-none pl-9 pr-8 py-2.5 bg-surface border border-border rounded-lg text-sm text-secondary font-light focus:outline-none focus:border-gold/40 transition-all duration-300 cursor-pointer"
           >
             {PROJECT_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -276,7 +276,7 @@ export default function TimesheetsPage() {
               </option>
             ))}
           </select>
-          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-600 pointer-events-none" />
+          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-tertiary pointer-events-none" />
         </div>
 
         {/* Date Range */}
@@ -288,10 +288,10 @@ export default function TimesheetsPage() {
               setDateFrom(e.target.value);
               setPage(1);
             }}
-            className="px-3 py-2.5 bg-[#141414] border border-[#1F1F1F] rounded-lg text-sm text-neutral-300 font-light focus:outline-none focus:border-[#D4A843]/40 transition-all duration-300 cursor-pointer"
+            className="px-3 py-2.5 bg-surface border border-border rounded-lg text-sm text-secondary font-light focus:outline-none focus:border-gold/40 transition-all duration-300 cursor-pointer"
             title="From date"
           />
-          <span className="text-neutral-600 text-xs">to</span>
+          <span className="text-tertiary text-xs">to</span>
           <input
             type="date"
             value={dateTo}
@@ -299,7 +299,7 @@ export default function TimesheetsPage() {
               setDateTo(e.target.value);
               setPage(1);
             }}
-            className="px-3 py-2.5 bg-[#141414] border border-[#1F1F1F] rounded-lg text-sm text-neutral-300 font-light focus:outline-none focus:border-[#D4A843]/40 transition-all duration-300 cursor-pointer"
+            className="px-3 py-2.5 bg-surface border border-border rounded-lg text-sm text-secondary font-light focus:outline-none focus:border-gold/40 transition-all duration-300 cursor-pointer"
             title="To date"
           />
         </div>
@@ -317,28 +317,28 @@ export default function TimesheetsPage() {
       {/* Content */}
       {isLoading ? (
         <div className="p-16 flex flex-col items-center justify-center gap-3">
-          <div className="w-6 h-6 border-2 border-[#D4A843]/30 border-t-[#D4A843] rounded-full animate-spin" />
-          <span className="text-[12px] text-neutral-600 font-light tracking-wide">
+          <div className="w-6 h-6 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
+          <span className="text-[12px] text-tertiary font-light tracking-wide">
             Loading timesheets...
           </span>
         </div>
       ) : isError ? (
         <div className="p-16 text-center">
-          <AlertCircle size={32} className="text-red-400/60 mx-auto mb-3" />
-          <p className="text-red-400 text-sm font-light">
+          <AlertCircle size={32} className="text-error/60 mx-auto mb-3" />
+          <p className="text-error text-sm font-light">
             Failed to load timesheets.
           </p>
-          <p className="text-neutral-600 text-xs mt-1 font-light">
+          <p className="text-tertiary text-xs mt-1 font-light">
             Please check your connection and try again.
           </p>
         </div>
       ) : resolvedEntries.length === 0 ? (
         <div className="p-16 text-center">
           <Clock size={32} className="text-neutral-700 mx-auto mb-3" />
-          <p className="text-neutral-500 text-sm font-light">
+          <p className="text-tertiary text-sm font-light">
             No time entries found.
           </p>
-          <p className="text-neutral-600 text-xs mt-1 font-light">
+          <p className="text-tertiary text-xs mt-1 font-light">
             {debouncedSearch ||
             employeeFilter ||
             projectFilter ||
@@ -354,28 +354,28 @@ export default function TimesheetsPage() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="bg-[#141414] border border-[#1F1F1F] rounded-xl overflow-hidden"
+          className="bg-surface border border-border rounded-xl overflow-hidden"
         >
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#1F1F1F]">
-                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-neutral-500">
+                <tr className="border-b border-border">
+                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     Employee
                   </th>
-                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-neutral-500">
+                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     Project
                   </th>
-                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-neutral-500">
+                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     Task
                   </th>
-                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-neutral-500">
+                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     Description
                   </th>
-                  <th className="px-6 py-3.5 text-right text-[11px] font-medium uppercase tracking-[0.15em] text-neutral-500">
+                  <th className="px-6 py-3.5 text-right text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     Hours
                   </th>
-                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-neutral-500">
+                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     Date
                   </th>
                 </tr>
@@ -389,11 +389,11 @@ export default function TimesheetsPage() {
                   <motion.tr
                     key={entry.id}
                     variants={rowVariants}
-                    className="border-b border-[#1F1F1F]/50 last:border-0 hover:bg-white/[0.02] transition-colors duration-200 group"
+                    className="border-b border-border last:border-0 hover:bg-white/[0.02] transition-colors duration-200 group"
                   >
                     <td className="px-6 py-4">
-                      <span className="inline-flex items-center gap-2 text-sm text-white font-light">
-                        <span className="w-6 h-6 rounded-full bg-[#1A1A1A] border border-[#1F1F1F] flex items-center justify-center text-[10px] font-medium text-neutral-400 shrink-0">
+                      <span className="inline-flex items-center gap-2 text-sm text-foreground font-light">
+                        <span className="w-6 h-6 rounded-full bg-surface border border-border flex items-center justify-center text-[10px] font-medium text-tertiary shrink-0">
                           {entry.employee_name
                             ?.split(' ')
                             .map((n) => n[0])
@@ -405,28 +405,28 @@ export default function TimesheetsPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm text-neutral-400 font-light">
+                      <span className="text-sm text-tertiary font-light">
                         {entry.project_name || '—'}
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm text-neutral-400 font-light">
+                      <span className="text-sm text-tertiary font-light">
                         {entry.task_name || '—'}
                       </span>
                     </td>
                     <td className="px-6 py-4 max-w-[200px]">
-                      <span className="text-sm text-neutral-500 font-light truncate block">
+                      <span className="text-sm text-tertiary font-light truncate block">
                         {entry.description || '—'}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <span className="text-sm text-[#D4A843] font-medium tabular-nums">
+                      <span className="text-sm text-gold font-medium tabular-nums">
                         {formatHours(entry.hours)}h
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="flex items-center gap-1.5 text-[12px] text-neutral-500 font-light">
-                        <Calendar size={11} className="text-neutral-600" />
+                      <span className="flex items-center gap-1.5 text-[12px] text-tertiary font-light">
+                        <Calendar size={11} className="text-tertiary" />
                         {entry.date ? formatDate(entry.date) : '—'}
                       </span>
                     </td>
@@ -446,14 +446,14 @@ export default function TimesheetsPage() {
           transition={{ delay: 0.4 }}
           className="flex items-center justify-between mt-6"
         >
-          <span className="text-[12px] text-neutral-500 font-light">
+          <span className="text-[12px] text-tertiary font-light">
             Page {page} of {resolvedTotalPages} &middot; {resolvedTotal} entries
           </span>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-neutral-400 bg-[#1A1A1A] border border-[#1F1F1F] rounded-md hover:text-white hover:border-[#333] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 font-light"
+              className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-tertiary bg-surface border border-border rounded-md hover:text-foreground hover:border-border disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 font-light"
             >
               <svg
                 width="13"
@@ -475,7 +475,7 @@ export default function TimesheetsPage() {
             <button
               onClick={() => setPage((p) => Math.min(resolvedTotalPages, p + 1))}
               disabled={page >= resolvedTotalPages}
-              className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-neutral-400 bg-[#1A1A1A] border border-[#1F1F1F] rounded-md hover:text-white hover:border-[#333] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 font-light"
+              className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-tertiary bg-surface border border-border rounded-md hover:text-foreground hover:border-border disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 font-light"
             >
               Next
               <svg

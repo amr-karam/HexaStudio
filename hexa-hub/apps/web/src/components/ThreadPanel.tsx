@@ -113,22 +113,22 @@ export function ThreadPanel({ parentMessage, channelId, onClose }: ThreadPanelPr
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="absolute right-0 top-0 bottom-0 w-[420px] max-w-[85vw] bg-[#0E0E0E] border-l border-[#1F1F1F] flex flex-col shadow-2xl"
+            className="absolute right-0 top-0 bottom-0 w-[420px] max-w-[85vw] bg-void-deep border-l border-border flex flex-col shadow-2xl"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-5 border-b border-[#1F1F1F] shrink-0">
+            <div className="flex items-center justify-between p-5 border-b border-border shrink-0">
               <div className="flex items-center gap-2.5">
-                <MessageCircle size={18} className="text-[#D4A843]" />
-                <span className="text-white font-serif font-light">
+                <MessageCircle size={18} className="text-gold" />
+                <span className="text-foreground font-serif font-light">
                   Thread
                 </span>
-                <span className="text-[11px] text-[#555]">
+                <span className="text-[11px] text-tertiary">
                   {totalReplies} {totalReplies === 1 ? 'reply' : 'replies'}
                 </span>
               </div>
               <button
                 onClick={onClose}
-                className="p-1.5 rounded-lg text-[#555] hover:text-white hover:bg-white/[0.05] transition-colors"
+                className="p-1.5 rounded-lg text-tertiary hover:text-foreground hover:bg-white/[0.05] transition-colors"
               >
                 <X size={18} />
               </button>
@@ -137,23 +137,23 @@ export function ThreadPanel({ parentMessage, channelId, onClose }: ThreadPanelPr
             {/* Thread Content */}
             <div className="flex-1 overflow-y-auto">
               {/* Parent Message */}
-              <div className="p-5 border-b border-[#1F1F1F]/50">
+              <div className="p-5 border-b border-border">
                 <div className="flex items-start gap-3">
                   {/* Avatar */}
-                  <div className="w-8 h-8 rounded-full bg-[#1F1F1F] flex items-center justify-center text-xs text-[#888] shrink-0 font-medium">
+                  <div className="w-8 h-8 rounded-full bg-border flex items-center justify-center text-xs text-tertiary shrink-0 font-medium">
                     {parentMessage.sender?.fullName?.[0] ?? '?'}
                   </div>
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-baseline gap-2 mb-1">
-                      <span className="text-sm font-medium text-white">
+                      <span className="text-sm font-medium text-foreground">
                         {parentMessage.sender?.fullName ?? 'Unknown'}
                       </span>
-                      <span className="text-[10px] text-[#555]">
+                      <span className="text-[10px] text-tertiary">
                         {formatTimestamp(parentMessage.createdAt)}
                       </span>
                     </div>
-                    <p className="text-sm text-neutral-300 font-light leading-relaxed break-words">
+                    <p className="text-sm text-secondary font-light leading-relaxed break-words">
                       {parentMessage.content}
                     </p>
                   </div>
@@ -164,17 +164,17 @@ export function ThreadPanel({ parentMessage, channelId, onClose }: ThreadPanelPr
               <div className="py-2">
                 {isLoading ? (
                   <div className="py-12 flex items-center justify-center">
-                    <span className="text-[12px] text-[#555] font-light">
+                    <span className="text-[12px] text-tertiary font-light">
                       Loading replies...
                     </span>
                   </div>
                 ) : replies.length === 0 ? (
                   <div className="py-12 flex flex-col items-center justify-center gap-2">
-                    <CornerDownRight size={20} className="text-[#333]" />
-                    <span className="text-[12px] text-[#555] font-light">
+                    <CornerDownRight size={20} className="text-tertiary" />
+                    <span className="text-[12px] text-tertiary font-light">
                       No replies yet
                     </span>
-                    <span className="text-[10px] text-[#444]">
+                    <span className="text-[10px] text-tertiary">
                       Be the first to reply
                     </span>
                   </div>
@@ -191,23 +191,23 @@ export function ThreadPanel({ parentMessage, channelId, onClose }: ThreadPanelPr
                         className="px-5 py-3 hover:bg-white/[0.02] transition-colors"
                       >
                         <div className="flex items-start gap-3">
-                          <div className="w-7 h-7 rounded-full bg-[#1F1F1F] flex items-center justify-center text-[10px] text-[#888] shrink-0 font-medium">
+                          <div className="w-7 h-7 rounded-full bg-border flex items-center justify-center text-[10px] text-tertiary shrink-0 font-medium">
                             {reply.sender?.fullName?.[0] ?? '?'}
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-baseline gap-2 mb-0.5">
                               <span
                                 className={`text-xs font-medium ${
-                                  isOwnReply ? 'text-[#D4A843]' : 'text-white'
+                                  isOwnReply ? 'text-gold' : 'text-white'
                                 }`}
                               >
                                 {reply.sender?.fullName ?? 'Unknown'}
                               </span>
-                              <span className="text-[9px] text-[#555]">
+                              <span className="text-[9px] text-tertiary">
                                 {formatTimestamp(reply.createdAt)}
                               </span>
                             </div>
-                            <p className="text-[13px] text-neutral-400 font-light leading-relaxed break-words">
+                            <p className="text-[13px] text-tertiary font-light leading-relaxed break-words">
                               {reply.content}
                             </p>
                           </div>
@@ -223,19 +223,19 @@ export function ThreadPanel({ parentMessage, channelId, onClose }: ThreadPanelPr
             {/* Reply Input */}
             <form
               onSubmit={handleSendReply}
-              className="p-4 border-t border-[#1F1F1F] shrink-0"
+              className="p-4 border-t border-border shrink-0"
             >
               <div className="flex gap-2">
                 <input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder={`Reply to thread...`}
-                  className="flex-1 bg-[#1A1A1A] border border-[#1F1F1F] rounded-lg px-4 py-2.5 text-sm text-white placeholder:text-[#555] font-light outline-none focus:border-[#D4A843]/40 transition-all"
+                  className="flex-1 bg-surface border border-border rounded-lg px-4 py-2.5 text-sm text-foreground placeholder:text-tertiary font-light outline-none focus:border-gold/40 transition-all"
                 />
                 <button
                   type="submit"
                   disabled={sendReplyMutation.isPending || !input.trim()}
-                  className="bg-[#D4A843] text-[#0A0A0A] p-2.5 rounded-lg hover:bg-[#D4A843]/90 transition-all disabled:opacity-40 shrink-0"
+                  className="bg-gold text-void-deep p-2.5 rounded-lg hover:bg-gold/90 transition-all disabled:opacity-40 shrink-0"
                 >
                   <Send size={16} />
                 </button>

@@ -88,8 +88,8 @@ export default function PortalDeliverablesPage() {
   }, [token, api]);
 
   const getStatusColor = (status: Deliverable['status']) => {
-    if (status === 'approved') return 'bg-emerald-500/10 text-emerald-400';
-    if (status === 'rejected') return 'bg-red-500/10 text-red-400';
+    if (status === 'approved') return 'bg-success/10 text-success';
+    if (status === 'rejected') return 'bg-error/10 text-error';
     return 'bg-amber-500/10 text-amber-400';
   };
 
@@ -101,14 +101,14 @@ export default function PortalDeliverablesPage() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-[#555] mb-3">
+        <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-tertiary mb-3">
           <FileText size={13} />
           <span>Deliverables</span>
         </div>
-        <h1 className="text-2xl font-serif font-light text-white mb-1">
+        <h1 className="text-2xl font-serif font-light text-foreground mb-1">
           Pending Approvals
         </h1>
-        <p className="text-[13px] text-[#666]">
+        <p className="text-[13px] text-tertiary">
           Review and approve deliverables from your projects
         </p>
       </motion.div>
@@ -116,7 +116,7 @@ export default function PortalDeliverablesPage() {
       {/* Deliverables List */}
       {isLoading ? (
         <div className="flex items-center justify-center py-20">
-          <div className="w-6 h-6 border-2 border-[#D4A843]/30 border-t-[#D4A843] rounded-full animate-spin" />
+          <div className="w-6 h-6 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
         </div>
       ) : deliverables.filter(d => d.status === 'pending').length === 0 ? (
         <motion.div
@@ -124,9 +124,9 @@ export default function PortalDeliverablesPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center py-20"
         >
-          <CheckCircle2 size={48} className="text-emerald-400 mx-auto mb-4" />
-          <h3 className="text-lg font-serif font-light text-white mb-2">All caught up!</h3>
-          <p className="text-[13px] text-[#666]">No pending deliverables to review.</p>
+          <CheckCircle2 size={48} className="text-success mx-auto mb-4" />
+          <h3 className="text-lg font-serif font-light text-foreground mb-2">All caught up!</h3>
+          <p className="text-[13px] text-tertiary">No pending deliverables to review.</p>
         </motion.div>
       ) : (
         <div className="space-y-4">
@@ -136,36 +136,36 @@ export default function PortalDeliverablesPage() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              className="bg-[#141414] border border-[#1F1F1F] rounded-2xl p-4 md:p-5 hover:border-[#D4A843]/20 transition-all"
+              className="bg-surface border border-border rounded-2xl p-4 md:p-5 hover:border-gold/20 transition-all"
             >
               <div className="flex items-start gap-4">
                 {/* Icon */}
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#D4A843]/10 flex-shrink-0">
-                  <FileText size={18} className="text-[#D4A843]" />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-gold/10 flex-shrink-0">
+                  <FileText size={18} className="text-gold" />
                 </div>
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-base font-serif font-light text-white">{d.title}</h3>
+                    <h3 className="text-base font-serif font-light text-foreground">{d.title}</h3>
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${getStatusColor(d.status)}`}>
                       {d.status.toUpperCase()}
                     </span>
                   </div>
-                  <p className="text-[11px] text-[#666] mb-3">{d.description}</p>
+                  <p className="text-[11px] text-tertiary mb-3">{d.description}</p>
                   
-                  <div className="flex items-center gap-4 text-[11px] text-[#555] mb-4">
-                    <span>Project: <span className="text-white font-light">{d.projectName}</span></span>
-                    <span>Uploaded: <span className="text-white font-light">{d.uploadedAt}</span></span>
-                    <span>Size: <span className="text-white font-light">{d.fileSize}</span></span>
+                  <div className="flex items-center gap-4 text-[11px] text-tertiary mb-4">
+                    <span>Project: <span className="text-foreground font-light">{d.projectName}</span></span>
+                    <span>Uploaded: <span className="text-foreground font-light">{d.uploadedAt}</span></span>
+                    <span>Size: <span className="text-foreground font-light">{d.fileSize}</span></span>
                   </div>
 
-                  <div className="flex items-center gap-2 pt-3 border-t border-[#1F1F1F] first:border-0">
+                  <div className="flex items-center gap-2 pt-3 border-t border-border first:border-0">
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => {}}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/10 text-emerald-400 rounded-lg text-xs font-medium hover:bg-emerald-500/20 transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-success/10 text-success rounded-lg text-xs font-medium hover:bg-success/20 transition-colors"
                     >
                       <CheckCircle2 size={12} />
                       Approve
@@ -174,7 +174,7 @@ export default function PortalDeliverablesPage() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => {}}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500/10 text-red-400 rounded-lg text-xs font-medium hover:bg-red-500/20 transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-error/10 text-error rounded-lg text-xs font-medium hover:bg-error/20 transition-colors"
                     >
                       <XCircle size={12} />
                       Reject
@@ -182,7 +182,7 @@ export default function PortalDeliverablesPage() {
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="flex items-center gap-1.5 px-3 py-1.5 border border-[#1F1F1F] text-[#555] rounded-lg text-xs font-medium hover:bg-white/[0.03] transition-colors ml-auto"
+                      className="flex items-center gap-1.5 px-3 py-1.5 border border-border text-tertiary rounded-lg text-xs font-medium hover:bg-white/[0.03] transition-colors ml-auto"
                     >
                       <Download size={12} />
                       Download

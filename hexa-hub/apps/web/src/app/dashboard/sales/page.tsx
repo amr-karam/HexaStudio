@@ -34,7 +34,7 @@ interface PipelineStage {
 
 // ─── Components ────────────────────────────────────────────────────────────
 
-function KpiCard({ icon: Icon, label, value, prefix, suffix, trend, trendLabel, color = '#D4A843' }: {
+function KpiCard({ icon: Icon, label, value, prefix, suffix, trend, trendLabel, color = 'var(--color-gold)' }: {
   icon: LucideIcon;
   label: string;
   value: number;
@@ -48,21 +48,21 @@ function KpiCard({ icon: Icon, label, value, prefix, suffix, trend, trendLabel, 
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-[#141414] border border-[#1F1F1F] rounded-2xl p-5 hover:border-[#D4A843]/20 transition-colors"
+      className="bg-surface border border-border rounded-2xl p-5 hover:border-gold/20 transition-colors"
     >
       <div className="flex items-center justify-between mb-3">
         <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${color}15` }}>
           <Icon size={17} style={{ color }} />
         </div>
         {trend && (
-          <span className={`flex items-center gap-0.5 text-[11px] font-medium ${trend === 'up' ? 'text-emerald-400' : 'text-red-400'}`}>
+          <span className={`flex items-center gap-0.5 text-[11px] font-medium ${trend === 'up' ? 'text-success' : 'text-error'}`}>
             {trend === 'up' ? <TrendingUp size={12} /> : <TrendingUp size={12} className="rotate-180" />}
             {trendLabel}
           </span>
         )}
       </div>
-      <p className="text-[10px] uppercase tracking-[0.2em] text-[#555] mb-1">{label}</p>
-      <p className="text-2xl font-serif font-light text-white">
+      <p className="text-[10px] uppercase tracking-[0.2em] text-tertiary mb-1">{label}</p>
+      <p className="text-2xl font-serif font-light text-foreground">
         <AnimatedCounter value={value} prefix={prefix} suffix={suffix} />
       </p>
     </motion.div>
@@ -108,7 +108,7 @@ function AnimatedCounter({ value, prefix = '', suffix = '', duration = 1.5 }: {
   return <span ref={ref}>{formatted}</span>;
 }
 
-function BarChart({ data, title, color: _color = '#D4A843' }: {
+function BarChart({ data, title, color: _color = 'var(--color-gold)' }: {
   data: { name: string; value: number; color: string; label?: string }[];
   title: string;
   color?: string;
@@ -118,8 +118,8 @@ function BarChart({ data, title, color: _color = '#D4A843' }: {
   const barWidth = 40;
 
   return (
-    <div className="bg-[#141414] border border-[#1F1F1F] rounded-2xl p-5">
-      <h3 className="text-sm font-medium text-white mb-4">{title}</h3>
+    <div className="bg-surface border border-border rounded-2xl p-5">
+      <h3 className="text-sm font-medium text-foreground mb-4">{title}</h3>
       <div className="flex items-end justify-between" style={{ height: chartH }}>
         {data.map((item, index) => (
           <motion.div
@@ -134,7 +134,7 @@ function BarChart({ data, title, color: _color = '#D4A843' }: {
               className="w-full rounded-t-lg transition-all duration-300 hover:opacity-80"
               style={{ height: `${(item.value / max) * chartH}%`, backgroundColor: item.color }}
             />
-            <span className="text-[11px] text-[#555]">{item.label}</span>
+            <span className="text-[11px] text-tertiary">{item.label}</span>
           </motion.div>
         ))}
       </div>
@@ -179,13 +179,13 @@ export default function SalesLandingPage() {
   return (
     <div className="p-8 md:p-10 lg:p-12 min-h-screen">
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
-        <h1 className="text-3xl font-serif font-light text-white mb-1">Sales</h1>
-        <p className="text-[13px] text-[#666] font-light">Manage quotations, invoices, and revenue</p>
+        <h1 className="text-3xl font-serif font-light text-foreground mb-1">Sales</h1>
+        <p className="text-[13px] text-tertiary font-light">Manage quotations, invoices, and revenue</p>
       </motion.div>
 
       {isLoading ? (
         <div className="flex items-center justify-center py-20">
-          <div className="w-6 h-6 border-2 border-[#D4A843]/30 border-t-[#D4A843] rounded-full animate-spin" />
+          <div className="w-6 h-6 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
         </div>
       ) : (
         <>
@@ -195,19 +195,19 @@ export default function SalesLandingPage() {
             variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
           >
-            <KpiCard icon={DollarSign} label="Revenue" value={stats.revenue} prefix="$" trend="up" trendLabel="12.4%" color="#D4A843" />
-            <KpiCard icon={FileText} label="Quotations" value={stats.orders} trend="up" trendLabel="5.2%" color="#60A5FA" />
-            <KpiCard icon={Users} label="Customers" value={stats.customers} trend="up" trendLabel="3.1%" color="#34D399" />
-            <KpiCard icon={TrendingUp} label="Avg Order Value" value={stats.averageOrderValue} prefix="$" trend="up" trendLabel="2.3%" color="#A78BFA" />
+            <KpiCard icon={DollarSign} label="Revenue" value={stats.revenue} prefix="$" trend="up" trendLabel="12.4%" color="var(--color-gold)" />
+            <KpiCard icon={FileText} label="Quotations" value={stats.orders} trend="up" trendLabel="5.2%" color="var(--color-info)" />
+            <KpiCard icon={Users} label="Customers" value={stats.customers} trend="up" trendLabel="3.1%" color="var(--color-success)" />
+            <KpiCard icon={TrendingUp} label="Avg Order Value" value={stats.averageOrderValue} prefix="$" trend="up" trendLabel="2.3%" color="var(--color-metric-violet)" />
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {recentOrders.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                className="bg-[#141414] border border-[#1F1F1F] rounded-2xl p-5"
+                className="bg-surface border border-border rounded-2xl p-5"
               >
-                <h3 className="text-sm font-medium text-white mb-4">Recent Orders</h3>
+                <h3 className="text-sm font-medium text-foreground mb-4">Recent Orders</h3>
                 <div className="space-y-3">
                   {recentOrders.map((order, i) => (
                     <motion.div
@@ -215,13 +215,13 @@ export default function SalesLandingPage() {
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.3 + i * 0.05 }}
-                      className="flex items-center justify-between py-2 border-b border-[#1F1F1F] last:border-0"
+                      className="flex items-center justify-between py-2 border-b border-border last:border-0"
                     >
                       <div>
-                        <p className="text-sm text-white font-light">{order.customer}</p>
-                        <p className="text-[11px] text-[#555]">{order.date}</p>
+                        <p className="text-sm text-foreground font-light">{order.customer}</p>
+                        <p className="text-[11px] text-tertiary">{order.date}</p>
                       </div>
-                      <p className={`text-sm font-medium ${order.amount >= 100 ? 'text-emerald-400' : 'text-[#888]'}`}>
+                      <p className={`text-sm font-medium ${order.amount >= 100 ? 'text-success' : 'text-tertiary'}`}>
                       ${order.amount.toLocaleString()}</p>
                     </motion.div>
                   ))}

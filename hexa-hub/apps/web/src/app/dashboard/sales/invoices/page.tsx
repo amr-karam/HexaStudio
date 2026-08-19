@@ -44,22 +44,22 @@ const STATUS_CONFIG: Record<
   string,
   { label: string; bg: string; text: string; dot: string }
 > = {
-  draft: { label: 'Draft', bg: 'bg-neutral-500/10', text: 'text-neutral-400', dot: 'bg-neutral-400' },
-  posted: { label: 'Posted', bg: 'bg-blue-500/10', text: 'text-blue-400', dot: 'bg-blue-400' },
-  paid: { label: 'Paid', bg: 'bg-emerald-500/10', text: 'text-emerald-400', dot: 'bg-emerald-400' },
-  cancelled: { label: 'Cancelled', bg: 'bg-red-500/10', text: 'text-red-400', dot: 'bg-red-400' },
+  draft: { label: 'Draft', bg: 'bg-neutral-500/10', text: 'text-tertiary', dot: 'bg-neutral-400' },
+  posted: { label: 'Posted', bg: 'bg-info/10', text: 'text-info', dot: 'bg-blue-400' },
+  paid: { label: 'Paid', bg: 'bg-success/10', text: 'text-success', dot: 'bg-emerald-400' },
+  cancelled: { label: 'Cancelled', bg: 'bg-error/10', text: 'text-error', dot: 'bg-red-400' },
 };
 
 const PAYMENT_CONFIG: Record<
   string,
   { label: string; color: string }
 > = {
-  paid: { label: 'Paid', color: 'text-emerald-400' },
-  not_paid: { label: 'Unpaid', color: 'text-red-400' },
-  partial: { label: 'Partial', color: 'text-[#D4A843]' },
-  not_due: { label: 'Not Due', color: 'text-neutral-500' },
+  paid: { label: 'Paid', color: 'text-success' },
+  not_paid: { label: 'Unpaid', color: 'text-error' },
+  partial: { label: 'Partial', color: 'text-gold' },
+  not_due: { label: 'Not Due', color: 'text-tertiary' },
   reversed: { label: 'Reversed', color: 'text-orange-400' },
-  in_payment: { label: 'In Payment', color: 'text-blue-400' },
+  in_payment: { label: 'In Payment', color: 'text-info' },
 };
 
 const STATUS_OPTIONS: { value: string; label: string }[] = [
@@ -201,23 +201,23 @@ export default function InvoicesPage() {
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="mb-10"
       >
-        <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-[#666] mb-4">
+        <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-tertiary mb-4">
           <FileText size={13} />
           <span>Sales / Invoices</span>
         </div>
         <div className="flex items-end justify-between">
           <div>
-            <h1 className="text-3xl font-serif font-light text-white mb-1">
+            <h1 className="text-3xl font-serif font-light text-foreground mb-1">
               Invoices
             </h1>
-            <p className="text-[13px] text-[#666] font-light">
+            <p className="text-[13px] text-tertiary font-light">
               {data?.total ?? 0} total invoices
             </p>
           </div>
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="flex items-center gap-2 px-5 py-2.5 bg-[#D4A843] text-[#0A0A0A] rounded-lg text-sm font-medium tracking-wide transition-shadow hover:shadow-[0_0_20px_rgba(212,168,67,0.15)]"
+            className="flex items-center gap-2 px-5 py-2.5 bg-gold text-void-deep rounded-lg text-sm font-medium tracking-wide transition-shadow hover:shadow-[0_0_20px_rgba(212, 175, 55,0.15)]"
           >
             <Plus size={16} />
             New Invoice
@@ -235,7 +235,7 @@ export default function InvoicesPage() {
         <div className="relative flex-1 max-w-sm">
           <Search
             size={15}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#555]"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-tertiary"
           />
           <input
             type="text"
@@ -244,18 +244,18 @@ export default function InvoicesPage() {
             onChange={(e) =>
               setFilters((prev) => ({ ...prev, search: e.target.value }))
             }
-            className="w-full pl-10 pr-4 py-2.5 bg-[#141414] border border-[#1F1F1F] rounded-lg text-sm text-white placeholder:text-[#555] font-light focus:outline-none focus:border-[#D4A843]/40 focus:ring-1 focus:ring-[#D4A843]/20 transition-all duration-300"
+            className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-lg text-sm text-foreground placeholder:text-tertiary font-light focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20/20 transition-all duration-300"
           />
         </div>
         <div className="relative">
           <Filter
             size={13}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#555] pointer-events-none"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-tertiary pointer-events-none"
           />
           <select
             value={filters.status}
             onChange={(e) => handleStatusFilter(e.target.value)}
-            className="appearance-none pl-9 pr-8 py-2.5 bg-[#141414] border border-[#1F1F1F] rounded-lg text-sm text-neutral-300 font-light focus:outline-none focus:border-[#D4A843]/40 transition-all duration-300 cursor-pointer"
+            className="appearance-none pl-9 pr-8 py-2.5 bg-surface border border-border rounded-lg text-sm text-secondary font-light focus:outline-none focus:border-gold/40 transition-all duration-300 cursor-pointer"
           >
             {STATUS_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -263,7 +263,7 @@ export default function InvoicesPage() {
               </option>
             ))}
           </select>
-          <ChevronDownIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-[#555] pointer-events-none" />
+          <ChevronDownIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-tertiary pointer-events-none" />
         </div>
 
         {/* Export Button */}
@@ -281,50 +281,50 @@ export default function InvoicesPage() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-        className="bg-[#141414] border border-[#1F1F1F] rounded-xl overflow-hidden"
+        className="bg-surface border border-border rounded-xl overflow-hidden"
       >
         {isLoading ? (
           <div className="p-16 flex flex-col items-center justify-center gap-3">
-            <div className="w-6 h-6 border-2 border-[#D4A843]/30 border-t-[#D4A843] rounded-full animate-spin" />
-            <span className="text-[12px] text-[#555] font-light tracking-wide">
+            <div className="w-6 h-6 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
+            <span className="text-[12px] text-tertiary font-light tracking-wide">
               Loading invoices...
             </span>
           </div>
         ) : isError ? (
           <div className="p-16 text-center">
-            <p className="text-red-400 text-sm">Failed to load invoices.</p>
-            <p className="text-[#555] text-xs mt-1">
+            <p className="text-error text-sm">Failed to load invoices.</p>
+            <p className="text-tertiary text-xs mt-1">
               Please check your connection and try again.
             </p>
           </div>
         ) : invoices.length === 0 ? (
           <div className="p-16 text-center">
-            <FileText size={32} className="text-[#333] mx-auto mb-3" />
-            <p className="text-[#555] text-sm">No invoices found.</p>
+            <FileText size={32} className="text-tertiary mx-auto mb-3" />
+            <p className="text-tertiary text-sm">No invoices found.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#1F1F1F]">
-                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-[#555]">
+                <tr className="border-b border-border">
+                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     <span className="flex items-center gap-1.5">
-                      Name <ArrowUpDown size={11} className="text-[#444]" />
+                      Name <ArrowUpDown size={11} className="text-tertiary" />
                     </span>
                   </th>
-                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-[#555]">
+                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     Client
                   </th>
-                  <th className="px-6 py-3.5 text-right text-[11px] font-medium uppercase tracking-[0.15em] text-[#555]">
+                  <th className="px-6 py-3.5 text-right text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     Amount
                   </th>
-                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-[#555]">
+                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     Due Date
                   </th>
-                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-[#555]">
+                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     Status
                   </th>
-                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-[#555]">
+                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     Payment
                   </th>
                 </tr>
@@ -345,39 +345,39 @@ export default function InvoicesPage() {
                       onClick={() =>
                         router.push(`/dashboard/sales/invoices/${inv.id}`)
                       }
-                      className={`border-b border-[#1F1F1F]/50 last:border-0 cursor-pointer transition-colors duration-200 group ${
+                      className={`border-b border-border last:border-0 cursor-pointer transition-colors duration-200 group ${
                         overdue
-                          ? 'bg-red-500/[0.03] hover:bg-red-500/[0.06]'
+                          ? 'bg-error/[0.03] hover:bg-error/[0.06]'
                           : 'hover:bg-white/[0.02]'
                       }`}
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm text-white font-light group-hover:text-[#D4A843] transition-colors duration-200">
+                          <span className="text-sm text-foreground font-light group-hover:text-gold transition-colors duration-200">
                             {inv.name}
                           </span>
                           {overdue && (
                             <AlertTriangle
                               size={13}
-                              className="text-red-400 shrink-0"
+                              className="text-error shrink-0"
                             />
                           )}
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-sm text-[#999] font-light">
+                        <span className="text-sm text-tertiary font-light">
                           {inv.partner_id?.[1] ?? '—'}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <span className="text-sm text-white font-light tabular-nums">
+                        <span className="text-sm text-foreground font-light tabular-nums">
                           {formatCurrency(inv.amount_total)}
                         </span>
                       </td>
                       <td className="px-6 py-4">
                         <span
                           className={`text-sm font-light ${
-                            overdue ? 'text-red-400' : 'text-[#777]'
+                            overdue ? 'text-error' : 'text-tertiary'
                           }`}
                         >
                           {inv.invoice_date_due
@@ -403,7 +403,7 @@ export default function InvoicesPage() {
                             {paymentCfg.label}
                           </span>
                         ) : (
-                          <span className="text-[12px] text-[#444]">—</span>
+                          <span className="text-[12px] text-tertiary">—</span>
                         )}
                       </td>
                     </motion.tr>
@@ -416,15 +416,15 @@ export default function InvoicesPage() {
 
         {/* Pagination */}
         {invoices.length > 0 && (
-          <div className="flex items-center justify-between px-6 py-4 border-t border-[#1F1F1F]">
-            <span className="text-[12px] text-[#555] font-light">
+          <div className="flex items-center justify-between px-6 py-4 border-t border-border">
+            <span className="text-[12px] text-tertiary font-light">
               Page {page} of {totalPages} &middot; {data?.total ?? 0} invoices
             </span>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page <= 1}
-                className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-[#888] bg-[#1A1A1A] border border-[#1F1F1F] rounded-md hover:text-white hover:border-[#333] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+                className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-tertiary bg-surface border border-border rounded-md hover:text-foreground hover:border-border disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
               >
                 <ChevronLeft size={13} />
                 Previous
@@ -432,7 +432,7 @@ export default function InvoicesPage() {
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page >= totalPages}
-                className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-[#888] bg-[#1A1A1A] border border-[#1F1F1F] rounded-md hover:text-white hover:border-[#333] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+                className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-tertiary bg-surface border border-border rounded-md hover:text-foreground hover:border-border disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
               >
                 Next
                 <ChevronRight size={13} />

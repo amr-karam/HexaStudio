@@ -143,11 +143,11 @@ export function PDFDownloadButton({
 
   const variantClasses: Record<NonNullable<PDFDownloadButtonProps['variant']>, string> = {
     primary:
-      'bg-[#D4A843] text-[#0A0A0A] hover:bg-[#D4A843]/90 hover:shadow-[0_0_20px_rgba(212,168,67,0.15)]',
+      'bg-gold text-void-deep hover:bg-gold/90 hover:shadow-[0_0_20px_rgba(212, 175, 55,0.15)]',
     secondary:
-      'bg-transparent text-[#D4A843] border border-[#D4A843]/30 hover:bg-[#D4A843]/10 hover:border-[#D4A843]/50',
+      'bg-transparent text-gold border border-gold/30 hover:bg-gold/10 hover:border-gold/50',
     ghost:
-      'bg-transparent text-[#888] hover:text-[#D4A843] hover:bg-[#D4A843]/5',
+      'bg-transparent text-tertiary hover:text-gold hover:bg-gold/5',
   };
 
   const isDisabled = disabled || state === 'loading';
@@ -163,8 +163,8 @@ export function PDFDownloadButton({
         'disabled:opacity-40 disabled:cursor-not-allowed',
         variantClasses[variant],
         sizeClasses[size],
-        state === 'success' && '!bg-emerald-500/10 !text-emerald-400 !border-emerald-500/20',
-        state === 'error' && '!bg-red-500/10 !text-red-400 !border-red-500/20',
+        state === 'success' && '!bg-success/10 !text-success !border-emerald-500/20',
+        state === 'error' && '!bg-error/10 !text-error !border-red-500/20',
         className,
       )}
       title={`Download invoice ${invoiceData.invoiceNumber} as PDF`}
@@ -172,9 +172,9 @@ export function PDFDownloadButton({
       {state === 'loading' ? (
         <Loader2 size={size === 'sm' ? 13 : 15} className="animate-spin" />
       ) : state === 'success' ? (
-        <Download size={size === 'sm' ? 13 : 15} className="text-emerald-400" />
+        <Download size={size === 'sm' ? 13 : 15} className="text-success" />
       ) : state === 'error' ? (
-        <FileText size={size === 'sm' ? 13 : 15} className="text-red-400" />
+        <FileText size={size === 'sm' ? 13 : 15} className="text-error" />
       ) : (
         <Download size={size === 'sm' ? 13 : 15} />
       )}

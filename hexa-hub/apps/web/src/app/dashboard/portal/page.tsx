@@ -102,21 +102,21 @@ export default function PortalPage() {
     <div className="p-4 md:p-8 lg:p-10 min-h-screen">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-        <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-[#666] mb-3">
+        <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-tertiary mb-3">
           <FolderKanban size={13} />
           <span>Client Portal</span>
         </div>
-        <h1 className="text-2xl md:text-3xl font-serif font-light text-white mb-1">
+        <h1 className="text-2xl md:text-3xl font-serif font-light text-foreground mb-1">
           Welcome, valued client
         </h1>
-        <p className="text-[13px] text-[#666] font-light">
+        <p className="text-[13px] text-tertiary font-light">
           Here&rsquo;s an overview of your active projects and recent deliverables.
         </p>
       </motion.div>
 
       {isLoading ? (
         <div className="flex items-center justify-center py-20">
-          <div className="w-6 h-6 border-2 border-[#D4A843]/30 border-t-[#D4A843] rounded-full animate-spin" />
+          <div className="w-6 h-6 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
         </div>
       ) : (
         <>
@@ -128,9 +128,9 @@ export default function PortalPage() {
             className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-8"
           >
             {[
-              { icon: MessageCircle, label: 'Message Team', color: 'bg-[#D4A843]/10 text-[#D4A843]' },
-              { icon: FileText, label: 'View Invoices', color: 'bg-blue-500/10 text-blue-400' },
-              { icon: CheckCircle2, label: 'Approve Deliverables', color: 'bg-emerald-500/10 text-emerald-400' },
+              { icon: MessageCircle, label: 'Message Team', color: 'bg-gold/10 text-gold' },
+              { icon: FileText, label: 'View Invoices', color: 'bg-info/10 text-info' },
+              { icon: CheckCircle2, label: 'Approve Deliverables', color: 'bg-success/10 text-success' },
               { icon: Calendar, label: 'Upcoming Meetings', color: 'bg-purple-500/10 text-purple-400' },
             ].map((action, i) => {
               const Icon = action.icon;
@@ -141,7 +141,7 @@ export default function PortalPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 + i * 0.05 }}
                   whileHover={{ scale: 1.02 }}
-                  className="flex items-center justify-center gap-2 p-3 bg-[#141414] border border-[#1F1F1F] rounded-xl text-sm font-light hover:border-[#D4A843]/20 transition-all"
+                  className="flex items-center justify-center gap-2 p-3 bg-surface border border-border rounded-xl text-sm font-light hover:border-gold/20 transition-all"
                 >
                   <span className={`w-7 h-7 rounded-lg flex items-center justify-center ${action.color}`}>
                     <Icon size={14} />
@@ -160,8 +160,8 @@ export default function PortalPage() {
             className="mb-8"
           >
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-serif font-light text-white">Your Projects</h2>
-              <span className="text-[11px] text-[#555]">{projects.length} active</span>
+              <h2 className="text-lg font-serif font-light text-foreground">Your Projects</h2>
+              <span className="text-[11px] text-tertiary">{projects.length} active</span>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {projects.map((project, i) => (
@@ -184,19 +184,19 @@ export default function PortalPage() {
             transition={{ delay: 0.4 }}
           >
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-serif font-light text-white">Recent Deliverables</h2>
-              <a href="/dashboard/portal/deliverables" className="text-[11px] text-[#D4A843] hover:underline">
+              <h2 className="text-lg font-serif font-light text-foreground">Recent Deliverables</h2>
+              <a href="/dashboard/portal/deliverables" className="text-[11px] text-gold hover:underline">
                 View all →
               </a>
             </div>
-            <div className="bg-[#141414] border border-[#1F1F1F] rounded-2xl overflow-hidden">
+            <div className="bg-surface border border-border rounded-2xl overflow-hidden">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-[#1F1F1F]">
-                    <th className="text-left text-[10px] uppercase tracking-wider text-[#555] font-medium pb-2.5 px-4 first:pl-4">Title</th>
-                    <th className="text-left text-[10px] uppercase tracking-wider text-[#555] font-medium pb-2.5">Status</th>
-                    <th className="text-left text-[10px] uppercase tracking-wider text-[#555] font-medium pb-2.5">Date</th>
-                    <th className="text-right text-[10px] uppercase tracking-wider text-[#555] font-medium pb-2.5 pr-4">Actions</th>
+                  <tr className="border-b border-border">
+                    <th className="text-left text-[10px] uppercase tracking-wider text-tertiary font-medium pb-2.5 px-4 first:pl-4">Title</th>
+                    <th className="text-left text-[10px] uppercase tracking-wider text-tertiary font-medium pb-2.5">Status</th>
+                    <th className="text-left text-[10px] uppercase tracking-wider text-tertiary font-medium pb-2.5">Date</th>
+                    <th className="text-right text-[10px] uppercase tracking-wider text-tertiary font-medium pb-2.5 pr-4">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -206,31 +206,31 @@ export default function PortalPage() {
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.5 + i * 0.05 }}
-                      className="border-b border-[#1F1F1F] last:border-0"
+                      className="border-b border-border last:border-0"
                     >
                       <td className="px-4 py-3 first:pl-4">
-                        <p className="text-sm text-white font-light">{d.title}</p>
-                        <p className="text-[11px] text-[#555]">{d.description}</p>
+                        <p className="text-sm text-foreground font-light">{d.title}</p>
+                        <p className="text-[11px] text-tertiary">{d.description}</p>
                       </td>
                       <td className="py-3">
                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${
                           d.status === 'approved'
-                            ? 'bg-emerald-500/10 text-emerald-400'
+                            ? 'bg-success/10 text-success'
                             : d.status === 'rejected'
-                            ? 'bg-red-500/10 text-red-400'
+                            ? 'bg-error/10 text-error'
                             : 'bg-amber-500/10 text-amber-400'
                         }`}>
                           {d.status.charAt(0).toUpperCase() + d.status.slice(1)}
                         </span>
                       </td>
-                      <td className="py-3 text-[11px] text-[#666]">{d.uploadedAt}</td>
+                      <td className="py-3 text-[11px] text-tertiary">{d.uploadedAt}</td>
                       <td className="py-3 pr-4 text-right">
                         <div className="flex items-center justify-end gap-2">
-                          <button className="p-1.5 text-[#555] hover:text-white hover:bg-white/[0.03] rounded-lg transition-colors">
+                          <button className="p-1.5 text-tertiary hover:text-foreground hover:bg-white/[0.03] rounded-lg transition-colors">
                             <Download size={14} />
                           </button>
                           {d.status === 'pending' && (
-                            <button className="px-2.5 py-1 text-[10px] bg-[#D4A843] text-[#0A0A0A] rounded-lg font-medium">
+                            <button className="px-2.5 py-1 text-[10px] bg-gold text-void-deep rounded-lg font-medium">
                               Review
                             </button>
                           )}

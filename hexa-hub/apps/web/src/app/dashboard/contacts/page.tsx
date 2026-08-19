@@ -50,7 +50,7 @@ export default function ContactsPage() {
         <h1 className="text-4xl font-serif font-light mb-2">
           <span className="text-gold">Contacts</span>
         </h1>
-        <p className="text-neutral-500 font-light">
+        <p className="text-tertiary font-light">
           Manage your network of partners, clients, and collaborators.
         </p>
         <motion.div
@@ -68,7 +68,7 @@ export default function ContactsPage() {
           className={`px-4 py-2 rounded-lg text-sm font-light transition-all ${
             tab === 'all'
               ? 'bg-gold/10 text-gold border border-gold/30'
-              : 'text-neutral-500 border border-transparent hover:text-neutral-300'
+              : 'text-tertiary border border-transparent hover:text-secondary'
           }`}
         >
           All Contacts
@@ -78,7 +78,7 @@ export default function ContactsPage() {
           className={`px-4 py-2 rounded-lg text-sm font-light transition-all ${
             tab === 'clients'
               ? 'bg-gold/10 text-gold border border-gold/30'
-              : 'text-neutral-500 border border-transparent hover:text-neutral-300'
+              : 'text-tertiary border border-transparent hover:text-secondary'
           }`}
         >
           Clients
@@ -89,13 +89,13 @@ export default function ContactsPage() {
       <div className="relative mb-6">
         <div className="flex items-center gap-3">
           <div className="relative flex-1">
-            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-600" />
+            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-tertiary" />
             <input
               type="text"
               placeholder="Search contacts..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 bg-surface border border-border rounded-xl text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-gold/30 focus:ring-1 focus:ring-gold/10 transition-all"
+              className="w-full pl-11 pr-4 py-3 bg-surface border border-border rounded-xl text-sm text-foreground placeholder-neutral-600 focus:outline-none focus:border-gold/30 focus:ring-1 focus:ring-gold/10 transition-all"
             />
           </div>
           <ExportButton
@@ -111,7 +111,7 @@ export default function ContactsPage() {
       {/* Contact List */}
       <div className="bg-surface border border-border rounded-2xl overflow-hidden">
         <div className="px-6 py-4 border-b border-border/50">
-          <p className="text-sm text-neutral-400 font-light">
+          <p className="text-sm text-tertiary font-light">
             {displayTotal > 0 ? `${displayTotal} contact${displayTotal === 1 ? '' : 's'}` : 'Contacts'}
           </p>
         </div>
@@ -120,7 +120,7 @@ export default function ContactsPage() {
           <div className="p-12 text-center">
             <div className="animate-pulse space-y-4">
               {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="h-14 bg-neutral-800 rounded-lg" />
+                <div key={i} className="h-14 bg-surface rounded-lg" />
               ))}
             </div>
           </div>
@@ -135,15 +135,15 @@ export default function ContactsPage() {
                 className="flex items-center gap-4 px-6 py-4 hover:bg-white/[0.02] transition-colors cursor-pointer"
               >
                 <div className="w-9 h-9 rounded-full bg-surface border border-border flex items-center justify-center shrink-0">
-                  <User size={15} className="text-neutral-500" />
+                  <User size={15} className="text-tertiary" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-white/80 font-light truncate">
                     {contact.name || 'Unnamed'}
                   </p>
-                  <p className="text-xs text-neutral-600 truncate">{contact.email || '—'}</p>
+                  <p className="text-xs text-tertiary truncate">{contact.email || '—'}</p>
                 </div>
-                <span className="text-xs text-neutral-600 shrink-0">
+                <span className="text-xs text-tertiary shrink-0">
                   {contact.is_company ? 'Company' : 'Individual'}
                 </span>
                 <ChevronRight size={14} className="text-neutral-700 shrink-0" />
@@ -153,7 +153,7 @@ export default function ContactsPage() {
         ) : (
           <div className="p-12 text-center">
             <AlertCircle size={32} className="mx-auto text-neutral-700 mb-3" />
-            <p className="text-neutral-600 text-sm font-light">No contacts found.</p>
+            <p className="text-tertiary text-sm font-light">No contacts found.</p>
           </div>
         )}
       </div>

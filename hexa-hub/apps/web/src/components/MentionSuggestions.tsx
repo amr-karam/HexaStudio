@@ -137,7 +137,7 @@ export function MentionSuggestions({
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -8, scale: 0.96 }}
           transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute bottom-full left-0 mb-2 w-72 bg-[#141414] border border-[#1F1F1F] rounded-xl shadow-2xl overflow-hidden z-50"
+          className="absolute bottom-full left-0 mb-2 w-72 bg-surface border border-border rounded-xl shadow-2xl overflow-hidden z-50"
         >
           <div className="p-2">
             {suggestions.map((user, i) => {
@@ -149,16 +149,16 @@ export function MentionSuggestions({
                   onClick={() => onSelect(user)}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-colors duration-150 ${
                     isHighlighted
-                      ? 'bg-[#D4A843]/10 text-[#D4A843]'
-                      : 'text-neutral-400 hover:bg-white/[0.04] hover:text-white'
+                      ? 'bg-gold/10 text-gold'
+                      : 'text-tertiary hover:bg-white/[0.04] hover:text-white'
                   }`}
                 >
                   {/* Avatar */}
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium shrink-0 ${
                       isSpecial
-                        ? 'bg-[#D4A843]/20 text-[#D4A843]'
-                        : 'bg-[#1F1F1F] text-[#888]'
+                        ? 'bg-gold/20 text-gold'
+                        : 'bg-border text-tertiary'
                     }`}
                   >
                     {isSpecial ? (
@@ -174,24 +174,24 @@ export function MentionSuggestions({
                         @{user.fullName}
                       </span>
                       {isSpecial && (
-                        <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 bg-[#D4A843]/10 text-[#D4A843] rounded font-medium">
+                        <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 bg-gold/10 text-gold rounded font-medium">
                           {user.role}
                         </span>
                       )}
                     </div>
                     {isSpecial ? (
-                      <span className="text-[11px] text-[#555]">
+                      <span className="text-[11px] text-tertiary">
                         {user.label ?? `@${user.fullName}`}
                       </span>
                     ) : (
-                      <span className="text-[11px] text-[#555] truncate">
+                      <span className="text-[11px] text-tertiary truncate">
                         {user.email}
                       </span>
                     )}
                   </div>
 
                   {isHighlighted && (
-                    <span className="text-[9px] text-[#555] font-mono">↩</span>
+                    <span className="text-[9px] text-tertiary font-mono">↩</span>
                   )}
                 </button>
               );
@@ -199,7 +199,7 @@ export function MentionSuggestions({
           </div>
 
           {/* Footer hint */}
-          <div className="px-3 py-2 border-t border-[#1F1F1F]/50 flex items-center gap-2 text-[10px] text-[#444]">
+          <div className="px-3 py-2 border-t border-border flex items-center gap-2 text-[10px] text-tertiary">
             <Shield size={10} />
             <span>Use @all, @here, or @role:admin for group mentions</span>
           </div>

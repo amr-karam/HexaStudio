@@ -34,8 +34,8 @@ const PRIORITY_CONFIG: Record<
 > = {
   urgent: {
     label: 'Urgent',
-    bg: 'bg-red-500/10',
-    text: 'text-red-400',
+    bg: 'bg-error/10',
+    text: 'text-error',
     dot: 'bg-red-400',
   },
   high: {
@@ -46,14 +46,14 @@ const PRIORITY_CONFIG: Record<
   },
   medium: {
     label: 'Medium',
-    bg: 'bg-blue-500/10',
-    text: 'text-blue-400',
+    bg: 'bg-info/10',
+    text: 'text-info',
     dot: 'bg-blue-400',
   },
   low: {
     label: 'Low',
     bg: 'bg-neutral-500/10',
-    text: 'text-neutral-400',
+    text: 'text-tertiary',
     dot: 'bg-neutral-500',
   },
 };
@@ -149,20 +149,20 @@ export default function HelpdeskPage() {
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="mb-10"
       >
-        <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-neutral-500 mb-4">
+        <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-tertiary mb-4">
           <MessageSquareMore size={13} />
           <span>Helpdesk</span>
         </div>
         <div className="flex items-end justify-between">
           <div>
-            <h1 className="text-3xl font-serif font-light text-white mb-1">
+            <h1 className="text-3xl font-serif font-light text-foreground mb-1">
               Helpdesk
             </h1>
-            <p className="text-[13px] text-neutral-500 font-light">
+            <p className="text-[13px] text-tertiary font-light">
               {resolvedTotal} support tickets
             </p>
           </div>
-          <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#D4A843] text-[#0A0A0A] text-sm font-light tracking-wide rounded-lg hover:bg-[#D4A843]/90 hover:shadow-[0_0_20px_rgba(212,168,67,0.15)] transition-all duration-300">
+          <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-gold text-void-deep text-sm font-light tracking-wide rounded-lg hover:bg-gold/90 hover:shadow-[0_0_20px_rgba(212, 175, 55,0.15)] transition-all duration-300">
             <Plus size={15} />
             New Ticket
           </button>
@@ -179,20 +179,20 @@ export default function HelpdeskPage() {
         <div className="relative flex-1 max-w-sm">
           <Search
             size={15}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-600"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-tertiary"
           />
           <input
             type="text"
             placeholder="Search tickets..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-[#141414] border border-[#1F1F1F] rounded-lg text-sm text-white placeholder:text-neutral-600 font-light focus:outline-none focus:border-[#D4A843]/40 focus:ring-1 focus:ring-[#D4A843]/20 transition-all duration-300"
+            className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-lg text-sm text-foreground placeholder:text-tertiary font-light focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20/20 transition-all duration-300"
           />
         </div>
         <div className="relative">
           <Filter
             size={13}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-600 pointer-events-none"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-tertiary pointer-events-none"
           />
           <select
             value={stageFilter}
@@ -200,7 +200,7 @@ export default function HelpdeskPage() {
               setStageFilter(e.target.value);
               setPage(1);
             }}
-            className="appearance-none pl-9 pr-8 py-2.5 bg-[#141414] border border-[#1F1F1F] rounded-lg text-sm text-neutral-300 font-light focus:outline-none focus:border-[#D4A843]/40 transition-all duration-300 cursor-pointer"
+            className="appearance-none pl-9 pr-8 py-2.5 bg-surface border border-border rounded-lg text-sm text-secondary font-light focus:outline-none focus:border-gold/40 transition-all duration-300 cursor-pointer"
           >
             {STAGE_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -208,25 +208,25 @@ export default function HelpdeskPage() {
               </option>
             ))}
           </select>
-          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-600 pointer-events-none" />
+          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-tertiary pointer-events-none" />
         </div>
       </motion.div>
 
       {/* Content */}
       {isLoading ? (
         <div className="p-16 flex flex-col items-center justify-center gap-3">
-          <div className="w-6 h-6 border-2 border-[#D4A843]/30 border-t-[#D4A843] rounded-full animate-spin" />
-          <span className="text-[12px] text-neutral-600 font-light tracking-wide">
+          <div className="w-6 h-6 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
+          <span className="text-[12px] text-tertiary font-light tracking-wide">
             Loading tickets...
           </span>
         </div>
       ) : isError ? (
         <div className="p-16 text-center">
-          <AlertCircle size={32} className="text-red-400/60 mx-auto mb-3" />
-          <p className="text-red-400 text-sm font-light">
+          <AlertCircle size={32} className="text-error/60 mx-auto mb-3" />
+          <p className="text-error text-sm font-light">
             Failed to load tickets.
           </p>
-          <p className="text-neutral-600 text-xs mt-1 font-light">
+          <p className="text-tertiary text-xs mt-1 font-light">
             Please check your connection and try again.
           </p>
         </div>
@@ -236,10 +236,10 @@ export default function HelpdeskPage() {
             size={32}
             className="text-neutral-700 mx-auto mb-3"
           />
-          <p className="text-neutral-500 text-sm font-light">
+          <p className="text-tertiary text-sm font-light">
             No tickets found.
           </p>
-          <p className="text-neutral-600 text-xs mt-1 font-light">
+          <p className="text-tertiary text-xs mt-1 font-light">
             {debouncedSearch || stageFilter
               ? 'Try adjusting your filters.'
               : 'Create a new ticket to get started.'}
@@ -251,28 +251,28 @@ export default function HelpdeskPage() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="bg-[#141414] border border-[#1F1F1F] rounded-xl overflow-hidden"
+          className="bg-surface border border-border rounded-xl overflow-hidden"
         >
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#1F1F1F]">
-                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-neutral-500">
+                <tr className="border-b border-border">
+                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     Subject
                   </th>
-                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-neutral-500">
+                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     Customer
                   </th>
-                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-neutral-500">
+                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     Priority
                   </th>
-                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-neutral-500">
+                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     Stage
                   </th>
-                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-neutral-500">
+                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     Assigned To
                   </th>
-                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-neutral-500">
+                  <th className="px-6 py-3.5 text-left text-[11px] font-medium uppercase tracking-[0.15em] text-tertiary">
                     Created
                   </th>
                   <th className="w-10 px-6 py-3.5" />
@@ -294,15 +294,15 @@ export default function HelpdeskPage() {
                       onClick={() =>
                         router.push(`/dashboard/helpdesk/${ticket.id}`)
                       }
-                      className="border-b border-[#1F1F1F]/50 last:border-0 hover:bg-white/[0.02] cursor-pointer transition-colors duration-200 group"
+                      className="border-b border-border last:border-0 hover:bg-white/[0.02] cursor-pointer transition-colors duration-200 group"
                     >
                       <td className="px-6 py-4">
-                        <span className="text-sm text-white font-light group-hover:text-[#D4A843] transition-colors duration-200">
+                        <span className="text-sm text-foreground font-light group-hover:text-gold transition-colors duration-200">
                           {ticket.subject}
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-sm text-neutral-400 font-light">
+                        <span className="text-sm text-tertiary font-light">
                           {ticket.customer_name || '—'}
                         </span>
                       </td>
@@ -317,27 +317,27 @@ export default function HelpdeskPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-[12px] text-neutral-400 font-light capitalize">
+                        <span className="text-[12px] text-tertiary font-light capitalize">
                           {(ticket.stage || 'new').replace(/_/g, ' ')}
                         </span>
                       </td>
                       <td className="px-6 py-4">
                         {ticket.assigned_to_name ? (
-                          <span className="inline-flex items-center gap-2 text-sm text-neutral-400 font-light">
-                            <span className="w-6 h-6 rounded-full bg-[#D4A843]/10 text-[#D4A843] text-[10px] font-medium flex items-center justify-center shrink-0">
+                          <span className="inline-flex items-center gap-2 text-sm text-tertiary font-light">
+                            <span className="w-6 h-6 rounded-full bg-gold/10 text-gold text-[10px] font-medium flex items-center justify-center shrink-0">
                               {getInitials(ticket.assigned_to_name)}
                             </span>
                             {ticket.assigned_to_name}
                           </span>
                         ) : (
-                          <span className="text-[12px] text-neutral-600">
+                          <span className="text-[12px] text-tertiary">
                             Unassigned
                           </span>
                         )}
                       </td>
                       <td className="px-6 py-4">
-                        <span className="flex items-center gap-1.5 text-[12px] text-neutral-500 font-light">
-                          <Clock size={11} className="text-neutral-600" />
+                        <span className="flex items-center gap-1.5 text-[12px] text-tertiary font-light">
+                          <Clock size={11} className="text-tertiary" />
                           {ticket.created_at
                             ? formatDate(ticket.created_at)
                             : '—'}
@@ -346,7 +346,7 @@ export default function HelpdeskPage() {
                       <td className="px-6 py-4">
                         <ChevronRight
                           size={14}
-                          className="text-neutral-700 group-hover:text-[#D4A843] transition-colors duration-200"
+                          className="text-neutral-700 group-hover:text-gold transition-colors duration-200"
                         />
                       </td>
                     </motion.tr>
@@ -366,14 +366,14 @@ export default function HelpdeskPage() {
           transition={{ delay: 0.4 }}
           className="flex items-center justify-between mt-6"
         >
-          <span className="text-[12px] text-neutral-500 font-light">
+          <span className="text-[12px] text-tertiary font-light">
             Page {page} of {resolvedTotalPages} &middot; {resolvedTotal} tickets
           </span>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-neutral-400 bg-[#1A1A1A] border border-[#1F1F1F] rounded-md hover:text-white hover:border-[#333] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 font-light"
+              className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-tertiary bg-surface border border-border rounded-md hover:text-foreground hover:border-border disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 font-light"
             >
               <ChevronRight size={13} className="rotate-180" />
               Previous
@@ -381,7 +381,7 @@ export default function HelpdeskPage() {
             <button
               onClick={() => setPage((p) => Math.min(resolvedTotalPages, p + 1))}
               disabled={page >= resolvedTotalPages}
-              className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-neutral-400 bg-[#1A1A1A] border border-[#1F1F1F] rounded-md hover:text-white hover:border-[#333] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 font-light"
+              className="flex items-center gap-1 px-3 py-1.5 text-[12px] text-tertiary bg-surface border border-border rounded-md hover:text-foreground hover:border-border disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 font-light"
             >
               Next
               <ChevronRight size={13} />

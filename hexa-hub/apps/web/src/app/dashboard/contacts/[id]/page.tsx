@@ -46,13 +46,13 @@ export default function ContactDetailPage() {
 
   if (loading) return (
     <div className="min-h-screen bg-background flex items-center justify-center">
-      <div className="w-6 h-6 border-2 border-[#D4A843]/30 border-t-[#D4A843] rounded-full animate-spin" />
+      <div className="w-6 h-6 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
     </div>
   );
 
   if (error) return (
     <div className="min-h-screen bg-background flex items-center justify-center">
-      <div className="text-center"><AlertCircle size={32} className="mx-auto text-red-400 mb-3" /><p className="text-red-400">{error}</p></div>
+      <div className="text-center"><AlertCircle size={32} className="mx-auto text-error mb-3" /><p className="text-error">{error}</p></div>
     </div>
   );
 
@@ -62,32 +62,32 @@ export default function ContactDetailPage() {
 
   return (
     <div className="p-8 md:p-12 min-h-screen">
-      <button onClick={() => router.back()} className="flex items-center gap-2 text-[#666] hover:text-white mb-8 transition-colors">
+      <button onClick={() => router.back()} className="flex items-center gap-2 text-tertiary hover:text-foreground mb-8 transition-colors">
         <ChevronLeft size={16} /> <span className="text-sm">Back to Contacts</span>
       </button>
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
         {/* Header */}
         <div className="flex items-start gap-6 mb-8">
-          <div className="w-20 h-20 rounded-2xl bg-[#1F1F1F] flex items-center justify-center text-2xl text-[#888] font-light shrink-0">
+          <div className="w-20 h-20 rounded-2xl bg-border flex items-center justify-center text-2xl text-tertiary font-light shrink-0">
             {initials}
           </div>
           <div className="flex-1">
-            <h1 className="text-3xl font-serif font-light text-white mb-1">{contact.name}</h1>
-            <div className="flex items-center gap-3 text-sm text-[#666]">
+            <h1 className="text-3xl font-serif font-light text-foreground mb-1">{contact.name}</h1>
+            <div className="flex items-center gap-3 text-sm text-tertiary">
               {contact.company_id && <><Building2 size={13} />{contact.company_id[1]}</>}
               {contact.create_date && <><Clock size={13} /> Since {new Date(contact.create_date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</>}
             </div>
           </div>
-          <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="px-4 py-2 bg-white/5 border border-[#1F1F1F] text-white rounded-lg text-sm flex items-center gap-2">
+          <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="px-4 py-2 bg-white/5 border border-border text-foreground rounded-lg text-sm flex items-center gap-2">
             <Edit3 size={14} /> Edit
           </motion.button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Contact Details */}
-          <div className="p-6 bg-[#141414] border border-[#1F1F1F] rounded-xl">
-            <h3 className="text-sm font-serif text-white mb-4">Contact Info</h3>
+          <div className="p-6 bg-surface border border-border rounded-xl">
+            <h3 className="text-sm font-serif text-foreground mb-4">Contact Info</h3>
             <div className="space-y-4">
               {contact.email && <InfoRow icon={Mail} label="Email" value={contact.email} />}
               {contact.phone && <InfoRow icon={Phone} label="Phone" value={contact.phone} />}
@@ -97,20 +97,20 @@ export default function ContactDetailPage() {
           </div>
 
           {/* Address */}
-          <div className="p-6 bg-[#141414] border border-[#1F1F1F] rounded-xl">
-            <h3 className="text-sm font-serif text-white mb-4">Address</h3>
+          <div className="p-6 bg-surface border border-border rounded-xl">
+            <h3 className="text-sm font-serif text-foreground mb-4">Address</h3>
             {(contact.street || contact.city) ? (
               <div className="space-y-1">
                 <InfoRow icon={MapPin} label="" value={[contact.street, contact.city, contact.zip, contact.country_id?.[1]].filter(Boolean).join(', ')} />
               </div>
             ) : (
-              <p className="text-sm text-[#555] italic">No address on file</p>
+              <p className="text-sm text-tertiary italic">No address on file</p>
             )}
           </div>
 
           {/* Related */}
-          <div className="p-6 bg-[#141414] border border-[#1F1F1F] rounded-xl">
-            <h3 className="text-sm font-serif text-white mb-4">Related</h3>
+          <div className="p-6 bg-surface border border-border rounded-xl">
+            <h3 className="text-sm font-serif text-foreground mb-4">Related</h3>
             <div className="space-y-3">
               <QuickLink icon={FolderKanban} label="Projects" count="—" />
               <QuickLink icon={FileText} label="Invoices" count="—" />
@@ -119,9 +119,9 @@ export default function ContactDetailPage() {
         </div>
 
         {contact.comment && (
-          <div className="mt-6 p-6 bg-[#141414] border border-[#1F1F1F] rounded-xl">
-            <h3 className="text-sm font-serif text-white mb-3">Notes</h3>
-            <p className="text-sm text-[#888] font-light whitespace-pre-wrap">{contact.comment}</p>
+          <div className="mt-6 p-6 bg-surface border border-border rounded-xl">
+            <h3 className="text-sm font-serif text-foreground mb-3">Notes</h3>
+            <p className="text-sm text-tertiary font-light whitespace-pre-wrap">{contact.comment}</p>
           </div>
         )}
       </motion.div>
@@ -132,10 +132,10 @@ export default function ContactDetailPage() {
 function InfoRow({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string }) {
   return (
     <div className="flex items-start gap-3">
-      <Icon size={15} className="text-[#555] mt-0.5 shrink-0" />
+      <Icon size={15} className="text-tertiary mt-0.5 shrink-0" />
       <div className="min-w-0">
-        {label && <p className="text-[10px] uppercase tracking-wider text-[#666]">{label}</p>}
-        <p className="text-sm text-white font-light truncate">{value}</p>
+        {label && <p className="text-[10px] uppercase tracking-wider text-tertiary">{label}</p>}
+        <p className="text-sm text-foreground font-light truncate">{value}</p>
       </div>
     </div>
   );
@@ -145,10 +145,10 @@ function QuickLink({ icon: Icon, label, count }: { icon: React.ElementType; labe
   return (
     <div className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-white/[0.02] transition-colors cursor-pointer">
       <div className="flex items-center gap-2">
-        <Icon size={14} className="text-[#555]" />
-        <span className="text-sm text-[#888] font-light">{label}</span>
+        <Icon size={14} className="text-tertiary" />
+        <span className="text-sm text-tertiary font-light">{label}</span>
       </div>
-      <span className="text-xs text-[#555]">{count}</span>
+      <span className="text-xs text-tertiary">{count}</span>
     </div>
   );
 }

@@ -77,7 +77,7 @@ export const MetricCard = ({
         {isLoading ? (
           <div className="h-8 w-20 bg-white/20 rounded animate-pulse" />
         ) : (
-          <span className="text-2xl font-bold text-white">{value}</span>
+          <span className="text-2xl font-bold text-foreground">{value}</span>
         )}
       </div>
 

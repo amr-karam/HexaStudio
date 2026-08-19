@@ -21,14 +21,14 @@ export function ChannelMessageInput({ value, onChange, onSend, isPending }: Prop
   };
 
   return (
-    <form onSubmit={onSend} className="p-4 border-t border-[#1F1F1F] flex gap-3 relative">
+    <form onSubmit={onSend} className="p-4 border-t border-border flex gap-3 relative">
       <div className="flex-1 relative">
         <input
           ref={inputRef}
           value={value}
           onChange={handleChange}
           placeholder="Message #channel... @ to mention"
-          className="w-full bg-[#1A1A1A] border border-[#1F1F1F] rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#D4A843]/50 transition-all"
+          className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-sm text-foreground outline-none focus:border-gold/50 transition-all"
         />
         <MentionSuggestions
           suggestions={suggestions}
@@ -42,7 +42,7 @@ export function ChannelMessageInput({ value, onChange, onSend, isPending }: Prop
       <button
         type="submit"
         disabled={isPending || !value.trim()}
-        className="bg-[#D4A843] text-[#0A0A0A] p-3 rounded-xl hover:bg-[#D4A843]/90 transition-all disabled:opacity-40"
+        className="bg-gold text-void-deep p-3 rounded-xl hover:bg-gold/90 transition-all disabled:opacity-40"
       >
         <Send size={18} />
       </button>

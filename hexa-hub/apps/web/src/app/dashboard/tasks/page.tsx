@@ -13,10 +13,10 @@ import {
 } from 'lucide-react';
 
 const priorityColors: Record<string, string> = {
-  urgent: 'text-red-400 bg-red-500/10',
+  urgent: 'text-error bg-error/10',
   high: 'text-amber-400 bg-amber-500/10',
-  normal: 'text-blue-400 bg-blue-500/10',
-  low: 'text-neutral-500 bg-neutral-800',
+  normal: 'text-info bg-info/10',
+  low: 'text-tertiary bg-surface',
 };
 
 export default function TasksPage() {
@@ -36,7 +36,7 @@ export default function TasksPage() {
         <h1 className="text-4xl font-serif font-light mb-2">
           <span className="text-gold">Tasks</span>
         </h1>
-        <p className="text-neutral-500 font-light">
+        <p className="text-tertiary font-light">
           Track and manage project tasks across your workspace.
         </p>
         <motion.div
@@ -49,20 +49,20 @@ export default function TasksPage() {
 
       {/* Search */}
       <div className="relative mb-6">
-        <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-600" />
+        <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-tertiary" />
         <input
           type="text"
           placeholder="Search tasks..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-11 pr-4 py-3 bg-surface border border-border rounded-xl text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-gold/30 focus:ring-1 focus:ring-gold/10 transition-all"
+          className="w-full pl-11 pr-4 py-3 bg-surface border border-border rounded-xl text-sm text-foreground placeholder-neutral-600 focus:outline-none focus:border-gold/30 focus:ring-1 focus:ring-gold/10 transition-all"
         />
       </div>
 
       {/* Task List */}
       <div className="bg-surface border border-border rounded-2xl overflow-hidden">
         <div className="px-6 py-4 border-b border-border/50">
-          <p className="text-sm text-neutral-400 font-light">
+          <p className="text-sm text-tertiary font-light">
             {total > 0 ? `${total} task${total === 1 ? '' : 's'}` : 'Tasks'}
           </p>
         </div>
@@ -71,7 +71,7 @@ export default function TasksPage() {
           <div className="p-12 text-center">
             <div className="animate-pulse space-y-4">
               {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="h-14 bg-neutral-800 rounded-lg" />
+                <div key={i} className="h-14 bg-surface rounded-lg" />
               ))}
             </div>
           </div>
@@ -87,9 +87,9 @@ export default function TasksPage() {
               >
                 <div className="shrink-0">
                   {task.state === 'done' ? (
-                    <CheckCircle2 size={18} className="text-emerald-400" />
+                    <CheckCircle2 size={18} className="text-success" />
                   ) : (
-                    <CheckSquare size={18} className="text-neutral-600" />
+                    <CheckSquare size={18} className="text-tertiary" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -97,7 +97,7 @@ export default function TasksPage() {
                     {task.name || 'Unnamed Task'}
                   </p>
                   {task.date_deadline && (
-                    <p className="text-xs text-neutral-600 mt-0.5 flex items-center gap-1">
+                    <p className="text-xs text-tertiary mt-0.5 flex items-center gap-1">
                       <Clock size={10} />
                       {new Date(task.date_deadline).toLocaleDateString()}
                     </p>
@@ -106,7 +106,7 @@ export default function TasksPage() {
                 {task.priority && (
                   <span
                     className={`text-[10px] uppercase tracking-wider font-medium px-2 py-0.5 rounded-md ${
-                      priorityColors[task.priority] || 'text-neutral-500 bg-neutral-800'
+                      priorityColors[task.priority] || 'text-tertiary bg-surface'
                     }`}
                   >
                     {task.priority}
@@ -119,7 +119,7 @@ export default function TasksPage() {
         ) : (
           <div className="p-12 text-center">
             <AlertCircle size={32} className="mx-auto text-neutral-700 mb-3" />
-            <p className="text-neutral-600 text-sm font-light">No tasks found.</p>
+            <p className="text-tertiary text-sm font-light">No tasks found.</p>
           </div>
         )}
       </div>

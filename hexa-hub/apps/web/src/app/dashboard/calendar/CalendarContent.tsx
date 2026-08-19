@@ -36,26 +36,26 @@ const EVENT_TYPE_CONFIG: Record<
   meeting: {
     label: 'Meeting',
     dot: 'bg-blue-400',
-    chip: 'bg-blue-500/10 border-blue-500/20',
-    chipText: 'text-blue-400',
+    chip: 'bg-info/10 border-blue-500/20',
+    chipText: 'text-info',
   },
   consultation: {
     label: 'Consultation',
-    dot: 'bg-[#D4A843]',
-    chip: 'bg-[#D4A843]/10 border-[#D4A843]/20',
-    chipText: 'text-[#D4A843]',
+    dot: 'bg-gold',
+    chip: 'bg-gold/10 border-gold/20',
+    chipText: 'text-gold',
   },
   deadline: {
     label: 'Deadline',
     dot: 'bg-red-400',
-    chip: 'bg-red-500/10 border-red-500/20',
-    chipText: 'text-red-400',
+    chip: 'bg-error/10 border-red-500/20',
+    chipText: 'text-error',
   },
   reminder: {
     label: 'Reminder',
     dot: 'bg-neutral-400',
     chip: 'bg-neutral-500/10 border-neutral-500/20',
-    chipText: 'text-neutral-400',
+    chipText: 'text-tertiary',
   },
 };
 
@@ -198,20 +198,20 @@ export default function CalendarContent() {
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="mb-10"
       >
-        <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-neutral-500 mb-4">
+        <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-tertiary mb-4">
           <CalendarIcon size={13} />
           <span>Calendar</span>
         </div>
         <div className="flex items-end justify-between">
           <div>
-            <h1 className="text-3xl font-serif font-light text-white mb-1">
+            <h1 className="text-3xl font-serif font-light text-foreground mb-1">
               Calendar
             </h1>
-            <p className="text-[13px] text-neutral-500 font-light">
+            <p className="text-[13px] text-tertiary font-light">
               {resolvedTotal} events this month
             </p>
           </div>
-          <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#D4A843] text-[#0A0A0A] text-sm font-light tracking-wide rounded-lg hover:bg-[#D4A843]/90 hover:shadow-[0_0_20px_rgba(212,168,67,0.15)] transition-all duration-300">
+          <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-gold text-void-deep text-sm font-light tracking-wide rounded-lg hover:bg-gold/90 hover:shadow-[0_0_20px_rgba(212, 175, 55,0.15)] transition-all duration-300">
             <Plus size={15} />
             New Event
           </button>
@@ -223,33 +223,33 @@ export default function CalendarContent() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-        className="bg-[#141414] border border-[#1F1F1F] rounded-xl overflow-hidden mb-8"
+        className="bg-surface border border-border rounded-xl overflow-hidden mb-8"
       >
         {/* Month Navigation */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#1F1F1F]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
           <button
             onClick={goPrevMonth}
-            className="p-1.5 rounded-lg text-neutral-500 hover:text-white hover:bg-white/[0.05] transition-all duration-200"
+            className="p-1.5 rounded-lg text-tertiary hover:text-foreground hover:bg-white/[0.05] transition-all duration-200"
           >
             <ChevronLeft size={18} />
           </button>
-          <h2 className="text-lg font-serif font-light text-white">
+          <h2 className="text-lg font-serif font-light text-foreground">
             {MONTH_NAMES[currentMonth]} {currentYear}
           </h2>
           <button
             onClick={goNextMonth}
-            className="p-1.5 rounded-lg text-neutral-500 hover:text-white hover:bg-white/[0.05] transition-all duration-200"
+            className="p-1.5 rounded-lg text-tertiary hover:text-foreground hover:bg-white/[0.05] transition-all duration-200"
           >
             <ChevronRight size={18} />
           </button>
         </div>
 
         {/* Day Headers */}
-        <div className="grid grid-cols-7 border-b border-[#1F1F1F]">
+        <div className="grid grid-cols-7 border-b border-border">
           {DAYS_OF_WEEK.map((day) => (
             <div
               key={day}
-              className="px-2 py-3 text-center text-[10px] font-medium uppercase tracking-[0.15em] text-neutral-500"
+              className="px-2 py-3 text-center text-[10px] font-medium uppercase tracking-[0.15em] text-tertiary"
             >
               {day}
             </div>
@@ -272,9 +272,9 @@ export default function CalendarContent() {
             return (
               <div
                 key={idx}
-                className={`min-h-[72px] p-2 border-b border-r border-[#1F1F1F]/50 transition-colors duration-200 ${
+                className={`min-h-[72px] p-2 border-b border-r border-border transition-colors duration-200 ${
                   isEmpty
-                    ? 'bg-[#0A0A0A]/30'
+                    ? 'bg-void-deep'
                     : 'hover:bg-white/[0.02]'
                 } ${(idx + 1) % 7 === 0 ? 'border-r-0' : ''}`}
               >
@@ -284,8 +284,8 @@ export default function CalendarContent() {
                       <span
                         className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-light transition-all duration-200 ${
                           isToday
-                            ? 'bg-[#D4A843] text-[#0A0A0A] ring-2 ring-[#D4A843]/40'
-                            : 'text-neutral-400'
+                            ? 'bg-gold text-void-deep ring-2 ring-gold'
+                            : 'text-tertiary'
                         }`}
                       >
                         {day}
@@ -303,7 +303,7 @@ export default function CalendarContent() {
                         );
                       })}
                       {dayEvents.length > 3 && (
-                        <span className="text-[9px] text-neutral-600 font-light leading-none">
+                        <span className="text-[9px] text-tertiary font-light leading-none">
                           +{dayEvents.length - 3}
                         </span>
                       )}
@@ -322,18 +322,18 @@ export default function CalendarContent() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
       >
-        <h3 className="text-sm font-serif font-light text-white mb-4">
+        <h3 className="text-sm font-serif font-light text-foreground mb-4">
           Upcoming Events
         </h3>
 
-        <div className="bg-[#141414] border border-[#1F1F1F] rounded-xl overflow-hidden">
+        <div className="bg-surface border border-border rounded-xl overflow-hidden">
           {isLoading ? (
             <div className="p-12 flex flex-col items-center justify-center gap-3">
               <div className="animate-pulse space-y-4 w-full max-w-md">
                 {Array.from({ length: 4 }).map((_, i) => (
                   <div
                     key={i}
-                    className="h-16 bg-[#1F1F1F]/60 rounded-lg"
+                    className="h-16 bg-border rounded-lg"
                   />
                 ))}
               </div>
@@ -342,12 +342,12 @@ export default function CalendarContent() {
             <div className="p-12 text-center">
               <AlertCircle
                 size={32}
-                className="text-red-400/60 mx-auto mb-3"
+                className="text-error/60 mx-auto mb-3"
               />
-              <p className="text-red-400 text-sm font-light">
+              <p className="text-error text-sm font-light">
                 Failed to load events.
               </p>
-              <p className="text-neutral-600 text-xs mt-1 font-light">
+              <p className="text-tertiary text-xs mt-1 font-light">
                 Please check your connection and try again.
               </p>
             </div>
@@ -357,10 +357,10 @@ export default function CalendarContent() {
                 size={32}
                 className="text-neutral-700 mx-auto mb-3"
               />
-              <p className="text-neutral-500 text-sm font-light">
+              <p className="text-tertiary text-sm font-light">
                 No events scheduled this month.
               </p>
-              <p className="text-neutral-600 text-xs mt-1 font-light">
+              <p className="text-tertiary text-xs mt-1 font-light">
                 Click &quot;New Event&quot; to schedule your first event.
               </p>
             </div>
@@ -369,7 +369,7 @@ export default function CalendarContent() {
               variants={eventListVariants}
               initial="hidden"
               animate="visible"
-              className="divide-y divide-[#1F1F1F]/50"
+              className="divide-y divide-border"
             >
               {sortedEvents.map((event) => {
                 const cfg =
@@ -389,13 +389,13 @@ export default function CalendarContent() {
                     className="flex items-center gap-4 px-6 py-4 hover:bg-white/[0.02] transition-colors cursor-pointer group"
                   >
                     {/* Date block */}
-                    <div className="w-12 h-12 shrink-0 rounded-xl bg-[#1A1A1A] border border-[#1F1F1F] flex flex-col items-center justify-center">
-                      <span className="text-xs font-medium text-neutral-400">
+                    <div className="w-12 h-12 shrink-0 rounded-xl bg-surface border border-border flex flex-col items-center justify-center">
+                      <span className="text-xs font-medium text-tertiary">
                         {new Date(event.date).toLocaleDateString('en-US', {
                           day: 'numeric',
                         })}
                       </span>
-                      <span className="text-[9px] uppercase tracking-wider text-neutral-600">
+                      <span className="text-[9px] uppercase tracking-wider text-tertiary">
                         {new Date(event.date).toLocaleDateString('en-US', {
                           month: 'short',
                         })}
@@ -403,19 +403,19 @@ export default function CalendarContent() {
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-white font-light group-hover:text-[#D4A843] transition-colors duration-200 truncate">
+                      <p className="text-sm text-foreground font-light group-hover:text-gold transition-colors duration-200 truncate">
                         {event.title}
                       </p>
                       <div className="flex items-center gap-3 mt-1">
                         {timeDisplay && (
-                          <span className="flex items-center gap-1 text-[11px] text-neutral-500 font-light">
-                            <Clock size={10} className="text-neutral-600" />
+                          <span className="flex items-center gap-1 text-[11px] text-tertiary font-light">
+                            <Clock size={10} className="text-tertiary" />
                             {timeDisplay}
                           </span>
                         )}
                         {event.attendees_count !== undefined && event.attendees_count > 0 && (
-                          <span className="flex items-center gap-1 text-[11px] text-neutral-500 font-light">
-                            <Users size={10} className="text-neutral-600" />
+                          <span className="flex items-center gap-1 text-[11px] text-tertiary font-light">
+                            <Users size={10} className="text-tertiary" />
                             {event.attendees_count}
                           </span>
                         )}

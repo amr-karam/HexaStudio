@@ -83,8 +83,8 @@ function highlightMentions(text: string): React.ReactNode {
           key={i}
           className={`font-medium ${
             special
-              ? 'text-[#D4A843] bg-[#D4A843]/10 px-1 rounded'
-              : 'text-[#D4A843]'
+              ? 'text-gold bg-gold/10 px-1 rounded'
+              : 'text-gold'
           }`}
         >
           {part}
@@ -112,21 +112,21 @@ function formatTime(isoStr: string): string {
 
 function MessagesSkeleton() {
   return (
-    <div className="flex h-[calc(100vh-8rem)] bg-[#141414] border border-[#1F1F1F] rounded-2xl overflow-hidden">
+    <div className="flex h-[calc(100vh-8rem)] bg-surface border border-border rounded-2xl overflow-hidden">
       {/* Sidebar skeleton */}
-      <div className="w-72 border-r border-[#1F1F1F] flex flex-col bg-black/20 shrink-0">
+      <div className="w-72 border-r border-border flex flex-col bg-black/20 shrink-0">
         {/* Tab bar skeleton */}
-        <div className="p-2 border-b border-[#1F1F1F] flex gap-0.5">
+        <div className="p-2 border-b border-border flex gap-0.5">
           {Array.from({ length: 4 }).map((_, i) => (
             <Skeleton key={i} variant="rectangular" height={32} className="flex-1 rounded-md" />
           ))}
         </div>
         {/* Search bar skeleton */}
-        <div className="p-3 border-b border-[#1F1F1F]">
+        <div className="p-3 border-b border-border">
           <Skeleton variant="rectangular" height={34} className="rounded-lg" />
         </div>
         {/* Connection status skeleton */}
-        <div className="px-3 py-1.5 border-b border-[#1F1F1F]/50 flex items-center gap-1.5">
+        <div className="px-3 py-1.5 border-b border-border flex items-center gap-1.5">
           <Skeleton variant="circular" width={6} height={6} />
           <SkeletonText width="60px" className="h-2.5" />
         </div>
@@ -166,10 +166,10 @@ function ChatHeader({
   isOnline: boolean;
 }) {
   return (
-    <div className="px-5 py-3.5 border-b border-[#1F1F1F] flex items-center justify-between bg-[#0A0A0A]/20 shrink-0">
+    <div className="px-5 py-3.5 border-b border-border flex items-center justify-between bg-void-deep shrink-0">
       <div className="flex items-center gap-3">
         <div className="relative">
-          <div className="w-9 h-9 rounded-full bg-neutral-800 flex items-center justify-center text-white">
+          <div className="w-9 h-9 rounded-full bg-surface flex items-center justify-center text-foreground">
             <UserIcon size={15} />
           </div>
           <PresenceIndicator
@@ -179,7 +179,7 @@ function ChatHeader({
           />
         </div>
         <div>
-          <h3 className="text-sm font-serif font-light text-white">
+          <h3 className="text-sm font-serif font-light text-foreground">
             {contact.fullName}
           </h3>
           <PresenceIndicator isOnline={isOnline} showLabel />
@@ -187,17 +187,17 @@ function ChatHeader({
       </div>
       <div className="flex items-center gap-1">
         <Tooltip content="Voice Call">
-          <button className="p-2 rounded-lg text-[#555] hover:text-white hover:bg-white/[0.05] transition-colors">
+          <button className="p-2 rounded-lg text-tertiary hover:text-foreground hover:bg-white/[0.05] transition-colors">
             <Phone size={16} />
           </button>
         </Tooltip>
         <Tooltip content="Video Call">
-          <button className="p-2 rounded-lg text-[#555] hover:text-white hover:bg-white/[0.05] transition-colors">
+          <button className="p-2 rounded-lg text-tertiary hover:text-foreground hover:bg-white/[0.05] transition-colors">
             <Video size={16} />
           </button>
         </Tooltip>
         <Tooltip content="More">
-          <button className="p-2 rounded-lg text-[#555] hover:text-white hover:bg-white/[0.05] transition-colors">
+          <button className="p-2 rounded-lg text-tertiary hover:text-foreground hover:bg-white/[0.05] transition-colors">
             <MoreHorizontal size={16} />
           </button>
         </Tooltip>
@@ -226,13 +226,13 @@ function ContactItem({
       className={cn(
         'mx-2 px-3 py-2.5 rounded-lg cursor-pointer transition-colors group',
         isSelected
-          ? 'bg-[#D4A843]/10 text-[#D4A843]'
-          : 'hover:bg-white/5 text-neutral-400',
+          ? 'bg-gold/10 text-gold'
+          : 'hover:bg-white/5 text-tertiary',
       )}
     >
       <div className="flex items-center gap-2.5">
         <div className="relative shrink-0">
-          <div className="w-9 h-9 rounded-full bg-neutral-800 flex items-center justify-center text-white">
+          <div className="w-9 h-9 rounded-full bg-surface flex items-center justify-center text-foreground">
             <UserIcon size={15} />
           </div>
           <span className="absolute -bottom-0.5 -right-0.5">
@@ -244,25 +244,25 @@ function ContactItem({
             <p
               className={cn(
                 'text-xs font-medium truncate',
-                isSelected ? 'text-[#D4A843]' : 'text-white',
+                isSelected ? 'text-gold' : 'text-white',
               )}
             >
               {contact.fullName}
             </p>
             {contact.lastMessageTime && (
-              <span className="text-[9px] text-[#444] ml-2 shrink-0">
+              <span className="text-[9px] text-tertiary ml-2 shrink-0">
                 {formatTime(contact.lastMessageTime)}
               </span>
             )}
           </div>
           <p className="text-[10px] truncate mt-0.5">
-            <span className={isOnline ? 'text-emerald-500/60' : 'text-neutral-600'}>
+            <span className={isOnline ? 'text-emerald-500/60' : 'text-tertiary'}>
               {isOnline ? 'Online' : 'Offline'}
             </span>
             {contact.lastMessage && (
               <>
-                <span className="text-[#444] mx-1">·</span>
-                <span className="text-neutral-600">{contact.lastMessage}</span>
+                <span className="text-tertiary mx-1">·</span>
+                <span className="text-tertiary">{contact.lastMessage}</span>
               </>
             )}
           </p>
@@ -290,15 +290,15 @@ function ChannelListItem({
       className={cn(
         'mx-2 px-3 py-2.5 rounded-lg cursor-pointer transition-colors',
         isSelected
-          ? 'bg-[#D4A843]/10 text-[#D4A843]'
-          : 'text-neutral-400 hover:bg-white/5',
+          ? 'bg-gold/10 text-gold'
+          : 'text-tertiary hover:bg-white/5',
       )}
     >
       <div className="flex items-center gap-2">
-        <Hash size={13} className="text-[#555] shrink-0" />
+        <Hash size={13} className="text-tertiary shrink-0" />
         <span className="text-xs font-medium truncate">{channel.name}</span>
         {channel.unreadCount ? (
-          <span className="ml-auto text-[9px] bg-[#D4A843] text-[#0A0A0A] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+          <span className="ml-auto text-[9px] bg-gold text-void-deep font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
             {channel.unreadCount > 99 ? '99+' : channel.unreadCount}
           </span>
         ) : null}
@@ -328,20 +328,20 @@ function MessageBubble({
           className={cn(
             'max-w-[70%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed',
             isOwn
-              ? 'bg-[#D4A843] text-[#0A0A0A] rounded-tr-none'
-              : 'bg-[#1A1A1A] text-neutral-300 rounded-tl-none border border-[#1F1F1F]',
+              ? 'bg-gold text-void-deep rounded-tr-none'
+              : 'bg-surface text-secondary rounded-tl-none border border-border',
           )}
         >
           {highlightMentions(message.content)}
         </motion.div>
       </div>
       <div className={`flex ${isOwn ? 'justify-end' : 'justify-start'} items-center gap-1`}>
-        <span className="text-[9px] text-[#444] opacity-0 group-hover:opacity-100 transition-opacity">
+        <span className="text-[9px] text-tertiary opacity-0 group-hover:opacity-100 transition-opacity">
           {formatTime(message.createdAt)}
         </span>
         <button
           onClick={() => onReply(message)}
-          className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 text-[10px] text-[#555] hover:text-[#D4A843] py-0.5"
+          className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 text-[10px] text-tertiary hover:text-gold py-0.5"
         >
           <MessageCircle size={10} />
           <span>Reply</span>
@@ -358,14 +358,14 @@ function EmptyChatView() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="flex-1 flex items-center justify-center text-[#555]"
+      className="flex-1 flex items-center justify-center text-tertiary"
     >
       <div className="text-center">
-        <div className="w-20 h-20 rounded-full bg-[#1A1A1A] flex items-center justify-center mx-auto mb-5">
-          <Users size={32} className="text-[#444]" />
+        <div className="w-20 h-20 rounded-full bg-surface flex items-center justify-center mx-auto mb-5">
+          <Users size={32} className="text-tertiary" />
         </div>
-        <p className="text-lg font-serif font-light text-white mb-2">Your Messages</p>
-        <p className="text-sm font-light text-[#555] max-w-xs">
+        <p className="text-lg font-serif font-light text-foreground mb-2">Your Messages</p>
+        <p className="text-sm font-light text-tertiary max-w-xs">
           Select a conversation from the sidebar to start messaging.
         </p>
       </div>
@@ -383,14 +383,14 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
       className="flex-1 flex items-center justify-center"
     >
       <div className="text-center">
-        <div className="w-16 h-16 rounded-2xl bg-red-500/10 flex items-center justify-center mx-auto mb-4">
-          <AlertCircle size={24} className="text-red-400" />
+        <div className="w-16 h-16 rounded-2xl bg-error/10 flex items-center justify-center mx-auto mb-4">
+          <AlertCircle size={24} className="text-error" />
         </div>
-        <p className="text-sm text-white font-light mb-1">Failed to load</p>
-        <p className="text-xs text-[#555] font-light mb-4">Could not load your messages.</p>
+        <p className="text-sm text-foreground font-light mb-1">Failed to load</p>
+        <p className="text-xs text-tertiary font-light mb-4">Could not load your messages.</p>
         <button
           onClick={onRetry}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-[#D4A843] text-[#0A0A0A] rounded-lg text-sm font-medium hover:bg-[#D4A843]/90 transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-gold text-void-deep rounded-lg text-sm font-medium hover:bg-gold/90 transition-colors"
         >
           <RefreshCw size={13} />
           Retry
@@ -650,7 +650,7 @@ export default function MessagesPage() {
 
   if (isError && contacts.length === 0 && channels.length === 0) {
     return (
-      <div className="flex h-[calc(100vh-8rem)] bg-[#141414] border border-[#1F1F1F] rounded-2xl overflow-hidden">
+      <div className="flex h-[calc(100vh-8rem)] bg-surface border border-border rounded-2xl overflow-hidden">
         <ErrorState onRetry={fetchData} />
       </div>
     );
@@ -659,11 +659,11 @@ export default function MessagesPage() {
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex h-[calc(100vh-8rem)] bg-[#141414] border border-[#1F1F1F] rounded-2xl overflow-hidden">
+    <div className="flex h-[calc(100vh-8rem)] bg-surface border border-border rounded-2xl overflow-hidden">
       {/* ── Sidebar ─────────────────────────────────────────────────────── */}
-      <div className="w-72 border-r border-[#1F1F1F] flex flex-col bg-black/20 shrink-0">
+      <div className="w-72 border-r border-border flex flex-col bg-black/20 shrink-0">
         {/* Tabs */}
-        <div className="p-2 border-b border-[#1F1F1F] flex gap-0.5">
+        <div className="p-2 border-b border-border flex gap-0.5">
           {TABS.map((t) => {
             const Icon = t.icon;
             const active = activeTab === t.id;
@@ -674,8 +674,8 @@ export default function MessagesPage() {
                 className={cn(
                   'flex-1 flex items-center justify-center gap-1 py-2 rounded-md text-[11px] font-medium transition-all duration-200',
                   active
-                    ? 'bg-[#D4A843]/10 text-[#D4A843]'
-                    : 'text-[#555] hover:text-[#888]',
+                    ? 'bg-gold/10 text-gold'
+                    : 'text-tertiary hover:text-tertiary',
                 )}
               >
                 <Icon size={12} />
@@ -686,30 +686,30 @@ export default function MessagesPage() {
         </div>
 
         {/* Search */}
-        <div className="p-3 border-b border-[#1F1F1F]">
+        <div className="p-3 border-b border-border">
           <div className="relative">
             <Search
               size={14}
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#555]"
+              className="absolute left-2.5 top-1/2 -translate-y-1/2 text-tertiary"
             />
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#1A1A1A] border border-[#1F1F1F] rounded-lg py-1.5 pl-7 pr-3 text-xs text-white placeholder-[#555] outline-none focus:border-[#D4A843]/50 transition-all"
+              className="w-full bg-surface border border-border rounded-lg py-1.5 pl-7 pr-3 text-xs text-foreground placeholder:text-tertiary outline-none focus:border-gold/50 transition-all"
               placeholder="Search..."
             />
           </div>
         </div>
 
         {/* Socket Connection Status */}
-        <div className="px-3 py-1.5 border-b border-[#1F1F1F]/50 flex items-center gap-1.5">
+        <div className="px-3 py-1.5 border-b border-border flex items-center gap-1.5">
           <span
             className={cn(
               'h-1.5 w-1.5 rounded-full',
               isSocketConnected ? 'bg-emerald-400' : 'bg-amber-400',
             )}
           />
-          <span className="text-[9px] text-[#444] uppercase tracking-wider font-medium">
+          <span className="text-[9px] text-tertiary uppercase tracking-wider font-medium">
             {isSocketConnected ? 'Connected' : 'Connecting...'}
           </span>
         </div>
@@ -717,7 +717,7 @@ export default function MessagesPage() {
         {/* Channels */}
         {showChannels && channels.length > 0 && (
           <>
-            <div className="px-3 py-2 text-[9px] uppercase tracking-[0.2em] text-[#444] font-medium">
+            <div className="px-3 py-2 text-[9px] uppercase tracking-[0.2em] text-tertiary font-medium">
               Channels
             </div>
             {channels.map((ch) => (
@@ -735,13 +735,13 @@ export default function MessagesPage() {
         {showDMs && (
           <div className="flex-1 overflow-y-auto">
             {channels.length > 0 && showChannels && filteredContacts.length > 0 && (
-              <div className="px-3 py-2 text-[9px] uppercase tracking-[0.2em] text-[#444] font-medium">
+              <div className="px-3 py-2 text-[9px] uppercase tracking-[0.2em] text-tertiary font-medium">
                 Direct Messages
               </div>
             )}
             {filteredContacts.length === 0 ? (
               <div className="px-4 py-8 text-center">
-                <p className="text-[11px] text-[#555] font-light">
+                <p className="text-[11px] text-tertiary font-light">
                   {searchQuery
                     ? 'No contacts match your search.'
                     : 'No conversations yet.'}
@@ -781,10 +781,10 @@ export default function MessagesPage() {
                   className="flex items-center justify-center h-full"
                 >
                   <div className="text-center">
-                    <div className="w-14 h-14 rounded-full bg-[#1A1A1A] flex items-center justify-center mx-auto mb-3">
-                      <MessageCircle size={22} className="text-[#444]" />
+                    <div className="w-14 h-14 rounded-full bg-surface flex items-center justify-center mx-auto mb-3">
+                      <MessageCircle size={22} className="text-tertiary" />
                     </div>
-                    <p className="text-sm text-[#555] font-light">
+                    <p className="text-sm text-tertiary font-light">
                       No messages yet. Say hello!
                     </p>
                   </div>
@@ -812,11 +812,11 @@ export default function MessagesPage() {
             {/* Message Input */}
             <form
               onSubmit={sendMsg}
-              className="px-4 py-3 border-t border-[#1F1F1F] flex items-end gap-2.5 relative bg-[#0A0A0A]/10"
+              className="px-4 py-3 border-t border-border flex items-end gap-2.5 relative bg-void-deep"
             >
               <button
                 type="button"
-                className="p-2 rounded-lg text-[#555] hover:text-[#888] transition-colors"
+                className="p-2 rounded-lg text-tertiary hover:text-tertiary transition-colors"
               >
                 <Paperclip size={17} />
               </button>
@@ -830,12 +830,12 @@ export default function MessagesPage() {
                     if (e.key === 'Escape') stopTyping();
                   }}
                   placeholder={`Message ${selectedContact.fullName}... @ to mention`}
-                  className="w-full bg-[#1A1A1A] border border-[#1F1F1F] rounded-xl pl-4 pr-10 py-2.5 text-sm text-white placeholder-[#555] outline-none focus:border-[#D4A843]/50 transition-all font-light"
+                  className="w-full bg-surface border border-border rounded-xl pl-4 pr-10 py-2.5 text-sm text-foreground placeholder:text-tertiary outline-none focus:border-gold/50 transition-all font-light"
                   disabled={isSending}
                 />
                 <button
                   type="button"
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 rounded-md text-[#555] hover:text-[#888] transition-colors"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 rounded-md text-tertiary hover:text-tertiary transition-colors"
                 >
                   <Smile size={16} />
                 </button>
@@ -846,8 +846,8 @@ export default function MessagesPage() {
                 className={cn(
                   'p-2.5 rounded-xl transition-all duration-200 shrink-0',
                   input.trim() && !isSending
-                    ? 'bg-[#D4A843] text-[#0A0A0A] hover:bg-[#D4A843]/90'
-                    : 'bg-[#1A1A1A] text-[#444]',
+                    ? 'bg-gold text-void-deep hover:bg-gold/90'
+                    : 'bg-surface text-tertiary',
                 )}
               >
                 {isSending ? (
@@ -890,23 +890,23 @@ export default function MessagesPage() {
         ) : selectedChannel ? (
           <>
             {/* Channel Header */}
-            <div className="px-5 py-3.5 border-b border-[#1F1F1F] flex items-center justify-between bg-[#0A0A0A]/20 shrink-0">
+            <div className="px-5 py-3.5 border-b border-border flex items-center justify-between bg-void-deep shrink-0">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-[#D4A843]/10 text-[#D4A843] flex items-center justify-center">
+                <div className="w-9 h-9 rounded-full bg-gold/10 text-gold flex items-center justify-center">
                   <Hash size={18} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-serif font-light text-white">
+                  <h3 className="text-sm font-serif font-light text-foreground">
                     #{selectedChannel.name}
                   </h3>
-                  <p className="text-[11px] text-[#555]">
+                  <p className="text-[11px] text-tertiary">
                     {selectedChannel.description || `${selectedChannel.memberCount} members`}
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-1">
                 <Tooltip content="Channel Members">
-                  <button className="p-2 rounded-lg text-[#555] hover:text-white hover:bg-white/[0.05] transition-colors flex items-center gap-1.5 text-xs">
+                  <button className="p-2 rounded-lg text-tertiary hover:text-foreground hover:bg-white/[0.05] transition-colors flex items-center gap-1.5 text-xs">
                     <Users size={15} />
                     <span>{selectedChannel.memberCount}</span>
                   </button>
@@ -923,10 +923,10 @@ export default function MessagesPage() {
                   className="flex items-center justify-center h-full"
                 >
                   <div className="text-center">
-                    <div className="w-14 h-14 rounded-full bg-[#1A1A1A] flex items-center justify-center mx-auto mb-3">
-                      <Hash size={22} className="text-[#444]" />
+                    <div className="w-14 h-14 rounded-full bg-surface flex items-center justify-center mx-auto mb-3">
+                      <Hash size={22} className="text-tertiary" />
                     </div>
-                    <p className="text-sm text-[#555] font-light">
+                    <p className="text-sm text-tertiary font-light">
                       Welcome to #{selectedChannel.name}! Start the conversation.
                     </p>
                   </div>
@@ -947,11 +947,11 @@ export default function MessagesPage() {
             {/* Message Input */}
             <form
               onSubmit={sendMsg}
-              className="px-4 py-3 border-t border-[#1F1F1F] flex items-end gap-2.5 relative bg-[#0A0A0A]/10"
+              className="px-4 py-3 border-t border-border flex items-end gap-2.5 relative bg-void-deep"
             >
               <button
                 type="button"
-                className="p-2 rounded-lg text-[#555] hover:text-[#888] transition-colors"
+                className="p-2 rounded-lg text-tertiary hover:text-tertiary transition-colors"
               >
                 <Paperclip size={17} />
               </button>
@@ -961,7 +961,7 @@ export default function MessagesPage() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder={`Message #${selectedChannel.name}...`}
-                  className="w-full bg-[#1A1A1A] border border-[#1F1F1F] rounded-xl pl-4 pr-10 py-2.5 text-sm text-white placeholder-[#555] outline-none focus:border-[#D4A843]/50 transition-all font-light"
+                  className="w-full bg-surface border border-border rounded-xl pl-4 pr-10 py-2.5 text-sm text-foreground placeholder:text-tertiary outline-none focus:border-gold/50 transition-all font-light"
                   disabled={isSending}
                 />
               </div>
@@ -971,8 +971,8 @@ export default function MessagesPage() {
                 className={cn(
                   'p-2.5 rounded-xl transition-all duration-200 shrink-0',
                   input.trim() && !isSending
-                    ? 'bg-[#D4A843] text-[#0A0A0A] hover:bg-[#D4A843]/90'
-                    : 'bg-[#1A1A1A] text-[#444]',
+                    ? 'bg-gold text-void-deep hover:bg-gold/90'
+                    : 'bg-surface text-tertiary',
                 )}
               >
                 {isSending ? (

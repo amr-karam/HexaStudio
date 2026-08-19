@@ -47,7 +47,7 @@ export function PresenceIndicator({
       {showLabel && (
         <span
           className={`text-[11px] font-medium ${
-            isOnline ? 'text-emerald-400' : 'text-neutral-500'
+            isOnline ? 'text-success' : 'text-tertiary'
           }`}
         >
           {isOnline ? 'Online' : 'Offline'}
@@ -83,7 +83,7 @@ export function TypingIndicator({ users, className = '' }: TypingIndicatorProps)
       initial={{ opacity: 0, y: 4 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 4 }}
-      className={`flex items-center gap-2 px-1 text-[12px] text-emerald-400/80 font-light ${className}`}
+      className={`flex items-center gap-2 px-1 text-[12px] text-success/80 font-light ${className}`}
     >
       {/* Animated dots */}
       <span className="flex gap-0.5">

@@ -28,7 +28,7 @@ export const RealTimeMetricsPanel = () => {
     >
       {/* Header with connection status */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-white">Real-time Metrics</h2>
+        <h2 className="text-2xl font-bold text-foreground">Real-time Metrics</h2>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 text-sm">
             <div
@@ -72,28 +72,28 @@ export const RealTimeMetricsPanel = () => {
           className="bg-gray-900/50 backdrop-blur-md rounded-2xl p-6 border border-white/10"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 bg-blue-500/20 rounded-xl">
-              <Users className="w-6 h-6 text-blue-400" />
+            <div className="p-3 bg-info/20 rounded-xl">
+              <Users className="w-6 h-6 text-info" />
             </div>
-            <h3 className="text-lg font-semibold text-white">Active Users</h3>
+            <h3 className="text-lg font-semibold text-foreground">Active Users</h3>
           </div>
 
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-white/80 text-sm">Total Active</span>
-              <span className="text-xl font-bold text-white">
+              <span className="text-xl font-bold text-foreground">
                 {metrics?.activeUsers.total || "--"}
               </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-white/80 text-sm">Active in Last Hour</span>
-              <span className="text-lg text-white">
+              <span className="text-lg text-foreground">
                 {metrics?.activeUsers.activeInLastHour || "--"}
               </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-white/80 text-sm">Peak Today</span>
-              <span className="text-lg text-white">
+              <span className="text-lg text-foreground">
                 {metrics?.activeUsers.peakToday || "--"}
               </span>
             </div>
@@ -111,12 +111,12 @@ export const RealTimeMetricsPanel = () => {
                       className="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 transition-colors"
                     >
                       <div
-                        className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-xs font-medium text-white"
+                        className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-xs font-medium text-foreground"
                       >
                         {user.name.charAt(0)}
                       </div>
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-white truncate">{user.name}</p>
+                        <p className="text-sm font-medium text-foreground truncate">{user.name}</p>
                         <p className="text-xs text-white/60 truncate">{user.email}</p>
                       </div>
                     </div>
@@ -134,28 +134,28 @@ export const RealTimeMetricsPanel = () => {
           className="bg-gray-900/50 backdrop-blur-md rounded-2xl p-6 border border-white/10"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 bg-emerald-500/20 rounded-xl">
-              <Briefcase className="w-6 h-6 text-emerald-400" />
+            <div className="p-3 bg-success/20 rounded-xl">
+              <Briefcase className="w-6 h-6 text-success" />
             </div>
-            <h3 className="text-lg font-semibold text-white">Projects</h3>
+            <h3 className="text-lg font-semibold text-foreground">Projects</h3>
           </div>
 
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-white/80 text-sm">In Progress</span>
-              <span className="text-xl font-bold text-white">
+              <span className="text-xl font-bold text-foreground">
                 {metrics?.projects.inProgress.length || "--"}
               </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-white/80 text-sm">Total Projects</span>
-              <span className="text-lg text-white">
+              <span className="text-lg text-foreground">
                 {metrics?.projects.totalProjects || "--"}
               </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-white/80 text-sm">Completed This Month</span>
-              <span className="text-lg text-white">
+              <span className="text-lg text-foreground">
                 {metrics?.projects.completedThisMonth || "--"}
               </span>
             </div>
@@ -172,7 +172,7 @@ export const RealTimeMetricsPanel = () => {
                       key={project.id}
                       className="p-2 rounded-lg hover:bg-white/5 transition-colors"
                     >
-                      <p className="text-sm font-medium text-white truncate">{project.name}</p>
+                      <p className="text-sm font-medium text-foreground truncate">{project.name}</p>
                       <p className="text-xs text-white/60 truncate">{project.client}</p>
                     </div>
                   ))}
@@ -192,31 +192,31 @@ export const RealTimeMetricsPanel = () => {
             <div className="p-3 bg-cyan-500/20 rounded-xl">
               <DollarSign className="w-6 h-6 text-cyan-400" />
             </div>
-            <h3 className="text-lg font-semibold text-white">Revenue</h3>
+            <h3 className="text-lg font-semibold text-foreground">Revenue</h3>
           </div>
 
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-white/80 text-sm">Total</span>
-              <span className="text-xl font-bold text-white">
+              <span className="text-xl font-bold text-foreground">
                 {metrics?.revenue.total ? metrics.revenue.currency + metrics.revenue.total.toLocaleString() : "--"}
               </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-white/80 text-sm">Paid</span>
-              <span className="text-lg text-white">
+              <span className="text-lg text-foreground">
                 {metrics?.revenue.paid ? metrics.revenue.currency + metrics.revenue.paid.toLocaleString() : "--"}
               </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-white/80 text-sm">Pending</span>
-              <span className="text-lg text-white">
+              <span className="text-lg text-foreground">
                 {metrics?.revenue.pending ? metrics.revenue.currency + metrics.revenue.pending.toLocaleString() : "--"}
               </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-white/80 text-sm">Overdue</span>
-              <span className="text-lg text-white">
+              <span className="text-lg text-foreground">
                 {metrics?.revenue.overdue ? metrics.revenue.currency + metrics.revenue.overdue.toLocaleString() : "--"}
               </span>
             </div>
@@ -226,7 +226,7 @@ export const RealTimeMetricsPanel = () => {
             <div className="mt-4 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs text-white/60">Paid Percentage</span>
-                <span className="text-xs font-medium text-white">
+                <span className="text-xs font-medium text-foreground">
                   {metrics.revenue.paidPercentage.toFixed(1)}%
                 </span>
               </div>
@@ -252,26 +252,26 @@ export const RealTimeMetricsPanel = () => {
           <div className="p-3 bg-purple-500/20 rounded-xl">
             <Bot className="w-6 h-6 text-purple-400" />
           </div>
-          <h3 className="text-lg font-semibold text-white">AI Copilot Analytics</h3>
+          <h3 className="text-lg font-semibold text-foreground">AI Copilot Analytics</h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-white/80 text-sm">Daily Active Users</span>
-              <span className="text-xl font-bold text-white">
+              <span className="text-xl font-bold text-foreground">
                 {metrics?.copilot.dailyActiveUsers || "--"}
               </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-white/80 text-sm">Monthly Active Users</span>
-              <span className="text-lg text-white">
+              <span className="text-lg text-foreground">
                 {metrics?.copilot.monthlyActiveUsers || "--"}
               </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-white/80 text-sm">Total Sessions</span>
-              <span className="text-lg text-white">
+              <span className="text-lg text-foreground">
                 {metrics?.copilot.totalSessions || "--"}
               </span>
             </div>
@@ -280,13 +280,13 @@ export const RealTimeMetricsPanel = () => {
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-white/80 text-sm">Avg Session Duration</span>
-              <span className="text-lg text-white">
+              <span className="text-lg text-foreground">
                 {metrics?.copilot.avgSessionDuration ? metrics.copilot.avgSessionDuration.toFixed(1) + "s" : "--"}
               </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-white/80 text-sm">Satisfaction Score</span>
-              <span className="text-lg text-white">
+              <span className="text-lg text-foreground">
                 {metrics?.copilot.satisfactionScore ? metrics.copilot.satisfactionScore.toFixed(1) : "--"}/10
               </span>
             </div>
@@ -305,7 +305,7 @@ export const RealTimeMetricsPanel = () => {
           <div className="p-3 bg-amber-500/20 rounded-xl">
             <Activity className="w-6 h-6 text-amber-400" />
           </div>
-          <h3 className="text-lg font-semibold text-white">Channel Activity</h3>
+          <h3 className="text-lg font-semibold text-foreground">Channel Activity</h3>
         </div>
 
         {metrics?.channelActivity && metrics.channelActivity.length > 0 ? (
@@ -319,16 +319,16 @@ export const RealTimeMetricsPanel = () => {
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-500 rounded-lg flex items-center justify-center text-xs font-medium text-white">
+                    <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-500 rounded-lg flex items-center justify-center text-xs font-medium text-foreground">
                       {channel.channel.charAt(0)}
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-white">{channel.channel}</p>
+                      <p className="text-sm font-medium text-foreground">{channel.channel}</p>
                       <p className="text-xs text-white/60">{channel.members} members</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-medium text-white">
+                    <p className="text-sm font-medium text-foreground">
                       {channel.activeNow} active now
                     </p>
                     <p className="text-xs text-white/60">
