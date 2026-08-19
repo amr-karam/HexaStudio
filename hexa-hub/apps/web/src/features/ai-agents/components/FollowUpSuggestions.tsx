@@ -6,7 +6,7 @@
 import { motion } from 'framer-motion';
 
 interface FollowUpSuggestionsProps {
-  suggestions: string[];
+  suggestions?: string[];
   onSelect: (prompt: string) => void;
 }
 
