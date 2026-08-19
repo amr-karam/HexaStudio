@@ -20,6 +20,39 @@ const SUGGESTED_PROMPTS = [
   'What are our top CRM opportunities?',
 ];
 
+// ─── Follow-up Suggestions Generator ────────────────────────────────────────
+
+/**
+ * Generates context-aware follow-up prompts based on the last assistant message.
+ */
+function generateFollowUps(messages: Array<{ role: string; content: string; agentName?: string }>): string[] {
+  const lastAssistant = messages
+    .filter((m) => m.role === 'assistant')
+    .pop();
+  if (!lastAssistant) return [];
+
+  const lower = lastAssistant.content.toLowerCase();
+  const agentName = lastAssistant.agentName ?? '';
+
+  // ERP Analyst follow-ups
+  if (agentName === 'erp-analyst' || lower.includes('revenue') || lower.includes('budget') || lower.includes('invoice')) {
+    return ['Show expense breakdown', 'Compare with last quarter', 'Export to CSV'];
+  }
+
+  // Project Assistant follow-ups
+  if (agentName === 'project-assistant' || lower.includes('project') || lower.includes('task')) {
+    return ['Create a new task', 'Show team workload', 'List overdue items'];
+  }
+
+  // Sales Agent follow-ups
+  if (agentName === 'sales-agent' || lower.includes('lead') || lower.includes('opportunity') || lower.includes('pipeline')) {
+    return ['Create a new lead', 'Show pipeline by stage', 'Generate a proposal'];
+  }
+
+  // Knowledge Agent / generic
+  return ['Tell me more', 'Show related documents', 'What else can you help with?'];
+}
+
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export default function AiAssistantPage() {
@@ -201,6 +234,16 @@ export default function AiAssistantPage() {
                 )}
               </div>
             </motion.div>
+          )}
+
+          {/* Follow-up suggestions after last assistant message */}
+          {messages.length > 0 && !isProcessing && messages[messages.length - 1].role === 'assistant' && (
+            <FollowUpSuggestions
+              suggestions={generateFollowUps(messages)}
+              onSelect={(prompt) => {
+                void sendMessage(prompt, selectedAgent ?? undefined);
+              }}
+            />
           )}
 
           <div ref={messagesEndRef} />
