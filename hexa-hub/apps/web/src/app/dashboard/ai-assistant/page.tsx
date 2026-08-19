@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Bot, History, Settings, CheckCircle } from 'lucide-react';
 import TypingDots from '@/components/TypingDots';
 import { useAgentChat } from '@/features/ai-agents/hooks/use-agent-chat';
-import { AgentBadge, AgentSelector, ToolCallIndicator } from '@/features/ai-agents/components';
+import { AgentBadge, AgentSelector, ToolCallIndicator, FollowUpSuggestions } from '@/features/ai-agents/components';
 
 // ─── Suggested Prompts ──────────────────────────────────────────────────────
 
@@ -31,6 +31,7 @@ export default function AiAssistantPage() {
     sendMessage,
     selectAgent,
     currentQuery,
+    toolCalls,
   } = useAgentChat();
 
   const [inputValue, setInputValue] = useState('');
@@ -186,7 +187,18 @@ export default function AiAssistantPage() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start mb-4">
               <div className="bg-surface border border-border rounded-2xl rounded-bl-md px-4 py-3">
                 <TypingDots />
-                <ToolCallIndicator toolName="analyzing" agentName="agent" isActive={true} />
+                {toolCalls.length > 0 && (
+                  <div className="mt-2 space-y-1">
+                    {toolCalls.map((tool, i) => (
+                      <ToolCallIndicator
+                        key={`${tool}-${i}`}
+                        toolName={tool}
+                        agentName="agent"
+                        isActive={true}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             </motion.div>
           )}
