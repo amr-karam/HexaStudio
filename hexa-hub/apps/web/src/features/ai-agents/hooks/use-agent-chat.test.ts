@@ -101,13 +101,10 @@ describe('useAgentChat', () => {
   });
 
   it('should add user message when sendMessage is called', async () => {
-    global.fetch = vi
-      .fn()
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockAgentsResponse,
-      })
-      .mockResolvedValueOnce(mockChatResponse);
+    global.fetch = vi.fn().mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockAgentsResponse,
+    });
 
     const { result } = renderHook(() => useAgentChat());
 
@@ -121,10 +118,6 @@ describe('useAgentChat', () => {
 
     await waitFor(() => {
       expect(result.current.messages).toHaveLength(1);
-    });
-
-    await waitFor(() => {
-      expect(result.current.isProcessing).toBe(true);
     });
 
     expect(result.current.messages[0].role).toBe('user');
@@ -151,13 +144,10 @@ describe('useAgentChat', () => {
   });
 
   it('should clear conversation when clearConversation is called', async () => {
-    global.fetch = vi
-      .fn()
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockAgentsResponse,
-      })
-      .mockResolvedValueOnce(mockChatResponse);
+    global.fetch = vi.fn().mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockAgentsResponse,
+    });
 
     const { result } = renderHook(() => useAgentChat());
 
@@ -249,6 +239,97 @@ describe('useAgentChat', () => {
     expect(mockEventSource.close).toHaveBeenCalled();
   });
 
+  it('should handle tool.start and tool.result events', async () => {
+    global.fetch = vi.fn().mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockAgentsResponse,
+    });
+
+    const { result } = renderHook(() => useAgentChat());
+
+    await waitFor(() => {
+      expect(result.current.agents).toHaveLength(2);
+    });
+
+    act(() => {
+      result.current.sendMessage('Hello', 'erp-analyst');
+    });
+
+    await waitFor(() => {
+      expect(result.current.isProcessing).toBe(true);
+    });
+
+    // Simulate tool.start
+    act(() => {
+      mockEventSource.onmessage!({
+        data: JSON.stringify({ type: 'tool.start', toolName: 'odoo_search_read' }),
+      } as MessageEvent);
+    });
+
+    expect(result.current.toolCalls).toContain('odoo_search_read');
+
+    // Simulate message chunk then tool.result
+    act(() => {
+      mockEventSource.onmessage!({
+        data: JSON.stringify({ type: 'message.chunk', content: 'Found results' }),
+      } as MessageEvent);
+    });
+
+    act(() => {
+      mockEventSource.onmessage!({
+        data: JSON.stringify({ type: 'tool.result', toolName: 'odoo_search_read', result: 'data' }),
+      } as MessageEvent);
+    });
+
+    // tool should be removed from toolCalls after result
+    expect(result.current.toolCalls).not.toContain('odoo_search_read');
+
+    // Simulate agent.end to clean up
+    act(() => {
+      mockEventSource.onmessage!({
+        data: JSON.stringify({ type: 'agent.end' }),
+      } as MessageEvent);
+    });
+  });
+
+  it('should fallback to POST when SSE errors', async () => {
+    global.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockAgentsResponse,
+      })
+      .mockResolvedValueOnce(mockChatResponse);
+
+    const { result } = renderHook(() => useAgentChat());
+
+    await waitFor(() => {
+      expect(result.current.agents).toHaveLength(2);
+    });
+
+    act(() => {
+      result.current.sendMessage('Hello', 'erp-analyst');
+    });
+
+    await waitFor(() => {
+      expect(result.current.isProcessing).toBe(true);
+    });
+
+    // Simulate SSE error
+    act(() => {
+      mockEventSource.onerror!({} as Event);
+    });
+
+    // Should fallback to POST
+    await waitFor(() => {
+      expect(result.current.messages).toHaveLength(2);
+    });
+
+    expect(result.current.messages[1].role).toBe('assistant');
+    expect(result.current.messages[1].content).toBe('Q3 revenue was €1.2M');
+    expect(result.current.messages[1].agentName).toBe('erp-analyst');
+  });
+
   it('should fallback to hardcoded agents when API is unavailable', async () => {
     global.fetch = vi
       .fn()
@@ -302,5 +383,20 @@ describe('useAgentChat', () => {
     });
 
     expect(result.current.currentQuery).toBe('Test query');
+  });
+
+  it('should expose toolCalls state', async () => {
+    global.fetch = vi.fn().mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockAgentsResponse,
+    });
+
+    const { result } = renderHook(() => useAgentChat());
+
+    await waitFor(() => {
+      expect(result.current.agents).toHaveLength(2);
+    });
+
+    expect(result.current.toolCalls).toEqual([]);
   });
 });

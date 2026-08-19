@@ -45,4 +45,5 @@ export interface UseAgentChatResult {
   clearConversation: () => void;
   setQuery: (query: string) => void;
   currentQuery: string;
+  toolCalls: string[];
 }
