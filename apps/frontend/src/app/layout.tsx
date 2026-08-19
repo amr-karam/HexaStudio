@@ -80,9 +80,6 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
         <link rel="preconnect" href="https://api.hexastudio.net" />
         <link rel="dns-prefetch" href="//api.hexastudio.net" />
-        {/* FractureRingHero 3D scene loads HDR environment map from this CDN */}
-        <link rel="preconnect" href="https://raw.githack.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="//raw.githack.com" />
         {/* Analytics / monitoring origins (scripts are injected on idle) */}
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="//www.googletagmanager.com" />
@@ -138,16 +135,13 @@ export default function RootLayout({
             @font-face rules arrive. display=swap keeps text visible in fallback
             fonts during the async fetch. */}
         {/* eslint-disable @next/next/no-page-custom-font -- Pages-Router rule: in App Router the root layout IS the correct global location for font stylesheets (next/font/google is disabled: build machines have no Google Fonts API access). */}
-        {/* Non-blocking font CSS — preload the file, then load it as a
-            print stylesheet (non-blocking for screen) and promote it to
-            media="all" via an inline script. display=swap keeps text visible in
-            fallback fonts. */}
-        <link
-          rel="preload"
-          as="style"
-          id="gf-preload"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&family=Playfair+Display:wght@400..900&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Jost:wght@200..500&display=swap"
-        />
+        {/* Non-blocking font CSS — load the css2 stylesheet as a print
+            stylesheet (non-blocking for screen), then promote it to media="all"
+            via an inline script. display=swap keeps text visible in fallback
+            fonts. The woff2 preloads above start font downloads immediately,
+            so no separate <link rel="preload" as="style"> is needed: the print
+            stylesheet fetch starts on HTML parse and the browser coalesces it
+            with the flight-payload head link. */}
         <link
           rel="stylesheet"
           media="print"
@@ -159,12 +153,6 @@ export default function RootLayout({
             __html: "document.getElementById('gf-css').media='all';",
           }}
         />
-        <noscript>
-          <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&family=Playfair+Display:wght@400..900&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Jost:wght@200..500&display=swap"
-          />
-        </noscript>
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased" suppressHydrationWarning>
         <noscript>

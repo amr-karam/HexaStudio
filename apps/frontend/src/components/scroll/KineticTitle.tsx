@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { getGsap } from '@/lib/gsap';
-import { onIdle } from '@/lib/idle';
+import { scheduleIdle } from '@/lib/idle';
 import { GSAP_EASING, STAGGER_TOKENS } from '@/lib/motion/tokens';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { useQualityTier } from '@/providers/quality-provider';
@@ -25,6 +25,31 @@ interface SplitWord {
   word: string;
   isAccent: boolean;
   chars: string[];
+}
+
+/**
+ * Shared, throttled ScrollTrigger.refresh() safety net — module-level
+ * singleton. Char scrubs now initialize through one batched idle queue
+ * (up to ~5s post-hydration instead of per-instance 1.2s timeouts), so a
+ * fast early scroll can pass a title before its scrub range exists. One
+ * throttled refresh-on-scroll/resize keeps the scrub honest if that
+ * happens.
+ */
+let refreshBound = false;
+let refreshTimer: ReturnType<typeof setTimeout> | undefined;
+
+function bindRefreshSafetyNet(refresh: () => void): void {
+  if (refreshBound) return;
+  refreshBound = true;
+  const schedule = () => {
+    if (refreshTimer) return;
+    refreshTimer = setTimeout(() => {
+      refreshTimer = undefined;
+      refresh();
+    }, 250);
+  };
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
 }
 
 function splitWords(text: string, accentWords: string[]): SplitWord[] {
@@ -84,7 +109,7 @@ export const KineticTitle = ({
     let cancelled = false;
     let ctx: { revert: () => void } | null = null;
 
-    const cancelIdle = onIdle(() => {
+    const cancelIdle = scheduleIdle(() => {
     void (async () => {
       const [gsap, scrollTriggerModule] = await Promise.all([
         getGsap(),
@@ -92,6 +117,7 @@ export const KineticTitle = ({
       ]);
       if (cancelled) return;
       const { ScrollTrigger } = scrollTriggerModule;
+      bindRefreshSafetyNet(() => ScrollTrigger.refresh());
 
       const chars = root.querySelectorAll<HTMLElement>('[data-kt-char]');
       if (chars.length === 0) return;
@@ -123,7 +149,7 @@ export const KineticTitle = ({
           .catch(() => undefined);
       }
     })();
-    }, 1200);
+    });
 
     return () => {
       cancelled = true;

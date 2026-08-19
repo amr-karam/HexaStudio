@@ -49,6 +49,12 @@ export const HomeHeroStatic = () => {
       const q = gsap.utils.selector(root);
 
       ctx = gsap.context(() => {
+        // LCP note: the hero headline ([data-hero-headline]) is intentionally
+        // NOT part of the cascade. It is SSR-visible and must stay visible —
+        // hiding it (opacity 0) at cascade start and revealing it ~1.4s later
+        // pushed LCP to the reveal frame (elementRenderDelay ~2.3s in
+        // Lighthouse; invisible hero if JS stalls). Kicker/subline/CTA/marker
+        // still cascade for the choreographed entrance.
         const tl = gsap.timeline({
           defaults: { ease: 'power4.out' }, // Shift to power4 for more weight
           delay,
@@ -58,12 +64,6 @@ export const HomeHeroStatic = () => {
           { y: 20, opacity: 0 },
           { y: 0, opacity: 1, duration: 1.2 },
         )
-          .fromTo(
-            q('[data-hero-headline]'),
-            { y: 40, opacity: 0 },
-            { y: 0, opacity: 1, duration: 1.4 },
-            0.15,
-          )
           .fromTo(
             q('[data-hero-subline]'),
             { y: 30, opacity: 0 },
