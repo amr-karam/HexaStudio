@@ -10,7 +10,7 @@ import type { NextRequest } from 'next/server';
  * - Public routes (/, /login) always accessible
  */
 
-const PUBLIC_ROUTES = new Set(['/', '/login', '/favicon.ico', '/robots.txt', '/manifest.json']);
+const PUBLIC_ROUTES = new Set(['/', '/dev-preview', '/login', '/favicon.ico', '/robots.txt', '/manifest.json']);
 
 /**
  * Extract cookies from the request in a type-safe way.

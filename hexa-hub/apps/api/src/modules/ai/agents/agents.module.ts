@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AiModule } from '../ai.module';
 import { OdooModule } from '../../odoo/odoo.module';
 import { WorkspacesModule } from '../../workspaces/workspaces.module';
 import { Workspace } from '../../workspaces/entities/workspace.entity';
@@ -18,7 +17,6 @@ import { QdrantService } from './tools/qdrant.service';
 
 @Module({
   imports: [
-    AiModule,
     OdooModule,
     WorkspacesModule,
     TypeOrmModule.forFeature([Workspace, Task]),

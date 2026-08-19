@@ -155,7 +155,7 @@ describe('Session Management', () => {
       await bridge.cleanupSession('test-session-9', true);
       
       // Check if session file still exists
-      const sessionFile = path.join(testDir, 'data', ${session.id}.json);
+      const sessionFile = path.join(testDir, 'data', `${session.id}.json`);
       try {
         const fileContent = await fs.readFile(sessionFile, 'utf8');
         const parsedData = JSON.parse(fileContent);
@@ -203,7 +203,7 @@ describe('Session Management', () => {
       // Wait for persistence
       await new Promise(resolve => setTimeout(resolve, 100));
       
-      const sessionFile = path.join(testDir, 'data', ${session.id}.json);
+      const sessionFile = path.join(testDir, 'data', `${session.id}.json`);
       const fileContent = await fs.readFile(sessionFile, 'utf8');
       const sessionData = JSON.parse(fileContent);
       
