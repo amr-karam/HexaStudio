@@ -101,14 +101,14 @@ export class OdooService implements OnModuleInit {
         resolve(false);
       }, 5000);
 
-      this.client.methodCall('version', [], ((error, value) => {
+      this.client.methodCall('version', [], ((error: unknown, value: unknown) => {
         clearTimeout(timer);
         if (error || !value) {
           resolve(false);
         } else {
           resolve(true);
         }
-      }) as xmlrpc.MethodCallback);
+      }) as (error: unknown, value: unknown) => void);
     });
   }
 
@@ -129,10 +129,10 @@ export class OdooService implements OnModuleInit {
     for (let attempt = 0; attempt <= this.MAX_RETRIES; attempt++) {
       try {
         const result = await new Promise<number>((resolve, reject) => {
-          this.client.methodCall('authenticate', [db, username, password, {}], ((error, value) => {
+          this.client.methodCall('authenticate', [db, username, password, {}], ((error: unknown, value: unknown) => {
             if (error) reject(error as Error);
             else resolve(value as number);
-          }) as xmlrpc.MethodCallback);
+          }) as (error: unknown, value: unknown) => void);
         });
 
         this.uid = result;
@@ -163,7 +163,7 @@ export class OdooService implements OnModuleInit {
           const env = getEnv();
           const password = env.ODOO_PASSWORD;
           const db = env.ODOO_DB;
-          this.objectClient.methodCall('execute_kw', [db, this.uid!, password, model, method, args], ((error, value) => {
+          this.objectClient.methodCall('execute_kw', [db, this.uid!, password, model, method, args], ((error: unknown, value: unknown) => {
             if (error) {
               if (this.isAuthError(error)) {
                 this.uid = null;
@@ -172,7 +172,7 @@ export class OdooService implements OnModuleInit {
             } else {
               resolve(value as T);
             }
-          }) as xmlrpc.MethodCallback);
+          }) as (error: unknown, value: unknown) => void);
         });
       } catch (error) {
         lastError = error;
