@@ -62,6 +62,7 @@
     "@nestjs/cli": "^11.0.24",
     "@types/jest-axe": "^3.5.9",
     "@types/node": "^26.1.1",
+    "@typescript-eslint/eslint-plugin": "^8.66.0",
     "axe-core": "^4.13.0",
     "caniuse-lite": "^1.0.30001806",
     "jest-axe": "^11.0.0",
