@@ -11,6 +11,9 @@ import {
   Request,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from '../users/entities/user-role.enum';
 import { ChannelsService } from './channels.service';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
@@ -23,12 +26,13 @@ interface RequestWithUser {
   user: { id: string };
 }
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('channels')
 export class ChannelsController {
   constructor(private readonly channelsService: ChannelsService) {}
 
   @Post()
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE)
   async create(
     @Body() createDto: CreateChannelDto,
     @Request() req: RequestWithUser,
@@ -37,11 +41,13 @@ export class ChannelsController {
   }
 
   @Get()
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE, UserRole.CLIENT)
   async findAll(@Request() req: RequestWithUser): Promise<Channel[]> {
     return this.channelsService.findAll(undefined, req.user.id);
   }
 
   @Get(':id')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE, UserRole.CLIENT)
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
     @Request() req: RequestWithUser,
@@ -50,6 +56,7 @@ export class ChannelsController {
   }
 
   @Put(':id')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE)
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateDto: UpdateChannelDto,
@@ -59,6 +66,7 @@ export class ChannelsController {
   }
 
   @Delete(':id')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE)
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
     @Request() req: RequestWithUser,
@@ -67,6 +75,7 @@ export class ChannelsController {
   }
 
   @Post(':channelId/members')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE)
   async addMember(
     @Param('channelId', ParseUUIDPipe) channelId: string,
     @Body() addMemberDto: AddChannelMemberDto,
@@ -81,6 +90,7 @@ export class ChannelsController {
   }
 
   @Get(':channelId/members')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE, UserRole.CLIENT)
   async getMembers(
     @Param('channelId', ParseUUIDPipe) channelId: string,
     @Request() req: RequestWithUser,
@@ -89,6 +99,7 @@ export class ChannelsController {
   }
 
   @Post(':channelId/messages')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE)
   async sendMessage(
     @Param('channelId', ParseUUIDPipe) channelId: string,
     @Body() body: { content: string; type?: string; replyTo?: string },
@@ -105,6 +116,7 @@ export class ChannelsController {
   }
 
   @Get(':channelId/messages')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE, UserRole.CLIENT)
   async getMessages(
     @Param('channelId', ParseUUIDPipe) channelId: string,
     @Request() req: RequestWithUser,
@@ -115,6 +127,7 @@ export class ChannelsController {
   // ─── Thread Endpoints ───────────────────────────────────────────────────
 
   @Get(':channelId/messages/threaded')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE, UserRole.CLIENT)
   async getThreadedMessages(
     @Param('channelId', ParseUUIDPipe) channelId: string,
     @Request() req: RequestWithUser,
@@ -123,6 +136,7 @@ export class ChannelsController {
   }
 
   @Get(':channelId/messages/:messageId/thread')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE, UserRole.CLIENT)
   async getThreadContext(
     @Param('channelId', ParseUUIDPipe) _channelId: string,
     @Param('messageId', ParseUUIDPipe) messageId: string,
@@ -132,6 +146,7 @@ export class ChannelsController {
   }
 
   @Get(':channelId/messages/:messageId/replies')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE, UserRole.CLIENT)
   async getThreadReplies(
     @Param('channelId', ParseUUIDPipe) _channelId: string,
     @Param('messageId', ParseUUIDPipe) messageId: string,
@@ -141,6 +156,7 @@ export class ChannelsController {
   }
 
   @Post(':channelId/messages/:messageId/reply')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE)
   async replyToMessage(
     @Param('channelId', ParseUUIDPipe) channelId: string,
     @Param('messageId', ParseUUIDPipe) messageId: string,

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Workspace } from './entities/workspace.entity';
@@ -24,12 +24,16 @@ export class WorkspacesService {
 
   async findOne(id: string) {
     const cacheKey = this.cacheManager.generateKey('workspace:id', id);
-    return this.cacheManager.watch(cacheKey, () => 
-      this.workspaceRepo.findOne({ 
-        where: { id }, 
-        relations: ['owner', 'tasks'] 
+    const workspace = await this.cacheManager.watch(cacheKey, () =>
+      this.workspaceRepo.findOne({
+        where: { id },
+        relations: ['owner', 'tasks'],
       })
     );
+    if (!workspace) {
+      throw new NotFoundException(`Workspace with id "${id}" not found`);
+    }
+    return workspace;
   }
 
   async findByClient(clientId: string) {
@@ -44,12 +48,18 @@ export class WorkspacesService {
 
   async findByClientIdAndId(clientId: string, workspaceId: string) {
     const cacheKey = this.cacheManager.generateKey('workspace:client:id', clientId, workspaceId);
-    return this.cacheManager.watch(cacheKey, () => 
+    const workspace = await this.cacheManager.watch(cacheKey, () =>
       this.workspaceRepo.findOne({
         where: { id: workspaceId, client: { id: clientId } },
         relations: ['tasks', 'tasks.assignee', 'client'],
       })
     );
+    // Tenant-isolation guard: do not distinguish "does not exist" from
+    // "does not belong to this client" to avoid leaking existence.
+    if (!workspace) {
+      throw new NotFoundException('Workspace not found or access denied');
+    }
+    return workspace;
   }
 
   async create(data: Partial<Workspace>) {

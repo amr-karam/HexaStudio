@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { WorkspacesService } from './workspaces.service';
 import { Workspace } from './entities/workspace.entity';
 import { Task } from './entities/task.entity';
+import { CacheManagerService } from '../../common/cache/cache.service';
 
 describe('WorkspacesService', () => {
   let service: WorkspacesService;
@@ -15,6 +16,15 @@ describe('WorkspacesService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         WorkspacesService,
+        {
+          provide: CacheManagerService,
+          useValue: {
+            generateKey: jest.fn(),
+            watch: jest.fn(async (_key: string, factory: () => Promise<unknown>) => factory()),
+            del: jest.fn(),
+            delByPattern: jest.fn(),
+          },
+        },
         {
           provide: getRepositoryToken(Workspace),
           useValue: { find: jest.fn(), findOne: jest.fn(), create: jest.fn(), save: jest.fn() },

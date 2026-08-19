@@ -2,6 +2,9 @@ import { Controller, Get, Post, Body, Param, UseGuards, Req } from '@nestjs/comm
 import { MessagesService } from './messages.service';
 import { ChannelsService } from '../channels/channels.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from '../users/entities/user-role.enum';
 import { Request } from 'express';
 
 interface AuthenticatedRequest extends Request {
@@ -12,6 +15,7 @@ interface AuthenticatedRequest extends Request {
   };
 }
 
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('messages')
 export class MessagesController {
   constructor(
@@ -19,20 +23,20 @@ export class MessagesController {
     private readonly channelsService: ChannelsService,
   ) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post('send')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE)
   async send(@Req() req: AuthenticatedRequest, @Body() body: { receiverId: string; content: string; type?: 'text' | 'file' | 'system'; fileUrl?: string }) {
     return this.messagesService.sendMessage(req.user.id, body.receiverId, body.content, body.type, body.fileUrl);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('conversation/:userId')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE, UserRole.CLIENT)
   async getChat(@Req() req: AuthenticatedRequest, @Param('userId') userId: string) {
     return this.messagesService.getConversation(req.user.id, userId);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('inbox')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE, UserRole.CLIENT)
   async getInbox(@Req() req: AuthenticatedRequest) {
     return this.messagesService.getInbox(req.user.id);
   }
@@ -44,8 +48,8 @@ export class MessagesController {
    * Aggregates DM conversations, channel memberships, mentions, and notifications
    * into a single unified inbox view.
    */
-  @UseGuards(JwtAuthGuard)
   @Get('unified-inbox')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE, UserRole.CLIENT)
   async getUnifiedInbox(@Req() req: AuthenticatedRequest) {
     const userId = req.user.id;
 
@@ -91,15 +95,15 @@ export class MessagesController {
 
   // ─── Thread Endpoints ───────────────────────────────────────────────────
 
-  @UseGuards(JwtAuthGuard)
   @Get('thread/:messageId')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE, UserRole.CLIENT)
   async getThreadContext(@Param('messageId') messageId: string) {
     const context = await this.messagesService.getThreadContext(messageId);
     return { data: context };
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('thread/:messageId/reply')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE)
   async replyToMessage(
     @Req() req: AuthenticatedRequest,
     @Param('messageId') messageId: string,

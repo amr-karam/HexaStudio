@@ -29,6 +29,7 @@
     "@nestjs/swagger": "^8.0.0",
     "@nestjs/throttler": "^6.5.0",
     "@nestjs/typeorm": "^10.0.0",
+    "@qdrant/qdrant-js": "^1.19.0",
     "@sentry/node": "^10.69.0",
     "@sentry/tracing": "^7.120.4",
     "bcrypt": "^6.0.0",
@@ -37,13 +38,15 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "lodash": "^4.17.21",
+    "openai": "^5.23.2",
     "pg": "^8.11.0",
     "qrcode": "^1.5.4",
     "redis": "^4.6.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0",
     "speakeasy": "^2.0.0",
-    "typeorm": "^0.3.0"
+    "typeorm": "^0.3.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

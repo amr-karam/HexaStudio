@@ -33,9 +33,13 @@ export class CacheManagerService {
 
   /** Deletes all keys matching a pattern (Redis KEYS scan). */
   async delByPattern(pattern: string): Promise<void> {
-    const keys = await (this.cache as any).keys(pattern);
+    const store = this.cache as Cache & {
+      keys: (p: string) => Promise<string[]>;
+      del: (keys: string | string[]) => Promise<void>;
+    };
+    const keys = await store.keys(pattern);
     if (keys.length > 0) {
-      await this.cache.del(keys);
+      await store.del(keys);
     }
   }
 }

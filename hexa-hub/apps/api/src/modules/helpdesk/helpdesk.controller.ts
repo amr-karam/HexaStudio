@@ -1,16 +1,20 @@
 import { Controller, Get, Post, Patch, Param, Query, Body, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from '../users/entities/user-role.enum';
 import { HelpdeskService } from './helpdesk.service';
 
 @ApiTags('Helpdesk')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('odoo/helpdesk')
 export class HelpdeskController {
   constructor(private readonly service: HelpdeskService) {}
 
   @Get('tickets')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE, UserRole.CLIENT)
   @ApiOperation({ summary: 'List support tickets' })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
@@ -22,18 +26,21 @@ export class HelpdeskController {
   }
 
   @Get('tickets/:id')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE, UserRole.CLIENT)
   @ApiOperation({ summary: 'Get ticket by ID' })
   getTicket(@Param('id', ParseIntPipe) id: number) {
     return this.service.getTicket(id);
   }
 
   @Post('tickets')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE)
   @ApiOperation({ summary: 'Create support ticket' })
   createTicket(@Body() body: Record<string, unknown>) {
     return this.service.createTicket(body);
   }
 
   @Patch('tickets/:id')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.EMPLOYEE)
   @ApiOperation({ summary: 'Update support ticket' })
   updateTicket(@Param('id', ParseIntPipe) id: number, @Body() body: Record<string, unknown>) {
     return this.service.updateTicket(id, body);
