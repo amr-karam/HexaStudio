@@ -90,8 +90,8 @@ export class AgentsController {
         userId,
         sessionId,
         undefined,
-        (evt) => {
-          // Events are emitted via the generator; the frontend picks up chunks
+        () => {
+          // Events are emitted via the generator; frontend picks up chunks
         },
       )) {
         yield {

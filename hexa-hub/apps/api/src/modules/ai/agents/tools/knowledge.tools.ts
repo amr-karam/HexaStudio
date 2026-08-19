@@ -42,7 +42,7 @@ export class KnowledgeTools {
         try {
           // The QdrantService should have a search method that handles
           // embedding generation internally (or expects pre-embedded vectors)
-          const results = await this.qdrant.search(args.collection, args.query, topK);
+          const results = await this.qdrant.search(args.collection ?? 'knowledge', args.query, topK);
           const formatted = results.map((r: QdrantSearchResult) => ({
             score: r.score,
             content: r.payload?.content || r.payload?.text || JSON.stringify(r.payload),

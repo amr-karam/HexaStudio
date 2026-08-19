@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AgentsController } from './agents.controller';
 import { AgentOrchestrator } from './agents.service';
-import { ExecutionContext } from '@nestjs/common';
 
 // ─── Mocks ──────────────────────────────────────────────────────────────────
 

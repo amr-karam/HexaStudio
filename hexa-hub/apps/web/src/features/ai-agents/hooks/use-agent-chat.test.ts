@@ -123,9 +123,12 @@ describe('useAgentChat', () => {
       expect(result.current.messages).toHaveLength(1);
     });
 
+    await waitFor(() => {
+      expect(result.current.isProcessing).toBe(true);
+    });
+
     expect(result.current.messages[0].role).toBe('user');
     expect(result.current.messages[0].content).toBe('Hello, agent');
-    expect(result.current.isProcessing).toBe(true);
   });
 
   it('should select agent when selectAgent is called', async () => {
