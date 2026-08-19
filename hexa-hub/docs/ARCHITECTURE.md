@@ -80,6 +80,31 @@ HEXA Hub is the premium experience layer built on top of Odoo 17 ERP.
 5. **Retry Logic**: Exponential backoff with circuit breaker pattern
 6. **Audit Log**: Track all sync operations for debugging and compliance
 
+## 2.5 AI Multi-Agent System (Hermes)
+
+HEXA Hub includes a Hermes multi-agent system with specialized AI assistants
+for ERP data analysis, project management, sales operations, and knowledge
+retrieval.
+
+### 2.5.1 Agents
+
+| Agent | Purpose | Tools |
+|-------|---------|-------|
+| ERP Analyst | Odoo ERP financial & CRM analysis | odoo_search_read, odoo_financial_query |
+| Project Assistant | PostgreSQL project & task queries | query_projects, query_tasks, create_task, 	eam_stats |
+| Sales Agent | CRM lead creation | odoo_search_read, odoo_create_lead |
+| Knowledge Agent | Semantic search + CMS | semantic_search, cms_search, list_documents |
+
+### 2.5.2 API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | /api/ai/agents/chat | Non-streaming chat |
+| GET | /api/ai/agents/stream | SSE streaming |
+| GET | /api/ai/agents/list | Agent directory |
+
+See docs/AI_AGENTS.md for full documentation.
+
 ## 3. Database Schema Strategy
 - **Primary DB:** PostgreSQL (Relational data: Users, Projects, Messages, Permissions).
 - **Cache/Queue:** Redis (Session management, Real-time state, Job queues).
