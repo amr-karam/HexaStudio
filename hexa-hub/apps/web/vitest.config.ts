@@ -1,3 +1,4 @@
+process.env.NODE_ENV = 'test';
 import { defineConfig } from 'vitest/config';
 import { resolve } from 'path';
 
