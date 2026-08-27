@@ -9,6 +9,7 @@ import {
   type KeyboardEvent,
 } from 'react';
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
+import { useClickOutside } from '@/hooks/useClickOutside';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCurrencyStore, type CurrencyOption } from './currency-store';
 import { useLocale } from '@/i18n/LocaleProvider';
@@ -217,28 +218,12 @@ export function CurrencySelector() {
     },
   );
 
-  /* ---- Click outside ---- */
-  useEffect(() => {
-    if (!isOpen) return;
-    const handleClick = (e: MouseEvent) => {
-      if (
-        panelRef.current &&
-        !panelRef.current.contains(e.target as Node) &&
-        triggerRef.current &&
-        !triggerRef.current.contains(e.target as Node)
-      ) {
-        closePanel();
-      }
-    };
-    // Delay listener to avoid immediate closure from the opening click
-    const timer = setTimeout(() => {
-      document.addEventListener('mousedown', handleClick);
-    }, 0);
-    return () => {
-      clearTimeout(timer);
-      document.removeEventListener('mousedown', handleClick);
-    };
-  }, [isOpen, closePanel]);
+  /* ---- Click outside (was 17 lines of ad-hoc mousedown + timer) ---- */
+  useClickOutside([panelRef, triggerRef], () => closePanel(), {
+    enabled: isOpen,
+    event: 'mousedown',
+    delay: 0,
+  });
 
   /* ---- Keyboard nav within dropdown ---- */
   const handleKeyDown = useCallback(

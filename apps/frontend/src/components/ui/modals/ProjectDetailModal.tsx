@@ -9,6 +9,7 @@ import { TextReveal } from '@/components/ui/TextReveal';
 import { REDUCED_TRANSITION, makeTransition, modalPanel, overlay } from '@/lib/motion';
 import { useHEXAMotion } from '@/hooks/useHEXAMotion';
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
+import { useScrollLock } from '@/hooks/useScrollLock';
 
 interface ModalProject {
   title: string;
@@ -77,38 +78,16 @@ export const ProjectDetailModal = ({ isOpen, onClose, project }: ProjectDetailMo
     return () => document.removeEventListener('keydown', handler);
   }, [isOpen, trapFocus]);
 
+  // Body scroll lock + inert (was 32 lines of ad-hoc DOM)
+  useScrollLock(isOpen, { inertSelector: '#main-content' });
+
+  // Focus management: remember trigger + move focus to close button
   useEffect(() => {
     if (!isOpen) return;
-
-    // Body scroll lock
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    // Remember the trigger for focus restoration
     previouslyFocused.current = document.activeElement as HTMLElement;
-
-    // Make background inert
-    const mainContent = document.getElementById('main-content');
-    if (mainContent) {
-      mainContent.setAttribute('inert', '');
-      mainContent.setAttribute('aria-hidden', 'true');
-    }
-
-    // Set initial focus to the close button
-    requestAnimationFrame(() => {
-      closeBtnRef.current?.focus();
-    });
-
+    const raf = requestAnimationFrame(() => closeBtnRef.current?.focus());
     return () => {
-      document.body.style.overflow = prevOverflow;
-
-      // Remove inert
-      if (mainContent) {
-        mainContent.removeAttribute('inert');
-        mainContent.removeAttribute('aria-hidden');
-      }
-
-      // Restore focus
+      cancelAnimationFrame(raf);
       previouslyFocused.current?.focus();
     };
   }, [isOpen]);
