@@ -11,7 +11,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import framerMotion from 'framer-motion';
 
 vi.mock('@/features/portal/api', () => ({
   portalApi: {
@@ -131,7 +130,7 @@ describe('ApprovalCenterView — persistence', () => {
 
   it('does NOT call the API on the demo registry (dev fallback is local-only)', async () => {
     getDashboard.mockResolvedValue({ ...LIVE_DASHBOARD, pendingApprovals: [] });
-    vi.stubEnv('NODE_ENV', 'development');
+    (process.env as unknown as { NODE_ENV: string }).NODE_ENV = 'development';
 
     renderView();
     // Demo items hydrate from INITIAL_APPROVALS in development.
@@ -145,6 +144,6 @@ describe('ApprovalCenterView — persistence', () => {
     expect(reviewApproval).not.toHaveBeenCalled();
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
 
-    vi.unstubAllEnvs();
+    (process.env as unknown as { NODE_ENV: string }).NODE_ENV = 'test';
   });
 });
