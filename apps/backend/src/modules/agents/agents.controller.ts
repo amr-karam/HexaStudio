@@ -62,9 +62,10 @@ export class AgentsController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Chat with AI agent (authenticated)' })
-  async chat(@Body() body: ChatDto) {
+  async chat(@Body() body: ChatDto, @req() req: any) {
     const provider = body.provider || 'openai';
     const message = sanitizePrompt(body.message);
+    const user = req.user;
 
     if (provider === 'gemini') {
       if (!this.geminiService.isAvailable) {
@@ -77,7 +78,7 @@ export class AgentsController {
     }
 
     const persona = body.persona ?? 'general';
-    return this.agentsService.chat(message, persona, body.sessionId);
+    return this.agentsService.chat(message, persona, body.sessionId, user);
   }
 
   @Delete('memory')

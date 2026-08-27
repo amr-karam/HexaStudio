@@ -9,6 +9,8 @@ import { useLocale } from '@/i18n/LocaleProvider';
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import { useFocusTrap } from '@/hooks/useFocusTrap';
+import { useToggle } from '@/hooks/useToggle';
+import { useThrottledCallback } from '@/hooks/useThrottledValue';
 import dynamic from 'next/dynamic';
 import { Magnetic } from '@/components/ui/Magnetic';
 import { useHEXAMotion } from '@/hooks/useHEXAMotion';
@@ -79,7 +81,7 @@ const NavItem = ({ label, href, active, onClick, isPremium, badgeCount, icon }: 
 
 export const Navbar = () => {
   const pathname = usePathname();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, toggleMenu, , closeMenuRaw] = useToggle(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [unreadPremiumCount] = useState(3); // This would typically come from a context or state management
@@ -88,22 +90,23 @@ export const Navbar = () => {
   const menuTrapRef = useRef<HTMLDivElement>(null);
   const { reduced } = useHEXAMotion();
 
+  const handleScroll = useThrottledCallback(() => {
+    const currentScrollY = window.scrollY;
+    setIsScrolled(currentScrollY > 20);
+    if (currentScrollY < 20) {
+      setIsVisible(true);
+    } else if (currentScrollY > lastScrollY.current) {
+      setIsVisible(false);
+    } else {
+      setIsVisible(true);
+    }
+    lastScrollY.current = currentScrollY;
+  }, 100);
+
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      setIsScrolled(currentScrollY > 20);
-      if (currentScrollY < 20) {
-        setIsVisible(true);
-      } else if (currentScrollY > lastScrollY.current) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
-      }
-      lastScrollY.current = currentScrollY;
-    };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [handleScroll]);
 
   // Body scroll lock + background inert (was 27 lines of ad-hoc DOM)
   useScrollLock(isMenuOpen, { inertSelector: '#main-content' });
@@ -112,7 +115,7 @@ export const Navbar = () => {
   useKeyboardShortcut(
     'Escape',
     () => {
-      if (isMenuOpen) setIsMenuOpen(false);
+      if (isMenuOpen) closeMenuRaw();
     },
     { target: 'document' },
   );
@@ -123,15 +126,15 @@ export const Navbar = () => {
   // Close menu on route change and restore focus
   useEffect(() => {
     if (isMenuOpen) {
-      setIsMenuOpen(false);
+      closeMenuRaw();
       triggerRef.current?.focus();
     }
   }, [pathname]);
 
   const closeMenu = useCallback(() => {
-    setIsMenuOpen(false);
+    closeMenuRaw();
     setTimeout(() => triggerRef.current?.focus(), 0);
-  }, []);
+  }, [closeMenuRaw]);
 
   const { t } = useLocale();
 
@@ -199,7 +202,7 @@ export const Navbar = () => {
         <Magnetic strength={0.25} className="md:hidden">
           <button
             ref={triggerRef}
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            onClick={toggleMenu}
             className="flex flex-col gap-1.5 py-2"
             aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={isMenuOpen}

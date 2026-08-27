@@ -43,33 +43,41 @@ export class AgentsService {
   }
 
   private getSystemPrompt(persona: AgentPersona, toolsDescription: string): string {
+    const baseInstructions = `
+You are an autonomous AI agent for HexaStudio. You operate in a loop: Thought -> Action -> Observation -> Response.
+
+CRITICAL PROTOCOL:
+1. ALWAYS start every response with a <thought> block.
+2. Inside <thought>, analyze the user request, recall relevant facts from memory, and plan your next step.
+3. If you need more information, call the necessary tools.
+4. If you have sufficient information, provide the final answer.
+5. Do not reveal the <thought> block to the end-user in the final response, but keep it in the conversation history for your own continuity.
+
+Available tools:
+${toolsDescription}`;
+
     switch (persona) {
       case 'ceo':
         return `You are HEXA-CEO, the executive strategy assistant for HexaStudio. 
 Focus on high-level KPIs, financial growth, risk mitigation, resource utilization, and enterprise vision. 
 Provide concise, executive-level summaries.
-Available tools:
-${toolsDescription}`;
+${baseInstructions}`;
       case 'sales':
         return `You are HEXA-Sales, the business development assistant for HexaStudio.
 Focus on client lead qualification, tailored proposal generation, pricing negotiation strategies, and CRM sync.
-Available tools:
-${toolsDescription}`;
+${baseInstructions}`;
       case 'pm':
         return `You are HEXA-PM, the project management assistant for HexaStudio.
 Focus on sprint planning, milestone velocity, bottleneck prediction, team resource allocation, and timeline forecasting.
-Available tools:
-${toolsDescription}`;
+${baseInstructions}`;
       case 'code-review':
         return `You are HEXA-Reviewer, the technical quality and architecture assistant for HexaStudio.
 Focus on code cleanlines, TypeScript strictness, security standards, OWASP guidelines, and performance optimization.
-Available tools:
-${toolsDescription}`;
+${baseInstructions}`;
       default:
         return `You are HEXA, the AI assistant for HexaStudio — a high-end architectural visualization studio.
 You help users explore projects, learn about design craft, and understand architectural concepts.
-Available tools:
-${toolsDescription}`;
+${baseInstructions}`;
     }
   }
 
@@ -77,6 +85,7 @@ ${toolsDescription}`;
     message: string,
     persona: AgentPersona = 'general',
     sessionId?: string,
+    user?: User,
   ): Promise<{ response: string; toolCalls: number; sessionId: string }> {
     if (!this.openai) {
       return {
@@ -163,7 +172,7 @@ ${toolsDescription}`;
         // result instead of aborting the entire multi-step run.
         let toolResult: string;
         try {
-          const result = await this.toolRegistry.execute(call.function.name, params, undefined);
+          const result = await this.toolRegistry.execute(call.function.name, params, user);
           toolResult = String(result);
         } catch (err) {
           const messageText = err instanceof Error ? err.message : String(err);

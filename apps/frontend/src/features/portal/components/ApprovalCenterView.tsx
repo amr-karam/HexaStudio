@@ -195,6 +195,7 @@ export function ApprovalCenterView() {
   const [dataSource, setDataSource] = useState<'live' | 'demo'>('demo');
   const [approvals, setApprovals] = useState<PendingApproval[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [persistError, setPersistError] = useState<string | null>(null);
 
   const { data: dashboardData } = useQuery({
     queryKey: ['portal-dashboard'],
@@ -224,11 +225,15 @@ export function ApprovalCenterView() {
   const activeApproval = approvals.find((a) => a.id === selectedId);
 
   const handleAction = (id: string, newStatus: 'approved' | 'revision_requested', notes?: string) => {
+    const now = new Date().toISOString();
+    const actionLabel = newStatus === 'approved' ? 'Approved by Client' : 'Revision Requested by Client';
+
+    setPersistError(null);
+
+    // Optimistic update — persisted to the backend when on live data.
     setApprovals((prev) =>
       prev.map((item) => {
         if (item.id !== id) return item;
-        const now = new Date().toISOString();
-        const actionLabel = newStatus === 'approved' ? 'Approved by Client' : 'Revision Requested by Client';
         return {
           ...item,
           status: newStatus,
@@ -239,6 +244,29 @@ export function ApprovalCenterView() {
         };
       })
     );
+
+    // Demo registry (dev fallback) is local-only by design.
+    if (dataSource !== 'live') return;
+
+    // Persist the decision; revert the optimistic update if the backend rejects it.
+    const backendAction = newStatus === 'approved' ? 'approved' : 'revision';
+    portalApi
+      .reviewApproval(id, backendAction, notes)
+      .catch(() => {
+        setApprovals((prev) =>
+          prev.map((item) => {
+            if (item.id !== id) return item;
+            return {
+              ...item,
+              status: 'pending',
+              auditTrail: (item.auditTrail || []).filter(
+                (log) => !(log.timestamp === now && log.action === actionLabel),
+              ),
+            };
+          })
+        );
+        setPersistError('Your decision could not be recorded — please try again.');
+      });
   };
 
   return (
@@ -269,6 +297,16 @@ export function ApprovalCenterView() {
           Review, sign, and authorize deliverables, scope changes, and milestone invoices with full audit logging.
         </p>
       </motion.div>
+
+      {/* Persistence failure — honest alert, never a silent loss */}
+      {persistError && (
+        <p
+          role="alert"
+          className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 font-mono text-[0.625rem] uppercase tracking-[0.2em] text-red-400"
+        >
+          {persistError}
+        </p>
+      )}
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -463,7 +501,7 @@ export function ApprovalCenterView() {
                       />
                     </button>
                     <button
-                      onClick={() => handleAction(activeApproval.id, 'revision_requested', 'Please adjust lighting angle')}
+                      onClick={() => handleAction(activeApproval.id, 'revision_requested')}
                       className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 font-mono text-[0.625rem] uppercase tracking-[0.3em] text-neutral-300 transition-colors duration-300 ease-[var(--hexa-ease-interaction)] hover:border-accent/40 hover:text-accent focus-luxury"
                       aria-label="Request a revision"
                     >

@@ -102,6 +102,18 @@ interface BackendKpis {
   openSupportTickets: number;
 }
 
+interface BackendPhaseApproval {
+  id: string;
+  projectId: string;
+  phaseName: string;
+  status: 'pending' | 'submitted' | 'approved' | 'rejected' | 'revision';
+  submittedBy?: string;
+  reviewedBy?: string;
+  comment?: string;
+  submittedAt?: string;
+  reviewedAt?: string;
+}
+
 interface PortalDashboardData {
   projectHealth: BackendProjectHealth;
   kpis: BackendKpis;
@@ -313,6 +325,25 @@ export const portalApi = {
 
   getApprovals: (projectId: number): Promise<Response> =>
     authenticatedFetch(`${API_BASE_URL}/api/approvals/project/${projectId}`),
+
+  /**
+   * Record a client decision on a pending approval (audit-trailed).
+   * Mirrors the backend `PhaseApproval` shape returned by
+   * `PATCH /api/approvals/:id/review`.
+   */
+  reviewApproval: (
+    approvalId: string,
+    action: 'approved' | 'rejected' | 'revision',
+    comment?: string,
+  ): Promise<BackendPhaseApproval> =>
+    authFetch<BackendPhaseApproval>(
+      `${API_BASE_URL}/api/approvals/${approvalId}/review`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify({ action, comment }),
+      },
+      'Failed to record approval decision',
+    ),
 
   /* -------- Notifications -------- */
 
