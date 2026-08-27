@@ -39,7 +39,7 @@ interface FieldResult<T> {
   isValid: boolean;
 }
 
-interface FormState<T extends Record<string, any>> {
+interface FormState<T extends Record<string, unknown>> {
   values: T;
   errors: Partial<Record<keyof T, string | null>>;
   touched: Partial<Record<keyof T, boolean>>;
@@ -49,7 +49,7 @@ interface FormState<T extends Record<string, any>> {
   isDirty: boolean;
 }
 
-interface FormActions<T extends Record<string, any>> {
+interface FormActions<T extends Record<string, unknown>> {
   handleChange: <K extends keyof T>(name: K, value: T[K]) => void;
   handleBlur: <K extends keyof T>(name: K) => void;
   handleSubmit: (e: React.FormEvent) => Promise<void>;
@@ -171,12 +171,12 @@ export function useField<T>(
  * @param onSubmit - Async callback invoked on valid submission
  * @returns Form state, actions, and derived values
  */
-export function useForm<T extends Record<string, any>>(
-  fieldConfigs: Record<string, FieldConfig<any>>,
+export function useForm<T extends Record<string, unknown>>(
+  fieldConfigs: Record<string, FieldConfig<unknown>>,
   onSubmit: (values: T) => Promise<void> = async () => {}
 ): FormState<T> & FormActions<T> {
   const [values, setValues] = useState<T>(() => {
-    const initial: Record<string, any> = {};
+    const initial: Record<string, unknown> = {};
     for (const [key, config] of Object.entries(fieldConfigs)) {
       initial[key] = config.initialValue;
     }
@@ -239,13 +239,11 @@ export function useForm<T extends Record<string, any>>(
   // Validate all fields
   const validateAll = useCallback((): Partial<Record<keyof T, string | null>> => {
     const newErrors: Partial<Record<keyof T, string | null>> = {};
-    let hasError = false;
 
-    for (const [key, config] of Object.entries(configsRef.current)) {
+    for (const key of Object.keys(configsRef.current)) {
       const error = validateField(key as keyof T, values[key as keyof T]);
       if (error) {
         newErrors[key as keyof T] = error;
-        hasError = true;
       }
     }
 
@@ -286,7 +284,7 @@ export function useForm<T extends Record<string, any>>(
 
   // Reset form to initial values
   const resetForm = useCallback(() => {
-    const initial: Record<string, any> = {};
+    const initial: Record<string, unknown> = {};
     for (const [key, config] of Object.entries(configsRef.current)) {
       initial[key] = config.initialValue;
     }

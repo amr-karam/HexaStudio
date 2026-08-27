@@ -205,6 +205,18 @@ export function CurrencySelector() {
     }
   }, [isOpen]);
 
+  // Escape key closes the panel (replaces ad-hoc keydown listener)
+  useKeyboardShortcut(
+    'Escape',
+    () => {
+      if (isOpen) closePanel();
+    },
+    {
+      ignoreInput: false,
+      target: 'document',
+    },
+  );
+
   /* ---- Click outside ---- */
   useEffect(() => {
     if (!isOpen) return;
@@ -218,13 +230,14 @@ export function CurrencySelector() {
         closePanel();
       }
     };
-    // Escape key closes the panel (replaces ad-hoc listener)
-    useKeyboardShortcut('Escape', () => closePanel(), {
-      // Escape may need to work even when focus is in the search input
-      ignoreInput: false,
-      // Register on document like the original code
-      target: 'document',
-    });
+    // Delay listener to avoid immediate closure from the opening click
+    const timer = setTimeout(() => {
+      document.addEventListener('mousedown', handleClick);
+    }, 0);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('mousedown', handleClick);
+    };
   }, [isOpen, closePanel]);
 
   /* ---- Keyboard nav within dropdown ---- */

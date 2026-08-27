@@ -27,3 +27,6 @@ export { useKeyboardShortcut, isKeyCombo } from './useKeyboardShortcut';
 export type { KeyboardShortcutOptions } from './useKeyboardShortcut';
 export { useHotkeys } from './useHotkeys';
 export type { Hotkey } from './useHotkeys';
+
+// ── Form hooks ──────────────────────────────────────────
+export { useField, useForm } from './form-hooks';

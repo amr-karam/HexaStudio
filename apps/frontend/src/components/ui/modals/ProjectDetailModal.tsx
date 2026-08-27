@@ -69,6 +69,14 @@ export const ProjectDetailModal = ({ isOpen, onClose, project }: ProjectDetailMo
     [],
   );
 
+  // Tab focus trap while modal is open
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = (e: KeyboardEvent): void => trapFocus(e);
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [isOpen, trapFocus]);
+
   useEffect(() => {
     if (!isOpen) return;
 

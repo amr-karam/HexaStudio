@@ -141,16 +141,17 @@ export const Navbar = () => {
     };
   }, [isMenuOpen]);
 
-  // Focus trap inside mobile menu
-useEffect(() => {
-    // ✅ ESCAPE → closes menu
-    useKeyboardShortcut('Escape', () => {
-      if (isMenuOpen) {
-        setIsMenuOpen(false);
-      }
-    }, { target: 'document' });
+  // Escape closes mobile menu (replaces ad-hoc keydown listener)
+  useKeyboardShortcut(
+    'Escape',
+    () => {
+      if (isMenuOpen) setIsMenuOpen(false);
+    },
+    { target: 'document' },
+  );
 
-    // 🔄 TAB TRAP → for keyboard navigation inside menu
+  // Focus trap inside mobile menu (Tab cycling)
+  useEffect(() => {
     if (!isMenuOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key !== 'Tab') return;
