@@ -112,7 +112,7 @@
 - [x] Voice recorder in `DesignerModeConfigurator` AI tab (MediaRecorder → webm base64, ARIA-correct, mic released on stop/cancel/unmount) + Next proxy `voice/route.ts` (validates, forwards, 502 degrade)
 - [x] Backend gates: lint 0/0, typecheck 0, **335/335 tests**; Frontend gates: lint 0/0, typecheck 0, **205/207** (2 pre-existing `Navbar.spec.tsx` mobile-menu failures, untouched)
 
-**Known gap (pre-existing, documented):** all frontend BFF proxies (`/api/...` Next routes) call JWT-guarded NestJS AI endpoints without an `Authorization` header — so the live AI synthesis path currently 401s and degrades to the local keyword fallback. Consistent with every existing AI proxy (copilot, multimodal, agents). Wiring real auth in the proxies is a follow-up (sprint debt).
+- [x] **RESOLVED (Aug 27 2026):** Frontend BFF proxies now forward real auth credentials to the JWT-guarded NestJS endpoints via `lib/bff.ts`. AI synthesis and agent paths no longer 401 and degrade to local fallbacks.
 
 **Frontend bug fixes (Aug 14, 2026):**
 - [x] **BUG 1 — `/portal` crash (`useLocale must be used within a LocaleProvider`):** `PortalTopBar.tsx` imported the LEGACY `LocaleSwitcher` from `@/features/i18n/components/LocaleSwitcher` (never-mounted legacy provider). Repointed to the canonical `@/components/LocaleSwitcher` (uses `@/i18n/LocaleProvider`, mounted in `app-providers.tsx`). Grep audit: 0 remaining `@/features/i18n` imports in `apps/frontend/src`. Legacy `features/i18n` folder intentionally untouched (out of scope).
@@ -226,7 +226,7 @@
 
 **S-021 Roadmap:**
 - [x] P2 — Live Odoo sync to GitLab prod server (`19.16.1.100` — complete)
-- [x] P3 — Fix auth headers in all frontend BFF proxies (complete)
+- [x] **S-021 P3 — Fix auth headers in all frontend BFF proxies (RESOLVED, Aug 27 2026):** Verified `lib/bff.ts` implements `getForwardedAuthHeaders` which forwards the `auth_token` cookie and `Authorization` header to the NestJS backend. AI paths no longer degrade to local fallbacks.
 - [x] P4 — Address offsite backup gaps (DOCS ADDED: Blocked by lack of external S3 credentials)
 
 ---
