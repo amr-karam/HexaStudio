@@ -815,20 +815,18 @@ Performance category not returned by this run (first attempt timed out; retry em
 **Status:** ? Implemented & tested
 
 ### 1. Overview
-Enhanced the MCP bridge (pps/backend/src/bridge.ts) with comprehensive session management capabilities, including TTL-based expiration, file-based persistence, automatic cleanup, and a new public API for session inspection and management.
+Enhanced the MCP bridge (`apps/backend/src/bridge.ts) with comprehensive session management capabilities, including TTL-based expiration, file-based persistence, automatic cleanup, and a new public API for session inspection and management.
 
 ### 2. New Features
 
 #### 2.1 Session Interface Enhancements
-- **TTL Support**: Added 	tl (milliseconds) and xpiresAt (timestamp) fields to the Session interface
+- **TTL Support**: Added 	tl (milliseconds) and `expiresAt (timestamp) fields to the Session interface
 - **Expiration Logic**: Sessions now automatically expire after their TTL, preventing memory leaks
-- **State Management**: Sessions track status (ctive | paused | completed), messages, and tool results
+- **State Management**: Sessions track status (`active | paused | completed), messages, and tool results
 
 #### 2.2 Configurable Session Management
 - **sessionTtl**: Configurable session lifetime (default: 24 hours)
-- **persistence**: Persistence mode (ile | 
-edis | 
-one)
+- **persistence**: Persistence mode (`file | `redis | `none)
 - **cleanupInterval**: Automatic cleanup interval (default: 5 minutes)
 
 #### 2.3 File-Based Persistence
@@ -903,7 +901,7 @@ Created comprehensive test suite with 3 test files:
 
 | File | Change |
 |------|--------|
-| pps/backend/src/bridge.ts | Enhanced with session management (771 lines) |
+| `apps/backend/src/bridge.ts | Enhanced with session management (771 lines) |
 | 	ests/session/session.service.spec.ts | New file (30 tests) |
 | 	ests/session/session.persistence.spec.ts | New file (20 tests) |
 | 	ests/session/session.expiration.spec.ts | New file (20 tests) |
@@ -963,7 +961,7 @@ const bridge2 = new McpBridge({
 ### 8. Notes
 
 - **Backward Compatible**: Existing code continues to work without changes
-- **Type Safe**: Full TypeScript coverage with no ny types
+- **Type Safe**: Full TypeScript coverage with no `any types
 - **Well Documented**: Comprehensive JSDoc comments for all new methods
 - **Production Ready**: All quality gates passed, tests verified
 
@@ -1007,3 +1005,23 @@ Restored full quality-gate compliance across all three workspaces. Two root caus
 ### 5. Notes
 - `react-test-renderer` unified at `19.0.0` (root + mobile) to match `react@19.0.0` — the RTR/React major-version mismatch hard-fails @testing-library/react-native's `ensurePeerDeps` check.
 - Long-term option (not applied): add `express` as explicit backend dependency and restore native `Response` typing.
+
+## 2026-08-27 (2) — BFF Auth Forwarding Gap Closed (Executive Brief) — COMPLETE
+
+**Status:** Implemented & verified (frontend gates green)
+
+### 1. Overview
+Closed the documented sprint debt (S-021 known gap): all frontend BFF proxies now forward real auth credentials to the JWT-guarded NestJS endpoints. Audit of all 18 custom `/api` routes found 17 already correct via `proxyToBackend` (cookie-first, Bearer fallback); the single straggler was `executive-brief`, which used `authenticatedFetch` whose module-level access token is browser-only (null in server route handlers) — the route always 401ed for signed-in portal clients.
+
+### 2. Fix
+- `apps/frontend/src/app/api/portal/reports/executive-brief/route.ts` — migrated from `authenticatedFetch` to `proxyToBackend` (GET, 15s timeout, projectId validation preserved). Auth cookie `auth_token` now forwarded verbatim; upstream 401/403/404/5xx pass through honestly; unreachable backend yields 502. Zero `any`, design-token safe (no UI surface).
+
+### 3. Regression Tests
+- `apps/frontend/test/app/api/executive-brief-route.test.ts` — 5 tests: (1) 400 when projectId missing, (2) auth cookie forwarded upstream, (3) Bearer header forwarded when no cookie, (4) upstream 401 passes through, (5) 502 on unreachable backend. Note: fetch mock must be re-stubbed per test (`vi.unstubAllGlobals` in afterEach wipes module-level stubs; a live local backend was absorbing the real calls and honestly returning 401).
+
+### 4. Verification
+- Frontend: lint 0/0 (+ design tokens + font preloads), typecheck 0 errors, **522/522 tests** (70 files).
+- Backend chain verified end-to-end in code: `JwtStrategy` reads `auth_token` cookie first, Bearer fallback; `AuthController` login/register/refresh all set the httpOnly cookie.
+
+### 5. Incident Note
+- A transient lint warning (dead `useScrollLock` import in `Navbar.tsx`) was OneDrive sync lag, not a real defect — file verified byte-identical to HEAD after recovery; no code change required.

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProgressiveReveal from '@/components/effects/ProgressiveReveal';
 import Link from 'next/link';
@@ -10,6 +10,7 @@ import { REDUCED_TRANSITION, makeTransition, modalPanel, overlay } from '@/lib/m
 import { useHEXAMotion } from '@/hooks/useHEXAMotion';
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
 import { useScrollLock } from '@/hooks/useScrollLock';
+import { useFocusTrap } from '@/hooks/useFocusTrap';
 
 interface ModalProject {
   title: string;
@@ -25,9 +26,6 @@ interface ProjectDetailModalProps {
   onClose: () => void;
   project: ModalProject;
 }
-
-const FOCUSABLE_SELECTOR =
-  'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 export const ProjectDetailModal = ({ isOpen, onClose, project }: ProjectDetailModalProps) => {
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -47,47 +45,17 @@ export const ProjectDetailModal = ({ isOpen, onClose, project }: ProjectDetailMo
     preventDefault: true
   });
 
-  const trapFocus = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return;
-      const dialog = dialogRef.current;
-      if (!dialog) return;
-
-      const focusable = Array.from(dialog.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR));
-      if (focusable.length === 0) return;
-
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    },
-    [],
-  );
-
-  // Tab focus trap while modal is open
-  useEffect(() => {
-    if (!isOpen) return;
-    const handler = (e: KeyboardEvent): void => trapFocus(e);
-    document.addEventListener('keydown', handler);
-    return () => document.removeEventListener('keydown', handler);
-  }, [isOpen, trapFocus]);
+  // Focus trap + initial focus (was 22 lines of duplicated Tab logic)
+  useFocusTrap(dialogRef, isOpen);
 
   // Body scroll lock + inert (was 32 lines of ad-hoc DOM)
   useScrollLock(isOpen, { inertSelector: '#main-content' });
 
-  // Focus management: remember trigger + move focus to close button
+  // Remember trigger for focus restoration (initial focus now handled by useFocusTrap)
   useEffect(() => {
     if (!isOpen) return;
     previouslyFocused.current = document.activeElement as HTMLElement;
-    const raf = requestAnimationFrame(() => closeBtnRef.current?.focus());
     return () => {
-      cancelAnimationFrame(raf);
       previouslyFocused.current?.focus();
     };
   }, [isOpen]);

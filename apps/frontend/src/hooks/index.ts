@@ -37,3 +37,5 @@ export { useThrottledValue, useThrottledCallback } from './useThrottledValue';
 export { useClickOutside } from './useClickOutside';
 export type { UseClickOutsideOptions } from './useClickOutside';
 export { useScrollLock } from './useScrollLock';
+export { useFocusTrap } from './useFocusTrap';
+export { useInterval, useTimeout } from './useInterval';

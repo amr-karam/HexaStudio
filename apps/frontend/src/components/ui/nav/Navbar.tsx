@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { useLocale } from '@/i18n/LocaleProvider';
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
 import { useScrollLock } from '@/hooks/useScrollLock';
+import { useFocusTrap } from '@/hooks/useFocusTrap';
 import dynamic from 'next/dynamic';
 import { Magnetic } from '@/components/ui/Magnetic';
 import { useHEXAMotion } from '@/hooks/useHEXAMotion';
@@ -76,9 +77,6 @@ const NavItem = ({ label, href, active, onClick, isPremium, badgeCount, icon }: 
   </Magnetic>
 );
 
-const FOCUSABLE_SELECTOR =
-  'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
-
 export const Navbar = () => {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -87,6 +85,7 @@ export const Navbar = () => {
   const [unreadPremiumCount] = useState(3); // This would typically come from a context or state management
   const lastScrollY = useRef(0);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const menuTrapRef = useRef<HTMLDivElement>(null);
   const { reduced } = useHEXAMotion();
 
   useEffect(() => {
@@ -106,23 +105,10 @@ export const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Body scroll lock + background inert (now via hook — was 27 lines of ad-hoc DOM)
+  // Body scroll lock + background inert (was 27 lines of ad-hoc DOM)
   useScrollLock(isMenuOpen, { inertSelector: '#main-content' });
 
-  // Move focus into the dialog when it opens
-  useEffect(() => {
-    if (!isMenuOpen) return;
-    const raf = requestAnimationFrame(() => {
-      const menu = document.getElementById('mobile-menu');
-      if (menu) {
-        const firstFocusable = menu.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
-        firstFocusable?.focus();
-      }
-    });
-    return () => cancelAnimationFrame(raf);
-  }, [isMenuOpen]);
-
-  // Escape closes mobile menu (replaces ad-hoc keydown listener)
+  // Escape closes mobile menu
   useKeyboardShortcut(
     'Escape',
     () => {
@@ -131,28 +117,8 @@ export const Navbar = () => {
     { target: 'document' },
   );
 
-  // Focus trap inside mobile menu (Tab cycling)
-  useEffect(() => {
-    if (!isMenuOpen) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return;
-      const menu = document.getElementById('mobile-menu');
-      if (!menu) return;
-      const focusable = menu.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
-      if (focusable.length === 0) return;
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isMenuOpen]);
+  // Focus trap + initial focus (was 30 lines of duplicated Tab+raf logic)
+  useFocusTrap(menuTrapRef, isMenuOpen);
 
   // Close menu on route change and restore focus
   useEffect(() => {
@@ -261,13 +227,15 @@ export const Navbar = () => {
         </Magnetic>
       </nav>
 
-      <NavbarMobileMenu
-        isOpen={isMenuOpen}
-        onClose={closeMenu}
-        navItems={navItems}
-        pathname={pathname}
-        reduced={reduced}
-      />
+      <div ref={menuTrapRef}>
+        <NavbarMobileMenu
+          isOpen={isMenuOpen}
+          onClose={closeMenu}
+          navItems={navItems}
+          pathname={pathname}
+          reduced={reduced}
+        />
+      </div>
     </>
   );
 };

@@ -1,12 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { NextRequest } from 'next/server';
 import { GET } from '@/app/api/portal/reports/executive-brief/route';
+import { API_BASE_URL } from '@/config/constants';
 
 const fetchMock = vi.fn();
-
-vi.stubGlobal('fetch', fetchMock);
-
-import { API_BASE_URL } from '@/config/constants';
 
 function makeRequest(query: string, headers: Record<string, string> = {}): NextRequest {
   return new NextRequest(`http://localhost/api/portal/reports/executive-brief${query}`, {
@@ -17,6 +14,10 @@ function makeRequest(query: string, headers: Record<string, string> = {}): NextR
 describe('GET /api/portal/reports/executive-brief', () => {
   beforeEach(() => {
     fetchMock.mockReset();
+    // Re-stub before EVERY test: unstubAllGlobals() in afterEach wipes the
+    // stub, and the machine-local live backend would otherwise answer with
+    // real 401s instead of the mocked responses.
+    vi.stubGlobal('fetch', fetchMock);
   });
 
   afterEach(() => {
