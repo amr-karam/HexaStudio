@@ -1,7 +1,7 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** August 27, 2026 — Monorepo gate restoration: backend `express` type fix, mobile Expo SDK 53 realignment (18 packages) + jest-expo preset, all 3 workspace gates green
-**Version:** 2.2.2
+**Last Updated:** August 27, 2026 — Keyboard shortcut consolidation (Navbar/CurrencySelector/ProjectDetailModal → `useKeyboardShortcut`) + `useField`/`useForm` hooks with 20 tests, all 3 workspace gates green
+**Version:** 2.2.3
 **Authority Level:** 13 (Production)
 **Current Phase:** Production-Ready — Quad-Track Feature Delivery & Silent Luxury Design System (DEPLOYED)
 
@@ -26,7 +26,7 @@
 | Gate | Target | Status | Result |
 |---|---|---|---|
 | **Backend Tests** | 390 total (47 files) | `47 / 47 files, 390/390 tests` | ✅ PASS |
-| **Frontend Tests** | 465 total | `465 / 465` | ✅ PASS |
+| **Frontend Tests** | 485 total (63 files) | `485 / 485` | ✅ PASS |
 | **Mobile Tests** | 26 passing | `26 / 26` | ✅ PASS |
 | **Frontend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **Backend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
@@ -134,7 +134,8 @@
 - [x] **Backend gate GREEN:** **47/47 test files PASS (exit 0)**. Env note: `npm run test --workspace=apps/backend` no longer resolves `vitest` after the root `npm ci` hoist (workspace-local `.bin` dirs are not created) — use `node_modules\.bin\vitest.cmd run --config apps/backend/vitest.config.mts --silent`.
 - [x] **Environment repair:** root `node_modules` corruption from a killed `npm install` (partial extractions: vitest, iterare, rxjs, xmlrpc/xmlbuilder, @rolldown native binding) fixed via `npm ci`; lockfile synced with `npm install --package-lock-only`.
 - [x] **hexa-hub test runner partitioning:** root bare `vitest run` was sweeping up specs owned by other runners (e2e/ → Playwright, apps/api → Jest, apps/web → own jsdom vitest config). Added `hexa-hub/vitest.config.ts` scoping root vitest to `tests/**`; changed `test` script `vitest` → `vitest run` (bare `vitest` hung in watch mode under redirected stdout). `npm test` now exits 0 (20/20).
-- [ ] Remaining: hexa-hub has no `eslint.config.js` (ESLint 9 flat config missing) — needs new devDeps + legacy triage, separate setup task. Commit of the working tree (~36 files) pending decision.
+- [x] **hexa-hub ESLint set up:** added `eslint.config.js` (ESLint 9 flat config, `@eslint/js` + `typescript-eslint` 8) + devDeps; lint now runs clean. Fixed 26 legacy issues: removed dead `McpMessage`/`McpResponse`/`uuidv4` imports, converted 17 `any` to proper types (`GitLabPayload`, `ToolResult`, `MergeRequestResult`, `Record<string, unknown>`), `let`→`const`, unused-param prefixes. `npm run lint` → 0 errors, 0 warnings.
+- [ ] Commit of the working tree (~38 files) pending decision.
 **Utility hooks suite — Essential React hook library (Aug 18, 2026):**
 - [x] **Gap analysis:** the `src/hooks/` directory was missing 7 standard React utility hooks (`usePrevious`, `useDebouncedValue`/`useDebouncedCallback`, `useLocalStorage`, `useCopyToClipboard`, `useWindowSize`/`useWindowBreakpoint`, `useIntersectionObserver`, `useEvent`). Grep confirmed 0 existing implementations. Created all 7 as `'use client'` component hooks with strict TypeScript (zero `any`), JSDoc documentation, and comprehensive unit test suites.
 - [x] **7 new hook source files** in `apps/frontend/src/hooks/`:
@@ -156,6 +157,18 @@
   - Both use `Event` -> `KeyboardEvent` cast (DOM `addEventListener` typing), `useRef` for stable callbacks, proper cleanup.
 - [x] **2 new test files** (`use-keyboard-shortcut.test.ts` — 18 tests, `use-hotkeys.test.ts` — 11 tests) covering modifier matching, cross-platform ctrlCmd, input/textarea guards, IME, preventDefault, cleanup, stable callbacks on re-render, first-match-wins.
 - [x] **Gates verified:** frontend lint 0/0, typecheck 0 errors, hook tests **123/123** (17 files), design-token gate PASSED.
+
+**Keyboard shortcut consolidation + Form hooks (Aug 27, 2026):**
+- [x] **Refactored 3 components** to use `useKeyboardShortcut` (removed duplicated Escape listeners, fixed Rules-of-Hooks violations where hook was called inside `useEffect`):
+  - `Navbar.tsx` — Escape closes mobile menu (`target:'document'`), Tab trap isolated in dedicated `useEffect`
+  - `CurrencySelector.tsx` — Escape closes panel (`ignoreInput:false`), click-outside restored with `setTimeout(0)` debounce + proper cleanup
+  - `ProjectDetailModal.tsx` — Escape closes modal (`ignoreInput:false`, `preventDefault:true`), Tab trap preserved via `trapFocus` + separate `useEffect` for inert/scroll-lock
+- [x] **New form hooks** `apps/frontend/src/hooks/form-hooks.ts` (351 lines, 0 `any`):
+  - `useField<T>` — single field with `value/error/touched/dirty/isValid`, validation `{required, minLength, maxLength, min, max, pattern, custom}`, `onChange/onBlur/reset`
+  - `useForm<T extends Record<string,unknown>>` — multi-field manager with `values/errors/touched/dirty/isSubmitting/isValid/isDirty`, `handleChange/handleBlur/setField/setErrors/handleSubmit/resetForm`, `validateAll` + per-field validation, `isSubmitting` guard, error handling
+  - Exported from `hooks/index.ts` barrel
+- [x] **20 new tests** `test/hooks/form-hooks.test.tsx` — `useField` (required, min/maxLength, pattern, number min/max, custom string/boolean, touched, reset) + `useForm` (init, handleChange/dirty/validation, handleBlur, setField, resetForm, handleSubmit valid/invalid, isValid, setErrors, throw handling)
+- [x] **Gates verified (Aug 27, 2026):** frontend lint 0/0, typecheck 0 errors, tests **485/485** (63 files, +20), design-token + font-preload PASSED
 
 **Production deploy + fixes (Aug 17, 2026) — commit `75dc3b0`:**
 - [x] **BUG — backend never compiled from scratch (`TS1016`):** `auth.controller.ts` logout had `@Headers('authorization') authHeader?: string` (optional) immediately followed by required `@Body() body` → `TS1016: A required parameter cannot follow an optional parameter`. Masked for weeks by Docker layer caching (any prior deploy reused the cached `COPY . .` build layer). A frontend-only change invalidated the layer → full backend rebuild → build broke, blocking deploy. Fix: removed `?` (runtime-identical — `authHeader?.replace('Bearer ', '') ?? ''` already absorbs `undefined`). Backend gates: lint 0/0, typecheck 0, tests **386/386** (46 files), `nest build` ✅. **Note: the previously-running production backend image predated repo HEAD — the deployed backend now matches the repo for the first time.**

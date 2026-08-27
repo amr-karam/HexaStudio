@@ -97,6 +97,13 @@
     "@rolldown/binding-win32-x64-msvc": "1.2.2"
   },
   "allowScripts": {
-    "tui@1.0.0": true
+    "tui@1.0.0": true,
+    "@sentry/cli@2.58.6": true,
+    "@google/genai@2.15.0": true,
+    "@parcel/watcher@2.6.0": true,
+    "@swc/core@1.15.47": true,
+    "esbuild@0.28.1": true,
+    "protobufjs@7.6.5": true,
+    "unrs-resolver@1.12.2": true
   }
 }

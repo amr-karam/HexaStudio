@@ -30,3 +30,10 @@ export type { Hotkey } from './useHotkeys';
 
 // ── Form hooks ──────────────────────────────────────────
 export { useField, useForm } from './form-hooks';
+
+// ── Interaction hooks ─────────────────────────────────
+export { useToggle } from './useToggle';
+export { useThrottledValue, useThrottledCallback } from './useThrottledValue';
+export { useClickOutside } from './useClickOutside';
+export type { UseClickOutsideOptions } from './useClickOutside';
+export { useScrollLock } from './useScrollLock';
