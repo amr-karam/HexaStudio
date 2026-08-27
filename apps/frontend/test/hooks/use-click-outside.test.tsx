@@ -1,3 +1,4 @@
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, fireEvent, act } from '@testing-library/react';
 import { useRef } from 'react';
 import { useClickOutside } from '@/hooks/useClickOutside';
