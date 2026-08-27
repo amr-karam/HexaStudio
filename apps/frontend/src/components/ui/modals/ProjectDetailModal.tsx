@@ -11,6 +11,7 @@ import { useHEXAMotion } from '@/hooks/useHEXAMotion';
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import { useFocusTrap } from '@/hooks/useFocusTrap';
+import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 
 interface ModalProject {
   title: string;
@@ -50,6 +51,12 @@ export const ProjectDetailModal = ({ isOpen, onClose, project }: ProjectDetailMo
 
   // Body scroll lock + inert (was 32 lines of ad-hoc DOM)
   useScrollLock(isOpen, { inertSelector: '#main-content' });
+
+  // Document title sync (restores on close)
+  useDocumentTitle(
+    isOpen ? `${project.title} — ${project.category} | HEXA Studio` : '',
+    { restoreOnUnmount: true },
+  );
 
   // Remember trigger for focus restoration (initial focus now handled by useFocusTrap)
   useEffect(() => {

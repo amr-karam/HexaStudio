@@ -47,3 +47,6 @@ export type { UseCountdownOptions, UseCountdownReturn } from './useCountdown';
 export { useFetch } from './useFetch';
 export type { UseFetchOptions, UseFetchState, UseFetchReturn } from './useFetch';
 export { useDocumentTitle } from './useDocumentTitle';
+export { useOnlineStatus } from './useOnlineStatus';
+export { useWindowScroll } from './useWindowScroll';
+export type { WindowScrollState } from './useWindowScroll';

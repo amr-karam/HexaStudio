@@ -104,6 +104,8 @@
     "@swc/core@1.15.47": true,
     "esbuild@0.28.1": true,
     "protobufjs@7.6.5": true,
-    "unrs-resolver@1.12.2": true
+    "unrs-resolver@1.12.2": true,
+    "eventsource@4.1.1": true,
+    "gcp-metadata@8.1.2": true
   }
 }
