@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useLocale } from '@/i18n/LocaleProvider';
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
+import { useScrollLock } from '@/hooks/useScrollLock';
 import dynamic from 'next/dynamic';
 import { Magnetic } from '@/components/ui/Magnetic';
 import { useHEXAMotion } from '@/hooks/useHEXAMotion';
@@ -105,40 +106,20 @@ export const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Body scroll lock + background inert
+  // Body scroll lock + background inert (now via hook — was 27 lines of ad-hoc DOM)
+  useScrollLock(isMenuOpen, { inertSelector: '#main-content' });
+
+  // Move focus into the dialog when it opens
   useEffect(() => {
-    if (isMenuOpen) {
-      document.body.style.overflow = 'hidden';
-      // Make main content inert
-      const mainContent = document.getElementById('main-content');
-      if (mainContent) {
-        mainContent.setAttribute('inert', '');
-        mainContent.setAttribute('aria-hidden', 'true');
+    if (!isMenuOpen) return;
+    const raf = requestAnimationFrame(() => {
+      const menu = document.getElementById('mobile-menu');
+      if (menu) {
+        const firstFocusable = menu.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
+        firstFocusable?.focus();
       }
-      // Move focus into the dialog
-      requestAnimationFrame(() => {
-        const menu = document.getElementById('mobile-menu');
-        if (menu) {
-          const firstFocusable = menu.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
-          firstFocusable?.focus();
-        }
-      });
-    } else {
-      document.body.style.overflow = '';
-      const mainContent = document.getElementById('main-content');
-      if (mainContent) {
-        mainContent.removeAttribute('inert');
-        mainContent.removeAttribute('aria-hidden');
-      }
-    }
-    return () => {
-      document.body.style.overflow = '';
-      const mainContent = document.getElementById('main-content');
-      if (mainContent) {
-        mainContent.removeAttribute('inert');
-        mainContent.removeAttribute('aria-hidden');
-      }
-    };
+    });
+    return () => cancelAnimationFrame(raf);
   }, [isMenuOpen]);
 
   // Escape closes mobile menu (replaces ad-hoc keydown listener)
