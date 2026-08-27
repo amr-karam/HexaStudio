@@ -813,7 +813,8 @@ Enhanced the MCP bridge (pps/backend/src/bridge.ts) with comprehensive session 
 
 #### 2.2 Configurable Session Management
 - **sessionTtl**: Configurable session lifetime (default: 24 hours)
-- **persistence**: Persistence mode (ile | edis | 
+- **persistence**: Persistence mode (ile | 
+edis | 
 one)
 - **cleanupInterval**: Automatic cleanup interval (default: 5 minutes)
 
@@ -827,7 +828,8 @@ one)
 - **listSessions()**: Returns summary of all active sessions
 - **sessionInfo(sessionId)**: Returns detailed session information
 - **cleanupSession(sessionId, preserveData)**: Clean up specific sessions
-- **enewSessionTtl(sessionId, ttl?)**: Extend session TTL
+- **
+enewSessionTtl(sessionId, ttl?)**: Extend session TTL
 
 ### 3. Bug Fixes
 
@@ -960,7 +962,8 @@ const bridge2 = new McpBridge({
 - Session sharing between bridge instances
 
 ---
-
+
+
 
 ---
 
@@ -969,28 +972,25 @@ const bridge2 = new McpBridge({
 **Status:** ✅ Implemented & verified (all 3 gates green)
 
 ### 1. Overview
-Restored full quality-gate compliance across all three workspaces. Two root causes were repaired: (a) backend streaming controllers importing xpress (not a direct dependency) which broke test collection and 	sc, and (b) the mobile workspace pinned to an invalid Expo package matrix (React 19.2.8 + RN 0.77 + non-existent versions like xpo-device@57) that crashed the Jest Expo preset.
+Restored full quality-gate compliance across all three workspaces. Two root causes were repaired: (a) backend streaming controllers importing `express` (not a direct dependency) which broke test collection and `tsc`, and (b) the mobile workspace pinned to an invalid Expo package matrix (React 19.2.8 + RN 0.77 + non-existent versions like `expo-device@57`) that crashed the Jest Expo preset.
 
 ### 2. Backend Fixes (2 files)
-- pps/backend/src/modules/ai/ai-chat.controller.ts + model-fusion-stream.controller.ts: replaced import { Response } from 'express' with structural typing on @Res() ({ write/setHeader/flushHeaders/setTimeout/end }) — Express stream methods without importing xpress. Resolves vitest "Cannot find package 'express'" collection failure AND 	sc TS2339 errors. **Backend: 47/47 files, 390/390 tests, tsc 0 errors, lint 0/0.**
+- `apps/backend/src/modules/ai/ai-chat.controller.ts` + `model-fusion-stream.controller.ts`: replaced `import { Response } from 'express'` with structural typing on `@Res()` (`{ write/setHeader/flushHeaders/setTimeout/end }`) — Express stream methods without importing `express`. Resolves vitest "Cannot find package 'express'" collection failure AND `tsc` TS2339 errors. **Backend: 47/47 files, 390/390 tests, tsc 0 errors, lint 0/0.**
 
 ### 3. Mobile Fixes (root-cause repair)
-- pps/mobile/package.json — realigned **18 packages** to Expo SDK 53 canonical versions (eact 19.0.0, eact-native 0.79.6, xpo-router ~5.1.11, xpo-device ~7.1.4, xpo-notifications ~0.31.5, xpo-updates ~0.28.18, etc.) per 
-px expo install --check dependency map.
-- pps/mobile/jest.config.js — preset eact-native → jest-expo (bare-RN preset cannot resolve expo-router (tabs) route groups or abel-preset-expo).
-- pps/mobile/package.json test script — 
-px --yes jest@29.7.0 → jest (npx-cached Jest cannot resolve workspace presets).
-- pps/mobile/src/types/testing-library-react-native.d.ts — ambient types (package v13 ships its own types; kept as belt-and-braces for hoisted resolution).
-- Repaired corrupted root 
-ode_modules entries (caniuse-lite, hermes-parser) — OneDrive hydration casualties.
+- `apps/mobile/package.json` — realigned **18 packages** to Expo SDK 53 canonical versions (`react 19.0.0`, `react-native 0.79.6`, `expo-router ~5.1.11`, `expo-device ~7.1.4`, `expo-notifications ~0.31.5`, `expo-updates ~0.28.18`, etc.) per `npx expo install --check` dependency map.
+- `apps/mobile/jest.config.js` — preset `react-native` → `jest-expo` (bare-RN preset cannot resolve expo-router `(tabs)` route groups or `babel-preset-expo`).
+- `apps/mobile/package.json` test script — `npx --yes jest@29.7.0` → `jest` (npx-cached Jest cannot resolve workspace presets).
+- `apps/mobile/src/types/testing-library-react-native.d.ts` — ambient types (package v13 ships its own types; kept as belt-and-braces for hoisted resolution).
+- Repaired corrupted root `node_modules` entries (`caniuse-lite`, `hermes-parser`) — OneDrive hydration casualties.
 
 ### 4. Gate Results (Aug 27, 2026)
 | Workspace | Lint | Typecheck | Tests |
 |---|---|---|---|
 | frontend | 0/0 (+ tokens ✅ + fonts ✅) | 0 | 62 files / 465 tests ✅ |
 | backend | 0/0 | 0 | 47 files / 390 tests ✅ |
-| mobile | 0/0 | 0 | 8 suites / 26 tests ✅ (--detectOpenHandles clean — no leaks) |
+| mobile | 0/0 | 0 | 8 suites / 26 tests ✅ (`--detectOpenHandles` clean — no leaks) |
 
 ### 5. Notes
-- eact-test-renderer unified at 19.0.0 (root + mobile) to match eact@19.0.0 — the RTR/React major-version mismatch hard-fails @testing-library/react-native's nsurePeerDeps check.
-- Long-term option (not applied): add xpress as explicit backend dependency and restore native Response typing.
+- `react-test-renderer` unified at `19.0.0` (root + mobile) to match `react@19.0.0` — the RTR/React major-version mismatch hard-fails @testing-library/react-native's `ensurePeerDeps` check.
+- Long-term option (not applied): add `express` as explicit backend dependency and restore native `Response` typing.
