@@ -9,7 +9,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 vi.mock('@/features/portal/api', () => ({
@@ -87,6 +87,15 @@ function renderView(): ReturnType<typeof render> {
   );
 }
 
+/**
+ * Wait for the signing desk detail panel (AnimatePresence mode="wait" delays
+ * its entrance after the empty state exits) and click the approve button.
+ */
+async function approveFirstDeliverable(): Promise<void> {
+  const approveButton = await screen.findByRole('button', { name: 'Approve this deliverable' });
+  fireEvent.click(approveButton);
+}
+
 describe('ApprovalCenterView — persistence', () => {
   it('renders the live registry badge when the dashboard API returns approvals', async () => {
     getDashboard.mockResolvedValue(LIVE_DASHBOARD);
@@ -100,9 +109,7 @@ describe('ApprovalCenterView — persistence', () => {
     getDashboard.mockResolvedValue(LIVE_DASHBOARD);
 
     renderView();
-    await screen.findAllByText(/3D Exterior Renderings/);
-
-    screen.getByRole('button', { name: 'Approve this deliverable' }).click();
+    await approveFirstDeliverable();
 
     await waitFor(() => {
       expect(reviewApproval).toHaveBeenCalledWith('app-1', 'approved', undefined);
@@ -114,36 +121,35 @@ describe('ApprovalCenterView — persistence', () => {
     reviewApproval.mockRejectedValue(new Error('network down'));
 
     renderView();
-    await screen.findAllByText(/3D Exterior Renderings/);
-
-    screen.getByRole('button', { name: 'Approve this deliverable' }).click();
+    await approveFirstDeliverable();
 
     // Honest failure: role=alert message + status pill returns to Awaiting Signature.
     expect(await screen.findByRole('alert')).toHaveTextContent(
       /decision could not be recorded/i,
     );
     await waitFor(() => {
-      expect(screen.getByText('Awaiting Signature')).toBeInTheDocument();
+      expect(screen.getAllByText('Awaiting Signature').length).toBeGreaterThan(0);
     });
     expect(screen.queryByText('Record sealed in the ledger')).not.toBeInTheDocument();
   });
 
   it('does NOT call the API on the demo registry (dev fallback is local-only)', async () => {
     getDashboard.mockResolvedValue({ ...LIVE_DASHBOARD, pendingApprovals: [] });
+    const previousEnv = process.env.NODE_ENV;
     (process.env as unknown as { NODE_ENV: string }).NODE_ENV = 'development';
 
-    renderView();
-    // Demo items hydrate from INITIAL_APPROVALS in development.
-    await screen.findAllByText(/3D Exterior Renderings/);
+    try {
+      renderView();
+      // Demo items hydrate from INITIAL_APPROVALS in development.
+      await approveFirstDeliverable();
 
-    screen.getByRole('button', { name: 'Approve this deliverable' }).click();
-
-    await waitFor(() => {
-      expect(screen.getByText('Approved')).toBeInTheDocument();
-    });
-    expect(reviewApproval).not.toHaveBeenCalled();
-    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
-
-    (process.env as unknown as { NODE_ENV: string }).NODE_ENV = 'test';
+      // "Approved" legitimately appears in both the list pill and the detail pill.
+      const approvedPills = await screen.findAllByText('Approved');
+      expect(approvedPills.length).toBeGreaterThan(0);
+      expect(reviewApproval).not.toHaveBeenCalled();
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    } finally {
+      (process.env as unknown as { NODE_ENV: string }).NODE_ENV = previousEnv as string;
+    }
   });
 });
