@@ -48,6 +48,11 @@
     "order": {
       "type": "integer",
       "default": 0
+    },
+    "editorialHero": {
+      "type": "component",
+      "repeatable": false,
+      "component": "editorial-hero.editorial-hero"
     }
   }
 }

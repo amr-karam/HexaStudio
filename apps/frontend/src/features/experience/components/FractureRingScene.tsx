@@ -8,6 +8,7 @@ import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import { Group, TorusGeometry, BufferAttribute, MeshStandardMaterial, DoubleSide, ACESFilmicToneMapping } from 'three';
 import { createFractureTexture } from './fracture-ring-texture';
 import { useContextLossRecovery } from '@/hooks/useContextLossRecovery';
+import { useSharedWebGLContext } from '@/hooks/useSharedWebGLContext';
 
 /* -------------------------------------------------------------------------- */
 /*  Shaders                                                                   */
@@ -178,6 +179,9 @@ export function FractureRingScene({ scrollProgress, finePointer }: FractureRingS
   // never unmounts the Canvas, closing the post-context-loss render race.
   const { registerContext } = useContextLossRecovery();
   const cleanupContextRef = useRef<(() => void) | null>(null);
+  
+  // Use shared WebGL context from provider when available
+  const sharedGl = useSharedWebGLContext();
 
   useEffect(() => {
     return () => {
@@ -190,7 +194,7 @@ export function FractureRingScene({ scrollProgress, finePointer }: FractureRingS
     <Canvas
       camera={{ position: [0, 0, 7], fov: 45 }}
       dpr={[1, 2]}
-      gl={{
+      gl={sharedGl ?? {
         antialias: true,
         toneMapping: ACESFilmicToneMapping,
         toneMappingExposure: 1.0,

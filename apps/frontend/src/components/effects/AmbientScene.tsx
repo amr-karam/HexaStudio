@@ -6,6 +6,7 @@ import ShaderGradient from './ShaderGradient';
 import ParticleDust from './ParticleDust';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useContextLossRecovery } from '@/hooks/useContextLossRecovery';
+import { useSharedWebGLContext } from '@/hooks/useSharedWebGLContext';
 
 /* -------------------------------------------------------------------------- */
 /*  Types                                                                      */
@@ -64,6 +65,9 @@ export default function AmbientScene({
   // restore — never unmounts the Canvas (closes the getProgramParameter race).
   const { registerContext } = useContextLossRecovery();
   const cleanupContextRef = useRef<(() => void) | null>(null);
+  
+  // Use shared WebGL context from provider when available
+  const sharedGl = useSharedWebGLContext();
 
   useEffect(() => {
     return () => {
@@ -122,7 +126,7 @@ export default function AmbientScene({
     >
       {mounted && isVisible && (
         <Canvas
-          gl={{ antialias: false, alpha: false }}
+          gl={sharedGl ?? { antialias: false, alpha: false }}
           camera={{ position: [0, 0, 1], fov: 45 }}
           dpr={[1, 1.25]}
           style={{ background: (color1 as string) || '#050508' }}

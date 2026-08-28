@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect, useCallback } from 'react';
 import { cn } from '@/lib/utils';
+import { useWebGLContext } from '@/providers/webgl-context-provider';
 
 /**
  * SilkShaderBackground — a lightweight WebGL silk/iridescence shader.
@@ -15,17 +16,21 @@ import { cn } from '@/lib/utils';
  * - Respects `prefers-reduced-motion` — renders static fallback
  * - Pauses when tab is hidden (requestAnimationFrame gating)
  * - Cleans up WebGL context on unmount
+ * - **Shares WebGL context with WebGLContextProvider when available** to prevent context loss
  *
  * Props:
  * - `speed` — animation speed multiplier (default 0.4)
  * - `opacity` — canvas opacity (default 0.15)
  * - `className` — additional classes
+ * - `sharedContext` — when true, uses shared WebGL context from provider (default: true)
  */
 
 interface SilkShaderBackgroundProps {
   speed?: number;
   opacity?: number;
   className?: string;
+  /** When true, attempts to use shared WebGL context from WebGLContextProvider */
+  sharedContext?: boolean;
 }
 
 const VERT_SHADER = `
@@ -135,6 +140,7 @@ export const SilkShaderBackground: React.FC<SilkShaderBackgroundProps> = ({
   speed = 0.4,
   opacity = 0.15,
   className,
+  sharedContext = true,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);
@@ -142,25 +148,22 @@ export const SilkShaderBackground: React.FC<SilkShaderBackgroundProps> = ({
   const programRef = useRef<WebGLProgram | null>(null);
   const bufferRef = useRef<WebGLBuffer | null>(null);
   const glRef = useRef<WebGLRenderingContext | null>(null);
+  const cleanupSharedRef = useRef<(() => void) | null>(null);
+
+  const { gl: sharedGl, canvas: sharedCanvas, state, registerR3FContext } = sharedContext ? useWebGLContext() : { gl: null, canvas: null, state: 'initializing' as const, registerR3FContext: () => () => {} };
 
   const prefersReducedMotion = typeof window !== 'undefined'
     && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // Determine which context/canvas to use
+  const useShared = sharedContext && sharedGl && sharedCanvas && state === 'ready';
+
   const render = useCallback(() => {
-    const canvas = canvasRef.current;
+    const canvas = useShared ? sharedCanvas! : canvasRef.current;
     if (!canvas) return;
 
-    if (!glRef.current || glRef.current.isContextLost()) {
-      const gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false });
-      if (!gl) return;
-      glRef.current = gl;
-      programRef.current = null;
-    }
-
-    const gl = glRef.current;
+    const gl = useShared ? sharedGl! : glRef.current;
     if (!gl || gl.isContextLost()) return;
-
-    // Resize
     const dpr = Math.min(window.devicePixelRatio, 1.5); // Cap at 1.5 for performance
     const w = canvas.clientWidth;
     const h = canvas.clientHeight;
@@ -214,7 +217,7 @@ export const SilkShaderBackground: React.FC<SilkShaderBackgroundProps> = ({
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
-  }, [speed]);
+  }, [speed, useShared, sharedCanvas, sharedGl]);
 
   useEffect(() => {
     if (prefersReducedMotion) return;
@@ -232,17 +235,27 @@ export const SilkShaderBackground: React.FC<SilkShaderBackgroundProps> = ({
       animFrameRef.current = requestAnimationFrame(loop);
     };
 
+    // Register with shared context if using it
+    if (useShared && sharedGl) {
+      cleanupSharedRef.current = registerR3FContext(sharedGl);
+    }
+
     loop();
 
-    const canvas = canvasRef.current;
+    const canvas = useShared ? sharedCanvas! : canvasRef.current;
+
     const handleContextLost = (event: Event) => {
       event.preventDefault();
       programRef.current = null;
-      glRef.current = null;
+      if (!useShared) {
+        glRef.current = null;
+      }
     };
     const handleContextRestored = () => {
       programRef.current = null;
-      glRef.current = null;
+      if (!useShared) {
+        glRef.current = null;
+      }
     };
 
     if (canvas) {
@@ -257,8 +270,11 @@ export const SilkShaderBackground: React.FC<SilkShaderBackgroundProps> = ({
         canvas.removeEventListener('webglcontextlost', handleContextLost);
         canvas.removeEventListener('webglcontextrestored', handleContextRestored);
       }
-      // Cleanup WebGL context
-      if (glRef.current) {
+      // Cleanup shared context registration
+      cleanupSharedRef.current?.();
+      cleanupSharedRef.current = null;
+      // Cleanup WebGL resources (only if not using shared context)
+      if (!useShared && glRef.current) {
         if (bufferRef.current) {
           glRef.current.deleteBuffer(bufferRef.current);
           bufferRef.current = null;
@@ -267,10 +283,10 @@ export const SilkShaderBackground: React.FC<SilkShaderBackgroundProps> = ({
           glRef.current.deleteProgram(programRef.current);
           programRef.current = null;
         }
+        glRef.current = null;
       }
-      glRef.current = null;
     };
-  }, [prefersReducedMotion, render]);
+  }, [prefersReducedMotion, render, useShared, sharedCanvas, sharedGl, registerR3FContext]);
 
   // Static fallback for reduced motion
   if (prefersReducedMotion) {
@@ -284,6 +300,11 @@ export const SilkShaderBackground: React.FC<SilkShaderBackgroundProps> = ({
         aria-hidden="true"
       />
     );
+  }
+
+  // When using shared context, don't render a canvas — we draw into the shared one
+  if (useShared) {
+    return null;
   }
 
   return (

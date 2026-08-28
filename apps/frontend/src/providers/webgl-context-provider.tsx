@@ -56,6 +56,8 @@ interface WebGLContextValue {
   requestRecovery: () => Promise<boolean>;
   requestFallback: () => void;
   onStateChange: (callback: (state: WebGLContextState) => void) => () => void;
+  /** Register an R3F Canvas to share this context. Returns cleanup. */
+  registerR3FContext: (gl: WebGL2RenderingContext | WebGLRenderingContext) => () => void;
 }
 
 const DEFAULT_METRICS: WebGLMetrics = {
@@ -204,12 +206,13 @@ export function WebGLContextProvider({
     }));
   }, [enableMetrics]);
 
-  /* ---- Context Initialization ---- */
+/* ---- Context Initialization ---- */
   const initializeContext = useCallback(async (): Promise<WebGL2RenderingContext | WebGLRenderingContext | null> => {
     const newCanvas = document.createElement("canvas");
     newCanvas.style.cssText = "position:absolute;top:0;left:0;width:100%;height:100%;display:block;";
-    newCanvas.width = window.innerWidth * Math.min(window.devicePixelRatio, 2);
-    newCanvas.height = window.innerHeight * Math.min(window.devicePixelRatio, 2);
+    // Cap DPR at 1.5 to reduce GPU memory pressure and prevent context loss
+    newCanvas.width = window.innerWidth * Math.min(window.devicePixelRatio, 1.5);
+    newCanvas.height = window.innerHeight * Math.min(window.devicePixelRatio, 1.5);
     
     canvasRef.current = newCanvas;
     setCanvas(newCanvas);
@@ -289,9 +292,10 @@ export function WebGLContextProvider({
       notifyStateChange("ready");
     };
 
-    const handleResize = () => {
+const handleResize = () => {
       if (!canvasRef.current || !glRef.current) return;
-      const dpr = Math.min(window.devicePixelRatio, 2);
+      // Cap DPR at 1.5 to reduce GPU memory pressure and prevent context loss
+      const dpr = Math.min(window.devicePixelRatio, 1.5);
       canvasRef.current.width = window.innerWidth * dpr;
       canvasRef.current.height = window.innerHeight * dpr;
       glRef.current.viewport(0, 0, canvasRef.current.width, canvasRef.current.height);
@@ -355,6 +359,24 @@ export function WebGLContextProvider({
     }
   }, [canvas]);
 
+/* ---- R3F Context Sharing ---- */
+  const r3fContextRef = useRef<WebGL2RenderingContext | WebGLRenderingContext | null>(null);
+
+  const registerR3FContext = useCallback(
+    (r3fGl: WebGL2RenderingContext | WebGLRenderingContext): (() => void) => {
+      r3fContextRef.current = r3fGl;
+      // Sync state changes to R3F context
+      const cleanup = onStateChange((newState) => {
+        if (newState === "lost" && r3fContextRef.current) {
+          const loseCtx = r3fContextRef.current.getExtension("WEBGL_lose_context");
+          if (loseCtx) loseCtx.loseContext();
+        }
+      });
+      return cleanup;
+    },
+    [onStateChange]
+  );
+
   /* ---- Public API ---- */
   const requestRecovery = useCallback(async () => {
     return await attemptRecovery();
@@ -376,8 +398,9 @@ export function WebGLContextProvider({
       requestRecovery,
       requestFallback,
       onStateChange,
+      registerR3FContext,
     }),
-    [gl, canvas, state, capabilities, metrics, requestRecovery, requestFallback, onStateChange]
+    [gl, canvas, state, capabilities, metrics, requestRecovery, requestFallback, onStateChange, registerR3FContext]
   );
 
   return (

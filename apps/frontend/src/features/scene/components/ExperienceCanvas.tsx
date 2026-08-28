@@ -16,6 +16,7 @@ import { SceneAccessibility } from './SceneAccessibility';
 import { useQualityTier } from '@/providers/quality-provider';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useContextLossRecovery } from '@/hooks/useContextLossRecovery';
+import { useSharedWebGLContext } from '@/hooks/useSharedWebGLContext';
 import { ProjectHotspot } from '@hexastudio/types';
 import { useDesignerStore } from '../store/designer-store';
 import { LIGHTING_PRESETS } from '../config/lighting-presets';
@@ -139,6 +140,9 @@ export const ExperienceCanvas = ({
   const [restartKey, setRestartKey] = useState(0);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const cleanupContextRef = useRef<(() => void) | null>(null);
+  
+  // Use shared WebGL context from provider when available
+  const sharedGl = useSharedWebGLContext();
 
   // WebGL context-loss recovery: pause the render loop on loss (never unmount),
   // and on restore remount the Canvas via `restartKey` so a fresh context is
@@ -248,7 +252,7 @@ export const ExperienceCanvas = ({
           dpr={[1, tier.maxDpr]}
           frameloop={frameloop}
           onCreated={handleCreated}
-          gl={{
+          gl={sharedGl ?? {
             antialias: glAntialias,
             powerPreference: 'high-performance',
             toneMapping: 4, // ACESFilmicToneMapping

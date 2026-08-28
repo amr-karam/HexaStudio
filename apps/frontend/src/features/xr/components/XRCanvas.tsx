@@ -5,6 +5,7 @@ import { XR, createXRStore } from '@react-three/xr';
 import { ReactNode, useEffect, useRef } from 'react';
 import { XR_QUALITY } from '../config/xr-config';
 import { useContextLossRecovery } from '@/hooks/useContextLossRecovery';
+import { useSharedWebGLContext } from '@/hooks/useSharedWebGLContext';
 
 const store = createXRStore();
 
@@ -13,6 +14,9 @@ export function XRCanvas({ children }: { children: ReactNode }) {
   // restore — never unmounts the Canvas (closes the getProgramParameter race).
   const { registerContext } = useContextLossRecovery();
   const cleanupContextRef = useRef<(() => void) | null>(null);
+  
+  // Use shared WebGL context from provider when available
+  const sharedGl = useSharedWebGLContext();
 
   useEffect(() => {
     return () => {
@@ -25,7 +29,7 @@ export function XRCanvas({ children }: { children: ReactNode }) {
     <Canvas
       dpr={XR_QUALITY.dpr}
       shadows={false}
-      gl={{
+      gl={sharedGl ?? {
         antialias: true,
         alpha: true,
         outputColorSpace: 'srgb',
