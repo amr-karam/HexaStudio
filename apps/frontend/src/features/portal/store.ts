@@ -35,14 +35,14 @@ const _SIDEBAR_COLLAPSED_KEY = 'hexa-portal-sidebar-collapsed';
 
 function _getInitialTheme(): Theme {
   if (typeof window === 'undefined') return 'dark';
-  const stored = localStorage.getItem('hexa-portal-theme');
+  const stored = localStorage.getItem(_THEME_KEY);
   if (stored === 'light' || stored === 'dark') return stored;
   return 'dark';
 }
 
 function getInitialSidebarCollapsed(): boolean {
   if (typeof window === 'undefined') return false;
-  const stored = localStorage.getItem('hexa-portal-sidebar-collapsed');
+  const stored = localStorage.getItem(_SIDEBAR_COLLAPSED_KEY);
   return stored === 'true';
 }
 
@@ -50,7 +50,7 @@ export const usePortalStore = create<PortalUIState>((set) => ({
   isSidebarOpen: false,
   isSidebarCollapsed: getInitialSidebarCollapsed(),
   isCommandPaletteOpen: false,
-  theme: 'dark',
+  theme: _getInitialTheme(),
 
   toggleSidebar: () => set((s) => ({ isSidebarOpen: !s.isSidebarOpen })),
   setSidebarOpen: (open) => set({ isSidebarOpen: open }),
@@ -58,13 +58,13 @@ export const usePortalStore = create<PortalUIState>((set) => ({
   toggleSidebarCollapsed: () => set((s) => {
     const next = !s.isSidebarCollapsed;
     if (typeof window !== 'undefined') {
-      localStorage.setItem('hexa-portal-sidebar-collapsed', String(next));
+      localStorage.setItem(_SIDEBAR_COLLAPSED_KEY, String(next));
     }
     return { isSidebarCollapsed: next };
   }),
   setSidebarCollapsed: (collapsed) => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('hexa-portal-sidebar-collapsed', String(collapsed));
+      localStorage.setItem(_SIDEBAR_COLLAPSED_KEY, String(collapsed));
     }
     set({ isSidebarCollapsed: collapsed });
   },
@@ -74,7 +74,7 @@ export const usePortalStore = create<PortalUIState>((set) => ({
 
   setTheme: (theme) => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('hexa-portal-theme', theme);
+      localStorage.setItem(_THEME_KEY, theme);
     }
     set({ theme });
   },

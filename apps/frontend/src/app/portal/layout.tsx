@@ -3,6 +3,7 @@ import { PortalThemeProvider } from '@/features/portal/components/PortalThemePro
 import { PortalSidebar, PortalMobileSidebar } from '@/features/portal/components/PortalSidebar';
 import { PortalTopBar } from '@/features/portal/components/PortalTopBar';
 import { CommandPalette } from '@/features/portal/components/CommandPalette';
+import { PortalLayoutContent } from '@/features/portal/components/PortalLayoutContent';
 
 export const metadata: Metadata = {
   title: 'Client Portal | HEXA Studio',
@@ -16,32 +17,26 @@ export default function PortalLayout({
 }) {
   return (
     <PortalThemeProvider>
-      <div className="min-h-screen bg-background text-foreground flex relative overflow-hidden">
-        {/* Dynamic Ambient Light - Follows the "Silent Luxury" theme */}
+      <div className="min-h-screen bg-sl-obsidian text-sl-alabaster flex relative overflow-hidden">
+        {/* Dynamic Ambient Light - "Silent Luxury" gold glow */}
         <div className="fixed inset-0 pointer-events-none">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-gold/10 blur-[120px] animate-pulse" />
-          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-gold/5 blur-[120px]" />
+          <div className="absolute top-[-15%] left-[-10%] w-[45%] h-[45%] rounded-full bg-sl-gold-subtle/30 blur-[120px]" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[35%] h-[35%] rounded-full bg-sl-gold-subtle/20 blur-[120px]" />
         </div>
 
-        {/* Desktop Sidebar - Now Glassmorphic */}
-        <div className="z-20">
-          <PortalSidebar />
-        </div>
+        {/* Desktop Sidebar - Glassmorphic icon rail */}
+        <PortalSidebar />
 
         {/* Mobile Sidebar Drawer */}
         <PortalMobileSidebar />
 
-        {/* Top Bar - Now Floating Glass */}
+        {/* Top Bar - Floating Glass */}
         <div className="fixed top-0 right-0 left-0 z-30">
           <PortalTopBar />
         </div>
 
-        {/* Main Content Area - Liquid Layout */}
-        <main className="flex-1 lg:pl-64 pt-20 min-h-screen flex flex-col relative z-10">
-          <div className="flex-1 px-6 md:px-16 py-12 w-full max-w-[1600px] mx-auto transition-all duration-500 ease-in-out">
-            {children}
-          </div>
-        </main>
+        {/* Main Content Area — dynamically offsets for sidebar state */}
+        <PortalLayoutContent>{children}</PortalLayoutContent>
 
         {/* Command Palette Overlay */}
         <CommandPalette />
