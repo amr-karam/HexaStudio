@@ -127,10 +127,10 @@ function MetricBar({
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
-        <span className="text-[11px] uppercase tracking-wider font-mono text-neutral-500">
+        <span className="text-[11px] uppercase tracking-wider font-mono text-sl-mist/60">
           {label}
         </span>
-        <span className="text-xs font-mono text-neutral-400">{value}%</span>
+        <span className="text-xs font-mono text-sl-mist/60">{value}%</span>
       </div>
       <div
         className="h-1.5 rounded-full bg-white/[0.04] overflow-hidden"
@@ -188,30 +188,30 @@ function MeetingCard({
       animate="visible"
       custom={prefersReduced}
       transition={makeTransition('entrance', 'component', index * 0.08)}
-      className="flex gap-4 p-4 bg-white/[0.02] rounded-xl border border-border/20 hover:border-accent/20 transition-colors duration-300"
+      className="flex gap-4 p-4 bg-white/[0.02] rounded-xl border border-sl-silver/20 hover:border-sl-gold-subtle/20 transition-colors duration-300"
     >
       {/* Date Badge */}
-      <div className="flex flex-col items-center justify-center shrink-0 w-14 h-14 rounded-lg bg-accent/[0.06] border border-accent/15">
-        <span className="text-[10px] uppercase tracking-widest font-mono text-accent">
+      <div className="flex flex-col items-center justify-center shrink-0 w-14 h-14 rounded-lg bg-sl-gold-subtle/[0.06] border border-sl-gold-subtle/15">
+        <span className="text-[10px] uppercase tracking-widest font-mono text-sl-gold-hover">
           {monthShort}
         </span>
-        <span className="text-xl font-serif font-light text-foreground leading-none">
+        <span className="text-xl font-serif font-light text-sl-alabaster leading-none">
           {dayNum}
         </span>
       </div>
 
       {/* Details */}
       <div className="min-w-0 flex-1">
-        <h4 className="text-sm font-semibold text-foreground leading-snug">
+        <h4 className="text-sm font-semibold text-sl-alabaster leading-snug">
           {meeting.title}
         </h4>
         <div className="flex items-center gap-1.5 mt-1">
-          <Icon name="clock" size={11} className="text-neutral-500" />
-          <span className="text-[11px] font-mono text-accent">
+          <Icon name="clock" size={11} className="text-sl-mist/60" />
+          <span className="text-[11px] font-mono text-sl-gold-hover">
             {meeting.time}
           </span>
         </div>
-        <p className="text-[11px] text-neutral-500 mt-1.5 truncate">
+        <p className="text-[11px] text-sl-mist/60 mt-1.5 truncate">
           {meeting.participants.join(' · ')}
         </p>
       </div>
@@ -231,11 +231,11 @@ function EmptyState({
 }) {
   return (
     <div className="flex flex-col items-center justify-center py-10 px-6 text-center">
-      <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-border/20 flex items-center justify-center mb-4">
-        <Icon name={icon} size={22} className="text-neutral-600" />
+      <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-sl-silver/20 flex items-center justify-center mb-4">
+        <Icon name={icon} size={22} className="text-sl-mist/60" />
       </div>
-      <p className="text-sm font-medium text-neutral-400">{title}</p>
-      <p className="text-xs text-neutral-600 mt-1 max-w-[220px]">{description}</p>
+      <p className="text-sm font-medium text-sl-mist/60">{title}</p>
+      <p className="text-xs text-sl-mist/60 mt-1 max-w-[220px]">{description}</p>
     </div>
   );
 }
@@ -291,7 +291,7 @@ export default function PortalDashboardPage() {
       {/*  SECTION 1 — PREMIUM WELCOME HERO                               */}
       {/* ================================================================ */}
       <section
-        className="relative overflow-hidden rounded-2xl border border-border/20 bg-surface"
+        className="relative overflow-hidden rounded-2xl border border-sl-silver/20 bg-sl-obsidian"
         aria-label="Project overview"
       >
         {/* Animated gold gradient glow */}
@@ -338,11 +338,11 @@ export default function PortalDashboardPage() {
                 >
                   <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
                 </span>
-                <span className="text-[11px] uppercase tracking-widest font-mono text-neutral-500">
+                <span className="text-[11px] uppercase tracking-widest font-mono text-sl-mist/60">
                   Live Status
                 </span>
                 <span className="text-neutral-700">·</span>
-                <span className="text-[11px] font-mono text-neutral-500">
+                <span className="text-[11px] font-mono text-sl-mist/60">
                   {dashboardData.companyName}
                 </span>
               </div>
@@ -351,10 +351,10 @@ export default function PortalDashboardPage() {
                 onClick={() => setCopilotOpen(true)}
                 className={cn(
                   'inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold',
-                  'bg-gradient-to-r from-accent to-accent-bright text-void',
-                  'shadow-lg shadow-accent/15 hover:shadow-accent/25',
+                  'bg-gradient-to-r from-sl-gold-subtle to-sl-gold-subtle-bright text-void',
+                  'shadow-lg shadow-sl-gold-subtle/15 hover:shadow-sl-gold-subtle/25',
                   'hover:brightness-110 transition-all duration-300',
-                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
                 )}
                 aria-label="Open HEXA Copilot assistant"
               >
@@ -365,15 +365,15 @@ export default function PortalDashboardPage() {
 
             {/* Hero text */}
             <motion.div variants={fadeLift} custom={prefersReduced}>
-              <p className="text-sm font-mono text-neutral-500 uppercase tracking-wider mb-2">
+              <p className="text-sm font-mono text-sl-mist/60 uppercase tracking-wider mb-2">
                 Welcome back, {displayName}
               </p>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-light text-foreground tracking-tight leading-tight">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-light text-sl-alabaster tracking-tight leading-tight">
                 {dashboardData.activeProjectName}
               </h1>
-              <p className="text-sm text-neutral-400 mt-2">
+              <p className="text-sm text-sl-mist/60 mt-2">
                 Current Stage:{' '}
-                <span className="text-accent font-semibold">
+                <span className="text-sl-gold-hover font-semibold">
                   {dashboardData.activeProjectStage}
                 </span>
               </p>
@@ -383,15 +383,15 @@ export default function PortalDashboardPage() {
             <motion.div
               variants={fadeLift}
               custom={prefersReduced}
-              className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-8 pt-6 border-t border-border/15"
+              className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-8 pt-6 border-t border-sl-silver/20/15"
             >
               {/* Progress */}
-              <div className="p-4 rounded-xl bg-white/[0.02] border border-border/15">
-                <p className="text-[10px] uppercase tracking-widest font-mono text-neutral-600">
+              <div className="p-4 rounded-xl bg-white/[0.02] border border-sl-silver/20/15">
+                <p className="text-[10px] uppercase tracking-widest font-mono text-sl-mist/60">
                   Overall Progress
                 </p>
                 <div className="flex items-baseline justify-between mt-1.5">
-                  <p className="text-2xl font-serif font-light text-foreground">
+                  <p className="text-2xl font-serif font-light text-sl-alabaster">
                     {dashboardData.overallProgressPercentage}%
                   </p>
                   <span className="text-[10px] font-mono text-emerald-400">
@@ -407,7 +407,7 @@ export default function PortalDashboardPage() {
                   aria-label={`Overall progress: ${dashboardData.overallProgressPercentage}%`}
                 >
                   <motion.div
-                    className="bg-accent h-full rounded-full"
+                    className="bg-sl-gold-subtle h-full rounded-full"
                     initial={prefersReduced ? { width: `${dashboardData.overallProgressPercentage}%` } : { width: '0%' }}
                     animate={{ width: `${dashboardData.overallProgressPercentage}%` }}
                     transition={
@@ -420,41 +420,41 @@ export default function PortalDashboardPage() {
               </div>
 
               {/* Next Milestone */}
-              <div className="p-4 rounded-xl bg-white/[0.02] border border-border/15">
-                <p className="text-[10px] uppercase tracking-widest font-mono text-neutral-600">
+              <div className="p-4 rounded-xl bg-white/[0.02] border border-sl-silver/20/15">
+                <p className="text-[10px] uppercase tracking-widest font-mono text-sl-mist/60">
                   Next Milestone
                 </p>
-                <p className="text-sm font-semibold text-foreground mt-1.5 line-clamp-1">
+                <p className="text-sm font-semibold text-sl-alabaster mt-1.5 line-clamp-1">
                   {dashboardData.nextMilestoneName}
                 </p>
                 <div className="flex items-center gap-1 mt-1.5">
-                  <Icon name="milestone" size={11} className="text-accent" />
-                  <p className="text-[11px] font-mono text-accent">
+                  <Icon name="milestone" size={11} className="text-sl-gold-hover" />
+                  <p className="text-[11px] font-mono text-sl-gold-hover">
                     Due {dashboardData.nextMilestoneDueDate}
                   </p>
                 </div>
               </div>
 
               {/* Pending */}
-              <div className="p-4 rounded-xl bg-white/[0.02] border border-border/15">
-                <p className="text-[10px] uppercase tracking-widest font-mono text-neutral-600">
+              <div className="p-4 rounded-xl bg-white/[0.02] border border-sl-silver/20/15">
+                <p className="text-[10px] uppercase tracking-widest font-mono text-sl-mist/60">
                   Pending Approvals
                 </p>
-                <p className="text-2xl font-serif font-light text-accent mt-1.5">
+                <p className="text-2xl font-serif font-light text-sl-gold-hover mt-1.5">
                   {dashboardData.pendingApprovals.length}
                 </p>
-                <p className="text-[11px] text-neutral-500 mt-1">
+                <p className="text-[11px] text-sl-mist/60 mt-1">
                   Requires Sign-off
                 </p>
               </div>
 
               {/* Health */}
-              <div className="p-4 rounded-xl bg-white/[0.02] border border-border/15">
-                <p className="text-[10px] uppercase tracking-widest font-mono text-neutral-600">
+              <div className="p-4 rounded-xl bg-white/[0.02] border border-sl-silver/20/15">
+                <p className="text-[10px] uppercase tracking-widest font-mono text-sl-mist/60">
                   Project Health
                 </p>
                 <p className="text-2xl font-serif font-light text-emerald-400 mt-1.5">
-                  {dashboardData.healthScore.score} <span className="text-sm text-neutral-600">/ 100</span>
+                  {dashboardData.healthScore.score} <span className="text-sm text-sl-mist/60">/ 100</span>
                 </p>
                 <p className="text-[11px] text-emerald-400/80 mt-1">
                   {dashboardData.healthScore.status}
@@ -491,12 +491,12 @@ export default function PortalDashboardPage() {
         <div className="lg:col-span-8 space-y-6">
           {/* ---- Pending Approvals ---- */}
           <section
-            className="relative rounded-2xl border border-accent/20 bg-surface overflow-hidden"
+            className="relative rounded-2xl border border-sl-gold-subtle/20 bg-sl-obsidian overflow-hidden"
             aria-label="Pending approvals"
           >
             {/* Subtle top accent glow */}
             <div
-              className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent"
+              className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-sl-gold-subtle/40 to-transparent"
               aria-hidden="true"
             />
 
@@ -504,13 +504,13 @@ export default function PortalDashboardPage() {
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-3">
                   <span className="relative flex h-2.5 w-2.5" aria-hidden="true">
-                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-accent" />
+                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-sl-gold-subtle" />
                   </span>
-                  <h2 className="text-base font-bold text-foreground">
+                  <h2 className="text-base font-bold text-sl-alabaster">
                     Pending Approvals
                   </h2>
                   {dashboardData.pendingApprovals.length > 0 && (
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-accent/10 text-accent">
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sl-gold-subtle/10 text-sl-gold-hover">
                       {dashboardData.pendingApprovals.length}
                     </span>
                   )}
@@ -518,8 +518,8 @@ export default function PortalDashboardPage() {
                 <button
                   onClick={() => router.push('/portal/approvals')}
                   className={cn(
-                    'text-[11px] font-mono uppercase tracking-wider text-accent/80 hover:text-accent transition-colors duration-200',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface rounded px-2 py-1',
+                    'text-[11px] font-mono uppercase tracking-wider text-sl-gold-hover/80 hover:text-sl-gold-hover transition-colors duration-200',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-surface rounded px-2 py-1',
                   )}
                   aria-label="View all pending approvals"
                 >
@@ -567,10 +567,10 @@ export default function PortalDashboardPage() {
 
           {/* ---- Activity Feed ---- */}
           <section
-            className="rounded-2xl border border-border/20 bg-surface p-6"
+            className="rounded-2xl border border-sl-silver/20 bg-sl-obsidian p-6"
             aria-label="Recent project activity"
           >
-            <h2 className="text-base font-bold text-foreground mb-5">
+            <h2 className="text-base font-bold text-sl-alabaster mb-5">
               Live Project Activity
             </h2>
 
@@ -608,7 +608,7 @@ export default function PortalDashboardPage() {
                         : item.type === 'approval'
                           ? 'bg-emerald-500/20 border-emerald-400'
                           : item.type === 'milestone'
-                            ? 'bg-accent/20 border-accent'
+                            ? 'bg-sl-gold-subtle/20 border-sl-gold-subtle'
                             : item.type === 'invoice'
                               ? 'bg-amber-500/20 border-amber-400'
                               : 'bg-white/5 border-neutral-600',
@@ -627,7 +627,7 @@ export default function PortalDashboardPage() {
 
           {/* ---- Quick Actions Grid ---- */}
           <section aria-label="Quick actions">
-            <h2 className="text-base font-bold text-foreground mb-4">
+            <h2 className="text-base font-bold text-sl-alabaster mb-4">
               Quick Actions
             </h2>
             <motion.div
@@ -694,10 +694,10 @@ export default function PortalDashboardPage() {
         <div className="lg:col-span-4 space-y-6">
           {/* ---- Project Health ---- */}
           <section
-            className="rounded-2xl border border-border/20 bg-surface p-6"
+            className="rounded-2xl border border-sl-silver/20 bg-sl-obsidian p-6"
             aria-label="Project health score"
           >
-            <h2 className="text-base font-bold text-foreground mb-5">
+            <h2 className="text-base font-bold text-sl-alabaster mb-5">
               Project Health
             </h2>
 
@@ -706,7 +706,7 @@ export default function PortalDashboardPage() {
               <div
                 className={cn(
                   'relative p-6 rounded-xl',
-                  'bg-white/[0.02] border border-border/15',
+                  'bg-white/[0.02] border border-sl-silver/20/15',
                   'backdrop-blur-sm',
                 )}
               >
@@ -732,15 +732,15 @@ export default function PortalDashboardPage() {
 
           {/* ---- Upcoming Meetings ---- */}
           <section
-            className="rounded-2xl border border-border/20 bg-surface p-6"
+            className="rounded-2xl border border-sl-silver/20 bg-sl-obsidian p-6"
             aria-label="Upcoming meetings"
           >
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-base font-bold text-foreground">
+              <h2 className="text-base font-bold text-sl-alabaster">
                 Upcoming Meetings
               </h2>
               {dashboardData.upcomingMeetings.length > 0 && (
-                <span className="text-[10px] font-mono text-neutral-500">
+                <span className="text-[10px] font-mono text-sl-mist/60">
                   {dashboardData.upcomingMeetings.length} scheduled
                 </span>
               )}
@@ -823,27 +823,27 @@ function ApprovalCard({
       custom={prefersReduced}
       transition={makeTransition('entrance', 'component', index * 0.06)}
       className={cn(
-        'p-4 rounded-xl bg-white/[0.02] border border-border/15',
+        'p-4 rounded-xl bg-white/[0.02] border border-sl-silver/20/15',
         'flex items-center justify-between gap-4',
-        'hover:border-accent/20 transition-colors duration-300',
+        'hover:border-sl-gold-subtle/20 transition-colors duration-300',
       )}
     >
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 mb-1">
           <span className="relative flex h-2 w-2 shrink-0" aria-hidden="true">
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-sl-gold-subtle" />
           </span>
-          <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-accent/10 text-accent">
+          <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-sl-gold-subtle/10 text-sl-gold-hover">
             {approval.type}
           </span>
-          <span className="text-[10px] font-mono text-neutral-600 uppercase">
+          <span className="text-[10px] font-mono text-sl-mist/60 uppercase">
             {approval.phaseName}
           </span>
         </div>
-        <h4 className="text-sm font-semibold text-foreground leading-snug line-clamp-1">
+        <h4 className="text-sm font-semibold text-sl-alabaster leading-snug line-clamp-1">
           {approval.title}
         </h4>
-        <p className="text-[11px] text-neutral-500 mt-1">
+        <p className="text-[11px] text-sl-mist/60 mt-1">
           Submitted by {approval.submittedBy}
         </p>
       </div>
@@ -853,9 +853,9 @@ function ApprovalCard({
         className={cn(
           'shrink-0 text-[11px] font-mono font-bold uppercase tracking-wider',
           'px-4 py-2 rounded-lg',
-          'bg-accent text-void hover:bg-accent-bright',
+          'bg-sl-gold-subtle text-void hover:bg-sl-gold-subtle-bright',
           'transition-colors duration-200',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
         )}
         aria-label={`Review ${approval.title}`}
       >
