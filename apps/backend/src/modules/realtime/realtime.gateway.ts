@@ -39,6 +39,17 @@ interface ApprovalUpdateEvent extends ApprovalEvent {
   timestamp: string;
 }
 
+/** Spatial command payload for AI-driven scene updates. */
+export interface SpatialCommand {
+  type: 'SET_LIGHTING' | 'SET_MATERIAL' | 'SET_CAMERA';
+  payload: Record<string, unknown>;
+  metadata: {
+    triggeredBy: 'ai-agent' | 'user';
+    agentPersona?: string;
+    timestamp?: string;
+  };
+}
+
 /** Payload for relaying a WebRTC SDP offer. */
 interface WebRTCOfferPayload {
   projectId: string;
@@ -134,6 +145,20 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
     if (this.server) {
       this.server.to(room).emit(event, data);
     }
+  }
+
+  /** Dispatch a spatial command (lighting/material/camera) to all clients in a project room. */
+  dispatchSpatialCommand(projectId: string, command: SpatialCommand): void {
+    const room = `project:${projectId}`;
+    const enrichedCommand: SpatialCommand = {
+      ...command,
+      metadata: {
+        ...command.metadata,
+        timestamp: new Date().toISOString(),
+      },
+    };
+    this.emitToRoom(room, 'spatial:command', enrichedCommand);
+    this.logger.debug(`Dispatched spatial command [${command.type}] to ${room}`);
   }
 
   @SubscribeMessage('join-project')

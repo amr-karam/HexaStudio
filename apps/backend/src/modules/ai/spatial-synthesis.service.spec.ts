@@ -4,6 +4,7 @@ import { ServiceUnavailableException } from '@nestjs/common';
 import { SpatialSynthesisService } from './spatial-synthesis.service';
 import { StructuredOutputService } from './structured-output.service';
 import { VoiceService } from './voice.service';
+import { RealtimeGateway } from '../realtime/realtime.gateway';
 import { SpatialBrief, SpatialBriefSchema } from './spatial-brief.schema';
 
 const mockBrief: SpatialBrief = {
@@ -23,6 +24,11 @@ const mockVoiceService = {
   transcribeAudio: vi.fn(),
 };
 
+const mockRealtimeGateway = {
+  dispatchSpatialCommand: vi.fn(),
+  emitToRoom: vi.fn(),
+};
+
 describe('SpatialSynthesisService', () => {
   let service: SpatialSynthesisService;
 
@@ -35,6 +41,7 @@ describe('SpatialSynthesisService', () => {
         SpatialSynthesisService,
         { provide: StructuredOutputService, useValue: mockStructuredOutputService },
         { provide: VoiceService, useValue: mockVoiceService },
+        { provide: RealtimeGateway, useValue: mockRealtimeGateway },
       ],
     }).compile();
 
