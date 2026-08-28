@@ -7,8 +7,9 @@ import { randomUUID } from 'crypto';
 import { OdooService } from '../odoo/odoo.service';
 import { MinioService } from '../storage/minio.service';
 import { RedisService } from '../storage/redis.service';
-import { AgentMemoryService } from '../agents/agent-memory.service';
+import { AgentMemoryService, type MemoryMessage } from '../agents/agent-memory.service';
 import { StructuredOutputService } from '../ai/structured-output.service';
+import { z } from 'zod';
 import type {
   PortalDashboardData,
   ProjectHealthStatus,
@@ -406,12 +407,15 @@ export class PortalService {
    */
   private async computeSentiment(clientEmail: string): Promise<'positive' | 'neutral' | 'frustrated' | 'urgent'> {
     try {
-      const session = await this.agentMemory.getRecentSession(clientEmail);
-      if (!session || session.messages.length === 0) return 'neutral';
+      const messages = await this.agentMemory.getHistory('portal', clientEmail, 20);
+      if (messages.length === 0) return 'neutral';
 
-      const context = session.messages.slice(-20).map(m => `${m.role}: ${m.content}`).join('\\n');
-      const result = await this.structuredOutput.generate<{ sentiment: 'positive' | 'neutral' | 'frustrated' | 'urgent' }>({
-        prompt: `Analyze the following client conversation and determine the overall sentiment.
+      const context = messages.slice(-20).map((m: MemoryMessage) => `${m.role}: ${m.content ?? ''}`).join('\n');
+      const sentimentSchema = z.object({
+        sentiment: z.enum(['positive', 'neutral', 'frustrated', 'urgent']),
+      });
+      const result = await this.structuredOutput.generateStructuredOutput<{ sentiment: string }>(
+        `Analyze the following client conversation and determine the overall sentiment.
         - 'positive': Client is happy, praising work, or expressing high trust.
         - 'frustrated': Client is complaining, unhappy with quality, or expressing annoyance.
         - 'urgent': Client is pushing for deadlines, asking for immediate updates, or sounds stressed.
@@ -419,16 +423,10 @@ export class PortalService {
 
         Conversation:
         ${context}`,
-        schema: {
-          type: 'object',
-          properties: {
-            sentiment: { type: 'string', enum: ['positive', 'neutral', 'frustrated', 'urgent'] },
-          },
-          required: ['sentiment'],
-        },
-      });
+        sentimentSchema,
+      );
 
-      return result.sentiment ?? 'neutral';
+      return (result.sentiment as 'positive' | 'neutral' | 'frustrated' | 'urgent') ?? 'neutral';
     } catch (err) {
       this.logger.warn(`Sentiment analysis failed for ${clientEmail}: ${err}`);
       return 'neutral';
