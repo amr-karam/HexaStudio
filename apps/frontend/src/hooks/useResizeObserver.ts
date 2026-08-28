@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 export interface ResizeObserverEntry {
   width: number;
@@ -37,21 +37,19 @@ export function useResizeObserver(
 ): UseResizeObserverReturn {
   const { enabled = true, target: explicitTarget, box = 'content-box' } = options;
 
-  const entryRef = useRef<ResizeObserverEntry | null>(null);
-  const targetRef = useRef<Element | null>(null);
-  const observerRef = useRef<globalThis.ResizeObserver | null>(null);
+  // Latest entry as STATE so consumers re-render when the observed size changes.
+  const [entry, setEntry] = useState<ResizeObserverEntry | null>(null);
+  // Observed element for ref-based mode. Stored as state (not a ref) so that
+  // the callback ref setting the node re-runs the observation effect below.
+  const [observedNode, setObservedNode] = useState<Element | null>(null);
 
   // Callback ref for the element. When no explicit target, this is the element
-  // we observe. When explicit target given, this still stores the element for
-  // potential styling/layout but is not observed.
+  // we observe. When an explicit target is given, this ref is just for the
+  // element itself and is not observed.
   const setRef = useCallback(
     (node: Element | null) => {
-      if (explicitTarget !== undefined) {
-        // explicit target given — this ref is just for the element itself
-        // (so it renders normally). Don't observe via this ref.
-        return;
-      }
-      targetRef.current = node;
+      if (explicitTarget !== undefined) return;
+      setObservedNode((prev) => (prev === node ? prev : node));
     },
     [explicitTarget],
   );
@@ -63,14 +61,10 @@ export function useResizeObserver(
         ? explicitTarget instanceof Element
           ? explicitTarget
           : (explicitTarget as React.RefObject<Element | null>).current ?? null
-        : targetRef.current;
+        : observedNode;
 
     if (!enabled || !target) {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-        observerRef.current = null;
-      }
-      entryRef.current = null;
+      setEntry(null);
       return;
     }
 
@@ -78,27 +72,25 @@ export function useResizeObserver(
       const first = entries[0];
       if (!first) return;
       const contentRect = first.contentRect;
-      entryRef.current = {
+      setEntry({
         width: contentRect.width,
         height: contentRect.height,
         x: contentRect.x,
         y: contentRect.y,
         contentRect,
-      };
+      });
     });
     observer.observe(target, { box });
-    observerRef.current = observer;
 
     return () => {
       observer.disconnect();
-      observerRef.current = null;
     };
-  }, [enabled, explicitTarget, box]);
+  }, [enabled, explicitTarget, box, observedNode]);
 
   return {
     ref: setRef,
-    entry: entryRef.current,
-    width: entryRef.current?.width ?? 0,
-    height: entryRef.current?.height ?? 0,
+    entry,
+    width: entry?.width ?? 0,
+    height: entry?.height ?? 0,
   };
 }

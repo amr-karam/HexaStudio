@@ -1,28 +1,29 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useResizeObserver } from '@/hooks/useResizeObserver';
 
-// Proper mock of ResizeObserver constructor
-let mockCallback: ((entries: globalThis.ResizeObserverEntry[]) => void) | null = null;
-const mockObserve = vi.fn();
-const mockDisconnect = vi.fn();
-const mockUnobserve = vi.fn();
-
-function setupResizeObserverMock() {
-  
-  globalThis.ResizeObserver = class MockResizeObserver {
-    constructor(callback: (entries: globalThis.ResizeObserverEntry[]) => void) {
-      mockCallback = callback;
-    }
-    observe = mockObserve;
-    disconnect = mockDisconnect;
-    unobserve = mockUnobserve;
-  } as unknown as typeof globalThis.ResizeObserver;
-}
-
 describe('useResizeObserver', () => {
+  let mockObserve: ReturnType<typeof vi.fn>;
+  let mockDisconnect: ReturnType<typeof vi.fn>;
+  let mockCallback: ((entries: globalThis.ResizeObserverEntry[]) => void) | null;
+
   beforeEach(() => {
-    setupResizeObserverMock();
+    mockObserve = vi.fn();
+    mockDisconnect = vi.fn();
+
+    // Mock ResizeObserver constructor
+    mockCallback = null;
+    globalThis.ResizeObserver = class MockResizeObserver {
+      constructor(callback: (entries: globalThis.ResizeObserverEntry[]) => void) {
+        mockCallback = callback;
+      }
+      observe = mockObserve;
+      disconnect = mockDisconnect;
+    } as unknown as typeof globalThis.ResizeObserver;
+  });
+
+  afterEach(() => {
+    delete (globalThis as unknown as Record<string, unknown>)['ResizeObserver'];
   });
 
   it('returns 0 width/height before observing', () => {
@@ -32,7 +33,7 @@ describe('useResizeObserver', () => {
     expect(result.current.entry).toBeNull();
   });
 
-  it('observes element via ref callback and reports size', () => {
+  it('observes element via ref callback and reports size', async () => {
     const { result } = renderHook(() => useResizeObserver());
 
     const div = document.createElement('div');
@@ -40,10 +41,13 @@ describe('useResizeObserver', () => {
       result.current.ref(div);
     });
 
+    // Wait for effect to run
+    await act(() => {});
+
     expect(mockObserve).toHaveBeenCalledWith(div, expect.objectContaining({ box: 'content-box' }));
     expect(result.current.width).toBe(0); // no entry yet
 
-    // Simulate a resize callback with a mock contentRect
+    // Simulate a resize callback
     const mockEntry = {
       contentRect: {
         width: 100,
@@ -73,48 +77,53 @@ describe('useResizeObserver', () => {
     });
   });
 
-  it('can observe an explicit element', () => {
+  it('can observe an explicit element', async () => {
     const element = document.createElement('div');
     const { result } = renderHook(() => useResizeObserver({ target: element }));
+    await act(() => {});
     expect(mockObserve).toHaveBeenCalledWith(element, expect.objectContaining({ box: 'content-box' }));
     expect(result.current.width).toBe(0);
   });
 
-  it('can use target as RefObject', () => {
+  it('can use target as RefObject', async () => {
     const element = document.createElement('div');
     const refObj = { current: element };
-    // Cast to RefObject<Element | null> for testing
     const { result } = renderHook(() =>
       useResizeObserver({ target: refObj as React.RefObject<Element | null> }),
     );
+    await act(() => {});
     expect(mockObserve).toHaveBeenCalledWith(element, expect.anything());
     expect(result.current.width).toBe(0);
   });
 
-  it('disabled does not observe', () => {
+  it('disabled does not observe', async () => {
     const element = document.createElement('div');
     const { result } = renderHook(() => useResizeObserver({ target: element, enabled: false }));
+    await act(() => {});
     expect(mockObserve).not.toHaveBeenCalled();
     expect(result.current.width).toBe(0);
   });
 
-  it('allows custom box model', () => {
+  it('allows custom box model', async () => {
     const element = document.createElement('div');
     const { result } = renderHook(() => useResizeObserver({ target: element, box: 'border-box' }));
+    await act(() => {});
     expect(mockObserve).toHaveBeenCalledWith(element, expect.objectContaining({ box: 'border-box' }));
   });
 
-  it('cleans up observer on unmount', () => {
+  it('cleans up observer on unmount', async () => {
     const element = document.createElement('div');
     const { unmount } = renderHook(() => useResizeObserver({ target: element }));
+    await act(() => {});
     expect(mockDisconnect).not.toHaveBeenCalled();
     unmount();
     expect(mockDisconnect).toHaveBeenCalled();
   });
 
-  it('ref callback does not trigger observation when explicit target given', () => {
+  it('ref callback does not trigger observation when explicit target given', async () => {
     const element = document.createElement('div');
     const { result } = renderHook(() => useResizeObserver({ target: element }));
+    await act(() => {});
     // Call ref with a different element - observe should still only be called once
     act(() => {
       result.current.ref(document.createElement('span'));
@@ -123,17 +132,19 @@ describe('useResizeObserver', () => {
     expect(mockObserve).toHaveBeenCalledWith(element, expect.anything());
   });
 
-  it('disconnect is called when target changes', () => {
+  it('disconnect is called when target changes', async () => {
     const element1 = document.createElement('div');
     const element2 = document.createElement('div');
     const { rerender } = renderHook(
       ({ target }) => useResizeObserver({ target }),
       { initialProps: { target: element1 } },
     );
+    await act(() => {});
     expect(mockObserve).toHaveBeenCalledWith(element1, expect.anything());
     expect(mockDisconnect).not.toHaveBeenCalled();
 
     rerender({ target: element2 });
+    await act(() => {});
     expect(mockObserve).toHaveBeenCalledWith(element2, expect.anything());
     expect(mockDisconnect).toHaveBeenCalled(); // should disconnect old observer
   });
