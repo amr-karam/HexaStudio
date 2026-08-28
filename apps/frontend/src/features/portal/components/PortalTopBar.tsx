@@ -51,8 +51,7 @@ const WebXRArButton = createDynamicComponent<Record<string, never>>(
 import { LocaleSwitcher } from '@/components/LocaleSwitcher';
 
 export function PortalTopBar() {
-  const { user, toggleSidebar } = useAuth();
-  const { setCommandPaletteOpen } = usePortalStore();
+  const { setCommandPaletteOpen, isSidebarCollapsed, toggleSidebar } = usePortalStore();
   const { theme, toggleTheme } = usePortalTheme();
   const prefersReduced = useReducedMotion();
 
@@ -61,7 +60,8 @@ export function PortalTopBar() {
       className={cn(
         'fixed top-0 z-30',
         /* Left edge offset — collapsed sidebar is 64px, expanded is 248px */
-        'left-0 lg:left-[4rem] lg:lg:left-[15.5rem]',
+        'left-0 lg:left-[4rem]',
+        isSidebarCollapsed ? 'lg:left-[4rem]' : 'lg:left-[15.5rem]',
         'right-0',
         'h-16 border-b border-sl-silver/20',
         'bg-sl-obsidian/70 backdrop-blur-2xl',

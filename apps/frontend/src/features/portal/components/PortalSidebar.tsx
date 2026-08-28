@@ -233,8 +233,12 @@ function SidebarContent({
               {/* Rotating diamond accent on the avatar corner */}
               <motion.span
                 aria-hidden="true"
-                animate={{ rotate: 360 }}
-                transition={{ repeat: Infinity, duration: 12, ease: 'linear' }}
+                animate={prefersReduced ? {} : { rotate: 360 }}
+                transition={
+                  prefersReduced
+                    ? undefined
+                    : { repeat: Infinity, duration: 12, ease: 'linear' }
+                }
                 className="absolute -bottom-0.5 -right-0.5 block h-1.5 w-1.5 rotate-45 border border-sl-gold-hover/50 bg-sl-obsidian"
               />
             </div>
