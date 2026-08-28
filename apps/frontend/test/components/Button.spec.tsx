@@ -65,8 +65,8 @@ describe('Button', () => {
     it('defaults to primary variant', () => {
       const { container } = render(<Button>Default</Button>);
       const btn = container.querySelector('button');
-      // primary includes bg-accent
-      expect(btn?.className).toContain('bg-accent');
+      // primary includes bg-sl-gold-subtle
+      expect(btn?.className).toContain('bg-sl-gold-subtle');
     });
   });
 
@@ -190,7 +190,7 @@ describe('Button', () => {
       const { container } = render(<Button>Focus</Button>);
       const cls = container.querySelector('button')?.className ?? '';
       expect(cls).toContain('focus-visible:ring');
-      expect(cls).toContain('focus-visible:ring-accent');
+      expect(cls).toContain('focus-visible:ring-sl-gold-hover');
     });
   });
 

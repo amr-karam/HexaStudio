@@ -50,13 +50,13 @@ export const Footer = () => {
       <ContactRibbon />
       <div className="px-4 sm:px-8 md:px-16 py-12 border-b border-artisan-glass-border">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <p className="text-sm text-neutral-400 font-light">
+          <p className="text-sm text-sl-mist/60 font-light">
             {t('footer.cta')}
           </p>
           <Magnetic>
             <Link
               href="/contact"
-              className="text-xs uppercase tracking-[0.3em] text-accent hover:text-accent-light transition-colors duration-500 whitespace-nowrap"
+              className="text-xs uppercase tracking-[0.3em] text-sl-gold-hover hover:text-sl-gold-subtle transition-colors duration-500 whitespace-nowrap"
             >
               {t('footer.startProject')} &rarr;
             </Link>
@@ -75,107 +75,107 @@ export const Footer = () => {
                 height={24}
                 className="group-hover:rotate-90 transition-transform duration-500"
               />
-              <span className="text-xs font-medium uppercase tracking-[0.4em] text-foreground">
-                HexaStudio
-              </span>
+               <span className="text-xs font-medium uppercase tracking-[0.4em] text-sl-alabaster">
+                 HexaStudio
+               </span>
             </Link>
-            <p className="text-sm text-neutral-400 leading-relaxed font-light">
-              {t('footer.tagline')}
-            </p>
+             <p className="text-sm text-sl-mist/60 leading-relaxed font-light">
+               {t('footer.tagline')}
+             </p>
           </div>
 
-          <div className="lg:col-span-3 flex flex-col gap-6">
-            <span className="text-xs uppercase tracking-[0.3em] text-neutral-500">
-              {t('footer.navigation')}
-            </span>
-            <div className="flex flex-col gap-3">
-              {navLinks.map((item, i) => (
-                <motion.div
-                  key={item.href}
-                  custom={i}
-                  variants={linkVariants}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                >
-                  <Link
-                    href={item.href}
-                    className="text-sm text-neutral-500 hover:text-accent transition-colors duration-500 w-fit py-1"
-                  >
-                    {item.name}
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-          </div>
+           <div className="lg:col-span-3 flex flex-col gap-6">
+             <span className="text-xs uppercase tracking-[0.3em] text-sl-mist/60">
+               {t('footer.navigation')}
+             </span>
+             <div className="flex flex-col gap-3">
+               {navLinks.map((item, i) => (
+                 <motion.div
+                   key={item.href}
+                   custom={i}
+                   variants={linkVariants}
+                   initial="hidden"
+                   whileInView="visible"
+                   viewport={{ once: true }}
+                 >
+                   <Link
+                     href={item.href}
+                     className="text-sm text-sl-mist/60 hover:text-sl-gold-hover transition-colors duration-500 w-fit py-1"
+                   >
+                     {item.name}
+                   </Link>
+                 </motion.div>
+               ))}
+             </div>
+           </div>
 
-          <div className="lg:col-span-2 flex flex-col gap-6">
-            <span className="text-xs uppercase tracking-[0.3em] text-neutral-500">
-              {t('footer.legal')}
-            </span>
-            <div className="flex flex-col gap-3">
-              {['/privacy', '/terms'].map((href, i) => (
-                <motion.div
-                  key={href}
-                  custom={i + 5}
-                  variants={linkVariants}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                >
-                  <Link
-                    href={href}
-                    className="text-sm text-neutral-500 hover:text-accent transition-colors duration-500 w-fit py-1"
-                  >
-                    {href === '/privacy' ? t('footer.privacy') : t('footer.terms')}
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-          </div>
+           <div className="lg:col-span-2 flex flex-col gap-6">
+             <span className="text-xs uppercase tracking-[0.3em] text-sl-mist/60">
+               {t('footer.legal')}
+             </span>
+             <div className="flex flex-col gap-3">
+               {['/privacy', '/terms'].map((href, i) => (
+                 <motion.div
+                   key={href}
+                   custom={i + 5}
+                   variants={linkVariants}
+                   initial="hidden"
+                   whileInView="visible"
+                   viewport={{ once: true }}
+                 >
+                   <Link
+                     href={href}
+                     className="text-sm text-sl-mist/60 hover:text-sl-gold-hover transition-colors duration-500 w-fit py-1"
+                   >
+                     {href === '/privacy' ? t('footer.privacy') : t('footer.terms')}
+                   </Link>
+                 </motion.div>
+               ))}
+             </div>
+           </div>
 
-          <div className="lg:col-span-2 flex flex-col gap-6">
-            <span className="text-xs uppercase tracking-[0.3em] text-neutral-500">
-              {t('footer.connect')}
-            </span>
-            <div className="flex flex-col gap-3">
-              {socialLinks.map((link, i) => (
-                <motion.div
-                  key={link.name}
-                  custom={i + 7}
-                  variants={linkVariants}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                >
-                  <a
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-neutral-500 hover:text-accent transition-colors duration-500 w-fit py-1"
-                  >
-                    {link.name}
-                  </a>
-                </motion.div>
-              ))}
-            </div>
-          </div>
+           <div className="lg:col-span-2 flex flex-col gap-6">
+             <span className="text-xs uppercase tracking-[0.3em] text-sl-mist/60">
+               {t('footer.connect')}
+             </span>
+             <div className="flex flex-col gap-3">
+               {socialLinks.map((link, i) => (
+                 <motion.div
+                   key={link.name}
+                   custom={i + 7}
+                   variants={linkVariants}
+                   initial="hidden"
+                   whileInView="visible"
+                   viewport={{ once: true }}
+                 >
+                   <a
+                     href={link.href}
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     className="text-sm text-sl-mist/60 hover:text-sl-gold-hover transition-colors duration-500 w-fit py-1"
+                   >
+                     {link.name}
+                   </a>
+                 </motion.div>
+               ))}
+             </div>
+           </div>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ type: 'spring', stiffness: 100, damping: 20, delay: 0.6 }}
-          className="mt-16 md:mt-24 pt-8 border-t border-artisan-glass-border flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6"
-        >
-          <p className="text-xs uppercase tracking-widest text-neutral-600">
-            &copy; {currentYear} HexaStudio. {t('footer.rights')}
-          </p>
-          <p className="text-[11px] uppercase tracking-widest text-neutral-600 font-medium">
-            Precision &mdash; Purpose &mdash; Vision
-          </p>
-        </motion.div>
+         <motion.div
+           initial={{ opacity: 0 }}
+           whileInView={{ opacity: 1 }}
+           viewport={{ once: true }}
+           transition={{ type: 'spring', stiffness: 100, damping: 20, delay: 0.6 }}
+           className="mt-16 md:mt-24 pt-8 border-t border-sl-silver/20 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6"
+         >
+           <p className="text-xs uppercase tracking-widest text-sl-mist/60">
+             &copy; {currentYear} HexaStudio. {t('footer.rights')}
+           </p>
+           <p className="text-[11px] uppercase tracking-widest text-sl-mist/60 font-medium">
+             Precision &mdash; Purpose &mdash; Vision
+           </p>
+         </motion.div>
       </ScrollFadeIn>
     </footer>
   );
