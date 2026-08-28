@@ -14,6 +14,7 @@ import { ProjectsModule } from '../projects/projects.module';
     OdooModule,
     StorageModule,
     AIModule,
+    AgentsModule,
     forwardRef(() => AuthModule),
     forwardRef(() => ProjectsModule),
   ],

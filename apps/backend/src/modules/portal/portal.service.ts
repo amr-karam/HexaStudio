@@ -7,6 +7,8 @@ import { randomUUID } from 'crypto';
 import { OdooService } from '../odoo/odoo.service';
 import { MinioService } from '../storage/minio.service';
 import { RedisService } from '../storage/redis.service';
+import { AgentMemoryService } from '../agents/agent-memory.service';
+import { StructuredOutputService } from '../ai/structured-output.service';
 import type {
   PortalDashboardData,
   ProjectHealthStatus,
@@ -100,6 +102,8 @@ export class PortalService {
     private readonly odooService: OdooService,
     private readonly minioService: MinioService,
     private readonly redisService: RedisService,
+    private readonly agentMemory: AgentMemoryService,
+    private readonly structuredOutput: StructuredOutputService,
   ) {}
 
   async getClientProjectData(clientEmail?: string) {
@@ -220,13 +224,16 @@ export class PortalService {
     // ── Notifications summary (from Redis) ──────────────────────────────────
     const notifications = await this.getNotificationsSummary(clientEmail);
 
-    // ── Project Health Score ─────────────────────────────────────────────────
+     // ── Project Health Score ─────────────────────────────────────────────────
+    const sentiment = await this.computeSentiment(clientEmail);
     const projectHealth = this.computeProjectHealth(
       projects,
       unpaidInvoices,
       overdueInvoices,
       recentActivity,
+      sentiment,
     );
+
 
     return {
       projectHealth,
@@ -395,6 +402,40 @@ export class PortalService {
   }
 
   /**
+   * Analyze the recent conversation sentiment via AI.
+   */
+  private async computeSentiment(clientEmail: string): Promise<'positive' | 'neutral' | 'frustrated' | 'urgent'> {
+    try {
+      const session = await this.agentMemory.getRecentSession(clientEmail);
+      if (!session || session.messages.length === 0) return 'neutral';
+
+      const context = session.messages.slice(-20).map(m => `${m.role}: ${m.content}`).join('\\n');
+      const result = await this.structuredOutput.generate<{ sentiment: 'positive' | 'neutral' | 'frustrated' | 'urgent' }>({
+        prompt: `Analyze the following client conversation and determine the overall sentiment.
+        - 'positive': Client is happy, praising work, or expressing high trust.
+        - 'frustrated': Client is complaining, unhappy with quality, or expressing annoyance.
+        - 'urgent': Client is pushing for deadlines, asking for immediate updates, or sounds stressed.
+        - 'neutral': Professional, standard exchange with no strong emotion.
+
+        Conversation:
+        ${context}`,
+        schema: {
+          type: 'object',
+          properties: {
+            sentiment: { type: 'string', enum: ['positive', 'neutral', 'frustrated', 'urgent'] },
+          },
+          required: ['sentiment'],
+        },
+      });
+
+      return result.sentiment ?? 'neutral';
+    } catch (err) {
+      this.logger.warn(`Sentiment analysis failed for ${clientEmail}: ${err}`);
+      return 'neutral';
+    }
+  }
+
+  /**
    * Retrieve the notifications summary for a user from Redis.
    */
   private async getNotificationsSummary(
@@ -422,10 +463,10 @@ export class PortalService {
    *
    * Algorithm:
    *   1. Start at 100
-   *   2. Deduct -5 per unpaid invoice
-   *   3. Deduct -10 per overdue invoice
-   *   4. Deduct proportional points for incomplete milestones
-   *   5. Add +2 per activity in the last 7 days (max +20 bonus)
+   *   2. Deduct -5 per unpaid invoice, -10 per overdue invoice
+   *   3. Deduct proportional points for incomplete milestones
+   *   4. Add +2 per activity in the last 7 days (max +20 bonus)
+   *   5. Sentiment Adjustment: Positive (+10), Frustrated (-20), Urgent (-5)
    *   6. Clamp to 0-100
    */
   private computeProjectHealth(
@@ -433,7 +474,8 @@ export class PortalService {
     unpaidInvoices: ClientInvoice[],
     overdueInvoices: ClientInvoice[],
     recentActivity: ActivityItem[],
-  ): { score: number; status: ProjectHealthStatus; activeProjects: number; completedProjects: number; totalProjects: number } {
+    sentiment: 'positive' | 'neutral' | 'frustrated' | 'urgent',
+  ): { score: number; status: ProjectHealthStatus; sentiment: 'positive' | 'neutral' | 'frustrated' | 'urgent'; activeProjects: number; completedProjects: number; totalProjects: number } {
     let score = 100;
 
     // Deductions for unpaid invoices
@@ -466,6 +508,15 @@ export class PortalService {
     score = Math.max(0, Math.min(100, score));
 
     // Determine status label
+      // Sentiment adjustments
+    if (sentiment === 'positive') score += 10;
+    else if (sentiment === 'frustrated') score -= 20;
+    else if (sentiment === 'urgent') score -= 5;
+
+    // Clamp to 0-100
+    score = Math.max(0, Math.min(100, score));
+
+    // Determine status label
     let status: ProjectHealthStatus;
     if (score >= 80) status = 'excellent';
     else if (score >= 60) status = 'good';
@@ -480,6 +531,7 @@ export class PortalService {
     return {
       score,
       status,
+      sentiment,
       activeProjects,
       completedProjects,
       totalProjects: projects.length,
