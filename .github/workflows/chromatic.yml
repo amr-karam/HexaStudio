@@ -1,0 +1,58 @@
+name: Chromatic Visual Regression
+
+on:
+  push:
+    branches: [main, develop, 'feat/*']
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  chromatic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      pull_requests: write
+      checks: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: apps/frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: apps/frontend
+
+      - name: Build Storybook
+        run: npm run build-storybook
+        working-directory: apps/frontend
+
+      - name: Publish to Chromatic
+        uses: chromaui/action@v1
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          buildScriptName: build-storybook
+          storybookBuildDir: storybook-static
+          onlyChanged: true
+          autoAcceptChanges: main
+          exitZeroOnChanges: false
+          exitOnceUploaded: true
+          diffThreshold: 0.2
+          viewports: 'mobile1,mobile2,tablet,desktop,large'
+          chromeFlags: '--enable-webgl --enable-webgl2 --use-gl=swiftshader --ignore-gpu-blocklist'
+          delay: 3000
+          captureDelay: 2000
+          retries: 2
+          ignoreStories: '*/ReducedMotion,*/NoWebGL'
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
