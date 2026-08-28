@@ -8,9 +8,10 @@
  * a slowly rotating gold diamond, mono section markers, gold-gradient active
  * indicator, and a gold-ring user profile.
  *
- * Fixed sidebar (240px) on desktop; on mobile slides out from left with a
- * backdrop overlay. All motion sources from EASE/DURATION tokens and collapses
- * under `prefers-reduced-motion`.
+ * Fixed sidebar on desktop — 240px expanded, collapses to a 64px icon rail.
+ * On mobile it slides out from the left with a backdrop overlay.
+ * All motion sources from EASE/DURATION tokens and collapses under
+ * `prefers-reduced-motion`.
  */
 
 import { usePathname, useRouter } from 'next/navigation';
@@ -58,14 +59,19 @@ const PORTAL_NAV_SECTIONS: PortalNavSection[] = [
 ];
 
 /* -------------------------------------------------------------------------- */
-/*  Sidebar Content (shared between desktop & mobile)                          */
+/*  Sidebar Content (shared between desktop & mobile)                         */
 /* -------------------------------------------------------------------------- */
 
-function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
+function SidebarContent({
+  onNavigate,
+  isCollapsed,
+}: {
+  onNavigate?: () => void;
+  isCollapsed: boolean;
+}) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuth();
-  const reducedMotion = useReducedMotion();
 
   const handleNavigation = (href: string) => {
     router.push(href);
@@ -79,62 +85,92 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   };
 
   return (
-    <div className="relative flex h-full flex-col bg-surface/75 backdrop-blur-2xl border-r border-border/20 overflow-hidden">
+    <div className="relative flex h-full flex-col bg-sl-obsidian/75 backdrop-blur-2xl border-r border-sl-silver/20 overflow-hidden">
       {/* Gold radial aura — barely visible atelier top-light */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-[radial-gradient(ellipse_at_top,rgba(212,175,55,0.05),transparent_70%)]"
+        className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-[radial-gradient(ellipse_at_top,rgba(196,176,145,0.05),transparent_70%)]"
       />
 
       {/* Gold specular top hairline */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/20 to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sl-gold-hover to-transparent"
       />
 
+      {/* Collapse Toggle (desktop only) — top-right corner */}
+      {!isCollapsed && (
+        <div className="absolute top-3 right-2 z-30 lg:block hidden">
+          <button
+            onClick={() => usePortalStore.getState().toggleSidebarCollapsed()}
+            className={cn(
+              'flex items-center justify-center w-8 h-8 rounded-lg',
+              'text-sl-silver hover:text-sl-alabaster hover:bg-sl-stone',
+              'transition-colors duration-300',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-hover'
+            )}
+            aria-label="Collapse sidebar"
+            aria-expanded={false}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+        </div>
+      )}
+
       {/* Brand */}
-      <div className="relative flex items-center gap-3 px-6 h-16 border-b border-border/20">
+      <div className={cn(
+        'relative flex items-center h-16 border-b border-sl-silver/20 transition-all duration-300',
+        isCollapsed ? 'justify-center px-2' : 'px-6'
+      )}>
         <button
           onClick={() => handleNavigation('/portal')}
-          className="group flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+          className={cn(
+            'group flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-hover focus-visible:ring-offset-2 focus-visible:ring-offset-sl-obsidian transition-all duration-300',
+            isCollapsed ? 'justify-center w-12' : 'flex-1'
+          )}
           aria-label="Go to portal home"
         >
-          <span className="relative flex items-center justify-center w-8 h-8 rounded-full bg-accent/10 border border-accent/30 transition-colors duration-300 group-hover:bg-accent/20">
-            <span className="text-xs font-serif italic text-accent">H</span>
+          <span className="relative flex items-center justify-center shrink-0 w-8 h-8 rounded-full bg-sl-gold-subtle border border-sl-gold-hover transition-colors duration-300 group-hover:bg-sl-gold-hover">
+            <span className="text-xs font-serif italic text-sl-gold-hover">H</span>
             {/* Rotating diamond accent — mirror of the preloader motif */}
             <motion.span
               aria-hidden="true"
-              animate={reducedMotion ? {} : { rotate: 360 }}
-              transition={
-                reducedMotion
-                  ? undefined
-                  : { repeat: Infinity, duration: 12, ease: 'linear' }
-              }
-              className="absolute -bottom-0.5 -right-0.5 block h-1.5 w-1.5 rotate-45 border border-accent/50 bg-surface"
+              animate={{ rotate: 360 }}
+              transition={{
+                repeat: Infinity, duration: 12, ease: 'linear',
+              }}
+              className="absolute -bottom-0.5 -right-0.5 block h-1.5 w-1.5 rotate-45 border border-sl-gold-hover/50 bg-sl-obsidian"
             />
           </span>
-          <span className="text-sm uppercase tracking-[0.3em] text-foreground font-light">
-            <span className="font-serif">Client</span>{' '}
-            <span className="font-normal text-accent">Portal</span>
-          </span>
+
+          {!isCollapsed && (
+            <span className="text-sm uppercase tracking-[0.3em] text-sl-alabaster font-light">
+              <span className="font-serif">Client</span>{' '}
+              <span className="font-normal text-sl-gold-hover">Portal</span>
+            </span>
+          )}
         </button>
       </div>
 
       {/* Navigation — grouped by mono section markers */}
-      <nav className="relative flex-1 overflow-y-auto px-3 py-5" aria-label="Portal navigation">
+      <nav className="relative flex-1 overflow-y-auto px-2 py-4" aria-label="Portal navigation">
         {PORTAL_NAV_SECTIONS.map((section) => (
-          <div key={section.marker} className="mb-5 last:mb-0">
-            <div className="flex items-center gap-2 px-3 pb-1.5 pt-1">
-              <span
-                aria-hidden="true"
-                className="block h-1 w-1 rotate-45 bg-accent/50"
-              />
-              <span className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-neutral-600">
-                {section.marker}
-              </span>
-            </div>
+          <div key={section.marker} className="mb-4 last:mb-0">
+            {!isCollapsed && (
+              <div className="flex items-center gap-2 px-3 pb-1.5 pt-1">
+                <span
+                  aria-hidden="true"
+                  className="block h-1 w-1 rotate-45 bg-sl-gold-hover/50"
+                />
+                <span className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-sl-silver">
+                  {section.marker}
+                </span>
+              </div>
+            )}
 
-            <div className="space-y-1">
+            <div className="space-y-1 px-1">
               {section.items.map((item) => {
                 const isActive =
                   item.href === '/portal'
@@ -146,19 +182,20 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                     key={item.href}
                     onClick={() => handleNavigation(item.href)}
                     className={cn(
-                      'group relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm tracking-[0.02em] transition-all duration-300',
-                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
+                      'group relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-300',
+                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-hover focus-visible:ring-offset-2 focus-visible:ring-offset-sl-obsidian',
                       isActive
-                        ? 'text-accent bg-accent/5 shadow-[inset_0_1px_0_rgba(212,175,55,0.06)]'
-                        : 'text-neutral-500 hover:text-foreground hover:bg-white/[0.03]',
+                        ? 'text-sl-gold-hover bg-sl-gold-subtle shadow-[inset_0_1px_0_rgba(196,176,145,0.06)]'
+                        : 'text-sl-silver hover:text-sl-alabaster hover:bg-sl-stone/50',
                     )}
                     aria-current={isActive ? 'page' : undefined}
+                    aria-label={isCollapsed ? item.label : undefined}
                   >
                     {/* Active indicator bar — gold specular gradient */}
                     {isActive && (
                       <motion.span
                         layoutId="sidebar-active-indicator"
-                        className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-full bg-gradient-to-b from-accent-light via-accent to-accent-dark"
+                        className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-full bg-gradient-to-b from-sl-gold-hover via-sl-gold-hover to-sl-gold-subtle"
                         transition={{
                           type: 'spring',
                           stiffness: 350,
@@ -171,14 +208,29 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                       name={item.icon as IconName}
                       size={18}
                       className={cn(
-                        'transition-colors duration-300',
+                        'shrink-0 transition-colors duration-300',
                         isActive
-                          ? 'text-accent'
-                          : 'text-neutral-600 group-hover:text-accent',
+                          ? 'text-sl-gold-hover'
+                          : 'text-sl-silver group-hover:text-sl-gold-hover',
                       )}
                     />
 
-                    <span className="truncate">{item.label}</span>
+                    {!isCollapsed && (
+                      <span className="truncate">{item.label}</span>
+                    )}
+
+                    {/* Tooltip for collapsed mode */}
+                    {isCollapsed && (
+                      <motion.span
+                        initial={{ opacity: 0, x: 8 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 8 }}
+                        transition={{ duration: 0.15, ease: 'ease-out' }}
+                        className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2 py-1 text-xs font-mono uppercase tracking-[0.15em] text-sl-silver bg-sl-obsidian border border-sl-silver/20 rounded whitespace-nowrap shadow-xl z-10"
+                      >
+                        {item.label}
+                      </motion.span>
+                    )}
                   </button>
                 );
               })}
@@ -188,32 +240,29 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       </nav>
 
       {/* User Profile Section */}
-      {user && (
-        <div className="relative border-t border-border/20 p-4">
+      {!isCollapsed && user && (
+        <div className="relative border-t border-sl-silver/20 p-4">
           <div className="flex items-center gap-3 mb-3">
             {/* Gold-ring avatar */}
-            <div className="relative w-10 h-10 rounded-full bg-accent/10 border border-accent/40 ring-1 ring-accent/20 flex items-center justify-center shrink-0">
-              <span className="text-xs font-mono text-accent uppercase">
+            <div className="relative w-10 h-10 rounded-full bg-sl-gold-subtle border border-sl-gold-hover/40 ring-1 ring-sl-gold-hover/20 flex items-center justify-center shrink-0">
+              <span className="text-xs font-mono text-sl-gold-hover uppercase">
                 {user.email?.charAt(0) ?? 'U'}
               </span>
               {/* Rotating diamond accent on the avatar corner */}
               <motion.span
                 aria-hidden="true"
-                animate={reducedMotion ? {} : { rotate: 360 }}
-                transition={
-                  reducedMotion
-                    ? undefined
-                    : { repeat: Infinity, duration: 12, ease: 'linear' }
-                }
-                className="absolute -bottom-0.5 -right-0.5 block h-1.5 w-1.5 rotate-45 border border-accent/50 bg-surface"
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 12, ease: 'linear' }}
+                className="absolute -bottom-0.5 -right-0.5 block h-1.5 w-1.5 rotate-45 border border-sl-gold-hover/50 bg-sl-obsidian"
               />
             </div>
+
             <div className="min-w-0">
-              <p className="text-sm text-foreground truncate">{user.email}</p>
-              <p className="flex items-center gap-1.5 text-[10px] text-neutral-500 uppercase tracking-wider font-mono">
+              <p className="text-sm text-sl-alabaster truncate">{user.email}</p>
+              <p className="flex items-center gap-1.5 text-[10px] text-sl-silver uppercase tracking-wider font-mono">
                 <span
                   aria-hidden="true"
-                  className="h-1 w-1 rounded-full bg-accent shadow-[0_0_4px_rgba(212,175,55,0.5)]"
+                  className="h-1 w-1 rounded-full bg-sl-gold-hover shadow-[0_0_4px_rgba(196,176,145,0.5)]"
                 />
                 {user.role ?? 'Client'}
               </p>
@@ -222,7 +271,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 
           <button
             onClick={handleLogout}
-            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 font-mono text-[0.625rem] uppercase tracking-[0.25em] text-neutral-600 hover:text-red-400 hover:bg-red-500/5 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 font-mono text-[0.625rem] uppercase tracking-[0.25em] text-sl-silver hover:text-red-400 hover:bg-red-500/5 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-hover"
           >
             <Icon name="log-out" size={14} />
             Sign Out
@@ -238,15 +287,58 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 /* -------------------------------------------------------------------------- */
 
 export function PortalSidebar() {
+  const { isSidebarCollapsed, toggleSidebarCollapsed } = usePortalStore();
+
   return (
-    <aside
-      className="hidden lg:flex fixed left-0 top-0 bottom-0 w-[85vw] max-w-[256px] z-20"
-      aria-label="Portal sidebar"
-    >
-      {/* Glassmorphic backdrop — lets the ambient glow pass through */}
-      <div className="absolute inset-0 -z-10 bg-surface/70 backdrop-blur-2xl" aria-hidden="true" />
-      <SidebarContent />
-    </aside>
+    <>
+      {/* The sidebar is a fixed icon-rail on desktop */}
+      <aside
+        className={cn(
+          'hidden lg:flex fixed left-0 top-0 bottom-0 z-20',
+          'transition-all duration-300 ease-out',
+          'border-r border-sl-silver/20'
+        )}
+        style={{
+          width: isSidebarCollapsed ? '4rem' : '15.5rem',
+          minWidth: isSidebarCollapsed ? '4rem' : '15.5rem',
+          maxWidth: isSidebarCollapsed ? '4rem' : '15.5rem',
+        }}
+        aria-label="Portal sidebar"
+      >
+        {/* Glassmorphic backdrop — lets the ambient glow pass through */}
+        <div
+          className="absolute inset-0 -z-10 bg-sl-obsidian/70 backdrop-blur-2xl"
+          aria-hidden="true"
+        />
+
+        <SidebarContent isCollapsed={isSidebarCollapsed} />
+
+        {/* Collapse toggle — anchored bottom-left of sidebar */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30">
+          <button
+            onClick={toggleSidebarCollapsed}
+            className={cn(
+              'flex items-center justify-center w-8 h-8 rounded-lg',
+              'text-sl-silver hover:text-sl-alabaster hover:bg-sl-stone',
+              'transition-colors duration-300',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-hover'
+            )}
+            aria-label={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-expanded={!isSidebarCollapsed}
+          >
+            <motion.span
+              animate={{ rotate: isSidebarCollapsed ? 180 : 0 }}
+              transition={{ duration: 0.3, ease: 'ease-out' }}
+              className="flex items-center justify-center"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </motion.span>
+          </button>
+        </div>
+      </aside>
+    </>
   );
 }
 
@@ -276,7 +368,7 @@ export function PortalMobileSidebar() {
             aria-hidden="true"
           />
 
-          {/* Panel — collapses the slide to a fade under reduced motion */}
+          {/* Panel — slides in from the left */}
           <motion.aside
             initial={reducedMotion ? { opacity: 0 } : { x: -280 }}
             animate={reducedMotion ? { opacity: 1 } : { x: 0 }}
@@ -285,14 +377,16 @@ export function PortalMobileSidebar() {
               duration: reducedMotion ? DURATION.micro : DURATION.component,
               ease: reducedMotion ? EASE.sharp : EASE.entrance,
             }}
-            className="fixed left-0 top-0 bottom-0 w-[85vw] max-w-[280px] z-50 lg:hidden"
+            className="fixed left-0 top-0 bottom-0 w-[85vw] max-w-[280px] z-50 lg:hidden overflow-hidden"
             aria-label="Portal sidebar"
           >
-            <SidebarContent onNavigate={() => setSidebarOpen(false)} />
+            <SidebarContent
+              onNavigate={() => setSidebarOpen(false)}
+              isCollapsed={false}
+            />
           </motion.aside>
         </>
       )}
     </AnimatePresence>
   );
 }
-
