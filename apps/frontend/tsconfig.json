@@ -40,6 +40,8 @@
   "exclude": [
     "node_modules",
     "src/stories",
-    "**/__stories__"
+    "**/__stories__",
+    "**/*.stories.tsx",
+    "**/*.stories.ts"
   ]
 }
