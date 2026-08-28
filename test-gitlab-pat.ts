@@ -1,0 +1,1 @@
+const TOKEN = 'glpat-fake12345678901234567890';
