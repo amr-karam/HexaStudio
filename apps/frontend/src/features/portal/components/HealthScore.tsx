@@ -27,6 +27,19 @@ function getScoreColor(score: number): { text: string; glow: string } {
   return { text: 'text-danger', glow: 'rgba(var(--color-danger-rgb), 0.1)' };
 }
 
+function getSentimentVisuals(sentiment?: string): { label: string; color: string; aura: string; animate: boolean } {
+  switch (sentiment) {
+    case 'positive':
+      return { label: 'Positive ✨', color: 'text-emerald-400', aura: 'rgba(52, 211, 153, 0.15)', animate: false };
+    case 'frustrated':
+      return { label: 'Attention Required ⚠️', color: 'text-amber-400', aura: 'rgba(251, 191, 36, 0.15)', animate: false };
+    case 'urgent':
+      return { label: 'High Urgency ⚡', color: 'text-danger', aura: 'rgba(239, 68, 68, 0.2)', animate: true };
+    default:
+      return { label: 'Stable ⚖️', color: 'text-neutral-500', aura: 'rgba(168, 162, 158, 0.1)', animate: false };
+  }
+}
+
 function getStatusLabel(score: number): string {
   if (score > 80) return 'Excellent';
   if (score > 60) return 'Good';
@@ -39,8 +52,9 @@ const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS;
 
 export function HealthScore({ data, className }: HealthScoreProps) {
   const prefersReduced = useReducedMotion();
-  const { score } = data;
+  const { score, sentiment } = data;
   const colors = getScoreColor(score);
+  const sentimentVisuals = getSentimentVisuals(sentiment);
   const statusLabel = getStatusLabel(score);
 
   // Animated offset
@@ -63,9 +77,11 @@ export function HealthScore({ data, className }: HealthScoreProps) {
     <div className={cn('flex flex-col items-center', className)}>
       <div className="relative w-36 h-36">
         {/* Glow effect */}
-        <div
-          className="absolute inset-0 rounded-full opacity-40 blur-xl"
-          style={{ background: colors.glow }}
+        <motion.div
+          animate={sentimentVisuals.animate ? { opacity: [0.3, 0.6, 0.3] } : { opacity: 0.4 }}
+          transition={sentimentVisuals.animate ? { repeat: Infinity, duration: 2, ease: 'easeInOut' } : {}}
+          className="absolute inset-0 rounded-full blur-xl"
+          style={{ background: sentimentVisuals.aura }}
         />
 
         {/* SVG Circle */}
@@ -133,6 +149,14 @@ export function HealthScore({ data, className }: HealthScoreProps) {
         className={cn('text-sm font-mono uppercase tracking-wider mt-3', colors.text)}
       >
         {statusLabel}
+      </motion.p>
+      <motion.p
+        initial={prefersReduced ? { opacity: 1 } : { opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: prefersReduced ? 0 : 0.7, duration: DURATION.component }}
+        className={cn('text-[10px] font-mono uppercase tracking-tighter mt-1', sentimentVisuals.color)}
+      >
+        {sentimentVisuals.label}
       </motion.p>
       <p className="text-xs text-neutral-600 mt-1">Project Health</p>
     </div>

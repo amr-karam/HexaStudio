@@ -13,6 +13,7 @@ export interface ProjectHealth {
   /** 0-100 computed health score */
   score: number;
   status: ProjectHealthStatus;
+  sentiment?: 'positive' | 'neutral' | 'frustrated' | 'urgent';
   activeProjects: number;
   completedProjects: number;
   totalProjects: number;

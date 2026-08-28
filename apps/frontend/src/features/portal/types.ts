@@ -27,6 +27,7 @@ export interface StatItem {
 export interface HealthScoreData {
   score: number;
   status: string;
+  sentiment?: 'positive' | 'neutral' | 'frustrated' | 'urgent';
   metricBreakdown?: {
     timeline: number;
     budget: number;
