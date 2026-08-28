@@ -1,7 +1,7 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** August 27, 2026 — Keyboard shortcut consolidation (Navbar/CurrencySelector/ProjectDetailModal → `useKeyboardShortcut`) + `useField`/`useForm` hooks with 20 tests, all 3 workspace gates green
-**Version:** 2.2.3
+**Last Updated:** August 28, 2026 — 25-hook library complete (useToggle/Throttle/ClickOutside/ScrollLock/FocusTrap/Interval/IsMounted/Async/Countdown/Fetch/DocumentTitle/OnlineStatus/WindowScroll) + Navbar/ProjectDetailModal/CurrencySelector/ApprovalCenterView consolidations, all gates green — 78 files / 557 tests
+**Version:** 2.2.5
 **Authority Level:** 13 (Production)
 **Current Phase:** Production-Ready — Quad-Track Feature Delivery & Silent Luxury Design System (DEPLOYED)
 
@@ -26,7 +26,7 @@
 | Gate | Target | Status | Result |
 |---|---|---|---|
 | **Backend Tests** | 390 total (47 files) | `47 / 47 files, 390/390 tests` | ✅ PASS |
-| **Frontend Tests** | 485 total (63 files) | `485 / 485` | ✅ PASS |
+| **Frontend Tests** | 557 total (78 files) | `557 / 557` | ✅ PASS |
 | **Mobile Tests** | 26 passing | `26 / 26` | ✅ PASS |
 | **Frontend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **Backend Typecheck** | 0 errors | `0 errors` | ✅ PASS |

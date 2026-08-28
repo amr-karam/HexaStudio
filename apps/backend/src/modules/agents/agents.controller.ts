@@ -1,4 +1,6 @@
-import { Controller, Post, Body, UseGuards, HttpException, HttpStatus, VERSION_NEUTRAL, Delete } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, HttpException, HttpStatus, VERSION_NEUTRAL, Delete, Req } from '@nestjs/common';
+import { Request } from 'express';
+import type { User } from '@hexastudio/types';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsOptional, IsIn, MaxLength } from 'class-validator';
 import { AgentsService, AgentPersona } from './agents.service';
@@ -62,10 +64,9 @@ export class AgentsController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Chat with AI agent (authenticated)' })
-  async chat(@Body() body: ChatDto, @req() req: any) {
+  async chat(@Body() body: ChatDto, @Req() req: Request) {
     const provider = body.provider || 'openai';
     const message = sanitizePrompt(body.message);
-    const user = req.user;
 
     if (provider === 'gemini') {
       if (!this.geminiService.isAvailable) {
@@ -78,7 +79,7 @@ export class AgentsController {
     }
 
     const persona = body.persona ?? 'general';
-    return this.agentsService.chat(message, persona, body.sessionId, user);
+    return this.agentsService.chat(message, persona, body.sessionId, req.user as User);
   }
 
   @Delete('memory')

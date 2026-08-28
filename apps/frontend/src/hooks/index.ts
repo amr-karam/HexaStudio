@@ -50,3 +50,8 @@ export { useDocumentTitle } from './useDocumentTitle';
 export { useOnlineStatus } from './useOnlineStatus';
 export { useWindowScroll } from './useWindowScroll';
 export type { WindowScrollState } from './useWindowScroll';
+export { useSessionStorage } from './useSessionStorage';
+export type { UseSessionStorageOptions } from './useSessionStorage';
+export { useGeolocation } from './useGeolocation';
+export type { GeolocationState, UseGeolocationOptions } from './useGeolocation';
+export { useIdle } from './useIdle';

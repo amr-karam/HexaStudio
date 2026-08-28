@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import type { User } from '@hexastudio/types';
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import { ChatCompletionMessageParam, ChatCompletionTool } from 'openai/resources/chat/completions';
