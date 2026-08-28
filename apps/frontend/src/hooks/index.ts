@@ -55,3 +55,7 @@ export type { UseSessionStorageOptions } from './useSessionStorage';
 export { useGeolocation } from './useGeolocation';
 export type { GeolocationState, UseGeolocationOptions } from './useGeolocation';
 export { useIdle } from './useIdle';
+export { useHash } from './useHash';
+export { useResizeObserver } from './useResizeObserver';
+export type { ResizeObserverEntry, UseResizeObserverOptions, UseResizeObserverReturn } from './useResizeObserver';
+export { usePageVisibility } from './usePageVisibility';
