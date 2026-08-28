@@ -25,7 +25,7 @@ export default tseslint.config({
   },
 }, {
   rules: {
-    "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+    "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
     // "no-useless-catch" is too strict — synchronous throws from browser
     // extensions (e.g. Chrome Money Helper intercepting window.fetch) bypass
     // async/await and require a catch to propagate correctly to callers.
