@@ -1,9 +1,9 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** August 28, 2026 — 25-hook library complete (useToggle/Throttle/ClickOutside/ScrollLock/FocusTrap/Interval/IsMounted/Async/Countdown/Fetch/DocumentTitle/OnlineStatus/WindowScroll) + Navbar/ProjectDetailModal/CurrencySelector/ApprovalCenterView consolidations, all gates green — 78 files / 557 tests
+**Last Updated:** August 28, 2026 — Phase 0 (Token Unification), Phase 1 (Portal Shell & Navigation Redesign), Phase 2 (Dashboard Split + Honest States) complete — all gates green (606 tests, 0 lint errors/warnings, 0 typecheck errors)
 **Version:** 2.2.5
 **Authority Level:** 13 (Production)
-**Current Phase:** Production-Ready — Quad-Track Feature Delivery & Silent Luxury Design System (DEPLOYED)
+**Current Phase:** Production-Ready — Silent Luxury 2.0 Portal-First Redesign
 
 ---
 
@@ -26,18 +26,18 @@
 | Gate | Target | Status | Result |
 |---|---|---|---|
 | **Backend Tests** | 390 total (47 files) | `47 / 47 files, 390/390 tests` | ✅ PASS |
-| **Frontend Tests** | 557 total (78 files) | `557 / 557` | ✅ PASS |
+| **Frontend Tests** | 606 total (86 files) | `606 / 606` | ✅ PASS |
 | **Mobile Tests** | 26 passing | `26 / 26` | ✅ PASS |
 | **Frontend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **Backend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **Mobile Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **ESLint (all)** | 0 errors, 0 warnings | `0 errors, 0 warnings` (frontend, backend, mobile full `src` + `test`) | ✅ PASS |
 
-- **Current Phase**: Phase 4 / Release Candidate & Live Operations (v2.2.2)
+- **Current Phase**: Silent Luxury 2.0 Redesign — Phase 1 Complete (Portal Shell & Navigation)
 - **Active Workspace Quality Gates**:
-  - `apps/frontend`: 60 suites / 436 tests passed (100%), 50 routes compiled, 0 errors, 0 warnings
-  - `apps/backend`: 47 files / 370 tests passed (100%), 0 errors, 0 warnings
-  - `apps/mobile`: 8 suites / 25 tests passed (100%), 0 errors, 0 warnings
+  - `apps/frontend`: 86 suites / 606 tests passed (100%), 0 errors, 0 warnings, design-token gate PASSED
+  - `apps/backend`: 47 files / 390 tests passed (100%), 0 errors, 0 warnings
+  - `apps/mobile`: 8 suites / 26 tests passed (100%), 0 errors, 0 warnings
 
 - **Production Server (`19.16.1.100`)**:
   - 28/28 containers **Up (healthy)**
@@ -53,7 +53,7 @@
 
 ### Core Platform
 - **3D Designer Mode & AI Spatial Synthesis** — Active (`DesignerModeConfigurator.tsx`)
-- **Client Portal v3.0 Digital HQ** — Active (26 components, 13 routes)
+- **Client Portal v4.0 Digital HQ** — Active (32 components, 13 routes) — Silent Luxury 2.0 redesign in progress (Phase 1 complete: collapsible icon-rail sidebar, floating glass top bar, unified sl-* token layer)
 - **WebXR AR 1:1 Scale Mobile Projection** — Active (`WebXRArButton.tsx`)
 - **3D Spatial Audio (Web Audio API)** — Active (`SpatialAudioPlayer.tsx`)
 - **WebRTC Live 3D Review Room** — Active (`/portal/review/[id]`)
@@ -93,6 +93,46 @@
 - `~/.config/opencode/opencode.json` (OpenCode global configuration)
 - Backend `env.ts` Zod schema (type-safe, validated at startup)
 
+
+---
+
+## 4. Active Work: Silent Luxury 2.0 Portal Redesign
+
+**Phase 0 — Token Unification (COMPLETE):**
+- `apps/frontend/src/app/globals.css` is the single canonical token source — `sl-*` palette (void, obsidian, stone, silver, mist, alabaster, warm-neutral, gold-hover, gold-subtle, gold-rgb, gold-25) registered as Tailwind utilities; Cormorant Garamond + Jost fonts configured via `@theme`; motion + glass tokens consolidated in root `:root`.
+- Deleted dead `apps/frontend/src/styles/silent-luxury-tokens.css` (not imported anywhere).
+- Added `varsIgnorePattern: "^_"` to `@typescript-eslint/no-unused-vars` in `apps/frontend/eslint.config.mjs`.
+- Removed dead artifacts: `BentoGrid/`, `bento-tokens.ts`, `EnhancedNavigation/`, `page-bento.tsx`.
+- Lint gate: ✅ PASS (0 errors, 0 warnings)
+
+**Phase 1 — Portal Shell & Navigation (COMPLETE):**
+- `PortalSidebar.tsx` — rewritten as collapsible icon-rail (240px expanded / 64px collapsed) with: gold-ring avatar, rotating gold diamond accent, mono section markers, gold-gradient active indicator, hover tooltips in collapsed mode, bottom-anchored collapse toggle. Fixed `left-0` positioning so top bar clears the sidebar.
+- `PortalTopBar.tsx` — floating glass top bar with: `sl-*` token layer, dynamic left offset based on sidebar collapsed state, removed nested right-section structural bug, improved focus rings.
+- `PortalThemeProvider.tsx` — light theme CSS overrides updated to map `sl-*` tokens to a warm parchment palette (no more old `bg-surface`/`border-border`/`text-foreground` references).
+- `PortalLayoutContent.tsx` (NEW) — client component that dynamically offsets main content based on sidebar collapse state via `usePortalStore`.
+- `app/portal/layout.tsx` — updated to use `PortalLayoutContent`, `sl-*` tokens for background/ambient glow.
+- `store.ts` — added `isSidebarCollapsed` state with localStorage persistence (`hexa-portal-sidebar-collapsed`).
+- `CommandPalette.tsx` — all old tokens (`text-neutral-500`, `border-border/20`, `bg-accent/10`, etc.) replaced with `sl-*` equivalents.
+- `PortalIcons.tsx` — added `refresh-cw` icon for retry button.
+- Lint: ✅ PASS (0 errors, 0 warnings) | Typecheck: ✅ PASS | Tests: ✅ 606/606
+
+**Phase 2 — Dashboard Split + Honest States (COMPLETE):**
+- `apps/frontend/src/app/portal/page.tsx` — 866 lines → 163 lines. Removed `MOCK_FALLBACK_DASHBOARD` entirely; now uses `DashboardError` with honest error state + retry via `queryClient.refetchQueries()`. Replaced old token references (`bg-background`, `text-foreground`, `border-border/20`, `bg-accent`, `text-neutral-*`) with `sl-*` equivalents.
+- Extracted 10 sub-components into separate files:
+  - `DashboardHero.tsx` — Welcome hero + KPI strip (gold gradient glow, live-status badge, copilot button)
+  - `DashboardStatsGrid.tsx` — Staggered KPI stat cards grid
+  - `PendingApprovalsSection.tsx` — Approval list with pulsing gold urgency indicator + AnimatePresence empty states
+  - `ActivityFeedSection.tsx` — Timeline activity feed with type-based dot coloring
+  - `QuickActionsGrid.tsx` — Responsive grid of 6 action cards
+  - `ProjectHealthSection.tsx` — Health ring + metric breakdown bars + upcoming meetings
+  - `MetricBar.tsx` — Animated progress bar with health-color coding
+  - `MeetingCard.tsx` — Calendar-style meeting card with date badge
+  - `ApprovalCard.tsx` — Compact approval card with review button
+  - `EmptyState.tsx` — Centered empty state (shared component)
+  - `DashboardError.tsx` — Honest API error state with retry button + isRetrying spinner
+- All components respect `useReducedMotion` (WCAG AA) and use `sl-*` tokens.
+- Fixed `__stories__bak` lint errors (3 `any` types + unused imports) to satisfy 0-error gate.
+- Lint: ✅ PASS (0 errors, 0 warnings) | Typecheck: ✅ PASS | Tests: ✅ 606/606
 
 ---
 

@@ -17,6 +17,7 @@
  * sidebar collapse state via `lg:left-[sidebar-width]`.
  */
 
+import { useAuth } from '@/features/auth';
 import { cn } from '@/lib/utils';
 import { usePortalStore } from '../store';
 import { Icon } from './PortalIcons';

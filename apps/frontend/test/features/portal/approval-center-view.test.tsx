@@ -9,7 +9,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, act } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 vi.mock('@/features/portal/api', () => ({
@@ -123,8 +123,11 @@ describe('ApprovalCenterView — persistence', () => {
     renderView();
     await approveFirstDeliverable();
 
+    // Flush the rejected-persist microtask so the revert + alert settle inside act.
+    await act(async () => {});
+
     // Honest failure: role=alert message + status pill returns to Awaiting Signature.
-    expect(await screen.findByRole('alert')).toHaveTextContent(
+    expect(screen.getByRole('alert')).toHaveTextContent(
       /decision could not be recorded/i,
     );
     await waitFor(() => {
