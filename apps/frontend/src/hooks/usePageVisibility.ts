@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 /**
  * Reports whether the document/tab is visible.
- * Uses the Page Visibility API (`document.visibilityState`).
+ * Uses the Page Visibility API (document.visibilityState).
  *
  * @returns true when page is visible (i.e. NOT hidden), false when hidden.
  */
@@ -16,12 +16,17 @@ export function usePageVisibility(): boolean {
         : true,
   );
 
+  const updateVisibility = useCallback(() => {
+    if (typeof document === 'undefined') return;
+    setVisible(document.visibilityState === 'visible');
+  }, []);
+
   useEffect(() => {
     if (typeof document === 'undefined') return;
-    const onChange = () => setVisible(document.visibilityState === 'visible');
-    document.addEventListener('visibilitychange', onchange, { passive: true });
-    return () => document.removeEventListener('visibilitychange', onchange, { passive: true });
-  }, []);
+    document.addEventListener('visibilitychange', updateVisibility);
+    updateVisibility();
+    return () => document.removeEventListener('visibilitychange', updateVisibility);
+  }, [updateVisibility]);
 
   return visible;
 }

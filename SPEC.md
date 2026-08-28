@@ -1,43 +1,102 @@
-# SPEC: Resolve "Missing API Key" in OpenCode Desktop
+# Editorial Hero CMS Integration - Specification
 
-## Status
-**Completed**
+## Overview
+Integrate the CMS-driven Editorial Hero component (`HeroEditorial`) with Strapi by adding the `editorialHero` field to the Page content type. This allows content editors to configure hero sections per page via Strapi admin.
 
-## Problem Statement
-Users reported persistent "Missing API key" errors within the OpenCode Desktop application UI. This error indicates that the application's underlying server instances could not locate valid API keys for required LLM providers, preventing model selection and execution.
+## Current State
+- ✅ Frontend: `HeroEditorial` component exists (`apps/frontend/src/components/hero/HeroEditorial.tsx`)
+- ✅ Types: `EditorialHero` interface defined in `@hexastudio/types` (`packages/types/index.ts`)
+- ✅ Frontend: `fetchEditorialHero` function exists (`apps/frontend/src/features/blog/lib/fetchEditorialHero.ts`)
+- ✅ Frontend: `fetchPage` function exists (`apps/frontend/src/features/pages/lib/fetchPages.ts`)
+- ✅ Backend: `PagesController` with `/api/pages/editorial-hero` endpoint (`apps/backend/src/modules/pages/pages.controller.ts`)
+- ✅ Backend: `PagesService` with `getEditorialHero` and `mapEditorialHero` (`apps/backend/src/modules/pages/pages.service.ts`)
+- ❌ **Strapi Page content type schema missing `editorialHero` field**
 
-## Root Cause Analysis (RCA)
-The OpenCode Desktop application operates by spawning two sidecar server instances:
-1.  **Native Sidecar (Windows):** Runs within the Electron main process, managing local resources.
-2.  **WSL Sidecar (Ubuntu):** Spawns an `opencode serve` instance inside the WSL environment (Ubuntu-24.04).
+## Required Changes
 
-Investigation revealed two critical misconfigurations:
-1.  **Native Sidecar:** The global configuration file (`C:\Users\amrmo\.config\opencode\opencode.json`) had an empty API key for the `freetheai` provider, which is required for the default agent models.
-2.  **WSL Sidecar:** The WSL environment possessed an empty `opencode.jsonc` file and lacked an `auth.json` file. Because the Desktop app often uses WSL sidecars for project-specific operations, this prevented successful provider/model authentication.
-3.  **Caching:** The Desktop UI caches config snapshots. Stale snapshots created *before* the config correction at 06:02 AM were causing the UI to persist the error until a full application restart.
+### 1. Strapi Page Content Type Schema Update
+**File:** `apps/cms/src/api/page/content-types/page/schema.json`
 
-## Implemented Solution
-### 1. Global Config Update
-The global configuration file was updated to include a valid API key for the `freetheai` provider:
-```json
-"freetheai": {
-  "options": {
-    "baseURL": "https://api.freetheai.xyz/v1",
-    "apiKey": "sta_1829d5bde9f1966b5323b3c336e2badf81b59689762beae6"
-  }
+Add `editorialHero` as a **component** (recommended) or nested object with the following fields:
+- `eyebrow` (string, optional) - Small mono eyebrow above title
+- `title` (string, required) - Main display title, supports newline for line splits
+- `accentWord` (string, optional) - Italic accent word rendered inside title
+- `subtitle` (string, optional) - Supporting paragraph below title
+- `primaryCtaLabel` (string, optional) - Primary CTA button label
+- `primaryCtaHref` (string, optional) - Primary CTA button href
+- `secondaryCtaLabel` (string, optional) - Secondary CTA link label
+- `secondaryCtaHref` (string, optional) - Secondary CTA link href
+
+**Recommended approach:** Use a Strapi **component** for reusability and cleaner admin UI.
+
+### 2. Create Strapi Component for EditorialHero
+**File:** `apps/cms/src/components/editorial-hero/schema.json`
+
+Define the component schema matching the `EditorialHero` TypeScript interface.
+
+### 3. Update Page Content Type to Use Component
+Add `editorialHero` attribute to Page schema referencing the component.
+
+### 4. Regenerate Strapi Types (if using type generation)
+Run Strapi type generation to update TypeScript types.
+
+### 5. Test Integration
+- Create a page in Strapi admin with editorialHero configured
+- Verify `/api/pages/editorial-hero?slug=<page>` returns the data
+- Verify `HeroEditorial` renders correctly on the page
+
+## API Contract
+
+### GET `/api/pages/editorial-hero?slug=:slug`
+**Response (200):**
+```typescript
+// When hero is configured
+{
+  "eyebrow": "Chapter 01 - Vision",
+  "title": "Raw\nVision,\nRendered.",
+  "accentWord": "Vision",
+  "subtitle": "Worlds composed from light and restraint...",
+  "primaryCtaLabel": "Enter the Work",
+  "primaryCtaHref": "/projects",
+  "secondaryCtaLabel": "The Atelier",
+  "secondaryCtaHref": "/studio"
 }
+
+// When no hero configured
+null
 ```
 
-### 2. WSL Environment Synchronization
-To ensure parity between the native and WSL sidecars, the configuration and authentication files were symlinked from the Windows host to the WSL environment. This establishes a single source of truth:
-- `/home/amrmondy/.config/opencode/opencode.json` → `/mnt/c/Users/amrmo/.config/opencode/opencode.json`
-- `/home/amrmondy/.local/share/opencode/auth.json` → `/mnt/c/Users/amrmo/.local/share/opencode/auth.json`
+### GET `/api/pages/:slug`
+**Response includes `editorialHero` field in Page object.**
 
-## Verification
-- **Logs:** Renderer logs for the current session (`20260808T031351`) confirm 0 "Missing API key" or configuration load errors.
-- **Onboarding:** Onboarding state is verified as `pending: false`.
-- **Runtime:** The current session is successfully executing models using the `freetheai` provider.
+## Component Tree
+```
+Page (layout)
+  └── HeroEditorial (client component)
+        └── Receives `hero` prop from `fetchEditorialHero(slug)`
+```
 
-## Recommendations
-- **Full Application Restart:** If the UI still displays the error, perform a full quit (File → Quit) of the OpenCode Desktop application to clear all internal sidecar caches.
-- **Config Syncing:** The symlink approach ensures that future changes to the Windows-based configuration are automatically reflected in WSL.
+## Data Flow
+```
+Strapi Admin (Page edit)
+    → Strapi Page.content.editorialHero (component)
+    → Strapi API `/api/pages?filters[slug]=...&populate=*`
+    → Backend PagesService.mapEditorialHero()
+    → Backend GET `/api/pages/editorial-hero?slug=...`
+    → Frontend fetchEditorialHero(slug)
+    → HeroEditorial component renders
+```
+
+## Rendering Strategy
+- **Static/ISR:** `fetchEditorialHero` uses `next: { revalidate: 3600 }` - 1 hour ISR
+- **Fallback:** `HeroEditorial` has built-in `DEFAULT_HERO` when no CMS data
+- **SSR:** `fetchEditorialHero` runs on server (uses `process.env.API_URL`)
+
+## Acceptance Criteria
+1. Strapi Page content type has `editorialHero` component field
+2. Can create/edit editorial hero in Strapi admin
+3. `/api/pages/editorial-hero?slug=blog` returns EditorialHero JSON
+4. `/api/pages/blog` returns Page with `editorialHero` populated
+5. Blog page renders `HeroEditorial` with CMS data
+6. No TypeScript errors in frontend/backend
+7. All existing tests pass

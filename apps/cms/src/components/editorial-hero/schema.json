@@ -1,0 +1,53 @@
+{
+  "info": {
+    "singularName": "editorial-hero",
+    "pluralName": "editorial-heroes",
+    "displayName": "Editorial Hero",
+    "description": "Hero section configuration for editorial-style pages"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "eyebrow": {
+      "type": "string",
+      "required": false,
+      "description": "Small mono eyebrow above the title, e.g. 'Chapter 01 - Vision'"
+    },
+    "title": {
+      "type": "string",
+      "required": true,
+      "description": "Main display title. Supports a single newline to split lines."
+    },
+    "accentWord": {
+      "type": "string",
+      "required": false,
+      "description": "Optional italic accent word rendered inside the title (overrides line split if set)"
+    },
+    "subtitle": {
+      "type": "text",
+      "required": false,
+      "description": "Supporting paragraph below the title"
+    },
+    "primaryCtaLabel": {
+      "type": "string",
+      "required": false,
+      "description": "Primary CTA button label"
+    },
+    "primaryCtaHref": {
+      "type": "string",
+      "required": false,
+      "description": "Primary CTA button href"
+    },
+    "secondaryCtaLabel": {
+      "type": "string",
+      "required": false,
+      "description": "Secondary CTA link label"
+    },
+    "secondaryCtaHref": {
+      "type": "string",
+      "required": false,
+      "description": "Secondary CTA link href"
+    }
+  }
+}

@@ -44,7 +44,7 @@ import { ModelFusionStreamController } from './model-fusion-stream.controller';
  * ════════════════════════════════════════════
  */
 @Module({
-  imports: [forwardRef(() => VectorModule), StorageModule],
+  imports: [forwardRef(() => VectorModule), forwardRef(() => RealtimeModule), StorageModule],
   controllers: [
     MultimodalController,
     AiChatController,

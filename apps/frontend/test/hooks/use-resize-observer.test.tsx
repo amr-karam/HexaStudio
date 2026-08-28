@@ -1,20 +1,29 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useRef, useState } from 'react';
 import { useResizeObserver } from '@/hooks/useResizeObserver';
 
+// Proper mock of ResizeObserver constructor
+let mockCallback: ((entries: globalThis.ResizeObserverEntry[]) => void) | null = null;
+const mockObserve = vi.fn();
+const mockDisconnect = vi.fn();
+const mockUnobserve = vi.fn();
+
+function setupResizeObserverMock() {
+  
+  globalThis.ResizeObserver = class MockResizeObserver {
+    constructor(callback: (entries: globalThis.ResizeObserverEntry[]) => void) {
+      mockCallback = callback;
+    }
+    observe = mockObserve;
+    disconnect = mockDisconnect;
+    unobserve = mockUnobserve;
+  } as unknown as typeof globalThis.ResizeObserver;
+}
+
 describe('useResizeObserver', () => {
-  const mockContentRect = {
-    x: 0,
-    y: 0,
-    width: 300,
-    height: 200,
-    top: 0,
-    right: 300,
-    bottom: 200,
-    left: 0,
-    toJSON() { return this; },
-  };
+  beforeEach(() => {
+    setupResizeObserverMock();
+  });
 
   it('returns 0 width/height before observing', () => {
     const { result } = renderHook(() => useResizeObserver());
@@ -23,91 +32,109 @@ describe('useResizeObserver', () => {
     expect(result.current.entry).toBeNull();
   });
 
-  it('observes element via ref callback', () => {
-    const observerSpy = vi.fn();
-    globalThis.ResizeObserver = vi.fn(() => ({ observe: observerSpy, disconnect: vi.fn() })) as unknown as typeof globalThis.ResizeObserver;
-
+  it('observes element via ref callback and reports size', () => {
     const { result } = renderHook(() => useResizeObserver());
-    // Before attaching ref, nothing observed
-    expect(result.current.width).toBe(0);
 
-    // Attach ref
     const div = document.createElement('div');
     act(() => {
       result.current.ref(div);
     });
 
-    const observer = (globalThis.ResizeObserver as unknown as { new(fn: (entries: unknown[]) => void): unknown }).prototype;
-    expect(observerSpy).toHaveBeenCalled();
-    // Trigger a resize entry
-    const entries = [{ contentRect: mockContentRect, target: div }];
-    // The observer callback should be called — but we need to call it directly
-    const observerInstance = globalThis.ResizeObserver;
-    if (observerInstance instanceof Function) {
-      const constructed = new (observerInstance as { new(fn: (entries: globalThis.ResizeObserverEntry[]) => void): unknown })((entries) => {
-        // This is the callback; we already spied on observe
-      });
-    }
-    globalThis.ResizeObserver = undefined as unknown as typeof globalThis.ResizeObserver;
+    expect(mockObserve).toHaveBeenCalledWith(div, expect.objectContaining({ box: 'content-box' }));
+    expect(result.current.width).toBe(0); // no entry yet
+
+    // Simulate a resize callback with a mock contentRect
+    const mockEntry = {
+      contentRect: {
+        width: 100,
+        height: 200,
+        x: 0,
+        y: 0,
+        top: 0,
+        right: 100,
+        bottom: 200,
+        left: 0,
+        toJSON: () => ({}),
+      } as DOMRectReadOnly,
+      target: div,
+    };
+    act(() => {
+      mockCallback?.([mockEntry as unknown as globalThis.ResizeObserverEntry]);
+    });
+
+    expect(result.current.width).toBe(100);
+    expect(result.current.height).toBe(200);
+    expect(result.current.entry).toEqual({
+      width: 100,
+      height: 200,
+      x: 0,
+      y: 0,
+      contentRect: mockEntry.contentRect,
+    });
   });
 
   it('can observe an explicit element', () => {
     const element = document.createElement('div');
-    const observerSpy = vi.fn();
-    globalThis.ResizeObserver = vi.fn(() => ({ observe: observerSpy, disconnect: vi.fn() })) as unknown as typeof globalThis.ResizeObserver;
-
     const { result } = renderHook(() => useResizeObserver({ target: element }));
-    expect(observerSpy).toHaveBeenCalledWith(element, expect.objectContaining({ box: 'content-box' }));
+    expect(mockObserve).toHaveBeenCalledWith(element, expect.objectContaining({ box: 'content-box' }));
+    expect(result.current.width).toBe(0);
   });
 
   it('can use target as RefObject', () => {
     const element = document.createElement('div');
     const refObj = { current: element };
-    const observerSpy = vi.fn();
-    globalThis.ResizeObserver = vi.fn(() => ({ observe: observerSpy, disconnect: vi.fn() })) as unknown as typeof globalThis.ResizeObserver;
-
-    const { result } = renderHook(() => useResizeObserver({ target: refObj }));
-    expect(observerSpy).toHaveBeenCalledWith(element, expect.anything());
+    // Cast to RefObject<Element | null> for testing
+    const { result } = renderHook(() =>
+      useResizeObserver({ target: refObj as React.RefObject<Element | null> }),
+    );
+    expect(mockObserve).toHaveBeenCalledWith(element, expect.anything());
+    expect(result.current.width).toBe(0);
   });
 
   it('disabled does not observe', () => {
     const element = document.createElement('div');
-    const observerSpy = vi.fn();
-    globalThis.ResizeObserver = vi.fn(() => ({ observe: observerSpy, disconnect: vi.fn() })) as unknown as typeof globalThis.ResizeObserver;
-
     const { result } = renderHook(() => useResizeObserver({ target: element, enabled: false }));
-    expect(observerSpy).not.toHaveBeenCalled();
+    expect(mockObserve).not.toHaveBeenCalled();
     expect(result.current.width).toBe(0);
   });
 
   it('allows custom box model', () => {
     const element = document.createElement('div');
-    const observerSpy = vi.fn();
-    globalThis.ResizeObserver = vi.fn(() => ({ observe: observerSpy, disconnect: vi.fn() })) as unknown as typeof globalThis.ResizeObserver;
-
     const { result } = renderHook(() => useResizeObserver({ target: element, box: 'border-box' }));
-    expect(observerSpy).toHaveBeenCalledWith(element, expect.objectContaining({ box: 'border-box' }));
+    expect(mockObserve).toHaveBeenCalledWith(element, expect.objectContaining({ box: 'border-box' }));
   });
 
   it('cleans up observer on unmount', () => {
     const element = document.createElement('div');
-    const disconnectSpy = vi.fn();
-    globalThis.ResizeObserver = vi.fn(() => ({ observe: vi.fn(), disconnect: disconnectSpy })) as unknown as typeof globalThis.ResizeObserver;
-
     const { unmount } = renderHook(() => useResizeObserver({ target: element }));
-    expect(disconnectSpy).not.toHaveBeenCalled();
+    expect(mockDisconnect).not.toHaveBeenCalled();
     unmount();
-    expect(disconnectSpy).toHaveBeenCalled();
+    expect(mockDisconnect).toHaveBeenCalled();
   });
 
-  it('ignores ref callback when explicit target given', () => {
-    const observerSpy = vi.fn();
-    globalThis.ResizeObserver = vi.fn(() => ({ observe: observerSpy, disconnect: vi.fn() })) as unknown as typeof globalThis.ResizeObserver;
+  it('ref callback does not trigger observation when explicit target given', () => {
+    const element = document.createElement('div');
+    const { result } = renderHook(() => useResizeObserver({ target: element }));
+    // Call ref with a different element - observe should still only be called once
+    act(() => {
+      result.current.ref(document.createElement('span'));
+    });
+    expect(mockObserve).toHaveBeenCalledTimes(1);
+    expect(mockObserve).toHaveBeenCalledWith(element, expect.anything());
+  });
 
-    const { result } = renderHook(() => useResizeObserver({ target: document.createElement('div') }));
-    // Ref should still be callable (for JSX)
-    result.current.ref(document.createElement('span'));
-    // But observerSpy should only be called once (for the explicit target)
-    expect(observerSpy).toHaveBeenCalledTimes(1);
+  it('disconnect is called when target changes', () => {
+    const element1 = document.createElement('div');
+    const element2 = document.createElement('div');
+    const { rerender } = renderHook(
+      ({ target }) => useResizeObserver({ target }),
+      { initialProps: { target: element1 } },
+    );
+    expect(mockObserve).toHaveBeenCalledWith(element1, expect.anything());
+    expect(mockDisconnect).not.toHaveBeenCalled();
+
+    rerender({ target: element2 });
+    expect(mockObserve).toHaveBeenCalledWith(element2, expect.anything());
+    expect(mockDisconnect).toHaveBeenCalled(); // should disconnect old observer
   });
 });

@@ -29,6 +29,15 @@ interface PresencePayload {
   id: string;
 }
 
+interface SpatialCommandPayload {
+  type: 'SET_LIGHTING' | 'SET_MATERIAL' | 'SET_CAMERA';
+  payload: Record<string, unknown>;
+  metadata: {
+    triggeredBy: 'ai-agent' | 'user';
+    agentPersona?: string;
+  };
+}
+
 type EventHandlers = {
   onAnnotationAdded?: (annotation: AnnotationPayload) => void;
   onAnnotationResolved?: (data: { projectId: string; annotationId: string }) => void;
@@ -36,6 +45,7 @@ type EventHandlers = {
   onPresenceJoined?: (data: PresencePayload) => void;
   onPresenceLeft?: (data: { id: string }) => void;
   onProjectUpdated?: (data: unknown) => void;
+  onSpatialCommand?: (command: SpatialCommandPayload) => void;
   onConnected?: () => void;
   onDisconnected?: () => void;
 };
@@ -87,11 +97,16 @@ export function useRealtime(projectId: string | null, handlers: EventHandlers = 
       handlers.onProjectUpdated?.(data);
     });
 
+    socket.on('spatial:command', (data: SpatialCommandPayload) => {
+      handlers.onSpatialCommand?.(data);
+    });
+
     return () => {
       if (socket.connected) {
         socket.emit('leave-project', projectId);
         socket.disconnect();
       }
+      socket.off('spatial:command');
       socketRef.current = null;
     };
   }, [projectId, token]);

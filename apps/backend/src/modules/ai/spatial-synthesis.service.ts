@@ -3,6 +3,10 @@ import { SpatialBrief, SpatialBriefSchema } from './spatial-brief.schema';
 import { StructuredOutputService } from './structured-output.service';
 import { VoiceService } from './voice.service';
 import { sanitizePrompt } from './llm.factory';
+import { RealtimeGateway } from '../realtime/realtime.gateway';
+import { ToolDefinition } from '../agents/decorators/tool-definition.decorator';
+import { ToolAuthorization } from '../agents/decorators/tool-authorization.decorator';
+import type { SpatialCommand } from '../realtime/realtime.gateway';
 
 /**
  * SpatialSynthesisService
@@ -19,7 +23,8 @@ export class SpatialSynthesisService {
 
   constructor(
     private readonly structuredOutputService: StructuredOutputService,
-    private readonly voiceService: VoiceService
+    private readonly voiceService: VoiceService,
+    private readonly realtimeGateway: RealtimeGateway
   ) {}
 
   /**
@@ -68,5 +73,32 @@ Return a structured brief with:
     this.logger.debug(`Audio transcribed (${transcription.length} chars) — synthesizing brief`);
 
     return this.synthesizeFromPrompt(transcription);
+  }
+
+  @ToolDefinition({
+    name: 'updateScene',
+    description: 'Update the 3D scene with new lighting, material, or camera settings. Use this to apply design changes to the project visualization.',
+    parameters: {
+      type: 'object',
+      properties: {
+        projectId: { type: 'string', description: 'The project ID to update' },
+        type: { type: 'string', description: 'The type of update: SET_LIGHTING, SET_MATERIAL, or SET_CAMERA' },
+        payload: { type: 'object', description: 'The payload containing the new values (e.g., { lightingPreset: "golden_hour" })' },
+      },
+      required: ['projectId', 'type', 'payload'],
+    },
+  })
+  @ToolAuthorization({ requiresAuth: true, requiresHitl: false })
+  async updateScene(params: { projectId: string; type: string; payload: Record<string, unknown> }) {
+    const command: SpatialCommand = {
+      type: params.type as SpatialCommand['type'],
+      payload: params.payload,
+      metadata: {
+        triggeredBy: 'ai-agent',
+        agentPersona: 'designer',
+      },
+    };
+    this.realtimeGateway.dispatchSpatialCommand(params.projectId, command);
+    return { success: true, message: `Scene updated: ${params.type}` };
   }
 }

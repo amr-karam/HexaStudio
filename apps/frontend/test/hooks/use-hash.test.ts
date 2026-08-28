@@ -4,8 +4,54 @@ import { useHash } from '@/hooks/useHash';
 
 describe('useHash', () => {
   const originalLocation = window.location;
+  const originalHistory = window.history;
 
   beforeEach(() => {
+    // Mock window.history with pushState that updates location.hash
+    const mockHistory = {
+      pushState: (data: unknown, title: string, url: string) => {
+        const hashMatch = url ? url.match(/#(.*)$/) : null;
+        if (true) {
+          const nextHash = hashMatch ? hashMatch[0] : '';
+          if (url !== undefined && url !== null) {
+            Object.defineProperty(window, 'location', {
+              value: {
+                ...Object.getOwnPropertyDescriptor(window, 'location')?.value,
+                hash: nextHash,
+              },
+              writable: true,
+              configurable: true,
+            });
+          }
+        }
+      },
+      replaceState: (data: unknown, title: string, url: string) => {
+        const hashMatch = url ? url.match(/#(.*)$/) : null;
+        if (true) {
+          const nextHash = hashMatch ? hashMatch[0] : '';
+          if (url !== undefined && url !== null) {
+            Object.defineProperty(window, 'location', {
+              value: {
+                ...Object.getOwnPropertyDescriptor(window, 'location')?.value,
+                hash: nextHash,
+              },
+              writable: true,
+              configurable: true,
+            });
+          }
+        }
+      },
+      length: 0,
+      back: () => {},
+      forward: () => {},
+      go: () => {},
+    };
+    Object.defineProperty(window, 'history', {
+      value: mockHistory,
+      writable: true,
+      configurable: true,
+    });
+
     Object.defineProperty(window, 'location', {
       value: {
         hash: '',
@@ -24,8 +70,6 @@ describe('useHash', () => {
       writable: true,
       configurable: true,
     });
-    vi.spyOn(history, 'pushState').mockImplementation(() => {});
-    vi.spyOn(history, 'replaceState').mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -34,6 +78,15 @@ describe('useHash', () => {
       writable: true,
       configurable: true,
     });
+    try {
+      Object.defineProperty(window, 'history', {
+        value: originalHistory,
+        writable: true,
+        configurable: true,
+      });
+    } catch {
+      // restore may fail if history is non-configurable
+    }
   });
 
   it('returns empty string when no hash', () => {
@@ -85,6 +138,7 @@ describe('useHash', () => {
     });
     const { result } = renderHook(() => useHash());
     act(() => result.current[1](''));
+    // pushState with empty string should clear the hash
     expect(window.location.hash).toBe('');
     expect(result.current[0]).toBe('');
   });
@@ -101,16 +155,12 @@ describe('useHash', () => {
     const onChange = vi.fn();
     const { result } = renderHook(() => useHash());
     result.current[2](onChange);
-    // simulate hashchange
-    Object.defineProperty(window, 'location', {
-      value: {
-        ...originalLocation,
-        hash: '#bar',
-      },
-      writable: true,
-      configurable: true,
+    // simulate hashchange by dispatching the event
+    act(() => {
+      act(() => {
+      window.dispatchEvent(new Event('hashchange'));
     });
-    window.dispatchEvent(new Event('hashchange'));
+    });
     expect(onChange).toHaveBeenCalledWith('bar');
     expect(result.current[0]).toBe('bar');
   });

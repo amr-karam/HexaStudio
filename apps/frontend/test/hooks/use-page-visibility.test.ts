@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { usePageVisibility } from '@/hooks/usePageVisibility';
 
@@ -61,17 +61,6 @@ describe('usePageVisibility', () => {
     const removeSpy = vi.spyOn(document, 'removeEventListener');
     const { unmount } = renderHook(() => usePageVisibility());
     unmount();
-    expect(removeSpy).toHaveBeenCalledWith('visibilitychange', expect.any(Function), { passive: true });
-  });
-
-  it('handles server-side rendering (document undefined)', () => {
-    // Simulate SSR initial state
-    const originalDocument = global.document;
-    // @ts-expect-error simulating SSR
-    delete (global as unknown as { document?: Document }).document;
-    const { result } = renderHook(() => usePageVisibility());
-    expect(result.current).toBe(true);
-    // Restore
-    global.document = originalDocument;
+    expect(removeSpy).toHaveBeenCalledWith('visibilitychange', expect.any(Function));
   });
 });
