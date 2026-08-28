@@ -72,6 +72,7 @@ function SidebarContent({
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuth();
+  const prefersReduced = useReducedMotion();
 
   const handleNavigation = (href: string) => {
     router.push(href);
@@ -116,10 +117,12 @@ function SidebarContent({
             {/* Rotating diamond accent — mirror of the preloader motif */}
             <motion.span
               aria-hidden="true"
-              animate={{ rotate: 360 }}
-              transition={{
-                repeat: Infinity, duration: 12, ease: 'linear',
-              }}
+              animate={prefersReduced ? {} : { rotate: 360 }}
+              transition={
+                prefersReduced
+                  ? undefined
+                  : { repeat: Infinity, duration: 12, ease: 'linear' }
+              }
               className="absolute -bottom-0.5 -right-0.5 block h-1.5 w-1.5 rotate-45 border border-sl-gold-hover/50 bg-sl-obsidian"
             />
           </span>
