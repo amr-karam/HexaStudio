@@ -1,0 +1,205 @@
+# Gitleaks Configuration for HEXA Studio
+# Detects hardcoded secrets, API keys, passwords, tokens, etc.
+# Run: gitleaks detect --config .gitleaks.toml --source .
+
+[general]
+# Exit code 1 when leaks found (for CI integration)
+exit-code = 1
+# Verbose output
+verbose = true
+# Redact secrets in output
+redact = true
+# Max decode depth for nested encoding
+max-decode-depth = 3
+
+# Allowlist paths that should never be scanned
+[allowlist]
+paths = [
+    # Lockfiles and generated files
+    "(.*\\.lock)$",
+    "package-lock\\.json$",
+    "pnpm-lock\\.yaml$",
+    "yarn\\.lock$",
+    "Cargo\\.lock$",
+    "composer\\.lock$",
+    # Build outputs
+    "dist/",
+    "build/",
+    ".next/",
+    "node_modules/",
+    ".turbo/",
+    ".vercel/",
+    # IDE and OS files
+    ".vscode/",
+    ".idea/",
+    "*.swp",
+    "*.swo",
+    "*~",
+    ".DS_Store",
+    # Documentation examples
+    "*.md",
+    "docs/",
+    "*.example",
+    # Test fixtures
+    "__fixtures__/",
+    "__mocks__/",
+    "test/fixtures/",
+    "tests/fixtures/",
+    # Generated types
+    "*.d.ts",
+    # Configuration templates
+    ".env.example",
+    ".env.template",
+    "*.env.example",
+    "*.env.template",
+    # Backup and temporary files
+    "*.bak",
+    "*.backup",
+    "*.tmp",
+    "temp/",
+    "tmp/",
+]
+
+# Allowlist specific rules by description (for false positives)
+[[allowlist]]
+description = "Example placeholder values in documentation"
+paths = ["*.md", "docs/"]
+
+# Custom rules for HEXA Studio specific patterns
+[[rules]]
+id = "hexa-gitlab-pat"
+description = "GitLab Personal Access Token"
+regex = """glpat-[a-zA-Z0-9\-_]{20,}"""
+tags = ["gitlab", "pat", "token"]
+entropy = 4.5
+
+[[rules]]
+id = "hexa-jwt-secret"
+description = "JWT Secret Key (RSA private key or HS256 secret)"
+regex = """(?i)(jwt[_-]?(secret|key|private)[_-]?(=|:|\s))(['\"]?[a-zA-Z0-9\-_=\/+\.]{32,}['\"]?)"""
+tags = ["jwt", "secret", "key"]
+entropy = 4.0
+
+[[rules]]
+id = "hexa-minio-credentials"
+description = "MinIO/S3 Access Key and Secret Key"
+regex = """(?i)(minio[_-]?(access[_-]?key|secret[_-]?key)[_-]?(=|:|\s))(['\"]?[a-zA-Z0-9]{20,}['\"]?)"""
+tags = ["minio", "s3", "credentials"]
+entropy = 4.0
+
+[[rules]]
+id = "hexa-database-password"
+description = "Database Connection String with Password"
+regex = """(?i)(postgres(?:ql)?|mysql|mongodb)(?:\+[a-z]+)?://[^:]+:([^@]{8,})@"""
+tags = ["database", "password", "connection-string"]
+entropy = 4.0
+
+[[rules]]
+id = "hexa-cloudflare-token"
+description = "Cloudflare API Token"
+regex = """(?i)(cloudflare[_-]?(api[_-]?token|token)[_-]?(=|:|\s))(['\"]?[a-zA-Z0-9\-_]{30,}['\"]?)"""
+tags = ["cloudflare", "api", "token"]
+entropy = 4.5
+
+[[rules]]
+id = "hexa-sentry-dsn"
+description = "Sentry DSN"
+regex = """https://[a-zA-Z0-9]{32}@[a-zA-Z0-9\.\-]+\.[a-z]{2,}/\d+"""
+tags = ["sentry", "dsn"]
+
+[[rules]]
+id = "hexa-gcp-service-account"
+description = "Google Cloud Service Account Key"
+regex = """("type":\s*"service_account")"""
+tags = ["gcp", "service-account", "key"]
+
+[[rules]]
+id = "hexa-aws-credentials"
+description = "AWS Access Key ID / Secret Access Key"
+regex = """(?i)(aws[_-]?(access[_-]?key[_-]?id|secret[_-]?access[_-]?key)[_-]?(=|:|\s))(['\"]?[A-Z0-9]{20}['\"]?)"""
+tags = ["aws", "credentials"]
+entropy = 4.0
+
+[[rules]]
+id = "hexa-openai-api-key"
+description = "OpenAI API Key"
+regex = """sk-[a-zA-Z0-9]{48,}"""
+tags = ["openai", "api-key"]
+entropy = 4.5
+
+[[rules]]
+id = "hexa-anthropic-api-key"
+description = "Anthropic/Claude API Key"
+regex = """sk-ant-[a-zA-Z0-9\-_]{95,}"""
+tags = ["anthropic", "claude", "api-key"]
+entropy = 4.5
+
+[[rules]]
+id = "hexa-gemini-api-key"
+description = "Google Gemini API Key"
+regex = """AIza[0-9A-Za-z\-_]{35}"""
+tags = ["gemini", "google", "api-key"]
+entropy = 4.5
+
+[[rules]]
+id = "hexa-generic-api-key"
+description = "Generic API Key Pattern (high entropy)"
+regex = """(?i)(api[_-]?key[_-]?(=|:|\s))(['\"]?[a-zA-Z0-9\-_\.]{32,}['\"]?)"""
+tags = ["api-key", "secret"]
+entropy = 4.5
+
+[[rules]]
+id = "hexa-generic-secret"
+description = "Generic Secret Pattern (high entropy)"
+regex = """(?i)(secret[_-]?(=|:|\s))(['\"]?[a-zA-Z0-9\-_\.]{32,}['\"]?)"""
+tags = ["secret"]
+entropy = 4.5
+
+[[rules]]
+id = "hexa-private-key"
+description = "Private Key (RSA, EC, etc.)"
+regex = """-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----"""
+tags = ["private-key", "ssh", "ssl"]
+
+[[rules]]
+id = "hexa-slack-token"
+description = "Slack Bot/User/OAuth Token"
+regex = """xox[baprs]-[a-zA-Z0-9\-]{10,48}"""
+tags = ["slack", "token"]
+entropy = 4.0
+
+[[rules]]
+id = "hexa-discord-token"
+description = "Discord Bot Token"
+regex = """(?i)(discord[_-]?(bot[_-]?)?token[_-]?(=|:|\s))(['\"]?[a-zA-Z0-9\.\-_]{59,}['\"]?)"""
+tags = ["discord", "token"]
+entropy = 4.5
+
+[[rules]]
+id = "hexa-stripe-key"
+description = "Stripe API Key"
+regex = """(?i)(stripe[_-]?(secret[_-]?)?key[_-]?(=|:|\s))(['\"]?(sk_live|sk_test|rk_live|rk_test)_[a-zA-Z0-9]{24,}['\"]?)"""
+tags = ["stripe", "api-key"]
+entropy = 4.5
+
+[[rules]]
+id = "hexa-paypal-secret"
+description = "PayPal Client Secret"
+regex = """(?i)(paypal[_-]?(client[_-]?)?secret[_-]?(=|:|\s))(['\"]?[a-zA-Z0-9\-_]{32,}['\"]?)"""
+tags = ["paypal", "secret"]
+entropy = 4.5
+
+# Built-in gitleaks rules are enabled by default
+# We only add custom rules above for HEXA-specific patterns
+# Use `gitleaks detect --config .gitleaks.toml --verbose` to test
+
+# Disable some noisy built-in rules that produce false positives
+[[rules]]
+id = "generic-api-key"
+description = "Disable generic high-entropy API key rule (too noisy)"
+disabled = true
+
+[[rules]]
+id = "generic-secret"
+description = "Disable generic high-entropy secret rule (too noisy)"
+disabled = true
