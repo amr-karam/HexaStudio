@@ -52,7 +52,7 @@ import { LocaleSwitcher } from '@/components/LocaleSwitcher';
 
 export function PortalTopBar() {
   const { user, toggleSidebar } = useAuth();
-  const { setCommandPaletteOpen, isSidebarCollapsed } = usePortalStore();
+  const { setCommandPaletteOpen } = usePortalStore();
   const { theme, toggleTheme } = usePortalTheme();
   const prefersReduced = useReducedMotion();
 

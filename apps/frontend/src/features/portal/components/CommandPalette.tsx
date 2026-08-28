@@ -278,13 +278,13 @@ export function CommandPalette() {
                 }}
                 onKeyDown={handleKeyDown}
                 placeholder="Type a command or search..."
-                className="flex-1 h-14 bg-transparent text-sl-alabaster text-sm placeholder:text-neutral-600 outline-none"
+                className="flex-1 h-14 bg-transparent text-sl-alabaster text-sm placeholder:text-sl-silver/70 outline-none"
                 aria-label="Search commands"
                 aria-controls="command-palette-list"
                 aria-activedescendant={selectedId}
                 autoComplete="off"
               />
-              <kbd className="text-[10px] font-mono text-neutral-600 border border-sl-silver/30 rounded px-1.5 py-0.5">
+              <kbd className="text-[10px] font-mono text-sl-silver/70 border border-sl-silver/30 rounded px-1.5 py-0.5">
                 ESC
               </kbd>
             </div>
@@ -294,15 +294,15 @@ export function CommandPalette() {
               {flatResults.length === 0 ? (
                 <div className="py-12 text-center">
                   <p className="text-sm text-sl-silver">No results found</p>
-                  <p className="text-xs text-neutral-600 mt-1">Try a different search term</p>
+                  <p className="text-xs text-sl-silver/70 mt-1">Try a different search term</p>
                 </div>
               ) : (
                 Array.from(groupedResults.entries()).map(([category, items]) => (
                   <div key={category} className="mb-2">
                     {/* Category header */}
                     <div className="flex items-center gap-2 px-3 py-1.5">
-                      <Icon name={CATEGORY_ICONS[category]} size={12} className="text-neutral-600" />
-                      <span className="text-[10px] uppercase tracking-widest text-neutral-600 font-mono">
+                      <Icon name={CATEGORY_ICONS[category]} size={12} className="text-sl-silver/70" />
+                      <span className="text-[10px] uppercase tracking-widest text-sl-silver/70 font-mono">
                         {CATEGORY_LABELS[category]}
                       </span>
                     </div>
@@ -324,23 +324,23 @@ export function CommandPalette() {
                             'flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-left transition-colors duration-150',
                             'focus-visible:outline-none',
                             isSelected
-                              ? 'bg-accent/10 text-sl-alabaster'
-                              : 'text-neutral-400 hover:bg-white/[0.03]',
+                              ? 'bg-sl-gold-subtle/30 text-sl-alabaster'
+                              : 'text-sl-warm-neutral hover:bg-sl-stone/50',
                           )}
                         >
                           <Icon
                             name={item.icon as IconName}
                             size={16}
-                            className={isSelected ? 'text-accent' : 'text-neutral-600'}
+                            className={isSelected ? 'text-sl-gold-hover' : 'text-sl-silver/70'}
                           />
                           <div className="min-w-0">
                             <p className="text-sm truncate">{item.label}</p>
                             {item.description && (
-                              <p className="text-xs text-neutral-600 truncate">{item.description}</p>
+                              <p className="text-xs text-sl-silver/70 truncate">{item.description}</p>
                             )}
                           </div>
                           {isSelected && (
-                            <Icon name="chevron-right" size={14} className="ml-auto text-accent shrink-0" />
+                            <Icon name="chevron-right" size={14} className="ml-auto text-sl-gold-hover shrink-0" />
                           )}
                         </button>
                       );
@@ -352,7 +352,7 @@ export function CommandPalette() {
 
             {/* Footer hint */}
             <div className="flex items-center justify-between px-4 py-2.5 border-t border-sl-silver/20">
-              <div className="flex items-center gap-3 text-[10px] text-neutral-600 font-mono">
+              <div className="flex items-center gap-3 text-[10px] text-sl-silver/70 font-mono">
                 <span className="flex items-center gap-1">
                   <kbd className="border border-sl-silver/30 rounded px-1 py-0.5">↑</kbd>
                   <kbd className="border border-sl-silver/30 rounded px-1 py-0.5">↓</kbd>
