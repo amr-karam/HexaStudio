@@ -27,51 +27,43 @@ const PortalThemeContext = createContext<PortalThemeContextType | null>(null);
 /* -------------------------------------------------------------------------- */
 
 const LIGHT_THEME_CSS = `
-:root,
 [data-theme="light"] {
-  --color-background: #FAFAF9;
-  --color-foreground: #1A1A1A;
-  --color-surface: #FFFFFF;
-  --color-surface-light: #F5F5F4;
-  --color-surface-dark: #E7E5E4;
-  --color-border: #E4E4E7;
-  --color-border-light: #D4D4D8;
-  --color-border-dark: #A1A1AA;
-  --color-neutral-50: #18181B;
-  --color-neutral-100: #27272A;
-  --color-neutral-200: #3F3F46;
-  --color-neutral-300: #52525B;
-  --color-neutral-400: #71717A;
-  --color-neutral-500: #A1A1AA;
-  --color-neutral-600: #D4D4D8;
-  --color-neutral-700: #E4E4E7;
-  --color-neutral-800: #F4F4F5;
-  --color-neutral-900: #FAFAF9;
-  --glass-bg: rgba(0, 0, 0, 0.02);
-  --glass-border: rgba(0, 0, 0, 0.06);
-  --glass-bg-hover: rgba(0, 0, 0, 0.04);
-  --glass-border-hover: rgba(0, 0, 0, 0.1);
+  /* Map the unified sl-* tokens to a warm parchment palette */
+  --sl-obsidian: 17 12% 6%;
+  --sl-void: 0 0% 100%;
+  --sl-stone: 210 8% 93%;
+  --sl-silver: 210 10% 88%;
+  --sl-mist: 210 8% 94%;
+  --sl-alabaster: 210 10% 12%;
+  --sl-warm-neutral: 30 18% 45%;
+  --sl-gold-hover: 38 55% 55%;
+  --sl-gold-subtle: 40 50% 90%;
+  --sl-gold-rgb: 196, 176, 145;
+  --sl-gold-25: 40 50% 92%;
 }
 
 [data-theme="light"] .glass {
-  background: var(--glass-bg);
+  background: rgba(17, 12%, 6%, 0.03);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid var(--glass-border);
+  border: 1px solid rgba(196, 176, 145, 0.12);
 }
 
 [data-theme="light"] .glass-hover:hover {
-  background: var(--glass-bg-hover);
-  border-color: var(--glass-border-hover);
+  background: rgba(17, 12%, 6%, 0.05);
 }
 
 [data-theme="light"] ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
+  background: var(--sl-stone);
 }
 
 [data-theme="light"] ::selection {
-  background-color: var(--color-gold-25);
-  color: #1A1A1A;
+  background-color: var(--sl-gold-25);
+  color: var(--sl-alabaster);
+}
+
+[data-theme="light"] .shadow-gold-ambient {
+  --tw-shadow: 0 0 60px -20px rgba(196, 176, 145, 0.14);
 }
 `;
 
