@@ -16,7 +16,7 @@ import { hoverLift } from '@/lib/motion/bento-tokens';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 export interface BentoCardProps {
-  children: ReactNode;
+  children?: ReactNode;
   className?: string;
   variant?: 'default' | 'elevated' | 'glass' | 'accent' | 'interactive' | 'skeleton';
   span?: '1x1' | '2x1' | '1x2' | '2x2';
