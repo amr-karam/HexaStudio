@@ -1006,6 +1006,28 @@ Restored full quality-gate compliance across all three workspaces. Two root caus
 - `react-test-renderer` unified at `19.0.0` (root + mobile) to match `react@19.0.0` — the RTR/React major-version mismatch hard-fails @testing-library/react-native's `ensurePeerDeps` check.
 - Long-term option (not applied): add `express` as explicit backend dependency and restore native `Response` typing.
 
+
+---
+
+## 2026-08-28 - Portal Test Coverage Wave (Document Vault + Finance Ledger) - COMPLETE
+
+**Status:** Implemented & verified (frontend gates green)
+
+### 1. Overview
+Closed the final documented portal coverage gap: DocumentCenterView and FinanceCenterView now have full regression coverage (11 new tests). All major portal surfaces (approvals, documents, finance) are now test-guarded.
+
+### 2. New Test Files
+- `apps/frontend/test/features/portal/document-center-view.test.tsx` (5 tests): live document hydration via the shared loader, folder-tab filtering with holdings count, search + empty-state reset, Knowledge Base surface toggle, upload validation (50MB limit, honest error toast).
+- `apps/frontend/test/features/portal/finance-center-view.test.tsx` (6 tests): empty ledger state, Odoo paymentState-to-status mapping (not_paid -> pending, paid -> paid), summary-card math (total/paid/outstanding), currency conversion (USD -> EUR at 0.92), Pay-button gating (pending/overdue only), settlement modal.
+
+### 3. Test-Craft Notes
+- Currency assertions use Intl.NumberFormat exact output ("$37,500.00") - locale-formatted amounts include cents.
+- Amount nodes live inside framer-motion spans; use function matchers with a tagName guard to avoid matching ancestors.
+- AnimatePresence mode="wait" delays swap-in; findBy* queries settle it.
+
+### 4. Verification
+- Frontend: lint 0/0 (+ design tokens + font preloads), typecheck 0 errors, 585/585 tests (83 files).
+
 ## 2026-08-27 (2) — BFF Auth Forwarding Gap Closed (Executive Brief) — COMPLETE
 
 **Status:** Implemented & verified (frontend gates green)
