@@ -98,27 +98,6 @@ function SidebarContent({
         className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sl-gold-hover to-transparent"
       />
 
-      {/* Collapse Toggle (desktop only) — top-right corner */}
-      {!isCollapsed && (
-        <div className="absolute top-3 right-2 z-30 lg:block hidden">
-          <button
-            onClick={() => usePortalStore.getState().toggleSidebarCollapsed()}
-            className={cn(
-              'flex items-center justify-center w-8 h-8 rounded-lg',
-              'text-sl-silver hover:text-sl-alabaster hover:bg-sl-stone',
-              'transition-colors duration-300',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-hover'
-            )}
-            aria-label="Collapse sidebar"
-            aria-expanded={false}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
-          </button>
-        </div>
-      )}
-
       {/* Brand */}
       <div className={cn(
         'relative flex items-center h-16 border-b border-sl-silver/20 transition-all duration-300',
