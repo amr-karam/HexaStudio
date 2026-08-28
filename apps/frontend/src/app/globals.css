@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "../styles/artisan-tokens.css";
+@import "../styles/bento-tokens.css";
 
 @theme {
   --color-background: #050505;

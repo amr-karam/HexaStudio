@@ -18,7 +18,7 @@ import { useReducedMotion } from '@/hooks/useReducedMotion';
 export interface BentoCardProps {
   children: ReactNode;
   className?: string;
-  variant?: 'default' | 'elevated' | 'glass' | 'accent' | 'interactive';
+  variant?: 'default' | 'elevated' | 'glass' | 'accent' | 'interactive' | 'skeleton';
   span?: '1x1' | '2x1' | '1x2' | '2x2';
   onClick?: () => void;
   loading?: boolean;
@@ -46,7 +46,7 @@ export function BentoCard({
     `bento-card--${variant}`,
     `bento-span-${span}`,
     {
-      'animate-bento-entrance': !prefersReduced,
+      'animate-bento-entrance': !prefersReduced && variant !== 'skeleton',
       'will-change-transform': isInteractive,
     },
     className
@@ -89,17 +89,27 @@ export function BentoCard({
       aria-label={ariaLabel}
       {...interactiveProps}
     >
-      {error && (
-        <div className="bento-card__error" role="alert">
-          {error}
-        </div>
-      )}
-      {loading ? (
-        <div className="bento-card__loading">
-          <div className="bento-card__shimmer" />
+      {variant === 'skeleton' ? (
+        <div className="space-y-3">
+          <div className="h-4 bg-surface-secondary rounded w-3/4" />
+          <div className="h-4 bg-surface-secondary rounded w-full" />
+          <div className="h-4 bg-surface-secondary rounded w-5/6" />
         </div>
       ) : (
-        children
+        <>
+          {loading ? (
+            <div className="bento-card__loading">
+              <div className="bento-card__shimmer" />
+            </div>
+          ) : (
+            children
+          )}
+          {error && (
+            <div className="bento-card__error" role="alert">
+              {error}
+            </div>
+          )}
+        </>
       )}
     </motion.div>
   );
