@@ -15,6 +15,8 @@ import type {
   PortalTask,
   PortalTeamMember,
   PortalProjectDetail,
+  PendingApproval,
+  ApprovalSentiment,
 } from './types';
 import type { PortalProject, PortalInvoice } from '@/features/odoo/api';
 
@@ -68,6 +70,8 @@ interface BackendPendingApproval {
   submittedAt: string;
   projectName: string;
   priority: string;
+  sentiment?: ApprovalSentiment;
+  urgencyScore?: number;
 }
 
 interface BackendNotificationSummaryItem {
@@ -323,8 +327,37 @@ export const portalApi = {
 
   /* -------- Approvals -------- */
 
-  getApprovals: (projectId: number): Promise<Response> =>
-    authenticatedFetch(`${API_BASE_URL}/api/approvals/project/${projectId}`),
+  /**
+   * Fetch the full approval registry for a project from the dedicated
+   * `GET /api/v1/approvals/project/:projectId` endpoint.
+   *
+   * Unlike the dashboard snapshot (which only returns an aggregate count),
+   * this returns the full approval objects enriched with real-time sentiment
+   * and urgency scores derived from the client-chat history for each item.
+   */
+  getApprovalsByProject: (projectId: number): Promise<PendingApproval[]> =>
+    authFetch<BackendPendingApproval[]>(
+      `${API_BASE_URL}/api/approvals/project/${projectId}`,
+      {},
+      'Failed to load project approvals',
+    ).then((items) =>
+      items.map((a) => ({
+        id: a.id,
+        title: a.title,
+        type: a.type as PendingApproval['type'],
+        phaseName: a.priority,
+        projectName: a.projectName,
+        submittedAt: a.submittedAt,
+        submittedBy: '',
+        status: 'pending' as const,
+        fileUrl: undefined,
+        amount: undefined,
+        currency: undefined,
+        sentiment: a.sentiment,
+        urgencyScore: a.urgencyScore,
+        auditTrail: undefined,
+      })),
+    ),
 
   /**
    * Record a client decision on a pending approval (audit-trailed).

@@ -72,6 +72,8 @@ export interface NotificationData {
   link?: string;
 }
 
+export type ApprovalSentiment = 'positive' | 'neutral' | 'frustrated' | 'urgent';
+
 export interface PendingApproval {
   id: string;
   title: string;
@@ -84,6 +86,10 @@ export interface PendingApproval {
   fileUrl?: string;
   amount?: number;
   currency?: string;
+  /** Real-time sentiment inferred from client chat history for this approval */
+  sentiment?: ApprovalSentiment;
+  /** Sentiment-driven urgency score (0–100); higher = needs faster sign-off */
+  urgencyScore?: number;
   auditTrail?: {
     timestamp: string;
     action: string;
