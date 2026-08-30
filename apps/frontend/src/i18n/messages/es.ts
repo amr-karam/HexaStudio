@@ -46,10 +46,10 @@ export const es: typeof en = {
     title: 'Nuestros Servicios',
     subtitle: 'Soluciones integrales de visualización arquitectónica',
     expertise: 'Experiencia',
-    heroHeading: 'Nuestros <span class="text-accent">Servicios.</span>',
+    heroHeading: 'Nuestros <span class="text-sl-gold-hover">Servicios.</span>',
     inquire: 'Consultar sobre {title}',
     ctaOverline: 'Iniciar un Proyecto',
-    ctaHeading: '¿Tiene una Visión? <span class="text-accent">Construyámosla.</span>',
+    ctaHeading: '¿Tiene una Visión? <span class="text-sl-gold-hover">Construyámosla.</span>',
     ctaDescription: 'Todo gran proyecto comienza con una conversación. Cuéntenos sobre su visión y le mostraremos cómo darle vida.',
     ctaButton: 'Ponerse en Contacto',
     items: {

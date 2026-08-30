@@ -31,7 +31,7 @@ function ArticleCard({ article, _index, isFeatured }: { article: Article; _index
         {/* Cover image — featured: 21:9 cinematic; standard: 16:10 editorial */}
         <div
           className={cn(
-            "bg-surface-light overflow-hidden relative mb-10 transition-all duration-1000 ease-out-expo",
+            "bg-sl-obsidian-light overflow-hidden relative mb-10 transition-all duration-1000 ease-out-expo",
             isFeatured ? "aspect-[21/9]" : "aspect-[16/10]"
           )}
         >
@@ -44,15 +44,15 @@ function ArticleCard({ article, _index, isFeatured }: { article: Article; _index
               className="object-cover opacity-60 group-hover:opacity-100 group-hover:scale-[1.04] transition-all duration-700 ease-out-expo"
             />
           ) : (
-            <div className="w-full h-full bg-surface-dark" />
+            <div className="w-full h-full bg-sl-obsidian-dark" />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60" />
 
           {/* Hover overlay — refined "Read →" with gold accent */}
           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-black/20 backdrop-blur-[2px]">
-            <span className="text-xs uppercase tracking-[0.4em] text-white font-mono px-5 py-2.5 border border-white/20 rounded-sm">
+            <span className="text-xs uppercase tracking-[0.4em] text-sl-alabaster font-mono px-5 py-2.5 border border-white/20 rounded-sm">
               Read
-              <span className="text-accent ml-1.5">→</span>
+              <span className="text-sl-gold-hover ml-1.5">→</span>
             </span>
           </div>
         </div>
@@ -60,11 +60,11 @@ function ArticleCard({ article, _index, isFeatured }: { article: Article; _index
         {/* Editorial metadata row */}
         <div className="flex items-center gap-4 mb-5">
           {article.category && (
-            <span className="text-[10px] md:text-xs uppercase tracking-[0.5em] text-accent font-mono">
+            <span className="text-[10px] md:text-xs uppercase tracking-[0.5em] text-sl-gold-hover font-mono">
               {article.category.name}
             </span>
           )}
-          <span className="text-[10px] md:text-xs uppercase tracking-widest text-neutral-600 font-mono">
+          <span className="text-[10px] md:text-xs uppercase tracking-widest text-sl-mist/60 font-mono">
             {article.readTime} min read
           </span>
           <span className="flex-1 h-px bg-border/30" aria-hidden="true" />
@@ -73,7 +73,7 @@ function ArticleCard({ article, _index, isFeatured }: { article: Article; _index
         {/* Title — serif, tight tracking, gold hover */}
         <h2
           className={cn(
-            "font-serif font-light text-foreground group-hover:text-accent transition-colors duration-700 leading-tight tracking-tighter",
+            "font-serif font-light text-sl-alabaster group-hover:text-sl-gold-hover transition-colors duration-700 leading-tight tracking-tighter",
             isFeatured ? "text-4xl md:text-5xl lg:text-6xl" : "text-xl md:text-2xl lg:text-3xl"
           )}
         >
@@ -85,15 +85,15 @@ function ArticleCard({ article, _index, isFeatured }: { article: Article; _index
           className={cn(
             "font-light leading-relaxed line-clamp-3 mt-5",
             isFeatured
-              ? "text-lg text-neutral-400 max-w-3xl"
-              : "text-sm text-neutral-500 max-w-xl"
+              ? "text-lg text-sl-mist/60 max-w-3xl"
+              : "text-sm text-sl-mist/60 max-w-xl"
           )}
         >
           {article.excerpt}
         </p>
 
         {/* Gold accent line — reveals on hover */}
-        <div className="h-[1px] w-0 group-hover:w-32 bg-accent transition-all duration-700 ease-out-expo mt-6" aria-hidden="true" />
+        <div className="h-[1px] w-0 group-hover:w-32 bg-sl-gold-subtle transition-all duration-700 ease-out-expo mt-6" aria-hidden="true" />
       </Link>
     </article>
   );
@@ -187,7 +187,7 @@ export function BlogPageContent({ articles, showHeader = true }: BlogPageContent
   const displayArticles = articles.length > 0 ? articles : FALLBACK_ARTICLES;
 
   return (
-    <div className="min-h-screen bg-background pt-32 pb-24 overflow-hidden">
+    <div className="min-h-screen bg-sl-void pt-32 pb-24 overflow-hidden">
       {/* Atmospheric depth */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div className="gradient-radial-gold" />
@@ -213,17 +213,17 @@ export function BlogPageContent({ articles, showHeader = true }: BlogPageContent
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={SPRING_TRANSITION}
-            className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-8 block font-mono"
+            className="text-xs uppercase tracking-[0.5em] text-sl-mist/60 mb-8 block font-mono"
           >
             Thoughts & Insights
           </motion.span>
 
           {/* Title — cinematic serif with reveal */}
-          <div className="text-5xl md:text-7xl lg:text-8xl font-serif font-light text-foreground leading-[0.88] tracking-tighter mb-10">
+          <div className="text-5xl md:text-7xl lg:text-8xl font-serif font-light text-sl-alabaster leading-[0.88] tracking-tighter mb-10">
             <TextReveal delay={0.1}>
               The Architectural
               <br />
-              <span className="italic text-accent" style={{ fontFamily: '"Playfair Display", serif' }}>
+              <span className="italic text-sl-gold-hover" style={{ fontFamily: '"Playfair Display", serif' }}>
                 Journal
               </span>
             </TextReveal>
@@ -234,7 +234,7 @@ export function BlogPageContent({ articles, showHeader = true }: BlogPageContent
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ ...SPRING_TRANSITION, delay: 0.1 }}
-            className="text-neutral-400 font-light text-lg md:text-xl leading-relaxed w-full max-w-3xl border-l-2 border-accent/30 pl-6"
+            className="text-sl-mist/60 font-light text-lg md:text-xl leading-relaxed w-full max-w-3xl border-l-2 border-sl-gold-subtle/30 pl-6"
           >
             Exploring the intersection of spatial design, real-time technology, and the
             emotional impact of architectural visualization.
@@ -278,7 +278,7 @@ export function BlogPageContent({ articles, showHeader = true }: BlogPageContent
 
                   {/* Drop cap lead-in for featured article */}
                   {isFeatured && idx === 0 && (
-                    <p className="mt-12 storybook-body font-light text-neutral-400 leading-relaxed max-w-3xl border-l-2 border-accent/30 pl-6">
+                    <p className="mt-12 storybook-body font-light text-sl-mist/60 leading-relaxed max-w-3xl border-l-2 border-sl-gold-subtle/30 pl-6">
                       <DropCap>
                         {displayArticles[0].excerpt.slice(0, 120)}...
                       </DropCap>
@@ -296,10 +296,10 @@ export function BlogPageContent({ articles, showHeader = true }: BlogPageContent
         </div>
 
         {/* ── Newsletter teaser ────────────────────────────────────────────────── */}
-        <div className="max-w-2xl border-t border-border/30 pt-12">
-          <p className="text-neutral-500 font-light text-sm leading-relaxed text-center">
+        <div className="max-w-2xl border-t border-sl-silver/20 pt-12">
+          <p className="text-sl-mist/60 font-light text-sm leading-relaxed text-center">
             New essays on spatial design and architectural visualization —{' '}
-            <span className="text-accent font-medium">delivered occasionally.</span>
+            <span className="text-sl-gold-hover font-medium">delivered occasionally.</span>
           </p>
         </div>
       </div>

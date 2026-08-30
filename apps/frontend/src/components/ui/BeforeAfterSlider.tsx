@@ -130,8 +130,8 @@ export function BeforeAfterSlider({
           loading="lazy"
         />
         <div className="absolute bottom-5 left-5 z-10 px-3.5 py-1.5 rounded-full bg-void/80 backdrop-blur-md border border-white/10 shadow-lg flex items-center gap-2 pointer-events-none">
-          <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" aria-hidden="true" />
-          <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-foreground font-light">
+          <span className="w-1.5 h-1.5 rounded-full bg-sl-gold-subtle animate-pulse" aria-hidden="true" />
+          <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-sl-alabaster font-light">
             {afterLabel}
           </span>
         </div>
@@ -163,7 +163,7 @@ export function BeforeAfterSlider({
 
       {/* Divider line & interactive handle */}
       <div
-        className="absolute top-0 bottom-0 w-0.5 bg-gradient-to-b from-accent-light via-white to-accent shadow-[0_0_12px_rgba(212,175,55,0.6)] cursor-ew-resize transition-opacity"
+        className="absolute top-0 bottom-0 w-0.5 bg-gradient-to-b from-sl-gold-hover via-white to-sl-gold-subtle shadow-[0_0_12px_rgba(212,175,55,0.6)] cursor-ew-resize transition-opacity"
         style={{ left: `${position}%` }}
       >
         {/* Handle */}
@@ -178,19 +178,19 @@ export function BeforeAfterSlider({
           onKeyDown={handleKeyDown}
           className={cn(
             'absolute -translate-x-1/2 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full',
-            'bg-obsidian/90 backdrop-blur-xl border border-accent/60 shadow-[0_0_20px_rgba(212,175,55,0.35)]',
+            'bg-obsidian/90 backdrop-blur-xl border border-sl-gold-subtle/60 shadow-[0_0_20px_rgba(212,175,55,0.35)]',
             'flex items-center justify-center cursor-ew-resize',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-void',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-void',
             'transition-transform duration-200 ease-out',
-            isDragging ? 'scale-115 border-accent shadow-[0_0_30px_rgba(212,175,55,0.6)]' : 'hover:scale-105'
+            isDragging ? 'scale-115 border-sl-gold-subtle shadow-[0_0_30px_rgba(212,175,55,0.6)]' : 'hover:scale-105'
           )}
         >
           {/* Subtle gold center diamond */}
-          <div className="w-1.5 h-1.5 rotate-45 bg-accent shadow-[0_0_6px_rgba(212,175,55,0.8)]" aria-hidden="true" />
+          <div className="w-1.5 h-1.5 rotate-45 bg-sl-gold-subtle shadow-[0_0_6px_rgba(212,175,55,0.8)]" aria-hidden="true" />
 
           {/* Left/Right chevron glyphs */}
           <svg
-            className="absolute inset-0 w-full h-full p-2.5 text-white/70"
+            className="absolute inset-0 w-full h-full p-2.5 text-sl-alabaster/70"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"

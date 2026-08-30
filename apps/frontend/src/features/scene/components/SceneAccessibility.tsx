@@ -46,7 +46,7 @@ export const SceneAccessibility = ({ hotspots = [], projectTitle }: SceneAccessi
                     handleHotspotActivate(hotspot.id);
                   }
                 }}
-                className="focus:ring-2 focus:ring-accent outline-none"
+                className="focus:ring-2 focus:ring-sl-gold-subtle outline-none"
               >
                 {hotspot.title}
               </button>

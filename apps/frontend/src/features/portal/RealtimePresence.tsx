@@ -11,7 +11,7 @@ export function RealtimePresence({ users, isConnected }: RealtimePresenceProps) 
   return (
     <div className="flex items-center gap-2">
       <div className={`h-2 w-2 rounded-full ${isConnected ? 'bg-emerald-500' : 'bg-red-500'}`} />
-      <span className="text-xs text-white/40">
+      <span className="text-xs text-sl-alabaster/40">
         {isConnected ? `${unique.length} online` : 'Disconnected'}
       </span>
       {unique.length > 0 && (
@@ -19,14 +19,14 @@ export function RealtimePresence({ users, isConnected }: RealtimePresenceProps) 
           {unique.slice(0, 5).map((user, i) => (
             <div
               key={i}
-              className="flex h-5 w-5 items-center justify-center rounded-full bg-accent/20 text-[9px] font-medium text-accent ring-1 ring-black"
+              className="flex h-5 w-5 items-center justify-center rounded-full bg-sl-gold-subtle/20 text-[9px] font-medium text-sl-gold-hover ring-1 ring-black"
               title={user}
             >
               {user.charAt(0).toUpperCase()}
             </div>
           ))}
           {unique.length > 5 && (
-            <div className="flex h-5 w-5 items-center justify-center rounded-full bg-white/10 text-[9px] text-white/40">
+            <div className="flex h-5 w-5 items-center justify-center rounded-full bg-white/10 text-[9px] text-sl-alabaster/40">
               +{unique.length - 5}
             </div>
           )}

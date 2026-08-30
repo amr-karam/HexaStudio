@@ -46,10 +46,10 @@ export const zh: typeof en = {
     title: '我们的服务',
     subtitle: '端到端建筑可视化解决方案',
     expertise: '专业知识',
-    heroHeading: '我们的<span class="text-accent">服务。</span>',
+    heroHeading: '我们的<span class="text-sl-gold-hover">服务。</span>',
     inquire: '咨询{title}',
     ctaOverline: '启动项目',
-    ctaHeading: '有愿景？<span class="text-accent">让我们一起构建。</span>',
+    ctaHeading: '有愿景？<span class="text-sl-gold-hover">让我们一起构建。</span>',
     ctaDescription: '每个伟大的项目都始于一次对话。告诉我们您的愿景，我们将向您展示如何将其变为现实。',
     ctaButton: '联系我们',
     items: {

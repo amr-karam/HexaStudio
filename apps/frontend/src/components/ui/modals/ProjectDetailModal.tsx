@@ -108,12 +108,12 @@ export const ProjectDetailModal = ({ isOpen, onClose, project }: ProjectDetailMo
             animate="visible"
             exit="exit"
             custom={reduced}
-            className="relative w-full max-w-7xl max-h-[90vh] overflow-hidden bg-surface border border-border/50 shadow-2xl"
+            className="relative w-full max-w-7xl max-h-[90vh] overflow-hidden bg-sl-obsidian border border-sl-silver/20 shadow-2xl"
           >
             <button
               ref={closeBtnRef}
               onClick={onClose}
-              className="absolute top-6 end-6 z-20 w-12 h-12 flex items-center justify-center bg-background/50 backdrop-blur-md border border-border/50 text-neutral-400 hover:text-foreground transition-colors duration-300 rounded-full"
+              className="absolute top-6 end-6 z-20 w-12 h-12 flex items-center justify-center bg-sl-void/50 backdrop-blur-md border border-sl-silver/20 text-sl-mist/60 hover:text-sl-alabaster transition-colors duration-300 rounded-full"
               aria-label="Close modal"
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -122,7 +122,7 @@ export const ProjectDetailModal = ({ isOpen, onClose, project }: ProjectDetailMo
             </button>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 h-full overflow-hidden">
-              <div className="relative lg:col-span-7 h-[50vh] lg:h-auto overflow-hidden bg-surface-light">
+              <div className="relative lg:col-span-7 h-[50vh] lg:h-auto overflow-hidden bg-sl-obsidian-light">
                 <motion.div
                   initial={reduced ? { scale: 1 } : { scale: 1.1 }}
                   animate={{ scale: 1 }}
@@ -141,23 +141,23 @@ export const ProjectDetailModal = ({ isOpen, onClose, project }: ProjectDetailMo
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={reduced ? REDUCED_TRANSITION : { delay: 0.3, duration: 1 }}
-                  className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent lg:bg-gradient-to-r lg:from-background/40 lg:via-transparent lg:to-transparent"
+                  className="absolute inset-0 bg-gradient-to-t from-sl-void/60 via-transparent to-transparent lg:bg-gradient-to-r lg:from-background/40 lg:via-transparent lg:to-transparent"
                 />
               </div>
 
-              <div className="lg:col-span-5 flex flex-col justify-center p-8 md:p-16 bg-surface gap-8">
+              <div className="lg:col-span-5 flex flex-col justify-center p-8 md:p-16 bg-sl-obsidian gap-8">
                 <div>
                     <div className="flex flex-col items-start gap-2">
                       <motion.span
                         initial={reduced ? { opacity: 1 } : { opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={reduced ? REDUCED_TRANSITION : { delay: 0.2, duration: 0.6, ease: makeTransition('entrance', 'component') }}
-                        className="text-[11px] uppercase tracking-[0.5em] text-accent font-mono"
+                        className="text-[11px] uppercase tracking-[0.5em] text-sl-gold-hover font-mono"
                       >
                         {project.category}
                       </motion.span>
                       {project.status && (
-                        <span className="text-[9px] uppercase tracking-widest text-accent px-2 py-0.5 border border-accent/30 rounded-full bg-accent/10 font-mono">
+                        <span className="text-[9px] uppercase tracking-widest text-sl-gold-hover px-2 py-0.5 border border-sl-gold-subtle/30 rounded-full bg-sl-gold-subtle/10 font-mono">
                           {project.status}
                         </span>
                       )}
@@ -165,7 +165,7 @@ export const ProjectDetailModal = ({ isOpen, onClose, project }: ProjectDetailMo
 
                   <div className="mt-6">
                      <TextReveal delay={reduced ? 0 : 0.3}>
-                       <h2 id="project-modal-title" className="text-4xl md:text-6xl font-serif font-light tracking-tight text-foreground leading-tight">
+                       <h2 id="project-modal-title" className="text-4xl md:text-6xl font-serif font-light tracking-tight text-sl-alabaster leading-tight">
                          {project.title}
                        </h2>
                      </TextReveal>
@@ -176,7 +176,7 @@ export const ProjectDetailModal = ({ isOpen, onClose, project }: ProjectDetailMo
                   initial={reduced ? { opacity: 1 } : { opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={reduced ? REDUCED_TRANSITION : { delay: 0.4, duration: 0.8, ease: makeTransition('entrance', 'component') }}
-                  className="text-base text-neutral-400 font-light leading-relaxed"
+                  className="text-base text-sl-mist/60 font-light leading-relaxed"
                 >
                   {project.description || `A stunning ${project.category.toLowerCase()} project that showcases expertise in architectural visualization — from conceptual design to photorealistic presentation, every detail crafted with precision.`}
                 </motion.p>

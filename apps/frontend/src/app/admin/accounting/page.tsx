@@ -53,11 +53,11 @@ const fmt = (n: number) => new Intl.NumberFormat('en-LB').format(n);
 
 const stateBadge = (state: string) => {
   const styles: Record<string, string> = {
-    draft: 'bg-neutral-800 text-neutral-400',
+    draft: 'bg-sl-obsidian text-sl-mist/60',
     posted: 'bg-emerald-900/30 text-emerald-400',
     cancel: 'bg-red-900/30 text-red-400',
   };
-  return styles[state] || 'bg-neutral-800 text-neutral-400';
+  return styles[state] || 'bg-sl-obsidian text-sl-mist/60';
 };
 
 const typeBadge = (type: string) => {
@@ -67,7 +67,7 @@ const typeBadge = (type: string) => {
     out_refund: 'bg-purple-900/30 text-purple-400',
     in_refund: 'bg-orange-900/30 text-orange-400',
   };
-  return styles[type] || 'bg-neutral-800 text-neutral-400';
+  return styles[type] || 'bg-sl-obsidian text-sl-mist/60';
 };
 
 const typeLabel = (type: string) => {
@@ -130,33 +130,33 @@ export default function AdminAccountingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground px-8 py-16">
+    <div className="min-h-screen bg-sl-void text-sl-alabaster px-8 py-16">
       <div className="w-full">
         <div className="mb-12">
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-[10px] uppercase tracking-[0.5em] text-neutral-500 mb-4 block font-mono"
+            className="text-[10px] uppercase tracking-[0.5em] text-sl-mist/60 mb-4 block font-mono"
           >
             Admin / Accounting
           </motion.span>
           <div className="text-4xl md:text-6xl font-serif font-light tracking-tighter">
             <TextReveal delay={0.1}>
-              Accounting <span className="italic text-accent">Dashboard</span>
+              Accounting <span className="italic text-sl-gold-hover">Dashboard</span>
             </TextReveal>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 mb-10 border-b border-border/50">
+        <div className="flex gap-1 mb-10 border-b border-sl-silver/20">
           {tabs.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
               className={`px-5 py-3 text-sm font-light transition-colors border-b-2 -mb-px ${
                 activeTab === tab.key
-                  ? 'border-accent text-accent'
-                  : 'border-transparent text-neutral-500 hover:text-neutral-300'
+                  ? 'border-sl-gold-subtle text-sl-gold-hover'
+                  : 'border-transparent text-sl-mist/60 hover:text-sl-mist/80'
               }`}
             >
               {tab.label}
@@ -168,7 +168,7 @@ export default function AdminAccountingPage() {
         {activeTab === 'overview' && (
           <div className="space-y-8">
             {dashLoading ? (
-              <div className="text-neutral-500 font-light">Loading...</div>
+              <div className="text-sl-mist/60 font-light">Loading...</div>
             ) : dashboard && (
               <>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -182,9 +182,9 @@ export default function AdminAccountingPage() {
                       key={card.label}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="p-6 bg-surface border border-border/50"
+                      className="p-6 bg-sl-obsidian border border-sl-silver/20"
                     >
-                      <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-500 font-mono block mb-3">
+                      <span className="text-[10px] uppercase tracking-[0.3em] text-sl-mist/60 font-mono block mb-3">
                         {card.label}
                       </span>
                       <span className={`text-2xl font-light ${card.color}`}>{card.value}</span>
@@ -201,11 +201,11 @@ export default function AdminAccountingPage() {
                     { label: 'Journals', value: dashboard.journal_count },
                     { label: 'Taxes', value: dashboard.tax_count },
                   ].map((stat) => (
-                    <div key={stat.label} className="p-4 bg-surface border border-border/30">
-                      <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-600 font-mono block mb-2">
+                    <div key={stat.label} className="p-4 bg-sl-obsidian border border-sl-silver/20">
+                      <span className="text-[10px] uppercase tracking-[0.3em] text-sl-mist/60 font-mono block mb-2">
                         {stat.label}
                       </span>
-                      <span className="text-xl font-light text-foreground">{stat.value}</span>
+                      <span className="text-xl font-light text-sl-alabaster">{stat.value}</span>
                     </div>
                   ))}
                 </div>
@@ -219,19 +219,19 @@ export default function AdminAccountingPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border/50">
-                  <th className="text-left py-3 px-4 text-[10px] uppercase tracking-[0.3em] text-neutral-500 font-mono">Code</th>
-                  <th className="text-left py-3 px-4 text-[10px] uppercase tracking-[0.3em] text-neutral-500 font-mono">Name</th>
-                  <th className="text-left py-3 px-4 text-[10px] uppercase tracking-[0.3em] text-neutral-500 font-mono">Type</th>
+                <tr className="border-b border-sl-silver/20">
+                  <th className="text-left py-3 px-4 text-[10px] uppercase tracking-[0.3em] text-sl-mist/60 font-mono">Code</th>
+                  <th className="text-left py-3 px-4 text-[10px] uppercase tracking-[0.3em] text-sl-mist/60 font-mono">Name</th>
+                  <th className="text-left py-3 px-4 text-[10px] uppercase tracking-[0.3em] text-sl-mist/60 font-mono">Type</th>
                 </tr>
               </thead>
               <tbody>
                 {accounts.slice(0, 100).map((account) => (
-                  <tr key={account.id} className="border-b border-border/20 hover:bg-surface transition-colors">
-                    <td className="py-3 px-4 font-mono text-accent">{account.code}</td>
-                    <td className="py-3 px-4 font-light text-neutral-300">{account.name}</td>
+                  <tr key={account.id} className="border-b border-sl-silver/20 hover:bg-sl-obsidian transition-colors">
+                    <td className="py-3 px-4 font-mono text-sl-gold-hover">{account.code}</td>
+                    <td className="py-3 px-4 font-light text-sl-mist/80">{account.name}</td>
                     <td className="py-3 px-4">
-                      <span className="px-2 py-1 bg-neutral-800/50 rounded text-[10px] font-mono text-neutral-400">
+                      <span className="px-2 py-1 bg-sl-obsidian/50 rounded text-[10px] font-mono text-sl-mist/60">
                         {account.account_type}
                       </span>
                     </td>
@@ -240,7 +240,7 @@ export default function AdminAccountingPage() {
               </tbody>
             </table>
             {accounts.length > 100 && (
-              <p className="text-center py-4 text-neutral-500 text-sm font-light">
+              <p className="text-center py-4 text-sl-mist/60 text-sm font-light">
                 Showing 100 of {accounts.length} accounts
               </p>
             )}
@@ -252,27 +252,27 @@ export default function AdminAccountingPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border/50">
-                  <th className="text-left py-3 px-4 text-[10px] uppercase tracking-[0.3em] text-neutral-500 font-mono">Number</th>
-                  <th className="text-left py-3 px-4 text-[10px] uppercase tracking-[0.3em] text-neutral-500 font-mono">Date</th>
-                  <th className="text-left py-3 px-4 text-[10px] uppercase tracking-[0.3em] text-neutral-500 font-mono">Partner</th>
-                  <th className="text-left py-3 px-4 text-[10px] uppercase tracking-[0.3em] text-neutral-500 font-mono">Type</th>
-                  <th className="text-right py-3 px-4 text-[10px] uppercase tracking-[0.3em] text-neutral-500 font-mono">Amount</th>
-                  <th className="text-left py-3 px-4 text-[10px] uppercase tracking-[0.3em] text-neutral-500 font-mono">State</th>
+                <tr className="border-b border-sl-silver/20">
+                  <th className="text-left py-3 px-4 text-[10px] uppercase tracking-[0.3em] text-sl-mist/60 font-mono">Number</th>
+                  <th className="text-left py-3 px-4 text-[10px] uppercase tracking-[0.3em] text-sl-mist/60 font-mono">Date</th>
+                  <th className="text-left py-3 px-4 text-[10px] uppercase tracking-[0.3em] text-sl-mist/60 font-mono">Partner</th>
+                  <th className="text-left py-3 px-4 text-[10px] uppercase tracking-[0.3em] text-sl-mist/60 font-mono">Type</th>
+                  <th className="text-right py-3 px-4 text-[10px] uppercase tracking-[0.3em] text-sl-mist/60 font-mono">Amount</th>
+                  <th className="text-left py-3 px-4 text-[10px] uppercase tracking-[0.3em] text-sl-mist/60 font-mono">State</th>
                 </tr>
               </thead>
               <tbody>
                 {invoices.map((inv) => (
-                  <tr key={inv.id} className="border-b border-border/20 hover:bg-surface transition-colors">
-                    <td className="py-3 px-4 font-mono text-foreground">{inv.name}</td>
-                    <td className="py-3 px-4 font-light text-neutral-400">{inv.invoice_date || '—'}</td>
-                    <td className="py-3 px-4 font-light text-neutral-300">{inv.partner_id?.[1] || '—'}</td>
+                  <tr key={inv.id} className="border-b border-sl-silver/20 hover:bg-sl-obsidian transition-colors">
+                    <td className="py-3 px-4 font-mono text-sl-alabaster">{inv.name}</td>
+                    <td className="py-3 px-4 font-light text-sl-mist/60">{inv.invoice_date || '—'}</td>
+                    <td className="py-3 px-4 font-light text-sl-mist/80">{inv.partner_id?.[1] || '—'}</td>
                     <td className="py-3 px-4">
                       <span className={`px-2 py-1 rounded text-[10px] font-mono ${typeBadge(inv.move_type)}`}>
                         {typeLabel(inv.move_type)}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-right font-light text-foreground">{fmt(inv.amount_total)}</td>
+                    <td className="py-3 px-4 text-right font-light text-sl-alabaster">{fmt(inv.amount_total)}</td>
                     <td className="py-3 px-4">
                       <span className={`px-2 py-1 rounded text-[10px] font-mono ${stateBadge(inv.state)}`}>
                         {inv.state}
@@ -293,11 +293,11 @@ export default function AdminAccountingPage() {
                 key={journal.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="p-6 bg-surface border border-border/50 hover:border-accent/30 transition-colors"
+                className="p-6 bg-sl-obsidian border border-sl-silver/20 hover:border-sl-gold-subtle/30 transition-colors"
               >
-                <span className="text-xs font-mono text-accent block mb-2">{journal.code}</span>
-                <h3 className="text-lg font-light text-foreground mb-1">{journal.name}</h3>
-                <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-500 font-mono">
+                <span className="text-xs font-mono text-sl-gold-hover block mb-2">{journal.code}</span>
+                <h3 className="text-lg font-light text-sl-alabaster mb-1">{journal.name}</h3>
+                <span className="text-[10px] uppercase tracking-[0.3em] text-sl-mist/60 font-mono">
                   {journal.type}
                 </span>
               </motion.div>

@@ -27,9 +27,9 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
   if (!project) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-sl-void flex items-center justify-center">
         <div className="text-center">
-          <p className="text-neutral-500 mb-4">Project not found.</p>
+          <p className="text-sl-mist/60 mb-4">Project not found.</p>
           <Link href="/projects">
             <Button variant="outline">Back to Projects</Button>
           </Link>
@@ -66,7 +66,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-sl-void">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: sanitizeJsonLd(jsonLd) }}

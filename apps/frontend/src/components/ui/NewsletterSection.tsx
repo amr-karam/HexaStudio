@@ -26,12 +26,12 @@ const childVariants = {
 
 export function NewsletterSection() {
   return (
-    <section className="relative px-8 md:px-16 py-32 border-t border-border/50 overflow-hidden bg-background">
+    <section className="relative px-8 md:px-16 py-32 border-t border-sl-silver/20 overflow-hidden bg-sl-void">
       {/* Ambient gold glow */}
       <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
 
       {/* Decorative top gold line */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-sl-gold-subtle/40 to-transparent" />
 
       <motion.div
         variants={containerVariants}
@@ -42,20 +42,20 @@ export function NewsletterSection() {
       >
         <motion.span
           variants={childVariants}
-          className="text-[10px] uppercase tracking-[0.5em] text-neutral-500 mb-8 block font-mono"
+          className="text-[10px] uppercase tracking-[0.5em] text-sl-mist/60 mb-8 block font-mono"
         >
           Stay Informed
         </motion.span>
 
         <motion.div variants={childVariants} className="overflow-hidden mb-6">
-          <h2 className="text-4xl md:text-6xl font-serif font-light text-foreground leading-tight">
-            Join the <span className="italic text-accent">Inner Circle.</span>
+          <h2 className="text-4xl md:text-6xl font-serif font-light text-sl-alabaster leading-tight">
+            Join the <span className="italic text-sl-gold-hover">Inner Circle.</span>
           </h2>
         </motion.div>
 
         <motion.p
           variants={childVariants}
-          className="text-base text-neutral-400 font-light leading-relaxed mb-12 w-full max-w-lg mx-auto"
+          className="text-base text-sl-mist/60 font-light leading-relaxed mb-12 w-full max-w-lg mx-auto"
         >
           Be the first to receive exclusive architectural insights, project reveals, and
           behind-the-scenes narratives from our studio.
@@ -68,13 +68,13 @@ export function NewsletterSection() {
           <div className="relative flex-1">
             <Input
               placeholder="Enter your email"
-              className="flex-1 transition-all duration-500 focus:ring-1 focus:ring-accent/30 focus:border-accent/50"
+              className="flex-1 transition-all duration-500 focus:ring-1 focus:ring-sl-gold-subtle/30 focus:border-sl-gold-subtle/50"
             />
-            <div className="absolute bottom-0 left-0 h-px bg-accent/0 group-focus-within:bg-accent/50 transition-all duration-700 w-0 group-focus-within:w-full" />
+            <div className="absolute bottom-0 left-0 h-px bg-sl-gold-subtle/0 group-focus-within:bg-sl-gold-subtle/50 transition-all duration-700 w-0 group-focus-within:w-full" />
           </div>
           <Button variant="primary" size="lg" className="group relative overflow-hidden">
             <span className="relative z-10">Subscribe</span>
-            <span className="absolute inset-0 bg-accent/20 translate-y-full group-hover:translate-y-0 transition-transform duration-700 ease-out" />
+            <span className="absolute inset-0 bg-sl-gold-subtle/20 translate-y-full group-hover:translate-y-0 transition-transform duration-700 ease-out" />
           </Button>
         </motion.div>
 
@@ -82,16 +82,16 @@ export function NewsletterSection() {
           variants={childVariants}
           className="mt-10 flex items-center justify-center gap-4"
         >
-          <div className="h-px w-8 bg-accent/20" />
-          <p className="text-neutral-600 text-[10px] uppercase tracking-[0.3em] font-mono">
+          <div className="h-px w-8 bg-sl-gold-subtle/20" />
+          <p className="text-sl-mist/60 text-[10px] uppercase tracking-[0.3em] font-mono">
             No spam. Only curated architectural insights.
           </p>
-          <div className="h-px w-8 bg-accent/20" />
+          <div className="h-px w-8 bg-sl-gold-subtle/20" />
         </motion.div>
       </motion.div>
 
       {/* Decorative bottom gold line */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" />
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-sl-gold-subtle/40 to-transparent" />
     </section>
   );
 }

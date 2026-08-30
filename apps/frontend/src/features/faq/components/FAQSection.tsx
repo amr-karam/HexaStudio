@@ -41,15 +41,15 @@ export const FAQSection = ({ faqs: serverFaqs }: FAQSectionProps = {}) => {
   }, []);
 
   return (
-    <section className="px-8 md:px-16 py-32 bg-surface border-t border-border/50">
+    <section className="px-8 md:px-16 py-32 bg-sl-obsidian border-t border-sl-silver/20">
       <RadialGlow color="#D4AF37" size={400} top="-100px" right="-100px" blur={50} opacity={0.08} />
       <div className="max-w-4xl mx-auto">
         <ScrollFadeIn className="mb-20 text-center">
-          <span className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block">
+          <span className="text-xs uppercase tracking-[0.5em] text-sl-mist/60 mb-6 block">
             {t('footer.legal')}
           </span>
-          <h2 className="text-5xl md:text-7xl font-serif font-light tracking-tight text-foreground leading-tight">
-            Frequently Asked <span className="italic text-accent">Questions</span>
+          <h2 className="text-5xl md:text-7xl font-serif font-light tracking-tight text-sl-alabaster leading-tight">
+            Frequently Asked <span className="italic text-sl-gold-hover">Questions</span>
           </h2>
         </ScrollFadeIn>
 
@@ -58,16 +58,16 @@ export const FAQSection = ({ faqs: serverFaqs }: FAQSectionProps = {}) => {
             const isOpen = openIndex === idx;
             return (
               <ScrollFadeIn key={idx} delay={idx * 0.05}>
-                <div className="border border-border/50 rounded-xl overflow-hidden hover:border-accent/20 transition-colors duration-300">
+                <div className="border border-sl-silver/20 rounded-xl overflow-hidden hover:border-sl-gold-subtle/20 transition-colors duration-300">
                   <button
                     onClick={() => toggleFaq(idx)}
                     aria-expanded={isOpen}
                     className="w-full flex items-center justify-between px-6 py-5 text-start"
                   >
-                    <span className="text-base font-medium text-foreground pe-4">{faq.question}</span>
+                    <span className="text-base font-medium text-sl-alabaster pe-4">{faq.question}</span>
                     <span
                       className={cn(
-                        'text-accent text-xl flex-shrink-0 transition-transform duration-300',
+                        'text-sl-gold-hover text-xl flex-shrink-0 transition-transform duration-300',
                         isOpen && 'rotate-45',
                       )}
                       aria-hidden="true"
@@ -85,7 +85,7 @@ export const FAQSection = ({ faqs: serverFaqs }: FAQSectionProps = {}) => {
                     }}
                   >
                     <div className="overflow-hidden">
-                      <div className="px-6 pb-5 text-sm text-neutral-400 leading-relaxed">
+                      <div className="px-6 pb-5 text-sm text-sl-mist/60 leading-relaxed">
                         {faq.answer}
                       </div>
                     </div>

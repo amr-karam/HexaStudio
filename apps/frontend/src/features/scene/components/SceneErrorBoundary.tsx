@@ -64,7 +64,7 @@ export class SceneErrorBoundary extends React.Component<
       const { fallbackImage, title, description } = this.props;
 
       return (
-        <div role="alert" className="absolute inset-0 -z-10 flex items-center justify-center bg-background">
+        <div role="alert" className="absolute inset-0 -z-10 flex items-center justify-center bg-sl-void">
           {/* Background cover image (if provided). */}
           {fallbackImage && (
             <div
@@ -77,7 +77,7 @@ export class SceneErrorBoundary extends React.Component<
             {/* Icon / illustration. */}
             <div className="w-14 h-14 mx-auto mb-5 border border-white/10 flex items-center justify-center rounded-lg bg-white/5 backdrop-blur-sm">
               <svg
-                className="w-7 h-7 text-accent"
+                className="w-7 h-7 text-sl-gold-hover"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -92,12 +92,12 @@ export class SceneErrorBoundary extends React.Component<
             </div>
 
             {/* Title. */}
-            <h3 className="text-white/80 text-sm uppercase tracking-widest mb-2">
+            <h3 className="text-sl-alabaster/80 text-sm uppercase tracking-widest mb-2">
               {title || '3D Scene Unavailable'}
             </h3>
 
             {/* Description. */}
-            <p className="text-neutral-400 text-xs leading-relaxed mb-6">
+            <p className="text-sl-mist/60 text-xs leading-relaxed mb-6">
               {description ||
                 'The 3D visualization could not be loaded. This may be due to browser compatibility or network issues.'}
             </p>
@@ -106,13 +106,13 @@ export class SceneErrorBoundary extends React.Component<
             <div className="flex items-center justify-center gap-3">
               <button
                 onClick={() => window.location.reload()}
-                className="rounded-lg bg-accent px-5 py-2.5 text-xs font-medium text-black transition-colors hover:bg-accent-dark"
+                className="rounded-lg bg-sl-gold-subtle px-5 py-2.5 text-xs font-medium text-black transition-colors hover:bg-sl-gold-subtle-dark"
               >
                 Try Again
               </button>
               <Link
                 href="/"
-                className="rounded-lg border border-white/10 bg-white/5 px-5 py-2.5 text-xs font-medium text-white/60 transition-colors hover:bg-white/10 hover:text-white/80"
+                className="rounded-lg border border-white/10 bg-white/5 px-5 py-2.5 text-xs font-medium text-sl-alabaster/60 transition-colors hover:bg-white/10 hover:text-sl-alabaster/80"
               >
                 Back to Home
               </Link>

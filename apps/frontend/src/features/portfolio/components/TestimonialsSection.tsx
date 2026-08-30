@@ -67,20 +67,20 @@ const TestimonialCard = ({
       viewport={{ once: true, margin: '-60px' }}
       className="group relative"
     >
-      <div className="relative flex flex-col h-full p-8 md:p-10 bg-gradient-to-br from-surface/40 via-surface/20 to-surface/30 backdrop-blur-md border border-border/30 group-hover:border-gold/30 transition-all duration-700">
+      <div className="relative flex flex-col h-full p-8 md:p-10 bg-gradient-to-br from-surface/40 via-surface/20 to-surface/30 backdrop-blur-md border border-sl-silver/20 group-hover:border-sl-gold-subtle/30 transition-all duration-700">
         
         {/* Decorative quote mark — large, gold */}
-        <div className="absolute top-4 right-6 text-[80px] font-serif italic text-gold/[0.06] leading-none select-none pointer-events-none group-hover:text-gold/[0.12] transition-colors duration-700">
+        <div className="absolute top-4 right-6 text-[80px] font-serif italic text-sl-gold-hover/[0.06] leading-none select-none pointer-events-none group-hover:text-sl-gold-hover/[0.12] transition-colors duration-700">
           &ldquo;
         </div>
         
         {/* Corner accents */}
-        <div className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 border-gold/20 group-hover:border-gold/50 transition-colors duration-500" />
-        <div className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 border-gold/20 group-hover:border-gold/50 transition-colors duration-500" />
+        <div className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 border-sl-gold-subtle/20 group-hover:border-sl-gold-subtle/50 transition-colors duration-500" />
+        <div className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 border-sl-gold-subtle/20 group-hover:border-sl-gold-subtle/50 transition-colors duration-500" />
         
         {/* Quote icon */}
         <div className="mb-6">
-          <svg className="w-8 h-8 text-gold/40 group-hover:text-gold/70 transition-colors duration-500" viewBox="0 0 24 24" fill="currentColor">
+          <svg className="w-8 h-8 text-sl-gold-hover/40 group-hover:text-sl-gold-hover/70 transition-colors duration-500" viewBox="0 0 24 24" fill="currentColor">
             <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
           </svg>
         </div>
@@ -91,27 +91,27 @@ const TestimonialCard = ({
         </blockquote>
 
         {/* Author section with avatar */}
-        <div className="flex items-center gap-4 pt-6 border-t border-border/20 group-hover:border-gold/20 transition-colors duration-500">
+        <div className="flex items-center gap-4 pt-6 border-t border-sl-silver/20 group-hover:border-sl-gold-subtle/20 transition-colors duration-500">
           {/* Avatar circle with initials */}
-          <div className="relative w-12 h-12 rounded-full bg-gradient-to-br from-gold/30 to-gold/10 border border-gold/30 flex items-center justify-center group-hover:border-gold/60 group-hover:scale-110 transition-all duration-500">
-            <span className="font-mono text-xs text-gold/80 group-hover:text-gold tracking-wider">
+          <div className="relative w-12 h-12 rounded-full bg-gradient-to-br from-gold/30 to-gold/10 border border-sl-gold-subtle/30 flex items-center justify-center group-hover:border-sl-gold-subtle/60 group-hover:scale-110 transition-all duration-500">
+            <span className="font-mono text-xs text-sl-gold-hover/80 group-hover:text-sl-gold-hover tracking-wider">
               {initials}
             </span>
-            <div className="absolute inset-0 rounded-full bg-gold/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 rounded-full bg-sl-gold-subtle/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           </div>
           
           <div className="flex-1">
-            <p className="text-sm font-medium text-foreground tracking-wider uppercase group-hover:text-gold/90 transition-colors duration-500">
+            <p className="text-sm font-medium text-sl-alabaster tracking-wider uppercase group-hover:text-sl-gold-hover/90 transition-colors duration-500">
               {author}
             </p>
-            <p className="text-[10px] text-gold/50 font-mono tracking-[0.2em] mt-0.5">
+            <p className="text-[10px] text-sl-gold-hover/50 font-mono tracking-[0.2em] mt-0.5">
               {role}
             </p>
           </div>
         </div>
 
         {/* Animated bottom accent line */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-px bg-gold/60 group-hover:w-3/4 transition-all duration-1000 ease-out" />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-px bg-sl-gold-subtle/60 group-hover:w-3/4 transition-all duration-1000 ease-out" />
         
         {/* Subtle top gradient on hover */}
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
@@ -135,10 +135,10 @@ export const TestimonialsSection = () => {
   }));
 
   return (
-    <section className="relative px-8 md:px-16 py-32 bg-void-deep border-y border-border/20 overflow-hidden">
+    <section className="relative px-8 md:px-16 py-32 bg-void-deep border-y border-sl-silver/20 overflow-hidden">
       {/* Layered ambient glows */}
-      <div className="absolute top-1/3 left-1/4 w-[400px] h-[400px] bg-gold/[0.015] rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-1/3 right-1/4 w-[350px] h-[350px] bg-gold/[0.01] rounded-full blur-[80px] pointer-events-none" />
+      <div className="absolute top-1/3 left-1/4 w-[400px] h-[400px] bg-sl-gold-subtle/[0.015] rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-1/3 right-1/4 w-[350px] h-[350px] bg-sl-gold-subtle/[0.01] rounded-full blur-[80px] pointer-events-none" />
       
       <div className="absolute top-12 left-8 md:left-16 z-20">
         <ChapterMarker index={4} title="Proof" />
@@ -153,7 +153,7 @@ export const TestimonialsSection = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={SPRING_TRANSITION}
-            className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
+            className="text-xs uppercase tracking-[0.5em] text-sl-mist/60 mb-6 block font-mono"
           >
             {t('home.stats.clients')}
           </motion.span>
@@ -161,7 +161,7 @@ export const TestimonialsSection = () => {
           <KineticTitle
             text="What Our Partners Say"
             accentWords={['Say']}
-            className="text-5xl md:text-7xl font-serif font-light tracking-tight text-foreground leading-tight"
+            className="text-5xl md:text-7xl font-serif font-light tracking-tight text-sl-alabaster leading-tight"
           />
         </div>
 

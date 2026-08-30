@@ -87,7 +87,7 @@ export const KineticTitle = ({
   accentWords = [],
   as: Tag = 'h2',
   className,
-  accentClassName = 'italic text-accent',
+  accentClassName = 'italic text-sl-gold-hover',
 }: KineticTitleProps) => {
   const rootRef = useRef<HTMLHeadingElement>(null);
   const { staticMode } = useMotionPolicy();

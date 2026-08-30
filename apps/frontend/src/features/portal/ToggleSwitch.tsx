@@ -23,16 +23,16 @@ export function ToggleSwitch({
   const id = useId();
 
   return (
-    <div className="flex items-start justify-between gap-6 py-5 px-6 rounded-sm bg-background border border-border/30 hover:border-accent/20 transition-all duration-500 group">
+    <div className="flex items-start justify-between gap-6 py-5 px-6 rounded-sm bg-sl-void border border-sl-silver/20 hover:border-sl-gold-subtle/20 transition-all duration-500 group">
       <div className="flex flex-col gap-1">
         <label
           htmlFor={id}
-          className="text-sm font-medium text-foreground cursor-pointer select-none"
+          className="text-sm font-medium text-sl-alabaster cursor-pointer select-none"
         >
           {label}
         </label>
         {description && (
-          <p className="text-xs text-neutral-500 leading-relaxed max-w-md">
+          <p className="text-xs text-sl-mist/60 leading-relaxed max-w-md">
             {description}
           </p>
         )}
@@ -48,9 +48,9 @@ export function ToggleSwitch({
         className={`
           relative inline-flex h-7 w-12 shrink-0 cursor-pointer items-center rounded-full
           transition-colors duration-500 ease-[var(--hexa-ease-interaction)]
-          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background
           ${disabled ? 'opacity-40 cursor-not-allowed' : ''}
-          ${checked ? 'bg-accent' : 'bg-neutral-800'}
+          ${checked ? 'bg-sl-gold-subtle' : 'bg-sl-obsidian'}
         `}
       >
         <motion.span
@@ -58,7 +58,7 @@ export function ToggleSwitch({
           transition={{ type: 'spring', stiffness: 500, damping: 30 }}
           className={`
             inline-block h-5 w-5 rounded-full shadow-lg
-            ${checked ? 'translate-x-[1.375rem] bg-background' : 'translate-x-[0.25rem] bg-neutral-400'}
+            ${checked ? 'translate-x-[1.375rem] bg-sl-void' : 'translate-x-[0.25rem] bg-neutral-400'}
           `}
         />
       </button>

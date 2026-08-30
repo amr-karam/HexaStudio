@@ -79,7 +79,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   };
 
   return (
-    <div className="relative flex h-full flex-col bg-surface/75 backdrop-blur-2xl border-r border-border/20 overflow-hidden">
+    <div className="relative flex h-full flex-col bg-sl-obsidian/75 backdrop-blur-2xl border-r border-sl-silver/20 overflow-hidden">
       {/* Gold radial aura — barely visible atelier top-light */}
       <div
         aria-hidden="true"
@@ -89,18 +89,18 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       {/* Gold specular top hairline */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/20 to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sl-gold-subtle/20 to-transparent"
       />
 
       {/* Brand */}
-      <div className="relative flex items-center gap-3 px-6 h-16 border-b border-border/20">
+      <div className="relative flex items-center gap-3 px-6 h-16 border-b border-sl-silver/20">
         <button
           onClick={() => handleNavigation('/portal')}
-          className="group flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+          className="group flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
           aria-label="Go to portal home"
         >
-          <span className="relative flex items-center justify-center w-8 h-8 rounded-full bg-accent/10 border border-accent/30 transition-colors duration-300 group-hover:bg-accent/20">
-            <span className="text-xs font-serif italic text-accent">H</span>
+          <span className="relative flex items-center justify-center w-8 h-8 rounded-full bg-sl-gold-subtle/10 border border-sl-gold-subtle/30 transition-colors duration-300 group-hover:bg-sl-gold-subtle/20">
+            <span className="text-xs font-serif italic text-sl-gold-hover">H</span>
             {/* Rotating diamond accent — mirror of the preloader motif */}
             <motion.span
               aria-hidden="true"
@@ -110,12 +110,12 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                   ? undefined
                   : { repeat: Infinity, duration: 12, ease: 'linear' }
               }
-              className="absolute -bottom-0.5 -right-0.5 block h-1.5 w-1.5 rotate-45 border border-accent/50 bg-surface"
+              className="absolute -bottom-0.5 -right-0.5 block h-1.5 w-1.5 rotate-45 border border-sl-gold-subtle/50 bg-sl-obsidian"
             />
           </span>
-          <span className="text-sm uppercase tracking-[0.3em] text-foreground font-light">
+          <span className="text-sm uppercase tracking-[0.3em] text-sl-alabaster font-light">
             <span className="font-serif">Client</span>{' '}
-            <span className="font-normal text-accent">Portal</span>
+            <span className="font-normal text-sl-gold-hover">Portal</span>
           </span>
         </button>
       </div>
@@ -127,9 +127,9 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
             <div className="flex items-center gap-2 px-3 pb-1.5 pt-1">
               <span
                 aria-hidden="true"
-                className="block h-1 w-1 rotate-45 bg-accent/50"
+                className="block h-1 w-1 rotate-45 bg-sl-gold-subtle/50"
               />
-              <span className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-neutral-600">
+              <span className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-sl-mist/60">
                 {section.marker}
               </span>
             </div>
@@ -147,10 +147,10 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                     onClick={() => handleNavigation(item.href)}
                     className={cn(
                       'group relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm tracking-[0.02em] transition-all duration-300',
-                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
+                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
                       isActive
-                        ? 'text-accent bg-accent/5 shadow-[inset_0_1px_0_rgba(212,175,55,0.06)]'
-                        : 'text-neutral-500 hover:text-foreground hover:bg-white/[0.03]',
+                        ? 'text-sl-gold-hover bg-sl-gold-subtle/5 shadow-[inset_0_1px_0_rgba(212,175,55,0.06)]'
+                        : 'text-sl-mist/60 hover:text-sl-alabaster hover:bg-white/[0.03]',
                     )}
                     aria-current={isActive ? 'page' : undefined}
                   >
@@ -158,7 +158,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                     {isActive && (
                       <motion.span
                         layoutId="sidebar-active-indicator"
-                        className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-full bg-gradient-to-b from-accent-light via-accent to-accent-dark"
+                        className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-full bg-gradient-to-b from-sl-gold-hover via-sl-gold-subtle to-sl-gold-subtle-dark"
                         transition={{
                           type: 'spring',
                           stiffness: 350,
@@ -173,8 +173,8 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                       className={cn(
                         'transition-colors duration-300',
                         isActive
-                          ? 'text-accent'
-                          : 'text-neutral-600 group-hover:text-accent',
+                          ? 'text-sl-gold-hover'
+                          : 'text-sl-mist/60 group-hover:text-sl-gold-hover',
                       )}
                     />
 
@@ -189,11 +189,11 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 
       {/* User Profile Section */}
       {user && (
-        <div className="relative border-t border-border/20 p-4">
+        <div className="relative border-t border-sl-silver/20 p-4">
           <div className="flex items-center gap-3 mb-3">
             {/* Gold-ring avatar */}
-            <div className="relative w-10 h-10 rounded-full bg-accent/10 border border-accent/40 ring-1 ring-accent/20 flex items-center justify-center shrink-0">
-              <span className="text-xs font-mono text-accent uppercase">
+            <div className="relative w-10 h-10 rounded-full bg-sl-gold-subtle/10 border border-sl-gold-subtle/40 ring-1 ring-sl-gold-subtle/20 flex items-center justify-center shrink-0">
+              <span className="text-xs font-mono text-sl-gold-hover uppercase">
                 {user.email?.charAt(0) ?? 'U'}
               </span>
               {/* Rotating diamond accent on the avatar corner */}
@@ -205,15 +205,15 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                     ? undefined
                     : { repeat: Infinity, duration: 12, ease: 'linear' }
                 }
-                className="absolute -bottom-0.5 -right-0.5 block h-1.5 w-1.5 rotate-45 border border-accent/50 bg-surface"
+                className="absolute -bottom-0.5 -right-0.5 block h-1.5 w-1.5 rotate-45 border border-sl-gold-subtle/50 bg-sl-obsidian"
               />
             </div>
             <div className="min-w-0">
-              <p className="text-sm text-foreground truncate">{user.email}</p>
-              <p className="flex items-center gap-1.5 text-[10px] text-neutral-500 uppercase tracking-wider font-mono">
+              <p className="text-sm text-sl-alabaster truncate">{user.email}</p>
+              <p className="flex items-center gap-1.5 text-[10px] text-sl-mist/60 uppercase tracking-wider font-mono">
                 <span
                   aria-hidden="true"
-                  className="h-1 w-1 rounded-full bg-accent shadow-[0_0_4px_rgba(212,175,55,0.5)]"
+                  className="h-1 w-1 rounded-full bg-sl-gold-subtle shadow-[0_0_4px_rgba(212,175,55,0.5)]"
                 />
                 {user.role ?? 'Client'}
               </p>
@@ -222,7 +222,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 
           <button
             onClick={handleLogout}
-            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 font-mono text-[0.625rem] uppercase tracking-[0.25em] text-neutral-600 hover:text-red-400 hover:bg-red-500/5 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 font-mono text-[0.625rem] uppercase tracking-[0.25em] text-sl-mist/60 hover:text-red-400 hover:bg-red-500/5 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle"
           >
             <Icon name="log-out" size={14} />
             Sign Out
@@ -244,7 +244,7 @@ export function PortalSidebar() {
       aria-label="Portal sidebar"
     >
       {/* Glassmorphic backdrop — lets the ambient glow pass through */}
-      <div className="absolute inset-0 -z-10 bg-surface/70 backdrop-blur-2xl" aria-hidden="true" />
+      <div className="absolute inset-0 -z-10 bg-sl-obsidian/70 backdrop-blur-2xl" aria-hidden="true" />
       <SidebarContent />
     </aside>
   );

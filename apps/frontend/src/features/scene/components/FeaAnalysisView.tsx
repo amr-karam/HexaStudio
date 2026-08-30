@@ -18,11 +18,11 @@ export function FeaAnalysisView() {
   const safetyFactor = (3.5 / loadMultiplier).toFixed(2);
 
   return (
-    <div className="bg-neutral-950/90 border border-neutral-800 rounded-3xl p-6 shadow-2xl backdrop-blur-2xl text-neutral-100 space-y-5">
-      <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
+    <div className="bg-neutral-950/90 border border-sl-obsidian rounded-3xl p-6 shadow-2xl backdrop-blur-2xl text-neutral-100 space-y-5">
+      <div className="flex items-center justify-between pb-3 border-b border-sl-obsidian">
         <div>
           <h3 className="text-sm font-bold text-neutral-100">Structural FEA Stress Heatmap & Seismic Simulator</h3>
-          <p className="text-xs text-neutral-400">Finite Element Analysis & Deflection Tolerances</p>
+          <p className="text-xs text-sl-mist/60">Finite Element Analysis & Deflection Tolerances</p>
         </div>
         <span className="bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full text-emerald-400 text-xs font-mono">
           ✓ Structural Safety Factor: {safetyFactor}x
@@ -32,7 +32,7 @@ export function FeaAnalysisView() {
       {/* Live Load Multiplier Slider */}
       <div className="space-y-2">
         <div className="flex justify-between text-xs">
-          <span className="text-neutral-400 font-medium">Applied Live Load Multiplier</span>
+          <span className="text-sl-mist/60 font-medium">Applied Live Load Multiplier</span>
           <span className="font-bold text-amber-400 font-mono">{loadMultiplier.toFixed(2)}x Design Load</span>
         </div>
         <input
@@ -42,14 +42,14 @@ export function FeaAnalysisView() {
           step={0.1}
           value={loadMultiplier}
           onChange={(e) => setLoadMultiplier(parseFloat(e.target.value))}
-          className="w-full h-2 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-amber-400"
+          className="w-full h-2 bg-sl-obsidian rounded-lg appearance-none cursor-pointer accent-amber-400"
         />
       </div>
 
       {/* Seismic Magnitude Slider */}
       <div className="space-y-2">
         <div className="flex justify-between text-xs">
-          <span className="text-neutral-400 font-medium">Simulated Seismic Event</span>
+          <span className="text-sl-mist/60 font-medium">Simulated Seismic Event</span>
           <span className="font-bold text-amber-400 font-mono">Richter {seismicMagnitude.toFixed(1)}</span>
         </div>
         <input
@@ -59,13 +59,13 @@ export function FeaAnalysisView() {
           step={0.1}
           value={seismicMagnitude}
           onChange={(e) => setSeismicMagnitude(parseFloat(e.target.value))}
-          className="w-full h-2 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-amber-400"
+          className="w-full h-2 bg-sl-obsidian rounded-lg appearance-none cursor-pointer accent-amber-400"
         />
       </div>
 
       {/* FEA Gradient Stress Bar */}
       <div className="space-y-1">
-        <div className="flex justify-between text-[11px] font-mono text-neutral-400">
+        <div className="flex justify-between text-[11px] font-mono text-sl-mist/60">
           <span>0 MPa (Neutral)</span>
           <span>150 MPa (Yield Threshold)</span>
           <span>300+ MPa (Critical)</span>
@@ -75,16 +75,16 @@ export function FeaAnalysisView() {
 
       {/* FEA Metrics Grid */}
       <div className="grid grid-cols-3 gap-3 text-center text-xs">
-        <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-3">
-          <p className="text-[10px] text-neutral-500 uppercase font-mono">Max von Mises Stress</p>
+        <div className="bg-sl-void border border-sl-obsidian rounded-2xl p-3">
+          <p className="text-[10px] text-sl-mist/60 uppercase font-mono">Max von Mises Stress</p>
           <p className="text-base font-bold text-amber-400 font-mono mt-0.5">{maxStressMpa} MPa</p>
         </div>
-        <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-3">
-          <p className="text-[10px] text-neutral-500 uppercase font-mono">Max Deflection</p>
+        <div className="bg-sl-void border border-sl-obsidian rounded-2xl p-3">
+          <p className="text-[10px] text-sl-mist/60 uppercase font-mono">Max Deflection</p>
           <p className="text-base font-bold text-neutral-100 font-mono mt-0.5">{deflectionMm} mm</p>
         </div>
-        <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-3">
-          <p className="text-[10px] text-neutral-500 uppercase font-mono">Deflection Code Limit</p>
+        <div className="bg-sl-void border border-sl-obsidian rounded-2xl p-3">
+          <p className="text-[10px] text-sl-mist/60 uppercase font-mono">Deflection Code Limit</p>
           <p className="text-base font-bold text-emerald-400 font-mono mt-0.5">L / 360 (Pass)</p>
         </div>
       </div>

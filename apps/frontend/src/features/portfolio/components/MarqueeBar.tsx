@@ -91,7 +91,7 @@ export const MarqueeBar = () => {
   // Policy static path: plain centered list (reduced motion / user-paused).
   if (staticMode || paused) {
     return (
-      <section className="py-16 bg-surface border-y border-border/20 overflow-hidden">
+      <section className="py-16 bg-sl-obsidian border-y border-sl-silver/20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-8 md:px-16">
           <p className="text-[9px] uppercase tracking-[0.5em] text-text-secondary mb-8 text-center font-mono">
             Featured In
@@ -113,7 +113,7 @@ export const MarqueeBar = () => {
 
   return (
     <section
-      className="py-16 bg-surface border-y border-border/20 overflow-hidden"
+      className="py-16 bg-sl-obsidian border-y border-sl-silver/20 overflow-hidden"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onFocus={handleFocus}
@@ -138,7 +138,7 @@ export const MarqueeBar = () => {
               {brands.map((name) => (
                 <span
                   key={name}
-                  className="text-sm text-text-secondary hover:text-foreground tracking-[0.3em] uppercase font-light transition-colors duration-500 whitespace-nowrap"
+                  className="text-sm text-text-secondary hover:text-sl-alabaster tracking-[0.3em] uppercase font-light transition-colors duration-500 whitespace-nowrap"
                 >
                   {name}
                 </span>

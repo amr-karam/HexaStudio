@@ -134,12 +134,12 @@ export default function PremiumChatClient() {
        keeps the document to a single <main> (HTML spec requirement). */
     <section
       aria-labelledby="premium-chat-title"
-      className="min-h-screen pt-28 pb-16 bg-background relative overflow-hidden"
+      className="min-h-screen pt-28 pb-16 bg-sl-void relative overflow-hidden"
     >
       {/* Ambient gold aura */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div className="absolute top-0 right-0 w-[45%] h-[35%] bg-accent/3 blur-[180px] rounded-full" />
-        <div className="absolute bottom-0 left-0 w-[35%] h-[30%] bg-accent/5 blur-[120px] rounded-full" />
+        <div className="absolute top-0 right-0 w-[45%] h-[35%] bg-sl-gold-subtle/3 blur-[180px] rounded-full" />
+        <div className="absolute bottom-0 left-0 w-[35%] h-[30%] bg-sl-gold-subtle/5 blur-[120px] rounded-full" />
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative">
@@ -151,21 +151,21 @@ export default function PremiumChatClient() {
           className="mb-10"
         >
           <div className="flex items-center gap-4 mb-6">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-accent/30 to-transparent" aria-hidden="true" />
-            <span className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-neutral-500">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-sl-gold-subtle/30 to-transparent" aria-hidden="true" />
+            <span className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-sl-mist/60">
               § Concierge
             </span>
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-accent/30 to-transparent" aria-hidden="true" />
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-sl-gold-subtle/30 to-transparent" aria-hidden="true" />
           </div>
 
           <h1
             id="premium-chat-title"
-            className="font-serif text-4xl md:text-5xl font-light tracking-tight text-foreground"
+            className="font-serif text-4xl md:text-5xl font-light tracking-tight text-sl-alabaster"
           >
-            Premium <span className="italic text-accent">Chat</span>
+            Premium <span className="italic text-sl-gold-hover">Chat</span>
           </h1>
 
-          <p className="text-neutral-400 font-light mt-3 max-w-xl leading-relaxed">
+          <p className="text-sl-mist/60 font-light mt-3 max-w-xl leading-relaxed">
             A private line to the atelier. Bespoke conversations on architecture,
             visualization, and spatial intelligence — whenever you need them.
           </p>
@@ -174,7 +174,7 @@ export default function PremiumChatClient() {
             type="button"
             onClick={() => setMessages([createWelcomeMessage()])}
             aria-label="Start a new conversation"
-            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-3 text-xs font-mono uppercase tracking-[0.1em] text-background transition-all duration-300 hover:bg-accent-light active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-sl-gold-subtle px-5 py-3 text-xs font-mono uppercase tracking-[0.1em] text-background transition-all duration-300 hover:bg-sl-gold-subtle-light active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle"
           >
             Start a new conversation
           </button>
@@ -185,7 +185,7 @@ export default function PremiumChatClient() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: EASE.entrance, delay: 0.15 }}
-          className="h-[560px] md:h-[600px] overflow-hidden rounded-2xl border border-border/20 shadow-2xl"
+          className="h-[560px] md:h-[600px] overflow-hidden rounded-2xl border border-sl-silver/20 shadow-2xl"
         >
           <PremiumChat
             currentUser={currentUser}

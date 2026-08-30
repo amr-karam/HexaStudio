@@ -50,8 +50,8 @@ export function PortalTopBar() {
     <header
       className={cn(
         'fixed top-0 right-0 z-30',
-        'h-16 border-b border-border/20',
-        'bg-background/80 backdrop-blur-2xl',
+        'h-16 border-b border-sl-silver/20',
+        'bg-sl-void/80 backdrop-blur-2xl',
         'flex items-center justify-between px-4 md:px-6',
         'lg:left-60', /* offset for desktop sidebar */
       )}
@@ -62,7 +62,7 @@ export function PortalTopBar() {
         {/* Mobile hamburger */}
         <button
           onClick={toggleSidebar}
-          className="lg:hidden flex items-center justify-center w-11 h-11 rounded-lg text-neutral-400 hover:text-foreground hover:bg-white/[0.03] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          className="lg:hidden flex items-center justify-center w-11 h-11 rounded-lg text-sl-mist/60 hover:text-sl-alabaster hover:bg-white/[0.03] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle"
           aria-label="Toggle navigation menu"
         >
           <Icon name="menu" size={20} />
@@ -71,7 +71,7 @@ export function PortalTopBar() {
         {/* Mobile search button */}
         <button
           onClick={() => setCommandPaletteOpen(true)}
-          className="sm:hidden flex items-center justify-center w-11 h-11 rounded-lg text-neutral-400 hover:text-foreground hover:bg-white/[0.03] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          className="sm:hidden flex items-center justify-center w-11 h-11 rounded-lg text-sl-mist/60 hover:text-sl-alabaster hover:bg-white/[0.03] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle"
           aria-label="Open search"
         >
           <Icon name="search" size={20} />
@@ -82,17 +82,17 @@ export function PortalTopBar() {
           onClick={() => setCommandPaletteOpen(true)}
           className={cn(
             'flex items-center gap-3 rounded-xl px-4 py-2',
-            'bg-white/[0.03] border border-border/30',
-            'text-neutral-500 hover:text-neutral-400 hover:border-border-light',
+            'bg-white/[0.03] border border-sl-silver/20',
+            'text-sl-mist/60 hover:text-sl-mist/60 hover:border-sl-silver/20-light',
             'transition-all duration-300',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle',
             'w-64 hidden sm:flex',
           )}
           aria-label="Open command palette (Ctrl+K)"
         >
           <Icon name="search" size={14} />
           <span className="text-xs tracking-wide">Search...</span>
-          <kbd className="ml-auto text-[10px] font-mono text-neutral-600 border border-border/30 rounded px-1.5 py-0.5">
+          <kbd className="ml-auto text-[10px] font-mono text-sl-mist/60 border border-sl-silver/20 rounded px-1.5 py-0.5">
             <abbr title={typeof navigator !== 'undefined' && navigator.platform?.includes('Mac') ? 'Command' : 'Control'}>
               {typeof navigator !== 'undefined' && navigator.platform?.includes('Mac') ? '⌘' : 'Ctrl'}
             </abbr>
@@ -110,7 +110,7 @@ export function PortalTopBar() {
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
-            className="flex items-center justify-center w-11 h-11 rounded-lg text-neutral-400 hover:text-foreground hover:bg-white/[0.03] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="flex items-center justify-center w-11 h-11 rounded-lg text-sl-mist/60 hover:text-sl-alabaster hover:bg-white/[0.03] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle"
             aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
           >
             {!prefersReduced ? (
@@ -141,8 +141,8 @@ export function PortalTopBar() {
           {/* User avatar */}
           {user && (
             <div className="flex items-center gap-2 ml-1">
-              <div className="w-8 h-8 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center">
-                <span className="text-[10px] font-mono text-accent uppercase">
+              <div className="w-8 h-8 rounded-full bg-sl-gold-subtle/10 border border-sl-gold-subtle/20 flex items-center justify-center">
+                <span className="text-[10px] font-mono text-sl-gold-hover uppercase">
                   {user.email?.charAt(0) ?? 'U'}
                 </span>
               </div>

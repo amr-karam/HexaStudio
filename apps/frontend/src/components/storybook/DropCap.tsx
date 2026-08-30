@@ -24,7 +24,7 @@ export function DropCap({ children, className }: { children: ReactNode; classNam
           marginRight: "0.1em",
           marginTop: "0.05em",
           color: "var(--color-gold-85)",
-          textShadow: "0 2px 8px var(--color-gold-15)",
+          textShadow: "0 2px 8px var(--sl-gold-subtle)",
           fontStyle: "italic",
         }}
       >

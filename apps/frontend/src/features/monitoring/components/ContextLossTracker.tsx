@@ -115,7 +115,7 @@ export function ContextLossTracker() {
   const renderEvent = (event: { timestamp: Date; state: string; recovered?: boolean }, index: number) => (
     <div key={index} className="flex items-center gap-2">
       <span className={cn("w-2 h-2 rounded-full", event.recovered ? "bg-green-500" : "bg-red-500")}></span>
-      <span className="text-muted-foreground">
+      <span className="text-sl-mist/60">
         {formatTimestamp(event.timestamp)} - {"recovered" in event ? (event.recovered ? "✓ recovered" : "× failed") : event.state}
       </span>
     </div>
@@ -127,11 +127,11 @@ export function ContextLossTracker() {
       
       <div className="flex items-center gap-2 mb-2">
         {recoveryBadge}
-        <span className="text-xs text-muted-foreground capitalize">{formatTimestamp(new Date())}</span>
+        <span className="text-xs text-sl-mist/60 capitalize">{formatTimestamp(new Date())}</span>
       </div>
       
       {lossEvents.length > 0 && (
-        <div className="space-y-1 text-xs text-muted-foreground">
+        <div className="space-y-1 text-xs text-sl-mist/60">
           {lossEvents.map(renderEvent)}
         </div>
       )}
@@ -139,7 +139,7 @@ export function ContextLossTracker() {
       {isAttemptingRecovery && (
         <div className="flex items-center gap-2">
           <ShimmerSkeleton variant="circle" className="h-3 w-3" />
-          <span className="text-sm text-muted-foreground">Attempting recovery...</span>
+          <span className="text-sm text-sl-mist/60">Attempting recovery...</span>
         </div>
       )}
       

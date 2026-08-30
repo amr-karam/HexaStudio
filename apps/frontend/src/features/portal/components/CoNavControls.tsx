@@ -21,10 +21,10 @@ export function CoNavControls({ className }: CoNavControlsProps) {
       {/* Participant Presence Overlay */}
       <div className="flex flex-col gap-2 bg-black/40 backdrop-blur-xl border border-white/10 p-3 rounded-2xl shadow-2xl min-w-[200px]">
         <div className="flex items-center justify-between mb-1 px-1">
-          <span className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Live Session</span>
+          <span className="text-[10px] uppercase tracking-widest text-sl-alabaster/40 font-bold">Live Session</span>
           <div className="flex items-center gap-1.5">
             <div className={`h-1.5 w-1.5 rounded-full ${collabConnected ? 'bg-emerald-400' : 'bg-red-500'} animate-pulse`} />
-            <span className="text-[10px] text-white/60 font-medium">
+            <span className="text-[10px] text-sl-alabaster/60 font-medium">
               {collabConnected ? 'Synced' : 'Offline'}
             </span>
           </div>
@@ -45,8 +45,8 @@ export function CoNavControls({ className }: CoNavControlsProps) {
                     {peer.user.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-xs font-medium text-white/90 leading-tight">{peer.user}</span>
-                    <span className="text-[9px] text-white/40 leading-tight">Exploring Space</span>
+                    <span className="text-xs font-medium text-sl-alabaster/90 leading-tight">{peer.user}</span>
+                    <span className="text-[9px] text-sl-alabaster/40 leading-tight">Exploring Space</span>
                   </div>
                 </div>
                 <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.5)]" />
@@ -55,7 +55,7 @@ export function CoNavControls({ className }: CoNavControlsProps) {
           </AnimatePresence>
           
           {collaboratorList.length === 0 && (
-            <div className="text-center py-2 text-[10px] text-white/30 italic">
+            <div className="text-center py-2 text-[10px] text-sl-alabaster/30 italic">
               Waiting for participants...
             </div>
           )}
@@ -64,7 +64,7 @@ export function CoNavControls({ className }: CoNavControlsProps) {
 
        {/* Connection Health Indicator */}
        <div className="flex justify-center">
-         <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/5 text-[9px] text-white/30 font-medium uppercase tracking-tighter">
+         <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/5 text-[9px] text-sl-alabaster/30 font-medium uppercase tracking-tighter">
            <span className={`h-1 w-1 rounded-full ${
              collabConnected ? 'bg-emerald-500' : 'bg-red-500'
            }`} />

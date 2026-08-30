@@ -24,7 +24,7 @@ export function XRErrorFallback({
   const handleReload = () => window.location.reload();
 
   return (
-    <div role="alert" className="flex h-screen w-screen items-center justify-center bg-surface-dark">
+    <div role="alert" className="flex h-screen w-screen items-center justify-center bg-sl-obsidian-dark">
       {/* Background image (if provided). */}
       {coverImage && (
         <div
@@ -37,7 +37,7 @@ export function XRErrorFallback({
         {/* Icon */}
         <div className="w-14 h-14 mx-auto mb-5 border border-white/10 flex items-center justify-center rounded-lg bg-white/5">
           <svg
-            className="w-7 h-7 text-accent"
+            className="w-7 h-7 text-sl-gold-hover"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -52,22 +52,22 @@ export function XRErrorFallback({
         </div>
 
         {/* Title */}
-        <h2 className="mb-2 text-lg font-medium text-white/80">
+        <h2 className="mb-2 text-lg font-medium text-sl-alabaster/80">
           AR/VR Not Available
         </h2>
 
         {/* Project name */}
         {projectName && (
-          <p className="mb-3 text-xs uppercase tracking-widest text-accent">
+          <p className="mb-3 text-xs uppercase tracking-widest text-sl-gold-hover">
             {projectName}
           </p>
         )}
 
         {/* Message */}
-        <p className="mb-6 text-sm text-white/50 leading-relaxed">
+        <p className="mb-6 text-sm text-sl-alabaster/50 leading-relaxed">
           AR/VR is not available in this browser or on this device.
           {error.message && (
-            <span className="block mt-2 text-xs text-white/30">
+            <span className="block mt-2 text-xs text-sl-alabaster/30">
               {error.message}
             </span>
           )}
@@ -77,11 +77,11 @@ export function XRErrorFallback({
         <div className="flex flex-col items-center gap-3">
           <button
             onClick={handleReload}
-            className="rounded-lg bg-accent px-6 py-3 text-sm font-medium text-black transition-colors hover:bg-accent-dark active:scale-95"
+            className="rounded-lg bg-sl-gold-subtle px-6 py-3 text-sm font-medium text-black transition-colors hover:bg-sl-gold-subtle-dark active:scale-95"
           >
             Try Again
           </button>
-          <p className="text-xs text-white/30">
+          <p className="text-xs text-sl-alabaster/30">
             You can still view the 3D model in the standard viewer.
           </p>
         </div>

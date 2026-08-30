@@ -22,7 +22,7 @@ const NOTIFICATION_CONFIG: Record<NotificationType, { icon: IconName; color: str
   success: { icon: 'check', color: 'text-emerald-400' },
   warning: { icon: 'alert-circle', color: 'text-amber-400' },
   error: { icon: 'x', color: 'text-red-400' },
-  approval: { icon: 'file-check', color: 'text-accent' },
+  approval: { icon: 'file-check', color: 'text-sl-gold-hover' },
 };
 
 function formatRelativeTime(timestamp: string): string {
@@ -55,8 +55,8 @@ export function NotificationItem({ notification, onMarkAsRead, className }: Noti
       className={cn(
         'flex items-start gap-3 p-3 rounded-lg w-full text-left',
         'hover:bg-white/[0.02] transition-colors duration-200',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
-        !notification.isRead && 'bg-accent/[0.02]',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle',
+        !notification.isRead && 'bg-sl-gold-subtle/[0.02]',
         className,
       )}
       aria-label={`${notification.isRead ? '' : 'Unread: '}${notification.title}`}
@@ -64,7 +64,7 @@ export function NotificationItem({ notification, onMarkAsRead, className }: Noti
       {/* Unread dot */}
       <div className="mt-1 shrink-0">
         {!notification.isRead ? (
-          <div className="w-2 h-2 rounded-full bg-accent" />
+          <div className="w-2 h-2 rounded-full bg-sl-gold-subtle" />
         ) : (
           <div className="w-2 h-2" />
         )}
@@ -79,12 +79,12 @@ export function NotificationItem({ notification, onMarkAsRead, className }: Noti
       <div className="min-w-0 flex-1">
         <p className={cn(
           'text-sm leading-snug',
-          notification.isRead ? 'text-neutral-400' : 'text-foreground',
+          notification.isRead ? 'text-sl-mist/60' : 'text-sl-alabaster',
         )}>
           {notification.title}
         </p>
-        <p className="text-xs text-neutral-500 mt-0.5 line-clamp-2">{notification.message}</p>
-        <span className="text-[10px] text-neutral-600 font-mono mt-1.5 block">
+        <p className="text-xs text-sl-mist/60 mt-0.5 line-clamp-2">{notification.message}</p>
+        <span className="text-[10px] text-sl-mist/60 font-mono mt-1.5 block">
           {formatRelativeTime(notification.timestamp)}
         </span>
       </div>

@@ -31,11 +31,11 @@ export const TeamSection = () => {
   return (
     <section className="px-8 md:px-16 py-32">
       <ScrollFadeIn className="mb-20 text-center">
-        <span className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block">
+        <span className="text-xs uppercase tracking-[0.5em] text-sl-mist/60 mb-6 block">
           {t('footer.connect')}
         </span>
-        <h2 className="text-5xl md:text-7xl font-serif font-light tracking-tight text-foreground leading-tight">
-          The <span className="italic text-accent">Team</span>
+        <h2 className="text-5xl md:text-7xl font-serif font-light tracking-tight text-sl-alabaster leading-tight">
+          The <span className="italic text-sl-gold-hover">Team</span>
         </h2>
       </ScrollFadeIn>
 
@@ -49,7 +49,7 @@ export const TeamSection = () => {
               transition={{ ...SPRING_TRANSITION, delay: idx * 0.1 }}
             >
               <LiquidGlassCard glow className="p-6 group">
-                <div className="w-full aspect-square rounded-xl bg-neutral-900 mb-6 overflow-hidden">
+                <div className="w-full aspect-square rounded-xl bg-sl-void mb-6 overflow-hidden">
                   {member.avatar ? (
                     <Image src={member.avatar} alt={member.name} width={300} height={300} className="w-full h-full object-cover" />
                   ) : (
@@ -58,14 +58,14 @@ export const TeamSection = () => {
                     </div>
                   )}
                 </div>
-                <h3 className="text-lg font-medium text-foreground mb-1 group-hover:text-accent transition-colors duration-500">{member.name}</h3>
-                <p className="text-sm text-accent mb-1">{member.role}</p>
+                <h3 className="text-lg font-medium text-sl-alabaster mb-1 group-hover:text-sl-gold-hover transition-colors duration-500">{member.name}</h3>
+                <p className="text-sm text-sl-gold-hover mb-1">{member.role}</p>
                 {member.department && (
-                  <p className="text-xs text-neutral-500 mb-3">{member.department}</p>
+                  <p className="text-xs text-sl-mist/60 mb-3">{member.department}</p>
                 )}
                 <div className="flex flex-wrap gap-1.5">
                   {member.skills.slice(0, 3).map((skill) => (
-                    <span key={skill} className="text-[10px] uppercase tracking-wider text-neutral-500 border border-neutral-800 rounded-full px-2 py-0.5 group-hover:border-accent/30 transition-colors duration-500">
+                    <span key={skill} className="text-[10px] uppercase tracking-wider text-sl-mist/60 border border-sl-obsidian rounded-full px-2 py-0.5 group-hover:border-sl-gold-subtle/30 transition-colors duration-500">
                       {skill}
                     </span>
                   ))}

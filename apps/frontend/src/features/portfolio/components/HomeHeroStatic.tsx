@@ -184,7 +184,7 @@ export const HomeHeroStatic = () => {
       {finePointer && !staticMode && (
         <div
           ref={glowRef}
-          className="absolute top-1/2 left-1/2 w-[300px] h-[300px] -translate-x-1/2 -translate-y-1/2 bg-accent/3 blur-[100px] rounded-full pointer-events-none z-[1]"
+          className="absolute top-1/2 left-1/2 w-[300px] h-[300px] -translate-x-1/2 -translate-y-1/2 bg-sl-gold-subtle/3 blur-[100px] rounded-full pointer-events-none z-[1]"
           aria-hidden="true"
         />
       )}

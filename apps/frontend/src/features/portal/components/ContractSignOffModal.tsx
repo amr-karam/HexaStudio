@@ -87,34 +87,34 @@ export function ContractSignOffModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-      <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-surface p-6 shadow-2xl text-white space-y-5">
+      <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-sl-obsidian p-6 shadow-2xl text-sl-alabaster space-y-5">
         <div className="flex items-center justify-between border-b border-white/10 pb-4">
           <div>
-            <h2 className="text-lg font-bold text-white">Digital Contract Sign-Off</h2>
-            <p className="text-xs text-white/50">{contractTitle} (Ref: {contractId})</p>
+            <h2 className="text-lg font-bold text-sl-alabaster">Digital Contract Sign-Off</h2>
+            <p className="text-xs text-sl-alabaster/50">{contractTitle} (Ref: {contractId})</p>
           </div>
           <button
             onClick={onClose}
-            className="rounded-full bg-white/5 p-2 text-white/60 hover:bg-white/10 hover:text-white"
+            className="rounded-full bg-white/5 p-2 text-sl-alabaster/60 hover:bg-white/10 hover:text-sl-alabaster"
           >
             ✕
           </button>
         </div>
 
         <div className="space-y-3">
-          <label className="block text-xs font-medium text-white/70">Full Legal Name</label>
+          <label className="block text-xs font-medium text-sl-alabaster/70">Full Legal Name</label>
           <input
             type="text"
             value={typedName}
             onChange={(e) => setTypedName(e.target.value)}
             placeholder="e.g. Alexander Vance"
-            className="w-full rounded-lg border border-white/10 bg-black/50 px-3 py-2.5 text-sm text-white placeholder-white/30 focus:border-accent focus:outline-none"
+            className="w-full rounded-lg border border-white/10 bg-black/50 px-3 py-2.5 text-sm text-sl-alabaster placeholder-white/30 focus:border-sl-gold-subtle focus:outline-none"
           />
         </div>
 
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-medium text-white/70">Draw Digital Signature</label>
+            <label className="text-xs font-medium text-sl-alabaster/70">Draw Digital Signature</label>
             <button
               onClick={clearSignature}
               type="button"
@@ -143,7 +143,7 @@ export function ContractSignOffModal({
             onChange={(e) => setAgreed(e.target.checked)}
             className="mt-1 accent-accent cursor-pointer"
           />
-          <label htmlFor="agree-terms" className="text-xs text-white/70 cursor-pointer">
+          <label htmlFor="agree-terms" className="text-xs text-sl-alabaster/70 cursor-pointer">
             I agree that my typed name and drawn digital signature represent a legally binding audit-trailed sign-off for {contractTitle}.
           </label>
         </div>
@@ -151,14 +151,14 @@ export function ContractSignOffModal({
         <div className="flex items-center justify-end space-x-3 pt-4 border-t border-white/10">
           <button
             onClick={onClose}
-            className="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-white/70 hover:bg-white/10"
+            className="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-sl-alabaster/70 hover:bg-white/10"
           >
             {t('common.cancel')}
           </button>
           <button
             onClick={handleSign}
             disabled={!typedName.trim() || !agreed || isSubmitting}
-            className="rounded-lg bg-accent px-5 py-2 text-xs font-bold text-black disabled:opacity-40 hover:bg-accent-light transition-colors"
+            className="rounded-lg bg-sl-gold-subtle px-5 py-2 text-xs font-bold text-black disabled:opacity-40 hover:bg-sl-gold-subtle-light transition-colors"
           >
             {isSubmitting ? 'Signing & Stamping...' : 'Confirm Digital Signature'}
           </button>

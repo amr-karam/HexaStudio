@@ -42,7 +42,7 @@ export function NavbarMobileMenu({
           animate={{ opacity: 1 }}
           exit={reduced ? { opacity: 0 } : { opacity: 0 }}
           transition={menuTransition}
-          className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-16 bg-background/98 backdrop-blur-3xl"
+          className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-16 bg-sl-void/98 backdrop-blur-3xl"
         >
           {navItems.map((item, idx) => (
             <motion.div
@@ -67,8 +67,8 @@ export function NavbarMobileMenu({
                 className={cn(
                   'block text-3xl sm:text-4xl font-light tracking-tighter transition-colors duration-500 py-2 min-h-[44px] flex items-center justify-center',
                   pathname === item.href
-                    ? 'text-accent'
-                    : 'text-neutral-500 hover:text-foreground'
+                    ? 'text-sl-gold-hover'
+                    : 'text-sl-mist/60 hover:text-sl-alabaster'
                 )}
               >
                 {item.label}

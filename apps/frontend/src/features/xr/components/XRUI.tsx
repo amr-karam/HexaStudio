@@ -104,14 +104,14 @@ export function XRUI({ onExit, modelName }: XRUIProps) {
       <>
         <button
           onClick={onExit}
-          className="pointer-events-auto absolute end-4 top-4 rounded-full bg-black/50 px-4 py-2 text-sm text-white/80 backdrop-blur-sm transition-colors hover:bg-black/70"
+          className="pointer-events-auto absolute end-4 top-4 rounded-full bg-black/50 px-4 py-2 text-sm text-sl-alabaster/80 backdrop-blur-sm transition-colors hover:bg-black/70"
         >
           Exit
         </button>
 
         {modelName && !isSessionActive && (
           <div className="pointer-events-auto absolute start-4 top-4 max-w-[60%]">
-            <p className="truncate text-sm text-white/60">
+            <p className="truncate text-sm text-sl-alabaster/60">
               {modelName}
             </p>
           </div>
@@ -123,7 +123,7 @@ export function XRUI({ onExit, modelName }: XRUIProps) {
               <button
                 onClick={handleEnterAR}
                 disabled={entering === 'ar' || !modelLoaded}
-                className="rounded-lg bg-accent px-6 py-3 text-sm font-medium text-black shadow-lg transition-all hover:bg-accent-dark active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-lg bg-sl-gold-subtle px-6 py-3 text-sm font-medium text-black shadow-lg transition-all hover:bg-sl-gold-subtle-dark active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {entering === 'ar' ? 'Starting AR...' : 'View in AR'}
               </button>
@@ -132,13 +132,13 @@ export function XRUI({ onExit, modelName }: XRUIProps) {
               <button
                 onClick={handleEnterVR}
                 disabled={entering === 'vr' || !modelLoaded}
-                className="rounded-lg bg-white/10 px-6 py-3 text-sm font-medium text-white shadow-lg backdrop-blur-md transition-all hover:bg-white/20 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-lg bg-white/10 px-6 py-3 text-sm font-medium text-sl-alabaster shadow-lg backdrop-blur-md transition-all hover:bg-white/20 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {entering === 'vr' ? 'Starting VR...' : 'View in VR'}
               </button>
             )}
             {!support.ar && !support.vr && (
-              <p className="rounded-lg bg-black/30 px-4 py-2 text-xs text-white/40 backdrop-blur-sm">
+              <p className="rounded-lg bg-black/30 px-4 py-2 text-xs text-sl-alabaster/40 backdrop-blur-sm">
                 WebXR not available on this device
               </p>
             )}
@@ -148,10 +148,10 @@ export function XRUI({ onExit, modelName }: XRUIProps) {
         {isPlacing && (
           <>
             <div className="pointer-events-auto absolute left-1/2 top-8 -translate-x-1/2">
-              <p className="rounded-full bg-black/50 px-4 py-2 text-sm text-white/80 backdrop-blur-sm">
+              <p className="rounded-full bg-black/50 px-4 py-2 text-sm text-sl-alabaster/80 backdrop-blur-sm">
                 {hasSurface ? (
                   <span className="flex items-center gap-2">
-                    <span className="inline-block h-2 w-2 rounded-full bg-accent animate-pulse" />
+                    <span className="inline-block h-2 w-2 rounded-full bg-sl-gold-subtle animate-pulse" />
                     Surface found — tap to place
                   </span>
                 ) : (
@@ -162,7 +162,7 @@ export function XRUI({ onExit, modelName }: XRUIProps) {
             <div className="pointer-events-auto absolute bottom-8 left-1/2 -translate-x-1/2">
               <button
                 onClick={handleCancelPlacement}
-                className="rounded-lg bg-white/10 px-6 py-3 text-sm font-medium text-white shadow-lg backdrop-blur-md transition-all hover:bg-white/20 active:scale-95"
+                className="rounded-lg bg-white/10 px-6 py-3 text-sm font-medium text-sl-alabaster shadow-lg backdrop-blur-md transition-all hover:bg-white/20 active:scale-95"
               >
                 Cancel AR
               </button>
@@ -174,13 +174,13 @@ export function XRUI({ onExit, modelName }: XRUIProps) {
           <div className="pointer-events-auto absolute bottom-8 left-1/2 flex -translate-x-1/2 gap-4">
             <button
               onClick={handleReposition}
-              className="rounded-lg bg-white/10 px-6 py-3 text-sm font-medium text-white shadow-lg backdrop-blur-md transition-all hover:bg-white/20 active:scale-95"
+              className="rounded-lg bg-white/10 px-6 py-3 text-sm font-medium text-sl-alabaster shadow-lg backdrop-blur-md transition-all hover:bg-white/20 active:scale-95"
             >
               Reposition
             </button>
             <button
               onClick={handleConfirmPlacement}
-              className="rounded-lg bg-accent px-6 py-3 text-sm font-medium text-black shadow-lg transition-all hover:bg-accent-dark active:scale-95"
+              className="rounded-lg bg-sl-gold-subtle px-6 py-3 text-sm font-medium text-black shadow-lg transition-all hover:bg-sl-gold-subtle-dark active:scale-95"
             >
               Confirm Placement
             </button>
@@ -191,7 +191,7 @@ export function XRUI({ onExit, modelName }: XRUIProps) {
           <div className="pointer-events-auto absolute bottom-8 left-1/2 -translate-x-1/2">
             <button
               onClick={handleEndSession}
-              className="rounded-lg bg-red-500/80 px-6 py-3 text-sm font-medium text-white shadow-lg backdrop-blur-md transition-all hover:bg-red-500 active:scale-95"
+              className="rounded-lg bg-red-500/80 px-6 py-3 text-sm font-medium text-sl-alabaster shadow-lg backdrop-blur-md transition-all hover:bg-red-500 active:scale-95"
             >
               End AR Session
             </button>

@@ -46,10 +46,10 @@ export const fr: typeof en = {
     title: 'Nos Services',
     subtitle: 'Solutions complètes de visualisation architecturale',
     expertise: 'Expertise',
-    heroHeading: 'Nos <span class="text-accent">Services.</span>',
+    heroHeading: 'Nos <span class="text-sl-gold-hover">Services.</span>',
     inquire: 'Se renseigner sur {title}',
     ctaOverline: 'Démarrer un Projet',
-    ctaHeading: 'Vous avez une Vision ? <span class="text-accent">Construisons-la.</span>',
+    ctaHeading: 'Vous avez une Vision ? <span class="text-sl-gold-hover">Construisons-la.</span>',
     ctaDescription: 'Tout grand projet commence par une conversation. Parlez-nous de votre vision et nous vous montrerons comment la concrétiser.',
     ctaButton: 'Nous Contacter',
     items: {

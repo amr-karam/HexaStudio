@@ -105,13 +105,13 @@ describe('Card', () => {
   it('applies the solid variant', () => {
     const { container } = render(<Card title="Test" variant="solid" />);
     const card = container.firstChild as HTMLElement;
-    expect(card.className).toContain('bg-surface-dark');
+    expect(card.className).toContain('bg-sl-obsidian');
   });
 
   it('applies the luxury variant', () => {
     const { container } = render(<Card title="Test" variant="luxury" />);
     const card = container.firstChild as HTMLElement;
-    expect(card.className).toContain('border-accent/20');
+    expect(card.className).toContain('border-sl-gold');
   });
 
   it('applies hover styles by default', () => {

@@ -20,17 +20,17 @@ function StatusBar({ locale, total, translated }: { locale: string; total: numbe
     <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
       <div className="mb-3 flex items-center justify-between">
         <div>
-          <span className="text-lg font-medium text-white">{LOCALE_LABELS[locale] || locale}</span>
-          <span className="ml-2 text-sm text-white/40">{locale}</span>
+          <span className="text-lg font-medium text-sl-alabaster">{LOCALE_LABELS[locale] || locale}</span>
+          <span className="ml-2 text-sm text-sl-alabaster/40">{locale}</span>
         </div>
         <span className={`text-sm font-medium ${pct === 100 ? 'text-green-400' : pct >= 50 ? 'text-yellow-400' : 'text-red-400'}`}>
           {translated}/{total} ({pct}%)
         </span>
       </div>
       <div className="mb-3 h-1.5 overflow-hidden rounded-full bg-white/10">
-        <div className={`h-full rounded-full transition-all ${pct === 100 ? 'bg-green-500' : 'bg-accent'}`} style={{ width: `${pct}%` }} />
+        <div className={`h-full rounded-full transition-all ${pct === 100 ? 'bg-green-500' : 'bg-sl-gold-subtle'}`} style={{ width: `${pct}%` }} />
       </div>
-      <div className="flex flex-wrap gap-2 text-xs text-white/40">
+      <div className="flex flex-wrap gap-2 text-xs text-sl-alabaster/40">
         {Object.entries(CONTENT_TYPE_LABELS).map(([key, label]) => (
           <span key={key} className="rounded bg-white/5 px-2 py-0.5">
             {label}
@@ -75,12 +75,12 @@ function ExportImportPanel({ locale }: { locale: string }) {
 
   return (
     <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
-      <h3 className="mb-3 font-medium text-white">{LOCALE_LABELS[locale] || locale} ({locale})</h3>
+      <h3 className="mb-3 font-medium text-sl-alabaster">{LOCALE_LABELS[locale] || locale} ({locale})</h3>
       <div className="flex gap-3">
         <button
           onClick={handleExport}
           disabled={exporting}
-          className="rounded-lg bg-white/10 px-4 py-2 text-sm text-white/80 transition-colors hover:bg-white/20 disabled:opacity-50"
+          className="rounded-lg bg-white/10 px-4 py-2 text-sm text-sl-alabaster/80 transition-colors hover:bg-white/20 disabled:opacity-50"
         >
           {exporting ? 'Exporting...' : 'Export'}
         </button>
@@ -89,7 +89,7 @@ function ExportImportPanel({ locale }: { locale: string }) {
             <button
               onClick={handleImport}
               disabled={importing}
-              className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-accent-dark disabled:opacity-50"
+              className="rounded-lg bg-sl-gold-subtle px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-sl-gold-subtle-dark disabled:opacity-50"
             >
               {importing ? 'Importing...' : 'Import'}
             </button>
@@ -103,7 +103,7 @@ function ExportImportPanel({ locale }: { locale: string }) {
                 a.click();
                 URL.revokeObjectURL(url);
               }}
-              className="rounded-lg border border-white/10 px-4 py-2 text-sm text-white/60 transition-colors hover:bg-white/5"
+              className="rounded-lg border border-white/10 px-4 py-2 text-sm text-sl-alabaster/60 transition-colors hover:bg-white/5"
             >
               Download
             </button>
@@ -111,7 +111,7 @@ function ExportImportPanel({ locale }: { locale: string }) {
         )}
       </div>
       {exportData && (
-        <p className="mt-3 text-xs text-white/40">
+        <p className="mt-3 text-xs text-sl-alabaster/40">
           {Object.keys(exportData.contentTypes).length} content types,{' '}
           {Object.values(exportData.contentTypes).reduce((sum, arr) => sum + arr.length, 0)} entries exported
         </p>
@@ -145,8 +145,8 @@ export default function TranslationsPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-white">Translation Workflow</h1>
-        <p className="mt-1 text-sm text-white/40">
+        <h1 className="text-2xl font-semibold text-sl-alabaster">Translation Workflow</h1>
+        <p className="mt-1 text-sm text-sl-alabaster/40">
           {loading ? 'Loading...' : `${totalTranslated}/${totalEntries} translations across ${statuses.length} locales`}
         </p>
       </div>
@@ -160,7 +160,7 @@ export default function TranslationsPage() {
       {!loading && (
         <>
           <div className="mb-8">
-            <h2 className="mb-4 text-sm font-medium text-white/60 uppercase tracking-wider">Translation Coverage</h2>
+            <h2 className="mb-4 text-sm font-medium text-sl-alabaster/60 uppercase tracking-wider">Translation Coverage</h2>
             <div className="space-y-3">
               {statuses.map((s) => (
                 <StatusBar key={s.locale} locale={s.locale} total={s.total} translated={s.translated} />
@@ -169,7 +169,7 @@ export default function TranslationsPage() {
           </div>
 
           <div>
-            <h2 className="mb-4 text-sm font-medium text-white/60 uppercase tracking-wider">Export / Import</h2>
+            <h2 className="mb-4 text-sm font-medium text-sl-alabaster/60 uppercase tracking-wider">Export / Import</h2>
             <div className="space-y-3">
               {statuses.map((s) => (
                 <ExportImportPanel key={s.locale} locale={s.locale} />

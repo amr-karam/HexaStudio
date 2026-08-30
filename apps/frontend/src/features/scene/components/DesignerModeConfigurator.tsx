@@ -298,7 +298,7 @@ export function DesignerModeConfigurator() {
       {/* Floating Toggle Button */}
       <button
         onClick={toggleOpen}
-        className="fixed bottom-6 right-6 z-40 flex items-center space-x-2.5 bg-neutral-900/90 hover:bg-neutral-800 text-amber-400 border border-amber-500/30 px-4 py-3 rounded-full shadow-2xl backdrop-blur-xl transition-all duration-300 group"
+        className="fixed bottom-6 right-6 z-40 flex items-center space-x-2.5 bg-sl-void/90 hover:bg-sl-obsidian text-amber-400 border border-amber-500/30 px-4 py-3 rounded-full shadow-2xl backdrop-blur-xl transition-all duration-300 group"
       >
         <span className="text-lg">🎨</span>
         <span className="text-xs font-semibold text-neutral-100 group-hover:text-amber-300">Designer Mode</span>
@@ -312,28 +312,28 @@ export function DesignerModeConfigurator() {
             initial={{ opacity: 0, y: 20, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.96 }}
-            className="fixed bottom-20 right-6 z-50 w-96 bg-neutral-950/95 border border-neutral-800 rounded-3xl p-5 text-neutral-100 shadow-2xl backdrop-blur-2xl"
+            className="fixed bottom-20 right-6 z-50 w-96 bg-neutral-950/95 border border-sl-obsidian rounded-3xl p-5 text-neutral-100 shadow-2xl backdrop-blur-2xl"
           >
             {/* Drawer Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
+            <div className="flex items-center justify-between pb-3 border-b border-sl-obsidian">
               <div>
                 <h3 className="text-sm font-bold text-neutral-100">3D Designer Mode</h3>
-                <p className="text-xs text-neutral-400">PBR Materials, Lighting & AI Synthesis</p>
+                <p className="text-xs text-sl-mist/60">PBR Materials, Lighting & AI Synthesis</p>
               </div>
               <button
                 onClick={toggleOpen}
-                className="text-neutral-400 hover:text-neutral-200 p-1.5 rounded-lg hover:bg-neutral-800 transition-colors"
+                className="text-sl-mist/60 hover:text-neutral-200 p-1.5 rounded-lg hover:bg-sl-obsidian transition-colors"
               >
                 ✕
               </button>
             </div>
 
             {/* Navigation Tabs */}
-            <div className="flex p-1 mt-3 bg-neutral-900/80 rounded-xl border border-neutral-800">
+            <div className="flex p-1 mt-3 bg-sl-void/80 rounded-xl border border-sl-obsidian">
               <button
                 onClick={() => setActiveTab('lighting')}
                 className={`flex-1 text-xs py-1.5 font-medium rounded-lg transition-colors ${
-                  activeTab === 'lighting' ? 'bg-amber-500 text-neutral-950 font-bold' : 'text-neutral-400 hover:text-neutral-200'
+                  activeTab === 'lighting' ? 'bg-amber-500 text-neutral-950 font-bold' : 'text-sl-mist/60 hover:text-neutral-200'
                 }`}
               >
                 Lighting
@@ -341,7 +341,7 @@ export function DesignerModeConfigurator() {
               <button
                 onClick={() => setActiveTab('materials')}
                 className={`flex-1 text-xs py-1.5 font-medium rounded-lg transition-colors ${
-                  activeTab === 'materials' ? 'bg-amber-500 text-neutral-950 font-bold' : 'text-neutral-400 hover:text-neutral-200'
+                  activeTab === 'materials' ? 'bg-amber-500 text-neutral-950 font-bold' : 'text-sl-mist/60 hover:text-neutral-200'
                 }`}
               >
                 Materials
@@ -349,7 +349,7 @@ export function DesignerModeConfigurator() {
               <button
                 onClick={() => setActiveTab('ai')}
                 className={`flex-1 text-xs py-1.5 font-medium rounded-lg transition-colors ${
-                  activeTab === 'ai' ? 'bg-amber-500 text-neutral-950 font-bold' : 'text-neutral-400 hover:text-neutral-200'
+                  activeTab === 'ai' ? 'bg-amber-500 text-neutral-950 font-bold' : 'text-sl-mist/60 hover:text-neutral-200'
                 }`}
               >
                 AI Brief
@@ -365,8 +365,8 @@ export function DesignerModeConfigurator() {
                     onClick={() => setLighting(opt.id)}
                     className={`w-full p-3 rounded-2xl border text-left transition-all ${
                       activeLighting === opt.id
-                        ? 'bg-neutral-900 border-amber-500/60 shadow-lg shadow-amber-500/10'
-                        : 'bg-neutral-900/40 border-neutral-800 hover:border-neutral-700'
+                        ? 'bg-sl-void border-amber-500/60 shadow-lg shadow-amber-500/10'
+                        : 'bg-sl-void/40 border-sl-obsidian hover:border-neutral-700'
                     }`}
                   >
                     <div className="flex items-center justify-between">
@@ -376,7 +376,7 @@ export function DesignerModeConfigurator() {
                       </div>
                       {activeLighting === opt.id && <span className="text-xs text-amber-400 font-bold">Active</span>}
                     </div>
-                    <p className="text-[11px] text-neutral-400 mt-1">{opt.desc}</p>
+                    <p className="text-[11px] text-sl-mist/60 mt-1">{opt.desc}</p>
                   </button>
                 ))}
               </div>
@@ -391,8 +391,8 @@ export function DesignerModeConfigurator() {
                     onClick={() => setMaterial(mat.id)}
                     className={`w-full p-3 rounded-2xl border text-left transition-all ${
                       activeMaterial === mat.id
-                        ? 'bg-neutral-900 border-amber-500/60 shadow-lg shadow-amber-500/10'
-                        : 'bg-neutral-900/40 border-neutral-800 hover:border-neutral-700'
+                        ? 'bg-sl-void border-amber-500/60 shadow-lg shadow-amber-500/10'
+                        : 'bg-sl-void/40 border-sl-obsidian hover:border-neutral-700'
                     }`}
                   >
                     <div className="flex items-center justify-between">
@@ -402,7 +402,7 @@ export function DesignerModeConfigurator() {
                       </div>
                       {activeMaterial === mat.id && <span className="text-xs text-amber-400 font-bold">Active</span>}
                     </div>
-                    <div className="flex space-x-4 mt-2 text-[10px] text-neutral-400">
+                    <div className="flex space-x-4 mt-2 text-[10px] text-sl-mist/60">
                       <span>Roughness: {mat.roughness}</span>
                       <span>Metalness: {mat.metalness}</span>
                     </div>
@@ -415,13 +415,13 @@ export function DesignerModeConfigurator() {
             {activeTab === 'ai' && (
               <div className="mt-4 space-y-3">
                 {/* Input mode toggle: text prompt or voice capture */}
-                <div role="group" aria-label="Synthesis input mode" className="flex p-1 bg-neutral-900/80 rounded-xl border border-neutral-800">
+                <div role="group" aria-label="Synthesis input mode" className="flex p-1 bg-sl-void/80 rounded-xl border border-sl-obsidian">
                   <button
                     type="button"
                     onClick={() => setAiInputMode('text')}
                     aria-pressed={aiInputMode === 'text'}
                     className={`flex-1 text-xs py-1.5 font-medium rounded-lg transition-colors ${
-                      aiInputMode === 'text' ? 'bg-amber-500 text-neutral-950 font-bold' : 'text-neutral-400 hover:text-neutral-200'
+                      aiInputMode === 'text' ? 'bg-amber-500 text-neutral-950 font-bold' : 'text-sl-mist/60 hover:text-neutral-200'
                     }`}
                   >
                     Text
@@ -431,7 +431,7 @@ export function DesignerModeConfigurator() {
                     onClick={() => setAiInputMode('voice')}
                     aria-pressed={aiInputMode === 'voice'}
                     className={`flex-1 text-xs py-1.5 font-medium rounded-lg transition-colors ${
-                      aiInputMode === 'voice' ? 'bg-amber-500 text-neutral-950 font-bold' : 'text-neutral-400 hover:text-neutral-200'
+                      aiInputMode === 'voice' ? 'bg-amber-500 text-neutral-950 font-bold' : 'text-sl-mist/60 hover:text-neutral-200'
                     }`}
                   >
                     Voice
@@ -441,7 +441,7 @@ export function DesignerModeConfigurator() {
                 {aiInputMode === 'text' ? (
                   <div className="space-y-3">
                     <div>
-                      <label htmlFor="ai-prompt" className="text-xs font-medium text-neutral-300 block mb-1.5">
+                      <label htmlFor="ai-prompt" className="text-xs font-medium text-sl-mist/80 block mb-1.5">
                         Moodboard or Style Prompt
                       </label>
                       <textarea
@@ -450,7 +450,7 @@ export function DesignerModeConfigurator() {
                         value={aiPrompt}
                         onChange={(e) => setAiPrompt(e.target.value)}
                         placeholder="e.g. Minimalist Swiss concrete villa at sunset with warm timber accents..."
-                        className="w-full bg-neutral-900 border border-neutral-800 rounded-xl p-3 text-xs text-neutral-100 placeholder-neutral-500 focus:outline-none focus:border-amber-500/50"
+                        className="w-full bg-sl-void border border-sl-obsidian rounded-xl p-3 text-xs text-neutral-100 placeholder-neutral-500 focus:outline-none focus:border-amber-500/50"
                       />
                     </div>
                     <button
@@ -472,7 +472,7 @@ export function DesignerModeConfigurator() {
                       className={`w-full py-2.5 rounded-xl border text-xs font-bold transition-colors disabled:opacity-50 ${
                         isRecording
                           ? 'bg-red-500/15 border-red-500/50 text-red-300 hover:bg-red-500/25'
-                          : 'bg-neutral-900 border-neutral-700 text-neutral-100 hover:bg-neutral-800'
+                          : 'bg-sl-void border-neutral-700 text-neutral-100 hover:bg-sl-obsidian'
                       }`}
                     >
                       {isRecording
@@ -494,7 +494,7 @@ export function DesignerModeConfigurator() {
                           type="button"
                           onClick={handleCancelRecording}
                           aria-label="Cancel recording"
-                          className="text-[11px] text-neutral-400 underline hover:text-neutral-200 transition-colors"
+                          className="text-[11px] text-sl-mist/60 underline hover:text-neutral-200 transition-colors"
                         >
                           Cancel
                         </button>
@@ -526,11 +526,11 @@ export function DesignerModeConfigurator() {
                 )}
 
                 {activeBrief && (
-                  <div className="p-3 bg-neutral-900/80 border border-neutral-800 rounded-xl text-xs space-y-2">
+                  <div className="p-3 bg-sl-void/80 border border-sl-obsidian rounded-xl text-xs space-y-2">
                     <p className="font-semibold text-amber-400">{activeBrief.atmosphere}</p>
-                    <p className="text-[11px] text-neutral-300 leading-relaxed">{activeBrief.designRationale}</p>
+                    <p className="text-[11px] text-sl-mist/80 leading-relaxed">{activeBrief.designRationale}</p>
                     <div className="flex items-center space-x-1.5 pt-1">
-                      <span className="text-[10px] text-neutral-400">Palette:</span>
+                      <span className="text-[10px] text-sl-mist/60">Palette:</span>
                       {activeBrief.colorPalette.map((color, i) => (
                         <span key={i} className="w-3.5 h-3.5 rounded-full border border-neutral-700" style={{ backgroundColor: color }} />
                       ))}
@@ -541,10 +541,10 @@ export function DesignerModeConfigurator() {
             )}
 
             {/* Footer Action */}
-            <div className="mt-4 pt-3 border-t border-neutral-800 flex items-center justify-between">
+            <div className="mt-4 pt-3 border-t border-sl-obsidian flex items-center justify-between">
               <button
                 onClick={handleCaptureSnapshot}
-                className="w-full py-2 bg-neutral-900 hover:bg-neutral-800 text-neutral-200 border border-neutral-700 rounded-xl text-xs font-medium transition-colors flex items-center justify-center space-x-2"
+                className="w-full py-2 bg-sl-void hover:bg-sl-obsidian text-neutral-200 border border-neutral-700 rounded-xl text-xs font-medium transition-colors flex items-center justify-center space-x-2"
               >
                 <span>📷</span>
                 <span>Export High-Res 4K Snapshot</span>

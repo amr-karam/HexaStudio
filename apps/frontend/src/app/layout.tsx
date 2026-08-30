@@ -154,7 +154,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen bg-background text-foreground antialiased" suppressHydrationWarning>
+      <body className="min-h-screen bg-sl-void text-sl-alabaster antialiased" suppressHydrationWarning>
         <noscript>
           <style>{`
             .js-only { display: none !important; }

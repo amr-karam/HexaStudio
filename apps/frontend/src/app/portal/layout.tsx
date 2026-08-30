@@ -16,11 +16,11 @@ export default function PortalLayout({
 }) {
   return (
     <PortalThemeProvider>
-      <div className="min-h-screen bg-background text-foreground flex relative overflow-hidden">
+      <div className="min-h-screen bg-sl-void text-sl-alabaster flex relative overflow-hidden">
         {/* Dynamic Ambient Light - Follows the "Silent Luxury" theme */}
         <div className="fixed inset-0 pointer-events-none">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-gold/10 blur-[120px] animate-pulse" />
-          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-gold/5 blur-[120px]" />
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-sl-gold-subtle/10 blur-[120px] animate-pulse" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-sl-gold-subtle/5 blur-[120px]" />
         </div>
 
         {/* Desktop Sidebar - Now Glassmorphic */}

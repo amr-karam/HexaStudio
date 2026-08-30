@@ -66,8 +66,8 @@ export const GlassCard = ({
           scale: 1.01,
           boxShadow:
             variant === 'elevated'
-              ? '0 20px 60px -20px var(--color-gold-25)'
-              : '0 12px 48px -16px var(--color-gold-15)',
+              ? '0 20px 60px -20px var(--sl-gold-subtle)'
+              : '0 12px 48px -16px var(--sl-gold-subtle)',
         },
         transition: {
           duration: DURATION.component,

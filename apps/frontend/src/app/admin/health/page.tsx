@@ -49,7 +49,7 @@ const STATUS_STYLES: Record<HealthResult['status'], { bg: string; text: string; 
   healthy:   { bg: 'bg-emerald-500/10', text: 'text-emerald-400', dot: 'bg-emerald-400',             label: 'Healthy'   },
   degraded:  { bg: 'bg-yellow-500/10',  text: 'text-yellow-400',  dot: 'bg-yellow-400 animate-pulse',label: 'Degraded'  },
   down:      { bg: 'bg-red-500/10',     text: 'text-red-400',     dot: 'bg-red-500 animate-pulse',   label: 'Down'      },
-  unknown:   { bg: 'bg-white/5',        text: 'text-white/40',    dot: 'bg-white/20',                label: 'Unknown'   },
+  unknown:   { bg: 'bg-white/5',        text: 'text-sl-alabaster/40',    dot: 'bg-white/20',                label: 'Unknown'   },
 };
 
 async function checkService(svc: ServiceCheck): Promise<HealthResult> {
@@ -90,23 +90,23 @@ export default function HealthDashboardPage() {
   const allHealthy = healthy === total;
 
   return (
-    <div className="min-h-screen bg-obsidian text-white pt-24 pb-16 px-6">
+    <div className="min-h-screen bg-obsidian text-sl-alabaster pt-24 pb-16 px-6">
       <div className="max-w-5xl mx-auto space-y-8">
 
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Production Health Dashboard</h1>
-            <p className="text-xs text-white/50 mt-1">
+            <p className="text-xs text-sl-alabaster/50 mt-1">
               Server: <span className="font-mono text-amber-400">19.16.1.100</span> · Traefik v3 + Cloudflare Tunnel
-              {lastRun && <span className="ml-3">Last checked: <span className="text-white/70">{lastRun}</span></span>}
+              {lastRun && <span className="ml-3">Last checked: <span className="text-sl-alabaster/70">{lastRun}</span></span>}
             </p>
           </div>
 
           <button
             onClick={runChecks}
             disabled={isRunning}
-            className="flex items-center space-x-2 rounded-lg bg-accent px-5 py-2.5 text-xs font-bold text-black disabled:opacity-50 hover:bg-accent-light transition-colors"
+            className="flex items-center space-x-2 rounded-lg bg-sl-gold-subtle px-5 py-2.5 text-xs font-bold text-black disabled:opacity-50 hover:bg-sl-gold-subtle-light transition-colors"
           >
             <span>{isRunning ? '⟳ Checking…' : '↺ Re-check All'}</span>
           </button>
@@ -120,7 +120,7 @@ export default function HealthDashboardPage() {
               <p className={`text-sm font-bold ${allHealthy ? 'text-emerald-400' : 'text-red-400'}`}>
                 {allHealthy ? 'All Systems Operational' : `${total - healthy} Service${total - healthy !== 1 ? 's' : ''} Require Attention`}
               </p>
-              <p className="text-xs text-white/50">{healthy} / {total} services healthy</p>
+              <p className="text-xs text-sl-alabaster/50">{healthy} / {total} services healthy</p>
             </div>
           </div>
           <div className="flex items-center space-x-1">
@@ -136,7 +136,7 @@ export default function HealthDashboardPage() {
           if (!tierResults.length) return null;
           return (
             <div key={tier} className="space-y-3">
-              <h2 className="text-[10px] font-bold uppercase tracking-widest text-white/30">
+              <h2 className="text-[10px] font-bold uppercase tracking-widest text-sl-alabaster/30">
                 {tier === 'critical' ? '🔴 Critical Services' : tier === 'primary' ? '🟡 Primary Services' : '⚪ Secondary Services'}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -147,12 +147,12 @@ export default function HealthDashboardPage() {
                       <div className="flex items-center space-x-3">
                         <span className="text-xl">{result.icon}</span>
                         <div>
-                          <p className="text-sm font-semibold text-white">{result.label}</p>
+                          <p className="text-sm font-semibold text-sl-alabaster">{result.label}</p>
                           <div className="flex items-center space-x-1.5 mt-0.5">
                             <span className={`h-1.5 w-1.5 rounded-full ${style.dot}`} />
                             <span className={`text-[10px] font-medium ${style.text}`}>{style.label}</span>
                             {result.latencyMs !== undefined && (
-                              <span className="text-[10px] text-white/30">{result.latencyMs}ms</span>
+                              <span className="text-[10px] text-sl-alabaster/30">{result.latencyMs}ms</span>
                             )}
                           </div>
                         </div>
@@ -178,10 +178,10 @@ export default function HealthDashboardPage() {
         })}
 
         {/* Infrastructure Note */}
-        <div className="rounded-xl border border-white/5 bg-white/3 p-4 text-xs text-white/40 space-y-1">
-          <p>🏗 <strong className="text-white/60">Stack:</strong> Next.js 16 · NestJS 11 · Strapi 5 · Odoo 17 · PostgreSQL 16 · Redis 7 · Qdrant · MinIO</p>
-          <p>🌐 <strong className="text-white/60">Edge:</strong> Traefik v3 + Cloudflare Tunnel · GitLab CE (registry.gitlab.hexastudio.net)</p>
-          <p>🤖 <strong className="text-white/60">AI:</strong> Gemini 2.5 Flash · DeepSeek · OpenRouter · Anthropic Claude · Grok</p>
+        <div className="rounded-xl border border-white/5 bg-white/3 p-4 text-xs text-sl-alabaster/40 space-y-1">
+          <p>🏗 <strong className="text-sl-alabaster/60">Stack:</strong> Next.js 16 · NestJS 11 · Strapi 5 · Odoo 17 · PostgreSQL 16 · Redis 7 · Qdrant · MinIO</p>
+          <p>🌐 <strong className="text-sl-alabaster/60">Edge:</strong> Traefik v3 + Cloudflare Tunnel · GitLab CE (registry.gitlab.hexastudio.net)</p>
+          <p>🤖 <strong className="text-sl-alabaster/60">AI:</strong> Gemini 2.5 Flash · DeepSeek · OpenRouter · Anthropic Claude · Grok</p>
         </div>
       </div>
     </div>

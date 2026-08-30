@@ -111,11 +111,11 @@ export function GeminiLiveCritique({ projectId }: GeminiLiveCritiqueProps) {
   }, [stopSession]);
 
   return (
-    <div className="rounded-2xl border border-border/30 bg-obsidian-raised/60 p-4 space-y-3 artisan-glass">
+    <div className="rounded-2xl border border-sl-silver/20 bg-obsidian-raised/60 p-4 space-y-3 artisan-glass">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <div className={`h-2.5 w-2.5 rounded-full ${isActive ? 'bg-amber-400 animate-pulse' : 'bg-neutral-600'}`} />
-          <span className="text-xs font-mono uppercase tracking-wider text-accent font-medium">Live Voice Preview</span>
+          <span className="text-xs font-mono uppercase tracking-wider text-sl-gold-hover font-medium">Live Voice Preview</span>
         </div>
 
         <button
@@ -124,7 +124,7 @@ export function GeminiLiveCritique({ projectId }: GeminiLiveCritiqueProps) {
           className={`rounded-xl px-3.5 py-1.5 text-xs font-mono tracking-wider transition-all duration-300 ${
             isActive
               ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30'
-              : 'bg-obsidian border border-border/40 text-foreground hover:border-accent/40 hover:text-accent'
+              : 'bg-obsidian border border-sl-silver/20/40 text-sl-alabaster hover:border-sl-gold-subtle/40 hover:text-sl-gold-hover'
           }`}
         >
           {isConnecting ? 'Connecting...' : isActive ? '⏹ Disconnect' : '🎙️ Start Voice Preview'}
@@ -153,13 +153,13 @@ export function GeminiLiveCritique({ projectId }: GeminiLiveCritiqueProps) {
                 ref={(el) => {
                   barRefs.current[i] = el;
                 }}
-                className="flex-1 bg-accent/60 rounded-full"
+                className="flex-1 bg-sl-gold-subtle/60 rounded-full"
                 style={{ height: '15%' }}
               />
             ))}
           </div>
 
-          <p className="text-[11px] font-mono text-text-secondary leading-relaxed bg-obsidian/60 p-2.5 rounded-lg border border-border/20">
+          <p className="text-[11px] font-mono text-text-secondary leading-relaxed bg-obsidian/60 p-2.5 rounded-lg border border-sl-silver/20">
             {transcript}
           </p>
         </div>

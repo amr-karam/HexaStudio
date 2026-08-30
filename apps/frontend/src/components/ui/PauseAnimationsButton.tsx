@@ -30,9 +30,9 @@ export function PauseAnimationsButton({ className }: PauseAnimationsButtonProps)
       aria-label={paused ? 'Resume animations' : 'Pause animations'}
       className={cn(
         'flex items-center justify-center h-8 w-8 rounded-full',
-        'border border-border/40 text-neutral-500 hover:text-accent hover:border-accent/40',
+        'border border-sl-silver/20/40 text-sl-mist/60 hover:text-sl-gold-hover hover:border-sl-gold-subtle/40',
         'transition-colors duration-300',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background',
         className,
       )}
     >

@@ -21,9 +21,9 @@ interface HealthScoreProps {
 }
 
 function getScoreColor(score: number): { text: string; glow: string } {
-  if (score > 80) return { text: 'text-accent', glow: 'rgba(var(--color-accent-rgb), 0.1)' };
-  if (score > 60) return { text: 'text-neutral-400', glow: 'rgba(var(--color-neutral-400-rgb), 0.1)' };
-  if (score > 40) return { text: 'text-neutral-500', glow: 'rgba(var(--color-neutral-500-rgb), 0.1)' };
+  if (score > 80) return { text: 'text-sl-gold-hover', glow: 'rgba(var(--color-accent-rgb), 0.1)' };
+  if (score > 60) return { text: 'text-sl-mist/60', glow: 'rgba(var(--color-neutral-400-rgb), 0.1)' };
+  if (score > 40) return { text: 'text-sl-mist/60', glow: 'rgba(var(--color-neutral-500-rgb), 0.1)' };
   return { text: 'text-danger', glow: 'rgba(var(--color-danger-rgb), 0.1)' };
 }
 
@@ -36,7 +36,7 @@ function getSentimentVisuals(sentiment?: string): { label: string; color: string
     case 'urgent':
       return { label: 'High Urgency ⚡', color: 'text-danger', aura: 'rgba(239, 68, 68, 0.2)', animate: true };
     default:
-      return { label: 'Stable ⚖️', color: 'text-neutral-500', aura: 'rgba(168, 162, 158, 0.1)', animate: false };
+      return { label: 'Stable ⚖️', color: 'text-sl-mist/60', aura: 'rgba(168, 162, 158, 0.1)', animate: false };
   }
 }
 
@@ -131,11 +131,11 @@ export function HealthScore({ data, className }: HealthScoreProps) {
               ease: 'power4.out',
               delay: prefersReduced ? 0 : 0.2,
             }}
-            className="text-5xl font-serif font-light text-foreground"
+            className="text-5xl font-serif font-light text-sl-alabaster"
           >
             {score}
           </motion.span>
-          <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono -mt-0.5">
+          <span className="text-[10px] uppercase tracking-widest text-sl-mist/60 font-mono -mt-0.5">
             / 100
           </span>
         </div>
@@ -158,7 +158,7 @@ export function HealthScore({ data, className }: HealthScoreProps) {
       >
         {sentimentVisuals.label}
       </motion.p>
-      <p className="text-xs text-neutral-600 mt-1">Project Health</p>
+      <p className="text-xs text-sl-mist/60 mt-1">Project Health</p>
     </div>
   );
 }

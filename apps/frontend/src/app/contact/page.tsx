@@ -68,31 +68,31 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="bg-background text-foreground min-h-screen overflow-hidden">
+    <div className="bg-sl-void text-sl-alabaster min-h-screen overflow-hidden">
       <section className="relative flex min-h-screen flex-col items-center justify-center px-8 overflow-hidden">
         {/* Cinematic Background */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
           <SilkShaderBackground speed={0.3} opacity={0.12} />
           <div className="absolute inset-0 gradient-radial-gold" />
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-accent/10 blur-[120px] rounded-full" />
-          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/5 blur-[120px] rounded-full" />
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-sl-gold-subtle/10 blur-[120px] rounded-full" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-sl-gold-subtle/5 blur-[120px] rounded-full" />
         </div>
 
         {/* Hero */}
         <div className="text-center relative z-10 mb-16">
           {/* Atelier eyebrow */}
           <div className="flex items-center gap-4 mb-8">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-accent/30 to-transparent" aria-hidden="true" />
-            <span className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-neutral-500">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-sl-gold-subtle/30 to-transparent" aria-hidden="true" />
+            <span className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-sl-mist/60">
               § 01 — Contact
             </span>
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-accent/30 to-transparent" aria-hidden="true" />
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-sl-gold-subtle/30 to-transparent" aria-hidden="true" />
           </div>
 
-          <h1 className="text-5xl md:text-8xl font-serif font-light tracking-tighter text-foreground leading-tight">
+          <h1 className="text-5xl md:text-8xl font-serif font-light tracking-tighter text-sl-alabaster leading-tight">
             <TextCharReveal text="Start the" delay={0.1} stagger={0.04} blur />
             <br />
-            <span className="italic text-accent">
+            <span className="italic text-sl-gold-hover">
               <TextCharReveal text="Conversation." delay={0.5} stagger={0.04} blur />
             </span>
           </h1>
@@ -111,7 +111,7 @@ export default function ContactPage() {
               <div className="artisan-glass artisan-specular-top rounded-2xl p-8 md:p-16 relative overflow-hidden">
                 {/* Gold radial aura behind card */}
                 <div
-                  className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-accent/5 blur-3xl pointer-events-none"
+                  className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-sl-gold-subtle/5 blur-3xl pointer-events-none"
                   aria-hidden="true"
                 />
 
@@ -120,7 +120,7 @@ export default function ContactPage() {
                   <div className="flex flex-col gap-2 group">
                     <label
                       htmlFor="contact-name"
-                      className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-neutral-500 group-focus-within:text-accent transition-colors duration-700"
+                      className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-sl-mist/60 group-focus-within:text-sl-gold-hover transition-colors duration-700"
                     >
                       Full Name
                     </label>
@@ -133,7 +133,7 @@ export default function ContactPage() {
                       aria-invalid={errors.name ? true : undefined}
                       aria-describedby={errors.name ? 'contact-name-error' : undefined}
                       className={cn(
-                        'w-full bg-transparent border-b border-border/50 focus:border-accent/60 transition-all duration-700 rounded-none px-0 py-4 text-base font-light placeholder:text-neutral-600 focus:outline-none',
+                        'w-full bg-transparent border-b border-sl-silver/20 focus:border-sl-gold-subtle/60 transition-all duration-700 rounded-none px-0 py-4 text-base font-light placeholder:text-sl-mist/60 focus:outline-none',
                         errors.name && 'border-red-500/60 focus:border-red-500',
                       )}
                     />
@@ -148,7 +148,7 @@ export default function ContactPage() {
                   <div className="flex flex-col gap-2 group">
                     <label
                       htmlFor="contact-email"
-                      className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-neutral-500 group-focus-within:text-accent transition-colors duration-700"
+                      className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-sl-mist/60 group-focus-within:text-sl-gold-hover transition-colors duration-700"
                     >
                       Email Address
                     </label>
@@ -161,7 +161,7 @@ export default function ContactPage() {
                       aria-invalid={errors.email ? true : undefined}
                       aria-describedby={errors.email ? 'contact-email-error' : undefined}
                       className={cn(
-                        'w-full bg-transparent border-b border-border/50 focus:border-accent/60 transition-all duration-700 rounded-none px-0 py-4 text-base font-light placeholder:text-neutral-600 focus:outline-none',
+                        'w-full bg-transparent border-b border-sl-silver/20 focus:border-sl-gold-subtle/60 transition-all duration-700 rounded-none px-0 py-4 text-base font-light placeholder:text-sl-mist/60 focus:outline-none',
                         errors.email && 'border-red-500/60 focus:border-red-500',
                       )}
                     />
@@ -176,7 +176,7 @@ export default function ContactPage() {
                   <div className="flex flex-col gap-2 md:col-span-2 group">
                     <label
                       htmlFor="contact-company"
-                      className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-neutral-500 group-focus-within:text-accent transition-colors duration-700"
+                      className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-sl-mist/60 group-focus-within:text-sl-gold-hover transition-colors duration-700"
                     >
                       Company (Optional)
                     </label>
@@ -186,7 +186,7 @@ export default function ContactPage() {
                       placeholder="Studio or Firm Name"
                       value={formState.company}
                       onChange={(e) => setFormState({ ...formState, company: e.target.value })}
-                      className="w-full bg-transparent border-b border-border/50 focus:border-accent/60 transition-all duration-700 rounded-none px-0 py-4 text-base font-light placeholder:text-neutral-600 focus:outline-none"
+                      className="w-full bg-transparent border-b border-sl-silver/20 focus:border-sl-gold-subtle/60 transition-all duration-700 rounded-none px-0 py-4 text-base font-light placeholder:text-sl-mist/60 focus:outline-none"
                     />
                   </div>
 
@@ -194,7 +194,7 @@ export default function ContactPage() {
                   <div className="flex flex-col gap-2 group">
                     <label
                       htmlFor="contact-phone"
-                      className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-neutral-500 group-focus-within:text-accent transition-colors duration-700"
+                      className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-sl-mist/60 group-focus-within:text-sl-gold-hover transition-colors duration-700"
                     >
                       Phone (Optional)
                     </label>
@@ -204,7 +204,7 @@ export default function ContactPage() {
                       placeholder="+1 (555) 000-0000"
                       value={formState.phone}
                       onChange={(e) => setFormState({ ...formState, phone: e.target.value })}
-                      className="w-full bg-transparent border-b border-border/50 focus:border-accent/60 transition-all duration-700 rounded-none px-0 py-4 text-base font-light placeholder:text-neutral-600 focus:outline-none"
+                      className="w-full bg-transparent border-b border-sl-silver/20 focus:border-sl-gold-subtle/60 transition-all duration-700 rounded-none px-0 py-4 text-base font-light placeholder:text-sl-mist/60 focus:outline-none"
                     />
                   </div>
 
@@ -212,7 +212,7 @@ export default function ContactPage() {
                   <div className="flex flex-col gap-2 group">
                     <label
                       htmlFor="contact-service"
-                      className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-neutral-500 group-focus-within:text-accent transition-colors duration-700"
+                      className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-sl-mist/60 group-focus-within:text-sl-gold-hover transition-colors duration-700"
                     >
                       Service Type (Optional)
                     </label>
@@ -220,11 +220,11 @@ export default function ContactPage() {
                       id="contact-service"
                       value={formState.service}
                       onChange={(e) => setFormState({ ...formState, service: e.target.value })}
-                      className="w-full bg-transparent border-b border-border/50 focus:border-accent/60 transition-all duration-700 rounded-none px-0 py-4 text-base font-light text-foreground placeholder:text-neutral-600 focus:outline-none appearance-none cursor-pointer"
+                      className="w-full bg-transparent border-b border-sl-silver/20 focus:border-sl-gold-subtle/60 transition-all duration-700 rounded-none px-0 py-4 text-base font-light text-sl-alabaster placeholder:text-sl-mist/60 focus:outline-none appearance-none cursor-pointer"
                     >
-                      <option value="" className="bg-neutral-900">Select a service...</option>
+                      <option value="" className="bg-sl-void">Select a service...</option>
                       {serviceOptions.map((s) => (
-                        <option key={s.id} value={s.slug} className="bg-neutral-900">{s.title}</option>
+                        <option key={s.id} value={s.slug} className="bg-sl-void">{s.title}</option>
                       ))}
                     </select>
                   </div>
@@ -233,7 +233,7 @@ export default function ContactPage() {
                   <div className="flex flex-col gap-2 md:col-span-2 group">
                     <label
                       htmlFor="contact-budget"
-                      className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-neutral-500 group-focus-within:text-accent transition-colors duration-700"
+                      className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-sl-mist/60 group-focus-within:text-sl-gold-hover transition-colors duration-700"
                     >
                       Budget Range (Optional)
                     </label>
@@ -241,13 +241,13 @@ export default function ContactPage() {
                       id="contact-budget"
                       value={formState.budget}
                       onChange={(e) => setFormState({ ...formState, budget: e.target.value })}
-                      className="w-full bg-transparent border-b border-border/50 focus:border-accent/60 transition-all duration-700 rounded-none px-0 py-4 text-base font-light text-foreground placeholder:text-neutral-600 focus:outline-none appearance-none cursor-pointer"
+                      className="w-full bg-transparent border-b border-sl-silver/20 focus:border-sl-gold-subtle/60 transition-all duration-700 rounded-none px-0 py-4 text-base font-light text-sl-alabaster placeholder:text-sl-mist/60 focus:outline-none appearance-none cursor-pointer"
                     >
-                      <option value="" className="bg-neutral-900">Select a budget range...</option>
-                      <option value="under_50k" className="bg-neutral-900">Under $50K</option>
-                      <option value="50k_100k" className="bg-neutral-900">$50K – $100K</option>
-                      <option value="100k_500k" className="bg-neutral-900">$100K – $500K</option>
-                      <option value="500k_plus" className="bg-neutral-900">$500K+</option>
+                      <option value="" className="bg-sl-void">Select a budget range...</option>
+                      <option value="under_50k" className="bg-sl-void">Under $50K</option>
+                      <option value="50k_100k" className="bg-sl-void">$50K – $100K</option>
+                      <option value="100k_500k" className="bg-sl-void">$100K – $500K</option>
+                      <option value="500k_plus" className="bg-sl-void">$500K+</option>
                     </select>
                   </div>
 
@@ -255,7 +255,7 @@ export default function ContactPage() {
                   <div className="flex flex-col gap-2 md:col-span-2 group">
                     <label
                       htmlFor="contact-message"
-                      className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-neutral-500 group-focus-within:text-accent transition-colors duration-700"
+                      className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-sl-mist/60 group-focus-within:text-sl-gold-hover transition-colors duration-700"
                     >
                       Your Vision
                     </label>
@@ -267,7 +267,7 @@ export default function ContactPage() {
                       aria-invalid={errors.message ? true : undefined}
                       aria-describedby={errors.message ? 'contact-message-error' : undefined}
                       className={cn(
-                        'w-full h-48 bg-transparent border-b border-border/50 focus:border-accent/60 transition-all duration-700 rounded-none px-0 py-4 text-base font-light placeholder:text-neutral-600 focus:outline-none resize-none leading-relaxed',
+                        'w-full h-48 bg-transparent border-b border-sl-silver/20 focus:border-sl-gold-subtle/60 transition-all duration-700 rounded-none px-0 py-4 text-base font-light placeholder:text-sl-mist/60 focus:outline-none resize-none leading-relaxed',
                         errors.message && 'border-red-500/60 focus:border-red-500',
                       )}
                     />
@@ -306,7 +306,7 @@ export default function ContactPage() {
               <div className="artisan-glass artisan-specular-top rounded-2xl p-12 relative overflow-hidden">
                 {/* Gold radial aura behind card */}
                 <div
-                  className="absolute -top-20 left-1/2 -translate-x-1/2 h-40 w-40 rounded-full bg-accent/5 blur-3xl pointer-events-none"
+                  className="absolute -top-20 left-1/2 -translate-x-1/2 h-40 w-40 rounded-full bg-sl-gold-subtle/5 blur-3xl pointer-events-none"
                   aria-hidden="true"
                 />
 
@@ -318,7 +318,7 @@ export default function ContactPage() {
                   className={cn(
                     'w-20 h-20 mx-auto rounded-full border flex items-center justify-center mb-8',
                     status === 'sent'
-                      ? 'bg-accent/10 border-accent/20 text-accent'
+                      ? 'bg-sl-gold-subtle/10 border-sl-gold-subtle/20 text-sl-gold-hover'
                       : 'bg-red-500/10 border-red-500/20 text-red-500',
                   )}
                 >
@@ -345,10 +345,10 @@ export default function ContactPage() {
                   )}
                 </motion.div>
 
-                <h2 className="text-4xl font-serif font-light text-foreground mb-4">
+                <h2 className="text-4xl font-serif font-light text-sl-alabaster mb-4">
                   {status === 'sent' ? 'Message Received' : 'Transmission Failed'}
                 </h2>
-                <p className="text-neutral-400 font-light mb-12 max-w-xl mx-auto leading-relaxed">
+                <p className="text-sl-mist/60 font-light mb-12 max-w-xl mx-auto leading-relaxed">
                   {status === 'sent'
                     ? 'Thank you for reaching out. Our architects will review your vision and respond shortly.'
                     : 'Our systems are experiencing a momentary glitch. Please try again in a few moments.'}
@@ -370,11 +370,11 @@ export default function ContactPage() {
           href="/"
           className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 group"
         >
-          <span className="text-[0.5625rem] uppercase tracking-[0.35em] text-neutral-600 font-mono group-hover:text-accent transition-colors duration-700">
+          <span className="text-[0.5625rem] uppercase tracking-[0.35em] text-sl-mist/60 font-mono group-hover:text-sl-gold-hover transition-colors duration-700">
             Back to Home
           </span>
           <div
-            className="h-12 w-px bg-gradient-to-b from-neutral-600 to-transparent group-hover:from-accent transition-all duration-700"
+            className="h-12 w-px bg-gradient-to-b from-neutral-600 to-transparent group-hover:from-sl-gold-subtle transition-all duration-700"
             aria-hidden="true"
           />
         </Link>

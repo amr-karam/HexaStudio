@@ -20,10 +20,10 @@ const ACTIVITY_CONFIG: Record<ActivityType, { icon: IconName; color: string; bor
   approval: { icon: 'check', color: 'text-emerald-400', borderColor: 'border-l-emerald-400' },
   upload: { icon: 'upload', color: 'text-blue-400', borderColor: 'border-l-blue-400' },
   comment: { icon: 'message-square', color: 'text-purple-400', borderColor: 'border-l-purple-400' },
-  milestone: { icon: 'zap', color: 'text-accent', borderColor: 'border-l-accent' },
+  milestone: { icon: 'zap', color: 'text-sl-gold-hover', borderColor: 'border-l-accent' },
   invoice: { icon: 'receipt', color: 'text-amber-400', borderColor: 'border-l-amber-400' },
   message: { icon: 'send', color: 'text-cyan-400', borderColor: 'border-l-cyan-400' },
-  update: { icon: 'file-text', color: 'text-neutral-400', borderColor: 'border-l-neutral-500' },
+  update: { icon: 'file-text', color: 'text-sl-mist/60', borderColor: 'border-l-neutral-500' },
 };
 
 function formatRelativeTime(timestamp: string): string {
@@ -55,7 +55,7 @@ export function ActivityItem({ item, className }: ActivityItemProps) {
       className={cn(
         'flex items-start gap-3 p-3 rounded-lg border-l-2 w-full text-left',
         'hover:bg-white/[0.02] transition-colors duration-200',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
         config.borderColor,
         className,
       )}
@@ -67,16 +67,16 @@ export function ActivityItem({ item, className }: ActivityItemProps) {
 
       {/* Content */}
       <div className="min-w-0 flex-1">
-        <p className="text-sm text-foreground leading-snug">{item.title}</p>
-        <p className="text-xs text-neutral-500 mt-0.5 line-clamp-2">{item.description}</p>
+        <p className="text-sm text-sl-alabaster leading-snug">{item.title}</p>
+        <p className="text-xs text-sl-mist/60 mt-0.5 line-clamp-2">{item.description}</p>
 
         <div className="flex items-center gap-2 mt-2">
           {item.projectName && (
-            <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-600 bg-white/[0.03] px-2 py-0.5 rounded">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-sl-mist/60 bg-white/[0.03] px-2 py-0.5 rounded">
               {item.projectName}
             </span>
           )}
-          <span className="text-[10px] text-neutral-600 font-mono">
+          <span className="text-[10px] text-sl-mist/60 font-mono">
             {formatRelativeTime(item.timestamp)}
           </span>
         </div>

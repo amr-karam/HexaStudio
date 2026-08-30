@@ -70,7 +70,7 @@ const TYPE_ICON_MAP: Record<NotificationType, IconName> = {
 
 /** Maps notification type → Tailwind color class for the connector dot. */
 const TYPE_DOT_COLOR: Record<NotificationType, string> = {
-  approval: 'border-accent bg-accent/20',
+  approval: 'border-sl-gold-subtle bg-sl-gold-subtle/20',
   success: 'border-emerald-400 bg-emerald-500/20',
   warning: 'border-amber-400 bg-amber-500/20',
   error: 'border-red-400 bg-red-500/20',
@@ -79,7 +79,7 @@ const TYPE_DOT_COLOR: Record<NotificationType, string> = {
 
 /** Maps notification type → Tailwind color class for the icon. */
 const TYPE_ICON_COLOR: Record<NotificationType, string> = {
-  approval: 'text-accent',
+  approval: 'text-sl-gold-hover',
   success: 'text-emerald-400',
   warning: 'text-amber-400',
   error: 'text-red-400',
@@ -88,7 +88,7 @@ const TYPE_ICON_COLOR: Record<NotificationType, string> = {
 
 /** Maps notification type → background glow for the detail panel. */
 const TYPE_GLOW_CLASS: Record<NotificationType, string> = {
-  approval: 'bg-accent/[0.04]',
+  approval: 'bg-sl-gold-subtle/[0.04]',
   success: 'bg-emerald-500/[0.04]',
   warning: 'bg-amber-500/[0.04]',
   error: 'bg-red-500/[0.04]',
@@ -233,7 +233,7 @@ function NotificationSkeleton({ count = 5 }: { count?: number }) {
       {Array.from({ length: count }).map((_, idx) => (
         <div
           key={idx}
-          className="rounded-2xl border border-border/20 bg-surface p-5 overflow-hidden relative"
+          className="rounded-2xl border border-sl-silver/20 bg-sl-obsidian p-5 overflow-hidden relative"
         >
           {/* Animated gold shimmer overlay */}
           <div
@@ -277,8 +277,8 @@ function EmptyNotificationState({
       className="flex flex-col items-center justify-center py-20 px-6 text-center"
     >
       <div className="relative mb-6">
-        <div className="w-20 h-20 rounded-[2rem] bg-white/[0.02] border border-border/20 flex items-center justify-center">
-          <Icon name="bell" size={32} className="text-neutral-600" />
+        <div className="w-20 h-20 rounded-[2rem] bg-white/[0.02] border border-sl-silver/20 flex items-center justify-center">
+          <Icon name="bell" size={32} className="text-sl-mist/60" />
         </div>
         {/* Subtle gold glow ring */}
         <div
@@ -290,10 +290,10 @@ function EmptyNotificationState({
           aria-hidden="true"
         />
       </div>
-      <h3 className="text-base font-semibold text-neutral-400">
+      <h3 className="text-base font-semibold text-sl-mist/60">
         All caught up
       </h3>
-      <p className="text-sm text-neutral-600 mt-1.5 max-w-[280px]">
+      <p className="text-sm text-sl-mist/60 mt-1.5 max-w-[280px]">
         You have no pending notifications. We&apos;ll let you know when
         something needs your attention.
       </p>
@@ -428,7 +428,7 @@ export default function NotificationCenterPage() {
           className="space-y-2"
         >
           <motion.div variants={fadeLift} custom={prefersReduced}>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-light text-foreground tracking-tight leading-tight">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-light text-sl-alabaster tracking-tight leading-tight">
               Notification{' '}
               <span className="text-gradient-gold">Center</span>
             </h1>
@@ -439,7 +439,7 @@ export default function NotificationCenterPage() {
             custom={prefersReduced}
             transition={makeTransition('entrance', 'component', 0.1)}
           >
-            <p className="text-sm text-neutral-500 max-w-2xl">
+            <p className="text-sm text-sl-mist/60 max-w-2xl">
               Stay informed about project milestones, approvals, and
               activity across all your projects.
             </p>
@@ -473,7 +473,7 @@ export default function NotificationCenterPage() {
         >
           {/* ---- Filter Tabs ---- */}
           <div
-            className="inline-flex items-center gap-1 p-1 rounded-xl bg-white/[0.03] border border-border/15"
+            className="inline-flex items-center gap-1 p-1 rounded-xl bg-white/[0.03] border border-sl-silver/20/15"
             role="tablist"
             aria-label="Filter notifications by type"
           >
@@ -490,14 +490,14 @@ export default function NotificationCenterPage() {
                     'relative px-3.5 py-2 rounded-lg text-[11px] font-mono font-bold uppercase tracking-wider transition-all duration-300',
                     isActive
                       ? 'text-void'
-                      : 'text-neutral-500 hover:text-foreground',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
+                      : 'text-sl-mist/60 hover:text-sl-alabaster',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
                   )}
                 >
                   {isActive && (
                     <motion.span
                       layoutId="active-filter-pill"
-                      className="absolute inset-0 rounded-lg bg-accent"
+                      className="absolute inset-0 rounded-lg bg-sl-gold-subtle"
                       transition={
                         prefersReduced
                           ? { duration: 0.01 }
@@ -514,7 +514,7 @@ export default function NotificationCenterPage() {
                           'text-[10px] px-1.5 py-0.5 rounded-full font-mono',
                           isActive
                             ? 'bg-void/20 text-void'
-                            : 'bg-white/[0.06] text-neutral-500',
+                            : 'bg-white/[0.06] text-sl-mist/60',
                         )}
                       >
                         {notificationsWithLocalRead.length}
@@ -526,7 +526,7 @@ export default function NotificationCenterPage() {
                           'text-[10px] px-1.5 py-0.5 rounded-full font-mono',
                           isActive
                             ? 'bg-void/20 text-void'
-                            : 'bg-white/[0.06] text-neutral-500',
+                            : 'bg-white/[0.06] text-sl-mist/60',
                         )}
                       >
                         {unreadCount}
@@ -548,9 +548,9 @@ export default function NotificationCenterPage() {
               onClick={handleMarkAllAsRead}
               className={cn(
                 'inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold',
-                'bg-accent/10 text-accent border border-accent/20',
-                'hover:bg-accent/20 hover:border-accent/30 transition-all duration-300',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
+                'bg-sl-gold-subtle/10 text-sl-gold-hover border border-sl-gold-subtle/20',
+                'hover:bg-sl-gold-subtle/20 hover:border-sl-gold-subtle/30 transition-all duration-300',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
               )}
               aria-label={`Mark all ${unreadCount} notifications as read`}
             >
@@ -682,11 +682,11 @@ function NotificationListItem({
       role="listitem"
       className={cn(
         'group relative rounded-2xl border transition-all duration-300 cursor-pointer',
-        'hover:bg-white/[0.03] hover:border-border/30',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+        'hover:bg-white/[0.03] hover:border-sl-silver/20',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background',
         isExpanded
-          ? 'border-accent/25 bg-white/[0.03]'
-          : 'border-border/20 bg-surface',
+          ? 'border-sl-gold-subtle/25 bg-white/[0.03]'
+          : 'border-sl-silver/20 bg-sl-obsidian',
       )}
       tabIndex={0}
       onKeyDown={(e: React.KeyboardEvent) => {
@@ -728,8 +728,8 @@ function NotificationListItem({
           className={cn(
             'shrink-0 w-10 h-10 rounded-xl flex items-center justify-center border transition-all duration-300',
             isExpanded
-              ? 'bg-accent/[0.08] border-accent/20'
-              : 'bg-white/[0.03] border-border/15 group-hover:bg-white/[0.05]',
+              ? 'bg-sl-gold-subtle/[0.08] border-sl-gold-subtle/20'
+              : 'bg-white/[0.03] border-sl-silver/20/15 group-hover:bg-white/[0.05]',
           )}
           aria-hidden="true"
         >
@@ -754,8 +754,8 @@ function NotificationListItem({
                   className={cn(
                     'text-sm leading-snug transition-colors duration-300',
                     notification.isRead
-                      ? 'text-neutral-400 font-medium'
-                      : 'text-foreground font-semibold',
+                      ? 'text-sl-mist/60 font-medium'
+                      : 'text-sl-alabaster font-semibold',
                   )}
                 >
                   {notification.title}
@@ -766,7 +766,7 @@ function NotificationListItem({
                   className={cn(
                     'shrink-0 text-[9px] font-mono font-bold uppercase tracking-widest px-1.5 py-0.5 rounded',
                     typeColor,
-                    'bg-white/[0.03] border border-border/10',
+                    'bg-white/[0.03] border border-sl-silver/10',
                   )}
                 >
                   {notification.type}
@@ -777,7 +777,7 @@ function NotificationListItem({
               <p
                 className={cn(
                   'text-xs mt-1 leading-relaxed line-clamp-1 transition-colors duration-300',
-                  notification.isRead ? 'text-neutral-600' : 'text-neutral-500',
+                  notification.isRead ? 'text-sl-mist/60' : 'text-sl-mist/60',
                 )}
               >
                 {notification.message}
@@ -790,10 +790,10 @@ function NotificationListItem({
                   size={11}
                   className={cn(
                     'transition-colors duration-300',
-                    notification.isRead ? 'text-neutral-700' : 'text-neutral-600',
+                    notification.isRead ? 'text-neutral-700' : 'text-sl-mist/60',
                   )}
                 />
-                <span className="text-[10px] font-mono text-neutral-600">
+                <span className="text-[10px] font-mono text-sl-mist/60">
                   {formatRelativeTime(notification.timestamp)}
                 </span>
               </div>
@@ -807,8 +807,8 @@ function NotificationListItem({
                   aria-label="Unread notification"
                   role="status"
                 >
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-40" />
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-accent" />
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sl-gold-subtle opacity-40" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-sl-gold-subtle" />
                 </span>
               )}
 
@@ -822,7 +822,7 @@ function NotificationListItem({
                 }
                 className={cn(
                   'transition-opacity duration-300',
-                  isExpanded ? 'text-accent' : 'text-neutral-600 opacity-0 group-hover:opacity-100',
+                  isExpanded ? 'text-sl-gold-hover' : 'text-sl-mist/60 opacity-0 group-hover:opacity-100',
                 )}
               >
                 <Icon name="chevron-right" size={14} />
@@ -852,18 +852,18 @@ function NotificationListItem({
           >
             <div
               className={cn(
-                'px-4 sm:px-5 pb-5 pt-1 border-t border-border/15',
+                'px-4 sm:px-5 pb-5 pt-1 border-t border-sl-silver/20/15',
                 glowClass,
               )}
             >
               <div className="pl-[68px] space-y-4">
                 {/* Full message */}
-                <p className="text-sm text-neutral-400 leading-relaxed">
+                <p className="text-sm text-sl-mist/60 leading-relaxed">
                   {notification.message}
                 </p>
 
                 {/* Detail metadata */}
-                <div className="flex flex-wrap items-center gap-4 text-[11px] font-mono text-neutral-600">
+                <div className="flex flex-wrap items-center gap-4 text-[11px] font-mono text-sl-mist/60">
                   <span>
                     Type:{' '}
                     <span className={cn('font-semibold', typeColor)}>
@@ -876,7 +876,7 @@ function NotificationListItem({
                   </span>
                   <span>
                     ID:{' '}
-                    <span className="text-neutral-500">
+                    <span className="text-sl-mist/60">
                       {notification.id}
                     </span>
                   </span>
@@ -892,9 +892,9 @@ function NotificationListItem({
                       }}
                       className={cn(
                         'inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold',
-                        'bg-accent text-void hover:bg-accent-bright',
+                        'bg-sl-gold-subtle text-void hover:bg-sl-gold-subtle-bright',
                         'transition-colors duration-200',
-                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background',
                       )}
                       aria-label={`Navigate to ${notification.link}`}
                     >
@@ -911,10 +911,10 @@ function NotificationListItem({
                       }}
                       className={cn(
                         'inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-[11px] font-semibold',
-                        'text-neutral-500 hover:text-foreground',
-                        'bg-white/[0.03] hover:bg-white/[0.06] border border-border/15 hover:border-border/30',
+                        'text-sl-mist/60 hover:text-sl-alabaster',
+                        'bg-white/[0.03] hover:bg-white/[0.06] border border-sl-silver/20/15 hover:border-sl-silver/20',
                         'transition-all duration-200',
-                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background',
                       )}
                       aria-label="Mark as read"
                     >

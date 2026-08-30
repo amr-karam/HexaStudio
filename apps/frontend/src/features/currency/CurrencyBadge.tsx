@@ -27,7 +27,7 @@ export function CurrencyBadge({ baseAmountUSD, className }: CurrencyBadgeProps) 
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full border border-accent/20 bg-white/5 px-3 py-1 text-xs text-white/60',
+        'inline-flex items-center gap-1.5 rounded-full border border-sl-gold-subtle/20 bg-white/5 px-3 py-1 text-xs text-sl-alabaster/60',
         className,
       )}
       title={loading ? `Region ${region}` : title}
@@ -37,11 +37,11 @@ export function CurrencyBadge({ baseAmountUSD, className }: CurrencyBadgeProps) 
         aria-hidden="true"
         className={cn(
           'h-1.5 w-1.5 rounded-full transition-colors duration-300',
-          isOverridden ? 'bg-accent-light' : 'bg-accent',
+          isOverridden ? 'bg-sl-gold-subtle-light' : 'bg-sl-gold-subtle',
         )}
       />
-      <span className="font-medium text-white/90">{formatted}</span>
-      <span className="text-[10px] uppercase tracking-wide text-accent/80">
+      <span className="font-medium text-sl-alabaster/90">{formatted}</span>
+      <span className="text-[10px] uppercase tracking-wide text-sl-gold-hover/80">
         {loading ? region : taxNote}
       </span>
     </span>

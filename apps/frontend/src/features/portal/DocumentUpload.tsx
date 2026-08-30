@@ -135,15 +135,15 @@ export function DocumentUpload({ projectId, documents, onDocumentsChange }: Docu
 
   return (
     <section
-      className="bg-surface border border-border/50 rounded-sm overflow-hidden"
+      className="bg-sl-obsidian border border-sl-silver/20 rounded-sm overflow-hidden"
       dir={isRTL ? 'rtl' : 'ltr'}
       aria-busy={isUploading || deletingId !== null}
     >
       {/* Header */}
-      <div className="px-6 py-5 border-b border-border/20">
+      <div className="px-6 py-5 border-b border-sl-silver/20">
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-accent/60" />
-          <h2 className="text-base font-medium text-foreground tracking-wide">
+          <div className="w-2 h-2 rounded-full bg-sl-gold-subtle/60" />
+          <h2 className="text-base font-medium text-sl-alabaster tracking-wide">
             {t('portal.documents.title') || 'Project Documents'}
           </h2>
         </div>
@@ -165,9 +165,9 @@ export function DocumentUpload({ projectId, documents, onDocumentsChange }: Docu
                 }
           }
           className={cn(
-            'relative group cursor-pointer rounded-sm border border-dashed border-border/40 p-8 text-center transition-colors',
-            'hover:border-accent/40 hover:bg-accent/[0.03]',
-            isDragging && 'border-accent/60 bg-accent/5',
+            'relative group cursor-pointer rounded-sm border border-dashed border-sl-silver/20/40 p-8 text-center transition-colors',
+            'hover:border-sl-gold-subtle/40 hover:bg-sl-gold-subtle/[0.03]',
+            isDragging && 'border-sl-gold-subtle/60 bg-sl-gold-subtle/5',
             isUploading && 'pointer-events-none opacity-60',
           )}
         >
@@ -181,7 +181,7 @@ export function DocumentUpload({ projectId, documents, onDocumentsChange }: Docu
           />
 
           <motion.div
-            className="mx-auto mb-4 w-12 h-12 rounded-full border border-border/40 flex items-center justify-center text-neutral-500 group-hover:text-accent group-hover:border-accent/40 transition-colors"
+            className="mx-auto mb-4 w-12 h-12 rounded-full border border-sl-silver/20/40 flex items-center justify-center text-sl-mist/60 group-hover:text-sl-gold-hover group-hover:border-sl-gold-subtle/40 transition-colors"
             animate={staticMode ? {} : { y: isDragging ? -4 : 0 }}
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -189,26 +189,26 @@ export function DocumentUpload({ projectId, documents, onDocumentsChange }: Docu
             </svg>
           </motion.div>
 
-          <p className="text-sm text-foreground font-medium mb-1">
+          <p className="text-sm text-sl-alabaster font-medium mb-1">
             {t('portal.documents.dropHere') || 'Drop a file here, or click to browse'}
           </p>
-          <p className="text-xs text-neutral-500 font-light">
+          <p className="text-xs text-sl-mist/60 font-light">
             {t('portal.documents.supportedTypes') || 'PDF, images, Word, Excel, ZIP up to 50MB'}
           </p>
 
           {isUploading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+            <div className="absolute inset-0 flex items-center justify-center bg-sl-void/80 backdrop-blur-sm">
               <div className="flex items-center gap-3" role="status" aria-live="polite">
                 {staticMode ? (
-                  <div className="w-4 h-4 rounded-full border-2 border-accent/30 border-t-accent" />
+                  <div className="w-4 h-4 rounded-full border-2 border-sl-gold-subtle/30 border-t-accent" />
                 ) : (
                   <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
-                    className="w-4 h-4 rounded-full border-2 border-accent/30 border-t-accent"
+                    className="w-4 h-4 rounded-full border-2 border-sl-gold-subtle/30 border-t-accent"
                   />
                 )}
-                <span className="text-xs text-neutral-500 font-mono">
+                <span className="text-xs text-sl-mist/60 font-mono">
                   {t('portal.documents.uploading') || 'Uploading...'}
                 </span>
               </div>
@@ -223,7 +223,7 @@ export function DocumentUpload({ projectId, documents, onDocumentsChange }: Docu
               initial={staticMode ? {} : { opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={staticMode ? {} : { opacity: 0 }}
-              className="text-center py-8 text-neutral-500 text-sm"
+              className="text-center py-8 text-sl-mist/60 text-sm"
             >
               {t('portal.documents.empty') || 'No documents uploaded yet.'}
             </motion.div>
@@ -236,19 +236,19 @@ export function DocumentUpload({ projectId, documents, onDocumentsChange }: Docu
                   initial={staticMode ? {} : { opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={staticMode ? {} : { opacity: 0, scale: 0.98 }}
-                  className="flex items-center gap-4 p-4 bg-background border border-border/30 rounded-sm group hover:border-accent/20 transition-colors"
+                  className="flex items-center gap-4 p-4 bg-sl-void border border-sl-silver/20 rounded-sm group hover:border-sl-gold-subtle/20 transition-colors"
                 >
                   {/* File icon */}
-                  <div className="w-10 h-10 rounded-sm bg-surface border border-border/30 flex items-center justify-center text-[10px] font-mono text-accent/80 shrink-0">
+                  <div className="w-10 h-10 rounded-sm bg-sl-obsidian border border-sl-silver/20 flex items-center justify-center text-[10px] font-mono text-sl-gold-hover/80 shrink-0">
                     {fileIcon(doc.mimeType)}
                   </div>
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-foreground font-medium truncate">
+                    <p className="text-sm text-sl-alabaster font-medium truncate">
                       {doc.name}
                     </p>
-                    <p className="text-[10px] text-neutral-500 font-mono mt-0.5">
+                    <p className="text-[10px] text-sl-mist/60 font-mono mt-0.5">
                       {formatFileSize(doc.fileSize)} · {new Date(doc.createdAt).toLocaleDateString(locale)}
                     </p>
                   </div>
@@ -259,7 +259,7 @@ export function DocumentUpload({ projectId, documents, onDocumentsChange }: Docu
                       <a
                         href={doc.downloadUrl}
                         download={doc.name}
-                        className="p-2 text-neutral-500 hover:text-accent transition-colors"
+                        className="p-2 text-sl-mist/60 hover:text-sl-gold-hover transition-colors"
                         aria-label={t('portal.documents.download') || 'Download'}
                         onClick={(e) => e.stopPropagation()}
                       >
@@ -273,7 +273,7 @@ export function DocumentUpload({ projectId, documents, onDocumentsChange }: Docu
                       type="button"
                       onClick={() => handleDelete(doc.id)}
                       disabled={deletingId === doc.id}
-                      className="p-2 text-neutral-500 hover:text-red-400 transition-colors disabled:opacity-50"
+                      className="p-2 text-sl-mist/60 hover:text-red-400 transition-colors disabled:opacity-50"
                       aria-label={
                         deletingId === doc.id
                           ? 'Deleting document...'

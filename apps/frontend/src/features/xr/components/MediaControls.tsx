@@ -39,7 +39,7 @@ function SpeakingIndicator({ peers }: { peers: string[] }) {
 
   return (
     <div className="flex items-center gap-1.5">
-      <span className="text-[10px] font-medium uppercase tracking-wider text-white/40">
+      <span className="text-[10px] font-medium uppercase tracking-wider text-sl-alabaster/40">
         Speaking
       </span>
       <div className="flex -space-x-1">
@@ -60,7 +60,7 @@ function SpeakingIndicator({ peers }: { peers: string[] }) {
         </AnimatePresence>
       </div>
       {peers.length > 3 && (
-        <span className="text-[10px] text-white/30">+{peers.length - 3}</span>
+        <span className="text-[10px] text-sl-alabaster/30">+{peers.length - 3}</span>
       )}
     </div>
   );
@@ -97,7 +97,7 @@ export function MediaControls({
           className={`group relative flex h-8 w-8 items-center justify-center rounded-full transition-all duration-200 active:scale-90 ${
             webrtc.isMicMuted
               ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
-              : 'bg-white/10 text-white/80 hover:bg-white/20'
+              : 'bg-white/10 text-sl-alabaster/80 hover:bg-white/20'
           } disabled:cursor-not-allowed disabled:opacity-40`}
           title={webrtc.isMicMuted ? 'Unmute microphone' : 'Mute microphone'}
           aria-label={webrtc.isMicMuted ? 'Unmute microphone' : 'Mute microphone'}
@@ -140,7 +140,7 @@ export function MediaControls({
         {/* ── Connection quality + peer count ───────────────────────── */}
         <div className="flex items-center gap-2">
           <QualityIcon quality={webrtc.connectionQuality} />
-          <span className="text-[11px] font-medium text-white/50">
+          <span className="text-[11px] font-medium text-sl-alabaster/50">
             {webrtc.peerConnections > 0
               ? `${webrtc.peerConnections} peer${webrtc.peerConnections !== 1 ? 's' : ''}`
               : 'No peers'}

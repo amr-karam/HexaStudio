@@ -33,12 +33,12 @@ const demoCodeBlock = {
 
 export default function DemoCodeBlock() {
   return (
-    <div className="artisan-glass p-6 md:p-10 rounded-2xl border border-border/30 shadow-2xl">
-      <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-accent block mb-2">
+    <div className="artisan-glass p-6 md:p-10 rounded-2xl border border-sl-silver/20 shadow-2xl">
+      <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-sl-gold-hover block mb-2">
         Diagnostic & Benchmarking
       </span>
-      <h1 className="text-3xl md:text-4xl font-serif font-light text-foreground mb-6">
-        Large Code Block <span className="italic text-accent">Virtualization</span>
+      <h1 className="text-3xl md:text-4xl font-serif font-light text-sl-alabaster mb-6">
+        Large Code Block <span className="italic text-sl-gold-hover">Virtualization</span>
       </h1>
       <StrapiBlocks content={[demoCodeBlock]} />
     </div>

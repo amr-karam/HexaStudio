@@ -118,7 +118,7 @@ const PremiumChat: React.FC<PremiumChatProps> = ({
         <div
           className={`max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl rounded-lg p-3 ${
             isCurrentUser
-              ? 'bg-blue-500 text-white rounded-br-none'
+              ? 'bg-blue-500 text-sl-alabaster rounded-br-none'
               : 'bg-gray-200 text-gray-800 rounded-bl-none'
           }`}
         >
@@ -290,7 +290,7 @@ const PremiumChat: React.FC<PremiumChatProps> = ({
               <button
                 onClick={handleSendMessage}
                 disabled={!inputValue.trim() && attachments.length === 0}
-                className={`p-2 ${inputValue.trim() || attachments.length > 0 ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-500'}`}
+                className={`p-2 ${inputValue.trim() || attachments.length > 0 ? 'bg-blue-500 text-sl-alabaster' : 'bg-gray-200 text-gray-500'}`}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
                   <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5.355-1.152a1 1 0 011.17.077l2.6 1.152a1 1 0 001.406-1.17l-2.35-4.848a1 1 0 00-.391-.78l-4.16-1.851a1 1 0 01-.334-.67l1.43-2.967a1 1 0 00-.653-1.093l-5.48-1.115A1 1 0 003.28 7.935l1.97 4.2a1 1 0 001.257.934l5.357-1.152a1 1 0 011.17.077l2.6 1.152z" />

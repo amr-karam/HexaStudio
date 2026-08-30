@@ -179,19 +179,19 @@ export function CinematicPreloader() {
             y: '-100%',
             transition: { duration: EXIT_DURATION, ease: EASING.easeInOutQuint },
           }}
-          className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center overflow-hidden cursor-pointer"
+          className="fixed inset-0 z-[100] bg-sl-void flex flex-col items-center justify-center overflow-hidden cursor-pointer"
           style={{ willChange: 'transform' }}
           role="status"
           aria-live="polite"
           aria-label="Loading HexaStudio experience"
         >
           {/* Gold leading edge — bottom of the lifting panel */}
-          <span className="absolute bottom-0 inset-x-0 h-[2px] bg-accent" aria-hidden="true" />
+          <span className="absolute bottom-0 inset-x-0 h-[2px] bg-sl-gold-subtle" aria-hidden="true" />
 
           {/* Gold specular edge — subtle 1px top highlight */}
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-accent/20 to-transparent"
+            className="pointer-events-none absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-sl-gold-subtle/20 to-transparent"
           />
 
           {/* Architectural drafting grid + radial gold aura (fades in behind logotype) */}
@@ -212,7 +212,7 @@ export function CinematicPreloader() {
             <span
               key={position}
               aria-hidden="true"
-              className={`pointer-events-none absolute h-4 w-4 border-accent/30 ${position}`}
+              className={`pointer-events-none absolute h-4 w-4 border-sl-gold-subtle/30 ${position}`}
             />
           ))}
 
@@ -221,22 +221,22 @@ export function CinematicPreloader() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: DUR.ui, delay: 0.1, ease: EASING.easeOutExpo }}
-            className="absolute top-8 left-8 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.5em] text-neutral-400"
+            className="absolute top-8 left-8 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.5em] text-sl-mist/60"
           >
             <span
               aria-hidden="true"
-              className="pointer-events-none block h-[5px] w-[5px] rotate-45 border border-accent/30"
+              className="pointer-events-none block h-[5px] w-[5px] rotate-45 border border-sl-gold-subtle/30"
             />
             HexaStudio
             <span
               aria-hidden="true"
-              className="pointer-events-none block h-[5px] w-[5px] rotate-45 border border-accent/30"
+              className="pointer-events-none block h-[5px] w-[5px] rotate-45 border border-sl-gold-subtle/30"
             />
           </motion.span>
 
           {/* Serif logotype — staggered clip reveal + gold rule + diamond ornament */}
           <div className="flex flex-col items-center">
-            <h1 className="flex overflow-hidden font-serif text-6xl md:text-8xl tracking-[0.08em] text-foreground">
+            <h1 className="flex overflow-hidden font-serif text-6xl md:text-8xl tracking-[0.08em] text-sl-alabaster">
               {letters.map((letter, i) => (
                 <span key={letter} className="inline-block overflow-hidden">
                   <motion.span
@@ -263,7 +263,7 @@ export function CinematicPreloader() {
                 duration: DUR.ui,
                 ease: EASING.easeOutExpo,
               }}
-              className="pointer-events-none mt-3 block h-px w-full origin-left bg-gradient-to-r from-transparent via-accent/60 to-transparent"
+              className="pointer-events-none mt-3 block h-px w-full origin-left bg-gradient-to-r from-transparent via-sl-gold-subtle/60 to-transparent"
             />
             <motion.span
               aria-hidden="true"
@@ -274,14 +274,14 @@ export function CinematicPreloader() {
                 duration: DUR.ui,
                 ease: EASING.easeOutExpo,
               }}
-              className="pointer-events-none mt-5 block h-[7px] w-[7px] rotate-45 border border-accent/50"
+              className="pointer-events-none mt-5 block h-[7px] w-[7px] rotate-45 border border-sl-gold-subtle/50"
             />
           </div>
 
           {/* Mono counter — bottom right (textContent-driven, no re-renders) */}
           <span
             ref={counterRef}
-            className="absolute bottom-8 right-8 font-mono text-sm tabular-nums tracking-[0.3em] text-accent"
+            className="absolute bottom-8 right-8 font-mono text-sm tabular-nums tracking-[0.3em] text-sl-gold-hover"
           >
             000
           </span>
@@ -290,7 +290,7 @@ export function CinematicPreloader() {
           <motion.div
             aria-hidden="true"
             style={{ scaleX: goldScaleX }}
-            className="absolute bottom-0 inset-x-0 h-[2px] origin-left bg-accent"
+            className="absolute bottom-0 inset-x-0 h-[2px] origin-left bg-sl-gold-subtle"
           />
         </motion.div>
       )}

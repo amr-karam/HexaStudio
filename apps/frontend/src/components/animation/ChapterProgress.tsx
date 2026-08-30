@@ -105,14 +105,14 @@ export const ChapterProgress = ({
             onClick={() => handleJump(chapter.id)}
             aria-current={isActive ? 'true' : undefined}
             aria-label={`${String(i + 1).padStart(2, '0')} — ${chapter.label}`}
-            className="group flex items-center gap-3 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            className="group flex items-center gap-3 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             <span
               className={cn(
                 'font-mono text-[10px] tracking-[0.3em] transition-all duration-500',
                 isActive
-                  ? 'text-accent opacity-100'
-                  : 'text-neutral-500 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100',
+                  ? 'text-sl-gold-hover opacity-100'
+                  : 'text-sl-mist/60 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100',
               )}
             >
               {String(i + 1).padStart(2, '0')}
@@ -121,7 +121,7 @@ export const ChapterProgress = ({
               className={cn(
                 'block h-px transition-all duration-500',
                 isActive
-                  ? 'w-8 bg-accent'
+                  ? 'w-8 bg-sl-gold-subtle'
                   : 'w-4 bg-neutral-600 group-hover:w-6 group-hover:bg-neutral-400',
               )}
             />

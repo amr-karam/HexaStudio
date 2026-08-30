@@ -107,12 +107,12 @@ const PRIORITY_STYLES: Record<Ticket['priority'], { label: string; pill: string;
   },
   medium: {
     label: 'Medium',
-    pill: 'border-accent/30 bg-accent/10 text-accent-light',
-    dot: 'bg-accent',
+    pill: 'border-sl-gold-subtle/30 bg-sl-gold-subtle/10 text-sl-gold-hover',
+    dot: 'bg-sl-gold-subtle',
   },
   low: {
     label: 'Low',
-    pill: 'border-white/10 bg-white/5 text-neutral-400',
+    pill: 'border-white/10 bg-white/5 text-sl-mist/60',
     dot: 'bg-neutral-500',
   },
 };
@@ -120,7 +120,7 @@ const PRIORITY_STYLES: Record<Ticket['priority'], { label: string; pill: string;
 const LIFECYCLE_STYLES: Record<Ticket['status'], { label: string; pill: string; dot: string }> = {
   open: {
     label: 'Open',
-    pill: 'border-white/10 bg-white/5 text-neutral-300',
+    pill: 'border-white/10 bg-white/5 text-sl-mist/80',
     dot: 'bg-neutral-400',
   },
   in_progress: {
@@ -149,7 +149,7 @@ const SLA_CARDS = [
   },
   {
     icon: 'shield-check' as const,
-    iconWrap: 'border-accent/30 bg-accent/10 text-accent-light',
+    iconWrap: 'border-sl-gold-subtle/30 bg-sl-gold-subtle/10 text-sl-gold-hover',
     label: 'Dedicated Account SLA',
     value: 'Enterprise · Tier 1',
     note: 'Always-on coverage',
@@ -203,14 +203,14 @@ export function SupportCenterView() {
         />
 
         <div className="relative">
-          <p className="flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-accent/70">
-            <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-accent/70" />
+          <p className="flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-sl-gold-hover/70">
+            <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-sl-gold-subtle/70" />
             § 01 — Support
           </p>
-          <h1 className="mt-4 font-serif text-4xl font-light tracking-tight text-foreground sm:text-5xl">
+          <h1 className="mt-4 font-serif text-4xl font-light tracking-tight text-sl-alabaster sm:text-5xl">
             The Support <em className="text-gradient-gold font-normal italic">Concierge</em>
           </h1>
-          <p className="mt-3 max-w-xl text-sm font-light leading-relaxed text-neutral-500">
+          <p className="mt-3 max-w-xl text-sm font-light leading-relaxed text-sl-mist/60">
             Dedicated client support SLA, ticket tracking, and direct project manager escalation —
             your hands are never far from the studio.
           </p>
@@ -227,11 +227,11 @@ export function SupportCenterView() {
               'inline-flex items-center gap-2 rounded-full border px-3 py-1.5 font-mono text-[0.625rem] uppercase tracking-[0.25em]',
               dataSource === 'live'
                 ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
-                : 'border-accent/30 bg-accent/10 text-accent-light',
+                : 'border-sl-gold-subtle/30 bg-sl-gold-subtle/10 text-sl-gold-hover',
             )}
           >
             <span
-              className={cn('h-1.5 w-1.5 rounded-full', dataSource === 'live' ? 'bg-emerald-400' : 'bg-accent')}
+              className={cn('h-1.5 w-1.5 rounded-full', dataSource === 'live' ? 'bg-emerald-400' : 'bg-sl-gold-subtle')}
               aria-hidden="true"
             />
             {dataSource === 'live' ? 'Live' : 'Demo Data'}
@@ -243,7 +243,7 @@ export function SupportCenterView() {
             onClick={() => setShowCreate(true)}
             aria-haspopup="dialog"
             aria-expanded={showCreate}
-            className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 font-mono text-[0.625rem] uppercase tracking-[0.25em] text-neutral-950 shadow-[0_0_28px_rgba(212,175,55,0.28)] transition-colors duration-500 hover:bg-accent-light"
+            className="inline-flex items-center gap-2 rounded-full bg-sl-gold-subtle px-5 py-2.5 font-mono text-[0.625rem] uppercase tracking-[0.25em] text-neutral-950 shadow-[0_0_28px_rgba(212,175,55,0.28)] transition-colors duration-500 hover:bg-sl-gold-subtle-light"
           >
             <Icon name="plus" className="h-3.5 w-3.5" />
             <span>Submit Request</span>
@@ -272,7 +272,7 @@ export function SupportCenterView() {
             {/* Gold radial aura — revealed on hover */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full bg-accent/5 opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
+              className="pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full bg-sl-gold-subtle/5 opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
             />
 
             <div className="flex items-center gap-4">
@@ -286,10 +286,10 @@ export function SupportCenterView() {
                 <Icon name={card.icon} className="h-5 w-5" />
               </div>
               <div className="min-w-0">
-                <p className="font-mono text-[0.625rem] uppercase tracking-[0.3em] text-neutral-500">
+                <p className="font-mono text-[0.625rem] uppercase tracking-[0.3em] text-sl-mist/60">
                   {card.label}
                 </p>
-                <p className="mt-1.5 font-serif text-xl font-light tracking-tight text-foreground">
+                <p className="mt-1.5 font-serif text-xl font-light tracking-tight text-sl-alabaster">
                   {card.value}
                 </p>
               </div>
@@ -297,7 +297,7 @@ export function SupportCenterView() {
 
             <p
               className={cn(
-                'mt-4 flex items-center gap-2 font-mono text-[0.625rem] uppercase tracking-[0.2em] text-neutral-500',
+                'mt-4 flex items-center gap-2 font-mono text-[0.625rem] uppercase tracking-[0.2em] text-sl-mist/60',
               )}
             >
               <span aria-hidden="true" className="h-1 w-1 rotate-45 bg-current opacity-70" />
@@ -307,7 +307,7 @@ export function SupportCenterView() {
             {/* Specular gold hairline at the bottom — appears on hover */}
             <div
               aria-hidden="true"
-              className="absolute bottom-0 left-0 right-0 h-px bg-accent/0 transition-colors duration-1000 group-hover:bg-accent/30"
+              className="absolute bottom-0 left-0 right-0 h-px bg-sl-gold-subtle/0 transition-colors duration-1000 group-hover:bg-sl-gold-subtle/30"
             />
           </motion.div>
         ))}
@@ -321,11 +321,11 @@ export function SupportCenterView() {
         {/* Panel header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-5 border-b border-white/5">
           <div>
-            <h2 className="flex items-center gap-3 font-serif text-lg font-light tracking-tight text-foreground">
-              <span aria-hidden="true" className="h-2 w-2 rotate-45 border border-accent/60" />
+            <h2 className="flex items-center gap-3 font-serif text-lg font-light tracking-tight text-sl-alabaster">
+              <span aria-hidden="true" className="h-2 w-2 rotate-45 border border-sl-gold-subtle/60" />
               Active Concierge Inquiries &amp; Tickets
             </h2>
-            <p className="mt-1 font-mono text-[0.625rem] uppercase tracking-[0.2em] text-neutral-500">
+            <p className="mt-1 font-mono text-[0.625rem] uppercase tracking-[0.2em] text-sl-mist/60">
               Synced with Odoo helpdesk.ticket &bull; Enterprise SLA
             </p>
           </div>
@@ -337,8 +337,8 @@ export function SupportCenterView() {
               className={cn(
                 'px-2.5 py-1 rounded-lg text-xs font-mono transition-all',
                 selectedTeamId === null
-                  ? 'bg-accent text-background font-medium'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-neutral-200'
+                  ? 'bg-sl-gold-subtle text-background font-medium'
+                  : 'bg-sl-void border border-sl-obsidian text-sl-mist/60 hover:text-neutral-200'
               )}
             >
               All Teams
@@ -350,8 +350,8 @@ export function SupportCenterView() {
                 className={cn(
                   'px-2.5 py-1 rounded-lg text-xs font-mono transition-all flex items-center gap-1',
                   selectedTeamId === team.id
-                    ? 'bg-accent text-background font-medium'
-                    : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-neutral-200'
+                    ? 'bg-sl-gold-subtle text-background font-medium'
+                    : 'bg-sl-void border border-sl-obsidian text-sl-mist/60 hover:text-neutral-200'
                 )}
               >
                 <span>{team.name}</span>
@@ -389,29 +389,29 @@ export function SupportCenterView() {
                   {/* Gold radial aura — revealed on hover */}
                   <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute -right-8 -top-8 h-20 w-20 rounded-full bg-accent/5 opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
+                    className="pointer-events-none absolute -right-8 -top-8 h-20 w-20 rounded-full bg-sl-gold-subtle/5 opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
                   />
 
                   <div className="relative min-w-0 flex-1">
                     {/* Pill row — mono ticket ID + priority + lifecycle */}
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-mono text-xs font-semibold tracking-tight text-accent-light">
+                      <span className="font-mono text-xs font-semibold tracking-tight text-sl-gold-hover">
                         {t.id}
                       </span>
                       <StatusPill config={priority} />
                       <StatusPill config={lifecycle} />
-                      <span className="font-mono text-[0.625rem] uppercase tracking-[0.25em] text-neutral-600">
+                      <span className="font-mono text-[0.625rem] uppercase tracking-[0.25em] text-sl-mist/60">
                         {t.category}
                       </span>
                     </div>
 
                     {/* Subject — editorial serif, lighter weight */}
-                    <h3 className="mt-2.5 font-serif text-base font-light tracking-tight text-foreground">
+                    <h3 className="mt-2.5 font-serif text-base font-light tracking-tight text-sl-alabaster">
                       {t.subject}
                     </h3>
 
                     {/* Metadata — mono micro tracking */}
-                    <p className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[0.625rem] uppercase tracking-[0.2em] text-neutral-500">
+                    <p className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[0.625rem] uppercase tracking-[0.2em] text-sl-mist/60">
                       <span className="inline-flex items-center gap-1.5">
                         <Icon name="clock" className="h-3 w-3" aria-hidden="true" />
                         Created {new Date(t.createdAt).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })}
@@ -426,7 +426,7 @@ export function SupportCenterView() {
 
                   {/* Action — ghost glass link, arrow translation on hover */}
                   <button
-                    className="group/action inline-flex shrink-0 items-center gap-2 self-start rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 font-mono text-[0.625rem] uppercase tracking-[0.25em] text-neutral-300 transition-colors duration-500 hover:border-accent/40 hover:text-accent sm:self-center"
+                    className="group/action inline-flex shrink-0 items-center gap-2 self-start rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 font-mono text-[0.625rem] uppercase tracking-[0.25em] text-sl-mist/80 transition-colors duration-500 hover:border-sl-gold-subtle/40 hover:text-sl-gold-hover sm:self-center"
                     aria-label={`View discussion for ticket ${t.id}`}
                   >
                     <span>View Discussion</span>
@@ -473,24 +473,24 @@ export function SupportCenterView() {
               {/* Modal header */}
               <div className="flex items-center justify-between gap-4 border-b border-white/5 pb-4">
                 <div>
-                  <p className="flex items-center gap-2 font-mono text-[0.625rem] uppercase tracking-[0.3em] text-accent/70">
-                    <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-accent/70" />
+                  <p className="flex items-center gap-2 font-mono text-[0.625rem] uppercase tracking-[0.3em] text-sl-gold-hover/70">
+                    <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-sl-gold-subtle/70" />
                     § Support Request
                   </p>
-                  <h3 id="ticket-modal-title" className="mt-2 font-serif text-xl font-light tracking-tight text-foreground">
+                  <h3 id="ticket-modal-title" className="mt-2 font-serif text-xl font-light tracking-tight text-sl-alabaster">
                     Open a Concierge Channel
                   </h3>
                 </div>
                 <button
                   onClick={() => setShowCreate(false)}
-                  className="text-neutral-400 transition-colors duration-300 hover:text-accent"
+                  className="text-sl-mist/60 transition-colors duration-300 hover:text-sl-gold-hover"
                   aria-label="Close support request dialog"
                 >
                   <Icon name="x" className="h-5 w-5" />
                 </button>
               </div>
 
-              <p className="mt-4 text-xs font-light leading-relaxed text-neutral-400">
+              <p className="mt-4 text-xs font-light leading-relaxed text-sl-mist/60">
                 Your dedicated Project Manager will respond within your 15-minute SLA window.
               </p>
 
@@ -499,7 +499,7 @@ export function SupportCenterView() {
                 <div>
                   <label
                     htmlFor="ticket-subject"
-                    className="mb-2 block font-mono text-[0.625rem] uppercase tracking-[0.25em] text-neutral-400"
+                    className="mb-2 block font-mono text-[0.625rem] uppercase tracking-[0.25em] text-sl-mist/60"
                   >
                     Subject
                   </label>
@@ -507,13 +507,13 @@ export function SupportCenterView() {
                     id="ticket-subject"
                     type="text"
                     placeholder="e.g. Export request, material query…"
-                    className="h-11 w-full rounded-lg border border-white/[0.06] bg-white/[0.02] px-4 text-sm font-light text-foreground placeholder-neutral-500 transition-colors duration-300 focus:border-accent focus:bg-white/[0.04] focus:outline-none"
+                    className="h-11 w-full rounded-lg border border-white/[0.06] bg-white/[0.02] px-4 text-sm font-light text-sl-alabaster placeholder-neutral-500 transition-colors duration-300 focus:border-sl-gold-subtle focus:bg-white/[0.04] focus:outline-none"
                   />
                 </div>
                 <div>
                   <label
                     htmlFor="ticket-message"
-                    className="mb-2 block font-mono text-[0.625rem] uppercase tracking-[0.25em] text-neutral-400"
+                    className="mb-2 block font-mono text-[0.625rem] uppercase tracking-[0.25em] text-sl-mist/60"
                   >
                     Message
                   </label>
@@ -521,7 +521,7 @@ export function SupportCenterView() {
                     id="ticket-message"
                     rows={3}
                     placeholder="Provide details for your request…"
-                    className="w-full resize-none rounded-lg border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-sm font-light text-foreground placeholder-neutral-500 transition-colors duration-300 focus:border-accent focus:bg-white/[0.04] focus:outline-none"
+                    className="w-full resize-none rounded-lg border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-sm font-light text-sl-alabaster placeholder-neutral-500 transition-colors duration-300 focus:border-sl-gold-subtle focus:bg-white/[0.04] focus:outline-none"
                   />
                 </div>
               </div>
@@ -530,13 +530,13 @@ export function SupportCenterView() {
               <div className="mt-6 flex items-center justify-end gap-3 border-t border-white/5 pt-5">
                 <button
                   onClick={() => setShowCreate(false)}
-                  className="px-4 py-2 font-mono text-[0.625rem] uppercase tracking-[0.25em] text-neutral-400 transition-colors duration-300 hover:text-neutral-200"
+                  className="px-4 py-2 font-mono text-[0.625rem] uppercase tracking-[0.25em] text-sl-mist/60 transition-colors duration-300 hover:text-neutral-200"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => setShowCreate(false)}
-                  className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 font-mono text-[0.625rem] uppercase tracking-[0.25em] text-neutral-950 shadow-[0_0_24px_rgba(212,175,55,0.25)] transition-colors duration-500 hover:bg-accent-light"
+                  className="inline-flex items-center gap-2 rounded-full bg-sl-gold-subtle px-5 py-2.5 font-mono text-[0.625rem] uppercase tracking-[0.25em] text-neutral-950 shadow-[0_0_24px_rgba(212,175,55,0.25)] transition-colors duration-500 hover:bg-sl-gold-subtle-light"
                 >
                   <Icon name="send" className="h-3.5 w-3.5" aria-hidden="true" />
                   Submit Ticket
@@ -584,14 +584,14 @@ function SupportEmptyState({ reduced }: { reduced: boolean }) {
       role="status"
     >
       <div className="mb-6 flex items-center justify-center gap-2" aria-hidden="true">
-        <span className="h-2 w-2 rotate-45 border border-accent/40" />
-        <span className="h-2 w-2 rotate-45 bg-accent/70" />
-        <span className="h-2 w-2 rotate-45 border border-accent/40" />
+        <span className="h-2 w-2 rotate-45 border border-sl-gold-subtle/40" />
+        <span className="h-2 w-2 rotate-45 bg-sl-gold-subtle/70" />
+        <span className="h-2 w-2 rotate-45 border border-sl-gold-subtle/40" />
       </div>
-      <p className="font-serif text-xl font-light tracking-tight text-foreground sm:text-2xl">
+      <p className="font-serif text-xl font-light tracking-tight text-sl-alabaster sm:text-2xl">
         The concierge channel is quiet
       </p>
-      <p className="mt-3 max-w-md text-sm font-light leading-relaxed text-neutral-500">
+      <p className="mt-3 max-w-md text-sm font-light leading-relaxed text-sl-mist/60">
         No active requests at the moment. When a question arises, your dedicated
         Project Manager is a single message away.
       </p>

@@ -63,17 +63,17 @@ export const ArchitecturalDataViz: React.FC<ArchitecturalDataVizProps> = ({
     <div className={`artisan-glass rounded-2xl p-6 sm:p-8 relative overflow-hidden ${className}`}>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <span className="text-xs font-mono tracking-widest text-accent uppercase block mb-1">
+          <span className="text-xs font-mono tracking-widest text-sl-gold-hover uppercase block mb-1">
             Digital Artisan Standard
           </span>
-          <h3 className="text-xl sm:text-2xl font-serif font-bold text-white tracking-tight">
+          <h3 className="text-xl sm:text-2xl font-serif font-bold text-sl-alabaster tracking-tight">
             {title}
           </h3>
-          <p className="text-xs sm:text-sm text-neutral-400 mt-1">
+          <p className="text-xs sm:text-sm text-sl-mist/60 mt-1">
             {subtitle}
           </p>
         </div>
-        <div className="flex items-center gap-2 text-xs font-mono bg-neutral-900/60 border border-neutral-800 rounded-full px-3 py-1.5 self-start sm:self-auto text-neutral-300">
+        <div className="flex items-center gap-2 text-xs font-mono bg-sl-void/60 border border-sl-obsidian rounded-full px-3 py-1.5 self-start sm:self-auto text-sl-mist/80">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
           <span>Live Sync</span>
         </div>
@@ -137,21 +137,21 @@ export const ArchitecturalDataViz: React.FC<ArchitecturalDataVizProps> = ({
             whileHover={{ y: -4, transition: { type: 'spring', stiffness: 300, damping: 25 } }}
             className={`artisan-glass p-4 rounded-xl cursor-pointer transition-all duration-300 ${
               activePoint === idx
-                ? 'border-accent/50 shadow-[0_0_20px_rgba(212,175,55,0.15)]'
+                ? 'border-sl-gold-subtle/50 shadow-[0_0_20px_rgba(212,175,55,0.15)]'
                 : 'hover:border-neutral-700'
             }`}
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs text-neutral-400 font-medium truncate">{item.label}</span>
+              <span className="text-xs text-sl-mist/60 font-medium truncate">{item.label}</span>
               <span className="text-[10px] font-mono font-semibold text-emerald-400 bg-emerald-950/40 border border-emerald-800/40 px-1.5 py-0.5 rounded">
                 {item.change}
               </span>
             </div>
             <div className="flex items-baseline gap-1">
-              <span className="text-2xl font-bold font-mono text-white">{item.value}</span>
-              <span className="text-xs text-accent font-mono">{item.unit}</span>
+              <span className="text-2xl font-bold font-mono text-sl-alabaster">{item.value}</span>
+              <span className="text-xs text-sl-gold-hover font-mono">{item.unit}</span>
             </div>
-            <p className="text-[11px] text-neutral-500 mt-2 line-clamp-2 leading-relaxed">
+            <p className="text-[11px] text-sl-mist/60 mt-2 line-clamp-2 leading-relaxed">
               {item.description}
             </p>
           </motion.div>

@@ -212,7 +212,7 @@ export function CustomCursor() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.5 }}
             transition={makeTransition('entrance', 'micro')}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-3 py-1 rounded-full bg-accent text-background text-[8px] uppercase tracking-[0.2em] font-medium whitespace-nowrap"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-3 py-1 rounded-full bg-sl-gold-subtle text-background text-[8px] uppercase tracking-[0.2em] font-medium whitespace-nowrap"
           >
             {labelText}
           </motion.div>

@@ -49,8 +49,8 @@ function StatusBadge({ status }: { status: WorkflowExecutionStatus }) {
       : status === 'failed'
         ? 'bg-red-500/20 text-red-400'
         : status === 'running'
-          ? 'bg-accent/20 text-accent'
-          : 'bg-white/10 text-white/50';
+          ? 'bg-sl-gold-subtle/20 text-sl-gold-hover'
+          : 'bg-white/10 text-sl-alabaster/50';
   return <span className={`rounded-full px-2 py-0.5 text-[10px] ${classes}`}>{status}</span>;
 }
 
@@ -102,21 +102,21 @@ function WorkflowFormModal({ open, onClose, initial }: { open: boolean; onClose:
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-xl" onClick={onClose} />
-      <div className="relative w-full max-w-lg rounded-2xl border border-white/10 bg-neutral-900 p-8 shadow-2xl">
-        <h2 className="mb-6 text-xl font-semibold text-white">{initial?.id ? 'Edit Workflow' : 'New Workflow'}</h2>
+      <div className="relative w-full max-w-lg rounded-2xl border border-white/10 bg-sl-void p-8 shadow-2xl">
+        <h2 className="mb-6 text-xl font-semibold text-sl-alabaster">{initial?.id ? 'Edit Workflow' : 'New Workflow'}</h2>
         <div className="space-y-4">
-          <input placeholder="Workflow name *" aria-label="Workflow name" value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
-          <input placeholder="Description" aria-label="Description" value={description} onChange={(e) => setDescription(e.target.value)} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
+          <input placeholder="Workflow name *" aria-label="Workflow name" value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50" />
+          <input placeholder="Description" aria-label="Description" value={description} onChange={(e) => setDescription(e.target.value)} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50" />
 
           <div>
-            <label className="mb-1.5 block text-sm text-white/60">Trigger</label>
+            <label className="mb-1.5 block text-sm text-sl-alabaster/60">Trigger</label>
             <div className="flex gap-1 rounded-lg border border-white/10 bg-white/[0.02] p-1">
               {([
                 { key: 'event', label: 'Event' },
                 { key: 'schedule', label: 'Schedule' },
                 { key: 'manual', label: 'Manual' },
               ] as const).map((t) => (
-                <button key={t.key} onClick={() => setTriggerType(t.key)} className={`flex-1 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${triggerType === t.key ? 'bg-accent text-black' : 'text-white/50 hover:text-white/80'}`}>
+                <button key={t.key} onClick={() => setTriggerType(t.key)} className={`flex-1 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${triggerType === t.key ? 'bg-sl-gold-subtle text-black' : 'text-sl-alabaster/50 hover:text-sl-alabaster/80'}`}>
                   {t.label}
                 </button>
               ))}
@@ -124,7 +124,7 @@ function WorkflowFormModal({ open, onClose, initial }: { open: boolean; onClose:
           </div>
 
           {triggerType === 'event' && (
-            <select aria-label="Trigger event" value={event} onChange={(e) => setEvent(e.target.value as WorkflowEventName)} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50">
+            <select aria-label="Trigger event" value={event} onChange={(e) => setEvent(e.target.value as WorkflowEventName)} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50">
               {EVENT_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
@@ -132,28 +132,28 @@ function WorkflowFormModal({ open, onClose, initial }: { open: boolean; onClose:
           )}
 
           {triggerType === 'schedule' && (
-            <input placeholder="Cron expression (e.g. 0 8 * * *)" aria-label="Cron schedule" value={schedule} onChange={(e) => setSchedule(e.target.value)} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
+            <input placeholder="Cron expression (e.g. 0 8 * * *)" aria-label="Cron schedule" value={schedule} onChange={(e) => setSchedule(e.target.value)} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50" />
           )}
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-1.5 block text-sm text-white/60">Strategy</label>
-              <select aria-label="Execution strategy" value={strategy} onChange={(e) => setStrategy(e.target.value as 'sequential' | 'parallel')} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50">
+              <label className="mb-1.5 block text-sm text-sl-alabaster/60">Strategy</label>
+              <select aria-label="Execution strategy" value={strategy} onChange={(e) => setStrategy(e.target.value as 'sequential' | 'parallel')} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50">
                 <option value="sequential">Sequential</option>
                 <option value="parallel">Parallel</option>
               </select>
             </div>
             <div>
-              <label className="mb-1.5 block text-sm text-white/60">Enabled</label>
-              <button onClick={() => setEnabled(!enabled)} className={`relative h-5 w-9 rounded-full transition-colors ${enabled ? 'bg-accent' : 'bg-white/20'}`} aria-label="Toggle enabled">
+              <label className="mb-1.5 block text-sm text-sl-alabaster/60">Enabled</label>
+              <button onClick={() => setEnabled(!enabled)} className={`relative h-5 w-9 rounded-full transition-colors ${enabled ? 'bg-sl-gold-subtle' : 'bg-white/20'}`} aria-label="Toggle enabled">
                 <span className={`absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-black transition-transform ${enabled ? 'translate-x-4' : ''}`} />
               </button>
             </div>
           </div>
         </div>
         <div className="mt-6 flex justify-end gap-3">
-          <button onClick={onClose} className="rounded-lg border border-white/10 px-4 py-2 text-sm text-white/60 hover:bg-white/5">Cancel</button>
-          <button onClick={() => mutation.mutate()} disabled={mutation.isPending || !name} className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-black hover:bg-accent-dark disabled:opacity-50">
+          <button onClick={onClose} className="rounded-lg border border-white/10 px-4 py-2 text-sm text-sl-alabaster/60 hover:bg-white/5">Cancel</button>
+          <button onClick={() => mutation.mutate()} disabled={mutation.isPending || !name} className="rounded-lg bg-sl-gold-subtle px-5 py-2 text-sm font-medium text-black hover:bg-sl-gold-subtle-dark disabled:opacity-50">
             {mutation.isPending ? 'Saving...' : 'Save'}
           </button>
         </div>
@@ -211,22 +211,22 @@ export default function WorkflowsPage() {
     <div className="mx-auto max-w-5xl px-4 py-12">
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-white">Workflows</h1>
-          <p className="mt-1 text-sm text-white/40">Automate Odoo operations — triggers, steps, and execution history.</p>
+          <h1 className="text-2xl font-semibold text-sl-alabaster">Workflows</h1>
+          <p className="mt-1 text-sm text-sl-alabaster/40">Automate Odoo operations — triggers, steps, and execution history.</p>
         </div>
-        <button onClick={() => { setEditing(null); setModalOpen(true); }} className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-accent-dark">+ New Workflow</button>
+        <button onClick={() => { setEditing(null); setModalOpen(true); }} className="rounded-lg bg-sl-gold-subtle px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-sl-gold-subtle-dark">+ New Workflow</button>
       </div>
 
-      {workflows.isLoading && <p className="text-sm text-white/40">Loading...</p>}
+      {workflows.isLoading && <p className="text-sm text-sl-alabaster/40">Loading...</p>}
 
       {workflows.data && workflows.data.length === 0 && (
         <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-white/10 py-16">
           <div className="mb-4 text-4xl">⚙️</div>
-          <h3 className="mb-2 text-lg font-medium text-white/80">No workflows yet</h3>
-          <p className="mb-6 max-w-sm text-center text-sm text-white/40">
+          <h3 className="mb-2 text-lg font-medium text-sl-alabaster/80">No workflows yet</h3>
+          <p className="mb-6 max-w-sm text-center text-sm text-sl-alabaster/40">
             Create an automation to react to Odoo events, run on a schedule, or trigger manually.
           </p>
-          <button onClick={() => { setEditing(null); setModalOpen(true); }} className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-black transition-colors hover:bg-accent-dark">Add Workflow</button>
+          <button onClick={() => { setEditing(null); setModalOpen(true); }} className="rounded-lg bg-sl-gold-subtle px-5 py-2 text-sm font-medium text-black transition-colors hover:bg-sl-gold-subtle-dark">Add Workflow</button>
         </div>
       )}
 
@@ -236,12 +236,12 @@ export default function WorkflowsPage() {
             <div key={wf.id} className="rounded-xl border border-white/10 bg-white/[0.03] p-5 transition-colors hover:border-white/20">
               <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <h3 className="font-medium text-white">{wf.name}</h3>
-                  <p className="mt-0.5 text-sm text-white/40">{wf.description || 'No description'}</p>
+                  <h3 className="font-medium text-sl-alabaster">{wf.name}</h3>
+                  <p className="mt-0.5 text-sm text-sl-alabaster/40">{wf.description || 'No description'}</p>
                 </div>
                 <button
                   onClick={() => toggleMutation.mutate(wf)}
-                  className={`relative h-5 w-9 rounded-full transition-colors ${wf.enabled ? 'bg-accent' : 'bg-white/20'}`}
+                  className={`relative h-5 w-9 rounded-full transition-colors ${wf.enabled ? 'bg-sl-gold-subtle' : 'bg-white/20'}`}
                   aria-label={wf.enabled ? 'Disable workflow' : 'Enable workflow'}
                 >
                   <span className={`absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-black transition-transform ${wf.enabled ? 'translate-x-4' : ''}`} />
@@ -249,15 +249,15 @@ export default function WorkflowsPage() {
               </div>
 
               <div className="mb-3 flex flex-wrap gap-1.5">
-                <span className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-white/50">{triggerLabel(wf.trigger)}</span>
-                <span className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-white/50">{wf.steps.length} steps</span>
-                <span className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-white/50">v{wf.version} · {wf.strategy}</span>
-                <span className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-white/50">{executionCounts.get(wf.id) ?? 0} runs</span>
+                <span className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-sl-alabaster/50">{triggerLabel(wf.trigger)}</span>
+                <span className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-sl-alabaster/50">{wf.steps.length} steps</span>
+                <span className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-sl-alabaster/50">v{wf.version} · {wf.strategy}</span>
+                <span className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-sl-alabaster/50">{executionCounts.get(wf.id) ?? 0} runs</span>
               </div>
 
               <div className="flex gap-3 text-xs">
-                <button onClick={() => runMutation.mutate(wf.id)} disabled={runMutation.isPending} className="rounded-lg bg-accent px-3 py-1.5 font-medium text-black transition-colors hover:bg-accent-dark disabled:opacity-50">Run now</button>
-                <button onClick={() => { setEditing(wf); setModalOpen(true); }} className="text-white/40 transition-colors hover:text-white/70">Edit</button>
+                <button onClick={() => runMutation.mutate(wf.id)} disabled={runMutation.isPending} className="rounded-lg bg-sl-gold-subtle px-3 py-1.5 font-medium text-black transition-colors hover:bg-sl-gold-subtle-dark disabled:opacity-50">Run now</button>
+                <button onClick={() => { setEditing(wf); setModalOpen(true); }} className="text-sl-alabaster/40 transition-colors hover:text-sl-alabaster/70">Edit</button>
                 <button onClick={() => { if (confirm(`Delete workflow "${wf.name}"?`)) deleteMutation.mutate(wf.id); }} className="text-red-400/60 transition-colors hover:text-red-400">Delete</button>
               </div>
             </div>
@@ -266,20 +266,20 @@ export default function WorkflowsPage() {
       )}
 
       {/* Recent executions */}
-      <h2 className="mt-12 mb-4 text-lg font-medium text-white">Recent Executions</h2>
-      {executions.isLoading && <p className="text-sm text-white/40">Loading...</p>}
-      {executions.data && executions.data.length === 0 && <p className="text-sm text-white/30">No executions yet.</p>}
+      <h2 className="mt-12 mb-4 text-lg font-medium text-sl-alabaster">Recent Executions</h2>
+      {executions.isLoading && <p className="text-sm text-sl-alabaster/40">Loading...</p>}
+      {executions.data && executions.data.length === 0 && <p className="text-sm text-sl-alabaster/30">No executions yet.</p>}
       {executions.data && executions.data.length > 0 && (
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="text-white/40"><tr><th className="pb-2 font-normal">Execution</th><th className="pb-2 font-normal">Workflow</th><th className="pb-2 font-normal">Status</th><th className="pb-2 font-normal">Started</th><th className="pb-2 font-normal">Error</th></tr></thead>
-            <tbody className="text-white/70">
+            <thead className="text-sl-alabaster/40"><tr><th className="pb-2 font-normal">Execution</th><th className="pb-2 font-normal">Workflow</th><th className="pb-2 font-normal">Status</th><th className="pb-2 font-normal">Started</th><th className="pb-2 font-normal">Error</th></tr></thead>
+            <tbody className="text-sl-alabaster/70">
               {executions.data.slice(0, 20).map((ex) => (
                 <tr key={ex.id} className="border-t border-white/5">
-                  <td className="py-2 font-mono text-white/50">{ex.id.slice(0, 8)}</td>
-                  <td className="py-2 font-mono text-white/50">{ex.workflowId.slice(0, 8)}</td>
+                  <td className="py-2 font-mono text-sl-alabaster/50">{ex.id.slice(0, 8)}</td>
+                  <td className="py-2 font-mono text-sl-alabaster/50">{ex.workflowId.slice(0, 8)}</td>
                   <td className="py-2"><StatusBadge status={ex.status} /></td>
-                  <td className="py-2 text-white/40">{new Date(ex.startedAt).toLocaleString()}</td>
+                  <td className="py-2 text-sl-alabaster/40">{new Date(ex.startedAt).toLocaleString()}</td>
                   <td className="py-2 text-red-400/70">{ex.error ?? '—'}</td>
                 </tr>
               ))}

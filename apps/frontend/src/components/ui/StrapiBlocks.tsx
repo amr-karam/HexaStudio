@@ -26,7 +26,7 @@ function renderBlock(block: StrapiBlock | string, key: string): React.ReactNode 
   switch (block.type) {
     case 'paragraph': {
       return (
-        <p key={key} className="text-neutral-400 font-light leading-relaxed text-lg">
+        <p key={key} className="text-sl-mist/60 font-light leading-relaxed text-lg">
           {block.children ? renderChildren(block.children) : block.text || ''}
         </p>
       );
@@ -42,7 +42,7 @@ function renderBlock(block: StrapiBlock | string, key: string): React.ReactNode 
             : level === 3
               ? 'text-2xl md:text-3xl'
               : 'text-xl md:text-2xl';
-      const cls = `${sizeClass} font-serif font-light text-foreground tracking-tight mt-12 mb-6`;
+      const cls = `${sizeClass} font-serif font-light text-sl-alabaster tracking-tight mt-12 mb-6`;
       const children = block.children ? renderChildren(block.children) : block.text || '';
       if (level === 1) return <h1 key={key} className={cls}>{children}</h1>;
       if (level === 3) return <h3 key={key} className={cls}>{children}</h3>;
@@ -53,12 +53,12 @@ function renderBlock(block: StrapiBlock | string, key: string): React.ReactNode 
     case 'list': {
       const listClassBase =
         block.format === 'ordered' ? 'list-decimal list-inside' : 'space-y-2';
-      const listClassName = `${listClassBase} text-neutral-400 font-light text-lg`;
+      const listClassName = `${listClassBase} text-sl-mist/60 font-light text-lg`;
       const listItems = (block.children || []).map((item, idx) => {
         return (
           <li key={idx} className="flex items-start gap-3">
             {block.format !== 'ordered' && (
-              <span className="w-1.5 h-1.5 bg-accent rounded-full mt-2.5 shrink-0" />
+              <span className="w-1.5 h-1.5 bg-sl-gold-subtle rounded-full mt-2.5 shrink-0" />
             )}
             <span>{renderBlock(item, `${key}-${idx}`)}</span>
           </li>
@@ -80,7 +80,7 @@ function renderBlock(block: StrapiBlock | string, key: string): React.ReactNode 
       return (
         <blockquote
           key={key}
-          className="border-s-2 border-accent ps-6 my-8 text-neutral-300 italic text-xl font-light"
+          className="border-s-2 border-sl-gold-subtle ps-6 my-8 text-sl-mist/80 italic text-xl font-light"
         >
           {block.children ? renderChildren(block.children) : block.text || ''}
         </blockquote>
@@ -89,8 +89,8 @@ function renderBlock(block: StrapiBlock | string, key: string): React.ReactNode 
 
     case 'code': {
       return (
-        <div key={key} className="bg-neutral-900 border border-neutral-800 rounded-lg p-6 my-8 overflow-x-auto">
-          <pre className="text-sm font-mono text-neutral-300">
+        <div key={key} className="bg-sl-void border border-sl-obsidian rounded-lg p-6 my-8 overflow-x-auto">
+          <pre className="text-sm font-mono text-sl-mist/80">
             <code>{block.children ? renderChildren(block.children) : block.text || ''}</code>
           </pre>
         </div>
@@ -114,7 +114,7 @@ function renderBlock(block: StrapiBlock | string, key: string): React.ReactNode 
             )}
           </div>
           {captionText && (
-            <figcaption className="mt-3 text-center text-sm text-neutral-500 font-light">
+            <figcaption className="mt-3 text-center text-sm text-sl-mist/60 font-light">
               {captionText}
             </figcaption>
           )}
@@ -130,7 +130,7 @@ function renderBlock(block: StrapiBlock | string, key: string): React.ReactNode 
           href={typeof block.url === 'string' ? block.url : ''}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-accent underline underline-offset-4 hover:text-accent-light transition-colors"
+          className="text-sl-gold-hover underline underline-offset-4 hover:text-sl-gold-hover transition-colors"
         >
           {block.children ? renderChildren(block.children) : block.text || ''}
         </a>
@@ -139,7 +139,7 @@ function renderBlock(block: StrapiBlock | string, key: string): React.ReactNode 
 
     default: {
       return (
-        <div key={key} className="text-neutral-400">
+        <div key={key} className="text-sl-mist/60">
           {block.children ? renderChildren(block.children) : block.text || ''}
         </div>
       );

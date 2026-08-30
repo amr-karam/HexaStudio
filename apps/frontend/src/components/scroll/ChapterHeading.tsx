@@ -61,7 +61,7 @@ export const ChapterHeading = ({
         aria-hidden="true"
         style={staticMode ? { scaleX: 1 } : { scaleX: hairlineScale }}
         transition={{ duration: DUR.scene, ease: EASING.easeOutExpo }}
-        className="mb-8 block h-px w-24 origin-left bg-accent/50"
+        className="mb-8 block h-px w-24 origin-left bg-sl-gold-subtle/50"
       />
 
       {kicker && (
@@ -70,7 +70,7 @@ export const ChapterHeading = ({
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: DUR.ui, ease: EASING.easeOutExpo }}
-          className="mb-6 block font-mono text-xs uppercase tracking-[0.5em] text-neutral-500"
+          className="mb-6 block font-mono text-xs uppercase tracking-[0.5em] text-sl-mist/60"
         >
           {kicker}
         </motion.span>
@@ -79,7 +79,7 @@ export const ChapterHeading = ({
       <KineticTitle
         text={title}
         accentWords={accentWords}
-        className="text-5xl md:text-7xl font-serif font-light tracking-tight text-foreground leading-[1.1]"
+        className="text-5xl md:text-7xl font-serif font-light tracking-tight text-sl-alabaster leading-[1.1]"
       />
 
       {description && (
@@ -92,7 +92,7 @@ export const ChapterHeading = ({
             ease: EASING.easeOutExpo,
             delay: STAGGER_TOKENS.lines,
           }}
-          className="mt-6 w-full max-w-lg text-base font-light leading-relaxed text-neutral-500"
+          className="mt-6 w-full max-w-lg text-base font-light leading-relaxed text-sl-mist/60"
         >
           {description}
         </motion.p>

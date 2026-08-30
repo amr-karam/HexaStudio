@@ -109,9 +109,9 @@ function CurrencyInfo() {
         <motion.div
           animate={reduced ? undefined : { rotate: 360 }}
           transition={reduced ? REDUCED_TRANSITION : { repeat: Infinity, duration: 1, ease: 'linear' }}
-          className="w-3 h-3 rounded-full border-2 border-accent/30 border-t-accent shrink-0"
+          className="w-3 h-3 rounded-full border-2 border-sl-gold-subtle/30 border-t-accent shrink-0"
         />
-        <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">
+        <span className="text-[10px] uppercase tracking-widest text-sl-mist/60 font-mono">
           {t('portal.settings.loadingCurrency') || 'Loading...'}
         </span>
       </div>
@@ -122,20 +122,20 @@ function CurrencyInfo() {
     return (
       <div className="flex items-center gap-2">
         <div className="w-2 h-2 rounded-full bg-neutral-600 shrink-0" />
-        <span className="text-[10px] font-mono text-neutral-500">
+        <span className="text-[10px] font-mono text-sl-mist/60">
           {t('portal.settings.autoDetectActive') || 'Auto-detected from locale'}:{' '}
-          <span className="text-neutral-400">{locale?.toUpperCase()}</span>
+          <span className="text-sl-mist/60">{locale?.toUpperCase()}</span>
         </span>
       </div>
     );
   }
 
   return (
-    <div className="flex items-center gap-3 text-[10px] font-mono text-neutral-500">
+    <div className="flex items-center gap-3 text-[10px] font-mono text-sl-mist/60">
       <span className="flex items-center gap-1.5">
-        <span className="w-2 h-2 rounded-full bg-accent shrink-0" />
+        <span className="w-2 h-2 rounded-full bg-sl-gold-subtle shrink-0" />
         {t('portal.settings.activeCurrency') || 'Active'}:{' '}
-        <span className="text-accent font-medium">
+        <span className="text-sl-gold-hover font-medium">
           {current.symbol} {current.code}
         </span>
       </span>
@@ -151,11 +151,11 @@ function CurrencyInfo() {
 function PageSkeleton() {
   const reduced = useReducedMotion();
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
+    <div className="min-h-screen bg-sl-void flex items-center justify-center">
       <motion.div
         animate={reduced ? undefined : { opacity: [0.5, 1, 0.5] }}
         transition={reduced ? REDUCED_TRANSITION : { repeat: Infinity, duration: 1.5 }}
-        className="text-xs uppercase tracking-[0.5em] text-neutral-500 font-mono"
+        className="text-xs uppercase tracking-[0.5em] text-sl-mist/60 font-mono"
       >
         Loading...
       </motion.div>
@@ -219,8 +219,8 @@ export default function SettingsPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="text-neutral-500 text-xs uppercase tracking-widest font-mono">
+      <div className="min-h-screen bg-sl-void flex items-center justify-center">
+        <p className="text-sl-mist/60 text-xs uppercase tracking-widest font-mono">
           {t('portal.authRequired')}
         </p>
       </div>
@@ -228,7 +228,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-32 pb-24 px-8 md:px-16">
+    <div className="min-h-screen bg-sl-void pt-32 pb-24 px-8 md:px-16">
       <div className="mx-auto max-w-3xl">
         {/* Header */}
         <header className="mb-16">
@@ -236,11 +236,11 @@ export default function SettingsPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: EASE.entrance }}
-            className="text-[10px] uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
+            className="text-[10px] uppercase tracking-[0.5em] text-sl-mist/60 mb-6 block font-mono"
           >
             {t('portal.settings.title')}
           </motion.span>
-          <div className="text-4xl md:text-6xl font-serif font-light text-foreground leading-tight">
+          <div className="text-4xl md:text-6xl font-serif font-light text-sl-alabaster leading-tight">
             <TextReveal delay={0.1}>
               {t('portal.settings.title')}
             </TextReveal>
@@ -249,7 +249,7 @@ export default function SettingsPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25, duration: 0.6, ease: EASE.entrance }}
-            className="mt-4 text-sm text-neutral-500 font-light leading-relaxed"
+            className="mt-4 text-sm text-sl-mist/60 font-light leading-relaxed"
           >
             {t('portal.settings.subtitle')}
           </motion.p>
@@ -260,12 +260,12 @@ export default function SettingsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.7, ease: EASE.entrance }}
-          className="bg-surface border border-border/50 rounded-sm overflow-hidden"
+          className="bg-sl-obsidian border border-sl-silver/20 rounded-sm overflow-hidden"
         >
-          <div className="px-6 py-5 border-b border-border/20">
+          <div className="px-6 py-5 border-b border-sl-silver/20">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-accent/60" />
-              <h2 className="text-base font-medium text-foreground tracking-wide">
+              <div className="w-2 h-2 rounded-full bg-sl-gold-subtle/60" />
+              <h2 className="text-base font-medium text-sl-alabaster tracking-wide">
                 {t('portal.settings.emailNotifications')}
               </h2>
             </div>
@@ -295,29 +295,29 @@ export default function SettingsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.7, ease: EASE.entrance }}
-          className="bg-surface border border-border/50 rounded-sm overflow-hidden mt-8"
+          className="bg-sl-obsidian border border-sl-silver/20 rounded-sm overflow-hidden mt-8"
         >
-          <div className="px-6 py-5 border-b border-border/20">
+          <div className="px-6 py-5 border-b border-sl-silver/20">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-accent/60" />
-              <h2 className="text-base font-medium text-foreground tracking-wide">
+              <div className="w-2 h-2 rounded-full bg-sl-gold-subtle/60" />
+              <h2 className="text-base font-medium text-sl-alabaster tracking-wide">
                 {t('portal.settings.currency') || 'Currency & Regional'}
               </h2>
             </div>
           </div>
-          <div className="px-6 py-6 bg-background border border-border/30 rounded-sm m-4">
+          <div className="px-6 py-6 bg-sl-void border border-sl-silver/20 rounded-sm m-4">
             <div className="flex items-center justify-between">
               <div className="flex flex-col gap-1">
-                <span className="text-sm font-medium text-foreground">
+                <span className="text-sm font-medium text-sl-alabaster">
                   {t('portal.settings.preferredCurrency') || 'Preferred Currency'}
                 </span>
-                <p className="text-xs text-neutral-500 leading-relaxed max-w-md">
+                <p className="text-xs text-sl-mist/60 leading-relaxed max-w-md">
                   {t('portal.settings.currencyDesc') || 'Choose your preferred currency for pricing and invoice display. Auto-detects from your region.'}
                 </p>
               </div>
               <CurrencySelector />
             </div>
-            <div className="mt-4 pt-4 border-t border-border/10">
+            <div className="mt-4 pt-4 border-t border-sl-silver/10">
               <CurrencyInfo />
             </div>
           </div>
@@ -335,9 +335,9 @@ export default function SettingsPage() {
               <motion.div
                 animate={reduced ? undefined : { rotate: 360 }}
                 transition={reduced ? REDUCED_TRANSITION : { repeat: Infinity, duration: 1, ease: 'linear' }}
-                className="w-3 h-3 rounded-full border-2 border-accent/30 border-t-accent"
+                className="w-3 h-3 rounded-full border-2 border-sl-gold-subtle/30 border-t-accent"
               />
-              <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">
+              <span className="text-[10px] uppercase tracking-widest text-sl-mist/60 font-mono">
                 Syncing...
               </span>
             </>

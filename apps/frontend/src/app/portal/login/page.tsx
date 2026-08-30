@@ -35,30 +35,30 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-8 bg-background relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center p-8 bg-sl-void relative overflow-hidden">
       <div className="absolute inset-0 -z-10">
-        <div className="absolute top-[-10%] left-[-10%] w-1/2 h-1/2 bg-accent/5 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-1/2 h-1/2 bg-accent/5 blur-[120px] rounded-full" />
+        <div className="absolute top-[-10%] left-[-10%] w-1/2 h-1/2 bg-sl-gold-subtle/5 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-1/2 h-1/2 bg-sl-gold-subtle/5 blur-[120px] rounded-full" />
       </div>
 
       <motion.div 
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.8, ease: EASE.entrance }}
-        className="w-full max-w-md bg-surface border border-border/50 p-8 md:p-16 rounded-sm shadow-2xl"
+        className="w-full max-w-md bg-sl-obsidian border border-sl-silver/20 p-8 md:p-16 rounded-sm shadow-2xl"
       >
         <div className="text-center mb-12">
           <motion.span 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-[10px] uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
+            className="text-[10px] uppercase tracking-[0.5em] text-sl-mist/60 mb-6 block font-mono"
           >
             Secure Access
           </motion.span>
-          <div className="text-4xl md:text-5xl font-serif font-light text-foreground leading-tight">
+          <div className="text-4xl md:text-5xl font-serif font-light text-sl-alabaster leading-tight">
             <TextReveal delay={0.1}>
-              Client <span className="italic text-accent">Portal</span>
+              Client <span className="italic text-sl-gold-hover">Portal</span>
             </TextReveal>
           </div>
         </div>
@@ -90,9 +90,9 @@ export default function LoginPage() {
         </form>
 
         <div className="mt-12 text-center">
-          <p className="text-neutral-500 text-xs font-light">
+          <p className="text-sl-mist/60 text-xs font-light">
             Having trouble accessing your account? <br />
-            <a href="mailto:info@hexastudio.net" className="text-accent hover:underline">Contact your project lead.</a>
+            <a href="mailto:info@hexastudio.net" className="text-sl-gold-hover hover:underline">Contact your project lead.</a>
           </p>
         </div>
       </motion.div>

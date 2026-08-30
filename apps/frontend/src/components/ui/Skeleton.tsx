@@ -9,7 +9,7 @@ export const Skeleton = ({ className, variant = 'text' }: SkeletonProps) => {
   return (
     <div
       className={cn(
-        'animate-pulse bg-neutral-800',
+        'animate-pulse bg-sl-obsidian',
         variant === 'circular' && 'rounded-full',
         variant === 'text' && 'h-4 w-full rounded',
         variant === 'rectangular' && 'rounded-lg',

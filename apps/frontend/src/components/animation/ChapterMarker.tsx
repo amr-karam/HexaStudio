@@ -67,10 +67,10 @@ export const ChapterMarker = ({ index, title, className }: ChapterMarkerProps) =
         viewport={{ once: true, amount: 0.5 }}
         custom={staticMode}
       >
-        <span className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent">
+        <span className="font-mono text-[10px] uppercase tracking-[0.5em] text-sl-gold-hover">
           (CH. {toRomanNumeral(index)})
         </span>
-        <span className="font-serif italic text-sm uppercase tracking-[0.25em] text-neutral-400">
+        <span className="font-serif italic text-sm uppercase tracking-[0.25em] text-sl-mist/60">
           {title}
         </span>
       </motion.span>

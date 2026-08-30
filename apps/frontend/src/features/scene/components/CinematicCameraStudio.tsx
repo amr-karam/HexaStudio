@@ -41,11 +41,11 @@ export function CinematicCameraStudio() {
   const totalDuration = keyframes.reduce((sum, kf) => sum + kf.duration, 0);
 
   return (
-    <div className="bg-neutral-950/90 border border-neutral-800 rounded-3xl p-6 shadow-2xl backdrop-blur-2xl text-neutral-100 space-y-5">
-      <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
+    <div className="bg-neutral-950/90 border border-sl-obsidian rounded-3xl p-6 shadow-2xl backdrop-blur-2xl text-neutral-100 space-y-5">
+      <div className="flex items-center justify-between pb-3 border-b border-sl-obsidian">
         <div>
           <h3 className="text-sm font-bold text-neutral-100">Multi-Camera Cinematic Flythrough Studio</h3>
-          <p className="text-xs text-neutral-400">3D Keyframe Animation & 60fps Render Timeline</p>
+          <p className="text-xs text-sl-mist/60">3D Keyframe Animation & 60fps Render Timeline</p>
         </div>
         <span className="bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full text-amber-400 text-xs font-mono">
           ⏱️ {totalDuration}s Total Sequence
@@ -60,8 +60,8 @@ export function CinematicCameraStudio() {
             onClick={() => setActiveKeyframeId(kf.id)}
             className={`flex items-center justify-between p-3 rounded-2xl border transition-all cursor-pointer ${
               activeKeyframeId === kf.id
-                ? 'bg-neutral-900 border-amber-500/50 text-neutral-100 shadow-lg'
-                : 'bg-neutral-900/40 border-neutral-800 text-neutral-400 hover:border-neutral-700'
+                ? 'bg-sl-void border-amber-500/50 text-neutral-100 shadow-lg'
+                : 'bg-sl-void/40 border-sl-obsidian text-sl-mist/60 hover:border-neutral-700'
             }`}
           >
             <div className="flex items-center space-x-3 text-xs">
@@ -69,12 +69,12 @@ export function CinematicCameraStudio() {
               <span className="font-medium">{kf.name}</span>
             </div>
 
-            <div className="flex items-center space-x-3 text-[11px] font-mono text-neutral-400">
+            <div className="flex items-center space-x-3 text-[11px] font-mono text-sl-mist/60">
               <span>FOV: {kf.fov}°</span>
               <span>•</span>
               <span>{kf.duration}s</span>
               <span>•</span>
-              <span className="bg-neutral-800 px-2 py-0.5 rounded-md text-neutral-300 capitalize">{kf.easing}</span>
+              <span className="bg-sl-obsidian px-2 py-0.5 rounded-md text-sl-mist/80 capitalize">{kf.easing}</span>
             </div>
           </div>
         ))}
@@ -84,7 +84,7 @@ export function CinematicCameraStudio() {
       <div className="flex items-center justify-between pt-2">
         <button
           onClick={addKeyframe}
-          className="px-4 py-2 rounded-xl bg-neutral-900 border border-neutral-800 hover:bg-neutral-800 text-xs font-bold text-neutral-200 transition-colors"
+          className="px-4 py-2 rounded-xl bg-sl-void border border-sl-obsidian hover:bg-sl-obsidian text-xs font-bold text-neutral-200 transition-colors"
         >
           ➕ Add Camera Keyframe
         </button>
@@ -98,7 +98,7 @@ export function CinematicCameraStudio() {
           >
             {isPlaying ? '⏸️ Pause Flythrough' : '▶️ Preview Flythrough'}
           </button>
-          <button className="px-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-800 hover:bg-neutral-800 text-xs font-bold text-neutral-200 transition-colors">
+          <button className="px-4 py-2.5 rounded-xl bg-sl-void border border-sl-obsidian hover:bg-sl-obsidian text-xs font-bold text-neutral-200 transition-colors">
             🎬 Export 4K 60fps MP4
           </button>
         </div>

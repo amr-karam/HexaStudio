@@ -45,7 +45,7 @@ export const ContactRibbon = () => {
     'flex items-center gap-8 whitespace-nowrap text-4xl md:text-6xl font-serif font-light uppercase tracking-tight transition-colors duration-500';
 
   return (
-    <div className="group relative overflow-hidden border-b border-border/30 bg-surface py-10 md:py-14">
+    <div className="group relative overflow-hidden border-b border-sl-silver/20 bg-sl-obsidian py-10 md:py-14">
       <Link
         href="/contact"
         aria-label={label}
@@ -54,13 +54,13 @@ export const ContactRibbon = () => {
         onMouseLeave={handleMouseLeave}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        className="absolute inset-0 z-10 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent"
+        className="absolute inset-0 z-10 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-sl-gold-subtle"
       />
       {isStatic ? (
         <span aria-hidden="true" className="flex justify-center px-6">
-          <span className={`${itemClass} text-foreground group-hover:text-accent group-focus-visible:text-accent`}>
+          <span className={`${itemClass} text-sl-alabaster group-hover:text-sl-gold-hover group-focus-visible:text-sl-gold-hover`}>
             {label}
-            <span className="font-sans not-italic text-2xl md:text-4xl text-accent" aria-hidden="true">
+            <span className="font-sans not-italic text-2xl md:text-4xl text-sl-gold-hover" aria-hidden="true">
               &rarr;
             </span>
           </span>
@@ -79,9 +79,9 @@ export const ContactRibbon = () => {
           }}
         >
           {Array.from({ length: REPEATS * 2 }, (_, i) => (
-            <span key={i} className={`${itemClass} text-foreground/80`}>
+            <span key={i} className={`${itemClass} text-sl-alabaster/80`}>
               {label}
-              <span className="font-sans text-lg md:text-xl text-accent" aria-hidden="true">
+              <span className="font-sans text-lg md:text-xl text-sl-gold-hover" aria-hidden="true">
                 &#9670;
               </span>
             </span>

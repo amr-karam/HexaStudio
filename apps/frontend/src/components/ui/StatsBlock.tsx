@@ -54,18 +54,18 @@ export function StatsBlock({ stats, className, layout = 'grid', animationDelay =
           >
             {/* Icon */}
             {stat.icon && (
-              <div className="flex items-center justify-center mb-3 w-12 h-12 rounded-full bg-accent/10">
+              <div className="flex items-center justify-center mb-3 w-12 h-12 rounded-full bg-sl-gold-subtle/10">
                 {stat.icon}
               </div>
             )}
 
             {/* Value */}
-            <div className="text-4xl md:text-5xl font-serif font-light text-accent tabular-nums">
+            <div className="text-4xl md:text-5xl font-serif font-light text-sl-gold-hover tabular-nums">
               {formatValue(stat.value, stat.suffix, stat.prefix)}
             </div>
 
             {/* Label */}
-            <div className="mt-2 text-sm text-neutral-400 font-light uppercase tracking-wider">
+            <div className="mt-2 text-sm text-sl-mist/60 font-light uppercase tracking-wider">
               {stat.label}
             </div>
           </motion.div>
