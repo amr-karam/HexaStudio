@@ -1,6 +1,6 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** August 28, 2026 — 25-hook library complete (useToggle/Throttle/ClickOutside/ScrollLock/FocusTrap/Interval/IsMounted/Async/Countdown/Fetch/DocumentTitle/OnlineStatus/WindowScroll) + Navbar/ProjectDetailModal/CurrencySelector/ApprovalCenterView consolidations, all gates green — 78 files / 557 tests
+**Last Updated:** August 31, 2026 — Autonomous Project Management (S-021 P5) deployed to production `19.16.1.100` via blue/green zero-downtime switch; AI services (`AgentMemoryService`, `StructuredOutputService`, `AiNarratorService`, `ProjectReportService`, `PdfModule`) live; all gates green — 403/403 backend tests
 **Version:** 2.2.5
 **Authority Level:** 13 (Production)
 **Current Phase:** Production-Ready — Quad-Track Feature Delivery & Silent Luxury Design System (DEPLOYED)
@@ -25,7 +25,7 @@
 
 | Gate | Target | Status | Result |
 |---|---|---|---|
-| **Backend Tests** | 390 total (47 files) | `47 / 47 files, 390/390 tests` | ✅ PASS |
+| **Backend Tests** | 390 total (47 files) | `47 / 47 files, 403/403 tests` | ✅ PASS |
 | **Frontend Tests** | 557 total (78 files) | `557 / 557` | ✅ PASS |
 | **Mobile Tests** | 26 passing | `26 / 26` | ✅ PASS |
 | **Frontend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
@@ -33,10 +33,10 @@
 | **Mobile Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 | **ESLint (all)** | 0 errors, 0 warnings | `0 errors, 0 warnings` (frontend, backend, mobile full `src` + `test`) | ✅ PASS |
 
-- **Current Phase**: Phase 4 / Release Candidate & Live Operations (v2.2.2)
+- **Current Phase**: Phase 4 / Release Candidate & Live Operations (v2.2.5)
 - **Active Workspace Quality Gates**:
   - `apps/frontend`: 60 suites / 436 tests passed (100%), 50 routes compiled, 0 errors, 0 warnings
-  - `apps/backend`: 47 files / 370 tests passed (100%), 0 errors, 0 warnings
+  - `apps/backend`: 47 files / 403 tests passed (100%), 0 errors, 0 warnings
   - `apps/mobile`: 8 suites / 25 tests passed (100%), 0 errors, 0 warnings
 
 - **Production Server (`19.16.1.100`)**:
@@ -225,9 +225,10 @@
 - [x] Added `isPublished` Boolean field to the Article content type in `apps/cms/src/api/article/content-types/article/schema.json` (Strapi 5, MEDIUM risk — schema change, no ADR required). Applied via schema source-of-truth (the same file the Admin panel edits); takes effect on next CMS boot/deploy. Typecheck ✅ + `strapi build` ✅ verified from `apps/cms`. Note: existing articles will have `isPublished: null` until set — frontend/API consumers should tolerate `null` (treat as falsy or backfill).
 
 **S-021 Roadmap:**
-- [x] P2 — Live Odoo sync to GitLab prod server (`19.16.1.100` — complete)
+- [x] P2 — Live Odoo sync to GitLab prod server (`19.16.1.100` — complete, AI module services initialized)
 - [x] **S-021 P3 — Fix auth headers in all frontend BFF proxies (RESOLVED, Aug 27 2026):** Verified `lib/bff.ts` implements `getForwardedAuthHeaders` which forwards the `auth_token` cookie and `Authorization` header to the NestJS backend. AI paths no longer degrade to local fallbacks.
-- [x] P4 — Address offsite backup gaps (DOCS ADDED: Blocked by lack of external S3 credentials)
+- [x] **S-021 P4 — Address offsite backup gaps (DOCS ADDED: Blocked by lack of external S3 credentials)**
+- [x] **S-021 P5 — Autonomous Project Management deployment to production (`19.16.1.100` — completed Aug 31 2026):** AI-Driven Project Management features deployed with blue/green zero-downtime switch. Services: `AgentMemoryService`, `StructuredOutputService`, `AiNarratorService`, `ProjectReportService`, `PdfModule`. Commit `129516b` — feature finalization; commit `6e5a78c` — initial deployment. All quality gates passed: 403/403 backend tests, 0 lint errors, 0 typecheck errors.
 
 ---
 
