@@ -49,6 +49,8 @@ export class ApprovalService {
       status: 'submitted',
       submittedBy: userId,
       submittedAt: now,
+      sentiment: 'neutral',
+      urgencyScore: 45,
     };
 
     const initialEntry: AuditEntry = {

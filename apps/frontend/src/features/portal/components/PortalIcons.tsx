@@ -42,6 +42,7 @@ type IconName =
   | 'zap'
   | 'dollar-sign'
   | 'alert-circle'
+  | 'alert-triangle'
   | 'file-check'
   | 'phone'
   | 'video'
@@ -53,6 +54,7 @@ type IconName =
   | 'hash'
   | 'sparkles'
   | 'plus'
+  | 'plus-circle'
   | 'shield-check'
   | 'grid'
   | 'check-circle'
@@ -64,7 +66,14 @@ type IconName =
   | 'kanban'
   | 'camera'
   | 'mic'
-  | 'loader';
+  | 'loader'
+  | 'smile'
+  | 'meh'
+  | 'frown'
+  | 'pen-tool'
+  | 'layout-grid'
+  | 'package'
+  | 'git-branch';
 
 interface IconProps {
   name: IconName;
@@ -405,6 +414,75 @@ const ICON_PATHS: Record<IconName, React.ReactNode> = {
   loader: (
     <>
       <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+    </>
+  ),
+  smile: (
+    <>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+      <line x1="9" y1="9" x2="9.01" y2="9" />
+      <line x1="15" y1="9" x2="15.01" y2="9" />
+    </>
+  ),
+  meh: (
+    <>
+      <circle cx="12" cy="12" r="10" />
+      <line x1="8" y1="14" x2="16" y2="14" />
+      <line x1="9" y1="9" x2="9.01" y2="9" />
+      <line x1="15" y1="9" x2="15.01" y2="9" />
+    </>
+  ),
+  frown: (
+    <>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M16 14s-1.5 2-4 2-4-2-4-2" />
+      <line x1="9" y1="9" x2="9.01" y2="9" />
+      <line x1="15" y1="9" x2="15.01" y2="9" />
+    </>
+  ),
+  'alert-triangle': (
+    <>
+      <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+      <line x1="12" y1="9" x2="12" y2="13" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+    </>
+  ),
+  'plus-circle': (
+    <>
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="8" x2="12" y2="16" />
+      <line x1="8" y1="12" x2="16" y2="12" />
+    </>
+  ),
+  'pen-tool': (
+    <>
+      <path d="M12 19l7-7 3 3-7 7-3-3z" />
+      <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
+      <path d="M2 2l7.586 7.586" />
+      <circle cx="11" cy="11" r="2" />
+    </>
+  ),
+  'layout-grid': (
+    <>
+      <rect x="3" y="3" width="7" height="7" rx="1" />
+      <rect x="14" y="3" width="7" height="7" rx="1" />
+      <rect x="3" y="14" width="7" height="7" rx="1" />
+      <rect x="14" y="14" width="7" height="7" rx="1" />
+    </>
+  ),
+  package: (
+    <>
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+      <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+      <line x1="12" y1="22.08" x2="12" y2="12" />
+    </>
+  ),
+  'git-branch': (
+    <>
+      <line x1="6" y1="3" x2="6" y2="15" />
+      <circle cx="18" cy="6" r="3" />
+      <circle cx="6" cy="18" r="3" />
+      <path d="M18 9a9 9 0 0 1-9 9" />
     </>
   ),
 };

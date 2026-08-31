@@ -1,16 +1,18 @@
 'use client';
 
 import React from 'react';
+import { cn } from '@/lib/utils';
 import { Icon } from './PortalIcons';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { motion, AnimatePresence } from 'framer-motion';
 import { EASE, DURATION } from '@/lib/motion';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
+import type { IconName } from './PortalIcons';
 
 interface QuickAction {
   label: string;
   description: string;
-  icon: string;
+  icon: IconName;
   href: string;
   variant?: 'primary' | 'secondary' | 'ghost';
   badge?: string;

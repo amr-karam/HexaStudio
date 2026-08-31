@@ -10,6 +10,7 @@ import { RedisService } from '../storage/redis.service';
 import { AgentMemoryService, type MemoryMessage } from '../agents/agent-memory.service';
 import { StructuredOutputService } from '../ai/structured-output.service';
 import { z } from 'zod';
+import { ApprovalSentiment } from '@hexastudio/types';
 import type {
   PortalDashboardData,
   ProjectHealthStatus,
@@ -218,15 +219,15 @@ export class PortalService {
     // ── Upcoming Milestones ─────────────────────────────────────────────────
     const upcomingMilestones = this.buildUpcomingMilestones(projects);
 
+    // ── Project Health Score ─────────────────────────────────────────────────
+    const sentiment = await this.computeSentiment(clientEmail);
+
     // ── Pending Approvals ───────────────────────────────────────────────────
-    const pendingApprovals = this.buildPendingApprovals(projects);
+    const pendingApprovals = this.buildPendingApprovals(projects, sentiment);
     kpis.pendingApprovals = pendingApprovals.length;
 
     // ── Notifications summary (from Redis) ──────────────────────────────────
     const notifications = await this.getNotificationsSummary(clientEmail);
-
-     // ── Project Health Score ─────────────────────────────────────────────────
-    const sentiment = await this.computeSentiment(clientEmail);
     const projectHealth = this.computeProjectHealth(
       projects,
       unpaidInvoices,
@@ -371,7 +372,7 @@ export class PortalService {
    * portal, we treat incomplete milestones with a future due date as
    * "pending approvals" to give the client actionable visibility.
    */
-  private buildPendingApprovals(projects: ClientProject[]): PendingApproval[] {
+  private buildPendingApprovals(projects: ClientProject[], sentiment: ApprovalSentiment): PendingApproval[] {
     const approvals: PendingApproval[] = [];
 
     for (const project of projects) {
@@ -387,6 +388,10 @@ export class PortalService {
           if (daysUntilDue < 0) priority = 'high'; // overdue
           else if (daysUntilDue < 7) priority = 'medium';
 
+          // Urgency score: overdue is high, closer to due date is higher
+          let urgencyScore = Math.max(0, 100 - (daysUntilDue * 5)); 
+          if (priority === 'high') urgencyScore = 90 + Math.min(10, Math.abs(daysUntilDue));
+
           approvals.push({
             id: `approval-${milestone.id}`,
             type: 'deliverable',
@@ -394,6 +399,8 @@ export class PortalService {
             submittedAt: milestone.date,
             projectName: project.name,
             priority,
+            sentiment,
+            urgencyScore: Math.round(urgencyScore),
           });
         }
       }

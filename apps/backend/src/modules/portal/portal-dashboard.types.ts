@@ -5,6 +5,8 @@
  * controller, service, and frontend can share a single source of truth.
  */
 
+import { ApprovalSentiment } from '@hexastudio/types';
+
 // ── Project Health ────────────────────────────────────────────────────────────
 
 export type ProjectHealthStatus = 'excellent' | 'good' | 'attention' | 'critical';
@@ -87,6 +89,8 @@ export interface PendingApproval {
   submittedAt: string;
   projectName: string;
   priority: ApprovalPriority;
+  sentiment?: ApprovalSentiment;
+  urgencyScore?: number;
 }
 
 // ── Notifications Summary ─────────────────────────────────────────────────────

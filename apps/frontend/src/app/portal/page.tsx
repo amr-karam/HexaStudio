@@ -144,11 +144,11 @@ function MetricBar({
           className={cn(
             'h-full rounded-full',
             value >= 90
-              ? 'bg-emerald-400'
+              ? 'bg-emerald-500'
               : value >= 70
-                ? 'bg-amber-400'
+                ? 'bg-amber-500'
                 : value >= 50
-                  ? 'bg-orange-400'
+                  ? 'bg-amber-400'
                   : 'bg-red-400',
           )}
           initial={prefersReduced ? { width: `${value}%` } : { width: '0%' }}
@@ -585,7 +585,7 @@ export default function PortalDashboardPage() {
               {/* Vertical timeline connector line */}
               {dashboardData.activity.length > 1 && (
                 <div
-                  className="absolute left-[7px] top-3 bottom-3 w-px bg-border/30"
+                  className="absolute left-[7px] top-3 bottom-3 w-px bg-sl-silver/30"
                   aria-hidden="true"
                 />
               )}

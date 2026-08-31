@@ -179,8 +179,8 @@ function AuditTrailTimeline({ trail }: AuditTrailTimelineProps) {
               <p className="mt-0.5 font-mono text-[0.5625rem] uppercase tracking-[0.15em] text-sl-mist/60">
                 {formatLedgerDate(log.timestamp)} · {log.actor}
               </p>
-              {log.notes && (
-                <p className="mt-1 font-mono text-[0.5625rem] italic text-sl-gold-hover/80">"{log.notes}"</p>
+              {log.comment && (
+                <p className="mt-1 font-mono text-[0.5625rem] italic text-sl-gold-hover/80">"{log.comment}"</p>
               )}
             </li>
           );
@@ -224,7 +224,7 @@ export function ApprovalCenterView() {
 
   const activeApproval = approvals.find((a) => a.id === selectedId);
 
-  const handleAction = (id: string, newStatus: 'approved' | 'revision_requested', notes?: string) => {
+  const handleAction = (id: string, newStatus: 'approved' | 'revision_requested', comment?: string) => {
     const now = new Date().toISOString();
     const actionLabel = newStatus === 'approved' ? 'Approved by Client' : 'Revision Requested by Client';
 
@@ -239,7 +239,7 @@ export function ApprovalCenterView() {
           status: newStatus,
           auditTrail: [
             ...(item.auditTrail || []),
-            { timestamp: now, action: actionLabel, actor: 'Client User', notes },
+            { timestamp: now, action: actionLabel, actor: 'Client User', comment },
           ],
         };
       })
@@ -251,7 +251,7 @@ export function ApprovalCenterView() {
     // Persist the decision; revert the optimistic update if the backend rejects it.
     const backendAction = newStatus === 'approved' ? 'approved' : 'revision';
     portalApi
-      .reviewApproval(id, backendAction, notes)
+      .reviewApproval(id, backendAction, comment)
       .catch(() => {
         setApprovals((prev) =>
           prev.map((item) => {

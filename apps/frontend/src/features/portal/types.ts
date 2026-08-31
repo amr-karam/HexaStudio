@@ -94,7 +94,7 @@ export interface PendingApproval {
     timestamp: string;
     action: string;
     actor: string;
-    notes?: string;
+    comment?: string;
   }[];
 }
 

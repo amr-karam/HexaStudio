@@ -6,6 +6,10 @@
  * (PRODUCT.md: permanent, immutable audit log).
  */
 
+import { ApprovalSentiment } from '@hexastudio/types';
+
+export { ApprovalSentiment };
+
 export type ApprovalAction = 'approved' | 'rejected' | 'revision';
 
 export interface AuditEntry {
@@ -27,7 +31,7 @@ export interface PhaseApproval {
   reviewedAt?: string;
   auditTrail: AuditEntry[];
   /** Real-time sentiment inferred from the submitter's chat history (Cinematic Clarity) */
-  sentiment?: 'positive' | 'neutral' | 'frustrated' | 'urgent';
+  sentiment?: ApprovalSentiment;
   /** Sentiment-derived urgency score (0–100) used to prioritize the signing queue */
   urgencyScore?: number;
 }
