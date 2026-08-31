@@ -4,6 +4,8 @@ import { PortalService } from '../src/modules/portal/portal.service';
 import { OdooService } from '../src/modules/odoo/odoo.service';
 import { MinioService } from '../src/modules/storage/minio.service';
 import { RedisService } from '../src/modules/storage/redis.service';
+import { AgentMemoryService } from '../src/modules/agents/agent-memory.service';
+import { StructuredOutputService } from '../src/modules/ai/structured-output.service';
 
 describe('PortalService', () => {
   let service: PortalService;
@@ -63,6 +65,25 @@ describe('PortalService', () => {
         {
           provide: RedisService,
           useValue: mockRedisService,
+        },
+        {
+          provide: AgentMemoryService,
+          useValue: {
+            getHistory: vi.fn().mockResolvedValue([]),
+            append: vi.fn().mockResolvedValue(undefined),
+            appendMany: vi.fn().mockResolvedValue(undefined),
+            clear: vi.fn().mockResolvedValue(undefined),
+            remember: vi.fn().mockResolvedValue(undefined),
+            recall: vi.fn().mockResolvedValue(null),
+            forget: vi.fn().mockResolvedValue(undefined),
+          },
+        },
+        {
+          provide: StructuredOutputService,
+          useValue: {
+            generateStructuredOutput: vi.fn().mockResolvedValue({ content: 'test', confidence: 0.9 }),
+            isAvailable: true,
+          },
         },
       ],
     }).compile();

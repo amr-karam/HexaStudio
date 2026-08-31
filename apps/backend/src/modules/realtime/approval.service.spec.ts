@@ -10,6 +10,8 @@ import { NotFoundException } from '@nestjs/common';
 import { vi } from 'vitest';
 import { ApprovalService } from './approval.service';
 import { ApprovalRepository } from './approval.repository';
+import { AgentMemoryService } from '../agents/agent-memory.service';
+import { StructuredOutputService } from '../ai/structured-output.service';
 import type { PhaseApproval } from './approval.types';
 
 describe('ApprovalService', () => {
@@ -46,6 +48,25 @@ describe('ApprovalService', () => {
             saveAnnotation: vi.fn(),
             getAnnotation: vi.fn(),
             listAnnotationsByProject: vi.fn(),
+          },
+        },
+        {
+          provide: AgentMemoryService,
+          useValue: {
+            getHistory: vi.fn().mockResolvedValue([]),
+            append: vi.fn().mockResolvedValue(undefined),
+            appendMany: vi.fn().mockResolvedValue(undefined),
+            clear: vi.fn().mockResolvedValue(undefined),
+            remember: vi.fn().mockResolvedValue(undefined),
+            recall: vi.fn().mockResolvedValue(null),
+            forget: vi.fn().mockResolvedValue(undefined),
+          },
+        },
+        {
+          provide: StructuredOutputService,
+          useValue: {
+            generateStructuredOutput: vi.fn().mockResolvedValue({ content: 'test', confidence: 0.9 }),
+            isAvailable: true,
           },
         },
       ],

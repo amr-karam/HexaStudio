@@ -77,8 +77,6 @@ describe('HealthModule', () => {
     process.env.VECTOR_PORT = '6333';
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      // SecurityModule is @Global and provides SecurityAuditService, which
-      // RolesGuard now injects (ProjectsController, pulled in via VectorModule).
       imports: [
         ConfigModule.forRoot({ isGlobal: true }),
         RedisModule,
@@ -103,14 +101,6 @@ describe('HealthModule', () => {
       .useValue(mockOdooApiService)
       .overrideProvider(OdooDocumentService)
       .useValue(mockOdooDocumentService)
-      .overrideProvider(EventBus)
-      .useValue(mockEventBus)
-      .overrideProvider(VectorSyncService)
-      .useValue(mockVectorSyncService)
-      // RealtimeGateway now depends on TransformReasoningService, AuthService and
-      // ProjectsService, none of which are part of this test graph (AIModule is not
-      // imported). useMocker supplies the mocks in the global core module so they
-      // resolve from RealtimeModule.
       .useMocker((token) => {
         if (token === TransformReasoningService) {
           return { transformVoiceTo3D: vi.fn() };
