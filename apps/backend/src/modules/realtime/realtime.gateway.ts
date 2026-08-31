@@ -72,6 +72,17 @@ interface WebRTCPeerLeavePayload {
   projectId: string;
 }
 
+export type SpatialCommandType = 'SET_LIGHTING' | 'SET_MATERIAL' | 'SET_CAMERA';
+
+export interface SpatialCommand {
+  type: SpatialCommandType;
+  payload: Record<string, unknown>;
+  metadata: {
+    triggeredBy: 'ai-agent' | 'user';
+    agentPersona?: string;
+  };
+}
+
 // Same comma-split, trimmed list logic as main.ts. Wildcard ('*') is NOT used here
 // because credentials:true combined with a wildcard origin is invalid and insecure.
 // Read directly from process.env (not getEnv()) because decorator arguments are
@@ -134,6 +145,15 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
     if (this.server) {
       this.server.to(room).emit(event, data);
     }
+  }
+
+  dispatchSpatialCommand(projectId: string, command: SpatialCommand): void {
+    const room = `project:${projectId}`;
+    if (this.server) {
+      this.server.to(room).emit('spatial:command', command);
+    }
+    this.eventBus.emit('spatial:command', { projectId, command });
+    this.logger.debug(`Spatial command dispatched to ${room}: ${command.type}`);
   }
 
   @SubscribeMessage('join-project')

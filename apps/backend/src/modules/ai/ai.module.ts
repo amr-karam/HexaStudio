@@ -22,6 +22,7 @@ import { MinIOVisionService } from './minio-vision.listener';
 import { AiIntelligenceController } from './ai-intelligence.controller';
 import { StorageModule } from '../storage/storage.module';
 import { VectorModule } from '../vector/vector.module';
+import { RealtimeModule } from '../realtime/realtime.module';
 import { ModelFusionService } from './model-fusion.service';
 import { ModelFusionController } from './model-fusion.controller';
 import { ModelFusionStreamController } from './model-fusion-stream.controller';

@@ -26,6 +26,10 @@ export interface PhaseApproval {
   submittedAt?: string;
   reviewedAt?: string;
   auditTrail: AuditEntry[];
+  /** Real-time sentiment inferred from the submitter's chat history (Cinematic Clarity) */
+  sentiment?: 'positive' | 'neutral' | 'frustrated' | 'urgent';
+  /** Sentiment-derived urgency score (0–100) used to prioritize the signing queue */
+  urgencyScore?: number;
 }
 
 export interface ProjectAnnotation {

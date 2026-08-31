@@ -11,6 +11,15 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ApprovalRepository } from './approval.repository';
 import type { AuditEntry, PhaseApproval, ProjectAnnotation } from './approval.types';
+import { AgentMemoryService } from '../agents/agent-memory.service';
+import { StructuredOutputService } from '../ai/structured-output.service';
+import { z } from 'zod';
+
+/** Lightweight sentiment verdict computed from the submitter's recent chat history. */
+const SentimentSchema = z.object({
+  sentiment: z.enum(['positive', 'neutral', 'frustrated', 'urgent']),
+  urgencyScore: z.number().int().min(0).max(100),
+});
 
 interface AnnotationInput {
   projectId: string;
@@ -25,7 +34,11 @@ interface AnnotationInput {
 export class ApprovalService {
   private readonly logger = new Logger(ApprovalService.name);
 
-  constructor(private readonly repository: ApprovalRepository) {}
+  constructor(
+    private readonly repository: ApprovalRepository,
+    private readonly agentMemory: AgentMemoryService,
+    private readonly structuredOutput: StructuredOutputService,
+  ) {}
 
   async submitPhase(projectId: string, phaseName: string, userId: string): Promise<PhaseApproval> {
     const now = new Date().toISOString();
@@ -82,7 +95,69 @@ export class ApprovalService {
   }
 
   async getPhaseApprovals(projectId: string): Promise<PhaseApproval[]> {
-    return this.repository.listApprovalsByProject(projectId);
+    const approvals = await this.repository.listApprovalsByProject(projectId);
+
+    // Enrich each pending approval with sentiment derived from the
+    // submitter's recent chat history (last 20 messages).
+    // This powers the cinematic urgency beacon on the Signing Chamber.
+    return Promise.all(
+      approvals.map(async (approval): Promise<PhaseApproval> => {
+        if (approval.status !== 'submitted' || !approval.submittedBy) return approval;
+
+        const sent = await this.computeSentimentFromEmail(approval.submittedBy);
+        if (sent) {
+          return { ...approval, ...sent };
+        }
+        return approval;
+      }),
+    );
+  }
+
+  /**
+   * Compute real-time sentiment for a user based on their chat history.
+   * Returns `{ sentiment, urgencyScore }` or null if history/LLM is unavailable.
+   */
+  private async computeSentimentFromEmail(
+    email: string,
+  ): Promise<Pick<PhaseApproval, 'sentiment' | 'urgencyScore'> | null> {
+    try {
+      const messages = await this.agentMemory.getHistory('portal', email, 20);
+      if (!messages || messages.length === 0) return null;
+
+      const text = messages
+        .filter((m) => m.content !== null && m.content.length > 0)
+        .map((m) => m.content)
+        .join('\n');
+      const result = await this.structuredOutput.generateStructuredOutput<z.infer<typeof SentimentSchema>>(
+        `Analyze the following client chat transcript and determine their current sentiment and urgency level.\n\nTRANSCRIPT:\n${text}`,
+        SentimentSchema,
+        { temperature: 0.3, maxTokens: 500 },
+      );
+
+      // Map sentiment → urgency score
+      let urgencyScore: number;
+      switch (result.sentiment) {
+        case 'positive':
+          urgencyScore = 20;
+          break;
+        case 'neutral':
+          urgencyScore = 45;
+          break;
+        case 'frustrated':
+          urgencyScore = 75;
+          break;
+        case 'urgent':
+          urgencyScore = 95;
+          break;
+        default:
+          urgencyScore = result.urgencyScore;
+      }
+
+      return { sentiment: result.sentiment, urgencyScore: Math.max(urgencyScore, result.urgencyScore ?? 0) };
+    } catch (err) {
+      this.logger.warn(`Sentiment analysis failed for ${email}: ${err}`);
+      return null;
+    }
   }
 
   async addAnnotation(input: AnnotationInput): Promise<ProjectAnnotation> {
