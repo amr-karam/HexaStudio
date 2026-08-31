@@ -12,10 +12,10 @@ export function HeaderSection() {
       transition={{ duration: 0.8, ease: EASE.entrance }}
       className="px-8 md:px-16 mb-24"
     >
-      <span className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono">
+      <span className="text-xs uppercase tracking-[0.5em] text-sl-mist/60 mb-6 block font-mono">
         Archives
       </span>
-      <div className="text-6xl md:text-8xl font-serif font-light tracking-tighter text-foreground leading-tight">
+      <div className="text-6xl md:text-8xl font-serif font-light tracking-tighter text-sl-alabaster leading-tight">
         <TextSplit>Visual Narratives</TextSplit>
       </div>
     </motion.div>

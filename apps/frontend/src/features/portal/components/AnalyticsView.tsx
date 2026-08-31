@@ -109,7 +109,7 @@ const KPI_DATA: KpiData[] = [
     subtext: 'Tier 1 Premier Status',
     icon: 'sparkles',
     trend: { value: '6', direction: 'up' },
-    accentClass: 'text-accent',
+    accentClass: 'text-sl-gold-hover',
   },
 ];
 
@@ -206,7 +206,7 @@ const lineDrawVariant = (reduced: boolean) => ({
 function DiamondBullet({ className }: { className?: string }) {
   return (
     <span
-      className={cn('inline-block h-1.5 w-1.5 rotate-45 bg-accent/70 flex-shrink-0', className)}
+      className={cn('inline-block h-1.5 w-1.5 rotate-45 bg-sl-gold-subtle/70 flex-shrink-0', className)}
       aria-hidden="true"
     />
   );
@@ -244,12 +244,12 @@ function SectionCard({
       {/* Ambient gold aura revealed on hover — subtle, group-driven */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -right-12 -top-12 h-28 w-28 rounded-full bg-accent/[0.04] opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
+        className="pointer-events-none absolute -right-12 -top-12 h-28 w-28 rounded-full bg-sl-gold-subtle/[0.04] opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
       />
       {/* Bottom specular gold hairline — appears on hover */}
       <div
         aria-hidden="true"
-        className="absolute bottom-0 left-0 right-0 h-px bg-accent/0 transition-colors duration-1000 group-hover:bg-accent/25"
+        className="absolute bottom-0 left-0 right-0 h-px bg-sl-gold-subtle/0 transition-colors duration-1000 group-hover:bg-sl-gold-subtle/25"
       />
       <div className="relative">{children}</div>
     </motion.section>
@@ -264,13 +264,13 @@ function SectionHeader({ title, subtitle, index }: { title: string; subtitle?: s
       </span>
       <div>
         {index && (
-          <p className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-accent/60">
+          <p className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-sl-gold-hover/60">
             {index}
           </p>
         )}
-        <h3 className="font-serif text-lg font-light tracking-tight text-foreground">{title}</h3>
+        <h3 className="font-serif text-lg font-light tracking-tight text-sl-alabaster">{title}</h3>
         {subtitle && (
-          <p className="mt-1 text-xs font-light text-neutral-500">{subtitle}</p>
+          <p className="mt-1 text-xs font-light text-sl-mist/60">{subtitle}</p>
         )}
       </div>
     </div>
@@ -286,7 +286,7 @@ function KpiCard({ kpi, index, reduced }: { kpi: KpiData; index: number; reduced
     ? 'text-emerald-300'
     : kpi.trend.direction === 'down'
       ? 'text-red-300'
-      : 'text-neutral-500';
+      : 'text-sl-mist/60';
 
   const trendIcon: IconName = kpi.trend.direction === 'up'
     ? 'arrow-up-right'
@@ -318,7 +318,7 @@ function KpiCard({ kpi, index, reduced }: { kpi: KpiData; index: number; reduced
       {/* Hover gold radial aura */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full bg-accent/5 opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
+        className="pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full bg-sl-gold-subtle/5 opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
       />
 
       {/* Top row: icon plate + trend */}
@@ -327,13 +327,13 @@ function KpiCard({ kpi, index, reduced }: { kpi: KpiData; index: number; reduced
           className={cn(
             'flex h-10 w-10 items-center justify-center rounded-lg',
             'border border-white/[0.06] bg-white/[0.02]',
-            'transition-colors duration-500 group-hover:border-accent/40',
+            'transition-colors duration-500 group-hover:border-sl-gold-subtle/40',
           )}
         >
           <Icon
             name={kpi.icon}
             size={18}
-            className="text-neutral-400 transition-colors duration-500 group-hover:text-accent"
+            className="text-sl-mist/60 transition-colors duration-500 group-hover:text-sl-gold-hover"
           />
         </div>
         <div className={cn('flex items-center gap-1 font-mono text-[0.625rem] uppercase tracking-[0.15em]', trendColor)}>
@@ -346,24 +346,24 @@ function KpiCard({ kpi, index, reduced }: { kpi: KpiData; index: number; reduced
       <p
         className={cn(
           'relative font-serif text-3xl font-light tracking-tight tabular-nums',
-          kpi.accentClass ?? 'text-foreground',
+          kpi.accentClass ?? 'text-sl-alabaster',
         )}
       >
         {kpi.value}
       </p>
 
       {/* Label — mono uppercase */}
-      <p className="relative mt-1.5 font-mono text-[0.625rem] uppercase tracking-[0.25em] text-neutral-500">
+      <p className="relative mt-1.5 font-mono text-[0.625rem] uppercase tracking-[0.25em] text-sl-mist/60">
         {kpi.label}
       </p>
 
       {/* Subtext — editorial body */}
-      <p className="relative mt-1.5 text-xs font-light text-neutral-400">{kpi.subtext}</p>
+      <p className="relative mt-1.5 text-xs font-light text-sl-mist/60">{kpi.subtext}</p>
 
       {/* Bottom specular gold hairline */}
       <div
         aria-hidden="true"
-        className="absolute bottom-0 left-4 right-4 h-px bg-accent/0 transition-colors duration-1000 group-hover:bg-accent/25"
+        className="absolute bottom-0 left-4 right-4 h-px bg-sl-gold-subtle/0 transition-colors duration-1000 group-hover:bg-sl-gold-subtle/25"
       />
     </motion.div>
   );
@@ -378,14 +378,14 @@ function PhaseProgressBar({ phase, reduced }: { phase: PhaseData; reduced: boole
     phase.status === 'completed'
       ? 'bg-emerald-500'
       : phase.status === 'in_progress'
-        ? 'bg-accent'
+        ? 'bg-sl-gold-subtle'
         : 'bg-neutral-700';
 
   const textColor =
     phase.status === 'completed'
       ? 'text-emerald-400'
       : phase.status === 'in_progress'
-        ? 'text-accent'
+        ? 'text-sl-gold-hover'
         : 'text-textMuted';
 
   return (
@@ -397,7 +397,7 @@ function PhaseProgressBar({ phase, reduced }: { phase: PhaseData; reduced: boole
         </span>
       </div>
       <div
-        className="w-full bg-neutral-800/60 h-2.5 rounded-full overflow-hidden"
+        className="w-full bg-sl-obsidian/60 h-2.5 rounded-full overflow-hidden"
         role="progressbar"
         aria-valuenow={phase.percentage}
         aria-valuemin={0}
@@ -474,7 +474,7 @@ function ActivityHeatmap({ reduced }: { reduced: boolean }) {
                 }}
                 className={cn(
                   'aspect-square rounded-[3px]',
-                  cell.intensity === 0 ? 'bg-neutral-800' : 'bg-accent',
+                  cell.intensity === 0 ? 'bg-sl-obsidian' : 'bg-sl-gold-subtle',
                 )}
                 style={{ opacity }}
                 role="gridcell"
@@ -490,7 +490,7 @@ function ActivityHeatmap({ reduced }: { reduced: boolean }) {
           {[0.1, 0.3, 0.6, 1.0].map((level) => (
             <div
               key={`legend-${level}`}
-              className="w-3 h-3 rounded-[2px] bg-accent"
+              className="w-3 h-3 rounded-[2px] bg-sl-gold-subtle"
               style={{ opacity: level }}
               aria-hidden="true"
             />
@@ -512,7 +512,7 @@ function MilestoneTimeline({ reduced }: { reduced: boolean }) {
       <SectionHeader title="Milestone Timeline" subtitle="Project milestones & delivery dates" index="§ III — Cadence" />
       <div className="relative pt-4 pb-2">
         {/* Connecting line */}
-        <div className="absolute top-[28px] left-0 right-0 h-[2px] bg-neutral-800" aria-hidden="true" />
+        <div className="absolute top-[28px] left-0 right-0 h-[2px] bg-sl-obsidian" aria-hidden="true" />
 
         <div className="flex justify-between relative">
           {MILESTONE_DATA.map((ms, i) => {
@@ -543,14 +543,14 @@ function MilestoneTimeline({ reduced }: { reduced: boolean }) {
                   <div
                     className={cn(
                       'w-3.5 h-3.5 rounded-full border-2',
-                      isCompleted && 'bg-accent border-accent',
-                      isCurrent && 'bg-accent border-accent',
-                      isUpcoming && 'bg-neutral-800 border-neutral-700',
+                      isCompleted && 'bg-sl-gold-subtle border-sl-gold-subtle',
+                      isCurrent && 'bg-sl-gold-subtle border-sl-gold-subtle',
+                      isUpcoming && 'bg-sl-obsidian border-neutral-700',
                     )}
                   />
                   {isCurrent && !reduced && (
                     <motion.div
-                      className="absolute inset-0 rounded-full bg-accent/30"
+                      className="absolute inset-0 rounded-full bg-sl-gold-subtle/30"
                       animate={{
                         scale: [1, 2.2, 1],
                         opacity: [0.6, 0, 0.6],
@@ -570,7 +570,7 @@ function MilestoneTimeline({ reduced }: { reduced: boolean }) {
                   className={cn(
                     'text-[10px] font-medium text-center leading-tight max-w-[64px]',
                     isCompleted && 'text-textSecondary',
-                    isCurrent && 'text-accent font-semibold',
+                    isCurrent && 'text-sl-gold-hover font-semibold',
                     isUpcoming && 'text-textMuted',
                   )}
                 >
@@ -579,7 +579,7 @@ function MilestoneTimeline({ reduced }: { reduced: boolean }) {
                 <p
                   className={cn(
                     'text-[9px] font-mono mt-0.5',
-                    isCurrent ? 'text-accent/70' : 'text-textMuted/60',
+                    isCurrent ? 'text-sl-gold-hover/70' : 'text-textMuted/60',
                   )}
                 >
                   {ms.date}
@@ -721,7 +721,7 @@ function ResponseTimeChart({ reduced }: { reduced: boolean }) {
         {/* Value summary */}
         <div className="flex justify-between mt-2 px-1">
           <span className="text-[10px] text-textMuted font-mono">Slowest: 3.1h</span>
-          <span className="text-[10px] text-accent font-mono font-medium">Avg: 2.3h</span>
+          <span className="text-[10px] text-sl-gold-hover font-mono font-medium">Avg: 2.3h</span>
           <span className="text-[10px] text-emerald-400 font-mono">Fastest: 1.9h</span>
         </div>
       </div>
@@ -739,7 +739,7 @@ function FilesCard({ reduced }: { reduced: boolean }) {
   return (
     <SectionCard ariaLabel="File upload statistics" reduced={reduced} className="flex-1">
       <SectionHeader title="Files Uploaded" subtitle="This month" index="§ V — Throughput" />
-      <p className="text-4xl font-serif font-light text-foreground tracking-tight mb-4">
+      <p className="text-4xl font-serif font-light text-sl-alabaster tracking-tight mb-4">
         12
       </p>
 
@@ -761,7 +761,7 @@ function FilesCard({ reduced }: { reduced: boolean }) {
                 }}
             className={cn(
               'flex-1 rounded-t-sm min-w-[2px]',
-              count > 0 ? 'bg-accent/60' : 'bg-neutral-800/40',
+              count > 0 ? 'bg-sl-gold-subtle/60' : 'bg-sl-obsidian/40',
             )}
             aria-label={`${count} files uploaded on day ${i + 1}`}
           />
@@ -779,7 +779,7 @@ function MeetingsCard({ reduced }: { reduced: boolean }) {
   return (
     <SectionCard ariaLabel="Meeting statistics" reduced={reduced} className="flex-1">
       <SectionHeader title="Meetings" subtitle="This month" index="§ VI — Convenings" />
-      <p className="text-4xl font-serif font-light text-foreground tracking-tight mb-4">
+      <p className="text-4xl font-serif font-light text-sl-alabaster tracking-tight mb-4">
         8
       </p>
 
@@ -787,14 +787,14 @@ function MeetingsCard({ reduced }: { reduced: boolean }) {
       <div
         className={cn(
           'rounded-lg p-3 border',
-          'bg-white/[0.02] border-accent/15',
+          'bg-white/[0.02] border-sl-gold-subtle/15',
         )}
       >
         <div className="flex items-center gap-2 mb-1.5">
-          <div className="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0" />
+          <div className="w-1.5 h-1.5 rounded-full bg-sl-gold-subtle flex-shrink-0" />
           <span className="text-xs font-medium text-textSecondary">Next Meeting</span>
         </div>
-        <p className="text-sm font-semibold text-foreground">Design Review: VR Tour</p>
+        <p className="text-sm font-semibold text-sl-alabaster">Design Review: VR Tour</p>
         <div className="flex items-center gap-3 mt-1.5">
           <span className="text-[10px] text-textMuted font-mono flex items-center gap-1">
             <Icon name="calendar" size={10} className="text-textMuted" />
@@ -892,7 +892,7 @@ function BudgetDonut({ reduced }: { reduced: boolean }) {
 
           {/* Center text */}
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-2xl font-serif font-light text-foreground">50%</span>
+            <span className="text-2xl font-serif font-light text-sl-alabaster">50%</span>
             <span className="text-[9px] text-textMuted uppercase tracking-wider font-mono">Paid</span>
           </div>
         </div>
@@ -914,9 +914,9 @@ function BudgetDonut({ reduced }: { reduced: boolean }) {
                   }}
                   aria-hidden="true"
                 />
-                <span className="text-xs font-light text-neutral-400">{seg.label}</span>
+                <span className="text-xs font-light text-sl-mist/60">{seg.label}</span>
               </div>
-              <span className="font-mono text-xs font-medium text-foreground">
+              <span className="font-mono text-xs font-medium text-sl-alabaster">
                 {seg.percentage}%
               </span>
             </div>
@@ -926,10 +926,10 @@ function BudgetDonut({ reduced }: { reduced: boolean }) {
           <div className="my-2 h-px bg-white/5" />
 
           <div className="flex items-center justify-between">
-            <span className="font-mono text-[0.625rem] uppercase tracking-[0.25em] text-neutral-500">
+            <span className="font-mono text-[0.625rem] uppercase tracking-[0.25em] text-sl-mist/60">
               Total Budget
             </span>
-            <span className="font-serif text-base font-light tracking-tight tabular-nums text-foreground">
+            <span className="font-serif text-base font-light tracking-tight tabular-nums text-sl-alabaster">
               $125,000
             </span>
           </div>
@@ -968,14 +968,14 @@ export function AnalyticsView() {
         />
 
         <div className="relative">
-          <p className="flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-accent/70">
-            <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-accent/70" />
+          <p className="flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-sl-gold-hover/70">
+            <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-sl-gold-subtle/70" />
             § 01 — Analytics
           </p>
-          <h1 className="mt-4 font-serif text-4xl font-light tracking-tight text-foreground sm:text-5xl">
+          <h1 className="mt-4 font-serif text-4xl font-light tracking-tight text-sl-alabaster sm:text-5xl">
             The Studio <em className="text-gradient-gold font-normal italic">Pulse</em>
           </h1>
-          <p className="mt-3 max-w-xl text-sm font-light leading-relaxed text-neutral-500">
+          <p className="mt-3 max-w-xl text-sm font-light leading-relaxed text-sl-mist/60">
             Executive KPIs measuring project velocity, milestone accuracy, and team collaboration —
             metrics framed as a concierge quarterly review.
           </p>
@@ -987,7 +987,7 @@ export function AnalyticsView() {
           role="radiogroup"
           aria-label="Select date range"
         >
-          <span className="pl-3 pr-1 font-mono text-[0.625rem] uppercase tracking-[0.3em] text-neutral-500">
+          <span className="pl-3 pr-1 font-mono text-[0.625rem] uppercase tracking-[0.3em] text-sl-mist/60">
             Range
           </span>
           {DATE_RANGE_OPTIONS.map((opt) => {
@@ -1001,13 +1001,13 @@ export function AnalyticsView() {
                 aria-label={`Show data for the last ${opt.label}`}
                 className={cn(
                   'relative rounded-full px-4 py-1.5 font-mono text-xs tracking-[0.15em] transition-colors duration-500',
-                  isActive ? 'text-neutral-950' : 'text-neutral-400 hover:text-accent',
+                  isActive ? 'text-neutral-950' : 'text-sl-mist/60 hover:text-sl-gold-hover',
                 )}
               >
                 {isActive && (
                   <motion.span
                     layoutId="analytics-range-indicator"
-                    className="absolute inset-0 rounded-full bg-gradient-to-r from-accent-dark via-accent to-accent-light shadow-[0_0_20px_rgba(212,175,55,0.25)]"
+                    className="absolute inset-0 rounded-full bg-gradient-to-r from-sl-gold-subtle-dark via-sl-gold-subtle to-sl-gold-hover shadow-[0_0_20px_rgba(212,175,55,0.25)]"
                     transition={reduced ? { duration: 0.01 } : makeTransition('interaction', 'micro')}
                     aria-hidden="true"
                   />

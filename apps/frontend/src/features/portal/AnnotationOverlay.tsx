@@ -56,13 +56,13 @@ export function AnnotationOverlay({
   return (
     <div className="relative">
       <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-sm font-medium text-white/80">{t('portal.annotations.title')}</h3>
+        <h3 className="text-sm font-medium text-sl-alabaster/80">{t('portal.annotations.title')}</h3>
         <button
           onClick={() => setPlacing(!placing)}
           className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
             placing
-              ? 'bg-accent text-black'
-              : 'bg-white/10 text-white/70 hover:bg-white/20'
+              ? 'bg-sl-gold-subtle text-black'
+              : 'bg-white/10 text-sl-alabaster/70 hover:bg-white/20'
           }`}
         >
           {placing ? t('common.cancel') : t('portal.annotations.addAnnotation')}
@@ -90,18 +90,18 @@ export function AnnotationOverlay({
                 onClick={() => setSelected(selected === ann.id ? null : ann.id)}
                 className={`flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-xs font-bold transition-all ${
                   ann.resolved
-                    ? 'bg-emerald-500/80 text-white'
-                    : 'bg-accent text-black'
+                    ? 'bg-emerald-500/80 text-sl-alabaster'
+                    : 'bg-sl-gold-subtle text-black'
                 }`}
               >
                 {ann.resolved ? '✓' : '+'}
               </button>
 
               {selected === ann.id && (
-                <div className="absolute start-6 top-0 w-48 rounded-lg border border-white/10 bg-surface p-3 shadow-xl">
-                  <p className="text-xs text-white/80">{ann.content}</p>
+                <div className="absolute start-6 top-0 w-48 rounded-lg border border-white/10 bg-sl-obsidian p-3 shadow-xl">
+                  <p className="text-xs text-sl-alabaster/80">{ann.content}</p>
                   <div className="mt-2 flex items-center justify-between">
-                    <span className="text-[10px] text-white/40">{ann.author}</span>
+                    <span className="text-[10px] text-sl-alabaster/40">{ann.author}</span>
                     {!ann.resolved && (
                       <button
                         onClick={() => onResolveAnnotation(ann.id)}
@@ -121,25 +121,25 @@ export function AnnotationOverlay({
               className="absolute"
               style={{ insetInlineStart: `${newPos.x * 100}%`, top: `${newPos.y * 100}%` }}
             >
-              <div className="absolute start-6 top-0 w-48 rounded-lg border border-accent/50 bg-surface p-3 shadow-xl">
+              <div className="absolute start-6 top-0 w-48 rounded-lg border border-sl-gold-subtle/50 bg-sl-obsidian p-3 shadow-xl">
                 <textarea
                   value={newContent}
                   onChange={(e) => setNewContent(e.target.value)}
                   placeholder={t('portal.annotations.addNote')}
-                  className="w-full rounded border border-white/10 bg-black/50 p-1.5 text-xs text-white placeholder-white/30"
+                  className="w-full rounded border border-white/10 bg-black/50 p-1.5 text-xs text-sl-alabaster placeholder-white/30"
                   rows={2}
                   autoFocus
                 />
                 <div className="mt-2 flex gap-2">
                   <button
                     onClick={handleSubmitAnnotation}
-                    className="rounded bg-accent px-2 py-1 text-[10px] font-medium text-black"
+                    className="rounded bg-sl-gold-subtle px-2 py-1 text-[10px] font-medium text-black"
                   >
                     {t('common.save')}
                   </button>
                   <button
                     onClick={() => { setNewPos(null); setNewContent(''); }}
-                    className="rounded bg-white/10 px-2 py-1 text-[10px] text-white/60"
+                    className="rounded bg-white/10 px-2 py-1 text-[10px] text-sl-alabaster/60"
                   >
                     {t('common.cancel')}
                   </button>

@@ -17,15 +17,15 @@ export function ThemeSwitcher() {
   ];
 
   return (
-    <div className="bg-neutral-950/80 border border-neutral-800 rounded-full p-1.5 backdrop-blur-xl flex items-center space-x-1 shadow-2xl">
+    <div className="bg-neutral-950/80 border border-sl-obsidian rounded-full p-1.5 backdrop-blur-xl flex items-center space-x-1 shadow-2xl">
       {themes.map((t) => (
         <button
           key={t.id}
           onClick={() => setTheme(t.id)}
           className={`flex items-center space-x-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
             currentTheme === t.id
-              ? 'bg-neutral-900 text-neutral-100 shadow-md border border-neutral-700'
-              : 'text-neutral-400 hover:text-neutral-200'
+              ? 'bg-sl-void text-neutral-100 shadow-md border border-neutral-700'
+              : 'text-sl-mist/60 hover:text-neutral-200'
           }`}
         >
           <span className={`w-2.5 h-2.5 rounded-full ${t.bg}`} />

@@ -32,9 +32,9 @@ export function PhaseApprovalCard({ phase, onSubmit, onReview, isAdmin }: PhaseA
     <div className="rounded-lg border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
       <div className="flex items-center justify-between">
         <div>
-          <h4 className="text-sm font-medium text-white">{phase.name}</h4>
+          <h4 className="text-sm font-medium text-sl-alabaster">{phase.name}</h4>
           {phase.description && (
-            <p className="mt-1 text-xs text-white/40">{phase.description}</p>
+            <p className="mt-1 text-xs text-sl-alabaster/40">{phase.description}</p>
           )}
         </div>
         <span className={`rounded-full border px-2.5 py-0.5 text-xs font-medium ${STATUS_STYLES[phase.status]}`}>
@@ -46,7 +46,7 @@ export function PhaseApprovalCard({ phase, onSubmit, onReview, isAdmin }: PhaseA
         {!isAdmin && phase.status === 'pending' && onSubmit && (
           <button
             onClick={() => onSubmit(phase.id)}
-            className="rounded-md bg-accent px-3 py-1.5 text-xs font-medium text-black transition-colors hover:bg-accent-dark"
+            className="rounded-md bg-sl-gold-subtle px-3 py-1.5 text-xs font-medium text-black transition-colors hover:bg-sl-gold-subtle-dark"
           >
             {t('portal.approval.submitForApproval')}
           </button>
@@ -59,13 +59,13 @@ export function PhaseApprovalCard({ phase, onSubmit, onReview, isAdmin }: PhaseA
                 onReview?.(phase.id, 'approve', comment);
                 setShowReview(false);
               }}
-              className="rounded-md bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-emerald-500"
+              className="rounded-md bg-emerald-600 px-3 py-1.5 text-xs font-medium text-sl-alabaster transition-colors hover:bg-emerald-500"
             >
               {t('portal.approval.approve')}
             </button>
             <button
               onClick={() => setShowReview(!showReview)}
-              className="rounded-md bg-white/10 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-white/20"
+              className="rounded-md bg-white/10 px-3 py-1.5 text-xs font-medium text-sl-alabaster transition-colors hover:bg-white/20"
             >
               {t('portal.approval.requestRevision')}
             </button>
@@ -74,7 +74,7 @@ export function PhaseApprovalCard({ phase, onSubmit, onReview, isAdmin }: PhaseA
                 onReview?.(phase.id, 'reject', comment);
                 setShowReview(false);
               }}
-              className="rounded-md bg-red-600/80 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-red-600"
+              className="rounded-md bg-red-600/80 px-3 py-1.5 text-xs font-medium text-sl-alabaster transition-colors hover:bg-red-600"
             >
               {t('portal.approval.reject')}
             </button>
@@ -87,7 +87,7 @@ export function PhaseApprovalCard({ phase, onSubmit, onReview, isAdmin }: PhaseA
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder={t('portal.approval.revisionNotes')}
-              className="mt-2 w-full rounded-md border border-white/10 bg-black/50 p-2 text-xs text-white placeholder-white/30"
+              className="mt-2 w-full rounded-md border border-white/10 bg-black/50 p-2 text-xs text-sl-alabaster placeholder-white/30"
               rows={2}
             />
             <button
@@ -96,7 +96,7 @@ export function PhaseApprovalCard({ phase, onSubmit, onReview, isAdmin }: PhaseA
                 setShowReview(false);
                 setComment('');
               }}
-              className="mt-1 rounded-md bg-orange-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-orange-500"
+              className="mt-1 rounded-md bg-orange-600 px-3 py-1.5 text-xs font-medium text-sl-alabaster transition-colors hover:bg-orange-500"
             >
               {t('portal.approval.sendRevision')}
             </button>

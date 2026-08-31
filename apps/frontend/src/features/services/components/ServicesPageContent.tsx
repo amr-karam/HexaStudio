@@ -111,8 +111,8 @@ function ServiceAtmosphere({ index }: { index: number }) {
 function ServiceIndex({ index, title }: { index: number; title: string }) {
   const numeral = String(index + 1).padStart(2, '0');
   return (
-    <span className="font-mono text-[9px] uppercase tracking-[0.4em] text-neutral-500 mb-5 block">
-      <span className="text-accent">{numeral}</span>
+    <span className="font-mono text-[9px] uppercase tracking-[0.4em] text-sl-mist/60 mb-5 block">
+      <span className="text-sl-gold-hover">{numeral}</span>
       {' — '}
       {title
         .toLowerCase()
@@ -133,9 +133,9 @@ function FeatureList({ features }: { features: string[] }) {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ type: 'spring', stiffness: 160, damping: 22, delay: 0.06 * i }}
-          className="flex items-start gap-3 text-sm text-neutral-400 font-light leading-relaxed group/item"
+          className="flex items-start gap-3 text-sm text-sl-mist/60 font-light leading-relaxed group/item"
         >
-          <span className="mt-1.5 w-1 h-1 rounded-full bg-accent shrink-0 transition-colors duration-500 group-hover/item:bg-accent-bright" />
+          <span className="mt-1.5 w-1 h-1 rounded-full bg-sl-gold-subtle shrink-0 transition-colors duration-500 group-hover/item:bg-sl-gold-subtle-bright" />
           {item}
         </motion.li>
       ))}
@@ -148,7 +148,7 @@ export function ServicesPageContent({ services }: ServicesPageContentProps) {
   const displayServices = services.length > 0 ? services : FALLBACK_SERVICES;
 
   return (
-    <div className="bg-background text-foreground min-h-screen">
+    <div className="bg-sl-void text-sl-alabaster min-h-screen">
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
       <section className="relative min-h-screen flex flex-col items-center justify-center px-8 pt-20 pb-32 overflow-hidden">
         {/* Atmospheric depth layers */}
@@ -160,8 +160,8 @@ export function ServicesPageContent({ services }: ServicesPageContentProps) {
 
         {/* Ambient floating light orbs */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-          <div className="absolute top-[15%] left-[20%] w-[30%] h-[30%] rounded-full bg-accent/5 blur-[120px] animate-pulse" style={{ animationDuration: '8s' }} />
-          <div className="absolute bottom-[20%] right-[15%] w-[25%] h-[25%] rounded-full bg-accent/3 blur-[100px]" style={{ animationDelay: '-3s' }} />
+          <div className="absolute top-[15%] left-[20%] w-[30%] h-[30%] rounded-full bg-sl-gold-subtle/5 blur-[120px] animate-pulse" style={{ animationDuration: '8s' }} />
+          <div className="absolute bottom-[20%] right-[15%] w-[25%] h-[25%] rounded-full bg-sl-gold-subtle/3 blur-[100px]" style={{ animationDelay: '-3s' }} />
         </div>
 
         {/* Typography */}
@@ -170,11 +170,11 @@ export function ServicesPageContent({ services }: ServicesPageContentProps) {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={SPRING_TRANSITION}
-            className="font-mono text-[9px] uppercase tracking-[0.5em] text-neutral-500 mb-8 block"
+            className="font-mono text-[9px] uppercase tracking-[0.5em] text-sl-mist/60 mb-8 block"
           >
             {t('services.expertise')}
           </motion.span>
-          <div className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-serif font-light tracking-tighter text-foreground leading-[0.92] mb-8">
+          <div className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-serif font-light tracking-tighter text-sl-alabaster leading-[0.92] mb-8">
             <TextCharReveal
               text={String(t('services.title')) || 'Our Services.'}
               as="h1"
@@ -187,7 +187,7 @@ export function ServicesPageContent({ services }: ServicesPageContentProps) {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ ...SPRING_TRANSITION, delay: 0.25 }}
-            className="text-neutral-400 font-light text-base md:text-lg leading-relaxed max-w-xl mx-auto px-4"
+            className="text-sl-mist/60 font-light text-base md:text-lg leading-relaxed max-w-xl mx-auto px-4"
           >
             {t('services.tagline') || 'From first sketch to final render — every service shaped by precision and light.'}
           </motion.p>
@@ -200,10 +200,10 @@ export function ServicesPageContent({ services }: ServicesPageContentProps) {
           transition={{ delay: 1.5, duration: 0.8 }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
         >
-          <span className="font-mono text-[9px] uppercase tracking-[0.4em] text-neutral-600">
+          <span className="font-mono text-[9px] uppercase tracking-[0.4em] text-sl-mist/60">
             Scroll to explore
           </span>
-          <div className="w-px h-6 bg-gradient-to-b from-accent/50 to-transparent" />
+          <div className="w-px h-6 bg-gradient-to-b from-sl-gold-subtle/50 to-transparent" />
         </motion.div>
       </section>
 
@@ -261,11 +261,11 @@ export function ServicesPageContent({ services }: ServicesPageContentProps) {
                     <div className="relative z-10 p-8 md:p-10">
                       <ServiceIndex index={idx} title={title} />
 
-                      <h3 className="text-xl md:text-2xl font-serif font-light text-foreground mb-5 leading-snug group-hover:text-accent transition-colors duration-700">
+                      <h3 className="text-xl md:text-2xl font-serif font-light text-sl-alabaster mb-5 leading-snug group-hover:text-sl-gold-hover transition-colors duration-700">
                         {title}
                       </h3>
 
-                      <p className="text-neutral-400 font-light leading-relaxed mb-8 text-sm md:text-base">
+                      <p className="text-sl-mist/60 font-light leading-relaxed mb-8 text-sm md:text-base">
                         {description}
                       </p>
 
@@ -273,7 +273,7 @@ export function ServicesPageContent({ services }: ServicesPageContentProps) {
                       <FeatureList features={features} />
 
                       {/* Inquire CTA */}
-                      <div className="mt-8 pt-6 border-t border-border/30">
+                      <div className="mt-8 pt-6 border-t border-sl-silver/20">
                         <Link href="/contact">
                           <Button
                             variant="outline"
@@ -306,7 +306,7 @@ export function ServicesPageContent({ services }: ServicesPageContentProps) {
       </section>
 
       {/* ── CTA ────────────────────────────────────────────────────────────────── */}
-      <section className="px-8 md:px-16 py-32 border-t border-border/30 relative overflow-hidden">
+      <section className="px-8 md:px-16 py-32 border-t border-sl-silver/20 relative overflow-hidden">
         <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
         <div className="absolute inset-0" aria-hidden="true" style={{
           background: 'radial-gradient(ellipse at 50% 50%, rgba(var(--color-gold-rgb), 0.03) 0%, transparent 50%)',
@@ -318,7 +318,7 @@ export function ServicesPageContent({ services }: ServicesPageContentProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={SPRING_TRANSITION}
-            className="font-mono text-[9px] uppercase tracking-[0.5em] text-neutral-500 mb-6 block"
+            className="font-mono text-[9px] uppercase tracking-[0.5em] text-sl-mist/60 mb-6 block"
           >
             {t('services.ctaOverline')}
           </motion.span>
@@ -327,7 +327,7 @@ export function ServicesPageContent({ services }: ServicesPageContentProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ ...SPRING_TRANSITION, delay: 0.1 }}
-            className="text-3xl md:text-5xl lg:text-6xl font-serif font-light tracking-tight text-foreground mb-6 leading-tight"
+            className="text-3xl md:text-5xl lg:text-6xl font-serif font-light tracking-tight text-sl-alabaster mb-6 leading-tight"
           >
             {t('services.ctaHeading')}
           </motion.h2>
@@ -336,7 +336,7 @@ export function ServicesPageContent({ services }: ServicesPageContentProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ ...SPRING_TRANSITION, delay: 0.2 }}
-            className="text-neutral-400 font-light leading-relaxed mb-10 w-full max-w-2xl mx-auto text-base md:text-lg px-4"
+            className="text-sl-mist/60 font-light leading-relaxed mb-10 w-full max-w-2xl mx-auto text-base md:text-lg px-4"
           >
             {t('services.ctaDescription')}
           </motion.p>

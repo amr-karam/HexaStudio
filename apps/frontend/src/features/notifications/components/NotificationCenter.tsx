@@ -83,7 +83,7 @@ export function NotificationCenter() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Toggle notifications"
-        className="relative p-2.5 rounded-full text-neutral-300 hover:text-white hover:bg-neutral-800/60 transition-colors focus:outline-none"
+        className="relative p-2.5 rounded-full text-sl-mist/80 hover:text-sl-alabaster hover:bg-sl-obsidian/60 transition-colors focus:outline-none"
       >
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
@@ -108,10 +108,10 @@ export function NotificationCenter() {
             initial={{ opacity: 0, y: 10, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.96 }}
-            className="absolute right-0 mt-3 w-80 sm:w-96 rounded-2xl border border-neutral-800 bg-neutral-950/95 p-4 shadow-2xl backdrop-blur-2xl z-50 text-neutral-100"
+            className="absolute right-0 mt-3 w-80 sm:w-96 rounded-2xl border border-sl-obsidian bg-neutral-950/95 p-4 shadow-2xl backdrop-blur-2xl z-50 text-neutral-100"
           >
             {/* Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
+            <div className="flex items-center justify-between pb-3 border-b border-sl-obsidian">
               <div className="flex items-center space-x-2">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-200">Notifications</h4>
                 {unreadCount > 0 && (
@@ -123,13 +123,13 @@ export function NotificationCenter() {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={markAllAsRead}
-                  className="text-[11px] text-neutral-400 hover:text-amber-400 transition-colors"
+                  className="text-[11px] text-sl-mist/60 hover:text-amber-400 transition-colors"
                 >
                   Mark all read
                 </button>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="text-neutral-400 hover:text-neutral-200 p-1 rounded"
+                  className="text-sl-mist/60 hover:text-neutral-200 p-1 rounded"
                 >
                   ✕
                 </button>
@@ -141,7 +141,7 @@ export function NotificationCenter() {
               <button
                 onClick={() => setFilter('all')}
                 className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
-                  filter === 'all' ? 'bg-neutral-800 text-amber-400 border border-neutral-700' : 'text-neutral-400 hover:text-neutral-200'
+                  filter === 'all' ? 'bg-sl-obsidian text-amber-400 border border-neutral-700' : 'text-sl-mist/60 hover:text-neutral-200'
                 }`}
               >
                 All ({notifications.length})
@@ -149,7 +149,7 @@ export function NotificationCenter() {
               <button
                 onClick={() => setFilter('unread')}
                 className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
-                  filter === 'unread' ? 'bg-neutral-800 text-amber-400 border border-neutral-700' : 'text-neutral-400 hover:text-neutral-200'
+                  filter === 'unread' ? 'bg-sl-obsidian text-amber-400 border border-neutral-700' : 'text-sl-mist/60 hover:text-neutral-200'
                 }`}
               >
                 Unread ({unreadCount})
@@ -159,7 +159,7 @@ export function NotificationCenter() {
             {/* Notification List */}
             <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
               {filteredNotifications.length === 0 ? (
-                <p className="text-xs text-neutral-500 text-center py-6">No notifications</p>
+                <p className="text-xs text-sl-mist/60 text-center py-6">No notifications</p>
               ) : (
                 filteredNotifications.map((item) => (
                   <Link
@@ -171,22 +171,22 @@ export function NotificationCenter() {
                     }}
                     className={`block p-3 rounded-xl border transition-all ${
                       item.read
-                        ? 'bg-neutral-900/30 border-neutral-800/60 opacity-70'
-                        : 'bg-neutral-900 border-amber-500/30 shadow-md shadow-amber-500/5'
+                        ? 'bg-sl-void/30 border-sl-obsidian/60 opacity-70'
+                        : 'bg-sl-void border-amber-500/30 shadow-md shadow-amber-500/5'
                     }`}
                   >
                     <div className="flex items-start justify-between">
                       <span className="text-xs font-bold text-neutral-100">{item.title}</span>
-                      <span className="text-[10px] text-neutral-500">{item.timestamp}</span>
+                      <span className="text-[10px] text-sl-mist/60">{item.timestamp}</span>
                     </div>
-                    <p className="text-[11px] text-neutral-300 mt-1 leading-snug">{item.message}</p>
+                    <p className="text-[11px] text-sl-mist/80 mt-1 leading-snug">{item.message}</p>
                   </Link>
                 ))
               )}
             </div>
 
             {/* Footer */}
-            <div className="pt-3 mt-3 border-t border-neutral-800 text-center">
+            <div className="pt-3 mt-3 border-t border-sl-obsidian text-center">
               <Link
                 href="/portal"
                 onClick={() => setIsOpen(false)}

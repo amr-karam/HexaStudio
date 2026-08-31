@@ -28,7 +28,7 @@ export function TimelineBlock({ events, className, layout = 'vertical' }: Timeli
       <div className="relative">
         {/* Timeline line */}
         <div
-          className="absolute left-4 top-0 bottom-0 w-px bg-gradient-to-b from-accent/50 via-accent/30 to-transparent"
+          className="absolute left-4 top-0 bottom-0 w-px bg-gradient-to-b from-sl-gold-subtle/50 via-sl-gold-subtle/30 to-transparent"
           style={layout === 'horizontal' ? { top: '50%', left: '0', bottom: 'auto', width: '100%', height: '2px' } : undefined}
         />
 
@@ -52,7 +52,7 @@ export function TimelineBlock({ events, className, layout = 'vertical' }: Timeli
               )}
             >
               {/* Timeline dot */}
-              <div className="absolute left-4 top-6 w-8 h-8 rounded-full bg-accent border-4 border-background flex items-center justify-center z-10 shadow-lg">
+              <div className="absolute left-4 top-6 w-8 h-8 rounded-full bg-sl-gold-subtle border-4 border-background flex items-center justify-center z-10 shadow-lg">
                 <div className="w-3 h-3 rounded-full bg-white" />
               </div>
 
@@ -62,18 +62,18 @@ export function TimelineBlock({ events, className, layout = 'vertical' }: Timeli
                 layout === 'horizontal' && 'md:ml-0 md:mr-12 md:text-right'
               )}>
                 {/* Date */}
-                <span className="text-accent text-sm font-medium uppercase tracking-wider">
+                <span className="text-sl-gold-hover text-sm font-medium uppercase tracking-wider">
                   {event.date}
                 </span>
 
                 {/* Title */}
-                <h3 className="mt-2 text-xl font-serif font-light text-foreground">
+                <h3 className="mt-2 text-xl font-serif font-light text-sl-alabaster">
                   {event.title}
                 </h3>
 
                 {/* Description */}
                 {event.description && (
-                  <p className="mt-2 text-neutral-400 font-light leading-relaxed">
+                  <p className="mt-2 text-sl-mist/60 font-light leading-relaxed">
                     {event.description}
                   </p>
                 )}

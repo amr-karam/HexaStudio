@@ -52,7 +52,7 @@ export const LiquidGlassCard: React.FC<LiquidGlassCardProps> = ({
           className="pointer-events-none absolute -inset-px transition-opacity duration-300 opacity-0 group-hover:opacity-100"
           style={{
             opacity: isHovered ? 1 : 0,
-            background: `radial-gradient(400px circle at ${mousePos.x}% ${mousePos.y}%, var(--color-gold-15), transparent 70%)`,
+            background: `radial-gradient(400px circle at ${mousePos.x}% ${mousePos.y}%, var(--sl-gold-subtle), transparent 70%)`,
           }}
         />
       )}

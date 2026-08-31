@@ -46,61 +46,61 @@ export default function AdminRequestsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <span className="text-xs uppercase tracking-[0.5em] text-neutral-500 font-mono">Loading Admin Dashboard...</span>
+      <div className="min-h-screen bg-sl-void flex items-center justify-center">
+        <span className="text-xs uppercase tracking-[0.5em] text-sl-mist/60 font-mono">Loading Admin Dashboard...</span>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background pt-32 pb-24 px-8 md:px-16">
+    <div className="min-h-screen bg-sl-void pt-32 pb-24 px-8 md:px-16">
       <div className="w-full">
         <header className="mb-16">
           <motion.span 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
+            className="text-xs uppercase tracking-[0.5em] text-sl-mist/60 mb-6 block font-mono"
           >
             Internal Management
           </motion.span>
-          <div className="text-5xl md:text-7xl font-serif font-light tracking-tight text-foreground leading-tight">
+          <div className="text-5xl md:text-7xl font-serif font-light tracking-tight text-sl-alabaster leading-tight">
             <TextReveal delay={0.1}>
-              Client <span className="italic text-accent">Requests</span>
+              Client <span className="italic text-sl-gold-hover">Requests</span>
             </TextReveal>
           </div>
         </header>
 
-        <div className="bg-surface border border-border/50 rounded-sm overflow-hidden">
+        <div className="bg-sl-obsidian border border-sl-silver/20 rounded-sm overflow-hidden">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-border/50 bg-neutral-900/50">
-                <th className="p-6 text-[10px] uppercase tracking-widest text-neutral-500 font-mono">Request</th>
-                <th className="p-6 text-[10px] uppercase tracking-widest text-neutral-500 font-mono">Priority</th>
-                <th className="p-6 text-[10px] uppercase tracking-widest text-neutral-500 font-mono">Status</th>
-                <th className="p-6 text-[10px] uppercase tracking-widest text-neutral-500 font-mono text-right">Actions</th>
+              <tr className="border-b border-sl-silver/20 bg-sl-void/50">
+                <th className="p-6 text-[10px] uppercase tracking-widest text-sl-mist/60 font-mono">Request</th>
+                <th className="p-6 text-[10px] uppercase tracking-widest text-sl-mist/60 font-mono">Priority</th>
+                <th className="p-6 text-[10px] uppercase tracking-widest text-sl-mist/60 font-mono">Status</th>
+                <th className="p-6 text-[10px] uppercase tracking-widest text-sl-mist/60 font-mono text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
               {requests && requests.length > 0 ? (
                 requests.map((req) => (
-                  <tr key={req.id} className="border-b border-border/30 hover:bg-neutral-800/30 transition-colors">
+                  <tr key={req.id} className="border-b border-sl-silver/20 hover:bg-sl-obsidian/30 transition-colors">
                     <td className="p-6">
                       <div className="flex flex-col">
-                        <span className="text-sm font-medium text-foreground">{req.title}</span>
-                        <span className="text-xs text-neutral-500 font-light">{req.description}</span>
+                        <span className="text-sm font-medium text-sl-alabaster">{req.title}</span>
+                        <span className="text-xs text-sl-mist/60 font-light">{req.description}</span>
                       </div>
                     </td>
                       <td className="p-6">
                         <span className={`text-[10px] uppercase tracking-widest px-2 py-1 rounded-full font-mono ${
                           req.priority === 'high' ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 
-                          req.priority === 'medium' ? 'bg-accent/10 text-accent border border-accent/20' : 
-                          'bg-neutral-800 text-neutral-500 border border-neutral-700'
+                          req.priority === 'medium' ? 'bg-sl-gold-subtle/10 text-sl-gold-hover border border-sl-gold-subtle/20' : 
+                          'bg-sl-obsidian text-sl-mist/60 border border-neutral-700'
                         }`}>
                           {req.priority}
                         </span>
                       </td>
                       <td className="p-6">
-                        <span className="text-xs text-neutral-400 font-mono">{req.status}</span>
+                        <span className="text-xs text-sl-mist/60 font-mono">{req.status}</span>
                       </td>
                       <td className="p-6 text-right">
                         <div className="flex justify-end gap-2">
@@ -128,7 +128,7 @@ export default function AdminRequestsPage() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={4} className="p-12 text-center text-neutral-500 font-light">
+                    <td colSpan={4} className="p-12 text-center text-sl-mist/60 font-light">
                       No active requests to manage.
                     </td>
                   </tr>

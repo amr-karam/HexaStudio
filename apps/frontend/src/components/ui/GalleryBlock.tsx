@@ -33,7 +33,7 @@ export function GalleryBlock({
     <div className={cn('w-full', className)}>
       {/* Caption */}
       {caption && (
-        <p className="text-neutral-400 font-light text-lg mb-6 text-center">
+        <p className="text-sl-mist/60 font-light text-lg mb-6 text-center">
           {caption}
         </p>
       )}
@@ -55,7 +55,7 @@ export function GalleryBlock({
             key={index}
             className={cn(
               layout === 'horizontal' && 'flex-shrink-0',
-              'relative overflow-hidden rounded-xl cursor-pointer transition-all duration-300 group hover:ring-2 hover:ring-accent/50'
+              'relative overflow-hidden rounded-xl cursor-pointer transition-all duration-300 group hover:ring-2 hover:ring-sl-gold-subtle/50'
             )}
             onClick={() => setLightboxIndex(index)}
             onKeyDown={(e) => {
@@ -83,7 +83,7 @@ export function GalleryBlock({
               />
             </div>
             {image.caption && (
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white text-sm">
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-sl-alabaster text-sm">
                 {image.caption}
               </div>
             )}
@@ -119,7 +119,7 @@ export function GalleryBlock({
             onClick={() => setLightboxIndex(null)}
             aria-label="Close"
           >
-            <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-6 h-6 text-sl-alabaster" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -138,7 +138,7 @@ export function GalleryBlock({
           </div>
 
           {images[lightboxIndex].caption && (
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-center text-white text-sm max-w-md px-4">
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-center text-sl-alabaster text-sm max-w-md px-4">
               {images[lightboxIndex].caption}
             </div>
           )}
@@ -155,12 +155,12 @@ export function GalleryBlock({
                 }}
                 aria-label="Previous"
               >
-                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className="w-6 h-6 text-sl-alabaster" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
 
-              <div className="text-white text-sm">
+              <div className="text-sl-alabaster text-sm">
                 {lightboxIndex + 1} / {images.length}
               </div>
 
@@ -174,7 +174,7 @@ export function GalleryBlock({
                 }}
                 aria-label="Next"
               >
-                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className="w-6 h-6 text-sl-alabaster" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
               </button>

@@ -65,13 +65,13 @@ export function ContactPageContent({ faqs }: ContactPageContentProps) {
   };
 
   return (
-    <div className="bg-background text-foreground min-h-screen overflow-hidden">
+    <div className="bg-sl-void text-sl-alabaster min-h-screen overflow-hidden">
       <section className="relative flex min-h-screen flex-col items-center justify-center px-8 overflow-hidden">
         {/* Cinematic Background */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute inset-0 gradient-radial-gold" aria-hidden="true" />
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-accent/10 blur-[120px] rounded-full animate-pulse" />
-          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/5 blur-[120px] rounded-full" />
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-sl-gold-subtle/10 blur-[120px] rounded-full animate-pulse" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-sl-gold-subtle/5 blur-[120px] rounded-full" />
         </div>
 
         <div className="text-center relative z-10 mb-16">
@@ -79,14 +79,14 @@ export function ContactPageContent({ faqs }: ContactPageContentProps) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: EASE.entrance }}
-            className="text-xs uppercase tracking-[0.5em] text-neutral-400 mb-6 block font-mono"
+            className="text-xs uppercase tracking-[0.5em] text-sl-mist/60 mb-6 block font-mono"
           >
             Connect
           </motion.span>
-          <h1 className="text-5xl md:text-8xl font-serif font-light tracking-tighter text-foreground leading-tight">
+          <h1 className="text-5xl md:text-8xl font-serif font-light tracking-tighter text-sl-alabaster leading-tight">
             <TextCharReveal text="Start the" delay={0.1} stagger={0.04} blur />
             <br />
-            <span className="italic text-accent">
+            <span className="italic text-sl-gold-hover">
               <TextCharReveal text="Conversation." delay={0.5} stagger={0.04} blur />
             </span>
           </h1>
@@ -100,7 +100,7 @@ export function ContactPageContent({ faqs }: ContactPageContentProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.8, delay: 0.2, ease: EASE.entrance }}
-              className="relative z-10 w-full max-w-5xl bg-surface/30 backdrop-blur-2xl border border-border/50 p-8 md:p-16 rounded-sm shadow-2xl"
+              className="relative z-10 w-full max-w-5xl bg-sl-obsidian/30 backdrop-blur-2xl border border-sl-silver/20 p-8 md:p-16 rounded-sm shadow-2xl"
             >
               <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
                 <div className="flex flex-col gap-2 group">
@@ -109,7 +109,7 @@ export function ContactPageContent({ faqs }: ContactPageContentProps) {
                     placeholder="John Doe"
                     value={formState.name}
                     onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                    className={cn("bg-transparent border-b border-border focus:border-accent transition-all duration-500 rounded-none px-0", errors.name && "border-red-500")}
+                    className={cn("bg-transparent border-b border-sl-silver/20 focus:border-sl-gold-subtle transition-all duration-500 rounded-none px-0", errors.name && "border-red-500")}
                   />
                   {errors.name && <span className="text-[9px] text-red-500 uppercase tracking-widest">{errors.name}</span>}
                 </div>
@@ -121,7 +121,7 @@ export function ContactPageContent({ faqs }: ContactPageContentProps) {
                     type="email"
                     value={formState.email}
                     onChange={(e) => setFormState({ ...formState, email: e.target.value })}
-                    className={cn("bg-transparent border-b border-border focus:border-accent transition-all duration-500 rounded-none px-0", errors.email && "border-red-500")}
+                    className={cn("bg-transparent border-b border-sl-silver/20 focus:border-sl-gold-subtle transition-all duration-500 rounded-none px-0", errors.email && "border-red-500")}
                   />
                   {errors.email && <span className="text-[9px] text-red-500 uppercase tracking-widest">{errors.email}</span>}
                 </div>
@@ -132,7 +132,7 @@ export function ContactPageContent({ faqs }: ContactPageContentProps) {
                     placeholder="Studio or Firm Name"
                     value={formState.company}
                     onChange={(e) => setFormState({ ...formState, company: e.target.value })}
-                    className="bg-transparent border-b border-border focus:border-accent transition-all duration-500 rounded-none px-0"
+                    className="bg-transparent border-b border-sl-silver/20 focus:border-sl-gold-subtle transition-all duration-500 rounded-none px-0"
                   />
                 </div>
 
@@ -143,49 +143,49 @@ export function ContactPageContent({ faqs }: ContactPageContentProps) {
                     type="tel"
                     value={formState.phone}
                     onChange={(e) => setFormState({ ...formState, phone: e.target.value })}
-                    className="bg-transparent border-b border-border focus:border-accent transition-all duration-500 rounded-none px-0"
+                    className="bg-transparent border-b border-sl-silver/20 focus:border-sl-gold-subtle transition-all duration-500 rounded-none px-0"
                   />
                 </div>
 
                 <div className="flex flex-col gap-2 group">
-                  <label className="text-[10px] uppercase tracking-widest text-neutral-400 group-focus-within:text-accent transition-colors duration-500">Service Type (Optional)</label>
+                  <label className="text-[10px] uppercase tracking-widest text-sl-mist/60 group-focus-within:text-sl-gold-hover transition-colors duration-500">Service Type (Optional)</label>
                   <select
                     aria-label="Service Type"
                     value={formState.service}
                     onChange={(e) => setFormState({ ...formState, service: e.target.value })}
-                    className="w-full bg-transparent border-b border-border text-foreground p-0 focus:outline-none focus:border-accent transition-colors duration-300 appearance-none cursor-pointer"
+                    className="w-full bg-transparent border-b border-sl-silver/20 text-sl-alabaster p-0 focus:outline-none focus:border-sl-gold-subtle transition-colors duration-300 appearance-none cursor-pointer"
                   >
-                    <option value="" className="bg-neutral-900">Select a service...</option>
-                    <option value="residential" className="bg-neutral-900">Residential</option>
-                    <option value="commercial" className="bg-neutral-900">Commercial</option>
-                    <option value="interior" className="bg-neutral-900">Interior Design</option>
+                    <option value="" className="bg-sl-void">Select a service...</option>
+                    <option value="residential" className="bg-sl-void">Residential</option>
+                    <option value="commercial" className="bg-sl-void">Commercial</option>
+                    <option value="interior" className="bg-sl-void">Interior Design</option>
                   </select>
                 </div>
 
                 <div className="flex flex-col gap-2 md:col-span-2 group">
-                  <label className="text-[10px] uppercase tracking-widest text-neutral-400 group-focus-within:text-accent transition-colors duration-500">Budget Range (Optional)</label>
+                  <label className="text-[10px] uppercase tracking-widest text-sl-mist/60 group-focus-within:text-sl-gold-hover transition-colors duration-500">Budget Range (Optional)</label>
                   <select
                     aria-label="Budget Range"
                     value={formState.budget}
                     onChange={(e) => setFormState({ ...formState, budget: e.target.value })}
-                    className="w-full bg-transparent border-b border-border text-foreground p-0 focus:outline-none focus:border-accent transition-colors duration-300 appearance-none cursor-pointer"
+                    className="w-full bg-transparent border-b border-sl-silver/20 text-sl-alabaster p-0 focus:outline-none focus:border-sl-gold-subtle transition-colors duration-300 appearance-none cursor-pointer"
                   >
-                    <option value="" className="bg-neutral-900">Select a budget range...</option>
-                    <option value="under_50k" className="bg-neutral-900">Under $50K</option>
-                    <option value="50k_100k" className="bg-neutral-900">$50K - $100K</option>
-                    <option value="100k_500k" className="bg-neutral-900">$100K - $500K</option>
-                    <option value="500k_plus" className="bg-neutral-900">$500K+</option>
+                    <option value="" className="bg-sl-void">Select a budget range...</option>
+                    <option value="under_50k" className="bg-sl-void">Under $50K</option>
+                    <option value="50k_100k" className="bg-sl-void">$50K - $100K</option>
+                    <option value="100k_500k" className="bg-sl-void">$100K - $500K</option>
+                    <option value="500k_plus" className="bg-sl-void">$500K+</option>
                   </select>
                 </div>
 
                 <div className="flex flex-col gap-2 md:col-span-2 group">
-                  <label className="text-[10px] uppercase tracking-widest text-neutral-400 group-focus-within:text-accent transition-colors duration-500">Your Vision</label>
+                  <label className="text-[10px] uppercase tracking-widest text-sl-mist/60 group-focus-within:text-sl-gold-hover transition-colors duration-500">Your Vision</label>
                   <textarea
                     aria-label="Your Vision"
                     placeholder="Tell us about your architectural goals..."
                     value={formState.message}
                     onChange={(e) => setFormState({ ...formState, message: e.target.value })}
-                    className="w-full h-48 bg-transparent border-b border-border text-foreground p-0 focus:outline-none focus:border-accent transition-colors duration-300 resize-none font-light leading-relaxed"
+                    className="w-full h-48 bg-transparent border-b border-sl-silver/20 text-sl-alabaster p-0 focus:outline-none focus:border-sl-gold-subtle transition-colors duration-300 resize-none font-light leading-relaxed"
                   />
                   {errors.message && <span className="text-[9px] text-red-500 uppercase tracking-widest">{errors.message}</span>}
                 </div>
@@ -210,11 +210,11 @@ export function ContactPageContent({ faqs }: ContactPageContentProps) {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="relative z-10 w-full max-w-4xl text-center p-12 bg-surface/30 backdrop-blur-3xl border border-border/50 rounded-sm"
+              className="relative z-10 w-full max-w-4xl text-center p-12 bg-sl-obsidian/30 backdrop-blur-3xl border border-sl-silver/20 rounded-sm"
             >
               <div className={cn(
                 "w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-8 transition-colors duration-700",
-                status === 'sent' ? "bg-accent/20 text-accent" : "bg-red-500/20 text-red-500"
+                status === 'sent' ? "bg-sl-gold-subtle/20 text-sl-gold-hover" : "bg-red-500/20 text-red-500"
               )}>
                 {status === 'sent' ? (
                   <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -231,7 +231,7 @@ export function ContactPageContent({ faqs }: ContactPageContentProps) {
               <h2 className="text-4xl font-serif font-light mb-4">
                 {status === 'sent' ? 'Message Received' : 'Transmission Failed'}
               </h2>
-              <p className="text-neutral-400 font-light mb-12 w-full max-w-3xl mx-auto leading-relaxed">
+              <p className="text-sl-mist/60 font-light mb-12 w-full max-w-3xl mx-auto leading-relaxed">
                 {status === 'sent' 
                   ? 'Thank you for reaching out. Our architects will review your vision and respond shortly.' 
                   : 'Our systems are experiencing a momentary glitch. Please try again in a few moments.'}
@@ -244,8 +244,8 @@ export function ContactPageContent({ faqs }: ContactPageContentProps) {
         </AnimatePresence>
 
         <Link href="/" className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 group">
-          <span className="text-xs uppercase tracking-widest text-neutral-600 font-mono group-hover:text-accent transition-colors duration-500">Back to Home</span>
-          <div className="h-12 w-[1px] bg-gradient-to-b from-neutral-600 to-transparent group-hover:from-accent transition-colors duration-500" />
+          <span className="text-xs uppercase tracking-widest text-sl-mist/60 font-mono group-hover:text-sl-gold-hover transition-colors duration-500">Back to Home</span>
+          <div className="h-12 w-[1px] bg-gradient-to-b from-neutral-600 to-transparent group-hover:from-sl-gold-subtle transition-colors duration-500" />
         </Link>
       </section>
 

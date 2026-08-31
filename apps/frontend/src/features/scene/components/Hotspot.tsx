@@ -120,16 +120,16 @@ export const Hotspot = ({ hotspot }: HotspotProps) => {
       {(isHovered || isActive) && (
         <Html distanceFactor={15} position={[0, 0.4, 0]} center>
           <div
-            className="bg-background/90 backdrop-blur-xl border border-border p-4 pointer-events-none"
+            className="bg-sl-void/90 backdrop-blur-xl border border-sl-silver/20 p-4 pointer-events-none"
             style={{
               opacity: reducedMotion ? 1 : undefined,
               transform: reducedMotion ? 'none' : undefined,
             }}
           >
-            <p className="text-xs uppercase tracking-widest text-accent mb-1">
+            <p className="text-xs uppercase tracking-widest text-sl-gold-hover mb-1">
               {hotspot.title}
             </p>
-            <p className="text-[10px] text-neutral-500">{hotspot.description}</p>
+            <p className="text-[10px] text-sl-mist/60">{hotspot.description}</p>
           </div>
         </Html>
       )}

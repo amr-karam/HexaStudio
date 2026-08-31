@@ -66,7 +66,7 @@ export function QualitySettingsPanel() {
   return (
     <Card className="p-6 space-y-4 max-w-md">
       <h3 className="text-xl font-semibold mb-2">Quality Settings</h3>
-      <p className="text-sm text-muted-foreground mb-4">
+      <p className="text-sm text-sl-mist/60 mb-4">
         {webglState === "recovering"
           ? "Recovering from context loss"
           : qualityReasons[manualTier]}
@@ -83,7 +83,7 @@ export function QualitySettingsPanel() {
           {webglState === "recovering" ? "Recovering..." : manualTier}
         </p>
         {isRecovering && (
-          <p className="text-xs text-muted-foreground">Attempting WebGL context recovery...</p>
+          <p className="text-xs text-sl-mist/60">Attempting WebGL context recovery...</p>
         )}
       </div>
       
@@ -128,7 +128,7 @@ export function QualitySettingsPanel() {
       </div>
       
       {/* Manual override info */}
-      <div className="mt-4 pt-4 border-t text-sm text-muted-foreground">
+      <div className="mt-4 pt-4 border-t text-sm text-sl-mist/60">
         <p>Note: Manual selections override automatic detection.</p>
         <p className="mt-1">
           • <span className="font-medium">Performance</span>: Reduces triangle count, disables shadows and post-processing.

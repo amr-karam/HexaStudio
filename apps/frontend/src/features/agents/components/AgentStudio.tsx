@@ -134,12 +134,12 @@ export function AgentStudio() {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto p-6 md:p-12 bg-background text-foreground border border-neutral-800 rounded-2xl shadow-2xl">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 pb-6 border-b border-neutral-800 gap-4">
+    <div className="w-full max-w-6xl mx-auto p-6 md:p-12 bg-sl-void text-sl-alabaster border border-sl-obsidian rounded-2xl shadow-2xl">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 pb-6 border-b border-sl-obsidian gap-4">
         <div>
-          <span className="text-xs uppercase tracking-widest text-accent font-mono">Autonomous AI Swarm</span>
+          <span className="text-xs uppercase tracking-widest text-sl-gold-hover font-mono">Autonomous AI Swarm</span>
           <h2 className="text-3xl font-light tracking-tight mt-1">Multi-Agent Executive Studio</h2>
-          <p className="text-sm text-neutral-400 mt-1">
+          <p className="text-sm text-sl-mist/60 mt-1">
             Consult specialized AI personas with autonomous live Odoo ERP tool execution.
           </p>
         </div>
@@ -155,44 +155,44 @@ export function AgentStudio() {
               onClick={() => setSelectedPersona(p.id)}
               className={`p-5 rounded-xl border text-left transition-all flex flex-col justify-between ${
                 isSelected
-                  ? 'bg-accent/10 border-accent text-foreground shadow-lg'
-                  : 'bg-neutral-900/50 border-neutral-800 text-neutral-400 hover:border-neutral-700 hover:text-neutral-200'
+                  ? 'bg-sl-gold-subtle/10 border-sl-gold-subtle text-sl-alabaster shadow-lg'
+                  : 'bg-sl-void/50 border-sl-obsidian text-sl-mist/60 hover:border-neutral-700 hover:text-neutral-200'
               }`}
             >
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className={`text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 rounded ${
-                    isSelected ? 'bg-accent text-background font-medium' : 'bg-neutral-800 text-neutral-300'
+                    isSelected ? 'bg-sl-gold-subtle text-background font-medium' : 'bg-sl-obsidian text-sl-mist/80'
                   }`}>
                     {p.badge}
                   </span>
                 </div>
-                <h3 className="text-base font-medium text-foreground">{p.name}</h3>
-                <p className="text-xs text-neutral-400 mt-0.5">{p.subtitle}</p>
+                <h3 className="text-base font-medium text-sl-alabaster">{p.name}</h3>
+                <p className="text-xs text-sl-mist/60 mt-0.5">{p.subtitle}</p>
               </div>
-              <p className="text-xs text-neutral-500 mt-4 line-clamp-2">{p.description}</p>
+              <p className="text-xs text-sl-mist/60 mt-4 line-clamp-2">{p.description}</p>
             </button>
           );
         })}
       </div>
 
       {/* Chat Box */}
-      <div className="bg-neutral-950/60 border border-neutral-800/80 rounded-2xl p-6 flex flex-col h-[600px]">
+      <div className="bg-neutral-950/60 border border-sl-obsidian/80 rounded-2xl p-6 flex flex-col h-[600px]">
         {/* Chat Header */}
-        <div className="flex justify-between items-center pb-4 mb-4 border-b border-neutral-800">
+        <div className="flex justify-between items-center pb-4 mb-4 border-b border-sl-obsidian">
           <div>
-            <h3 className="text-lg font-medium text-foreground">{activePersonaMeta.name}</h3>
-            <p className="text-xs text-neutral-400">{activePersonaMeta.subtitle}</p>
+            <h3 className="text-lg font-medium text-sl-alabaster">{activePersonaMeta.name}</h3>
+            <p className="text-xs text-sl-mist/60">{activePersonaMeta.subtitle}</p>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={handleClearMemory}
               title="Reset conversation memory"
-              className="text-xs font-mono text-neutral-400 hover:text-neutral-200 bg-neutral-900 border border-neutral-800 px-3 py-1 rounded-full transition-colors"
+              className="text-xs font-mono text-sl-mist/60 hover:text-neutral-200 bg-sl-void border border-sl-obsidian px-3 py-1 rounded-full transition-colors"
             >
               🧹 Clear Memory
             </button>
-            <span className="text-xs font-mono text-accent bg-accent/10 border border-accent/20 px-3 py-1 rounded-full">
+            <span className="text-xs font-mono text-sl-gold-hover bg-sl-gold-subtle/10 border border-sl-gold-subtle/20 px-3 py-1 rounded-full">
               Active Persona
             </span>
           </div>
@@ -211,14 +211,14 @@ export function AgentStudio() {
                 <div
                   className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
                     msg.role === 'user'
-                      ? 'bg-accent text-background rounded-br-none font-medium'
-                      : 'bg-neutral-900 border border-neutral-800 text-neutral-200 rounded-bl-none'
+                      ? 'bg-sl-gold-subtle text-background rounded-br-none font-medium'
+                      : 'bg-sl-void border border-sl-obsidian text-neutral-200 rounded-bl-none'
                   }`}
                 >
                   {msg.content}
                 </div>
                 {msg.toolCalls !== undefined && msg.toolCalls > 0 && (
-                  <span className="text-[10px] font-mono text-accent-light flex items-center gap-1 mt-1 bg-accent/5 px-2 py-0.5 rounded border border-accent/10">
+                  <span className="text-[10px] font-mono text-sl-gold-hover flex items-center gap-1 mt-1 bg-sl-gold-subtle/5 px-2 py-0.5 rounded border border-sl-gold-subtle/10">
                     <span>⚡</span> Executed {msg.toolCalls} Autonomous Tool Call{msg.toolCalls > 1 ? 's' : ''} (Odoo SOT)
                   </span>
                 )}
@@ -227,8 +227,8 @@ export function AgentStudio() {
           </AnimatePresence>
 
           {loading && (
-            <div className="flex items-center gap-2 text-neutral-500 text-xs font-mono p-3 bg-neutral-900/40 rounded-xl w-fit">
-              <div className="w-3 h-3 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+            <div className="flex items-center gap-2 text-sl-mist/60 text-xs font-mono p-3 bg-sl-void/40 rounded-xl w-fit">
+              <div className="w-3 h-3 border-2 border-sl-gold-subtle border-t-transparent rounded-full animate-spin" />
               <span>{activePersonaMeta.name} is executing tools and reasoning...</span>
             </div>
           )}
@@ -241,7 +241,7 @@ export function AgentStudio() {
               key={idx}
               disabled={loading}
               onClick={() => sendMessage(prompt)}
-              className="text-xs font-mono text-neutral-400 bg-neutral-900/80 hover:bg-neutral-800 hover:text-accent border border-neutral-800 hover:border-accent/40 px-3 py-1.5 rounded-lg transition-all text-left disabled:opacity-50"
+              className="text-xs font-mono text-sl-mist/60 bg-sl-void/80 hover:bg-sl-obsidian hover:text-sl-gold-hover border border-sl-obsidian hover:border-sl-gold-subtle/40 px-3 py-1.5 rounded-lg transition-all text-left disabled:opacity-50"
             >
               &rarr; {prompt}
             </button>
@@ -249,18 +249,18 @@ export function AgentStudio() {
         </div>
 
         {/* Input Form */}
-        <form onSubmit={handleSubmit} className="flex gap-3 pt-3 border-t border-neutral-800">
+        <form onSubmit={handleSubmit} className="flex gap-3 pt-3 border-t border-sl-obsidian">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={`Message ${activePersonaMeta.name}...`}
-            className="flex-1 bg-neutral-900 border border-neutral-800 focus:border-accent text-foreground px-4 py-3 rounded-xl text-sm outline-none transition-colors"
+            className="flex-1 bg-sl-void border border-sl-obsidian focus:border-sl-gold-subtle text-sl-alabaster px-4 py-3 rounded-xl text-sm outline-none transition-colors"
           />
           <button
             type="submit"
             disabled={!input.trim() || loading}
-            className="px-6 py-3 bg-accent text-background font-mono text-xs uppercase tracking-widest rounded-xl hover:opacity-90 disabled:opacity-40 transition-all shadow-lg"
+            className="px-6 py-3 bg-sl-gold-subtle text-background font-mono text-xs uppercase tracking-widest rounded-xl hover:opacity-90 disabled:opacity-40 transition-all shadow-lg"
           >
             Send
           </button>

@@ -294,7 +294,7 @@ export const SilkShaderBackground: React.FC<SilkShaderBackgroundProps> = ({
       <div
         className={cn(
           'absolute inset-0 pointer-events-none',
-          'bg-gradient-to-br from-accent/5 via-transparent to-accent/3',
+          'bg-gradient-to-br from-sl-gold-subtle/5 via-transparent to-sl-gold-subtle/3',
           className,
         )}
         aria-hidden="true"

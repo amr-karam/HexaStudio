@@ -66,14 +66,14 @@ export function HeroEditorial({ hero }: { hero?: Partial<EditorialHero> }) {
       return (
         <>
           {before}
-          <span className="italic text-accent/90">{h.accentWord}</span>
+          <span className="italic text-sl-gold-hover/90">{h.accentWord}</span>
           {after}
         </>
       );
     }
     return h.title.split('\n').map((line, i) => (
       <span key={i} className="block">
-        {line.endsWith(',') ? <span className="italic text-accent/90">{line}</span> : line}
+        {line.endsWith(',') ? <span className="italic text-sl-gold-hover/90">{line}</span> : line}
       </span>
     ));
   };
@@ -99,15 +99,15 @@ export function HeroEditorial({ hero }: { hero?: Partial<EditorialHero> }) {
         {...reveal(0.15)}
         className={cn(
           'pointer-events-none absolute -top-[30%] -right-[22%]',
-          'size-[min(80vw,880px)] rounded-full border border-accent/10',
+          'size-[min(80vw,880px)] rounded-full border border-sl-gold-subtle/10',
         )}
       >
         {/* Inner hairline ring — layered depth */}
-        <div className="absolute inset-[14%] rounded-full border border-accent/[0.06]" />
+        <div className="absolute inset-[14%] rounded-full border border-sl-gold-subtle/[0.06]" />
         {/* Slow counter-rotation under motion policy */}
         {!animate && (
           <motion.div
-            className="absolute inset-[30%] rounded-full border border-dashed border-accent/[0.08]"
+            className="absolute inset-[30%] rounded-full border border-dashed border-sl-gold-subtle/[0.08]"
             animate={{ rotate: -360 }}
             transition={{ repeat: Infinity, duration: 120, ease: 'linear' }}
           />
@@ -124,7 +124,7 @@ export function HeroEditorial({ hero }: { hero?: Partial<EditorialHero> }) {
           Hexa Studio — Atelier
         </span>
         <span className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.35em] text-sl-ink/30">
-          <span aria-hidden="true" className="block h-1 w-1 rotate-45 bg-accent/60" />
+          <span aria-hidden="true" className="block h-1 w-1 rotate-45 bg-sl-gold-subtle/60" />
           Spatial Design &amp; 3D Craft
         </span>
       </motion.nav>
@@ -133,7 +133,7 @@ export function HeroEditorial({ hero }: { hero?: Partial<EditorialHero> }) {
       <div className="relative z-10 px-6 pb-16 md:px-12 md:pb-24">
         <motion.p
           {...reveal(0.2)}
-          className="mb-6 max-w-md font-mono text-[11px] uppercase leading-relaxed tracking-[0.3em] text-accent/80 md:text-xs"
+          className="mb-6 max-w-md font-mono text-[11px] uppercase leading-relaxed tracking-[0.3em] text-sl-gold-hover/80 md:text-xs"
         >
           {h.eyebrow}
         </motion.p>
@@ -158,10 +158,10 @@ export function HeroEditorial({ hero }: { hero?: Partial<EditorialHero> }) {
           <Link
             href={h.primaryCtaHref}
             className={cn(
-              'group inline-flex items-center gap-3 border border-accent/40 px-6 py-3',
-              'font-mono text-[11px] uppercase tracking-[0.3em] text-accent',
-              'transition-colors duration-500 hover:bg-accent/10 hover:border-accent',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-sl-void',
+              'group inline-flex items-center gap-3 border border-sl-gold-subtle/40 px-6 py-3',
+              'font-mono text-[11px] uppercase tracking-[0.3em] text-sl-gold-hover',
+              'transition-colors duration-500 hover:bg-sl-gold-subtle/10 hover:border-sl-gold-subtle',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-sl-void',
             )}
           >
             {h.primaryCtaLabel}
@@ -178,9 +178,9 @@ export function HeroEditorial({ hero }: { hero?: Partial<EditorialHero> }) {
               href={h.secondaryCtaHref}
               className={cn(
                 'font-mono text-[11px] uppercase tracking-[0.3em] text-sl-ink/50',
-                'underline decoration-accent/30 underline-offset-8 decoration-1',
-                'transition-colors duration-500 hover:text-sl-ink hover:decoration-accent',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-sl-void',
+                'underline decoration-sl-gold-subtle/30 underline-offset-8 decoration-1',
+                'transition-colors duration-500 hover:text-sl-ink hover:decoration-sl-gold-subtle',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-sl-void',
               )}
             >
               {h.secondaryCtaLabel}
@@ -192,7 +192,7 @@ export function HeroEditorial({ hero }: { hero?: Partial<EditorialHero> }) {
       {/* Bottom hairline — transition into CH. II */}
       <div
         aria-hidden="true"
-        className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-accent/20 to-transparent"
+        className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-sl-gold-subtle/20 to-transparent"
       />
     </section>
   );

@@ -70,7 +70,7 @@ const LIGHT_THEME_CSS = `
 }
 
 [data-theme="light"] ::selection {
-  background-color: var(--color-gold-25);
+  background-color: var(--sl-gold-subtle);
   color: #1A1A1A;
 }
 `;

@@ -28,7 +28,7 @@ export function CTASection() {
   return (
     <section
       ref={sectionRef}
-      className="relative px-8 md:px-16 py-48 overflow-hidden bg-surface border-t border-border/30"
+      className="relative px-8 md:px-16 py-48 overflow-hidden bg-sl-obsidian border-t border-sl-silver/20"
     >
       <div className="absolute top-12 left-8 md:left-16 z-20">
         <ChapterMarker index={5} title="Contact" />
@@ -47,7 +47,7 @@ export function CTASection() {
           style={reducedMotion ? {} : { pathLength: lineProgress }}
           className="absolute top-16 left-16 w-24 h-24"
         >
-          <svg width="96" height="96" viewBox="0 0 96 96" fill="none" className="text-gold/15">
+          <svg width="96" height="96" viewBox="0 0 96 96" fill="none" className="text-sl-gold-hover/15">
             <path
               d="M0 0 L96 0 L96 96"
               stroke="currentColor"
@@ -63,7 +63,7 @@ export function CTASection() {
           style={reducedMotion ? {} : { pathLength: lineProgress }}
           className="absolute bottom-16 right-16 w-24 h-24 rotate-180"
         >
-          <svg width="96" height="96" viewBox="0 0 96 96" fill="none" className="text-gold/15">
+          <svg width="96" height="96" viewBox="0 0 96 96" fill="none" className="text-sl-gold-hover/15">
             <path
               d="M0 0 L96 0 L96 96"
               stroke="currentColor"
@@ -81,7 +81,7 @@ export function CTASection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0 }}
-          className="text-xs uppercase tracking-[0.5em] text-gold/60 mb-8 block font-mono"
+          className="text-xs uppercase tracking-[0.5em] text-sl-gold-hover/60 mb-8 block font-mono"
         >
           Collaboration
         </motion.span>
@@ -91,10 +91,10 @@ export function CTASection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ type: "spring", stiffness: 180, damping: 22, delay: 0.1 }}
-          className="text-5xl md:text-8xl font-serif font-light tracking-tighter text-foreground mb-12 leading-[1.1]"
+          className="text-5xl md:text-8xl font-serif font-light tracking-tighter text-sl-alabaster mb-12 leading-[1.1]"
         >
           Ready to Define Your <br />
-          <span className="italic text-gold">Next Space?</span>
+          <span className="italic text-sl-gold-hover">Next Space?</span>
         </motion.h2>
 
         <motion.p
@@ -102,7 +102,7 @@ export function CTASection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ type: "spring", stiffness: 150, damping: 20, delay: 0.2 }}
-          className="text-lg text-neutral-400 font-light leading-relaxed mb-16 mx-auto w-full max-w-2xl"
+          className="text-lg text-sl-mist/60 font-light leading-relaxed mb-16 mx-auto w-full max-w-2xl"
         >
           Every great project begins with a conversation. Reach out and let&apos;s
           explore what we can create together.

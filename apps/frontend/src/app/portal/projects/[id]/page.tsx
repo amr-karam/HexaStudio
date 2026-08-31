@@ -165,11 +165,11 @@ export default function ProjectDetailPage() {
 
   if (authLoading || projectLoading || docsLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-sl-void flex items-center justify-center">
         <motion.div
           animate={{ opacity: [0.5, 1, 0.5] }}
           transition={{ repeat: Infinity, duration: 1.5 }}
-          className="text-xs uppercase tracking-[0.5em] text-neutral-500 font-mono"
+          className="text-xs uppercase tracking-[0.5em] text-sl-mist/60 font-mono"
         >
           Loading...
         </motion.div>
@@ -179,9 +179,9 @@ export default function ProjectDetailPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-sl-void flex items-center justify-center">
         <div className="text-center">
-          <p className="text-neutral-500 mb-8 uppercase tracking-widest font-mono text-xs">
+          <p className="text-sl-mist/60 mb-8 uppercase tracking-widest font-mono text-xs">
             {t('portal.authRequired')}
           </p>
           <Button variant="primary" onClick={() => router.push('/portal/login')}>
@@ -193,7 +193,7 @@ export default function ProjectDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-32 pb-24 px-8 md:px-16">
+    <div className="min-h-screen bg-sl-void pt-32 pb-24 px-8 md:px-16">
       <div className="mx-auto max-w-5xl">
         {/* Back link */}
         <motion.div
@@ -204,7 +204,7 @@ export default function ProjectDetailPage() {
         >
           <button
             onClick={() => router.push('/portal')}
-            className="group flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-neutral-500 hover:text-accent transition-colors duration-300"
+            className="group flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-sl-mist/60 hover:text-sl-gold-hover transition-colors duration-300"
           >
             <svg className="w-3 h-3 transition-transform duration-300 group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M19 12H5m7 7l-7-7 7-7" />
@@ -219,24 +219,24 @@ export default function ProjectDetailPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: EASE.entrance }}
-            className="text-[10px] uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
+            className="text-[10px] uppercase tracking-[0.5em] text-sl-mist/60 mb-6 block font-mono"
           >
             {t('portal.projectStatus')}
           </motion.span>
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
-              <div className="text-4xl md:text-7xl font-serif font-light text-foreground leading-tight">
+              <div className="text-4xl md:text-7xl font-serif font-light text-sl-alabaster leading-tight">
                 <TextReveal delay={0.1}>
                   {project.name}
                 </TextReveal>
               </div>
               <div className="flex items-center gap-4 mt-4">
-                <span className="text-xs text-neutral-500 uppercase tracking-wider font-mono">
+                <span className="text-xs text-sl-mist/60 uppercase tracking-wider font-mono">
                   {project.type}
                 </span>
                 <span className="w-1 h-1 rounded-full bg-neutral-700" />
-                <span className="text-xs text-neutral-500 font-mono">
+                <span className="text-xs text-sl-mist/60 font-mono">
                   {project.startDate?.slice(0, 10) ?? '—'} &mdash; {project.endDate?.slice(0, 10) ?? '—'}
                 </span>
               </div>
@@ -253,22 +253,22 @@ export default function ProjectDetailPage() {
                     stroke="currentColor"
                     strokeWidth="3"
                     strokeLinecap="round"
-                    className="text-accent"
+                    className="text-sl-gold-hover"
                     strokeDasharray={2 * Math.PI * 28}
                     initial={{ strokeDashoffset: 2 * Math.PI * 28 }}
                     animate={{ strokeDashoffset: 2 * Math.PI * 28 * (1 - progress / 100) }}
                     transition={{ duration: 1.5, ease: EASE.entrance }}
                   />
                 </svg>
-                <span className="absolute inset-0 flex items-center justify-center text-xs font-mono text-accent">
+                <span className="absolute inset-0 flex items-center justify-center text-xs font-mono text-sl-gold-hover">
                   {progress}%
                 </span>
               </div>
               <div className="flex flex-col">
-                <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">
+                <span className="text-[10px] uppercase tracking-widest text-sl-mist/60 font-mono">
                   Complete
                 </span>
-                <span className="text-xs text-neutral-400">
+                <span className="text-xs text-sl-mist/60">
                   {timelineMilestones.filter((m) => m.status === 'completed').length}/{timelineMilestones.length} milestones
                 </span>
               </div>
@@ -300,8 +300,8 @@ export default function ProjectDetailPage() {
             {
               label: 'Completed',
               count: timelineMilestones.filter((m) => m.status === 'completed').length,
-              color: 'text-accent',
-              border: 'border-accent/20 bg-accent/5',
+              color: 'text-sl-gold-hover',
+              border: 'border-sl-gold-subtle/20 bg-sl-gold-subtle/5',
             },
             {
               label: 'In Progress',
@@ -312,8 +312,8 @@ export default function ProjectDetailPage() {
             {
               label: 'Pending',
               count: timelineMilestones.filter((m) => m.status === 'pending').length,
-              color: 'text-neutral-500',
-              border: 'border-neutral-700 bg-neutral-800/30',
+              color: 'text-sl-mist/60',
+              border: 'border-neutral-700 bg-sl-obsidian/30',
             },
           ].map((stat) => (
             <div
@@ -321,7 +321,7 @@ export default function ProjectDetailPage() {
               className={`p-5 rounded-sm border ${stat.border} backdrop-blur-sm`}
             >
               <span className={`text-3xl font-serif font-light ${stat.color}`}>{stat.count}</span>
-              <p className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono mt-1">
+              <p className="text-[10px] uppercase tracking-widest text-sl-mist/60 font-mono mt-1">
                 {stat.label}
               </p>
             </div>

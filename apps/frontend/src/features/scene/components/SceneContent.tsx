@@ -299,7 +299,7 @@ export const SceneContent = ({
 
       {progress !== null && (
         <Html position={[3.4, 2.4, 0]} center distanceFactor={10} occlude>
-          <div className="pointer-events-none flex select-none items-center gap-2 rounded-full border border-white/15 bg-black/50 px-3 py-1 text-[10px] font-mono text-white/70 backdrop-blur-md">
+          <div className="pointer-events-none flex select-none items-center gap-2 rounded-full border border-white/15 bg-black/50 px-3 py-1 text-[10px] font-mono text-sl-alabaster/70 backdrop-blur-md">
             <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: accent }} />
             {progress}% · {milestones!.completed}/{milestones!.total}
           </div>

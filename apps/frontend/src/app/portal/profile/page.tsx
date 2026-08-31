@@ -104,9 +104,9 @@ const STRENGTH_LEVELS: StrengthLevel[] = [
 ] as const;
 
 const ROLE_BADGES: Record<string, { label: string; className: string }> = {
-  admin: { label: 'Admin', className: 'bg-accent/10 text-accent border-accent/20' },
+  admin: { label: 'Admin', className: 'bg-sl-gold-subtle/10 text-sl-gold-hover border-sl-gold-subtle/20' },
   editor: { label: 'Editor', className: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
-  user: { label: 'User', className: 'bg-neutral-500/10 text-neutral-400 border-neutral-500/20' },
+  user: { label: 'User', className: 'bg-neutral-500/10 text-sl-mist/60 border-neutral-500/20' },
 };
 
 /* -------------------------------------------------------------------------- */
@@ -140,11 +140,11 @@ function formatDate(dateString?: string): string {
 
 function PageSkeleton() {
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
+    <div className="min-h-screen bg-sl-void flex items-center justify-center">
       <motion.div
         animate={{ opacity: [0.5, 1, 0.5] }}
         transition={{ repeat: Infinity, duration: 1.5 }}
-        className="text-xs uppercase tracking-[0.5em] text-neutral-500 font-mono"
+        className="text-xs uppercase tracking-[0.5em] text-sl-mist/60 font-mono"
       >
         Loading...
       </motion.div>
@@ -156,13 +156,13 @@ function AccessGatewayPrompt() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
+    <div className="min-h-screen bg-sl-void flex items-center justify-center">
       <div className="text-center">
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: EASE.entrance }}
-          className="text-neutral-500 mb-8 uppercase tracking-widest font-mono text-xs"
+          className="text-sl-mist/60 mb-8 uppercase tracking-widest font-mono text-xs"
         >
           Authentication required
         </motion.p>
@@ -173,9 +173,9 @@ function AccessGatewayPrompt() {
           onClick={() => router.push('/portal/login')}
           className={cn(
             'inline-flex items-center gap-2 px-6 py-3 rounded-sm text-sm font-bold',
-            'bg-accent text-void',
+            'bg-sl-gold-subtle text-void',
             'hover:brightness-110 transition-all duration-300',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background',
           )}
           aria-label="Go to access gateway"
         >
@@ -324,7 +324,7 @@ export default function ProfilePage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: EASE.entrance }}
-              className="text-[10px] uppercase tracking-[0.5em] text-neutral-500 block font-mono"
+              className="text-[10px] uppercase tracking-[0.5em] text-sl-mist/60 block font-mono"
             >
               Profile
             </motion.span>
@@ -339,14 +339,14 @@ export default function ProfilePage() {
               </motion.span>
             )}
           </div>
-          <div className="text-4xl md:text-6xl font-serif font-light text-foreground leading-tight">
+          <div className="text-4xl md:text-6xl font-serif font-light text-sl-alabaster leading-tight">
             <TextReveal delay={0.1}>Profile</TextReveal>
           </div>
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25, duration: 0.6, ease: EASE.entrance }}
-            className="mt-4 text-sm text-neutral-500 font-light leading-relaxed"
+            className="mt-4 text-sm text-sl-mist/60 font-light leading-relaxed"
           >
             Manage your account, security, and personal preferences.
           </motion.p>
@@ -359,14 +359,14 @@ export default function ProfilePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.7, ease: EASE.entrance }}
-          className="bg-surface border border-border/50 rounded-sm overflow-hidden"
+          className="bg-sl-obsidian border border-sl-silver/20 rounded-sm overflow-hidden"
           aria-label="Account information"
         >
           {/* Panel Header */}
-          <div className="px-6 py-5 border-b border-border/20 flex items-center justify-between">
+          <div className="px-6 py-5 border-b border-sl-silver/20 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-accent/60" />
-              <h2 className="text-base font-medium text-foreground tracking-wide">
+              <div className="w-2 h-2 rounded-full bg-sl-gold-subtle/60" />
+              <h2 className="text-base font-medium text-sl-alabaster tracking-wide">
                 Account Information
               </h2>
             </div>
@@ -376,7 +376,7 @@ export default function ProfilePage() {
                   onClick={handleCancelEdit}
                   className={cn(
                     'text-[11px] font-mono uppercase tracking-wider',
-                    'text-neutral-500 hover:text-neutral-300 transition-colors duration-200',
+                    'text-sl-mist/60 hover:text-sl-mist/80 transition-colors duration-200',
                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-500 focus-visible:ring-offset-2 focus-visible:ring-offset-surface rounded px-2 py-1',
                   )}
                   aria-label="Cancel editing"
@@ -388,9 +388,9 @@ export default function ProfilePage() {
                   disabled={isSaving}
                   className={cn(
                     'inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider font-bold',
-                    'bg-accent text-void px-3 py-1 rounded',
-                    'hover:bg-accent-bright transition-all duration-200',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
+                    'bg-sl-gold-subtle text-void px-3 py-1 rounded',
+                    'hover:bg-sl-gold-subtle-bright transition-all duration-200',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
                     isSaving && 'opacity-50 pointer-events-none',
                   )}
                   aria-label="Save profile changes"
@@ -410,8 +410,8 @@ export default function ProfilePage() {
                 onClick={() => setIsEditing(true)}
                 className={cn(
                   'text-[11px] font-mono uppercase tracking-wider',
-                  'text-accent/80 hover:text-accent transition-colors duration-200',
-                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface rounded px-2 py-1',
+                  'text-sl-gold-hover/80 hover:text-sl-gold-hover transition-colors duration-200',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-surface rounded px-2 py-1',
                 )}
                 aria-label="Edit profile information"
               >
@@ -429,7 +429,7 @@ export default function ProfilePage() {
             >
               <label
                 htmlFor="profile-username"
-                className="text-[11px] uppercase tracking-wider font-mono text-neutral-500 mb-2 block"
+                className="text-[11px] uppercase tracking-wider font-mono text-sl-mist/60 mb-2 block"
               >
                 Username
               </label>
@@ -445,9 +445,9 @@ export default function ProfilePage() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     className={cn(
-                      'w-full bg-transparent border rounded-sm px-3 py-2 text-sm text-foreground',
-                      'border-border/50 focus:border-accent/50 focus:outline-none focus:ring-1 focus:ring-accent/20',
-                      'placeholder:text-neutral-600 transition-colors duration-200',
+                      'w-full bg-transparent border rounded-sm px-3 py-2 text-sm text-sl-alabaster',
+                      'border-sl-silver/20 focus:border-sl-gold-subtle/50 focus:outline-none focus:ring-1 focus:ring-sl-gold-subtle/20',
+                      'placeholder:text-sl-mist/60 transition-colors duration-200',
                     )}
                     placeholder="Your display name"
                     aria-label="Username"
@@ -455,7 +455,7 @@ export default function ProfilePage() {
                   />
                 </motion.div>
               ) : (
-                <p className="text-sm text-foreground font-medium">
+                <p className="text-sm text-sl-alabaster font-medium">
                   {displayUser.username}
                 </p>
               )}
@@ -466,11 +466,11 @@ export default function ProfilePage() {
               layout={!prefersReduced}
               className="px-6 py-5"
             >
-              <span className="text-[11px] uppercase tracking-wider font-mono text-neutral-500 mb-2 block">
+              <span className="text-[11px] uppercase tracking-wider font-mono text-sl-mist/60 mb-2 block">
                 Email
               </span>
               <div className="flex items-center gap-2.5">
-                <p className="text-sm text-foreground">{displayUser.email}</p>
+                <p className="text-sm text-sl-alabaster">{displayUser.email}</p>
                 <span
                   className="inline-flex items-center gap-1 text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
                   aria-label="Verified email"
@@ -486,7 +486,7 @@ export default function ProfilePage() {
               layout={!prefersReduced}
               className="px-6 py-5"
             >
-              <span className="text-[11px] uppercase tracking-wider font-mono text-neutral-500 mb-2 block">
+              <span className="text-[11px] uppercase tracking-wider font-mono text-sl-mist/60 mb-2 block">
                 Role
               </span>
               <span
@@ -506,12 +506,12 @@ export default function ProfilePage() {
               layout={!prefersReduced}
               className="px-6 py-5"
             >
-              <span className="text-[11px] uppercase tracking-wider font-mono text-neutral-500 mb-2 block">
+              <span className="text-[11px] uppercase tracking-wider font-mono text-sl-mist/60 mb-2 block">
                 Member Since
               </span>
               <div className="flex items-center gap-2">
-                <Icon name="calendar" size={13} className="text-neutral-500 shrink-0" />
-                <p className="text-sm text-foreground">
+                <Icon name="calendar" size={13} className="text-sl-mist/60 shrink-0" />
+                <p className="text-sm text-sl-alabaster">
                   {formatDate(profile?.createdAt)}
                 </p>
               </div>
@@ -526,13 +526,13 @@ export default function ProfilePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.7, ease: EASE.entrance }}
-          className="bg-surface border border-border/50 rounded-sm overflow-hidden mt-8"
+          className="bg-sl-obsidian border border-sl-silver/20 rounded-sm overflow-hidden mt-8"
           aria-label="Security settings"
         >
-          <div className="px-6 py-5 border-b border-border/20">
+          <div className="px-6 py-5 border-b border-sl-silver/20">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-accent/60" />
-              <h2 className="text-base font-medium text-foreground tracking-wide">
+              <div className="w-2 h-2 rounded-full bg-sl-gold-subtle/60" />
+              <h2 className="text-base font-medium text-sl-alabaster tracking-wide">
                 Security
               </h2>
             </div>
@@ -541,8 +541,8 @@ export default function ProfilePage() {
           {/* Change Password */}
           <div className="px-6 py-6">
             <div className="flex items-center gap-2 mb-5">
-              <Icon name="shield-check" size={14} className="text-neutral-500" />
-              <h3 className="text-xs font-semibold text-foreground tracking-wider uppercase">
+              <Icon name="shield-check" size={14} className="text-sl-mist/60" />
+              <h3 className="text-xs font-semibold text-sl-alabaster tracking-wider uppercase">
                 Change Password
               </h3>
             </div>
@@ -552,7 +552,7 @@ export default function ProfilePage() {
               <div>
                 <label
                   htmlFor="current-password"
-                  className="text-[11px] uppercase tracking-wider font-mono text-neutral-500 mb-2 block"
+                  className="text-[11px] uppercase tracking-wider font-mono text-sl-mist/60 mb-2 block"
                 >
                   Current Password
                 </label>
@@ -562,9 +562,9 @@ export default function ProfilePage() {
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   className={cn(
-                    'w-full bg-background border border-border/50 rounded-sm px-3 py-2 text-sm text-foreground',
-                    'focus:border-accent/50 focus:outline-none focus:ring-1 focus:ring-accent/20',
-                    'placeholder:text-neutral-600 transition-colors duration-200',
+                    'w-full bg-sl-void border border-sl-silver/20 rounded-sm px-3 py-2 text-sm text-sl-alabaster',
+                    'focus:border-sl-gold-subtle/50 focus:outline-none focus:ring-1 focus:ring-sl-gold-subtle/20',
+                    'placeholder:text-sl-mist/60 transition-colors duration-200',
                   )}
                   placeholder="••••••••"
                   autoComplete="current-password"
@@ -576,7 +576,7 @@ export default function ProfilePage() {
               <div>
                 <label
                   htmlFor="new-password"
-                  className="text-[11px] uppercase tracking-wider font-mono text-neutral-500 mb-2 block"
+                  className="text-[11px] uppercase tracking-wider font-mono text-sl-mist/60 mb-2 block"
                 >
                   New Password
                 </label>
@@ -586,9 +586,9 @@ export default function ProfilePage() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   className={cn(
-                    'w-full bg-background border border-border/50 rounded-sm px-3 py-2 text-sm text-foreground',
-                    'focus:border-accent/50 focus:outline-none focus:ring-1 focus:ring-accent/20',
-                    'placeholder:text-neutral-600 transition-colors duration-200',
+                    'w-full bg-sl-void border border-sl-silver/20 rounded-sm px-3 py-2 text-sm text-sl-alabaster',
+                    'focus:border-sl-gold-subtle/50 focus:outline-none focus:ring-1 focus:ring-sl-gold-subtle/20',
+                    'placeholder:text-sl-mist/60 transition-colors duration-200',
                   )}
                   placeholder="••••••••"
                   autoComplete="new-password"
@@ -614,7 +614,7 @@ export default function ProfilePage() {
                     </div>
                     <p className={cn('text-[11px] font-mono', strength.textColor)}>
                       {strength.label}
-                      {strength.label && <span className="text-neutral-600"> · Minimum 8 characters</span>}
+                      {strength.label && <span className="text-sl-mist/60"> · Minimum 8 characters</span>}
                     </p>
                   </motion.div>
                 )}
@@ -624,7 +624,7 @@ export default function ProfilePage() {
               <div>
                 <label
                   htmlFor="confirm-password"
-                  className="text-[11px] uppercase tracking-wider font-mono text-neutral-500 mb-2 block"
+                  className="text-[11px] uppercase tracking-wider font-mono text-sl-mist/60 mb-2 block"
                 >
                   Confirm New Password
                 </label>
@@ -634,11 +634,11 @@ export default function ProfilePage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className={cn(
-                    'w-full bg-background border rounded-sm px-3 py-2 text-sm text-foreground',
-                    'focus:outline-none focus:ring-1 placeholder:text-neutral-600 transition-colors duration-200',
+                    'w-full bg-sl-void border rounded-sm px-3 py-2 text-sm text-sl-alabaster',
+                    'focus:outline-none focus:ring-1 placeholder:text-sl-mist/60 transition-colors duration-200',
                     confirmPassword && !passwordsMatch
                       ? 'border-red-500/50 focus:border-red-500/50 focus:ring-red-500/20'
-                      : 'border-border/50 focus:border-accent/50 focus:ring-accent/20',
+                      : 'border-sl-silver/20 focus:border-sl-gold-subtle/50 focus:ring-sl-gold-subtle/20',
                   )}
                   placeholder="••••••••"
                   autoComplete="new-password"
@@ -664,9 +664,9 @@ export default function ProfilePage() {
                 disabled={changingPassword}
                 className={cn(
                   'inline-flex items-center gap-2 px-5 py-2.5 rounded-sm text-sm font-bold',
-                  'bg-accent text-void',
-                  'hover:bg-accent-bright transition-all duration-200',
-                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
+                  'bg-sl-gold-subtle text-void',
+                  'hover:bg-sl-gold-subtle-bright transition-all duration-200',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
                   changingPassword && 'opacity-50 pointer-events-none',
                 )}
                 aria-label="Update password"
@@ -693,8 +693,8 @@ export default function ProfilePage() {
           {/* Recent Sessions */}
           <div className="px-6 py-6">
             <div className="flex items-center gap-2 mb-5">
-              <Icon name="clock" size={14} className="text-neutral-500" />
-              <h3 className="text-xs font-semibold text-foreground tracking-wider uppercase">
+              <Icon name="clock" size={14} className="text-sl-mist/60" />
+              <h3 className="text-xs font-semibold text-sl-alabaster tracking-wider uppercase">
                 Recent Sessions
               </h3>
             </div>
@@ -712,8 +712,8 @@ export default function ProfilePage() {
                   }}
                   className={cn(
                     'flex items-center justify-between gap-4 p-4 rounded-sm',
-                    'bg-background border',
-                    session.isCurrent ? 'border-accent/20' : 'border-border/30',
+                    'bg-sl-void border',
+                    session.isCurrent ? 'border-sl-gold-subtle/20' : 'border-sl-silver/20',
                   )}
                   role="listitem"
                 >
@@ -722,8 +722,8 @@ export default function ProfilePage() {
                       className={cn(
                         'w-8 h-8 rounded-full flex items-center justify-center shrink-0',
                         session.isCurrent
-                          ? 'bg-accent/10 text-accent'
-                          : 'bg-white/[0.03] text-neutral-500',
+                          ? 'bg-sl-gold-subtle/10 text-sl-gold-hover'
+                          : 'bg-white/[0.03] text-sl-mist/60',
                       )}
                       aria-hidden="true"
                     >
@@ -731,21 +731,21 @@ export default function ProfilePage() {
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <p className="text-sm font-medium text-foreground truncate">
+                        <p className="text-sm font-medium text-sl-alabaster truncate">
                           {session.device}
                         </p>
                         {session.isCurrent && (
-                          <span className="text-[9px] font-mono font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-accent/10 text-accent border border-accent/20 shrink-0">
+                          <span className="text-[9px] font-mono font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-sl-gold-subtle/10 text-sl-gold-hover border border-sl-gold-subtle/20 shrink-0">
                             Current
                           </span>
                         )}
                       </div>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-[11px] font-mono text-neutral-500">
+                        <span className="text-[11px] font-mono text-sl-mist/60">
                           {session.ip}
                         </span>
                         <span className="w-1 h-1 rounded-full bg-neutral-700 shrink-0" aria-hidden="true" />
-                        <span className="text-[11px] font-mono text-neutral-500">
+                        <span className="text-[11px] font-mono text-sl-mist/60">
                           {session.lastActive}
                         </span>
                       </div>
@@ -759,7 +759,7 @@ export default function ProfilePage() {
                       'px-3 py-1.5 rounded-sm border transition-all duration-200',
                       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
                       session.isCurrent
-                        ? 'text-neutral-600 border-neutral-800 cursor-not-allowed'
+                        ? 'text-sl-mist/60 border-sl-obsidian cursor-not-allowed'
                         : 'text-red-400 border-red-500/20 hover:bg-red-500/10 hover:border-red-500/40 focus-visible:ring-red-400',
                     )}
                     aria-label={`Revoke session: ${session.device}`}
@@ -772,11 +772,11 @@ export default function ProfilePage() {
 
             {MOCK_SESSIONS.length === 0 && (
               <div className="flex flex-col items-center justify-center py-8 text-center">
-                <div className="w-12 h-12 rounded-2xl bg-white/[0.03] border border-border/20 flex items-center justify-center mb-3">
-                  <Icon name="clock" size={18} className="text-neutral-600" />
+                <div className="w-12 h-12 rounded-2xl bg-white/[0.03] border border-sl-silver/20 flex items-center justify-center mb-3">
+                  <Icon name="clock" size={18} className="text-sl-mist/60" />
                 </div>
-                <p className="text-sm font-medium text-neutral-400">No active sessions</p>
-                <p className="text-xs text-neutral-600 mt-1 max-w-[220px]">
+                <p className="text-sm font-medium text-sl-mist/60">No active sessions</p>
+                <p className="text-xs text-sl-mist/60 mt-1 max-w-[220px]">
                   All sessions have been revoked.
                 </p>
               </div>
@@ -791,19 +791,19 @@ export default function ProfilePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.45, duration: 0.7, ease: EASE.entrance }}
-          className="bg-surface border border-border/50 rounded-sm overflow-hidden mt-8"
+          className="bg-sl-obsidian border border-sl-silver/20 rounded-sm overflow-hidden mt-8"
           aria-label="Notification settings"
         >
           <div className="p-6">
             <div className="flex flex-col sm:flex-row items-start justify-between gap-6">
               <div className="min-w-0">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-2 h-2 rounded-full bg-accent/60 shrink-0" />
-                  <h2 className="text-base font-medium text-foreground tracking-wide">
+                  <div className="w-2 h-2 rounded-full bg-sl-gold-subtle/60 shrink-0" />
+                  <h2 className="text-base font-medium text-sl-alabaster tracking-wide">
                     Notification Settings
                   </h2>
                 </div>
-                <p className="text-xs text-neutral-500 leading-relaxed max-w-lg">
+                <p className="text-xs text-sl-mist/60 leading-relaxed max-w-lg">
                   Configure which project updates, approvals, and system alerts you
                   receive via email and in-app notifications.
                 </p>
@@ -812,9 +812,9 @@ export default function ProfilePage() {
                 onClick={() => router.push('/portal/settings')}
                 className={cn(
                   'inline-flex items-center gap-2 px-4 py-2.5 rounded-sm text-sm font-bold shrink-0',
-                  'bg-accent text-void',
-                  'hover:bg-accent-bright transition-all duration-200',
-                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
+                  'bg-sl-gold-subtle text-void',
+                  'hover:bg-sl-gold-subtle-bright transition-all duration-200',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
                 )}
                 aria-label="Open notification settings"
               >

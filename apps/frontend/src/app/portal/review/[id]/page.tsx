@@ -54,18 +54,18 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground pt-24 pb-12 px-6">
+    <div className="min-h-screen bg-sl-void text-sl-alabaster pt-24 pb-12 px-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header Rail */}
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/30 pb-6">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-sl-silver/20 pb-6">
           <div>
-            <div className="flex items-center space-x-2 text-xs text-accent font-mono mb-1">
+            <div className="flex items-center space-x-2 text-xs text-sl-gold-hover font-mono mb-1">
               <Link href="/portal/projects" className="hover:underline">← Projects</Link>
               <span>/</span>
               <span>Live 3D Review Room</span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-serif font-light text-foreground">Project Review: <span className="italic text-accent">{projectId.toUpperCase()}</span></h1>
-            <p className="text-xs text-text-muted font-light">Real-time WebRTC audio/video synchronization &amp; spatial model inspection</p>
+            <h1 className="text-2xl md:text-3xl font-serif font-light text-sl-alabaster">Project Review: <span className="italic text-sl-gold-hover">{projectId.toUpperCase()}</span></h1>
+            <p className="text-xs text-text-sl-mist/60 font-light">Real-time WebRTC audio/video synchronization &amp; spatial model inspection</p>
           </div>
 
           <div className="flex items-center space-x-3">
@@ -74,7 +74,7 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
               className={`rounded-xl px-4 py-2.5 text-xs font-mono tracking-wider transition-colors duration-300 ${
                 webrtc.isMicMuted
                   ? 'bg-red-500/15 text-red-400 border border-red-500/30'
-                  : 'bg-obsidian-raised border border-border/40 text-foreground hover:border-accent/40'
+                  : 'bg-obsidian-raised border border-sl-silver/20/40 text-sl-alabaster hover:border-sl-gold-subtle/40'
               }`}
             >
               {webrtc.isMicMuted ? '🎙️ Mic Muted' : '🎙️ Mic Active'}
@@ -82,7 +82,7 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
 
             <button
               onClick={() => setIsSignModalOpen(true)}
-              className="rounded-xl bg-accent px-5 py-2.5 text-xs font-mono uppercase tracking-widest text-background font-medium hover:opacity-90 transition-all duration-300 shadow-xl"
+              className="rounded-xl bg-sl-gold-subtle px-5 py-2.5 text-xs font-mono uppercase tracking-widest text-background font-medium hover:opacity-90 transition-all duration-300 shadow-xl"
             >
               ✍️ Sign Off Deliverable
             </button>
@@ -92,8 +92,8 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
         {/* 3D Review Stage & Media Sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Main 3D Canvas Stage */}
-          <div className="lg:col-span-8 h-[600px] relative rounded-2xl border border-border/30 bg-obsidian/90 overflow-hidden flex items-center justify-center artisan-glass">
-            <div className="absolute top-4 left-4 z-10 flex items-center space-x-2 bg-obsidian-raised/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-border/30 text-xs font-mono">
+          <div className="lg:col-span-8 h-[600px] relative rounded-2xl border border-sl-silver/20 bg-obsidian/90 overflow-hidden flex items-center justify-center artisan-glass">
+            <div className="absolute top-4 left-4 z-10 flex items-center space-x-2 bg-obsidian-raised/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-sl-silver/20 text-xs font-mono">
               <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
               <span className="text-text-secondary">Multiplayer Session Active</span>
             </div>
@@ -103,8 +103,8 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
               <SpatialCursors />
               <div className="text-center space-y-3 pointer-events-none">
                 <div className="text-5xl">🏛️</div>
-                <h3 className="text-lg font-serif font-light text-foreground">3D Interactive Review Canvas</h3>
-                <p className="text-xs text-text-muted max-w-md mx-auto font-light leading-relaxed">
+                <h3 className="text-lg font-serif font-light text-sl-alabaster">3D Interactive Review Canvas</h3>
+                <p className="text-xs text-text-sl-mist/60 max-w-md mx-auto font-light leading-relaxed">
                   Drag to orbit, scroll to zoom, click spatial annotations to leave design directives in real time.
                 </p>
               </div>
@@ -112,7 +112,7 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
 
             {signatureHash && (
               <div className="absolute bottom-4 right-4 z-10 bg-emerald-950/90 border border-emerald-500/40 px-4 py-2.5 rounded-xl backdrop-blur-md text-xs text-emerald-300 font-mono shadow-2xl">
-                ✓ Signed &amp; Stamped: <span className="font-mono text-white">{signatureHash.slice(0, 16)}...</span>
+                ✓ Signed &amp; Stamped: <span className="font-mono text-sl-alabaster">{signatureHash.slice(0, 16)}...</span>
               </div>
             )}
           </div>
@@ -135,41 +135,41 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
               }}
             />
 
-            <div className="rounded-2xl border border-border/30 bg-obsidian/70 p-5 space-y-4 artisan-glass">
-              <h3 className="text-xs font-mono uppercase tracking-[0.25em] text-accent">Active Participants ({webrtc.peerConnections + 1})</h3>
+            <div className="rounded-2xl border border-sl-silver/20 bg-obsidian/70 p-5 space-y-4 artisan-glass">
+              <h3 className="text-xs font-mono uppercase tracking-[0.25em] text-sl-gold-hover">Active Participants ({webrtc.peerConnections + 1})</h3>
               
               <div className="space-y-2.5">
-                <div className="flex items-center justify-between p-3 rounded-xl bg-obsidian-raised border border-border/20 text-xs">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-obsidian-raised border border-sl-silver/20 text-xs">
                   <div className="flex items-center space-x-3">
-                    <div className="h-7 w-7 rounded-full bg-accent/20 text-accent flex items-center justify-center font-mono font-bold text-[10px]">
+                    <div className="h-7 w-7 rounded-full bg-sl-gold-subtle/20 text-sl-gold-hover flex items-center justify-center font-mono font-bold text-[10px]">
                       YOU
                     </div>
-                    <span className="font-medium text-foreground">{userName}</span>
+                    <span className="font-medium text-sl-alabaster">{userName}</span>
                   </div>
                   <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Host</span>
                 </div>
 
-                <div className="flex items-center justify-between p-3 rounded-xl bg-obsidian-raised/60 border border-border/20 text-xs text-text-secondary">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-obsidian-raised/60 border border-sl-silver/20 text-xs text-text-secondary">
                   <div className="flex items-center space-x-3">
                     <div className="h-7 w-7 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-mono font-bold text-[10px]">
                       HS
                     </div>
                     <span>Hexa Lead Architect</span>
                   </div>
-                  <span className="text-[10px] font-mono text-text-muted">Presenter</span>
+                  <span className="text-[10px] font-mono text-text-sl-mist/60">Presenter</span>
                 </div>
               </div>
             </div>
 
             {/* Spatial Directives Stream */}
-            <div className="rounded-2xl border border-border/30 bg-obsidian/70 p-5 space-y-4 artisan-glass flex-1 flex flex-col justify-between">
+            <div className="rounded-2xl border border-sl-silver/20 bg-obsidian/70 p-5 space-y-4 artisan-glass flex-1 flex flex-col justify-between">
               <div>
-                <h3 className="text-xs font-mono uppercase tracking-[0.25em] text-accent mb-3">Live Spatial Directives</h3>
+                <h3 className="text-xs font-mono uppercase tracking-[0.25em] text-sl-gold-hover mb-3">Live Spatial Directives</h3>
                 <div className="space-y-2.5 max-h-[220px] overflow-y-auto pr-1">
                   {annotations.map((ann) => (
-                    <div key={ann.id} className="p-3 rounded-xl bg-obsidian-raised/70 border border-border/20 text-xs">
-                      <div className="flex justify-between text-[10px] font-mono text-text-muted mb-1">
-                        <span className="text-accent">{ann.author}</span>
+                    <div key={ann.id} className="p-3 rounded-xl bg-obsidian-raised/70 border border-sl-silver/20 text-xs">
+                      <div className="flex justify-between text-[10px] font-mono text-text-sl-mist/60 mb-1">
+                        <span className="text-sl-gold-hover">{ann.author}</span>
                         <span>{ann.time}</span>
                       </div>
                       <p className="text-text-secondary font-light leading-relaxed">{ann.text}</p>
@@ -184,11 +184,11 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
                   value={newAnnotation}
                   onChange={(e) => setNewAnnotation(e.target.value)}
                   placeholder="Add design directive..."
-                  className="flex-1 bg-obsidian-raised border border-border/30 focus:border-accent text-foreground text-xs px-3 py-2 rounded-xl outline-none"
+                  className="flex-1 bg-obsidian-raised border border-sl-silver/20 focus:border-sl-gold-subtle text-sl-alabaster text-xs px-3 py-2 rounded-xl outline-none"
                 />
                 <button
                   type="submit"
-                  className="px-3.5 py-2 bg-accent text-background rounded-xl text-xs font-mono font-semibold hover:opacity-90 transition-opacity"
+                  className="px-3.5 py-2 bg-sl-gold-subtle text-background rounded-xl text-xs font-mono font-semibold hover:opacity-90 transition-opacity"
                 >
                   Send
                 </button>

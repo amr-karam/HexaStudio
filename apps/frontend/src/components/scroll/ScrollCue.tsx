@@ -70,17 +70,17 @@ export const ScrollCue = ({ label = 'Scroll to explore', className, delay = 1.2 
           )}
           aria-hidden="true"
         >
-          <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-white/30">
+          <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-sl-alabaster/30">
             {label}
           </span>
           <span className="relative block h-16 w-px overflow-hidden bg-white/5">
             {staticMode ? (
-              <span className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-accent/70 to-transparent" />
+              <span className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-sl-gold-subtle/70 to-transparent" />
             ) : (
               <motion.span
                 animate={{ y: ['-100%', '220%'] }}
                 transition={{ duration: 1.8, repeat: Infinity, ease: EASING.easeInOutQuint }}
-                className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-accent/70 to-transparent"
+                className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-sl-gold-subtle/70 to-transparent"
               />
             )}
           </span>

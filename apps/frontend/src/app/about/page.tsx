@@ -49,7 +49,7 @@ function DiamondOrnament({ className = '' }: { className?: string }) {
   return (
     <div className={`flex justify-center ${className}`}>
       <div aria-hidden="true" className="storybook-ornament w-full max-w-xs">
-        <span className="h-1.5 w-1.5 rotate-45 border border-accent/50" />
+        <span className="h-1.5 w-1.5 rotate-45 border border-sl-gold-subtle/50" />
       </div>
     </div>
   );
@@ -58,7 +58,7 @@ function DiamondOrnament({ className = '' }: { className?: string }) {
 /* Small mono section marker — "§ 01", "§ 02", etc. */
 function SectionMarker({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-mono text-xs uppercase tracking-[0.5em] text-accent/70">
+    <p className="font-mono text-xs uppercase tracking-[0.5em] text-sl-gold-hover/70">
       {children}
     </p>
   );
@@ -86,7 +86,7 @@ export default async function AboutPage() {
   const heroImage = page?.featuredImage?.url;
 
   return (
-    <div className="bg-background text-foreground">
+    <div className="bg-sl-void text-sl-alabaster">
       {/* ------------------------------------------------------------------ */}
       {/* Movement I — Frontispiece (title page of the monograph)             */}
       {/* ------------------------------------------------------------------ */}
@@ -102,26 +102,26 @@ export default async function AboutPage() {
               className="object-cover opacity-20"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
+            <div className="absolute inset-0 bg-gradient-to-b from-sl-void/60 via-sl-void/80 to-sl-void" />
           </div>
         )}
 
         {/* Ghost chapter numeral */}
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute right-[6%] top-16 select-none font-serif text-[clamp(7rem,16vw,13rem)] leading-none text-accent/5"
+          className="pointer-events-none absolute right-[6%] top-16 select-none font-serif text-[clamp(7rem,16vw,13rem)] leading-none text-sl-gold-hover/5"
         >
           Ⅰ
         </span>
 
         <div className="relative z-10 text-center">
-          <span className="mb-10 inline-flex items-center justify-center gap-4 font-mono text-xs uppercase tracking-[0.5em] text-neutral-500">
-            <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-accent/70" />
+          <span className="mb-10 inline-flex items-center justify-center gap-4 font-mono text-xs uppercase tracking-[0.5em] text-sl-mist/60">
+            <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-sl-gold-subtle/70" />
             The Studio · Manifesto
-            <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-accent/70" />
+            <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-sl-gold-subtle/70" />
           </span>
 
-          <h1 className="mb-10 text-6xl font-serif font-light leading-[0.9] tracking-[-0.04em] text-foreground md:text-9xl">
+          <h1 className="mb-10 text-6xl font-serif font-light leading-[0.9] tracking-[-0.04em] text-sl-alabaster md:text-9xl">
             <TextCharReveal
               text={page?.title ?? 'The Manifesto'}
               as="span"
@@ -131,7 +131,7 @@ export default async function AboutPage() {
               className="block"
             />
             {!page?.title && (
-              <span className="block italic text-accent">
+              <span className="block italic text-sl-gold-hover">
                 <TextCharReveal
                   text="of Light"
                   as="span"
@@ -146,7 +146,7 @@ export default async function AboutPage() {
           {/* Double-rule ornament below the title */}
           <DiamondOrnament className="mb-12" />
 
-          <p className="mx-auto w-full max-w-4xl text-lg font-light leading-relaxed text-neutral-400">
+          <p className="mx-auto w-full max-w-4xl text-lg font-light leading-relaxed text-sl-mist/60">
             {page?.excerpt || FALLBACK_DESCRIPTION}
           </p>
         </div>
@@ -157,7 +157,7 @@ export default async function AboutPage() {
       {/* ------------------------------------------------------------------ */}
       <section
         aria-labelledby="doctrine-title"
-        className="relative overflow-hidden border-y border-border/50 bg-surface px-8 py-28 md:px-16 md:py-36"
+        className="relative overflow-hidden border-y border-sl-silver/20 bg-sl-obsidian px-8 py-28 md:px-16 md:py-36"
       >
         <div aria-hidden="true" className="absolute inset-0 gradient-radial-gold pointer-events-none" />
         <span
@@ -185,7 +185,7 @@ export default async function AboutPage() {
           </div>
 
             {hasCmsContent ? (
-              <div className="mt-14 prose prose-invert prose-headings:font-serif prose-headings:font-light prose-a:text-accent">
+              <div className="mt-14 prose prose-invert prose-headings:font-serif prose-headings:font-light prose-a:text-sl-gold-hover">
                 <StrapiBlocks content={page?.content ?? []} />
               </div>
             ) : (
@@ -193,14 +193,14 @@ export default async function AboutPage() {
               <div className="mt-16 grid gap-12 md:grid-cols-12">
                 {/* Main Narrative - shifted to create intentional negative space */}
                 <div className="md:col-span-6 lg:col-span-7 space-y-8">
-                  <p className="drop-cap storybook-body font-light md:text-justify leading-relaxed text-neutral-300">
+                  <p className="drop-cap storybook-body font-light md:text-justify leading-relaxed text-sl-mist/80">
                     We believe the distance between a good render and a masterpiece is
                     measured in details — the way light falls across brushed metal, the
                     quiet imperfection of a concrete wall, the patience of a shadow at
                     dusk. We study the physics of reality so that our digital worlds feel
                     inhabited long before they exist.
                   </p>
-                  <p className="storybook-body storybook-paragraph font-light md:text-justify leading-relaxed text-neutral-400">
+                  <p className="storybook-body storybook-paragraph font-light md:text-justify leading-relaxed text-sl-mist/60">
                     The studio was founded on a single conviction: architectural
                     visualization is not illustration, it is a discipline of seeing. Every
                     frame we produce is an argument about how a space should feel at a
@@ -210,11 +210,11 @@ export default async function AboutPage() {
                 
                 {/* High-contrast sidecar for the pull-quote */}
                 <div className="md:col-span-6 lg:col-span-5 md:pt-24 lg:pt-32">
-                  <blockquote className="storybook-accent border-l-2 border-accent/30 pl-8 font-serif text-2xl italic leading-tight md:text-3xl text-foreground">
+                  <blockquote className="storybook-accent border-l-2 border-sl-gold-subtle/30 pl-8 font-serif text-2xl italic leading-tight md:text-3xl text-sl-alabaster">
                     &ldquo;We do not decorate architecture with light. We use light to
                     tell the truth about it.&rdquo;
                   </blockquote>
-                  <p className="storybook-body mt-12 font-light md:text-justify text-neutral-500 leading-relaxed">
+                  <p className="storybook-body mt-12 font-light md:text-justify text-sl-mist/60 leading-relaxed">
                     Every commission begins the same way — not with software, but with
                     listening. We read the drawings, study the context, and ask the
                     questions that give a building its atmosphere long before the first
@@ -231,7 +231,7 @@ export default async function AboutPage() {
       {/* ------------------------------------------------------------------ */}
       <section
         aria-labelledby="method-title"
-        className="relative overflow-hidden bg-background px-8 py-28 md:px-16 md:py-36"
+        className="relative overflow-hidden bg-sl-void px-8 py-28 md:px-16 md:py-36"
       >
         <span
           aria-hidden="true"
@@ -257,18 +257,18 @@ export default async function AboutPage() {
               >
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute -right-14 -top-14 h-40 w-40 rounded-full bg-accent/10 opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
+                  className="pointer-events-none absolute -right-14 -top-14 h-40 w-40 rounded-full bg-sl-gold-subtle/10 opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
                 />
-                <h3 className="font-mono text-[0.625rem] uppercase tracking-[0.35em] text-accent/60">
+                <h3 className="font-mono text-[0.625rem] uppercase tracking-[0.35em] text-sl-gold-hover/60">
                   {pillar.label}
                 </h3>
                 <span
                   aria-hidden="true"
-                  className="mt-6 block font-serif text-6xl font-light leading-none text-accent/25"
+                  className="mt-6 block font-serif text-6xl font-light leading-none text-sl-gold-hover/25"
                 >
                   {pillar.numeral}
                 </span>
-                <p className="mt-6 font-sans text-sm leading-relaxed text-neutral-400">
+                <p className="mt-6 font-sans text-sm leading-relaxed text-sl-mist/60">
                   {pillar.body}
                 </p>
               </article>
@@ -280,7 +280,7 @@ export default async function AboutPage() {
       {/* ------------------------------------------------------------------ */}
       {/* Movement IV — The Practitioners (team)                              */}
       {/* ------------------------------------------------------------------ */}
-      <div className="border-y border-border/30 bg-surface px-8 py-20 md:px-16">
+      <div className="border-y border-sl-silver/20 bg-sl-obsidian px-8 py-20 md:px-16">
         <div className="mx-auto w-full max-w-5xl text-center">
           <SectionMarker>§ 03 — The Practitioners</SectionMarker>
           <DiamondOrnament className="mt-8" />
@@ -294,7 +294,7 @@ export default async function AboutPage() {
       {/* ------------------------------------------------------------------ */}
       <section
         aria-labelledby="colophon-title"
-        className="relative overflow-hidden border-t border-border/30 bg-surface px-8 py-28 md:px-16 md:py-36"
+        className="relative overflow-hidden border-t border-sl-silver/20 bg-sl-obsidian px-8 py-28 md:px-16 md:py-36"
       >
         <ClientSilkShaderBackground speed={0.3} opacity={0.1} />
         <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
@@ -311,7 +311,7 @@ export default async function AboutPage() {
           <p className="storybook-accent mt-8 font-serif text-xl italic leading-relaxed md:text-2xl">
             We exist to make that intention unforgettable.
           </p>
-          <p className="mt-10 font-mono text-[0.625rem] uppercase tracking-[0.35em] text-neutral-500">
+          <p className="mt-10 font-mono text-[0.625rem] uppercase tracking-[0.35em] text-sl-mist/60">
             Hexa Studio · Dubai · MMXXVI
           </p>
           <DiamondOrnament className="mt-14" />
@@ -320,13 +320,13 @@ export default async function AboutPage() {
         {/* CTA — the invitation that closes the book */}
         <div className="relative z-10 mt-20">
           <LiquidGlassCard goldAccent className="w-full max-w-4xl mx-auto text-center !p-16">
-            <span className="mb-6 block font-mono text-xs uppercase tracking-[0.5em] text-accent/60">
+            <span className="mb-6 block font-mono text-xs uppercase tracking-[0.5em] text-sl-gold-hover/60">
               Work With Us
             </span>
-            <h3 className="mb-8 text-4xl font-serif font-light leading-tight tracking-tight text-foreground md:text-6xl">
-              Ready to <span className="italic text-accent">Collaborate?</span>
+            <h3 className="mb-8 text-4xl font-serif font-light leading-tight tracking-tight text-sl-alabaster md:text-6xl">
+              Ready to <span className="italic text-sl-gold-hover">Collaborate?</span>
             </h3>
-            <p className="mx-auto mb-12 w-full max-w-2xl font-light leading-relaxed text-neutral-400">
+            <p className="mx-auto mb-12 w-full max-w-2xl font-light leading-relaxed text-sl-mist/60">
               We partner with architects, developers, and visionaries worldwide.
               Let&apos;s create something extraordinary together.
             </p>

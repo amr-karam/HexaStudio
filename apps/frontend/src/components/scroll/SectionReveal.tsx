@@ -187,7 +187,7 @@ export const SectionReveal = ({ children, className, distance = 1 }: SectionReve
       <span
         ref={hairlineRef}
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-[3] h-px origin-left bg-accent/60"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-[3] h-px origin-left bg-sl-gold-subtle/60"
         style={{ transform: 'scaleX(0)' }}
       />
     </div>

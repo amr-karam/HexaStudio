@@ -76,8 +76,8 @@ const STATUS_STYLES: Record<
   },
   pending: {
     label: 'Pending',
-    pill: 'border-accent/30 bg-accent/10 text-accent-light',
-    dot: 'bg-accent',
+    pill: 'border-sl-gold-subtle/30 bg-sl-gold-subtle/10 text-sl-gold-hover',
+    dot: 'bg-sl-gold-subtle',
   },
   overdue: {
     label: 'Overdue',
@@ -86,7 +86,7 @@ const STATUS_STYLES: Record<
   },
   draft: {
     label: 'Draft',
-    pill: 'border-white/10 bg-white/5 text-neutral-400',
+    pill: 'border-white/10 bg-white/5 text-sl-mist/60',
     dot: 'bg-neutral-500',
   },
 };
@@ -233,14 +233,14 @@ function LedgerEmptyState({ reduced }: { reduced: boolean }) {
       role="status"
     >
       <div className="mb-6 flex items-center justify-center gap-2" aria-hidden="true">
-        <span className="h-2 w-2 rotate-45 border border-accent/40" />
-        <span className="h-2 w-2 rotate-45 bg-accent/70" />
-        <span className="h-2 w-2 rotate-45 border border-accent/40" />
+        <span className="h-2 w-2 rotate-45 border border-sl-gold-subtle/40" />
+        <span className="h-2 w-2 rotate-45 bg-sl-gold-subtle/70" />
+        <span className="h-2 w-2 rotate-45 border border-sl-gold-subtle/40" />
       </div>
-      <p className="font-serif text-xl font-light tracking-tight text-foreground sm:text-2xl">
+      <p className="font-serif text-xl font-light tracking-tight text-sl-alabaster sm:text-2xl">
         The ledger awaits its first entry
       </p>
-      <p className="mt-3 max-w-md text-sm font-light leading-relaxed text-neutral-500">
+      <p className="mt-3 max-w-md text-sm font-light leading-relaxed text-sl-mist/60">
         Invoices issued through Odoo will appear here as elegant index entries —
         status, currency, and payment milestones at a glance.
       </p>
@@ -325,9 +325,9 @@ export function FinanceCenterView() {
       {
         label: 'Total Contract Value',
         valueFn: (fmt: (n: number) => string) => fmt(totalContractValue),
-        valueClass: 'text-foreground',
+        valueClass: 'text-sl-alabaster',
         note: `${totalCount} Invoice${totalCount !== 1 ? 's' : ''}`,
-        noteClass: 'text-neutral-500',
+        noteClass: 'text-sl-mist/60',
       },
       {
         label: 'Total Paid',
@@ -370,14 +370,14 @@ export function FinanceCenterView() {
         className="flex flex-col lg:flex-row lg:items-end justify-between gap-6"
       >
         <div>
-          <p className="flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-accent/70">
-            <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-accent/70" />
+          <p className="flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-sl-gold-hover/70">
+            <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-sl-gold-subtle/70" />
             § 01 — Finance
           </p>
-          <h1 className="mt-4 font-serif text-4xl font-light tracking-tight text-foreground sm:text-5xl">
+          <h1 className="mt-4 font-serif text-4xl font-light tracking-tight text-sl-alabaster sm:text-5xl">
             The Finance <em className="text-gradient-gold font-normal italic">Ledger</em>
           </h1>
-          <p className="mt-3 max-w-xl text-sm font-light leading-relaxed text-neutral-500">
+          <p className="mt-3 max-w-xl text-sm font-light leading-relaxed text-sl-mist/60">
             Real-time Odoo ERP sync for invoices, quotations, contracts, and dynamic currency conversions.
           </p>
         </div>
@@ -388,7 +388,7 @@ export function FinanceCenterView() {
           aria-label="Select display currency"
           className="artisan-glass artisan-specular-top flex items-center gap-1 rounded-full p-1.5 self-start lg:self-auto"
         >
-          <span className="pl-3 pr-1 font-mono text-[0.625rem] uppercase tracking-[0.3em] text-neutral-500">
+          <span className="pl-3 pr-1 font-mono text-[0.625rem] uppercase tracking-[0.3em] text-sl-mist/60">
             Currency
           </span>
           {(['USD', 'EUR', 'GBP'] as const).map((curr) => {
@@ -401,13 +401,13 @@ export function FinanceCenterView() {
                 aria-label={`Display amounts in ${curr}`}
                 className={cn(
                   'relative rounded-full px-4 py-1.5 font-mono text-xs tracking-[0.15em] transition-colors duration-500',
-                  isActive ? 'text-neutral-950' : 'text-neutral-400 hover:text-accent'
+                  isActive ? 'text-neutral-950' : 'text-sl-mist/60 hover:text-sl-gold-hover'
                 )}
               >
                 {isActive && (
                   <motion.span
                     layoutId="currency-indicator"
-                    className="absolute inset-0 rounded-full bg-gradient-to-r from-accent-dark via-accent to-accent-light shadow-[0_0_20px_rgba(212,175,55,0.25)]"
+                    className="absolute inset-0 rounded-full bg-gradient-to-r from-sl-gold-subtle-dark via-sl-gold-subtle to-sl-gold-hover shadow-[0_0_20px_rgba(212,175,55,0.25)]"
                     transition={reduced ? { duration: 0.01 } : makeTransition('interaction', 'micro')}
                     aria-hidden="true"
                   />
@@ -440,10 +440,10 @@ export function FinanceCenterView() {
             {/* Gold radial aura — revealed on hover */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full bg-accent/5 opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
+              className="pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full bg-sl-gold-subtle/5 opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
             />
 
-            <p className="font-mono text-[0.625rem] uppercase tracking-[0.3em] text-neutral-500">
+            <p className="font-mono text-[0.625rem] uppercase tracking-[0.3em] text-sl-mist/60">
               {card.label}
             </p>
 
@@ -470,7 +470,7 @@ export function FinanceCenterView() {
             {/* Specular gold hairline on hover */}
             <div
               aria-hidden="true"
-              className="absolute bottom-0 left-0 right-0 h-px bg-accent/0 transition-colors duration-1000 group-hover:bg-accent/30"
+              className="absolute bottom-0 left-0 right-0 h-px bg-sl-gold-subtle/0 transition-colors duration-1000 group-hover:bg-sl-gold-subtle/30"
             />
           </motion.div>
         ))}
@@ -483,11 +483,11 @@ export function FinanceCenterView() {
       <div className="artisan-glass artisan-specular-top relative overflow-hidden rounded-2xl">
         {/* Panel header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-5 border-b border-white/5">
-          <h2 className="flex items-center gap-3 font-serif text-lg font-light tracking-tight text-foreground">
-            <span aria-hidden="true" className="h-2 w-2 rotate-45 border border-accent/60" />
+          <h2 className="flex items-center gap-3 font-serif text-lg font-light tracking-tight text-sl-alabaster">
+            <span aria-hidden="true" className="h-2 w-2 rotate-45 border border-sl-gold-subtle/60" />
             Invoices &amp; Milestone Statements
           </h2>
-          <span className="font-mono text-[0.625rem] uppercase tracking-[0.3em] text-neutral-500">
+          <span className="font-mono text-[0.625rem] uppercase tracking-[0.3em] text-sl-mist/60">
             Synced from Odoo account.move
           </span>
         </div>
@@ -514,7 +514,7 @@ export function FinanceCenterView() {
                     key={idx}
                     role="columnheader"
                     className={cn(
-                      'font-mono text-[0.625rem] uppercase tracking-[0.3em] text-neutral-500',
+                      'font-mono text-[0.625rem] uppercase tracking-[0.3em] text-sl-mist/60',
                       idx === 3 && 'text-right',
                       idx === 5 && 'text-right'
                     )}
@@ -545,19 +545,19 @@ export function FinanceCenterView() {
                     >
                       {/* Invoice number + description */}
                       <div role="cell" className="min-w-0">
-                        <p className="font-mono text-xs font-semibold tracking-tight text-foreground">
+                        <p className="font-mono text-xs font-semibold tracking-tight text-sl-alabaster">
                           {inv.number}
                         </p>
-                        <p className="mt-1 truncate text-[11px] font-light text-neutral-500">
+                        <p className="mt-1 truncate text-[11px] font-light text-sl-mist/60">
                           {inv.items[0]?.description}
                         </p>
                       </div>
 
                       {/* Issue / Due */}
-                      <div role="cell" className="font-mono text-xs text-neutral-400">
+                      <div role="cell" className="font-mono text-xs text-sl-mist/60">
                         {inv.issueDate}
                       </div>
-                      <div role="cell" className="font-mono text-xs text-neutral-400">
+                      <div role="cell" className="font-mono text-xs text-sl-mist/60">
                         {inv.dueDate}
                       </div>
 
@@ -570,7 +570,7 @@ export function FinanceCenterView() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={reduced ? { opacity: 0 } : { opacity: 0, y: -6 }}
                             transition={reduced ? { duration: 0.01 } : makeTransition('sharp', 'micro')}
-                            className="inline-block font-serif text-base font-light tracking-tight tabular-nums text-foreground"
+                            className="inline-block font-serif text-base font-light tracking-tight tabular-nums text-sl-alabaster"
                           >
                             {formatAmount(inv.amount)}
                           </motion.span>
@@ -587,7 +587,7 @@ export function FinanceCenterView() {
                         <button
                           type="button"
                           onClick={() => handleToggleExpand(inv.id)}
-                          className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-neutral-900 border border-neutral-800 font-mono text-[0.625rem] uppercase tracking-[0.1em] text-neutral-400 hover:text-neutral-200 hover:border-neutral-700 transition-colors"
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-sl-void border border-sl-obsidian font-mono text-[0.625rem] uppercase tracking-[0.1em] text-sl-mist/60 hover:text-neutral-200 hover:border-neutral-700 transition-colors"
                           aria-label={`Toggle itemized breakdown for invoice ${inv.number}`}
                         >
                           <span>{expandedInvoiceId === inv.id ? 'Hide' : 'Lines'}</span>
@@ -596,14 +596,14 @@ export function FinanceCenterView() {
                           <button
                             type="button"
                             onClick={() => setSelectedPayInvoice(inv)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-accent/15 border border-accent/30 font-mono text-[0.625rem] uppercase tracking-[0.15em] text-accent hover:bg-accent hover:text-background transition-all duration-300"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-sl-gold-subtle/15 border border-sl-gold-subtle/30 font-mono text-[0.625rem] uppercase tracking-[0.15em] text-sl-gold-hover hover:bg-sl-gold-subtle hover:text-background transition-all duration-300"
                           >
                             <span>Pay</span>
                           </button>
                         )}
                         <a
                           href={inv.downloadUrl}
-                          className="inline-flex items-center gap-1 font-mono text-[0.625rem] uppercase tracking-[0.2em] text-accent transition-colors duration-500 hover:text-accent-light"
+                          className="inline-flex items-center gap-1 font-mono text-[0.625rem] uppercase tracking-[0.2em] text-sl-gold-hover transition-colors duration-500 hover:text-sl-gold-hover"
                           aria-label={`Download invoice ${inv.number} as PDF`}
                         >
                           <Icon name="download" className="w-3.5 h-3.5" />
@@ -614,16 +614,16 @@ export function FinanceCenterView() {
                       {/* Itemized Line Breakdown Panel */}
                       {expandedInvoiceId === inv.id && (
                         <div className="col-span-full mt-3 pt-3 border-t border-white/5 bg-neutral-950/40 rounded-xl p-4 space-y-2">
-                          <div className="flex justify-between items-center pb-2 border-b border-white/5 text-[10px] font-mono uppercase tracking-widest text-neutral-500">
+                          <div className="flex justify-between items-center pb-2 border-b border-white/5 text-[10px] font-mono uppercase tracking-widest text-sl-mist/60">
                             <span>Itemized Statement Line (account.move.line)</span>
                             <span>Quantity &bull; Unit &bull; Subtotal</span>
                           </div>
                           {loadingLinesId === inv.id ? (
-                            <div className="py-3 text-center text-xs font-mono text-neutral-500 animate-pulse">
+                            <div className="py-3 text-center text-xs font-mono text-sl-mist/60 animate-pulse">
                               Fetching itemized lines from Odoo ERP...
                             </div>
                           ) : (invoiceLinesCache[inv.id] || []).length === 0 ? (
-                            <div className="py-2 text-xs text-neutral-500 font-mono">
+                            <div className="py-2 text-xs text-sl-mist/60 font-mono">
                               No itemized lines recorded for this invoice.
                             </div>
                           ) : (
@@ -631,9 +631,9 @@ export function FinanceCenterView() {
                               <div key={line.id} className="flex justify-between items-center text-xs py-1.5 border-b border-white/5 last:border-0">
                                 <div className="space-y-0.5">
                                   <p className="text-neutral-200 font-medium">{line.name}</p>
-                                  <p className="text-[10px] font-mono text-neutral-500">Qty: {line.quantity ?? 1}</p>
+                                  <p className="text-[10px] font-mono text-sl-mist/60">Qty: {line.quantity ?? 1}</p>
                                 </div>
-                                <div className="text-right font-mono text-xs tabular-nums text-foreground">
+                                <div className="text-right font-mono text-xs tabular-nums text-sl-alabaster">
                                   {formatAmount(line.price_subtotal ?? line.price_unit ?? 0)}
                                 </div>
                               </div>
@@ -653,37 +653,37 @@ export function FinanceCenterView() {
       {/* Pay Milestone Modal */}
       <AnimatePresence>
         {selectedPayInvoice && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-sl-void/80 backdrop-blur-md">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="artisan-glass border border-border/40 rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl space-y-5"
+              className="artisan-glass border border-sl-silver/20/40 rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl space-y-5"
             >
               <div className="flex justify-between items-start">
                 <div>
-                  <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-accent">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-sl-gold-hover">
                     Milestone Settlement
                   </span>
-                  <h3 className="font-serif text-xl font-light text-foreground mt-1">
+                  <h3 className="font-serif text-xl font-light text-sl-alabaster mt-1">
                     Invoice {selectedPayInvoice.number}
                   </h3>
                 </div>
                 <button
                   onClick={() => setSelectedPayInvoice(null)}
-                  className="text-text-muted hover:text-foreground font-mono text-sm"
+                  className="text-text-sl-mist/60 hover:text-sl-alabaster font-mono text-sm"
                 >
                   ✕
                 </button>
               </div>
 
-              <div className="p-4 bg-obsidian-raised rounded-xl border border-border/20 space-y-2">
+              <div className="p-4 bg-obsidian-raised rounded-xl border border-sl-silver/20 space-y-2">
                 <div className="flex justify-between text-xs font-mono">
-                  <span className="text-text-muted">Amount Due:</span>
-                  <span className="text-foreground font-semibold">{formatAmount(selectedPayInvoice.amount)}</span>
+                  <span className="text-text-sl-mist/60">Amount Due:</span>
+                  <span className="text-sl-alabaster font-semibold">{formatAmount(selectedPayInvoice.amount)}</span>
                 </div>
                 <div className="flex justify-between text-xs font-mono">
-                  <span className="text-text-muted">Item:</span>
+                  <span className="text-text-sl-mist/60">Item:</span>
                   <span className="text-text-secondary truncate max-w-[200px]">{selectedPayInvoice.items[0]?.description}</span>
                 </div>
               </div>
@@ -700,7 +700,7 @@ export function FinanceCenterView() {
                       setPaidInvoiceIds((prev) => [...prev, selectedPayInvoice.id]);
                     }, 1200);
                   }}
-                  className="w-full py-3 rounded-xl bg-accent text-background font-mono text-xs uppercase tracking-widest font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                  className="w-full py-3 rounded-xl bg-sl-gold-subtle text-background font-mono text-xs uppercase tracking-widest font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
                 >
                   {isProcessingPayment ? (
                     <>
@@ -711,7 +711,7 @@ export function FinanceCenterView() {
                     <span>Confirm &amp; Authorize Payment</span>
                   )}
                 </button>
-                <p className="text-[10px] font-mono text-center text-text-muted">
+                <p className="text-[10px] font-mono text-center text-text-sl-mist/60">
                   🔒 Secured with 256-bit encryption · Synced with Odoo ERP
                 </p>
               </div>

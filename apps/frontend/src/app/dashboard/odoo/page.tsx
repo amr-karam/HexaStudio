@@ -12,9 +12,9 @@ type Tab = 'pipeline' | 'leads' | 'contacts' | 'projects' | 'documents' | 'sales
 function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
     <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
-      <p className="text-xs uppercase tracking-wide text-white/40">{label}</p>
-      <p className="mt-2 text-2xl font-semibold text-white">{value}</p>
-      {sub && <p className="mt-1 text-xs text-white/40">{sub}</p>}
+      <p className="text-xs uppercase tracking-wide text-sl-alabaster/40">{label}</p>
+      <p className="mt-2 text-2xl font-semibold text-sl-alabaster">{value}</p>
+      {sub && <p className="mt-1 text-xs text-sl-alabaster/40">{sub}</p>}
     </div>
   );
 }
@@ -25,14 +25,14 @@ function PipelineView({ data }: { data: OdooPipelineSummary }) {
     <div className="space-y-3">
       {data.stages.map((stage) => (
         <div key={stage.id} className="flex items-center gap-4">
-          <div className="w-40 shrink-0 truncate text-sm text-white/60">{stage.name}</div>
+          <div className="w-40 shrink-0 truncate text-sm text-sl-alabaster/60">{stage.name}</div>
           <div className="h-3 flex-1 overflow-hidden rounded-full bg-white/5">
-            <div className="h-full rounded-full bg-accent" style={{ width: `${(stage.leadCount / max) * 100}%` }} />
+            <div className="h-full rounded-full bg-sl-gold-subtle" style={{ width: `${(stage.leadCount / max) * 100}%` }} />
           </div>
-          <div className="w-28 shrink-0 text-right text-sm text-white/50">
+          <div className="w-28 shrink-0 text-right text-sm text-sl-alabaster/50">
             {stage.leadCount} lead{stage.leadCount === 1 ? '' : 's'}
           </div>
-          <div className="w-28 shrink-0 text-right text-sm text-white/40">
+          <div className="w-28 shrink-0 text-right text-sm text-sl-alabaster/40">
             ${Math.round(stage.expectedRevenue).toLocaleString()}
           </div>
         </div>
@@ -80,31 +80,31 @@ function LeadFormModal({ open, onClose, initial }: { open: boolean; onClose: () 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-xl" onClick={onClose} />
-      <div className="relative w-full max-w-lg rounded-2xl border border-white/10 bg-neutral-900 p-8 shadow-2xl">
-        <h2 className="mb-6 text-xl font-semibold text-white">{initial?.id ? 'Edit Lead' : 'New Lead'}</h2>
+      <div className="relative w-full max-w-lg rounded-2xl border border-white/10 bg-sl-void p-8 shadow-2xl">
+        <h2 className="mb-6 text-xl font-semibold text-sl-alabaster">{initial?.id ? 'Edit Lead' : 'New Lead'}</h2>
         <div className="space-y-4">
-          <input placeholder="Lead name *" aria-label="Lead name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
-          <input placeholder="Email" aria-label="Email" value={form.email_from} onChange={(e) => setForm({ ...form, email_from: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
-          <input placeholder="Company" aria-label="Company" value={form.partner_name} onChange={(e) => setForm({ ...form, partner_name: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
-          <input placeholder="Phone" aria-label="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
-          <select aria-label="Service type" value={form.x_hexa_service} onChange={(e) => setForm({ ...form, x_hexa_service: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50">
+          <input placeholder="Lead name *" aria-label="Lead name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50" />
+          <input placeholder="Email" aria-label="Email" value={form.email_from} onChange={(e) => setForm({ ...form, email_from: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50" />
+          <input placeholder="Company" aria-label="Company" value={form.partner_name} onChange={(e) => setForm({ ...form, partner_name: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50" />
+          <input placeholder="Phone" aria-label="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50" />
+          <select aria-label="Service type" value={form.x_hexa_service} onChange={(e) => setForm({ ...form, x_hexa_service: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50">
             <option value="">Service type...</option>
             <option value="residential">Residential</option>
             <option value="commercial">Commercial</option>
             <option value="interior">Interior</option>
           </select>
-          <select aria-label="Budget range" value={form.x_hexa_budget} onChange={(e) => setForm({ ...form, x_hexa_budget: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50">
+          <select aria-label="Budget range" value={form.x_hexa_budget} onChange={(e) => setForm({ ...form, x_hexa_budget: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50">
             <option value="">Budget range...</option>
             <option value="under_50k">Under $50K</option>
             <option value="50k_100k">$50K - $100K</option>
             <option value="100k_500k">$100K - $500K</option>
             <option value="500k_plus">$500K+</option>
           </select>
-          <textarea placeholder="Description" aria-label="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" rows={3} />
+          <textarea placeholder="Description" aria-label="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50" rows={3} />
         </div>
         <div className="mt-6 flex justify-end gap-3">
-          <button onClick={onClose} className="rounded-lg border border-white/10 px-4 py-2 text-sm text-white/60 hover:bg-white/5">Cancel</button>
-          <button onClick={() => mutation.mutate()} disabled={mutation.isPending || !form.name} className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-black hover:bg-accent-dark disabled:opacity-50">
+          <button onClick={onClose} className="rounded-lg border border-white/10 px-4 py-2 text-sm text-sl-alabaster/60 hover:bg-white/5">Cancel</button>
+          <button onClick={() => mutation.mutate()} disabled={mutation.isPending || !form.name} className="rounded-lg bg-sl-gold-subtle px-5 py-2 text-sm font-medium text-black hover:bg-sl-gold-subtle-dark disabled:opacity-50">
             {mutation.isPending ? 'Saving...' : 'Save'}
           </button>
         </div>
@@ -132,16 +132,16 @@ function ContactFormModal({ open, onClose }: { open: boolean; onClose: () => voi
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-xl" onClick={onClose} />
-      <div className="relative w-full max-w-md rounded-2xl border border-white/10 bg-neutral-900 p-8 shadow-2xl">
-        <h2 className="mb-6 text-xl font-semibold text-white">New Contact</h2>
+      <div className="relative w-full max-w-md rounded-2xl border border-white/10 bg-sl-void p-8 shadow-2xl">
+        <h2 className="mb-6 text-xl font-semibold text-sl-alabaster">New Contact</h2>
         <div className="space-y-4">
-          <input placeholder="Name *" aria-label="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
-          <input placeholder="Email" type="email" aria-label="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
-          <input placeholder="Phone" aria-label="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
+          <input placeholder="Name *" aria-label="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50" />
+          <input placeholder="Email" type="email" aria-label="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50" />
+          <input placeholder="Phone" aria-label="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50" />
         </div>
         <div className="mt-6 flex justify-end gap-3">
-          <button onClick={onClose} className="rounded-lg border border-white/10 px-4 py-2 text-sm text-white/60 hover:bg-white/5">Cancel</button>
-          <button onClick={() => mutation.mutate()} disabled={mutation.isPending || !form.name} className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-black hover:bg-accent-dark disabled:opacity-50">
+          <button onClick={onClose} className="rounded-lg border border-white/10 px-4 py-2 text-sm text-sl-alabaster/60 hover:bg-white/5">Cancel</button>
+          <button onClick={() => mutation.mutate()} disabled={mutation.isPending || !form.name} className="rounded-lg bg-sl-gold-subtle px-5 py-2 text-sm font-medium text-black hover:bg-sl-gold-subtle-dark disabled:opacity-50">
             {mutation.isPending ? 'Creating...' : 'Create'}
           </button>
         </div>
@@ -180,16 +180,16 @@ function KnowledgeFormModal({ open, onClose, initial }: { open: boolean; onClose
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-xl" onClick={onClose} />
-      <div className="relative w-full max-w-lg rounded-2xl border border-white/10 bg-neutral-900 p-8 shadow-2xl">
-        <h2 className="mb-6 text-xl font-semibold text-white">{initial?.id ? 'Edit Article' : 'New Article'}</h2>
+      <div className="relative w-full max-w-lg rounded-2xl border border-white/10 bg-sl-void p-8 shadow-2xl">
+        <h2 className="mb-6 text-xl font-semibold text-sl-alabaster">{initial?.id ? 'Edit Article' : 'New Article'}</h2>
         <div className="space-y-4">
-          <input placeholder="Article name *" aria-label="Article name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
-          <input placeholder="Category ID (optional)" aria-label="Category ID" value={form.category_id} onChange={(e) => setForm({ ...form, category_id: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
-          <textarea placeholder="Body" aria-label="Article body" value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" rows={6} />
+          <input placeholder="Article name *" aria-label="Article name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50" />
+          <input placeholder="Category ID (optional)" aria-label="Category ID" value={form.category_id} onChange={(e) => setForm({ ...form, category_id: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50" />
+          <textarea placeholder="Body" aria-label="Article body" value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50" rows={6} />
         </div>
         <div className="mt-6 flex justify-end gap-3">
-          <button onClick={onClose} className="rounded-lg border border-white/10 px-4 py-2 text-sm text-white/60 hover:bg-white/5">Cancel</button>
-          <button onClick={() => mutation.mutate()} disabled={mutation.isPending || !form.name} className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-black hover:bg-accent-dark disabled:opacity-50">
+          <button onClick={onClose} className="rounded-lg border border-white/10 px-4 py-2 text-sm text-sl-alabaster/60 hover:bg-white/5">Cancel</button>
+          <button onClick={() => mutation.mutate()} disabled={mutation.isPending || !form.name} className="rounded-lg bg-sl-gold-subtle px-5 py-2 text-sm font-medium text-black hover:bg-sl-gold-subtle-dark disabled:opacity-50">
             {mutation.isPending ? 'Saving...' : 'Save'}
           </button>
         </div>
@@ -217,16 +217,16 @@ function EmailSendModal({ open, onClose }: { open: boolean; onClose: () => void 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-xl" onClick={onClose} />
-      <div className="relative w-full max-w-lg rounded-2xl border border-white/10 bg-neutral-900 p-8 shadow-2xl">
-        <h2 className="mb-6 text-xl font-semibold text-white">Send Email</h2>
+      <div className="relative w-full max-w-lg rounded-2xl border border-white/10 bg-sl-void p-8 shadow-2xl">
+        <h2 className="mb-6 text-xl font-semibold text-sl-alabaster">Send Email</h2>
         <div className="space-y-4">
-          <input placeholder="To (email) *" type="email" aria-label="Recipient email" value={form.to} onChange={(e) => setForm({ ...form, to: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
-          <input placeholder="Subject *" aria-label="Subject" value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
-          <textarea placeholder="Body" aria-label="Email body" value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" rows={6} />
+          <input placeholder="To (email) *" type="email" aria-label="Recipient email" value={form.to} onChange={(e) => setForm({ ...form, to: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50" />
+          <input placeholder="Subject *" aria-label="Subject" value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50" />
+          <textarea placeholder="Body" aria-label="Email body" value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50" rows={6} />
         </div>
         <div className="mt-6 flex justify-end gap-3">
-          <button onClick={onClose} className="rounded-lg border border-white/10 px-4 py-2 text-sm text-white/60 hover:bg-white/5">Cancel</button>
-          <button onClick={() => mutation.mutate()} disabled={mutation.isPending || !form.to || !form.subject} className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-black hover:bg-accent-dark disabled:opacity-50">
+          <button onClick={onClose} className="rounded-lg border border-white/10 px-4 py-2 text-sm text-sl-alabaster/60 hover:bg-white/5">Cancel</button>
+          <button onClick={() => mutation.mutate()} disabled={mutation.isPending || !form.to || !form.subject} className="rounded-lg bg-sl-gold-subtle px-5 py-2 text-sm font-medium text-black hover:bg-sl-gold-subtle-dark disabled:opacity-50">
             {mutation.isPending ? 'Sending...' : 'Send'}
           </button>
         </div>
@@ -370,10 +370,10 @@ export default function OdooDashboardPage() {
     <div className="mx-auto max-w-5xl px-4 py-12">
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-white">Odoo ERP</h1>
-          <p className="mt-1 text-sm text-white/40">Live business operations — CRM, sales, projects, and invoicing.</p>
+          <h1 className="text-2xl font-semibold text-sl-alabaster">Odoo ERP</h1>
+          <p className="mt-1 text-sm text-sl-alabaster/40">Live business operations — CRM, sales, projects, and invoicing.</p>
         </div>
-        <button onClick={() => runSync(false)} disabled={syncing} className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-accent-dark disabled:opacity-50">
+        <button onClick={() => runSync(false)} disabled={syncing} className="rounded-lg bg-sl-gold-subtle px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-sl-gold-subtle-dark disabled:opacity-50">
           {syncing ? 'Syncing...' : 'Trigger Sync'}
         </button>
       </div>
@@ -388,7 +388,7 @@ export default function OdooDashboardPage() {
       {/* Tabs */}
       <div className="mb-6 flex gap-1 overflow-x-auto rounded-xl border border-white/10 bg-white/[0.02] p-1">
         {TABS.map((t) => (
-          <button key={t.key} onClick={() => setTab(t.key)} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${tab === t.key ? 'bg-accent text-black' : 'text-white/50 hover:text-white/80'}`}>
+          <button key={t.key} onClick={() => setTab(t.key)} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${tab === t.key ? 'bg-sl-gold-subtle text-black' : 'text-sl-alabaster/50 hover:text-sl-alabaster/80'}`}>
             {t.label}
           </button>
         ))}
@@ -397,8 +397,8 @@ export default function OdooDashboardPage() {
       {/* Pipeline Tab */}
       {tab === 'pipeline' && (
         <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
-          <h2 className="mb-4 text-lg font-medium text-white">CRM Pipeline</h2>
-          {pipeline.isLoading && <p className="text-sm text-white/40">Loading...</p>}
+          <h2 className="mb-4 text-lg font-medium text-sl-alabaster">CRM Pipeline</h2>
+          {pipeline.isLoading && <p className="text-sm text-sl-alabaster/40">Loading...</p>}
           {pipeline.data && <PipelineView data={pipeline.data} />}
         </section>
       )}
@@ -407,24 +407,24 @@ export default function OdooDashboardPage() {
       {tab === 'leads' && (
         <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-medium text-white">CRM Leads</h2>
-            <button onClick={() => setLeadModalOpen(true)} className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black hover:bg-accent-dark">+ New Lead</button>
+            <h2 className="text-lg font-medium text-sl-alabaster">CRM Leads</h2>
+            <button onClick={() => setLeadModalOpen(true)} className="rounded-lg bg-sl-gold-subtle px-4 py-2 text-sm font-medium text-black hover:bg-sl-gold-subtle-dark">+ New Lead</button>
           </div>
-          {leads.isLoading && <p className="text-sm text-white/40">Loading...</p>}
-          {leads.data && leads.data.length === 0 && <p className="text-sm text-white/30">No leads in Odoo.</p>}
+          {leads.isLoading && <p className="text-sm text-sl-alabaster/40">Loading...</p>}
+          {leads.data && leads.data.length === 0 && <p className="text-sm text-sl-alabaster/30">No leads in Odoo.</p>}
           {leads.data && leads.data.length > 0 && (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="text-white/40">
+                <thead className="text-sl-alabaster/40">
                   <tr><th className="pb-2 font-normal">Name</th><th className="pb-2 font-normal">Company</th><th className="pb-2 font-normal">Stage</th><th className="pb-2 font-normal">Created</th><th className="pb-2 font-normal">Actions</th></tr>
                 </thead>
-                <tbody className="text-white/70">
+                <tbody className="text-sl-alabaster/70">
                   {leads.data.map((lead) => (
                     <tr key={lead.id} className="border-t border-white/5">
                       <td className="py-2">{lead.name}</td>
-                      <td className="py-2 text-white/50">{lead.partner_name ?? '—'}</td>
-                      <td className="py-2 text-white/50">{idName(lead.stage_id)}</td>
-                      <td className="py-2 text-white/40">{lead.create_date?.slice(0, 10) ?? '—'}</td>
+                      <td className="py-2 text-sl-alabaster/50">{lead.partner_name ?? '—'}</td>
+                      <td className="py-2 text-sl-alabaster/50">{idName(lead.stage_id)}</td>
+                      <td className="py-2 text-sl-alabaster/40">{lead.create_date?.slice(0, 10) ?? '—'}</td>
                       <td className="py-2"><button onClick={() => handleArchiveLead(lead.id)} className="text-xs text-red-400/70 hover:text-red-400">Archive</button></td>
                     </tr>
                   ))}
@@ -440,27 +440,27 @@ export default function OdooDashboardPage() {
       {tab === 'contacts' && (
         <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
           <div className="mb-4 flex items-center justify-between gap-4">
-            <h2 className="text-lg font-medium text-white">Contacts</h2>
+            <h2 className="text-lg font-medium text-sl-alabaster">Contacts</h2>
             <div className="flex gap-3">
-              <input placeholder="Search..." aria-label="Search contacts" value={contactSearch} onChange={(e) => setContactSearch(e.target.value)} className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50" />
-              <button onClick={() => setContactModalOpen(true)} className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black hover:bg-accent-dark">+ New Contact</button>
+              <input placeholder="Search..." aria-label="Search contacts" value={contactSearch} onChange={(e) => setContactSearch(e.target.value)} className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50" />
+              <button onClick={() => setContactModalOpen(true)} className="rounded-lg bg-sl-gold-subtle px-4 py-2 text-sm font-medium text-black hover:bg-sl-gold-subtle-dark">+ New Contact</button>
             </div>
           </div>
-          {contacts.isLoading && <p className="text-sm text-white/40">Loading...</p>}
-          {contacts.data && contacts.data.length === 0 && <p className="text-sm text-white/30">No contacts found.</p>}
+          {contacts.isLoading && <p className="text-sm text-sl-alabaster/40">Loading...</p>}
+          {contacts.data && contacts.data.length === 0 && <p className="text-sm text-sl-alabaster/30">No contacts found.</p>}
           {contacts.data && contacts.data.length > 0 && (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="text-white/40">
+                <thead className="text-sl-alabaster/40">
                   <tr><th className="pb-2 font-normal">Name</th><th className="pb-2 font-normal">Email</th><th className="pb-2 font-normal">Phone</th><th className="pb-2 font-normal">Client</th></tr>
                 </thead>
-                <tbody className="text-white/70">
+                <tbody className="text-sl-alabaster/70">
                   {contacts.data.map((c) => (
                     <tr key={c.id} className="border-t border-white/5">
-                      <td className="py-2 font-medium text-white">{c.name}</td>
-                      <td className="py-2 text-white/50">{c.email ?? '—'}</td>
-                      <td className="py-2 text-white/50">{c.phone ?? '—'}</td>
-                      <td className="py-2">{c.x_hexa_client ? <span className="rounded bg-accent/20 px-2 py-0.5 text-xs text-accent">Client</span> : <span className="text-white/30">—</span>}</td>
+                      <td className="py-2 font-medium text-sl-alabaster">{c.name}</td>
+                      <td className="py-2 text-sl-alabaster/50">{c.email ?? '—'}</td>
+                      <td className="py-2 text-sl-alabaster/50">{c.phone ?? '—'}</td>
+                      <td className="py-2">{c.x_hexa_client ? <span className="rounded bg-sl-gold-subtle/20 px-2 py-0.5 text-xs text-sl-gold-hover">Client</span> : <span className="text-sl-alabaster/30">—</span>}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -474,17 +474,17 @@ export default function OdooDashboardPage() {
       {/* Projects Tab */}
       {tab === 'projects' && (
         <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
-          <h2 className="mb-4 text-lg font-medium text-white">Projects</h2>
-          {projects.isLoading && <p className="text-sm text-white/40">Loading...</p>}
-          {projects.data && projects.data.length === 0 && <p className="text-sm text-white/30">No projects in Odoo.</p>}
+          <h2 className="mb-4 text-lg font-medium text-sl-alabaster">Projects</h2>
+          {projects.isLoading && <p className="text-sm text-sl-alabaster/40">Loading...</p>}
+          {projects.data && projects.data.length === 0 && <p className="text-sm text-sl-alabaster/30">No projects in Odoo.</p>}
           {projects.data && projects.data.length > 0 && (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {projects.data.map((p) => (
                 <div key={p.id} className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                  <p className="font-medium text-white">{p.name}</p>
-                  <p className="mt-1 text-xs text-white/40">{p.x_hexa_type ?? '—'} · {p.x_hexa_status ?? idName(p.stage_id)}</p>
+                  <p className="font-medium text-sl-alabaster">{p.name}</p>
+                  <p className="mt-1 text-xs text-sl-alabaster/40">{p.x_hexa_type ?? '—'} · {p.x_hexa_status ?? idName(p.stage_id)}</p>
                   <div className="mt-3">
-                    <select aria-label="Project status" value={p.x_hexa_status ?? ''} onChange={(e) => handleUpdateProjectStatus(p.id, e.target.value)} className="w-full rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-xs text-white outline-none focus:border-accent/50">
+                    <select aria-label="Project status" value={p.x_hexa_status ?? ''} onChange={(e) => handleUpdateProjectStatus(p.id, e.target.value)} className="w-full rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-xs text-sl-alabaster outline-none focus:border-sl-gold-subtle/50">
                       <option value="">Set status...</option>
                       <option value="inquiry">Inquiry</option>
                       <option value="consultation">Consultation</option>
@@ -505,14 +505,14 @@ export default function OdooDashboardPage() {
       {/* Documents Tab */}
       {tab === 'documents' && (
         <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
-          <h2 className="mb-4 text-lg font-medium text-white">Project Documents</h2>
+          <h2 className="mb-4 text-lg font-medium text-sl-alabaster">Project Documents</h2>
           {/* Project selector */}
           <div className="mb-4">
             <select
               aria-label="Select a project"
               value={selectedProjectId ?? ''}
               onChange={(e) => setSelectedProjectId(e.target.value ? parseInt(e.target.value, 10) : null)}
-              className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50"
+              className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50"
             >
               <option value="">Select a project...</option>
               {projects.data?.map((p) => (
@@ -525,7 +525,7 @@ export default function OdooDashboardPage() {
             <>
               {/* Upload button */}
               <div className="mb-4">
-                <label className="cursor-pointer rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black hover:bg-accent-dark">
+                <label className="cursor-pointer rounded-lg bg-sl-gold-subtle px-4 py-2 text-sm font-medium text-black hover:bg-sl-gold-subtle-dark">
                   Upload File
                   <input
                     type="file"
@@ -546,15 +546,15 @@ export default function OdooDashboardPage() {
                 </label>
               </div>
 
-              {documents.isLoading && <p className="text-sm text-white/40">Loading documents...</p>}
-              {documents.data && documents.data.length === 0 && <p className="text-sm text-white/30">No documents for this project.</p>}
+              {documents.isLoading && <p className="text-sm text-sl-alabaster/40">Loading documents...</p>}
+              {documents.data && documents.data.length === 0 && <p className="text-sm text-sl-alabaster/30">No documents for this project.</p>}
               {documents.data && documents.data.length > 0 && (
                 <div className="space-y-2">
                   {documents.data.map((doc) => (
                     <div key={doc.id} className="flex items-center justify-between rounded-lg border border-white/5 bg-white/[0.02] p-3">
                       <div className="flex flex-col">
-                        <span className="text-sm text-white">{doc.name}</span>
-                        <span className="text-[10px] text-white/30 font-mono">
+                        <span className="text-sm text-sl-alabaster">{doc.name}</span>
+                        <span className="text-[10px] text-sl-alabaster/30 font-mono">
                           {doc.mimeType} · {(doc.fileSize / 1024).toFixed(1)} KB
                         </span>
                       </div>
@@ -567,7 +567,7 @@ export default function OdooDashboardPage() {
                             toast.error('Failed to get download URL');
                           }
                         }}
-                        className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-white/60 hover:bg-white/5"
+                        className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-sl-alabaster/60 hover:bg-white/5"
                       >
                         Download
                       </button>
@@ -577,27 +577,27 @@ export default function OdooDashboardPage() {
               )}
             </>
           )}
-          {!selectedProjectId && <p className="text-sm text-white/30">Select a project to view and upload documents.</p>}
+          {!selectedProjectId && <p className="text-sm text-sl-alabaster/30">Select a project to view and upload documents.</p>}
         </section>
       )}
 
       {/* Sales Tab */}
       {tab === 'sales' && (
         <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
-          <h2 className="mb-4 text-lg font-medium text-white">Sales Orders</h2>
-          {sales.isLoading && <p className="text-sm text-white/40">Loading...</p>}
-          {sales.data && sales.data.length === 0 && <p className="text-sm text-white/30">No sales orders.</p>}
+          <h2 className="mb-4 text-lg font-medium text-sl-alabaster">Sales Orders</h2>
+          {sales.isLoading && <p className="text-sm text-sl-alabaster/40">Loading...</p>}
+          {sales.data && sales.data.length === 0 && <p className="text-sm text-sl-alabaster/30">No sales orders.</p>}
           {sales.data && sales.data.length > 0 && (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="text-white/40"><tr><th className="pb-2 font-normal">Order</th><th className="pb-2 font-normal">Customer</th><th className="pb-2 font-normal">Total</th><th className="pb-2 font-normal">State</th></tr></thead>
-                <tbody className="text-white/70">
+                <thead className="text-sl-alabaster/40"><tr><th className="pb-2 font-normal">Order</th><th className="pb-2 font-normal">Customer</th><th className="pb-2 font-normal">Total</th><th className="pb-2 font-normal">State</th></tr></thead>
+                <tbody className="text-sl-alabaster/70">
                   {sales.data.map((o) => (
                     <tr key={o.id} className="border-t border-white/5">
                       <td className="py-2">{o.name}</td>
-                      <td className="py-2 text-white/50">{idName(o.partner_id)}</td>
-                      <td className="py-2 text-white/50">${Math.round(o.amount_total).toLocaleString()}</td>
-                      <td className="py-2 text-white/40">{o.state}</td>
+                      <td className="py-2 text-sl-alabaster/50">{idName(o.partner_id)}</td>
+                      <td className="py-2 text-sl-alabaster/50">${Math.round(o.amount_total).toLocaleString()}</td>
+                      <td className="py-2 text-sl-alabaster/40">{o.state}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -610,20 +610,20 @@ export default function OdooDashboardPage() {
       {/* Invoices Tab */}
       {tab === 'invoices' && (
         <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
-          <h2 className="mb-4 text-lg font-medium text-white">Invoices</h2>
-          {invoices.isLoading && <p className="text-sm text-white/40">Loading...</p>}
-          {invoices.data && invoices.data.length === 0 && <p className="text-sm text-white/30">No invoices.</p>}
+          <h2 className="mb-4 text-lg font-medium text-sl-alabaster">Invoices</h2>
+          {invoices.isLoading && <p className="text-sm text-sl-alabaster/40">Loading...</p>}
+          {invoices.data && invoices.data.length === 0 && <p className="text-sm text-sl-alabaster/30">No invoices.</p>}
           {invoices.data && invoices.data.length > 0 && (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="text-white/40"><tr><th className="pb-2 font-normal">Invoice</th><th className="pb-2 font-normal">Date</th><th className="pb-2 font-normal">Total</th><th className="pb-2 font-normal">Payment</th></tr></thead>
-                <tbody className="text-white/70">
+                <thead className="text-sl-alabaster/40"><tr><th className="pb-2 font-normal">Invoice</th><th className="pb-2 font-normal">Date</th><th className="pb-2 font-normal">Total</th><th className="pb-2 font-normal">Payment</th></tr></thead>
+                <tbody className="text-sl-alabaster/70">
                   {invoices.data.map((inv) => (
                     <tr key={inv.id} className="border-t border-white/5">
                       <td className="py-2">{inv.name}</td>
-                      <td className="py-2 text-white/50">{inv.invoice_date?.slice(0, 10) ?? '—'}</td>
-                      <td className="py-2 text-white/50">${Math.round(inv.amount_total ?? 0).toLocaleString()}</td>
-                      <td className="py-2 text-white/40">{inv.payment_state}</td>
+                      <td className="py-2 text-sl-alabaster/50">{inv.invoice_date?.slice(0, 10) ?? '—'}</td>
+                      <td className="py-2 text-sl-alabaster/50">${Math.round(inv.amount_total ?? 0).toLocaleString()}</td>
+                      <td className="py-2 text-sl-alabaster/40">{inv.payment_state}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -636,37 +636,37 @@ export default function OdooDashboardPage() {
       {/* Company Settings Tab */}
       {tab === 'company' && (
         <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
-          <h2 className="mb-4 text-lg font-medium text-white">Company Settings</h2>
-          {company.isLoading && <p className="text-sm text-white/40">Loading...</p>}
+          <h2 className="mb-4 text-lg font-medium text-sl-alabaster">Company Settings</h2>
+          {company.isLoading && <p className="text-sm text-sl-alabaster/40">Loading...</p>}
           {company.data && (
             <div className="grid gap-4 md:grid-cols-2">
               <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4">
-                <p className="text-xs uppercase tracking-wide text-white/40">Name</p>
-                <p className="mt-1 text-sm text-white">{company.data.name}</p>
+                <p className="text-xs uppercase tracking-wide text-sl-alabaster/40">Name</p>
+                <p className="mt-1 text-sm text-sl-alabaster">{company.data.name}</p>
               </div>
               <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4">
-                <p className="text-xs uppercase tracking-wide text-white/40">Address</p>
-                <p className="mt-1 text-sm text-white">
+                <p className="text-xs uppercase tracking-wide text-sl-alabaster/40">Address</p>
+                <p className="mt-1 text-sm text-sl-alabaster">
                   {[company.data.street, company.data.street2, company.data.city, company.data.state_id ? idName(company.data.state_id) : undefined, company.data.zip, company.data.country_id ? idName(company.data.country_id) : undefined]
                     .filter(Boolean)
                     .join(', ') || '—'}
                 </p>
               </div>
               <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4">
-                <p className="text-xs uppercase tracking-wide text-white/40">Phone</p>
-                <p className="mt-1 text-sm text-white">{company.data.phone || '—'}</p>
+                <p className="text-xs uppercase tracking-wide text-sl-alabaster/40">Phone</p>
+                <p className="mt-1 text-sm text-sl-alabaster">{company.data.phone || '—'}</p>
               </div>
               <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4">
-                <p className="text-xs uppercase tracking-wide text-white/40">Email</p>
-                <p className="mt-1 text-sm text-white">{company.data.email || '—'}</p>
+                <p className="text-xs uppercase tracking-wide text-sl-alabaster/40">Email</p>
+                <p className="mt-1 text-sm text-sl-alabaster">{company.data.email || '—'}</p>
               </div>
               <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4">
-                <p className="text-xs uppercase tracking-wide text-white/40">Website</p>
-                <p className="mt-1 text-sm text-white">{company.data.website || '—'}</p>
+                <p className="text-xs uppercase tracking-wide text-sl-alabaster/40">Website</p>
+                <p className="mt-1 text-sm text-sl-alabaster">{company.data.website || '—'}</p>
               </div>
               <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4">
-                <p className="text-xs uppercase tracking-wide text-white/40">Currency</p>
-                <p className="mt-1 text-sm text-white">{Array.isArray(company.data.currency_id) ? company.data.currency_id[1] : '—'}</p>
+                <p className="text-xs uppercase tracking-wide text-sl-alabaster/40">Currency</p>
+                <p className="mt-1 text-sm text-sl-alabaster">{Array.isArray(company.data.currency_id) ? company.data.currency_id[1] : '—'}</p>
               </div>
             </div>
           )}
@@ -676,22 +676,22 @@ export default function OdooDashboardPage() {
       {/* Sales Teams Tab */}
       {tab === 'sales-teams' && (
         <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
-          <h2 className="mb-4 text-lg font-medium text-white">Sales Teams</h2>
-          {salesTeams.isLoading && <p className="text-sm text-white/40">Loading...</p>}
-          {salesTeams.data && salesTeams.data.length === 0 && <p className="text-sm text-white/30">No sales teams in Odoo.</p>}
+          <h2 className="mb-4 text-lg font-medium text-sl-alabaster">Sales Teams</h2>
+          {salesTeams.isLoading && <p className="text-sm text-sl-alabaster/40">Loading...</p>}
+          {salesTeams.data && salesTeams.data.length === 0 && <p className="text-sm text-sl-alabaster/30">No sales teams in Odoo.</p>}
           {salesTeams.data && salesTeams.data.length > 0 && (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="text-white/40">
+                <thead className="text-sl-alabaster/40">
                   <tr><th className="pb-2 font-normal">Team</th><th className="pb-2 font-normal">Members</th><th className="pb-2 font-normal">Leads</th><th className="pb-2 font-normal">Expected Revenue</th></tr>
                 </thead>
-                <tbody className="text-white/70">
+                <tbody className="text-sl-alabaster/70">
                   {salesTeams.data.map((t) => (
                     <tr key={t.id} className="border-t border-white/5">
-                      <td className="py-2 font-medium text-white">{t.name}</td>
-                      <td className="py-2 text-white/50">{t.member_ids?.length ?? 0}</td>
-                      <td className="py-2 text-white/50">{t.leadCount ?? 0}</td>
-                      <td className="py-2 text-white/50">${Math.round(t.expectedRevenue ?? 0).toLocaleString()}</td>
+                      <td className="py-2 font-medium text-sl-alabaster">{t.name}</td>
+                      <td className="py-2 text-sl-alabaster/50">{t.member_ids?.length ?? 0}</td>
+                      <td className="py-2 text-sl-alabaster/50">{t.leadCount ?? 0}</td>
+                      <td className="py-2 text-sl-alabaster/50">${Math.round(t.expectedRevenue ?? 0).toLocaleString()}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -704,22 +704,22 @@ export default function OdooDashboardPage() {
       {/* Departments Tab */}
       {tab === 'departments' && (
         <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
-          <h2 className="mb-4 text-lg font-medium text-white">Departments</h2>
-          {departments.isLoading && <p className="text-sm text-white/40">Loading...</p>}
-          {departments.data && departments.data.length === 0 && <p className="text-sm text-white/30">No departments in Odoo.</p>}
+          <h2 className="mb-4 text-lg font-medium text-sl-alabaster">Departments</h2>
+          {departments.isLoading && <p className="text-sm text-sl-alabaster/40">Loading...</p>}
+          {departments.data && departments.data.length === 0 && <p className="text-sm text-sl-alabaster/30">No departments in Odoo.</p>}
           {departments.data && departments.data.length > 0 && (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="text-white/40">
+                <thead className="text-sl-alabaster/40">
                   <tr><th className="pb-2 font-normal">Name</th><th className="pb-2 font-normal">Full Path</th><th className="pb-2 font-normal">Manager</th><th className="pb-2 font-normal">Employees</th></tr>
                 </thead>
-                <tbody className="text-white/70">
+                <tbody className="text-sl-alabaster/70">
                   {departments.data.map((d) => (
                     <tr key={d.id} className="border-t border-white/5">
-                      <td className="py-2 font-medium text-white">{d.name}</td>
-                      <td className="py-2 text-white/50">{d.complete_name ?? d.name}</td>
-                      <td className="py-2 text-white/50">{idName(d.manager_id)}</td>
-                      <td className="py-2 text-white/50">{d.employeeCount ?? 0}</td>
+                      <td className="py-2 font-medium text-sl-alabaster">{d.name}</td>
+                      <td className="py-2 text-sl-alabaster/50">{d.complete_name ?? d.name}</td>
+                      <td className="py-2 text-sl-alabaster/50">{idName(d.manager_id)}</td>
+                      <td className="py-2 text-sl-alabaster/50">{d.employeeCount ?? 0}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -733,14 +733,14 @@ export default function OdooDashboardPage() {
       {tab === 'accounting' && (
         <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-lg font-medium text-white">Accounting</h2>
+            <h2 className="text-lg font-medium text-sl-alabaster">Accounting</h2>
             <div className="flex gap-1 rounded-lg border border-white/10 bg-white/[0.02] p-1">
               {([
                 { key: 'journal', label: 'Journal Entries' },
                 { key: 'payments', label: 'Payments' },
                 { key: 'banks', label: 'Banks' },
               ] as const).map((k) => (
-                <button key={k.key} onClick={() => setAccountingTab(k.key)} className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${accountingTab === k.key ? 'bg-accent text-black' : 'text-white/50 hover:text-white/80'}`}>
+                <button key={k.key} onClick={() => setAccountingTab(k.key)} className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${accountingTab === k.key ? 'bg-sl-gold-subtle text-black' : 'text-sl-alabaster/50 hover:text-sl-alabaster/80'}`}>
                   {k.label}
                 </button>
               ))}
@@ -749,20 +749,20 @@ export default function OdooDashboardPage() {
 
           {accountingTab === 'journal' && (
             <>
-              {journalEntries.isLoading && <p className="text-sm text-white/40">Loading journal entries...</p>}
-              {journalEntries.data && journalEntries.data.length === 0 && <p className="text-sm text-white/30">No journal entries.</p>}
+              {journalEntries.isLoading && <p className="text-sm text-sl-alabaster/40">Loading journal entries...</p>}
+              {journalEntries.data && journalEntries.data.length === 0 && <p className="text-sm text-sl-alabaster/30">No journal entries.</p>}
               {journalEntries.data && journalEntries.data.length > 0 && (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm">
-                    <thead className="text-white/40"><tr><th className="pb-2 font-normal">Entry</th><th className="pb-2 font-normal">Date</th><th className="pb-2 font-normal">Reference</th><th className="pb-2 font-normal">State</th><th className="pb-2 font-normal">Total</th></tr></thead>
-                    <tbody className="text-white/70">
+                    <thead className="text-sl-alabaster/40"><tr><th className="pb-2 font-normal">Entry</th><th className="pb-2 font-normal">Date</th><th className="pb-2 font-normal">Reference</th><th className="pb-2 font-normal">State</th><th className="pb-2 font-normal">Total</th></tr></thead>
+                    <tbody className="text-sl-alabaster/70">
                       {journalEntries.data.map((e) => (
                         <tr key={e.id} className="border-t border-white/5">
-                          <td className="py-2 font-medium text-white">{e.name}</td>
-                          <td className="py-2 text-white/50">{e.date?.slice(0, 10) ?? '—'}</td>
-                          <td className="py-2 text-white/50">{e.ref ?? '—'}</td>
-                          <td className="py-2 text-white/40">{e.state}</td>
-                          <td className="py-2 text-white/50">${Math.round(e.amount_total ?? 0).toLocaleString()}</td>
+                          <td className="py-2 font-medium text-sl-alabaster">{e.name}</td>
+                          <td className="py-2 text-sl-alabaster/50">{e.date?.slice(0, 10) ?? '—'}</td>
+                          <td className="py-2 text-sl-alabaster/50">{e.ref ?? '—'}</td>
+                          <td className="py-2 text-sl-alabaster/40">{e.state}</td>
+                          <td className="py-2 text-sl-alabaster/50">${Math.round(e.amount_total ?? 0).toLocaleString()}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -774,20 +774,20 @@ export default function OdooDashboardPage() {
 
           {accountingTab === 'payments' && (
             <>
-              {payments.isLoading && <p className="text-sm text-white/40">Loading payments...</p>}
-              {payments.data && payments.data.length === 0 && <p className="text-sm text-white/30">No payments.</p>}
+              {payments.isLoading && <p className="text-sm text-sl-alabaster/40">Loading payments...</p>}
+              {payments.data && payments.data.length === 0 && <p className="text-sm text-sl-alabaster/30">No payments.</p>}
               {payments.data && payments.data.length > 0 && (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm">
-                    <thead className="text-white/40"><tr><th className="pb-2 font-normal">Payment</th><th className="pb-2 font-normal">Date</th><th className="pb-2 font-normal">Partner</th><th className="pb-2 font-normal">Amount</th><th className="pb-2 font-normal">State</th></tr></thead>
-                    <tbody className="text-white/70">
+                    <thead className="text-sl-alabaster/40"><tr><th className="pb-2 font-normal">Payment</th><th className="pb-2 font-normal">Date</th><th className="pb-2 font-normal">Partner</th><th className="pb-2 font-normal">Amount</th><th className="pb-2 font-normal">State</th></tr></thead>
+                    <tbody className="text-sl-alabaster/70">
                       {payments.data.map((p) => (
                         <tr key={p.id} className="border-t border-white/5">
-                          <td className="py-2 font-medium text-white">{p.name}</td>
-                          <td className="py-2 text-white/50">{p.date?.slice(0, 10) ?? '—'}</td>
-                          <td className="py-2 text-white/50">{idName(p.partner_id)}</td>
-                          <td className="py-2 text-white/50">${Math.round(p.amount ?? 0).toLocaleString()}</td>
-                          <td className="py-2 text-white/40">{p.state}</td>
+                          <td className="py-2 font-medium text-sl-alabaster">{p.name}</td>
+                          <td className="py-2 text-sl-alabaster/50">{p.date?.slice(0, 10) ?? '—'}</td>
+                          <td className="py-2 text-sl-alabaster/50">{idName(p.partner_id)}</td>
+                          <td className="py-2 text-sl-alabaster/50">${Math.round(p.amount ?? 0).toLocaleString()}</td>
+                          <td className="py-2 text-sl-alabaster/40">{p.state}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -799,19 +799,19 @@ export default function OdooDashboardPage() {
 
           {accountingTab === 'banks' && (
             <>
-              {banks.isLoading && <p className="text-sm text-white/40">Loading banks...</p>}
-              {banks.data && banks.data.length === 0 && <p className="text-sm text-white/30">No bank accounts.</p>}
+              {banks.isLoading && <p className="text-sm text-sl-alabaster/40">Loading banks...</p>}
+              {banks.data && banks.data.length === 0 && <p className="text-sm text-sl-alabaster/30">No bank accounts.</p>}
               {banks.data && banks.data.length > 0 && (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm">
-                    <thead className="text-white/40"><tr><th className="pb-2 font-normal">Bank</th><th className="pb-2 font-normal">Code</th><th className="pb-2 font-normal">Account</th><th className="pb-2 font-normal">Balance</th></tr></thead>
-                    <tbody className="text-white/70">
+                    <thead className="text-sl-alabaster/40"><tr><th className="pb-2 font-normal">Bank</th><th className="pb-2 font-normal">Code</th><th className="pb-2 font-normal">Account</th><th className="pb-2 font-normal">Balance</th></tr></thead>
+                    <tbody className="text-sl-alabaster/70">
                       {banks.data.map((b) => (
                         <tr key={b.id} className="border-t border-white/5">
-                          <td className="py-2 font-medium text-white">{b.name}</td>
-                          <td className="py-2 text-white/50">{b.code ?? '—'}</td>
-                          <td className="py-2 text-white/50">{b.account_number ?? '—'}</td>
-                          <td className="py-2 text-white/50">${Math.round(b.balance ?? 0).toLocaleString()}</td>
+                          <td className="py-2 font-medium text-sl-alabaster">{b.name}</td>
+                          <td className="py-2 text-sl-alabaster/50">{b.code ?? '—'}</td>
+                          <td className="py-2 text-sl-alabaster/50">{b.account_number ?? '—'}</td>
+                          <td className="py-2 text-sl-alabaster/50">${Math.round(b.balance ?? 0).toLocaleString()}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -827,21 +827,21 @@ export default function OdooDashboardPage() {
       {tab === 'knowledge' && (
         <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-medium text-white">Knowledge Base</h2>
-            <button onClick={() => { setEditingArticle(null); setKnowledgeModalOpen(true); }} className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black hover:bg-accent-dark">+ New Article</button>
+            <h2 className="text-lg font-medium text-sl-alabaster">Knowledge Base</h2>
+            <button onClick={() => { setEditingArticle(null); setKnowledgeModalOpen(true); }} className="rounded-lg bg-sl-gold-subtle px-4 py-2 text-sm font-medium text-black hover:bg-sl-gold-subtle-dark">+ New Article</button>
           </div>
-          {knowledge.isLoading && <p className="text-sm text-white/40">Loading...</p>}
-          {knowledge.data && knowledge.data.length === 0 && <p className="text-sm text-white/30">No articles in Odoo.</p>}
+          {knowledge.isLoading && <p className="text-sm text-sl-alabaster/40">Loading...</p>}
+          {knowledge.data && knowledge.data.length === 0 && <p className="text-sm text-sl-alabaster/30">No articles in Odoo.</p>}
           {knowledge.data && knowledge.data.length > 0 && (
             <div className="space-y-2">
               {knowledge.data.map((a) => (
                 <div key={a.id} className="flex items-center justify-between gap-3 rounded-lg border border-white/5 bg-white/[0.02] p-3">
                   <div className="flex flex-col">
-                    <span className="text-sm text-white">{a.name}</span>
-                    <span className="font-mono text-[10px] text-white/30">#{a.id} · {a.create_date?.slice(0, 10) ?? '—'} · {idName(a.category_id)}</span>
+                    <span className="text-sm text-sl-alabaster">{a.name}</span>
+                    <span className="font-mono text-[10px] text-sl-alabaster/30">#{a.id} · {a.create_date?.slice(0, 10) ?? '—'} · {idName(a.category_id)}</span>
                   </div>
                   <div className="flex shrink-0 gap-2">
-                    <button onClick={() => { setEditingArticle(a); setKnowledgeModalOpen(true); }} className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-white/60 hover:bg-white/5">Edit</button>
+                    <button onClick={() => { setEditingArticle(a); setKnowledgeModalOpen(true); }} className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-sl-alabaster/60 hover:bg-white/5">Edit</button>
                     <button onClick={() => handleArchiveArticle(a.id)} className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-red-400/70 hover:bg-white/5">Archive</button>
                   </div>
                 </div>
@@ -856,28 +856,28 @@ export default function OdooDashboardPage() {
       {tab === 'email' && (
         <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-lg font-medium text-white">Emails</h2>
+            <h2 className="text-lg font-medium text-sl-alabaster">Emails</h2>
             <div className="flex gap-3">
-              <select aria-label="Email filter" value={emailFilter} onChange={(e) => setEmailFilter(e.target.value as 'all' | 'inbox' | 'sent')} className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-accent/50">
+              <select aria-label="Email filter" value={emailFilter} onChange={(e) => setEmailFilter(e.target.value as 'all' | 'inbox' | 'sent')} className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none focus:border-sl-gold-subtle/50">
                 <option value="all">All</option>
                 <option value="inbox">Inbox</option>
                 <option value="sent">Sent</option>
               </select>
-              <button onClick={() => setEmailModalOpen(true)} className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black hover:bg-accent-dark">+ Send Email</button>
+              <button onClick={() => setEmailModalOpen(true)} className="rounded-lg bg-sl-gold-subtle px-4 py-2 text-sm font-medium text-black hover:bg-sl-gold-subtle-dark">+ Send Email</button>
             </div>
           </div>
-          {emails.isLoading && <p className="text-sm text-white/40">Loading...</p>}
-          {emails.data && emails.data.length === 0 && <p className="text-sm text-white/30">No emails.</p>}
+          {emails.isLoading && <p className="text-sm text-sl-alabaster/40">Loading...</p>}
+          {emails.data && emails.data.length === 0 && <p className="text-sm text-sl-alabaster/30">No emails.</p>}
           {emails.data && emails.data.length > 0 && (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="text-white/40"><tr><th className="pb-2 font-normal">Subject</th><th className="pb-2 font-normal">From</th><th className="pb-2 font-normal">Date</th></tr></thead>
-                <tbody className="text-white/70">
+                <thead className="text-sl-alabaster/40"><tr><th className="pb-2 font-normal">Subject</th><th className="pb-2 font-normal">From</th><th className="pb-2 font-normal">Date</th></tr></thead>
+                <tbody className="text-sl-alabaster/70">
                   {emails.data.map((m) => (
                     <tr key={m.id} className="border-t border-white/5">
-                      <td className="py-2 font-medium text-white">{m.subject ?? '(no subject)'}</td>
-                      <td className="py-2 text-white/50">{m.email_from ?? idName(m.author_id)}</td>
-                      <td className="py-2 text-white/40">{m.date ? new Date(m.date).toLocaleString() : '—'}</td>
+                      <td className="py-2 font-medium text-sl-alabaster">{m.subject ?? '(no subject)'}</td>
+                      <td className="py-2 text-sl-alabaster/50">{m.email_from ?? idName(m.author_id)}</td>
+                      <td className="py-2 text-sl-alabaster/40">{m.date ? new Date(m.date).toLocaleString() : '—'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -892,12 +892,12 @@ export default function OdooDashboardPage() {
       {tab === 'sync' && (
         <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-lg font-medium text-white">Sync Engine</h2>
+            <h2 className="text-lg font-medium text-sl-alabaster">Sync Engine</h2>
             <div className="flex gap-3">
-              <button onClick={() => runSync(false)} disabled={syncing} className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black hover:bg-accent-dark disabled:opacity-50">
+              <button onClick={() => runSync(false)} disabled={syncing} className="rounded-lg bg-sl-gold-subtle px-4 py-2 text-sm font-medium text-black hover:bg-sl-gold-subtle-dark disabled:opacity-50">
                 {syncing ? 'Syncing...' : 'Run Delta Sync'}
               </button>
-              <button onClick={() => runSync(true)} disabled={syncing} className="rounded-lg border border-accent/40 px-4 py-2 text-sm font-medium text-accent hover:bg-accent/10 disabled:opacity-50">
+              <button onClick={() => runSync(true)} disabled={syncing} className="rounded-lg border border-sl-gold-subtle/40 px-4 py-2 text-sm font-medium text-sl-gold-hover hover:bg-sl-gold-subtle/10 disabled:opacity-50">
                 {syncing ? 'Syncing...' : 'Run Full Sync'}
               </button>
             </div>
@@ -910,20 +910,20 @@ export default function OdooDashboardPage() {
             <StatCard label="Entities Tracked" value={String(syncStatus.data?.entities.length ?? 0)} />
           </div>
 
-          <h3 className="mb-3 text-sm font-medium text-white/70">Entity Metrics</h3>
-          {syncStatus.data && syncStatus.data.entities.length === 0 && <p className="mb-4 text-sm text-white/30">No sync activity yet.</p>}
+          <h3 className="mb-3 text-sm font-medium text-sl-alabaster/70">Entity Metrics</h3>
+          {syncStatus.data && syncStatus.data.entities.length === 0 && <p className="mb-4 text-sm text-sl-alabaster/30">No sync activity yet.</p>}
           {syncStatus.data && syncStatus.data.entities.length > 0 && (
             <div className="mb-6 overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="text-white/40"><tr><th className="pb-2 font-normal">Entity</th><th className="pb-2 font-normal">Synced</th><th className="pb-2 font-normal">Errors</th><th className="pb-2 font-normal">Avg Duration</th><th className="pb-2 font-normal">Conflicts</th></tr></thead>
-                <tbody className="text-white/70">
+                <thead className="text-sl-alabaster/40"><tr><th className="pb-2 font-normal">Entity</th><th className="pb-2 font-normal">Synced</th><th className="pb-2 font-normal">Errors</th><th className="pb-2 font-normal">Avg Duration</th><th className="pb-2 font-normal">Conflicts</th></tr></thead>
+                <tbody className="text-sl-alabaster/70">
                   {syncStatus.data.entities.map((e) => (
                     <tr key={e.entityType} className="border-t border-white/5">
-                      <td className="py-2 font-medium text-white">{e.entityType}</td>
-                      <td className="py-2 text-white/50">{e.totalSynced}</td>
-                      <td className="py-2 text-white/50">{e.totalErrors}</td>
-                      <td className="py-2 text-white/50">{Math.round(e.avgDurationMs)}ms</td>
-                      <td className="py-2 text-white/50">{e.conflictsDetected} / {e.conflictsResolved} resolved</td>
+                      <td className="py-2 font-medium text-sl-alabaster">{e.entityType}</td>
+                      <td className="py-2 text-sl-alabaster/50">{e.totalSynced}</td>
+                      <td className="py-2 text-sl-alabaster/50">{e.totalErrors}</td>
+                      <td className="py-2 text-sl-alabaster/50">{Math.round(e.avgDurationMs)}ms</td>
+                      <td className="py-2 text-sl-alabaster/50">{e.conflictsDetected} / {e.conflictsResolved} resolved</td>
                     </tr>
                   ))}
                 </tbody>
@@ -931,19 +931,19 @@ export default function OdooDashboardPage() {
             </div>
           )}
 
-          <h3 className="mb-3 text-sm font-medium text-white/70">Recent Operations</h3>
-          {syncMetrics.data && syncMetrics.data.length === 0 && <p className="mb-4 text-sm text-white/30">No recent operations.</p>}
+          <h3 className="mb-3 text-sm font-medium text-sl-alabaster/70">Recent Operations</h3>
+          {syncMetrics.data && syncMetrics.data.length === 0 && <p className="mb-4 text-sm text-sl-alabaster/30">No recent operations.</p>}
           {syncMetrics.data && syncMetrics.data.length > 0 && (
             <div className="mb-6 overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="text-white/40"><tr><th className="pb-2 font-normal">Operation</th><th className="pb-2 font-normal">Result</th><th className="pb-2 font-normal">Duration</th><th className="pb-2 font-normal">Time</th></tr></thead>
-                <tbody className="text-white/70">
+                <thead className="text-sl-alabaster/40"><tr><th className="pb-2 font-normal">Operation</th><th className="pb-2 font-normal">Result</th><th className="pb-2 font-normal">Duration</th><th className="pb-2 font-normal">Time</th></tr></thead>
+                <tbody className="text-sl-alabaster/70">
                   {syncMetrics.data.map((m, i) => (
                     <tr key={`${m.operation}-${i}`} className="border-t border-white/5">
-                      <td className="py-2 font-medium text-white">{m.operation}</td>
+                      <td className="py-2 font-medium text-sl-alabaster">{m.operation}</td>
                       <td className="py-2">{m.success ? <span className="text-green-400/80">OK</span> : <span className="text-red-400/80">Failed</span>}</td>
-                      <td className="py-2 text-white/50">{Math.round(m.durationMs)}ms</td>
-                      <td className="py-2 text-white/40">{new Date(m.timestamp).toLocaleTimeString()}</td>
+                      <td className="py-2 text-sl-alabaster/50">{Math.round(m.durationMs)}ms</td>
+                      <td className="py-2 text-sl-alabaster/40">{new Date(m.timestamp).toLocaleTimeString()}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -951,26 +951,26 @@ export default function OdooDashboardPage() {
             </div>
           )}
 
-          <h3 className="mb-3 text-sm font-medium text-white/70">Pending Conflicts</h3>
-          {syncConflicts.data && syncConflicts.data.length === 0 && <p className="mb-4 text-sm text-white/30">No unresolved conflicts.</p>}
+          <h3 className="mb-3 text-sm font-medium text-sl-alabaster/70">Pending Conflicts</h3>
+          {syncConflicts.data && syncConflicts.data.length === 0 && <p className="mb-4 text-sm text-sl-alabaster/30">No unresolved conflicts.</p>}
           {syncConflicts.data && syncConflicts.data.length > 0 && (
             <div className="mb-6 overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="text-white/40"><tr><th className="pb-2 font-normal">Entity</th><th className="pb-2 font-normal">Record</th><th className="pb-2 font-normal">Detected</th><th className="pb-2 font-normal">Fields</th><th className="pb-2 font-normal">Resolution</th></tr></thead>
-                <tbody className="text-white/70">
+                <thead className="text-sl-alabaster/40"><tr><th className="pb-2 font-normal">Entity</th><th className="pb-2 font-normal">Record</th><th className="pb-2 font-normal">Detected</th><th className="pb-2 font-normal">Fields</th><th className="pb-2 font-normal">Resolution</th></tr></thead>
+                <tbody className="text-sl-alabaster/70">
                   {syncConflicts.data.map((c: SyncConflict) => (
                     <tr key={c.id} className="border-t border-white/5">
-                      <td className="py-2 text-white/50">{c.entityType}</td>
-                      <td className="py-2 text-white/50">#{c.entityId}</td>
-                      <td className="py-2 text-white/40">{c.detectedAt ? new Date(c.detectedAt).toLocaleString() : '—'}</td>
-                      <td className="py-2 text-white/40">{(c.conflictingFields ?? []).slice(0, 3).join(', ') || '—'}</td>
+                      <td className="py-2 text-sl-alabaster/50">{c.entityType}</td>
+                      <td className="py-2 text-sl-alabaster/50">#{c.entityId}</td>
+                      <td className="py-2 text-sl-alabaster/40">{c.detectedAt ? new Date(c.detectedAt).toLocaleString() : '—'}</td>
+                      <td className="py-2 text-sl-alabaster/40">{(c.conflictingFields ?? []).slice(0, 3).join(', ') || '—'}</td>
                       <td className="py-2">
                         <div className="flex items-center gap-2">
-                          <select aria-label="Resolution strategy" value={resolveStrategies[c.id] ?? 'odoo-wins'} onChange={(e) => setResolveStrategies({ ...resolveStrategies, [c.id]: e.target.value as 'odoo-wins' | 'hexa-wins' })} className="rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-xs text-white outline-none focus:border-accent/50">
+                          <select aria-label="Resolution strategy" value={resolveStrategies[c.id] ?? 'odoo-wins'} onChange={(e) => setResolveStrategies({ ...resolveStrategies, [c.id]: e.target.value as 'odoo-wins' | 'hexa-wins' })} className="rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-xs text-sl-alabaster outline-none focus:border-sl-gold-subtle/50">
                             <option value="odoo-wins">Odoo wins</option>
                             <option value="hexa-wins">HEXA wins</option>
                           </select>
-                          <button onClick={() => resolveConflictMutation.mutate({ id: c.id, strategy: resolveStrategies[c.id] ?? 'odoo-wins' })} disabled={resolveConflictMutation.isPending} className="rounded-lg bg-accent px-3 py-1 text-xs font-medium text-black hover:bg-accent-dark disabled:opacity-50">Resolve</button>
+                          <button onClick={() => resolveConflictMutation.mutate({ id: c.id, strategy: resolveStrategies[c.id] ?? 'odoo-wins' })} disabled={resolveConflictMutation.isPending} className="rounded-lg bg-sl-gold-subtle px-3 py-1 text-xs font-medium text-black hover:bg-sl-gold-subtle-dark disabled:opacity-50">Resolve</button>
                         </div>
                       </td>
                     </tr>
@@ -980,21 +980,21 @@ export default function OdooDashboardPage() {
             </div>
           )}
 
-          <h3 className="mb-3 text-sm font-medium text-white/70">Delta Cursors</h3>
-          {syncCursors.data && Object.keys(syncCursors.data).length === 0 && <p className="mb-4 text-sm text-white/30">No cursors yet.</p>}
+          <h3 className="mb-3 text-sm font-medium text-sl-alabaster/70">Delta Cursors</h3>
+          {syncCursors.data && Object.keys(syncCursors.data).length === 0 && <p className="mb-4 text-sm text-sl-alabaster/30">No cursors yet.</p>}
           {syncCursors.data && Object.keys(syncCursors.data).length > 0 && (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="text-white/40"><tr><th className="pb-2 font-normal">Entity</th><th className="pb-2 font-normal">Last Sync</th><th className="pb-2 font-normal">Last ID</th><th className="pb-2 font-normal">Synced</th><th className="pb-2 font-normal">Actions</th></tr></thead>
-                <tbody className="text-white/70">
+                <thead className="text-sl-alabaster/40"><tr><th className="pb-2 font-normal">Entity</th><th className="pb-2 font-normal">Last Sync</th><th className="pb-2 font-normal">Last ID</th><th className="pb-2 font-normal">Synced</th><th className="pb-2 font-normal">Actions</th></tr></thead>
+                <tbody className="text-sl-alabaster/70">
                   {Object.entries(syncCursors.data).map(([entityType, cursor]) => (
                     <tr key={entityType} className="border-t border-white/5">
-                      <td className="py-2 font-medium text-white">{entityType}</td>
-                      <td className="py-2 text-white/40">{new Date(cursor.lastSyncAt).toLocaleString()}</td>
-                      <td className="py-2 text-white/50">#{cursor.lastSyncId}</td>
-                      <td className="py-2 text-white/50">{cursor.recordsSynced}</td>
+                      <td className="py-2 font-medium text-sl-alabaster">{entityType}</td>
+                      <td className="py-2 text-sl-alabaster/40">{new Date(cursor.lastSyncAt).toLocaleString()}</td>
+                      <td className="py-2 text-sl-alabaster/50">#{cursor.lastSyncId}</td>
+                      <td className="py-2 text-sl-alabaster/50">{cursor.recordsSynced}</td>
                       <td className="py-2">
-                        <button onClick={() => handleResetCursor(entityType)} className="rounded-lg border border-white/10 px-3 py-1 text-xs text-white/60 hover:bg-white/5">Reset</button>
+                        <button onClick={() => handleResetCursor(entityType)} className="rounded-lg border border-white/10 px-3 py-1 text-xs text-sl-alabaster/60 hover:bg-white/5">Reset</button>
                       </td>
                     </tr>
                   ))}

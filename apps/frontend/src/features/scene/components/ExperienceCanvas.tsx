@@ -207,10 +207,10 @@ export const ExperienceCanvas = ({
     return (
       <div className="absolute inset-0 -z-10 flex items-center justify-center bg-obsidian">
         <div className="text-center max-w-md px-6">
-          <h3 className="text-white/60 text-sm uppercase tracking-widest mb-2">
+          <h3 className="text-sl-alabaster/60 text-sm uppercase tracking-widest mb-2">
             3D Scene Unavailable
           </h3>
-          <p className="text-neutral-400 text-xs leading-relaxed">
+          <p className="text-sl-mist/60 text-xs leading-relaxed">
             WebGL is not supported in this browser. Please try a different browser.
           </p>
         </div>
@@ -240,7 +240,7 @@ export const ExperienceCanvas = ({
           aria-live="polite"
           className="pointer-events-none absolute inset-0 flex items-center justify-center bg-obsidian"
         >
-          <p className="text-neutral-400 text-xs uppercase tracking-widest">
+          <p className="text-sl-mist/60 text-xs uppercase tracking-widest">
             3D experience paused
           </p>
         </div>

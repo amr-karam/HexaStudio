@@ -20,7 +20,7 @@ export function InvoiceDownloadButton({ invoiceId }: { invoiceId: string }) {
     <button
       onClick={handleDownload}
       disabled={downloading}
-      className="px-4 py-2 bg-neutral-900 border border-neutral-800 hover:border-accent text-xs font-mono uppercase tracking-wider text-neutral-300 hover:text-accent rounded-xl transition-all disabled:opacity-50"
+      className="px-4 py-2 bg-sl-void border border-sl-obsidian hover:border-sl-gold-subtle text-xs font-mono uppercase tracking-wider text-sl-mist/80 hover:text-sl-gold-hover rounded-xl transition-all disabled:opacity-50"
     >
       {downloading ? 'Preparing PDF...' : 'Download Official PDF'}
     </button>

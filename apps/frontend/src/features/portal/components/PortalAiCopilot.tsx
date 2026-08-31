@@ -518,7 +518,7 @@ export function PortalAiCopilot({
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             className={cn(
-              'fixed right-0 top-0 bottom-0 w-full max-w-md bg-surface border-l border-border text-foreground z-50 flex flex-col shadow-2xl',
+              'fixed right-0 top-0 bottom-0 w-full max-w-md bg-sl-obsidian border-l border-sl-silver/20 text-sl-alabaster z-50 flex flex-col shadow-2xl',
               isDragOver && 'border-amber-500/50',
             )}
           >
@@ -529,7 +529,7 @@ export function PortalAiCopilot({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="absolute inset-0 z-10 flex items-center justify-center bg-neutral-900/80 backdrop-blur-sm rounded-l-2xl pointer-events-none"
+                  className="absolute inset-0 z-10 flex items-center justify-center bg-sl-void/80 backdrop-blur-sm rounded-l-2xl pointer-events-none"
                 >
                   <div className="flex flex-col items-center gap-2 text-amber-400">
                     <Icon name="upload" size={32} strokeWidth={1.5} />
@@ -544,12 +544,12 @@ export function PortalAiCopilot({
             {/* ---- Header ---- */}
             <LiquidGlassCard glow className="p-3 md:p-4 shrink-0 border-b border-white/10">
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 rounded-none bg-white/5 flex items-center justify-center text-accent font-bold">
+                <div className="w-8 h-8 rounded-none bg-white/5 flex items-center justify-center text-sl-gold-hover font-bold">
                   <Icon name="sparkles" className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-serif font-light text-foreground/90">HEXA Copilot</h3>
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-neutral-500 font-mono">
+                  <h3 className="text-sm font-serif font-light text-sl-alabaster/90">HEXA Copilot</h3>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-sl-mist/60 font-mono">
                     AI Assistant &bull; Scope: {projectName}
                   </p>
                 </div>
@@ -582,8 +582,8 @@ export function PortalAiCopilot({
                     className={cn(
                       'relative max-w-[85%] px-4 py-3 leading-relaxed transition-all duration-500',
                       msg.role === 'user'
-                        ? 'bg-white/5 border-white/10 text-foreground self-end'
-                        : 'bg-white/3 border-white/10 text-foreground self-start'
+                        ? 'bg-white/5 border-white/10 text-sl-alabaster self-end'
+                        : 'bg-white/3 border-white/10 text-sl-alabaster self-start'
                     )}
                   >
                     {/* Attached image thumbnail */}
@@ -607,7 +607,7 @@ export function PortalAiCopilot({
                     <p className="whitespace-pre-wrap font-light text-sm leading-relaxed">{msg.content}</p>
                   </LiquidGlassCard>
 
-                  <span className="text-[9px] uppercase tracking-[0.2em] text-neutral-500 font-mono mt-1.5 px-1 self-end">
+                  <span className="text-[9px] uppercase tracking-[0.2em] text-sl-mist/60 font-mono mt-1.5 px-1 self-end">
                     {msg.timestamp}
                   </span>
 
@@ -626,7 +626,7 @@ export function PortalAiCopilot({
                             variant="ghost"
                             size="sm"
                             onClick={() => handleSend(action.label)}
-                            className="text-[10px] uppercase tracking-[0.2em] font-mono text-accent/80 hover:text-white h-auto px-3 py-1.5 bg-white/3 border border-white/10 hover:border-accent/30"
+                            className="text-[10px] uppercase tracking-[0.2em] font-mono text-sl-gold-hover/80 hover:text-sl-alabaster h-auto px-3 py-1.5 bg-white/3 border border-white/10 hover:border-sl-gold-subtle/30"
                             aria-label={action.label}
                           >
                             {action.label}
@@ -642,9 +642,9 @@ export function PortalAiCopilot({
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="flex items-center space-x-2 text-neutral-400 text-xs italic bg-white/3 border border-white/10 p-2.5 rounded-xl max-w-[120px] self-start"
+                  className="flex items-center space-x-2 text-sl-mist/60 text-xs italic bg-white/3 border border-white/10 p-2.5 rounded-xl max-w-[120px] self-start"
                 >
-                  <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                  <span className="w-2 h-2 rounded-full bg-sl-gold-subtle animate-pulse" />
                   <span>Analyzing...</span>
                 </motion.div>
               )}
@@ -674,7 +674,7 @@ export function PortalAiCopilot({
                     />
                     {isEncodingImage && (
                       <div className="absolute inset-0 flex items-center justify-center bg-white/5 rounded-none">
-                        <span className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-mono">
+                        <span className="text-[10px] uppercase tracking-[0.2em] text-sl-mist/60 font-mono">
                           Encoding...
                         </span>
                       </div>
@@ -690,7 +690,7 @@ export function PortalAiCopilot({
                     </Button>
                   </LiquidGlassCard>
                   {selectedImage && (
-                    <span className="text-[9px] uppercase tracking-[0.2em] text-neutral-500 font-mono ml-2 align-middle">
+                    <span className="text-[9px] uppercase tracking-[0.2em] text-sl-mist/60 font-mono ml-2 align-middle">
                       {formatFileSize(selectedImage.size)}
                     </span>
                   )}
@@ -728,8 +728,8 @@ export function PortalAiCopilot({
                   className={cn(
                     'transition-colors',
                     imagePreview
-                      ? 'text-accent hover:bg-white/5'
-                      : 'text-neutral-400 hover:text-white hover:bg-white/5',
+                      ? 'text-sl-gold-hover hover:bg-white/5'
+                      : 'text-sl-mist/60 hover:text-sl-alabaster hover:bg-white/5',
                     (isTyping || isEncodingImage) && 'opacity-50 cursor-not-allowed',
                   )}
                   aria-label="Attach image"
@@ -749,7 +749,7 @@ export function PortalAiCopilot({
                       'transition-colors relative',
                       isListening
                         ? 'text-red-400 animate-pulse'
-                        : 'text-neutral-400 hover:text-white hover:bg-white/5',
+                        : 'text-sl-mist/60 hover:text-sl-alabaster hover:bg-white/5',
                       isTyping && 'opacity-50 cursor-not-allowed',
                     )}
                     aria-label={isListening ? 'Stop listening' : 'Voice input'}
@@ -796,7 +796,7 @@ export function PortalAiCopilot({
                   }
                   disabled={isTyping || isListening}
                   className={cn(
-                    'flex-1 bg-white/3 border border-white/10 rounded-none px-4 py-2.5 text-sm text-foreground placeholder-neutral-500 focus:outline-none focus:border-accent/50 transition-colors',
+                    'flex-1 bg-white/3 border border-white/10 rounded-none px-4 py-2.5 text-sm text-sl-alabaster placeholder-neutral-500 focus:outline-none focus:border-sl-gold-subtle/50 transition-colors',
                     (isTyping || isListening) && 'opacity-50',
                   )}
                   aria-label="Chat input"
@@ -819,7 +819,7 @@ export function PortalAiCopilot({
               </form>
 
               {/* Hint text */}
-              <p className="text-[9px] uppercase tracking-[0.2em] text-neutral-500 font-mono mt-2 text-center">
+              <p className="text-[9px] uppercase tracking-[0.2em] text-sl-mist/60 font-mono mt-2 text-center">
                 {imagePreview
                   ? 'Images are limited to 10 MB'
                   : 'Attach images or use voice for multimodal queries'}

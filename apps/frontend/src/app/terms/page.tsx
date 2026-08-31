@@ -30,16 +30,16 @@ export default async function TermsPage() {
   const page = await fetchPage('terms');
 
   return (
-    <div className="min-h-screen bg-background pt-40 pb-32 relative">
+    <div className="min-h-screen bg-sl-void pt-40 pb-32 relative">
       {/* Subtle background */}
-      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-accent/3 blur-[200px] rounded-full pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-sl-gold-subtle/3 blur-[200px] rounded-full pointer-events-none" />
 
       <div className="w-full px-8 md:px-16 relative z-10">
-        <span className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono">
+        <span className="text-xs uppercase tracking-[0.5em] text-sl-mist/60 mb-6 block font-mono">
           Legal
         </span>
-        <div className="text-5xl md:text-7xl font-serif font-light tracking-tight text-foreground mb-16 leading-tight">
-          Terms of <span className="italic text-accent">Service</span>
+        <div className="text-5xl md:text-7xl font-serif font-light tracking-tight text-sl-alabaster mb-16 leading-tight">
+          Terms of <span className="italic text-sl-gold-hover">Service</span>
         </div>
 
         {page?.content && page.content.length > 0 ? (
@@ -48,15 +48,15 @@ export default async function TermsPage() {
           </div>
         ) : (
           /* Fallback content when CMS page is not available */
-          <div className="max-w-3xl flex flex-col gap-8 text-neutral-400 font-light leading-relaxed text-base">
-            <p className="text-lg text-neutral-300">
+          <div className="max-w-3xl flex flex-col gap-8 text-sl-mist/60 font-light leading-relaxed text-base">
+            <p className="text-lg text-sl-mist/80">
               By accessing or using the HexaStudio website and services, you
               agree to be bound by these terms. If you do not agree, please do
               not use our services.
             </p>
 
-            <div className="pt-6 border-t border-border/20">
-              <h2 className="text-sm uppercase tracking-[0.3em] text-foreground font-medium mb-4">
+            <div className="pt-6 border-t border-sl-silver/20">
+              <h2 className="text-sm uppercase tracking-[0.3em] text-sl-alabaster font-medium mb-4">
                 Intellectual Property
               </h2>
               <p>
@@ -67,8 +67,8 @@ export default async function TermsPage() {
               </p>
             </div>
 
-            <div className="pt-6 border-t border-border/20">
-              <h2 className="text-sm uppercase tracking-[0.3em] text-foreground font-medium mb-4">
+            <div className="pt-6 border-t border-sl-silver/20">
+              <h2 className="text-sm uppercase tracking-[0.3em] text-sl-alabaster font-medium mb-4">
                 Project Scope
               </h2>
               <p>
@@ -78,8 +78,8 @@ export default async function TermsPage() {
               </p>
             </div>
 
-            <div className="pt-6 border-t border-border/20">
-              <h2 className="text-sm uppercase tracking-[0.3em] text-foreground font-medium mb-4">
+            <div className="pt-6 border-t border-sl-silver/20">
+              <h2 className="text-sm uppercase tracking-[0.3em] text-sl-alabaster font-medium mb-4">
                 Limitation of Liability
               </h2>
               <p>
@@ -89,15 +89,15 @@ export default async function TermsPage() {
               </p>
             </div>
 
-            <div className="pt-6 border-t border-border/20">
-              <h2 className="text-sm uppercase tracking-[0.3em] text-foreground font-medium mb-4">
+            <div className="pt-6 border-t border-sl-silver/20">
+              <h2 className="text-sm uppercase tracking-[0.3em] text-sl-alabaster font-medium mb-4">
                 Contact
               </h2>
               <p>
                 For questions about these terms, email us at{' '}
                 <a
                   href="mailto:info@hexastudio.net"
-                  className="text-accent hover:underline transition-colors duration-300"
+                  className="text-sl-gold-hover hover:underline transition-colors duration-300"
                 >
                   info@hexastudio.net
                 </a>
@@ -107,7 +107,7 @@ export default async function TermsPage() {
           </div>
         )}
 
-        <div className="pt-12 mt-8 border-t border-border/20 max-w-3xl">
+        <div className="pt-12 mt-8 border-t border-sl-silver/20 max-w-3xl">
           <Link href="/">
             <Button variant="outline" size="lg">
               &larr; Back to Home

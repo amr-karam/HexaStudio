@@ -138,6 +138,6 @@ describe('Modal', () => {
     // container shows an accent ring when it receives keyboard focus.
     expect(dialog.className).toContain('focus-visible:outline-none');
     expect(dialog.className).toContain('focus-visible:ring-2');
-    expect(dialog.className).toContain('focus-visible:ring-accent');
+    expect(dialog.className).toContain('focus-visible:ring-sl-gold');
   });
 });

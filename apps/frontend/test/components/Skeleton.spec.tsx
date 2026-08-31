@@ -46,7 +46,7 @@ describe('Skeleton', () => {
 
   it('uses bg-neutral-800 background', () => {
     const { container } = render(<Skeleton />);
-    expect((container.firstChild as HTMLElement).className).toContain('bg-neutral-800');
+    expect((container.firstChild as HTMLElement).className).toContain('bg-sl-obsidian');
   });
 });
 

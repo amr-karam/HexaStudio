@@ -97,8 +97,8 @@ const STATUS_ICONS: Record<PendingApproval['status'], IconName> = {
 };
 
 const STATUS_PILLS: Record<PendingApproval['status'], string> = {
-  pending: 'border-accent/30 bg-accent/10 text-accent',
-  approved: 'border-accent/30 bg-accent/10 text-accent-light',
+  pending: 'border-sl-gold-subtle/30 bg-sl-gold-subtle/10 text-sl-gold-hover',
+  approved: 'border-sl-gold-subtle/30 bg-sl-gold-subtle/10 text-sl-gold-hover',
   rejected: 'border-red-500/20 bg-red-500/10 text-red-400',
   revision_requested: 'border-red-500/20 bg-red-500/10 text-red-400',
 };
@@ -157,11 +157,11 @@ interface AuditTrailTimelineProps {
 function AuditTrailTimeline({ trail }: AuditTrailTimelineProps) {
   return (
     <div>
-      <h4 className="flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.35em] text-neutral-500">
-        <span aria-hidden="true" className="h-px w-6 bg-accent/40" />
+      <h4 className="flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.35em] text-sl-mist/60">
+        <span aria-hidden="true" className="h-px w-6 bg-sl-gold-subtle/40" />
         Audit Trail
       </h4>
-      <ol className="relative mt-4 space-y-4 border-l border-accent/30 pl-5">
+      <ol className="relative mt-4 space-y-4 border-l border-sl-gold-subtle/30 pl-5">
         {trail.map((log, idx) => {
           const isLatest = idx === trail.length - 1;
           return (
@@ -171,16 +171,16 @@ function AuditTrailTimeline({ trail }: AuditTrailTimelineProps) {
                 className={cn(
                   'absolute -left-[25px] top-1 h-2 w-2 rotate-45 border',
                   isLatest
-                    ? 'border-accent bg-accent shadow-[0_0_8px_var(--color-accent)]'
-                    : 'border-accent/40 bg-background'
+                    ? 'border-sl-gold-subtle bg-sl-gold-subtle shadow-[0_0_8px_var(--color-accent)]'
+                    : 'border-sl-gold-subtle/40 bg-sl-void'
                 )}
               />
-              <p className="font-sans text-sm text-foreground/90">{log.action}</p>
-              <p className="mt-0.5 font-mono text-[0.5625rem] uppercase tracking-[0.15em] text-neutral-500">
+              <p className="font-sans text-sm text-sl-alabaster/90">{log.action}</p>
+              <p className="mt-0.5 font-mono text-[0.5625rem] uppercase tracking-[0.15em] text-sl-mist/60">
                 {formatLedgerDate(log.timestamp)} · {log.actor}
               </p>
               {log.notes && (
-                <p className="mt-1 font-mono text-[0.5625rem] italic text-accent/80">"{log.notes}"</p>
+                <p className="mt-1 font-mono text-[0.5625rem] italic text-sl-gold-hover/80">"{log.notes}"</p>
               )}
             </li>
           );
@@ -273,27 +273,27 @@ export function ApprovalCenterView() {
     <div className="space-y-8">
       {/* Section Header — mono eyebrow + serif heading with gold italic accent */}
       <motion.div variants={fadeLift} custom={reduced} initial="hidden" animate="visible" className="space-y-4">
-        <p className="flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-accent/70">
-          <span aria-hidden="true" className="h-px w-8 bg-accent/50" />
+        <p className="flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-sl-gold-hover/70">
+          <span aria-hidden="true" className="h-px w-8 bg-sl-gold-subtle/50" />
           § 01 — Approvals
         </p>
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <h1 className="font-serif text-3xl font-light leading-tight tracking-tight text-foreground md:text-4xl">
+          <h1 className="font-serif text-3xl font-light leading-tight tracking-tight text-sl-alabaster md:text-4xl">
             The Signing <em className="text-gradient-gold font-normal italic">Chamber</em>
           </h1>
           <span
             className={cn(
               'inline-flex items-center gap-2 rounded-full border px-3 py-1.5 font-mono text-[0.5625rem] uppercase tracking-[0.3em] backdrop-blur-md',
               dataSource === 'live'
-                ? 'border-accent/30 bg-accent/10 text-accent'
-                : 'border-white/10 bg-white/5 text-neutral-400'
+                ? 'border-sl-gold-subtle/30 bg-sl-gold-subtle/10 text-sl-gold-hover'
+                : 'border-white/10 bg-white/5 text-sl-mist/60'
             )}
           >
-            <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-accent" />
+            <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-sl-gold-subtle" />
             {dataSource === 'live' ? 'Live Registry' : 'Demo Registry'}
           </span>
         </div>
-        <p className="max-w-2xl text-sm leading-relaxed text-neutral-400">
+        <p className="max-w-2xl text-sm leading-relaxed text-sl-mist/60">
           Review, sign, and authorize deliverables, scope changes, and milestone invoices with full audit logging.
         </p>
       </motion.div>
@@ -342,7 +342,7 @@ export function ApprovalCenterView() {
               >
                 {/* Type badge + status pill */}
                 <div className="flex items-start justify-between gap-3">
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/25 bg-accent/5 px-2.5 py-1 font-mono text-[0.5625rem] uppercase tracking-[0.25em] text-accent">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-sl-gold-subtle/25 bg-sl-gold-subtle/5 px-2.5 py-1 font-mono text-[0.5625rem] uppercase tracking-[0.25em] text-sl-gold-hover">
                     <Icon name={TYPE_ICONS[item.type]} className="h-3 w-3" />
                     {TYPE_LABELS[item.type]}
                   </span>
@@ -362,26 +362,26 @@ export function ApprovalCenterView() {
                 </div>
 
                 {/* Serif title + mono metadata */}
-                <h3 className="mt-4 line-clamp-1 font-serif text-lg font-light tracking-tight text-foreground/95">
+                <h3 className="mt-4 line-clamp-1 font-serif text-lg font-light tracking-tight text-sl-alabaster/95">
                   {item.title}
                 </h3>
-                <p className="mt-1 font-mono text-[0.5625rem] uppercase tracking-[0.25em] text-neutral-500">
+                <p className="mt-1 font-mono text-[0.5625rem] uppercase tracking-[0.25em] text-sl-mist/60">
                   {item.phaseName}
-                  {amountLabel && <span className="ml-2 text-accent-light">· {amountLabel}</span>}
+                  {amountLabel && <span className="ml-2 text-sl-gold-hover">· {amountLabel}</span>}
                 </p>
 
                 {/* Submitter + date */}
                 <div className="mt-3 flex items-center justify-between gap-3 border-t border-white/5 pt-3">
-                  <span className="truncate font-mono text-[0.5625rem] uppercase tracking-[0.15em] text-neutral-500">
+                  <span className="truncate font-mono text-[0.5625rem] uppercase tracking-[0.15em] text-sl-mist/60">
                     by {item.submittedBy}
                   </span>
-                  <span className="shrink-0 font-mono text-[0.5625rem] uppercase tracking-[0.15em] text-neutral-600">
+                  <span className="shrink-0 font-mono text-[0.5625rem] uppercase tracking-[0.15em] text-sl-mist/60">
                     № {String(idx + 1).padStart(2, '0')} — {formatShortDate(item.submittedAt)}
                   </span>
                 </div>
 
                 {/* Review affordance */}
-                <span className="mt-4 inline-flex items-center gap-1.5 self-start font-mono text-[0.5625rem] uppercase tracking-[0.3em] text-neutral-400 transition-colors duration-300 ease-[var(--hexa-ease-interaction)] group-hover:text-accent">
+                <span className="mt-4 inline-flex items-center gap-1.5 self-start font-mono text-[0.5625rem] uppercase tracking-[0.3em] text-sl-mist/60 transition-colors duration-300 ease-[var(--hexa-ease-interaction)] group-hover:text-sl-gold-hover">
                   Review
                   <Icon
                     name="arrow-up-right"
@@ -397,11 +397,11 @@ export function ApprovalCenterView() {
         <div className="lg:col-span-7 artisan-glass artisan-glass-gold artisan-specular-top relative min-h-[24rem] flex flex-col justify-between overflow-hidden rounded-2xl p-6 md:p-8">
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute -left-px -top-px h-8 w-8 border-l-2 border-t-2 border-accent/40"
+            className="pointer-events-none absolute -left-px -top-px h-8 w-8 border-l-2 border-t-2 border-sl-gold-subtle/40"
           />
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute -bottom-px -right-px h-8 w-8 border-b-2 border-r-2 border-accent/40"
+            className="pointer-events-none absolute -bottom-px -right-px h-8 w-8 border-b-2 border-r-2 border-sl-gold-subtle/40"
           />
           <AnimatePresence mode="wait">
             {activeApproval ? (
@@ -417,7 +417,7 @@ export function ApprovalCenterView() {
                 <div className="space-y-5">
                   {/* Document eyebrow + status seal */}
                   <div className="flex items-start justify-between gap-4">
-                    <span className="font-mono text-[0.625rem] uppercase tracking-[0.35em] text-accent/80">
+                    <span className="font-mono text-[0.625rem] uppercase tracking-[0.35em] text-sl-gold-hover/80">
                       § {String(approvals.findIndex((a) => a.id === activeApproval.id) + 1).padStart(2, '0')} —{' '}
                       {TYPE_LABELS[activeApproval.type]}
                     </span>
@@ -438,17 +438,17 @@ export function ApprovalCenterView() {
 
                   {/* Serif title + mono metadata */}
                   <div>
-                    <h2 className="font-serif text-2xl font-light leading-snug tracking-tight text-foreground">
+                    <h2 className="font-serif text-2xl font-light leading-snug tracking-tight text-sl-alabaster">
                       {activeApproval.title}
                     </h2>
-                    <div className="mt-3 space-y-1 font-mono text-[0.625rem] uppercase tracking-[0.25em] text-neutral-500">
+                    <div className="mt-3 space-y-1 font-mono text-[0.625rem] uppercase tracking-[0.25em] text-sl-mist/60">
                       <p>
                         {activeApproval.projectName} · {activeApproval.phaseName}
                       </p>
                       <p>
                         Submitted by {activeApproval.submittedBy} · {formatShortDate(activeApproval.submittedAt)}
                         {activeApproval.amount != null && activeApproval.currency && (
-                          <span className="text-accent-light">
+                          <span className="text-sl-gold-hover">
                             {' '}
                             · {formatCurrency(activeApproval.amount, activeApproval.currency)}
                           </span>
@@ -460,18 +460,18 @@ export function ApprovalCenterView() {
                   {/* Deliverable preview card */}
                   <div className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/5 p-4">
                     <div className="flex items-center gap-3">
-                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-accent/25 bg-accent/10 text-accent">
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-sl-gold-subtle/25 bg-sl-gold-subtle/10 text-sl-gold-hover">
                         <Icon name={TYPE_ICONS[activeApproval.type]} className="h-5 w-5" />
                       </span>
                       <div>
-                        <p className="font-serif text-sm font-light text-foreground/90">Deliverable Package</p>
-                        <p className="mt-0.5 font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-neutral-500">
+                        <p className="font-serif text-sm font-light text-sl-alabaster/90">Deliverable Package</p>
+                        <p className="mt-0.5 font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-sl-mist/60">
                           PDF · Signed Presigned URL ready
                         </p>
                       </div>
                     </div>
                     <button
-                      className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-foreground/80 transition-colors duration-300 ease-[var(--hexa-ease-interaction)] hover:border-accent/40 hover:text-accent focus-luxury"
+                      className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-sl-alabaster/80 transition-colors duration-300 ease-[var(--hexa-ease-interaction)] hover:border-sl-gold-subtle/40 hover:text-sl-gold-hover focus-luxury"
                       aria-label="Preview deliverable package file"
                     >
                       <Icon name="eye" className="h-3.5 w-3.5" />
@@ -491,7 +491,7 @@ export function ApprovalCenterView() {
                   >
                     <button
                       onClick={() => handleAction(activeApproval.id, 'approved')}
-                      className="group inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-accent px-6 py-3.5 font-mono text-[0.625rem] uppercase tracking-[0.3em] text-background shadow-lg shadow-accent/20 transition-colors duration-300 ease-[var(--hexa-ease-interaction)] hover:bg-accent-light hover:shadow-accent/30 focus-luxury"
+                      className="group inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-sl-gold-subtle px-6 py-3.5 font-mono text-[0.625rem] uppercase tracking-[0.3em] text-background shadow-lg shadow-sl-gold-subtle/20 transition-colors duration-300 ease-[var(--hexa-ease-interaction)] hover:bg-sl-gold-subtle-light hover:shadow-sl-gold-subtle/30 focus-luxury"
                       aria-label="Approve this deliverable"
                     >
                       Approve Deliverable
@@ -502,7 +502,7 @@ export function ApprovalCenterView() {
                     </button>
                     <button
                       onClick={() => handleAction(activeApproval.id, 'revision_requested')}
-                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 font-mono text-[0.625rem] uppercase tracking-[0.3em] text-neutral-300 transition-colors duration-300 ease-[var(--hexa-ease-interaction)] hover:border-accent/40 hover:text-accent focus-luxury"
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 font-mono text-[0.625rem] uppercase tracking-[0.3em] text-sl-mist/80 transition-colors duration-300 ease-[var(--hexa-ease-interaction)] hover:border-sl-gold-subtle/40 hover:text-sl-gold-hover focus-luxury"
                       aria-label="Request a revision"
                     >
                       Request Revision
@@ -519,7 +519,7 @@ export function ApprovalCenterView() {
                       <Icon name={STATUS_ICONS[activeApproval.status]} className="h-3.5 w-3.5" />
                       {STATUS_LABELS[activeApproval.status]}
                     </span>
-                    <span className="hidden font-mono text-[0.5625rem] uppercase tracking-[0.25em] text-neutral-500 sm:inline">
+                    <span className="hidden font-mono text-[0.5625rem] uppercase tracking-[0.25em] text-sl-mist/60 sm:inline">
                       Record sealed in the ledger
                     </span>
                   </div>
@@ -540,20 +540,20 @@ export function ApprovalCenterView() {
                 role="status"
               >
                 <span aria-hidden="true" className="relative flex h-16 w-16 items-center justify-center">
-                  <span className="absolute inset-0 rotate-45 border border-accent/30" />
-                  <span className="absolute inset-2 rotate-45 border border-accent/20 bg-accent/5" />
-                  <Icon name="file-check" className="relative h-7 w-7 text-accent/70" />
+                  <span className="absolute inset-0 rotate-45 border border-sl-gold-subtle/30" />
+                  <span className="absolute inset-2 rotate-45 border border-sl-gold-subtle/20 bg-sl-gold-subtle/5" />
+                  <Icon name="file-check" className="relative h-7 w-7 text-sl-gold-hover/70" />
                 </span>
-                <p className="mt-6 font-serif text-2xl font-light tracking-tight text-foreground/90">
+                <p className="mt-6 font-serif text-2xl font-light tracking-tight text-sl-alabaster/90">
                   The signing desk <em className="text-gradient-gold font-normal italic">rests</em>.
                 </p>
-                <p className="mt-2 max-w-xs font-mono text-[0.625rem] uppercase tracking-[0.25em] leading-relaxed text-neutral-500">
+                <p className="mt-2 max-w-xs font-mono text-[0.625rem] uppercase tracking-[0.25em] leading-relaxed text-sl-mist/60">
                   Select a document from the queue to review its detail and audit trail.
                 </p>
                 <span aria-hidden="true" className="mt-5 flex items-center gap-2">
-                  <span className="h-px w-8 bg-gradient-to-r from-transparent to-accent/40" />
-                  <span className="h-1.5 w-1.5 rotate-45 bg-accent/50" />
-                  <span className="h-px w-8 bg-gradient-to-l from-transparent to-accent/40" />
+                  <span className="h-px w-8 bg-gradient-to-r from-transparent to-sl-gold-subtle/40" />
+                  <span className="h-1.5 w-1.5 rotate-45 bg-sl-gold-subtle/50" />
+                  <span className="h-px w-8 bg-gradient-to-l from-transparent to-sl-gold-subtle/40" />
                 </span>
               </motion.div>
             )}

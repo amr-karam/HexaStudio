@@ -69,20 +69,20 @@ const StepCard = ({ step, index }: { step: (typeof steps)[0]; index: number }) =
       <div className="absolute inset-0 bg-gradient-to-br from-gold/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
       
       {/* Corner accent */}
-      <div className="absolute top-0 right-0 w-16 h-16 border-t-2 border-r-2 border-gold/20 group-hover:border-gold/40 transition-colors duration-500" />
-      <div className="absolute bottom-0 left-0 w-16 h-16 border-b-2 border-l-2 border-gold/20 group-hover:border-gold/40 transition-colors duration-500" />
+      <div className="absolute top-0 right-0 w-16 h-16 border-t-2 border-r-2 border-sl-gold-subtle/20 group-hover:border-sl-gold-subtle/40 transition-colors duration-500" />
+      <div className="absolute bottom-0 left-0 w-16 h-16 border-b-2 border-l-2 border-sl-gold-subtle/20 group-hover:border-sl-gold-subtle/40 transition-colors duration-500" />
       
       {/* Card content */}
-      <div className="relative p-8 md:p-10 bg-surface/30 backdrop-blur-sm border border-border/30 group-hover:border-gold/20 transition-all duration-500">
+      <div className="relative p-8 md:p-10 bg-sl-obsidian/30 backdrop-blur-sm border border-sl-silver/20 group-hover:border-sl-gold-subtle/20 transition-all duration-500">
         {/* Step number — decorative background */}
-        <span className="absolute -top-6 -right-4 text-[80px] font-serif italic text-gold/[0.06] leading-none select-none pointer-events-none group-hover:text-gold/[0.1] transition-colors duration-700">
+        <span className="absolute -top-6 -right-4 text-[80px] font-serif italic text-sl-gold-hover/[0.06] leading-none select-none pointer-events-none group-hover:text-sl-gold-hover/[0.1] transition-colors duration-700">
           {step.number}
         </span>
 
         {/* Icon with gold accent */}
         <div className="relative mb-8">
-          <div className="w-14 h-14 rounded-sm bg-gold/10 group-hover:bg-gold/20 flex items-center justify-center transition-colors duration-500">
-            <div className="text-gold/70 group-hover:text-gold transition-colors duration-500">
+          <div className="w-14 h-14 rounded-sm bg-sl-gold-subtle/10 group-hover:bg-sl-gold-subtle/20 flex items-center justify-center transition-colors duration-500">
+            <div className="text-sl-gold-hover/70 group-hover:text-sl-gold-hover transition-colors duration-500">
               {step.icon}
             </div>
           </div>
@@ -92,15 +92,15 @@ const StepCard = ({ step, index }: { step: (typeof steps)[0]; index: number }) =
 
         {/* Step header */}
         <div className="flex items-center gap-4 mb-4">
-          <span className="text-xs font-mono text-gold/60 tracking-[0.4em]">{step.number}</span>
-          <div className="h-px w-12 bg-gold/20 group-hover:bg-gold/40 transition-colors duration-500" />
+          <span className="text-xs font-mono text-sl-gold-hover/60 tracking-[0.4em]">{step.number}</span>
+          <div className="h-px w-12 bg-sl-gold-subtle/20 group-hover:bg-sl-gold-subtle/40 transition-colors duration-500" />
         </div>
 
-        <h3 className="text-3xl md:text-4xl font-serif font-light text-foreground mb-6 tracking-tight group-hover:text-gold/90 transition-colors duration-500">
+        <h3 className="text-3xl md:text-4xl font-serif font-light text-sl-alabaster mb-6 tracking-tight group-hover:text-sl-gold-hover/90 transition-colors duration-500">
           {step.title}
         </h3>
 
-        <p className="text-base text-neutral-400 font-light leading-relaxed mb-8">
+        <p className="text-base text-sl-mist/60 font-light leading-relaxed mb-8">
           {step.description}
         </p>
 
@@ -109,17 +109,17 @@ const StepCard = ({ step, index }: { step: (typeof steps)[0]; index: number }) =
           {step.details.map((d, i) => (
             <li 
               key={d}
-              className="flex items-center gap-4 text-xs font-mono text-neutral-500 tracking-[0.15em] group-hover:text-neutral-400 transition-colors duration-500"
+              className="flex items-center gap-4 text-xs font-mono text-sl-mist/60 tracking-[0.15em] group-hover:text-sl-mist/60 transition-colors duration-500"
               style={{ transitionDelay: `${i * 50}ms` }}
             >
-              <span className="w-1.5 h-1.5 rounded-sm bg-gold/30 group-hover:bg-gold/60 group-hover:scale-125 transition-all duration-500 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 rounded-sm bg-sl-gold-subtle/30 group-hover:bg-sl-gold-subtle/60 group-hover:scale-125 transition-all duration-500 flex-shrink-0" />
               {d}
             </li>
           ))}
         </ul>
 
         {/* Bottom animated line */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-px bg-gold/50 group-hover:w-3/4 transition-all duration-1000 ease-out" />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-px bg-sl-gold-subtle/50 group-hover:w-3/4 transition-all duration-1000 ease-out" />
       </div>
     </motion.div>
   );
@@ -157,8 +157,8 @@ export const ProcessSection = () => {
       className="relative px-8 md:px-16 py-32 bg-void-deep overflow-hidden"
     >
       {/* Layered ambient glows */}
-      <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-gold/[0.03] rounded-full blur-[150px] pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-gold/[0.02] rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-sl-gold-subtle/[0.03] rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-sl-gold-subtle/[0.02] rounded-full blur-[120px] pointer-events-none" />
       
       {/* Subtle grid pattern */}
       <div className="absolute inset-0 opacity-[0.02]" 

@@ -187,7 +187,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
               ease: EASE.cinematic,
             }}
             onAnimationComplete={isCovering ? handleCoverComplete : finishReveal}
-            className="fixed inset-0 z-[9998] bg-background"
+            className="fixed inset-0 z-[9998] bg-sl-void"
             style={{
               pointerEvents: isCovering ? 'auto' : 'none',
               willChange: 'transform',
@@ -196,7 +196,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
           >
             {/* Gold leading edge — top while covering, bottom while lifting */}
             <span
-              className={`absolute inset-x-0 h-[2px] bg-accent ${isCovering ? 'top-0' : 'bottom-0'}`}
+              className={`absolute inset-x-0 h-[2px] bg-sl-gold-subtle ${isCovering ? 'top-0' : 'bottom-0'}`}
             />
             {/* Brand mark — only while covering */}
             {isCovering && (
@@ -204,7 +204,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: DURATION.micro, delay: 0.15 }}
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-mono text-[10px] uppercase tracking-[0.5em] text-accent"
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-mono text-[10px] uppercase tracking-[0.5em] text-sl-gold-hover"
               >
                 HexaStudio
               </motion.span>

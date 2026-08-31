@@ -19,7 +19,7 @@ export function TeamCard({
   return (
     <div
       className={cn(
-        'group relative overflow-hidden rounded-lg bg-surface',
+        'group relative overflow-hidden rounded-lg bg-sl-obsidian',
         className,
       )}
     >

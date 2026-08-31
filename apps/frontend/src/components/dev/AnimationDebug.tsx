@@ -46,7 +46,7 @@ export function AnimationDebug() {
 
   return (
     <div
-      className="fixed bottom-4 left-4 z-[9999] rounded-lg border border-white/10 bg-black/80 p-3 text-[11px] font-mono text-white/70 backdrop-blur-xl shadow-2xl"
+      className="fixed bottom-4 left-4 z-[9999] rounded-lg border border-white/10 bg-black/80 p-3 text-[11px] font-mono text-sl-alabaster/70 backdrop-blur-xl shadow-2xl"
       aria-hidden="true"
     >
       <div className="mb-2 flex items-center gap-2">
@@ -56,7 +56,7 @@ export function AnimationDebug() {
           transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
           className="h-2.5 w-2.5 rounded-full bg-green-400"
         />
-        <span className="text-white/80 font-semibold">Anim Debug</span>
+        <span className="text-sl-alabaster/80 font-semibold">Anim Debug</span>
       </div>
 
       <div className="space-y-0.5">
@@ -75,7 +75,7 @@ export function AnimationDebug() {
       <button
         type="button"
         onClick={policy.togglePause}
-        className="mt-2.5 w-full rounded border border-white/20 bg-white/10 px-2 py-1 text-[10px] font-semibold text-white hover:bg-white/20 transition-colors"
+        className="mt-2.5 w-full rounded border border-white/20 bg-white/10 px-2 py-1 text-[10px] font-semibold text-sl-alabaster hover:bg-white/20 transition-colors"
       >
         {policy.paused ? '▶ Resume Animations' : '⏸ Pause Animations'}
       </button>
@@ -107,7 +107,7 @@ function DiagnosticRow({
       <span>{label}</span>
       <span className={color}>
         {unknown ? '⏳' : ok ? '✅' : warn ? '⚠️' : '❌'}
-        {detail && <span className="ml-1 text-white/40">({detail})</span>}
+        {detail && <span className="ml-1 text-sl-alabaster/40">({detail})</span>}
       </span>
     </div>
   );

@@ -113,7 +113,7 @@ export function BookProgress() {
                   ? 'var(--color-gold-8)'
                   : 'rgba(255,255,255,0.03)',
                 boxShadow: isActive
-                  ? '0 0 12px var(--color-gold-15)'
+                  ? '0 0 12px var(--sl-gold-subtle)'
                   : 'none',
                 transition: 'all 0.4s var(--hexa-ease-entrance)',
                 transform: isActive ? 'translateX(-2px)' : 'translateX(0)',
@@ -158,7 +158,7 @@ export function BookProgress() {
                   width: '8px',
                   height: '1px',
                   background: isActive
-                    ? 'var(--color-gold-25)'
+                    ? 'var(--sl-gold-subtle)'
                     : 'rgba(255,255,255,0.06)',
                 }}
               />

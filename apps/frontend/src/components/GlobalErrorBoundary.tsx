@@ -51,7 +51,7 @@ export class GlobalErrorBoundary extends Component<Props, State> {
             </p>
             <button 
               onClick={() => window.location.reload()}
-              className="px-6 py-2 bg-accent text-black text-xs uppercase tracking-widest font-medium hover:bg-white transition-colors"
+              className="px-6 py-2 bg-sl-gold-subtle text-black text-xs uppercase tracking-widest font-medium hover:bg-white transition-colors"
             >
               Refresh Experience
             </button>

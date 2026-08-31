@@ -27,11 +27,11 @@ export function SolarShadowSimulator() {
   };
 
   return (
-    <div className="bg-neutral-950/90 border border-neutral-800 rounded-3xl p-6 shadow-2xl backdrop-blur-2xl text-neutral-100 space-y-5">
-      <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
+    <div className="bg-neutral-950/90 border border-sl-obsidian rounded-3xl p-6 shadow-2xl backdrop-blur-2xl text-neutral-100 space-y-5">
+      <div className="flex items-center justify-between pb-3 border-b border-sl-obsidian">
         <div>
           <h3 className="text-sm font-bold text-neutral-100">Solar Path & Architectural Shadow Simulator</h3>
-          <p className="text-xs text-neutral-400">Sustainable Lighting & Thermal Gain Analysis</p>
+          <p className="text-xs text-sl-mist/60">Sustainable Lighting & Thermal Gain Analysis</p>
         </div>
         <div className="flex items-center space-x-1.5 bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full text-amber-400 text-xs font-mono">
           <span>☀️ {solarRadiation} kW/m²</span>
@@ -41,7 +41,7 @@ export function SolarShadowSimulator() {
       {/* Sun Timeline Slider */}
       <div className="space-y-3">
         <div className="flex items-center justify-between text-xs">
-          <span className="text-neutral-400 font-medium">Time of Day</span>
+          <span className="text-sl-mist/60 font-medium">Time of Day</span>
           <span className="font-bold text-amber-400 font-mono text-sm">{formatTime(timeHour)}</span>
         </div>
         <input
@@ -51,9 +51,9 @@ export function SolarShadowSimulator() {
           step={0.25}
           value={timeHour}
           onChange={(e) => setTimeHour(parseFloat(e.target.value))}
-          className="w-full h-2 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-amber-400"
+          className="w-full h-2 bg-sl-obsidian rounded-lg appearance-none cursor-pointer accent-amber-400"
         />
-        <div className="flex justify-between text-[10px] text-neutral-500 font-mono">
+        <div className="flex justify-between text-[10px] text-sl-mist/60 font-mono">
           <span>6:00 AM (Sunrise)</span>
           <span>12:00 PM (Zenith)</span>
           <span>6:00 PM (Sunset)</span>
@@ -66,7 +66,7 @@ export function SolarShadowSimulator() {
         <button
           onClick={() => setSeason('solstice_summer')}
           className={`py-2 rounded-xl font-medium transition-all ${
-            season === 'solstice_summer' ? 'bg-amber-500 text-neutral-950 font-bold' : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-neutral-200'
+            season === 'solstice_summer' ? 'bg-amber-500 text-neutral-950 font-bold' : 'bg-sl-void border border-sl-obsidian text-sl-mist/60 hover:text-neutral-200'
           }`}
         >
           Summer Solstice
@@ -74,7 +74,7 @@ export function SolarShadowSimulator() {
         <button
           onClick={() => setSeason('equinox')}
           className={`py-2 rounded-xl font-medium transition-all ${
-            season === 'equinox' ? 'bg-amber-500 text-neutral-950 font-bold' : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-neutral-200'
+            season === 'equinox' ? 'bg-amber-500 text-neutral-950 font-bold' : 'bg-sl-void border border-sl-obsidian text-sl-mist/60 hover:text-neutral-200'
           }`}
         >
           Equinox
@@ -82,7 +82,7 @@ export function SolarShadowSimulator() {
         <button
           onClick={() => setSeason('solstice_winter')}
           className={`py-2 rounded-xl font-medium transition-all ${
-            season === 'solstice_winter' ? 'bg-amber-500 text-neutral-950 font-bold' : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-neutral-200'
+            season === 'solstice_winter' ? 'bg-amber-500 text-neutral-950 font-bold' : 'bg-sl-void border border-sl-obsidian text-sl-mist/60 hover:text-neutral-200'
           }`}
         >
           Winter Solstice
@@ -91,16 +91,16 @@ export function SolarShadowSimulator() {
 
       {/* Real-Time Solar Metrics Grid */}
       <div className="grid grid-cols-3 gap-3 text-center text-xs">
-        <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-3">
-          <p className="text-[10px] text-neutral-500 uppercase font-mono">Elevation Angle</p>
+        <div className="bg-sl-void border border-sl-obsidian rounded-2xl p-3">
+          <p className="text-[10px] text-sl-mist/60 uppercase font-mono">Elevation Angle</p>
           <p className="text-base font-bold text-neutral-100 font-mono mt-0.5">{sunElevation.toFixed(1)}°</p>
         </div>
-        <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-3">
-          <p className="text-[10px] text-neutral-500 uppercase font-mono">Azimuth Bearing</p>
+        <div className="bg-sl-void border border-sl-obsidian rounded-2xl p-3">
+          <p className="text-[10px] text-sl-mist/60 uppercase font-mono">Azimuth Bearing</p>
           <p className="text-base font-bold text-neutral-100 font-mono mt-0.5">{sunAzimuth.toFixed(0)}°</p>
         </div>
-        <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-3">
-          <p className="text-[10px] text-neutral-500 uppercase font-mono">Shadow Length Multiplier</p>
+        <div className="bg-sl-void border border-sl-obsidian rounded-2xl p-3">
+          <p className="text-[10px] text-sl-mist/60 uppercase font-mono">Shadow Length Multiplier</p>
           <p className="text-base font-bold text-amber-400 font-mono mt-0.5">
             {sunElevation > 5 ? (1 / Math.tan((sunElevation * Math.PI) / 180)).toFixed(2) : '∞'}x
           </p>

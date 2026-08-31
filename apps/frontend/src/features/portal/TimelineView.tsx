@@ -33,10 +33,10 @@ interface TimelineViewProps {
 
 const STATUS_CONFIG = {
   completed: {
-    bar: 'bg-accent shadow-[0_0_12px_rgba(212,175,55,0.25)]',
-    dot: 'bg-accent border-accent',
-    label: 'text-accent',
-    badge: 'bg-accent/10 text-accent border-accent/30',
+    bar: 'bg-sl-gold-subtle shadow-[0_0_12px_rgba(212,175,55,0.25)]',
+    dot: 'bg-sl-gold-subtle border-sl-gold-subtle',
+    label: 'text-sl-gold-hover',
+    badge: 'bg-sl-gold-subtle/10 text-sl-gold-hover border-sl-gold-subtle/30',
   },
   'in-progress': {
     bar: 'bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.2)]',
@@ -47,8 +47,8 @@ const STATUS_CONFIG = {
   pending: {
     bar: 'bg-neutral-700',
     dot: 'bg-neutral-700 border-neutral-600',
-    label: 'text-neutral-500',
-    badge: 'bg-neutral-800/50 text-neutral-500 border-neutral-700',
+    label: 'text-sl-mist/60',
+    badge: 'bg-sl-obsidian/50 text-sl-mist/60 border-neutral-700',
   },
 } as const;
 
@@ -183,14 +183,14 @@ export function TimelineView({
 
   if (milestones.length === 0) {
     return (
-      <div className={`bg-surface border border-border/50 p-8 md:p-12 rounded-sm ${className}`}>
+      <div className={`bg-sl-obsidian border border-sl-silver/20 p-8 md:p-12 rounded-sm ${className}`}>
         <div className="text-center py-12">
-          <div className="w-12 h-12 rounded-full bg-neutral-800/50 border border-border/30 flex items-center justify-center mx-auto mb-4">
-            <svg className="w-5 h-5 text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+          <div className="w-12 h-12 rounded-full bg-sl-obsidian/50 border border-sl-silver/20 flex items-center justify-center mx-auto mb-4">
+            <svg className="w-5 h-5 text-sl-mist/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
-          <p className="text-neutral-500 text-sm font-light">{t('portal.timeline.noMilestones')}</p>
+          <p className="text-sl-mist/60 text-sm font-light">{t('portal.timeline.noMilestones')}</p>
         </div>
       </div>
     );
@@ -199,14 +199,14 @@ export function TimelineView({
   return (
     <section
       ref={sectionRef}
-      className={`bg-surface border border-border/50 rounded-sm overflow-hidden ${className}`}
+      className={`bg-sl-obsidian border border-sl-silver/20 rounded-sm overflow-hidden ${className}`}
       aria-label={t('portal.timeline.title')}
     >
       {/* Header */}
-      <div className="px-6 py-5 border-b border-border/20 flex items-center justify-between">
+      <div className="px-6 py-5 border-b border-sl-silver/20 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-accent/60" />
-          <h2 className="text-base font-medium text-foreground tracking-wide">
+          <div className="w-2 h-2 rounded-full bg-sl-gold-subtle/60" />
+          <h2 className="text-base font-medium text-sl-alabaster tracking-wide">
             {t('portal.timeline.title')}
           </h2>
         </div>
@@ -227,14 +227,14 @@ export function TimelineView({
       <div className="overflow-x-auto overflow-y-visible scrollbar-thin scrollbar-thumb-neutral-700 scrollbar-track-transparent">
         <div className="relative" style={{ minWidth: `${totalWidth}px` }}>
           {/* Month grid lines */}
-          <div className="relative h-10 border-b border-border/20" dir={isRTL ? 'rtl' : 'ltr'}>
+          <div className="relative h-10 border-b border-sl-silver/20" dir={isRTL ? 'rtl' : 'ltr'}>
             {monthMarkers.map((marker, i) => (
               <div
                 key={i}
                 className="absolute top-0 bottom-0 flex items-end pb-2"
                 style={{ [isRTL ? 'right' : 'left']: `${marker.position}%` }}
               >
-                <span className="text-[9px] font-mono text-neutral-600 uppercase tracking-wider whitespace-nowrap">
+                <span className="text-[9px] font-mono text-sl-mist/60 uppercase tracking-wider whitespace-nowrap">
                   {marker.label}
                 </span>
                 <div
@@ -282,10 +282,10 @@ export function TimelineView({
                       'transition-transform duration-300 group-hover:scale-125',
                     )} />
                     <div className="flex flex-col min-w-0">
-                      <span className="text-sm font-medium text-foreground truncate">
+                      <span className="text-sm font-medium text-sl-alabaster truncate">
                         {milestone.name}
                       </span>
-                      <span className="text-[10px] text-neutral-600 font-mono">
+                      <span className="text-[10px] text-sl-mist/60 font-mono">
                         {formatDate(milestone.startDate, locale)}
                         {milestone.endDate && milestone.endDate !== milestone.startDate
                           ? ` — ${formatDate(milestone.endDate, locale)}`
@@ -353,8 +353,8 @@ export function TimelineView({
       </div>
 
       {/* Helper text for scroll */}
-      <div className="px-6 py-3 border-t border-border/10">
-        <p className="text-[9px] uppercase tracking-widest text-neutral-600 font-mono text-center sm:hidden">
+      <div className="px-6 py-3 border-t border-sl-silver/10">
+        <p className="text-[9px] uppercase tracking-widest text-sl-mist/60 font-mono text-center sm:hidden">
           ← Scroll horizontally →
         </p>
       </div>

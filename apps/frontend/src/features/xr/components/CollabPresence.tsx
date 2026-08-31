@@ -11,7 +11,7 @@ export function CollabPresence() {
   return (
     <div className="pointer-events-none fixed bottom-4 end-4 z-50 flex items-center gap-2 rounded-full bg-black/50 px-3 py-1.5 backdrop-blur-sm">
       <div className={`h-2 w-2 rounded-full ${connected ? 'bg-emerald-500' : 'bg-red-500'}`} />
-      <span className="text-xs text-white/60">
+      <span className="text-xs text-sl-alabaster/60">
         {connected ? `${total} in session` : 'Offline'}
       </span>
       {peers.length > 0 && (
@@ -19,7 +19,7 @@ export function CollabPresence() {
           {peers.slice(0, 4).map((peer) => (
             <div
               key={peer.id}
-              className="flex h-5 w-5 items-center justify-center rounded-full bg-accent/20 text-[9px] font-medium text-accent ring-1 ring-black"
+              className="flex h-5 w-5 items-center justify-center rounded-full bg-sl-gold-subtle/20 text-[9px] font-medium text-sl-gold-hover ring-1 ring-black"
               title={peer.user}
             >
               {peer.user.charAt(0).toUpperCase()}

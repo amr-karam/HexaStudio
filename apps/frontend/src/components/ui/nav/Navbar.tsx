@@ -53,26 +53,26 @@ const NavItem = ({ label, href, active, onClick, isPremium, badgeCount, icon }: 
       aria-current={active ? 'page' : undefined}
       className={cn(
         'group relative flex items-center gap-1.5 py-2 text-xs uppercase tracking-[0.3em] transition-colors duration-500',
-        active ? 'text-accent' : 'text-neutral-500 hover:text-foreground',
+        active ? 'text-sl-gold-hover' : 'text-sl-mist/60 hover:text-sl-alabaster',
         isPremium && 'premium-feature'
       )}
     >
-      {icon && <span className="text-accent">{icon}</span>}
+      {icon && <span className="text-sl-gold-hover">{icon}</span>}
       {label}
       {badgeCount && badgeCount > 0 && (
-        <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-xs font-bold text-background">
+        <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-sl-gold-subtle text-xs font-bold text-background">
           {badgeCount}
         </span>
       )}
       {!active && (
         <span
           aria-hidden="true"
-          className="nav-underline absolute -bottom-1 inset-x-0 h-[1px] bg-accent"
+          className="nav-underline absolute -bottom-1 inset-x-0 h-[1px] bg-sl-gold-subtle"
         />
       )}
       {active && (
         <span
-          className="absolute -bottom-1 inset-x-0 h-[1px] w-full bg-accent"
+          className="absolute -bottom-1 inset-x-0 h-[1px] w-full bg-sl-gold-subtle"
         />
       )}
     </Link>
@@ -161,7 +161,7 @@ export const Navbar = () => {
         className={cn(
           'fixed top-0 inset-x-0 z-50 flex items-center justify-between px-8 md:px-16 transition-all duration-700 ease-out-expo',
           isScrolled
-            ? 'py-4 bg-background/60 backdrop-blur-2xl border-b border-border/50'
+            ? 'py-4 bg-sl-void/60 backdrop-blur-2xl border-b border-sl-silver/20'
             : 'py-8 bg-transparent',
           isVisible ? 'translate-y-0' : '-translate-y-full'
         )}
@@ -178,7 +178,7 @@ export const Navbar = () => {
                 className="transition-transform duration-500"
               />
             </div>
-            <span className="text-xs font-medium uppercase tracking-[0.4em] text-foreground group-hover:text-accent transition-colors duration-500">
+            <span className="text-xs font-medium uppercase tracking-[0.4em] text-sl-alabaster group-hover:text-sl-gold-hover transition-colors duration-500">
               HexaStudio
             </span>
           </Link>

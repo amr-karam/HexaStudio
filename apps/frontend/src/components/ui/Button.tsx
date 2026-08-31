@@ -14,19 +14,19 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 const variants = {
   primary:
-    'bg-accent text-background hover:bg-accent/90 shadow-lg shadow-accent/20 hover:shadow-[0_0_20px_rgba(212,175,55,0.15)]',
+    'bg-sl-gold-subtle text-background hover:bg-sl-gold-subtle/90 shadow-lg shadow-sl-gold-subtle/20 hover:shadow-[0_0_20px_rgba(212,175,55,0.15)]',
   secondary:
-    'bg-white/5 text-white border border-white/10 hover:bg-white/10 hover:border-white/20',
-  ghost: 'bg-transparent text-white hover:bg-white/5',
-  danger: 'bg-red-500 text-white hover:bg-red-600',
+    'bg-white/5 text-sl-alabaster border border-white/10 hover:bg-white/10 hover:border-white/20',
+  ghost: 'bg-transparent text-sl-alabaster hover:bg-white/5',
+  danger: 'bg-red-500 text-sl-alabaster hover:bg-red-600',
   outline:
-    'border border-border text-foreground hover:border-accent hover:text-accent hover:bg-accent/5',
+    'border border-sl-silver/20 text-sl-alabaster hover:border-sl-gold-subtle hover:text-sl-gold-hover hover:bg-sl-gold-subtle/5',
   luxury:
-    'bg-white/[0.03] text-white border border-accent/40 backdrop-blur-2xl hover:border-accent hover:shadow-[var(--artisan-glass-shadow),0_0_35px_rgba(212,175,55,0.25)]',
+    'bg-white/[0.03] text-sl-alabaster border border-sl-gold-subtle/40 backdrop-blur-2xl hover:border-sl-gold-subtle hover:shadow-[var(--artisan-glass-shadow),0_0_35px_rgba(212,175,55,0.25)]',
   couture:
-    'bg-gradient-to-r from-neutral-900 via-neutral-900/95 to-black text-foreground border border-accent/40 shadow-[var(--artisan-glass-shadow),var(--artisan-glass-highlight)] hover:border-accent hover:shadow-[var(--artisan-glass-shadow),0_0_40px_rgba(212,175,55,0.35)]',
+    'bg-gradient-to-r from-neutral-900 via-neutral-900/95 to-black text-sl-alabaster border border-sl-gold-subtle/40 shadow-[var(--artisan-glass-shadow),var(--artisan-glass-highlight)] hover:border-sl-gold-subtle hover:shadow-[var(--artisan-glass-shadow),0_0_40px_rgba(212,175,55,0.35)]',
   glass:
-    'artisan-glass text-foreground hover:artisan-glass-gold hover:border-accent/40 focus-visible:ring-accent/60',
+    'artisan-glass text-sl-alabaster hover:artisan-glass-gold hover:border-sl-gold-subtle/40 focus-visible:ring-sl-gold-subtle/60',
 };
 
 const sizes = {
@@ -53,7 +53,7 @@ const Shimmer = () => (
 const LoadingSpinner = () => (
   <span
     aria-hidden
-    className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border border-accent/30 border-t-accent"
+    className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border border-sl-gold-subtle/30 border-t-accent"
   />
 );
 
@@ -86,7 +86,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const base = cn(
       'group relative inline-flex items-center justify-center rounded-full font-medium',
       'transition-all duration-300 ease-[var(--hexa-ease-interaction)]',
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background',
       'disabled:opacity-50 disabled:pointer-events-none active:scale-95',
       variants[variant],
       sizes[size],

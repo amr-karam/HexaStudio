@@ -35,14 +35,14 @@ export function OdooBoqEstimator() {
   const totalCost = items.reduce((sum, item) => sum + item.unitPrice * item.areaSqm, 0);
 
   return (
-    <div className="bg-neutral-950/90 border border-neutral-800 rounded-3xl p-6 shadow-2xl backdrop-blur-2xl text-neutral-100 space-y-5">
-      <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
+    <div className="bg-neutral-950/90 border border-sl-obsidian rounded-3xl p-6 shadow-2xl backdrop-blur-2xl text-neutral-100 space-y-5">
+      <div className="flex items-center justify-between pb-3 border-b border-sl-obsidian">
         <div>
           <h3 className="text-sm font-bold text-neutral-100">Smart Material Cost Estimator & Odoo BOQ Sync</h3>
-          <p className="text-xs text-neutral-400">Real-Time Quantity Takeoff & Live Odoo ERP Price Breakdown</p>
+          <p className="text-xs text-sl-mist/60">Real-Time Quantity Takeoff & Live Odoo ERP Price Breakdown</p>
         </div>
         <div className="text-right">
-          <span className="text-xs text-neutral-400 block font-mono">Estimated Subtotal</span>
+          <span className="text-xs text-sl-mist/60 block font-mono">Estimated Subtotal</span>
           <span className="text-lg font-bold text-emerald-400 font-mono">${totalCost.toLocaleString('en-US')} USD</span>
         </div>
       </div>
@@ -50,10 +50,10 @@ export function OdooBoqEstimator() {
       {/* Material Takeoff Table */}
       <div className="space-y-3">
         {items.map((item) => (
-          <div key={item.id} className="p-3 bg-neutral-900 border border-neutral-800 rounded-2xl flex items-center justify-between text-xs">
+          <div key={item.id} className="p-3 bg-sl-void border border-sl-obsidian rounded-2xl flex items-center justify-between text-xs">
             <div className="space-y-0.5">
               <span className="font-bold text-neutral-200 block">{item.name}</span>
-              <span className="text-neutral-500 font-mono text-[11px]">${item.unitPrice} / m² &bull; {item.category.toUpperCase()}</span>
+              <span className="text-sl-mist/60 font-mono text-[11px]">${item.unitPrice} / m² &bull; {item.category.toUpperCase()}</span>
             </div>
 
             <div className="flex items-center space-x-4">
@@ -62,9 +62,9 @@ export function OdooBoqEstimator() {
                   type="number"
                   value={item.areaSqm}
                   onChange={(e) => updateArea(item.id, parseFloat(e.target.value) || 0)}
-                  className="w-20 bg-neutral-950 border border-neutral-800 rounded-xl p-2 text-right font-mono font-bold text-neutral-100 focus:outline-none focus:border-amber-500/50"
+                  className="w-20 bg-neutral-950 border border-sl-obsidian rounded-xl p-2 text-right font-mono font-bold text-neutral-100 focus:outline-none focus:border-amber-500/50"
                 />
-                <span className="text-neutral-400 font-mono text-[11px]">m²</span>
+                <span className="text-sl-mist/60 font-mono text-[11px]">m²</span>
               </div>
               <span className="font-bold text-neutral-100 font-mono w-24 text-right">
                 ${(item.unitPrice * item.areaSqm).toLocaleString('en-US')}
@@ -75,8 +75,8 @@ export function OdooBoqEstimator() {
       </div>
 
       {/* Sync Button */}
-      <div className="flex items-center justify-between pt-2 border-t border-neutral-800">
-        <span className="text-[11px] text-neutral-400 font-mono">
+      <div className="flex items-center justify-between pt-2 border-t border-sl-obsidian">
+        <span className="text-[11px] text-sl-mist/60 font-mono">
           {syncedToOdoo ? '✓ Synchronized with Odoo Sales Order SO-8842' : '⚠️ Pending Odoo ERP Line-Item Sync'}
         </span>
         <button

@@ -17,7 +17,7 @@ export default function MaterialSwatchSelector() {
           onClick={() => setMaterial(preset)}
           className={cn(
             "w-8 h-8 rounded-full border-2 transition-all",
-            activeMaterial === preset ? "border-gold" : "border-transparent"
+            activeMaterial === preset ? "border-sl-gold-subtle" : "border-transparent"
           )}
           style={{ backgroundColor: MATERIAL_PRESETS[preset].color }}
           aria-label={`Select ${preset.replace("_", " ")}`}

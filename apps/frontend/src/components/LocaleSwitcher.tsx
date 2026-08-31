@@ -23,7 +23,7 @@ export function LocaleSwitcher() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-white/60 transition-colors hover:text-white/90"
+        className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-sl-alabaster/60 transition-colors hover:text-sl-alabaster/90"
       >
         <span>{LOCALES[locale].label}</span>
         <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -32,18 +32,18 @@ export function LocaleSwitcher() {
       </button>
 
       {open && (
-        <div className="absolute end-0 top-full mt-1 w-36 rounded-lg border border-white/10 bg-surface py-1 shadow-xl">
+        <div className="absolute end-0 top-full mt-1 w-36 rounded-lg border border-white/10 bg-sl-obsidian py-1 shadow-xl">
           {LOCALE_PATHS.map((l) => (
             <button
               key={l}
               onClick={() => { setLocale(l as Locale); setOpen(false); }}
               className={`flex w-full items-center gap-2 px-3 py-1.5 text-start text-xs transition-colors ${
-                locale === l ? 'text-accent' : 'text-white/60 hover:text-white/90'
+                locale === l ? 'text-sl-gold-hover' : 'text-sl-alabaster/60 hover:text-sl-alabaster/90'
               }`}
             >
               <span>{LOCALES[l].label}</span>
               {LOCALES[l].dir === 'rtl' && (
-                <span className="text-[10px] text-white/30">RTL</span>
+                <span className="text-[10px] text-sl-alabaster/30">RTL</span>
               )}
             </button>
           ))}

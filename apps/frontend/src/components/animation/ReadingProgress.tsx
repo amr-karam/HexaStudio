@@ -137,7 +137,7 @@ export function ReadingProgress({ className }: ReadingProgressProps) {
       aria-valuemax={100}
       aria-label="Reading progress"
       className={cn(
-        'fixed inset-x-0 top-0 z-50 h-[2px] origin-left bg-accent',
+        'fixed inset-x-0 top-0 z-50 h-[2px] origin-left bg-sl-gold-subtle',
         'transition-none', // no CSS transitions — rAF-coalesced scroll updates drive the transform
         className,
       )}

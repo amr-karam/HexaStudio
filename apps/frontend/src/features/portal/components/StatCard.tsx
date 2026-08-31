@@ -25,7 +25,7 @@ interface StatCardProps {
 const TREND_CONFIG = {
   up: { icon: 'arrow-up-right' as IconName, color: 'text-emerald-400', label: 'Increased' },
   down: { icon: 'arrow-down-right' as IconName, color: 'text-red-400', label: 'Decreased' },
-  neutral: { icon: 'minus' as IconName, color: 'text-neutral-500', label: 'No change' },
+  neutral: { icon: 'minus' as IconName, color: 'text-sl-mist/60', label: 'No change' },
 } as const;
 
 function formatValue(value: number, format?: StatItem['format']): string {
@@ -59,29 +59,29 @@ export function StatCard({ stat, index = 0 }: StatCardProps) {
       className={cn(
         'artisan-glass artisan-specular-top',
         'relative overflow-hidden rounded-xl p-6',
-        'hover:border-accent/30 transition-colors duration-700 ease-[var(--hexa-ease-interaction)]',
+        'hover:border-sl-gold-subtle/30 transition-colors duration-700 ease-[var(--hexa-ease-interaction)]',
         'group cursor-default',
       )}
     >
       {/* Gold radial aura — revealed on hover */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full bg-accent/5 opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
+        className="pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full bg-sl-gold-subtle/5 opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
       />
 
       {/* Icon + Trend */}
       <div className="flex items-center justify-between mb-6">
         {/* Icon plate — gold gradient border-on-hover, faint gold tint */}
-        <div className="relative w-10 h-10 rounded-lg p-px bg-gradient-to-br from-accent/25 via-accent/[0.07] to-transparent opacity-40 transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100">
-          <div className="relative flex h-full w-full items-center justify-center rounded-[7px] border border-border/20 bg-surface-light/50 transition-colors duration-700 group-hover:border-accent/40">
+        <div className="relative w-10 h-10 rounded-lg p-px bg-gradient-to-br from-sl-gold-subtle/25 via-sl-gold-subtle/[0.07] to-transparent opacity-40 transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100">
+          <div className="relative flex h-full w-full items-center justify-center rounded-[7px] border border-sl-silver/20 bg-sl-obsidian-light/50 transition-colors duration-700 group-hover:border-sl-gold-subtle/40">
             <div
               aria-hidden="true"
-              className="absolute inset-0 rounded-[7px] bg-accent/[0.04]"
+              className="absolute inset-0 rounded-[7px] bg-sl-gold-subtle/[0.04]"
             />
             <Icon
               name={stat.icon as IconName}
               size={16}
-              className="relative text-neutral-500 group-hover:text-accent transition-colors duration-500"
+              className="relative text-sl-mist/60 group-hover:text-sl-gold-hover transition-colors duration-500"
             />
           </div>
         </div>
@@ -104,19 +104,19 @@ export function StatCard({ stat, index = 0 }: StatCardProps) {
       <p
         className={cn(
           'text-4xl font-serif font-light tracking-tight mb-2',
-          isPositiveTrend ? 'text-gradient-gold' : 'text-foreground/90',
+          isPositiveTrend ? 'text-gradient-gold' : 'text-sl-alabaster/90',
         )}
       >
         {formatValue(stat.value, stat.format)}
       </p>
 
       {/* Label */}
-      <p className="text-[9px] text-neutral-500 uppercase tracking-[0.3em] font-mono">
+      <p className="text-[9px] text-sl-mist/60 uppercase tracking-[0.3em] font-mono">
         {stat.label}
       </p>
 
       {/* Subtle gold accent line on hover */}
-      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-accent/0 group-hover:bg-accent/30 transition-colors duration-1000" />
+      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-sl-gold-subtle/0 group-hover:bg-sl-gold-subtle/30 transition-colors duration-1000" />
     </motion.div>
   );
 }

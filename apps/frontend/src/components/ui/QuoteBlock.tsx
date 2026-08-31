@@ -30,7 +30,7 @@ export function QuoteBlock({
   return (
     <div className={cn('relative w-full', className)}>
       {/* Quote mark */}
-      <div className="absolute -top-6 left-0 text-accent/20 select-none">
+      <div className="absolute -top-6 left-0 text-sl-gold-hover/20 select-none">
         <svg
           className="w-20 h-20"
           viewBox="0 0 120 120"
@@ -47,7 +47,7 @@ export function QuoteBlock({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-50px' }}
           transition={{ duration: 0.5 }}
-          className="text-2xl md:text-3xl font-serif font-light text-white/90 leading-relaxed italic"
+          className="text-2xl md:text-3xl font-serif font-light text-sl-alabaster/90 leading-relaxed italic"
         >
           {quote}
         </motion.p>
@@ -57,7 +57,7 @@ export function QuoteBlock({
           <div className="mt-6 flex items-center gap-4">
             {/* Author image */}
             {image && (
-              <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-accent/30 flex-shrink-0">
+              <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-sl-gold-subtle/30 flex-shrink-0">
                 <Image
                   src={image}
                   alt={imageAlt || author || 'Author'}
@@ -71,10 +71,10 @@ export function QuoteBlock({
             {/* Author info */}
             <div className="text-left">
               {author && (
-                <div className="text-white font-medium">{author}</div>
+                <div className="text-sl-alabaster font-medium">{author}</div>
               )}
               {(role || company) && (
-                <div className="text-neutral-400 text-sm">
+                <div className="text-sl-mist/60 text-sm">
                   {role}
                   {role && company && ' at '}
                   {company}

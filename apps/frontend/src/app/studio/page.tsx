@@ -22,7 +22,7 @@ export default async function StudioPage() {
   const projectsData = await fetchProjects();
 
   return (
-    <div className="bg-background">
+    <div className="bg-sl-void">
       <HomeChapterRail />
       <HomeHero />
       <HomePageDynamic

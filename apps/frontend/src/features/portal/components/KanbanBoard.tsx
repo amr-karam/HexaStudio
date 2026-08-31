@@ -28,7 +28,7 @@ interface KanbanBoardProps {
 }
 
 const COLUMNS: { status: TaskStatus; label: string; icon: IconName; color: string }[] = [
-  { status: 'todo', label: 'To Do', icon: 'box', color: 'text-neutral-400' },
+  { status: 'todo', label: 'To Do', icon: 'box', color: 'text-sl-mist/60' },
   { status: 'in_progress', label: 'In Progress', icon: 'clock', color: 'text-blue-400' },
   { status: 'review', label: 'Review', icon: 'eye', color: 'text-amber-400' },
   { status: 'done', label: 'Done', icon: 'check-circle', color: 'text-emerald-400' },
@@ -38,12 +38,12 @@ const PRIORITY_STYLES: Record<TaskPriority, { bg: string; text: string; label: s
   urgent: { bg: 'bg-red-500/20', text: 'text-red-400', label: 'Urgent' },
   high: { bg: 'bg-orange-500/20', text: 'text-orange-400', label: 'High' },
   medium: { bg: 'bg-amber-500/20', text: 'text-amber-400', label: 'Medium' },
-  low: { bg: 'bg-neutral-700/50', text: 'text-neutral-400', label: 'Low' },
+  low: { bg: 'bg-neutral-700/50', text: 'text-sl-mist/60', label: 'Low' },
 };
 
 function ShimmerBlock({ reduced, className }: { reduced: boolean; className?: string }) {
   return (
-    <div className={cn('relative overflow-hidden rounded bg-neutral-800', className)} aria-hidden="true">
+    <div className={cn('relative overflow-hidden rounded bg-sl-obsidian', className)} aria-hidden="true">
       <motion.div
         className="absolute inset-0"
         style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(212,175,55,0.10) 50%, transparent 100%)' }}
@@ -56,7 +56,7 @@ function ShimmerBlock({ reduced, className }: { reduced: boolean; className?: st
 
 function KanbanSkeleton({ reduced }: { reduced: boolean }) {
   return (
-    <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 space-y-4">
+    <div className="bg-sl-void border border-sl-obsidian rounded-2xl p-6 space-y-4">
       <ShimmerBlock reduced={reduced} className="h-4 w-28" />
       <div className="flex space-x-4">
         {COLUMNS.map((col) => (
@@ -79,7 +79,7 @@ function TaskCard({ task, reduced }: { task: PortalTask; reduced: boolean }) {
     <motion.div
       variants={fadeLift}
       whileHover={reduced ? undefined : { y: -4, transition: makeTransition('interaction', 'micro') }}
-      className="bg-neutral-950 border border-neutral-800 rounded-xl p-4 space-y-2 hover:border-amber-500/40 transition-colors group"
+      className="bg-neutral-950 border border-sl-obsidian rounded-xl p-4 space-y-2 hover:border-amber-500/40 transition-colors group"
     >
       <div className="flex items-center justify-between">
         <span
@@ -92,7 +92,7 @@ function TaskCard({ task, reduced }: { task: PortalTask; reduced: boolean }) {
         </span>
         {task.dueDate && (
           <span
-            className={cn('text-[10px] font-mono', isOverdue ? 'text-red-400 font-bold' : 'text-neutral-500')}
+            className={cn('text-[10px] font-mono', isOverdue ? 'text-red-400 font-bold' : 'text-sl-mist/60')}
           >
             {isOverdue
               ? 'Overdue'
@@ -109,7 +109,7 @@ function TaskCard({ task, reduced }: { task: PortalTask; reduced: boolean }) {
       </h4>
 
       {task.description && (
-        <p className="text-[11px] text-neutral-500 line-clamp-2 leading-relaxed">
+        <p className="text-[11px] text-sl-mist/60 line-clamp-2 leading-relaxed">
           {task.description.replace(/<[^>]+>/g, '').trim()}
         </p>
       )}
@@ -123,7 +123,7 @@ function TaskCard({ task, reduced }: { task: PortalTask; reduced: boolean }) {
               .join('')
               .slice(0, 2)}
           </div>
-          <span className="text-[10px] text-neutral-500">{task.assigneeName}</span>
+          <span className="text-[10px] text-sl-mist/60">{task.assigneeName}</span>
         </div>
       )}
     </motion.div>
@@ -151,11 +151,11 @@ function KanbanColumn({
       <div className="flex items-center justify-between px-1">
         <div className="flex items-center space-x-2">
           <Icon name={icon} className={cn('w-4 h-4', color)} />
-          <h3 className="text-xs font-bold text-neutral-300 uppercase tracking-wider">
+          <h3 className="text-xs font-bold text-sl-mist/80 uppercase tracking-wider">
             {label}
           </h3>
         </div>
-        <span className="text-[10px] font-bold text-neutral-600 bg-neutral-800 px-2 py-0.5 rounded-full">
+        <span className="text-[10px] font-bold text-sl-mist/60 bg-sl-obsidian px-2 py-0.5 rounded-full">
           {tasks.length}
         </span>
       </div>
@@ -173,9 +173,9 @@ function KanbanColumn({
           <motion.div
             variants={fadeLift}
             custom={reduced}
-            className="border border-dashed border-neutral-800 rounded-xl p-8 text-center"
+            className="border border-dashed border-sl-obsidian rounded-xl p-8 text-center"
           >
-            <p className="text-[11px] text-neutral-600">No tasks</p>
+            <p className="text-[11px] text-sl-mist/60">No tasks</p>
           </motion.div>
         )}
       </motion.div>
@@ -208,11 +208,11 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
       custom={reduced}
       initial="hidden"
       animate="visible"
-      className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 space-y-4"
+      className="bg-sl-void border border-sl-obsidian rounded-2xl p-6 space-y-4"
     >
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-bold text-neutral-100">Project Tasks</h3>
-        <span className="text-[10px] text-neutral-500 font-mono">{tasks.length} total</span>
+        <span className="text-[10px] text-sl-mist/60 font-mono">{tasks.length} total</span>
       </div>
       <div className="flex space-x-4 overflow-x-auto pb-2">
         {COLUMNS.map((col) => {

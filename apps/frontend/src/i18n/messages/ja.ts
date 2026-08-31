@@ -46,10 +46,10 @@ export const ja: typeof en = {
     title: 'サービス',
     subtitle: '建築ビジュアライゼーションのトータルソリューション',
     expertise: '専門知識',
-    heroHeading: '私たちの<span class="text-accent">サービス。</span>',
+    heroHeading: '私たちの<span class="text-sl-gold-hover">サービス。</span>',
     inquire: '{title}について問い合わせる',
     ctaOverline: 'プロジェクトを始める',
-    ctaHeading: 'ビジョンをお持ちですか？<span class="text-accent">一緒に作りましょう。</span>',
+    ctaHeading: 'ビジョンをお持ちですか？<span class="text-sl-gold-hover">一緒に作りましょう。</span>',
     ctaDescription: 'すべての偉大なプロジェクトは会話から始まります。ビジョンについてお聞かせください。実現する方法をお見せします。',
     ctaButton: 'お問い合わせ',
     items: {

@@ -23,7 +23,7 @@ export const LoadingScreen = ({ children, progress: externalProgress }: LoadingS
         initial={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={reducedMotion ? REDUCED_TRANSITION : { duration: 0.8, ease: EASE.entrance }}
-        className="fixed inset-0 z-[100] flex items-center justify-center bg-background"
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-sl-void"
       >
         <div className="relative flex flex-col items-center gap-12">
           <div className="flex items-center gap-4">
@@ -37,7 +37,7 @@ export const LoadingScreen = ({ children, progress: externalProgress }: LoadingS
                 <Image src="/logo.svg" alt="HexaStudio" width={24} height={24} />
               </motion.div>
             )}
-            <span className="text-xs uppercase tracking-[0.5em] text-foreground font-medium">HexaStudio</span>
+            <span className="text-xs uppercase tracking-[0.5em] text-sl-alabaster font-medium">HexaStudio</span>
           </div>
           <div className="flex flex-col items-center gap-4">
             {isDeterminate ? (
@@ -50,7 +50,7 @@ export const LoadingScreen = ({ children, progress: externalProgress }: LoadingS
                 className="w-48 h-[1px] bg-border relative overflow-hidden"
               >
                 <motion.div
-                  className="absolute inset-y-0 start-0 bg-accent origin-left"
+                  className="absolute inset-y-0 start-0 bg-sl-gold-subtle origin-left"
                   style={{ transformOrigin: 'left' }}
                   animate={{ scaleX: displayProgress / 100 }}
                   transition={reducedMotion ? REDUCED_TRANSITION : { duration: 0.4, ease: EASE.entrance }}
@@ -64,10 +64,10 @@ export const LoadingScreen = ({ children, progress: externalProgress }: LoadingS
               >
                 {/* Indeterminate: moving gradient shimmer instead of fake percentage */}
                 {reducedMotion ? (
-                  <div className="absolute inset-y-0 start-0 w-1/3 bg-accent/60" />
+                  <div className="absolute inset-y-0 start-0 w-1/3 bg-sl-gold-subtle/60" />
                 ) : (
                   <motion.div
-                    className="absolute inset-y-0 w-1/3 bg-accent"
+                    className="absolute inset-y-0 w-1/3 bg-sl-gold-subtle"
                     animate={{ x: ['-30%', '230%'] }}
                     transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
                   />
@@ -75,13 +75,13 @@ export const LoadingScreen = ({ children, progress: externalProgress }: LoadingS
               </div>
             )}
             <span
-              className="text-[9px] uppercase tracking-[0.4em] text-neutral-600 font-light"
+              className="text-[9px] uppercase tracking-[0.4em] text-sl-mist/60 font-light"
               aria-live="polite"
             >
               {isDeterminate ? (
                 <>
                   Loading{' '}
-                  <span className="ml-2 text-accent">{displayProgress}%</span>
+                  <span className="ml-2 text-sl-gold-hover">{displayProgress}%</span>
                 </>
               ) : (
                 'Loading'

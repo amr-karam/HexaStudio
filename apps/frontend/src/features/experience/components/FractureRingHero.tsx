@@ -29,8 +29,8 @@ function FractureLoadingShell() {
       <div className="flex flex-col items-center gap-6">
         <ShimmerSkeleton variant="circle" className="h-16 w-16" />
         <div className="flex flex-col items-center gap-3">
-          <div className="h-[1px] w-12 bg-accent/40 animate-pulse" />
-          <span className="font-mono text-[9px] uppercase tracking-[0.4em] text-white/30">
+          <div className="h-[1px] w-12 bg-sl-gold-subtle/40 animate-pulse" />
+          <span className="font-mono text-[9px] uppercase tracking-[0.4em] text-sl-alabaster/30">
             Fracture ring loading
           </span>
         </div>

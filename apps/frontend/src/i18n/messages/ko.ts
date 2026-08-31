@@ -46,10 +46,10 @@ export const ko: typeof en = {
     title: '서비스',
     subtitle: '건축 시각화 토탈 솔루션',
     expertise: '전문 지식',
-    heroHeading: '우리의 <span class="text-accent">서비스.</span>',
+    heroHeading: '우리의 <span class="text-sl-gold-hover">서비스.</span>',
     inquire: '{title}에 대해 문의하기',
     ctaOverline: '프로젝트 시작하기',
-    ctaHeading: '비전이 있으신가요? <span class="text-accent">함께 만들어 봅시다.</span>',
+    ctaHeading: '비전이 있으신가요? <span class="text-sl-gold-hover">함께 만들어 봅시다.</span>',
     ctaDescription: '모든 위대한 프로젝트는 대화에서 시작됩니다. 비전에 대해 말씀해 주세요. 실현하는 방법을 보여드리겠습니다.',
     ctaButton: '문의하기',
     items: {

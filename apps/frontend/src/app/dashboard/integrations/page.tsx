@@ -20,14 +20,14 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-white/10 py-16">
       <div className="mb-4 text-4xl">🔗</div>
-      <h3 className="mb-2 text-lg font-medium text-white/80">No webhooks configured</h3>
-        <p className="mb-6 max-w-sm text-center text-sm text-white/40">
+      <h3 className="mb-2 text-lg font-medium text-sl-alabaster/80">No webhooks configured</h3>
+        <p className="mb-6 max-w-sm text-center text-sm text-sl-alabaster/40">
           Connect your tools — Slack, Odoo, or any custom endpoint.
           Webhooks fire on project approvals, annotations, and more.
         </p>
       <button
         onClick={onAdd}
-        className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-black transition-colors hover:bg-accent-dark"
+        className="rounded-lg bg-sl-gold-subtle px-5 py-2 text-sm font-medium text-black transition-colors hover:bg-sl-gold-subtle-dark"
       >
         Add Webhook
       </button>
@@ -52,13 +52,13 @@ function WebhookCard({
     <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5 transition-colors hover:border-white/20">
       <div className="mb-3 flex items-start justify-between">
         <div>
-          <h3 className="font-medium text-white">{webhook.name}</h3>
-          <p className="mt-0.5 truncate text-sm text-white/40">{webhook.url}</p>
+          <h3 className="font-medium text-sl-alabaster">{webhook.name}</h3>
+          <p className="mt-0.5 truncate text-sm text-sl-alabaster/40">{webhook.url}</p>
         </div>
         <div className="flex items-center gap-3">
           <button
             onClick={onToggle}
-            className={`relative h-5 w-9 rounded-full transition-colors ${webhook.active ? 'bg-accent' : 'bg-white/20'}`}
+            className={`relative h-5 w-9 rounded-full transition-colors ${webhook.active ? 'bg-sl-gold-subtle' : 'bg-white/20'}`}
           >
             <span className={`absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-black transition-transform ${webhook.active ? 'translate-x-4' : ''}`} />
           </button>
@@ -67,14 +67,14 @@ function WebhookCard({
 
       <div className="mb-3 flex flex-wrap gap-1.5">
         {eventLabels.map((label) => (
-          <span key={label} className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-white/50">
+          <span key={label} className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-sl-alabaster/50">
             {label}
           </span>
         ))}
       </div>
 
       <div className="flex gap-3 text-xs">
-        <button onClick={onEdit} className="text-white/40 transition-colors hover:text-white/70">
+        <button onClick={onEdit} className="text-sl-alabaster/40 transition-colors hover:text-sl-alabaster/70">
           Edit
         </button>
         <button onClick={onDelete} className="text-red-400/60 transition-colors hover:text-red-400">
@@ -118,27 +118,27 @@ function WebhookForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-5 rounded-xl border border-white/10 bg-white/[0.03] p-6">
       <div>
-        <label className="mb-1.5 block text-sm text-white/60">Name</label>
+        <label className="mb-1.5 block text-sm text-sl-alabaster/60">Name</label>
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="e.g. Slack Notifications"
-          className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none transition-colors focus:border-accent/50"
+          className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none transition-colors focus:border-sl-gold-subtle/50"
         />
       </div>
 
       <div>
-        <label className="mb-1.5 block text-sm text-white/60">Webhook URL</label>
+        <label className="mb-1.5 block text-sm text-sl-alabaster/60">Webhook URL</label>
         <input
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder="https://hooks.slack.com/..."
-          className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none transition-colors focus:border-accent/50"
+          className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-sl-alabaster outline-none transition-colors focus:border-sl-gold-subtle/50"
         />
       </div>
 
       <div>
-        <label className="mb-2 block text-sm text-white/60">Events</label>
+        <label className="mb-2 block text-sm text-sl-alabaster/60">Events</label>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           {EVENT_OPTIONS.map((opt) => (
             <label key={opt.value} className="flex cursor-pointer items-center gap-2 rounded-lg border border-white/5 px-3 py-2 transition-colors hover:border-white/20">
@@ -148,7 +148,7 @@ function WebhookForm({
                 onChange={() => toggleEvent(opt.value)}
                 className="accent-accent"
               />
-              <span className="text-sm text-white/60">{opt.label}</span>
+              <span className="text-sm text-sl-alabaster/60">{opt.label}</span>
             </label>
           ))}
         </div>
@@ -158,14 +158,14 @@ function WebhookForm({
         <button
           type="button"
           onClick={onCancel}
-          className="rounded-lg border border-white/10 px-4 py-2 text-sm text-white/60 transition-colors hover:bg-white/5"
+          className="rounded-lg border border-white/10 px-4 py-2 text-sm text-sl-alabaster/60 transition-colors hover:bg-white/5"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={saving || !name.trim() || !url.trim() || events.length === 0}
-          className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-black transition-colors hover:bg-accent-dark disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-lg bg-sl-gold-subtle px-5 py-2 text-sm font-medium text-black transition-colors hover:bg-sl-gold-subtle-dark disabled:cursor-not-allowed disabled:opacity-50"
         >
           {saving ? 'Saving...' : initial ? 'Update' : 'Create'}
         </button>
@@ -183,14 +183,14 @@ function OdooPanel() {
       <div className="mb-3 flex items-center gap-3">
         <span className="text-xl">📦</span>
         <div>
-          <h3 className="font-medium text-white">Odoo ERP</h3>
-          <p className="text-xs text-white/40">Projects, CRM, Invoices, Documents — all in one place</p>
+          <h3 className="font-medium text-sl-alabaster">Odoo ERP</h3>
+          <p className="text-xs text-sl-alabaster/40">Projects, CRM, Invoices, Documents — all in one place</p>
         </div>
         <span className="ml-auto rounded-full bg-green-500/20 px-2 py-0.5 text-[10px] text-green-400">
           Connected
         </span>
       </div>
-      <p className="text-xs text-white/30">Manage leads, projects, milestones, and documents through Odoo.</p>
+      <p className="text-xs text-sl-alabaster/30">Manage leads, projects, milestones, and documents through Odoo.</p>
     </a>
   );
 }
@@ -204,14 +204,14 @@ function WorkflowsPanel() {
       <div className="mb-3 flex items-center gap-3">
         <span className="text-xl">⚙️</span>
         <div>
-          <h3 className="font-medium text-white">Workflow Engine</h3>
-          <p className="text-xs text-white/40">Automations across CRM, projects, helpdesk, and accounting</p>
+          <h3 className="font-medium text-sl-alabaster">Workflow Engine</h3>
+          <p className="text-xs text-sl-alabaster/40">Automations across CRM, projects, helpdesk, and accounting</p>
         </div>
-        <span className="ml-auto rounded-full bg-accent/20 px-2 py-0.5 text-[10px] text-accent">
+        <span className="ml-auto rounded-full bg-sl-gold-subtle/20 px-2 py-0.5 text-[10px] text-sl-gold-hover">
           Active
         </span>
       </div>
-      <p className="text-xs text-white/30">Create event, schedule, and manual workflows that react to Odoo operations.</p>
+      <p className="text-xs text-sl-alabaster/30">Create event, schedule, and manual workflows that react to Odoo operations.</p>
     </a>
   );
 }
@@ -285,8 +285,8 @@ export default function IntegrationsPage() {
     <div className="mx-auto max-w-3xl px-4 py-12">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-white">Integrations</h1>
-          <p className="mt-1 text-sm text-white/40">
+          <h1 className="text-2xl font-semibold text-sl-alabaster">Integrations</h1>
+          <p className="mt-1 text-sm text-sl-alabaster/40">
             {webhooks.length === 0
               ? 'Connect your tools to HEXA Studio'
               : `${activeCount} of ${webhooks.length} webhooks active`}
@@ -294,7 +294,7 @@ export default function IntegrationsPage() {
         </div>
         <button
           onClick={() => { setShowForm(true); setEditing(null); }}
-          className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-accent-dark"
+          className="rounded-lg bg-sl-gold-subtle px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-sl-gold-subtle-dark"
         >
           Add Webhook
         </button>
@@ -338,7 +338,7 @@ export default function IntegrationsPage() {
         ))}
       </div>
 
-      <h2 className="mt-12 mb-4 text-lg font-medium text-white">ERP & Tools</h2>
+      <h2 className="mt-12 mb-4 text-lg font-medium text-sl-alabaster">ERP & Tools</h2>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <OdooPanel />
         <WorkflowsPanel />

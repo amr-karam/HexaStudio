@@ -8,24 +8,24 @@ import { TextReveal } from '@/components/ui/TextReveal';
 
 export default function NotFound() {
   return (
-    <main className="relative flex min-h-screen flex-col items-center justify-center px-8 overflow-hidden bg-background">
+    <main className="relative flex min-h-screen flex-col items-center justify-center px-8 overflow-hidden bg-sl-void">
       {/* Background texture */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(ellipse_at_center,white,transparent)] opacity-10 pointer-events-none" />
       
       {/* Ambient glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/5 blur-[200px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-sl-gold-subtle/5 blur-[200px] rounded-full pointer-events-none" />
 
       <div className="relative z-10 text-center flex flex-col items-center gap-8">
         <motion.span
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: EASE.entrance }}
-          className="text-xs uppercase tracking-[0.5em] text-neutral-500 font-mono"
+          className="text-xs uppercase tracking-[0.5em] text-sl-mist/60 font-mono"
         >
           Error 404
         </motion.span>
 
-        <div className="text-7xl md:text-[12rem] font-serif font-light tracking-tighter text-foreground/10 leading-none select-none">
+        <div className="text-7xl md:text-[12rem] font-serif font-light tracking-tighter text-sl-alabaster/10 leading-none select-none">
           <TextReveal delay={0.1}>404</TextReveal>
         </div>
 
@@ -34,9 +34,9 @@ export default function NotFound() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: EASE.entrance }}
-            className="text-3xl md:text-5xl font-serif font-light tracking-tight text-foreground"
+            className="text-3xl md:text-5xl font-serif font-light tracking-tight text-sl-alabaster"
           >
-            Space <span className="italic text-accent">Not Found</span>
+            Space <span className="italic text-sl-gold-hover">Not Found</span>
           </motion.h1>
         </div>
 
@@ -44,7 +44,7 @@ export default function NotFound() {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3, ease: EASE.entrance }}
-          className="text-neutral-500 text-sm max-w-md leading-relaxed font-light"
+          className="text-sl-mist/60 text-sm max-w-md leading-relaxed font-light"
         >
           The page you&apos;re looking for doesn&apos;t exist or has been moved to a different location.
         </motion.p>
@@ -70,8 +70,8 @@ export default function NotFound() {
       </div>
 
       {/* Bottom accent lines */}
-      <div className="absolute bottom-0 start-0 w-px h-32 bg-gradient-to-t from-accent to-transparent opacity-20" />
-      <div className="absolute bottom-0 end-0 w-px h-32 bg-gradient-to-t from-accent to-transparent opacity-20" />
+      <div className="absolute bottom-0 start-0 w-px h-32 bg-gradient-to-t from-sl-gold-subtle to-transparent opacity-20" />
+      <div className="absolute bottom-0 end-0 w-px h-32 bg-gradient-to-t from-sl-gold-subtle to-transparent opacity-20" />
     </main>
   );
 }

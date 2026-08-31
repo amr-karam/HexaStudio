@@ -22,13 +22,13 @@ export default async function ProjectsPage() {
   const projects = Array.isArray(projectsData?.projects) ? projectsData.projects : [];
 
   return (
-    <div className="min-h-screen bg-background pt-32 pb-24">
+    <div className="min-h-screen bg-sl-void pt-32 pb-24">
       <HeaderSection />
       <ProjectGrid projects={projects} />
       {projects.length === 0 && (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <p className="text-neutral-500 text-lg">No projects found.</p>
-          <p className="text-neutral-400 text-sm mt-2">Check back soon for new work.</p>
+          <p className="text-sl-mist/60 text-lg">No projects found.</p>
+          <p className="text-sl-mist/60 text-sm mt-2">Check back soon for new work.</p>
         </div>
       )}
     </div>

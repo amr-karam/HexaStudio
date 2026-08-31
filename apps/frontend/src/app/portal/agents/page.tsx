@@ -11,7 +11,7 @@ export default function PortalAgentsPage() {
     <div className="space-y-8">
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl font-light tracking-tight">Executive Agent Studio</h1>
-        <p className="text-sm text-neutral-400">
+        <p className="text-sm text-sl-mist/60">
           Collaborate with specialized autonomous AI personas for strategy, sales, delivery, and code review.
         </p>
       </div>

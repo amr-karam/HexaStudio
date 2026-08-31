@@ -141,17 +141,17 @@ function GlassButton({
         opacity,
       }}
       className={clsx(
-        'group relative inline-flex cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-full border border-accent/40 bg-accent/10 px-10 py-4 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.3em] text-accent backdrop-blur-md transition-colors duration-500 hover:border-accent/70 hover:bg-accent/15 focus-luxury',
+        'group relative inline-flex cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-full border border-sl-gold-subtle/40 bg-sl-gold-subtle/10 px-10 py-4 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.3em] text-sl-gold-hover backdrop-blur-md transition-colors duration-500 hover:border-sl-gold-subtle/70 hover:bg-sl-gold-subtle/15 focus-luxury',
         className,
       )}
     >
       <span
         aria-hidden="true"
-        className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-accent-light/80 to-transparent"
+        className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-sl-gold-hover/80 to-transparent"
       />
       <span
         aria-hidden="true"
-        className="h-1.5 w-1.5 rotate-45 bg-accent transition-transform duration-500 ease-[var(--hexa-ease-interaction)] group-hover:rotate-[135deg]"
+        className="h-1.5 w-1.5 rotate-45 bg-sl-gold-subtle transition-transform duration-500 ease-[var(--hexa-ease-interaction)] group-hover:rotate-[135deg]"
       />
       {children}
       <span
@@ -219,7 +219,7 @@ export default function CreativeAtelierPage() {
   }, []);
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-background font-sans text-foreground">
+    <div className="relative min-h-screen overflow-x-hidden bg-sl-void font-sans text-sl-alabaster">
       {/* Ambient obsidian-and-gold wash */}
       <div
         aria-hidden="true"
@@ -229,20 +229,20 @@ export default function CreativeAtelierPage() {
       <main className="relative flex min-h-screen flex-col">
         {/* Fixed header */}
         <header className="fixed inset-x-0 top-0 z-50">
-          <div className="flex items-center justify-between border-b border-accent/10 bg-background/70 px-6 py-4 backdrop-blur-xl sm:px-10">
+          <div className="flex items-center justify-between border-b border-sl-gold-subtle/10 bg-sl-void/70 px-6 py-4 backdrop-blur-xl sm:px-10">
             <Link
               href="/studio"
               className="group flex items-center gap-3 rounded-sm focus-luxury"
             >
               <span
                 aria-hidden="true"
-                className="h-2 w-2 rotate-45 bg-accent transition-transform duration-500 ease-[var(--hexa-ease-interaction)] group-hover:rotate-[135deg]"
+                className="h-2 w-2 rotate-45 bg-sl-gold-subtle transition-transform duration-500 ease-[var(--hexa-ease-interaction)] group-hover:rotate-[135deg]"
               />
-              <span className="font-serif text-base tracking-[0.3em] text-foreground sm:text-lg">
+              <span className="font-serif text-base tracking-[0.3em] text-sl-alabaster sm:text-lg">
                 HEXASTUDIO
               </span>
             </Link>
-            <p className="hidden font-mono text-[0.625rem] uppercase tracking-[0.35em] text-neutral-500 sm:block">
+            <p className="hidden font-mono text-[0.625rem] uppercase tracking-[0.35em] text-sl-mist/60 sm:block">
               The Digital Atelier
             </p>
           </div>
@@ -255,62 +255,62 @@ export default function CreativeAtelierPage() {
             aria-hidden="true"
             className="pointer-events-none absolute inset-x-4 bottom-6 top-24 hidden md:block"
           >
-            <div className="absolute inset-0 border border-accent/10" />
-            <div className="absolute -left-px -top-px h-10 w-10 border-l-2 border-t-2 border-accent/40" />
-            <div className="absolute -right-px -top-px h-10 w-10 border-r-2 border-t-2 border-accent/40" />
-            <div className="absolute -bottom-px -left-px h-10 w-10 border-b-2 border-l-2 border-accent/40" />
-            <div className="absolute -bottom-px -right-px h-10 w-10 border-b-2 border-r-2 border-accent/40" />
-            <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-accent/10 to-transparent" />
-            <div className="absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-gradient-to-r from-transparent via-accent/10 to-transparent" />
-            <div className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rotate-45 border border-accent/50" />
+            <div className="absolute inset-0 border border-sl-gold-subtle/10" />
+            <div className="absolute -left-px -top-px h-10 w-10 border-l-2 border-t-2 border-sl-gold-subtle/40" />
+            <div className="absolute -right-px -top-px h-10 w-10 border-r-2 border-t-2 border-sl-gold-subtle/40" />
+            <div className="absolute -bottom-px -left-px h-10 w-10 border-b-2 border-l-2 border-sl-gold-subtle/40" />
+            <div className="absolute -bottom-px -right-px h-10 w-10 border-b-2 border-r-2 border-sl-gold-subtle/40" />
+            <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-sl-gold-subtle/10 to-transparent" />
+            <div className="absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-gradient-to-r from-transparent via-sl-gold-subtle/10 to-transparent" />
+            <div className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rotate-45 border border-sl-gold-subtle/50" />
           </div>
 
           {/* Decorative serif numeral */}
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute right-[6%] top-20 hidden select-none font-serif text-[clamp(7rem,16vw,13rem)] leading-none text-accent/5 lg:block"
+            className="pointer-events-none absolute right-[6%] top-20 hidden select-none font-serif text-[clamp(7rem,16vw,13rem)] leading-none text-sl-gold-hover/5 lg:block"
           >
             01
           </span>
 
           <Reveal className="flex flex-col items-center text-center">
-            <p className="mb-8 flex items-center gap-4 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-accent/70">
-              <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-accent/70" />
+            <p className="mb-8 flex items-center gap-4 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-sl-gold-hover/70">
+              <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-sl-gold-subtle/70" />
               The Studio · Working Draft
-              <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-accent/70" />
+              <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-sl-gold-subtle/70" />
             </p>
 
-            <h1 className="max-w-4xl text-balance font-serif text-[clamp(2.75rem,7.5vw,7rem)] font-medium leading-[1.04] tracking-tight text-foreground">
+            <h1 className="max-w-4xl text-balance font-serif text-[clamp(2.75rem,7.5vw,7rem)] font-medium leading-[1.04] tracking-tight text-sl-alabaster">
               Creative{' '}
               <em className="text-gradient-gold font-normal italic">Atelier</em>
             </h1>
 
-            <p className="mt-8 max-w-xl text-balance font-sans text-base leading-relaxed text-neutral-400 sm:text-lg">
+            <p className="mt-8 max-w-xl text-balance font-sans text-base leading-relaxed text-sl-mist/60 sm:text-lg">
               Where raw intent is cut, set, and polished into artifact.
-              <span className="mt-2 block text-neutral-500">
+              <span className="mt-2 block text-sl-mist/60">
                 Every interaction writes form. Every pause reveals potential.
               </span>
             </p>
           </Reveal>
 
           <Reveal delay={160} className="mt-12 flex w-full max-w-xs items-center gap-4">
-            <span className="h-px flex-1 bg-gradient-to-r from-transparent to-accent/40" />
-            <span aria-hidden="true" className="h-2 w-2 rotate-45 border border-accent/60" />
-            <span className="h-px flex-1 bg-gradient-to-l from-transparent to-accent/40" />
+            <span className="h-px flex-1 bg-gradient-to-r from-transparent to-sl-gold-subtle/40" />
+            <span aria-hidden="true" className="h-2 w-2 rotate-45 border border-sl-gold-subtle/60" />
+            <span className="h-px flex-1 bg-gradient-to-l from-transparent to-sl-gold-subtle/40" />
           </Reveal>
         </section>
 
         {/* § 01 — The Elements */}
         <section aria-labelledby="atelier-elements" className="relative px-6 pt-20 sm:pt-28">
           <Reveal className="mx-auto flex w-full max-w-5xl flex-col items-center text-center">
-            <p className="flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-accent/70">
-              <span aria-hidden="true" className="h-px w-8 bg-accent/50" />
+            <p className="flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-sl-gold-hover/70">
+              <span aria-hidden="true" className="h-px w-8 bg-sl-gold-subtle/50" />
               § 01 — The Elements
-              <span aria-hidden="true" className="h-px w-8 bg-accent/50" />
+              <span aria-hidden="true" className="h-px w-8 bg-sl-gold-subtle/50" />
             </p>
             <h2
               id="atelier-elements"
-              className="mt-5 font-serif text-3xl tracking-tight text-foreground sm:text-4xl"
+              className="mt-5 font-serif text-3xl tracking-tight text-sl-alabaster sm:text-4xl"
             >
               Instruments of the{' '}
               <em className="text-gradient-gold font-normal italic">Atelier</em>
@@ -323,16 +323,16 @@ export default function CreativeAtelierPage() {
                 <article className="group artisan-glass artisan-specular-top relative flex h-full flex-col overflow-hidden rounded-2xl p-7 sm:p-8">
                   <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute -right-14 -top-14 h-40 w-40 rounded-full bg-accent/10 opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
+                    className="pointer-events-none absolute -right-14 -top-14 h-40 w-40 rounded-full bg-sl-gold-subtle/10 opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
                   />
-                  <span className="font-mono text-[0.625rem] uppercase tracking-[0.35em] text-accent/60">
+                  <span className="font-mono text-[0.625rem] uppercase tracking-[0.35em] text-sl-gold-hover/60">
                     № {item.index}
                   </span>
-                  <h3 className="mt-5 font-serif text-2xl text-foreground">{item.label}</h3>
-                  <p className="mt-3 flex-1 font-sans text-sm leading-relaxed text-neutral-400">
+                  <h3 className="mt-5 font-serif text-2xl text-sl-alabaster">{item.label}</h3>
+                  <p className="mt-3 flex-1 font-sans text-sm leading-relaxed text-sl-mist/60">
                     {item.description}
                   </p>
-                  <span className="mt-7 inline-flex items-center gap-2 self-start font-mono text-[0.625rem] uppercase tracking-[0.3em] text-neutral-500 transition-colors duration-500 group-hover:text-accent">
+                  <span className="mt-7 inline-flex items-center gap-2 self-start font-mono text-[0.625rem] uppercase tracking-[0.3em] text-sl-mist/60 transition-colors duration-500 group-hover:text-sl-gold-hover">
                     Explore
                     <span
                       aria-hidden="true"
@@ -363,8 +363,8 @@ export default function CreativeAtelierPage() {
           <div className="mx-auto w-full max-w-5xl">
             <Reveal>
               <div className="artisan-glass-gold artisan-specular-top relative overflow-hidden rounded-3xl p-8 md:p-14">
-                <p className="flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-accent/70">
-                  <span aria-hidden="true" className="h-px w-8 bg-accent/50" />
+                <p className="flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-sl-gold-hover/70">
+                  <span aria-hidden="true" className="h-px w-8 bg-sl-gold-subtle/50" />
                   § 02 — On Craft
                 </p>
 
@@ -373,16 +373,16 @@ export default function CreativeAtelierPage() {
                   <div>
                     <h2
                       id="atelier-craft-title"
-                      className="font-serif text-3xl leading-tight tracking-tight text-foreground sm:text-4xl"
+                      className="font-serif text-3xl leading-tight tracking-tight text-sl-alabaster sm:text-4xl"
                     >
                       The Nature of{' '}
                       <em className="text-gradient-gold font-normal italic">Making</em>
                     </h2>
-                    <p className="drop-cap mt-7 font-sans leading-relaxed text-neutral-300">
+                    <p className="drop-cap mt-7 font-sans leading-relaxed text-sl-mist/80">
                       True creation lives in the tension between control and surrender — between
                       the precise intention and the happy accident that reveals new possibilities.
                     </p>
-                    <p className="mt-5 font-sans leading-relaxed text-neutral-400">
+                    <p className="mt-5 font-sans leading-relaxed text-sl-mist/60">
                       In this atelier, we don&apos;t just build interfaces. We cultivate
                       environments where creative emergence becomes inevitable. Each project is a
                       collaboration between human intention and digital possibility.
@@ -392,22 +392,22 @@ export default function CreativeAtelierPage() {
                   {/* Column 2 — craft notes */}
                   <div className="space-y-6">
                     <div className="artisan-glass artisan-specular-top relative overflow-hidden rounded-2xl p-6 md:p-8">
-                      <h3 className="font-serif text-xl text-foreground md:text-2xl">
+                      <h3 className="font-serif text-xl text-sl-alabaster md:text-2xl">
                         From Trace to{' '}
                         <em className="text-gradient-gold font-normal italic">Artifact</em>
                       </h3>
-                      <p className="mt-3 font-sans text-sm leading-relaxed text-neutral-400">
+                      <p className="mt-3 font-sans text-sm leading-relaxed text-sl-mist/60">
                         What begins as a fleeting interaction becomes, through attention and
                         iteration, a lasting artifact — not despite its process, but because of it.
                       </p>
                     </div>
 
                     <div className="artisan-glass artisan-specular-top relative overflow-hidden rounded-2xl p-6 md:p-8">
-                      <h3 className="font-serif text-xl text-foreground md:text-2xl">
+                      <h3 className="font-serif text-xl text-sl-alabaster md:text-2xl">
                         Materials of{' '}
                         <em className="text-gradient-gold font-normal italic">Thought</em>
                       </h3>
-                      <p className="mt-3 font-sans text-sm leading-relaxed text-neutral-400">
+                      <p className="mt-3 font-sans text-sm leading-relaxed text-sl-mist/60">
                         Like a master artisan working with physical media, the digital creator
                         shapes not just pixels but possibilities — light becomes structure,
                         movement becomes meaning.
@@ -415,11 +415,11 @@ export default function CreativeAtelierPage() {
                     </div>
 
                     <div className="artisan-glass artisan-specular-top relative overflow-hidden rounded-2xl p-6 md:p-8">
-                      <h3 className="font-serif text-xl text-foreground md:text-2xl">
+                      <h3 className="font-serif text-xl text-sl-alabaster md:text-2xl">
                         The Alchemy of{' '}
                         <em className="text-gradient-gold font-normal italic">Collaboration</em>
                       </h3>
-                      <p className="mt-3 font-sans text-sm leading-relaxed text-neutral-400">
+                      <p className="mt-3 font-sans text-sm leading-relaxed text-sl-mist/60">
                         The best work emerges when diverse perspectives converge — designers,
                         engineers, strategists, and dreamers each bringing their unique lens to
                         the creative cauldron.
@@ -434,17 +434,17 @@ export default function CreativeAtelierPage() {
             <Reveal delay={120}>
               <nav
                 aria-label="Studio navigation"
-                className="mt-16 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 border-t border-accent/10 pt-10"
+                className="mt-16 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 border-t border-sl-gold-subtle/10 pt-10"
               >
                 {navItems.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="group inline-flex items-center gap-2 rounded-sm font-mono text-[0.6875rem] uppercase tracking-[0.25em] text-neutral-400 transition-colors duration-300 hover:text-accent focus-luxury"
+                    className="group inline-flex items-center gap-2 rounded-sm font-mono text-[0.6875rem] uppercase tracking-[0.25em] text-sl-mist/60 transition-colors duration-300 hover:text-sl-gold-hover focus-luxury"
                   >
                     <span
                       aria-hidden="true"
-                      className="h-1 w-1 rotate-45 bg-accent/40 transition-colors duration-300 group-hover:bg-accent"
+                      className="h-1 w-1 rotate-45 bg-sl-gold-subtle/40 transition-colors duration-300 group-hover:bg-sl-gold-subtle"
                     />
                     {item.label}
                   </Link>
@@ -456,8 +456,8 @@ export default function CreativeAtelierPage() {
 
         {/* Footer credit */}
         <footer className="mt-16 flex justify-center px-6 pb-14">
-          <p className="flex items-center justify-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.35em] text-neutral-600">
-            <span aria-hidden="true" className="h-1 w-1 rotate-45 bg-accent/40" />
+          <p className="flex items-center justify-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.35em] text-sl-mist/60">
+            <span aria-hidden="true" className="h-1 w-1 rotate-45 bg-sl-gold-subtle/40" />
             Crafted with artisan processes
           </p>
         </footer>
@@ -470,10 +470,10 @@ export default function CreativeAtelierPage() {
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={Math.round(scrollProgress)}
-        className="fixed inset-x-0 bottom-0 z-50 h-[3px] bg-background/80"
+        className="fixed inset-x-0 bottom-0 z-50 h-[3px] bg-sl-void/80"
       >
         <div
-          className="h-full bg-gradient-to-r from-accent-dark via-accent to-accent-light shadow-[0_0_10px_rgba(212,175,55,0.45)]"
+          className="h-full bg-gradient-to-r from-sl-gold-subtle-dark via-sl-gold-subtle to-sl-gold-hover shadow-[0_0_10px_rgba(212,175,55,0.45)]"
           style={{ width: `${scrollProgress}%` }}
         />
       </div>

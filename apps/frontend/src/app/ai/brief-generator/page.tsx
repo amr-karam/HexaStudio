@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function BriefGeneratorPage() {
   return (
-    <div className="min-h-screen bg-background text-foreground py-16 px-6 md:px-12">
+    <div className="min-h-screen bg-sl-void text-sl-alabaster py-16 px-6 md:px-12">
       <div className="max-w-6xl mx-auto space-y-8">
         <BriefGenerator />
       </div>

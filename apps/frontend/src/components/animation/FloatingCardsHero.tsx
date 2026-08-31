@@ -216,20 +216,20 @@ export function FloatingCardsHero({
           <div
             key={card.id}
             ref={(el) => { if (el) cardElsRef.current.set(card.id, el); }}
-            className={cn('absolute rounded-xl border border-white/10 bg-surface', card.className)}
+            className={cn('absolute rounded-xl border border-white/10 bg-sl-obsidian', card.className)}
             style={card.image ? { backgroundImage: card.image, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
           >
             <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-gold/5 to-transparent" />
           </div>
         ))}
         <div className="relative z-10 text-center max-w-4xl mx-auto">
-          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-light text-white leading-[1.1] mb-4">
-            {headline} <span className="font-serif italic text-gold">{highlight}</span>
+          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-light text-sl-alabaster leading-[1.1] mb-4">
+            {headline} <span className="font-serif italic text-sl-gold-hover">{highlight}</span>
           </h1>
           {subline && (
-            <p className="text-base md:text-lg text-white/40 font-light max-w-2xl mx-auto mb-8">{subline}</p>
+            <p className="text-base md:text-lg text-sl-alabaster/40 font-light max-w-2xl mx-auto mb-8">{subline}</p>
           )}
-          <Link href={ctaHref} className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-gold text-obsidian text-sm font-medium tracking-wider uppercase hover:bg-gold-light transition-colors">
+          <Link href={ctaHref} className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-sl-gold-subtle text-obsidian text-sm font-medium tracking-wider uppercase hover:bg-sl-gold-subtle-light transition-colors">
             {ctaLabel}
           </Link>
         </div>
@@ -299,7 +299,7 @@ export function FloatingCardsHero({
           <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-gold/5 to-transparent pointer-events-none" />
           {card.label && (
             <div
-              className="absolute bottom-2 left-2 right-2 px-2 py-1 rounded-md text-[10px] text-white/70 opacity-0 transition-opacity duration-300"
+              className="absolute bottom-2 left-2 right-2 px-2 py-1 rounded-md text-[10px] text-sl-alabaster/70 opacity-0 transition-opacity duration-300"
               style={{ background: 'rgba(20,10,6,0.7)', backdropFilter: 'blur(6px)' }}
             >
               {card.label}
@@ -311,12 +311,12 @@ export function FloatingCardsHero({
       <div className="relative z-10 text-center max-w-4xl mx-auto pointer-events-none">
         <h1
           ref={headlineRef}
-          className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-light text-white leading-[1.1] mb-4 flex flex-wrap items-baseline justify-center gap-x-3"
+          className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-light text-sl-alabaster leading-[1.1] mb-4 flex flex-wrap items-baseline justify-center gap-x-3"
         >
           {headlineWords}
           <LetterBounceText
             tag="span"
-            className="font-serif italic text-gold"
+            className="font-serif italic text-sl-gold-hover"
             stagger={0.05}
             duration={1.2}
             delay={0.8}
@@ -326,7 +326,7 @@ export function FloatingCardsHero({
         </h1>
 
         {subline && (
-          <p ref={sublineRef} className="text-base md:text-lg text-white/40 font-light max-w-2xl mx-auto mb-8 md:mb-12 leading-relaxed">
+          <p ref={sublineRef} className="text-base md:text-lg text-sl-alabaster/40 font-light max-w-2xl mx-auto mb-8 md:mb-12 leading-relaxed">
             {subline}
           </p>
         )}
@@ -334,7 +334,7 @@ export function FloatingCardsHero({
         <div className="pointer-events-auto flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
             href={ctaHref}
-            className="nav-cta inline-flex items-center gap-2 px-8 py-3 rounded-full bg-gold text-obsidian text-sm font-medium tracking-wider uppercase hover:bg-gold-light transition-colors"
+            className="nav-cta inline-flex items-center gap-2 px-8 py-3 rounded-full bg-sl-gold-subtle text-obsidian text-sm font-medium tracking-wider uppercase hover:bg-sl-gold-subtle-light transition-colors"
             onClick={(e) => {
               void getGsap().then((g) => {
                 g.fromTo(e.currentTarget, { scale: 1 }, { scale: 0.93, duration: 0.12, yoyo: true, repeat: 1, ease: 'power2.inOut' });

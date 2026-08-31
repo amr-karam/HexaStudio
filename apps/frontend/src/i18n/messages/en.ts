@@ -49,10 +49,10 @@ export const en = {
     title: 'Our Services',
     subtitle: 'End-to-end architectural visualization solutions',
     expertise: 'Expertise',
-    heroHeading: 'Our <span class="text-accent">Services.</span>',
+    heroHeading: 'Our <span class="text-sl-gold-hover">Services.</span>',
     inquire: 'Inquire about {title}',
     ctaOverline: 'Start a Project',
-    ctaHeading: 'Have a Vision? <span class="text-accent">Let\'s Build It.</span>',
+    ctaHeading: 'Have a Vision? <span class="text-sl-gold-hover">Let\'s Build It.</span>',
     ctaDescription: 'Every great project starts with a conversation. Tell us about your vision and we\'ll show you how to bring it to life.',
     ctaButton: 'Get in Touch',
     items: {

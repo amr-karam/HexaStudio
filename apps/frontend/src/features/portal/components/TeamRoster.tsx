@@ -55,15 +55,15 @@ export function TeamRoster({ projectId }: TeamRosterProps) {
 
   if (isLoading) {
     return (
-      <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 space-y-4">
-        <div className="h-4 w-32 bg-neutral-800 rounded animate-pulse" />
+      <div className="bg-sl-void border border-sl-obsidian rounded-2xl p-6 space-y-4">
+        <div className="h-4 w-32 bg-sl-obsidian rounded animate-pulse" />
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
             <div key={i} className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-full bg-neutral-800 animate-pulse" />
+              <div className="w-10 h-10 rounded-full bg-sl-obsidian animate-pulse" />
               <div className="space-y-1">
-                <div className="h-3 w-24 bg-neutral-800 rounded animate-pulse" />
-                <div className="h-2 w-16 bg-neutral-800 rounded animate-pulse" />
+                <div className="h-3 w-24 bg-sl-obsidian rounded animate-pulse" />
+                <div className="h-2 w-16 bg-sl-obsidian rounded animate-pulse" />
               </div>
             </div>
           ))}
@@ -73,13 +73,13 @@ export function TeamRoster({ projectId }: TeamRosterProps) {
   }
 
   return (
-    <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 space-y-5">
+    <div className="bg-sl-void border border-sl-obsidian rounded-2xl p-6 space-y-5">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <Icon name="users" className="w-4 h-4 text-amber-400" />
           <h3 className="text-sm font-bold text-neutral-100">Project Team</h3>
         </div>
-        <span className="text-[10px] text-neutral-500 font-mono">
+        <span className="text-[10px] text-sl-mist/60 font-mono">
           {members.length} members
         </span>
       </div>
@@ -88,7 +88,7 @@ export function TeamRoster({ projectId }: TeamRosterProps) {
         {members.map((member, idx) => (
           <div
             key={member.id}
-            className="flex items-center space-x-4 p-3 bg-neutral-950 rounded-xl border border-neutral-800 hover:border-neutral-700 transition-colors group"
+            className="flex items-center space-x-4 p-3 bg-neutral-950 rounded-xl border border-sl-obsidian hover:border-neutral-700 transition-colors group"
           >
             <div
               className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm ${getAvatarColor(idx)}`}
@@ -100,12 +100,12 @@ export function TeamRoster({ projectId }: TeamRosterProps) {
               <p className="text-sm font-semibold text-neutral-200 group-hover:text-amber-400 transition-colors truncate">
                 {member.name}
               </p>
-              <p className="text-[11px] text-neutral-500 truncate">{member.role}</p>
+              <p className="text-[11px] text-sl-mist/60 truncate">{member.role}</p>
             </div>
 
             <a
               href={`mailto:${member.email}`}
-              className="text-neutral-600 hover:text-amber-400 transition-colors shrink-0"
+              className="text-sl-mist/60 hover:text-amber-400 transition-colors shrink-0"
               title={`Email ${member.name}`}
             >
               <Icon name="send" className="w-4 h-4" />
@@ -116,7 +116,7 @@ export function TeamRoster({ projectId }: TeamRosterProps) {
         {members.length === 0 && (
           <div className="text-center py-8">
             <Icon name="users" className="w-8 h-8 text-neutral-700 mx-auto" />
-            <p className="text-xs text-neutral-500 mt-3">No team members assigned yet</p>
+            <p className="text-xs text-sl-mist/60 mt-3">No team members assigned yet</p>
           </div>
         )}
       </div>

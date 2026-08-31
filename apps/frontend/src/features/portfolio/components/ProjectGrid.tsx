@@ -122,7 +122,7 @@ const ProjectCard = ({ title, category, image, index, onClick, isFocused, status
         aria-label={`View details for ${title}`}
         className={cn(
           'group w-full text-left cursor-pointer perspective-1000',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-lg',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-lg',
         )}
       >
         <motion.div
@@ -136,8 +136,8 @@ const ProjectCard = ({ title, category, image, index, onClick, isFocused, status
           className="transition-all duration-700 ease-out"
         >
           <Card variant="solid" className="overflow-hidden p-0 aspect-[3/4]">
-            <div className="absolute inset-0 bg-accent/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
-            <div ref={imageClipRef} className="h-full w-full relative overflow-hidden bg-surface-light">
+            <div className="absolute inset-0 bg-sl-gold-subtle/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
+            <div ref={imageClipRef} className="h-full w-full relative overflow-hidden bg-sl-obsidian-light">
               <div className="h-full w-full transition-transform duration-1000 ease-out-expo group-hover:scale-110">
                 <div ref={imageScaleRef} data-distortion="work-card" className="relative h-full w-full">
                   <Image
@@ -154,18 +154,18 @@ const ProjectCard = ({ title, category, image, index, onClick, isFocused, status
 
               <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
                 <div className="transition-all duration-500 ease-out">
-                  <p className="text-[9px] md:text-[10px] uppercase tracking-[0.6em] text-accent/90 group-hover:text-accent transition-colors duration-500 mb-3 font-mono">
+                  <p className="text-[9px] md:text-[10px] uppercase tracking-[0.6em] text-sl-gold-hover/90 group-hover:text-sl-gold-hover transition-colors duration-500 mb-3 font-mono">
                     {category}
                   </p>
                   {status && (
-                    <span className="mb-3 inline-block rounded-none border border-white/10 px-2 py-0.5 text-[8px] uppercase tracking-[0.2em] text-white/50 bg-white/5">
+                    <span className="mb-3 inline-block rounded-none border border-white/10 px-2 py-0.5 text-[8px] uppercase tracking-[0.2em] text-sl-alabaster/50 bg-white/5">
                       {status}
                     </span>
                   )}
-                  <h3 className="text-xl md:text-2xl font-serif font-light text-foreground/95 group-hover:text-white transition-colors duration-500 leading-[1.1] tracking-tight">
+                  <h3 className="text-xl md:text-2xl font-serif font-light text-sl-alabaster/95 group-hover:text-sl-alabaster transition-colors duration-500 leading-[1.1] tracking-tight">
                     {title}
                   </h3>
-                  <div className="h-[1px] w-0 group-hover:w-full bg-accent transition-all duration-1000 mt-6 ease-out-expo" />
+                  <div className="h-[1px] w-0 group-hover:w-full bg-sl-gold-subtle transition-all duration-1000 mt-6 ease-out-expo" />
                 </div>
               </div>
             </div>
@@ -299,7 +299,7 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
   return (
     <>
       {/* Grid content section — storybook frame provided by parent page */}
-      <section ref={sectionRef} className="px-8 md:px-16 py-32 bg-background relative overflow-hidden">
+      <section ref={sectionRef} className="px-8 md:px-16 py-32 bg-sl-void relative overflow-hidden">
         <div className="absolute top-12 left-8 md:left-16 z-20">
           <ChapterMarker index={4} title="Proof" />
         </div>
@@ -311,7 +311,7 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="text-xs uppercase tracking-[0.5em] text-neutral-500 mb-6 block font-mono"
+              className="text-xs uppercase tracking-[0.5em] text-sl-mist/60 mb-6 block font-mono"
             >
               Selected Works
             </motion.span>
@@ -326,7 +326,7 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
               <KineticTitle
                 text="Creating Visual Truth"
                 accentWords={['Visual']}
-                className="text-5xl md:text-7xl font-serif font-light tracking-[-0.03em] text-foreground leading-[1.05]"
+                className="text-5xl md:text-7xl font-serif font-light tracking-[-0.03em] text-sl-alabaster leading-[1.05]"
               />
             </motion.div>
           </div>
@@ -335,7 +335,7 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={makeTransition('entrance', 'page', 0.2)}
-            className="text-neutral-500 font-light text-sm leading-relaxed w-full max-w-xs"
+            className="text-sl-mist/60 font-light text-sm leading-relaxed w-full max-w-xs"
           >
             A curation of architectural narratives defined by light, material, and space.
           </motion.p>
@@ -349,8 +349,8 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
                 className={cn(
                   'text-[9px] uppercase tracking-[0.4em] transition-all duration-700 font-mono py-1 border-b border-transparent',
                   activeCategory === cat
-                    ? 'text-accent border-accent'
-                    : 'text-neutral-600 hover:text-neutral-400'
+                    ? 'text-sl-gold-hover border-sl-gold-subtle'
+                    : 'text-sl-mist/60 hover:text-sl-mist/60'
                 )}
               >
                 {cat}

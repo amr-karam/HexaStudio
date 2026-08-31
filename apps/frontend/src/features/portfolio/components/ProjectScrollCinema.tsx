@@ -94,7 +94,7 @@ function ChapterHero({ project }: { project: Project }) {
               className="object-cover opacity-60"
             />
           </motion.div>
-          <div className="absolute inset-0 bg-gradient-to-b from-obsidian/20 via-transparent to-background" />
+          <div className="absolute inset-0 bg-gradient-to-b from-obsidian/20 via-transparent to-sl-void" />
         </div>
       )}
 
@@ -105,7 +105,7 @@ function ChapterHero({ project }: { project: Project }) {
           initial={staticMode ? { opacity: 1 } : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: EASE.entrance }}
-          className="text-xs uppercase tracking-[0.5em] text-accent mb-6 block font-mono"
+          className="text-xs uppercase tracking-[0.5em] text-sl-gold-hover mb-6 block font-mono"
         >
           {project.category?.name}
         </motion.span>
@@ -113,7 +113,7 @@ function ChapterHero({ project }: { project: Project }) {
           initial={staticMode ? { opacity: 1 } : { opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2, ease: EASE.entrance }}
-          className="text-6xl md:text-9xl font-serif font-light tracking-tighter text-foreground leading-tight"
+          className="text-6xl md:text-9xl font-serif font-light tracking-tighter text-sl-alabaster leading-tight"
         >
           {project.title}
         </motion.h1>
@@ -126,10 +126,10 @@ function ChapterHero({ project }: { project: Project }) {
         transition={{ delay: 1.5, duration: 0.8 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
       >
-        <span className="text-[10px] uppercase tracking-[0.4em] text-neutral-500 font-mono">
+        <span className="text-[10px] uppercase tracking-[0.4em] text-sl-mist/60 font-mono">
           Scroll to explore
         </span>
-        <div className="w-px h-8 bg-gradient-to-b from-accent/60 to-transparent" />
+        <div className="w-px h-8 bg-gradient-to-b from-sl-gold-subtle/60 to-transparent" />
       </motion.div>
     </section>
   );
@@ -148,7 +148,7 @@ function ChapterBrief({ project }: { project: Project }) {
   return (
     <section
       id="ch-brief"
-      className="relative min-h-screen w-full bg-background py-32 px-8 md:px-16"
+      className="relative min-h-screen w-full bg-sl-void py-32 px-8 md:px-16"
     >
       <div ref={ref} className="grid grid-cols-1 lg:grid-cols-12 gap-16 max-w-[1400px] mx-auto">
         {/* Left: editorial index + description */}
@@ -169,7 +169,7 @@ function ChapterBrief({ project }: { project: Project }) {
             initial={staticMode ? { opacity: 1 } : { opacity: 0, y: 30 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.2, ease: EASE.entrance }}
-            className="text-xl md:text-2xl text-neutral-400 font-light leading-relaxed max-w-2xl"
+            className="text-xl md:text-2xl text-sl-mist/60 font-light leading-relaxed max-w-2xl"
           >
             {project.description}
           </motion.p>
@@ -182,8 +182,8 @@ function ChapterBrief({ project }: { project: Project }) {
 
         {/* Right: metadata rows with stagger (bdn DNA) */}
         <div className="lg:col-span-5">
-          <div className="bg-surface border border-border/50 p-8 md:p-10 rounded-sm">
-            <h3 className="text-xs uppercase tracking-widest text-neutral-500 mb-8 font-mono">
+          <div className="bg-sl-obsidian border border-sl-silver/20 p-8 md:p-10 rounded-sm">
+            <h3 className="text-xs uppercase tracking-widest text-sl-mist/60 mb-8 font-mono">
               Project Details
             </h3>
             <div className="space-y-6">
@@ -197,12 +197,12 @@ function ChapterBrief({ project }: { project: Project }) {
                     delay: 0.3 + i * 0.08, // 80ms stagger per row
                     ease: EASE.entrance,
                   }}
-                  className="flex justify-between items-baseline border-b border-border/30 pb-4 last:border-0"
+                  className="flex justify-between items-baseline border-b border-sl-silver/20 pb-4 last:border-0"
                 >
-                  <span className="text-[10px] uppercase text-neutral-600 tracking-widest font-mono">
+                  <span className="text-[10px] uppercase text-sl-mist/60 tracking-widest font-mono">
                     {stat.label}
                   </span>
-                  <span className="text-sm text-foreground font-light text-right max-w-[60%]">
+                  <span className="text-sm text-sl-alabaster font-light text-right max-w-[60%]">
                     {stat.value}
                   </span>
                 </motion.div>
@@ -305,11 +305,11 @@ function ChapterExperience({ project }: { project: Project }) {
               initial={staticMode ? { opacity: 1 } : { opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              className="text-[10px] uppercase tracking-[0.4em] text-neutral-500 font-mono"
+              className="text-[10px] uppercase tracking-[0.4em] text-sl-mist/60 font-mono"
             >
               Drag to explore the model
             </motion.p>
-            <div className="w-px h-16 bg-gradient-to-b from-accent/40 to-transparent" />
+            <div className="w-px h-16 bg-gradient-to-b from-sl-gold-subtle/40 to-transparent" />
           </div>
         </div>
       </div>
@@ -335,7 +335,7 @@ function ChapterDetails({ project }: { project: Project }) {
   return (
     <section
       id="ch-details"
-      className="relative min-h-screen w-full bg-background py-32 px-8 md:px-16"
+      className="relative min-h-screen w-full bg-sl-void py-32 px-8 md:px-16"
     >
       <div ref={ref} className="max-w-[1400px] mx-auto">
         <ChapterMarker index={4} title="Details" className="mb-10" />
@@ -356,7 +356,7 @@ function ChapterDetails({ project }: { project: Project }) {
             initial={staticMode ? { opacity: 1 } : { opacity: 0, y: 12 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.05, ease: EASE.entrance }}
-            className="block font-mono text-[10px] uppercase tracking-[0.4em] text-accent mb-5"
+            className="block font-mono text-[10px] uppercase tracking-[0.4em] text-sl-gold-hover mb-5"
           >
             § 04 — By the Numbers
           </motion.span>
@@ -364,7 +364,7 @@ function ChapterDetails({ project }: { project: Project }) {
             initial={staticMode ? { opacity: 1 } : { opacity: 0, y: 24 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.1, ease: EASE.entrance }}
-            className="text-3xl md:text-4xl font-serif font-light tracking-tight text-foreground leading-tight"
+            className="text-3xl md:text-4xl font-serif font-light tracking-tight text-sl-alabaster leading-tight"
           >
             The details behind{' '}
             <em className="font-serif italic text-gradient-gold">the build</em>
@@ -394,16 +394,16 @@ function ChapterDetails({ project }: { project: Project }) {
                   delay: 0.2 + i * 0.08,
                   ease: EASE.entrance,
                 }}
-                className={`flex flex-col items-center text-center ${i > 0 ? 'md:border-l md:border-border/20 md:pl-10' : ''}`}
+                className={`flex flex-col items-center text-center ${i > 0 ? 'md:border-l md:border-sl-silver/20 md:pl-10' : ''}`}
               >
-                <div className="text-5xl md:text-7xl font-serif font-light text-accent leading-none tabular-nums">
+                <div className="text-5xl md:text-7xl font-serif font-light text-sl-gold-hover leading-none tabular-nums">
                   <AnimatedCounter value={c.value} />
                 </div>
                 <div
-                  className="mt-6 mb-4 h-px w-10 bg-gradient-to-r from-transparent via-accent/60 to-transparent"
+                  className="mt-6 mb-4 h-px w-10 bg-gradient-to-r from-transparent via-sl-gold-subtle/60 to-transparent"
                   aria-hidden="true"
                 />
-                <span className="text-[10px] uppercase tracking-[0.4em] text-neutral-500 font-mono">
+                <span className="text-[10px] uppercase tracking-[0.4em] text-sl-mist/60 font-mono">
                   {c.label}
                 </span>
               </motion.div>
@@ -423,27 +423,27 @@ function ChapterDetails({ project }: { project: Project }) {
             <div className="flex items-center gap-3 mb-8">
               <span className="relative flex h-2 w-2" aria-hidden="true">
                 {!staticMode && (
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sl-gold-subtle opacity-60" />
                 )}
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-sl-gold-subtle" />
               </span>
-              <h3 className="text-[10px] uppercase tracking-[0.4em] text-accent font-mono">
+              <h3 className="text-[10px] uppercase tracking-[0.4em] text-sl-gold-hover font-mono">
                 Live Project Status
               </h3>
             </div>
 
             <div className="flex items-center gap-4 mb-6">
-              <span className="text-sm text-foreground font-light">
+              <span className="text-sm text-sl-alabaster font-light">
                 {project.liveStatus.stage}
               </span>
               <span className="diamond-bullet" aria-hidden="true" />
-              <span className="text-xs text-accent font-mono tabular-nums">
+              <span className="text-xs text-sl-gold-hover font-mono tabular-nums">
                 {project.liveStatus.progress}%
               </span>
             </div>
 
             <div
-              className="w-full h-1 bg-surface-light/40 rounded-full overflow-hidden"
+              className="w-full h-1 bg-sl-obsidian-light/40 rounded-full overflow-hidden"
               role="progressbar"
               aria-valuenow={project.liveStatus.progress}
               aria-valuemin={0}
@@ -454,15 +454,15 @@ function ChapterDetails({ project }: { project: Project }) {
                 initial={staticMode ? { width: `${project.liveStatus.progress}%` } : { width: '0%' }}
                 animate={inView ? { width: `${project.liveStatus.progress}%` } : {}}
                 transition={{ duration: 1.2, delay: 0.7, ease: EASE.entrance }}
-                className="h-full rounded-full bg-gradient-to-r from-accent-dark via-accent to-accent-light"
+                className="h-full rounded-full bg-gradient-to-r from-sl-gold-subtle-dark via-sl-gold-subtle to-sl-gold-hover"
               />
             </div>
 
-            <div className="mt-6 pt-6 border-t border-accent/15 flex justify-between items-baseline">
-              <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">
+            <div className="mt-6 pt-6 border-t border-sl-gold-subtle/15 flex justify-between items-baseline">
+              <span className="text-[10px] uppercase tracking-widest text-sl-mist/60 font-mono">
                 Last updated
               </span>
-              <span className="text-xs text-neutral-400 font-mono">
+              <span className="text-xs text-sl-mist/60 font-mono">
                 {project.liveStatus.lastUpdate
                   ? new Date(project.liveStatus.lastUpdate).toLocaleDateString(undefined, {
                       year: 'numeric',
@@ -496,7 +496,7 @@ function ChapterNext({ project: _project, nextProject }: { project: Project; nex
   return (
     <section
       id="ch-next"
-      className="relative min-h-screen w-full bg-background py-32 px-8 md:px-16 flex items-center"
+      className="relative min-h-screen w-full bg-sl-void py-32 px-8 md:px-16 flex items-center"
     >
       <div ref={ref} className="max-w-[1400px] mx-auto w-full">
         <ChapterMarker index={5} title="Next" className="mb-16" />
@@ -519,14 +519,14 @@ function ChapterNext({ project: _project, nextProject }: { project: Project; nex
             transition={{ duration: 0.8, ease: EASE.entrance }}
             className="space-y-8"
           >
-            <span className="text-xs uppercase tracking-[0.5em] text-neutral-500 font-mono block">
+            <span className="text-xs uppercase tracking-[0.5em] text-sl-mist/60 font-mono block">
               Like What You See?
             </span>
-            <h2 className="text-4xl md:text-5xl font-serif font-light tracking-tight text-foreground leading-tight">
+            <h2 className="text-4xl md:text-5xl font-serif font-light tracking-tight text-sl-alabaster leading-tight">
               Let&apos;s Create Something{' '}
-              <span className="italic text-accent">Extraordinary</span>
+              <span className="italic text-sl-gold-hover">Extraordinary</span>
             </h2>
-            <p className="text-neutral-400 font-light leading-relaxed max-w-lg">
+            <p className="text-sl-mist/60 font-light leading-relaxed max-w-lg">
               Every project starts with a conversation. Tell us about your vision
               and we&apos;ll bring it to life.
             </p>
@@ -587,20 +587,20 @@ function ChapterNext({ project: _project, nextProject }: { project: Project; nex
                         fill="none"
                         stroke="currentColor"
                         strokeWidth="1"
-                        className="text-accent stroke-dasharray-[226] stroke-dashoffset-[226] group-hover:stroke-dashoffset-[0] transition-all duration-1000 ease-out"
+                        className="text-sl-gold-hover stroke-dasharray-[226] stroke-dashoffset-[226] group-hover:stroke-dashoffset-[0] transition-all duration-1000 ease-out"
                       />
                     </svg>
-                    <span className="absolute text-xs uppercase tracking-widest text-white font-mono">
+                    <span className="absolute text-xs uppercase tracking-widest text-sl-alabaster font-mono">
                       Next
                     </span>
                   </div>
                 </div>
 
                 <div className="p-6">
-                  <span className="text-[10px] uppercase tracking-[0.4em] text-accent font-mono block mb-2">
+                  <span className="text-[10px] uppercase tracking-[0.4em] text-sl-gold-hover font-mono block mb-2">
                     Next Project
                   </span>
-                  <h3 className="text-2xl font-serif font-light text-foreground group-hover:text-accent transition-colors duration-500">
+                  <h3 className="text-2xl font-serif font-light text-sl-alabaster group-hover:text-sl-gold-hover transition-colors duration-500">
                     {nextProject.title}
                   </h3>
                 </div>

@@ -22,11 +22,11 @@ export function WebXRVrLauncher() {
   const currentSpec = deviceSpecs[activeDevice];
 
   return (
-    <div className="bg-neutral-950/90 border border-neutral-800 rounded-3xl p-6 shadow-2xl backdrop-blur-2xl text-neutral-100 space-y-5">
-      <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
+    <div className="bg-neutral-950/90 border border-sl-obsidian rounded-3xl p-6 shadow-2xl backdrop-blur-2xl text-neutral-100 space-y-5">
+      <div className="flex items-center justify-between pb-3 border-b border-sl-obsidian">
         <div>
           <h3 className="text-sm font-bold text-neutral-100">WebXR VR Headset Direct Link Engine</h3>
-          <p className="text-xs text-neutral-400">1:1 Scale Stereoscopic Spatial Immersion</p>
+          <p className="text-xs text-sl-mist/60">1:1 Scale Stereoscopic Spatial Immersion</p>
         </div>
         <span className="bg-blue-500/10 border border-blue-500/30 px-3 py-1 rounded-full text-blue-400 text-xs font-mono">
           🥽 WebXR API Ready
@@ -35,7 +35,7 @@ export function WebXRVrLauncher() {
 
       {/* Headset Target Selection */}
       <div className="space-y-2">
-        <label className="text-xs text-neutral-400 font-medium block">Select Connected Spatial Headset</label>
+        <label className="text-xs text-sl-mist/60 font-medium block">Select Connected Spatial Headset</label>
         <div className="grid grid-cols-3 gap-2 text-xs">
           {(['vision_pro', 'quest_3', 'htc_vive'] as const).map((device) => (
             <button
@@ -44,7 +44,7 @@ export function WebXRVrLauncher() {
               className={`py-2 px-3 rounded-xl border font-semibold transition-all ${
                 activeDevice === device
                   ? 'bg-blue-500 text-neutral-950 border-blue-400 font-bold'
-                  : 'bg-neutral-900 border-neutral-800 text-neutral-400 hover:text-neutral-200'
+                  : 'bg-sl-void border-sl-obsidian text-sl-mist/60 hover:text-neutral-200'
               }`}
             >
               {deviceSpecs[device].name}
@@ -54,17 +54,17 @@ export function WebXRVrLauncher() {
       </div>
 
       {/* Device Specs Card */}
-      <div className="p-4 bg-neutral-900 border border-neutral-800 rounded-2xl space-y-1 text-xs">
+      <div className="p-4 bg-sl-void border border-sl-obsidian rounded-2xl space-y-1 text-xs">
         <div className="flex justify-between font-mono">
-          <span className="text-neutral-400">Active Headset:</span>
+          <span className="text-sl-mist/60">Active Headset:</span>
           <span className="font-bold text-neutral-100">{currentSpec.name}</span>
         </div>
         <div className="flex justify-between font-mono">
-          <span className="text-neutral-400">Spatial Mode:</span>
-          <span className="text-neutral-300">{currentSpec.mode}</span>
+          <span className="text-sl-mist/60">Spatial Mode:</span>
+          <span className="text-sl-mist/80">{currentSpec.mode}</span>
         </div>
         <div className="flex justify-between font-mono">
-          <span className="text-neutral-400">Target Framerate:</span>
+          <span className="text-sl-mist/60">Target Framerate:</span>
           <span className="text-emerald-400 font-bold">{currentSpec.refresh} Stereoscopic</span>
         </div>
       </div>
@@ -74,7 +74,7 @@ export function WebXRVrLauncher() {
         onClick={() => setInVrSession(!inVrSession)}
         className={`w-full py-3 rounded-2xl font-bold text-xs transition-all shadow-lg ${
           inVrSession
-            ? 'bg-red-500 hover:bg-red-400 text-white'
+            ? 'bg-red-500 hover:bg-red-400 text-sl-alabaster'
             : 'bg-blue-500 hover:bg-blue-400 text-neutral-950'
         }`}
       >

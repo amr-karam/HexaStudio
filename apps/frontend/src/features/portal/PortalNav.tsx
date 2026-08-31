@@ -120,8 +120,8 @@ function MoreMenu({
           'font-mono text-xs uppercase tracking-[0.25em]',
           'transition-colors duration-500 focus-luxury',
           hasActiveItem
-            ? 'text-accent bg-accent/10'
-            : 'text-neutral-500 hover:text-accent hover:bg-white/[0.02]',
+            ? 'text-sl-gold-hover bg-sl-gold-subtle/10'
+            : 'text-sl-mist/60 hover:text-sl-gold-hover hover:bg-white/[0.02]',
         )}
       >
         <Icon name="more-horizontal" size={13} />
@@ -129,7 +129,7 @@ function MoreMenu({
         <motion.svg
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={hexaMotion.transition('entrance', 'micro')}
-          className={cn('h-3 w-3', isOpen ? 'text-accent' : 'opacity-50')}
+          className={cn('h-3 w-3', isOpen ? 'text-sl-gold-hover' : 'opacity-50')}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -152,12 +152,12 @@ function MoreMenu({
             transition={hexaMotion.transition('entrance', 'micro')}
             className={cn(
               'absolute right-0 top-full mt-3 w-56 overflow-hidden rounded-xl',
-              'border border-border/40 bg-surface/95 backdrop-blur-2xl',
+              'border border-sl-silver/20/40 bg-sl-obsidian/95 backdrop-blur-2xl',
               'shadow-2xl shadow-black/40',
             )}
           >
-            <div className="border-b border-border/20 p-1.5">
-              <span className="block px-3 py-1.5 font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-neutral-600">
+            <div className="border-b border-sl-silver/20 p-1.5">
+              <span className="block px-3 py-1.5 font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-sl-mist/60">
                 Sections
               </span>
             </div>
@@ -176,8 +176,8 @@ function MoreMenu({
                       'font-mono text-xs uppercase tracking-[0.2em]',
                       'transition-colors duration-300 focus-luxury',
                       isItemActive
-                        ? 'text-accent bg-accent/10'
-                        : 'text-neutral-500 hover:bg-white/[0.03] hover:text-foreground',
+                        ? 'text-sl-gold-hover bg-sl-gold-subtle/10'
+                        : 'text-sl-mist/60 hover:bg-white/[0.03] hover:text-sl-alabaster',
                     )}
                   >
                     <Icon
@@ -186,8 +186,8 @@ function MoreMenu({
                       className={cn(
                         'transition-colors duration-300',
                         isItemActive
-                          ? 'text-accent'
-                          : 'text-neutral-600 group-hover:text-neutral-400',
+                          ? 'text-sl-gold-hover'
+                          : 'text-sl-mist/60 group-hover:text-sl-mist/60',
                       )}
                     />
                     <span>{item.label}</span>
@@ -229,14 +229,14 @@ function UserMenu({
         onClick={() => setIsOpen((open) => !open)}
         className={cn(
           'flex h-9 w-9 items-center justify-center rounded-full',
-          'border border-accent/40 bg-accent/10 ring-1 ring-accent/20',
+          'border border-sl-gold-subtle/40 bg-sl-gold-subtle/10 ring-1 ring-sl-gold-subtle/20',
           'transition-all duration-500 focus-luxury',
           isOpen
-            ? 'border-accent/80 bg-accent/20 ring-accent/40'
-            : 'hover:border-accent/80 hover:bg-accent/20',
+            ? 'border-sl-gold-subtle/80 bg-sl-gold-subtle/20 ring-sl-gold-subtle/40'
+            : 'hover:border-sl-gold-subtle/80 hover:bg-sl-gold-subtle/20',
         )}
       >
-        <span className="font-mono text-xs uppercase text-accent">
+        <span className="font-mono text-xs uppercase text-sl-gold-hover">
           {email?.charAt(0) ?? 'U'}
         </span>
       </button>
@@ -253,13 +253,13 @@ function UserMenu({
             transition={hexaMotion.transition('entrance', 'micro')}
             className={cn(
               'absolute right-0 top-full mt-3 w-64 overflow-hidden rounded-xl',
-              'border border-border/40 bg-surface/95 backdrop-blur-2xl',
+              'border border-sl-silver/20/40 bg-sl-obsidian/95 backdrop-blur-2xl',
               'shadow-2xl shadow-black/40',
             )}
           >
-            <div className="border-b border-border/20 px-4 pb-3 pt-4">
-              <p className="truncate text-xs text-foreground">{email}</p>
-              <p className="mt-1 font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-neutral-500">
+            <div className="border-b border-sl-silver/20 px-4 pb-3 pt-4">
+              <p className="truncate text-xs text-sl-alabaster">{email}</p>
+              <p className="mt-1 font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-sl-mist/60">
                 Client
               </p>
             </div>
@@ -269,12 +269,12 @@ function UserMenu({
                 href="/portal/profile"
                 role="menuitem"
                 onClick={close}
-                className="group flex items-center gap-3 rounded-lg px-3 py-2.5 font-mono text-xs uppercase tracking-[0.2em] text-neutral-500 transition-colors duration-300 hover:bg-white/[0.03] hover:text-foreground focus-luxury"
+                className="group flex items-center gap-3 rounded-lg px-3 py-2.5 font-mono text-xs uppercase tracking-[0.2em] text-sl-mist/60 transition-colors duration-300 hover:bg-white/[0.03] hover:text-sl-alabaster focus-luxury"
               >
                 <Icon
                   name="user"
                   size={14}
-                  className="text-neutral-600 transition-colors duration-300 group-hover:text-accent"
+                  className="text-sl-mist/60 transition-colors duration-300 group-hover:text-sl-gold-hover"
                 />
                 Profile
               </Link>
@@ -283,12 +283,12 @@ function UserMenu({
                 href="/portal/settings"
                 role="menuitem"
                 onClick={close}
-                className="group flex items-center gap-3 rounded-lg px-3 py-2.5 font-mono text-xs uppercase tracking-[0.2em] text-neutral-500 transition-colors duration-300 hover:bg-white/[0.03] hover:text-foreground focus-luxury"
+                className="group flex items-center gap-3 rounded-lg px-3 py-2.5 font-mono text-xs uppercase tracking-[0.2em] text-sl-mist/60 transition-colors duration-300 hover:bg-white/[0.03] hover:text-sl-alabaster focus-luxury"
               >
                 <Icon
                   name="settings"
                   size={14}
-                  className="text-neutral-600 transition-colors duration-300 group-hover:text-accent"
+                  className="text-sl-mist/60 transition-colors duration-300 group-hover:text-sl-gold-hover"
                 />
                 Settings
               </Link>
@@ -306,12 +306,12 @@ function UserMenu({
                   close();
                   onLogout();
                 }}
-                className="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 font-mono text-xs uppercase tracking-[0.2em] text-neutral-500 transition-colors duration-300 hover:bg-red-500/5 hover:text-red-400 focus-luxury"
+                className="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 font-mono text-xs uppercase tracking-[0.2em] text-sl-mist/60 transition-colors duration-300 hover:bg-red-500/5 hover:text-red-400 focus-luxury"
               >
                 <Icon
                   name="log-out"
                   size={14}
-                  className="text-neutral-600 transition-colors duration-300 group-hover:text-red-400"
+                  className="text-sl-mist/60 transition-colors duration-300 group-hover:text-red-400"
                 />
                 Logout
               </button>
@@ -447,7 +447,7 @@ export function PortalNav() {
 
   return (
     <nav
-      className="fixed inset-x-0 top-0 z-40 border-b border-border/30 bg-background/80 backdrop-blur-2xl"
+      className="fixed inset-x-0 top-0 z-40 border-b border-sl-silver/20 bg-sl-void/80 backdrop-blur-2xl"
       role="navigation"
       aria-label="Portal navigation"
     >
@@ -458,8 +458,8 @@ export function PortalNav() {
           aria-label="Portal Dashboard"
           className="group flex shrink-0 items-center gap-3 rounded-full focus-luxury"
         >
-          <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-accent/30 bg-accent/10 transition-colors duration-500 group-hover:bg-accent/20">
-            <span className="font-serif text-sm italic text-accent">H</span>
+          <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-sl-gold-subtle/30 bg-sl-gold-subtle/10 transition-colors duration-500 group-hover:bg-sl-gold-subtle/20">
+            <span className="font-serif text-sm italic text-sl-gold-hover">H</span>
             <motion.span
               aria-hidden="true"
               animate={hexaMotion.reduced ? {} : { rotate: 360 }}
@@ -468,12 +468,12 @@ export function PortalNav() {
                   ? undefined
                   : { repeat: Infinity, duration: 12, ease: 'linear' }
               }
-              className="absolute -bottom-0.5 -right-0.5 block h-1.5 w-1.5 rotate-45 border border-accent/50 bg-background"
+              className="absolute -bottom-0.5 -right-0.5 block h-1.5 w-1.5 rotate-45 border border-sl-gold-subtle/50 bg-sl-void"
             />
           </span>
           <span className="hidden text-xs uppercase tracking-[0.3em] sm:inline">
-            <span className="font-serif text-foreground">Client</span>
-            <span className="text-accent"> Portal</span>
+            <span className="font-serif text-sl-alabaster">Client</span>
+            <span className="text-sl-gold-hover"> Portal</span>
           </span>
         </Link>
 
@@ -491,8 +491,8 @@ export function PortalNav() {
                   'font-mono text-xs uppercase tracking-[0.25em]',
                   'transition-colors duration-500 focus-luxury',
                   isItemActive
-                    ? 'text-accent bg-accent/10'
-                    : 'text-neutral-500 hover:bg-white/[0.02] hover:text-accent',
+                    ? 'text-sl-gold-hover bg-sl-gold-subtle/10'
+                    : 'text-sl-mist/60 hover:bg-white/[0.02] hover:text-sl-gold-hover',
                 )}
               >
                 <Icon
@@ -501,8 +501,8 @@ export function PortalNav() {
                   className={cn(
                     'transition-colors duration-500',
                     isItemActive
-                      ? 'text-accent'
-                      : 'text-neutral-600 group-hover:text-accent',
+                      ? 'text-sl-gold-hover'
+                      : 'text-sl-mist/60 group-hover:text-sl-gold-hover',
                   )}
                 />
                 <span>{item.label}</span>
@@ -516,7 +516,7 @@ export function PortalNav() {
                         : { type: 'spring', stiffness: 300, damping: 30 }
                     }
                   >
-                    <span className="mx-auto block h-px w-5 bg-accent" />
+                    <span className="mx-auto block h-px w-5 bg-sl-gold-subtle" />
                   </motion.span>
                 )}
               </Link>
@@ -544,8 +544,8 @@ export function PortalNav() {
             type="button"
             className={cn(
               'flex h-10 w-10 items-center justify-center rounded-lg',
-              'text-neutral-400 transition-colors duration-300 lg:hidden',
-              'hover:bg-white/[0.03] hover:text-foreground focus-luxury',
+              'text-sl-mist/60 transition-colors duration-300 lg:hidden',
+              'hover:bg-white/[0.03] hover:text-sl-alabaster focus-luxury',
             )}
             aria-label={isMobileOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={isMobileOpen}
@@ -590,7 +590,7 @@ export function PortalNav() {
             animate="visible"
             exit="exit"
             variants={overlayVariants}
-            className="fixed inset-0 z-[60] overflow-y-auto bg-background/95 backdrop-blur-2xl lg:hidden"
+            className="fixed inset-0 z-[60] overflow-y-auto bg-sl-void/95 backdrop-blur-2xl lg:hidden"
             aria-label="Portal navigation menu"
           >
             {/* Ambient gold aura */}
@@ -607,12 +607,12 @@ export function PortalNav() {
                 onClick={() => setIsMobileOpen(false)}
                 className="flex items-center gap-3 rounded-full focus-luxury"
               >
-                <span className="flex h-9 w-9 items-center justify-center rounded-full border border-accent/30 bg-accent/10">
-                  <span className="font-serif text-sm italic text-accent">H</span>
+                <span className="flex h-9 w-9 items-center justify-center rounded-full border border-sl-gold-subtle/30 bg-sl-gold-subtle/10">
+                  <span className="font-serif text-sm italic text-sl-gold-hover">H</span>
                 </span>
                 <span className="text-xs uppercase tracking-[0.3em]">
-                  <span className="font-serif text-foreground">Client</span>
-                  <span className="text-accent"> Portal</span>
+                  <span className="font-serif text-sl-alabaster">Client</span>
+                  <span className="text-sl-gold-hover"> Portal</span>
                 </span>
               </Link>
               <button
@@ -620,7 +620,7 @@ export function PortalNav() {
                 type="button"
                 onClick={() => setIsMobileOpen(false)}
                 aria-label="Close menu"
-                className="flex h-10 w-10 items-center justify-center rounded-lg text-neutral-400 transition-colors duration-300 hover:bg-white/[0.03] hover:text-accent focus-luxury"
+                className="flex h-10 w-10 items-center justify-center rounded-lg text-sl-mist/60 transition-colors duration-300 hover:bg-white/[0.03] hover:text-sl-gold-hover focus-luxury"
               >
                 <Icon name="x" size={20} />
               </button>
@@ -637,7 +637,7 @@ export function PortalNav() {
             >
               <motion.span
                 variants={itemVariants}
-                className="block pb-4 font-mono text-[0.625rem] uppercase tracking-[0.35em] text-neutral-600"
+                className="block pb-4 font-mono text-[0.625rem] uppercase tracking-[0.35em] text-sl-mist/60"
               >
                 Executive HQ
               </motion.span>
@@ -650,19 +650,19 @@ export function PortalNav() {
                       href={item.href}
                       onClick={() => setIsMobileOpen(false)}
                       aria-current={isItemActive ? 'page' : undefined}
-                      className="group flex items-baseline justify-between gap-6 border-b border-border/20 py-5 focus-luxury"
+                      className="group flex items-baseline justify-between gap-6 border-b border-sl-silver/20 py-5 focus-luxury"
                     >
                       <span
                         className={cn(
                           'font-serif text-2xl transition-colors duration-500 md:text-3xl',
                           isItemActive
-                            ? 'text-accent'
-                            : 'text-neutral-400 group-hover:text-foreground',
+                            ? 'text-sl-gold-hover'
+                            : 'text-sl-mist/60 group-hover:text-sl-alabaster',
                         )}
                       >
                         {item.label}
                       </span>
-                      <span className="font-mono text-[0.625rem] uppercase tracking-[0.3em] text-neutral-600">
+                      <span className="font-mono text-[0.625rem] uppercase tracking-[0.3em] text-sl-mist/60">
                         {String(index + 1).padStart(2, '0')}
                       </span>
                     </Link>
@@ -672,7 +672,7 @@ export function PortalNav() {
             </motion.nav>
 
             {/* Overlay footer — currency + account */}
-            <div className="relative border-t border-border/20 px-6 py-6 md:px-12">
+            <div className="relative border-t border-sl-silver/20 px-6 py-6 md:px-12">
               <motion.div
                 variants={itemVariants}
                 initial="hidden"
@@ -682,13 +682,13 @@ export function PortalNav() {
                 <CurrencySelector />
                 {user && (
                   <>
-                    <div className="border-t border-border/20 pt-4">
-                      <p className="text-xs text-neutral-500">{user.email}</p>
+                    <div className="border-t border-sl-silver/20 pt-4">
+                      <p className="text-xs text-sl-mist/60">{user.email}</p>
                     </div>
                     <button
                       type="button"
                       onClick={handleLogout}
-                      className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-neutral-500 transition-colors duration-300 hover:text-red-400 focus-luxury"
+                      className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-sl-mist/60 transition-colors duration-300 hover:text-red-400 focus-luxury"
                     >
                       <Icon name="log-out" size={14} />
                       Logout

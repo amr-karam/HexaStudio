@@ -35,13 +35,13 @@ export function AcousticLabView() {
   const rating = getAcousticRating(rt60);
 
   return (
-    <div className="bg-neutral-950/90 border border-neutral-800 rounded-3xl p-6 shadow-2xl backdrop-blur-2xl text-neutral-100 space-y-5">
-      <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
+    <div className="bg-neutral-950/90 border border-sl-obsidian rounded-3xl p-6 shadow-2xl backdrop-blur-2xl text-neutral-100 space-y-5">
+      <div className="flex items-center justify-between pb-3 border-b border-sl-obsidian">
         <div>
           <h3 className="text-sm font-bold text-neutral-100">Acoustic Reverberation & Noise Analysis Lab</h3>
-          <p className="text-xs text-neutral-400">Sabine RT60 Sound Decay & Material Absorption</p>
+          <p className="text-xs text-sl-mist/60">Sabine RT60 Sound Decay & Material Absorption</p>
         </div>
-        <span className={`text-xs font-mono font-bold px-3 py-1 rounded-full bg-neutral-900 border border-neutral-800 ${rating.color}`}>
+        <span className={`text-xs font-mono font-bold px-3 py-1 rounded-full bg-sl-void border border-sl-obsidian ${rating.color}`}>
           {rating.label}
         </span>
       </div>
@@ -49,7 +49,7 @@ export function AcousticLabView() {
       {/* Room Volume Slider */}
       <div className="space-y-2">
         <div className="flex justify-between text-xs">
-          <span className="text-neutral-400 font-medium">Room Spatial Volume</span>
+          <span className="text-sl-mist/60 font-medium">Room Spatial Volume</span>
           <span className="font-bold text-amber-400 font-mono">{volume} m³</span>
         </div>
         <input
@@ -59,13 +59,13 @@ export function AcousticLabView() {
           step={25}
           value={volume}
           onChange={(e) => setVolume(parseFloat(e.target.value))}
-          className="w-full h-2 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-amber-400"
+          className="w-full h-2 bg-sl-obsidian rounded-lg appearance-none cursor-pointer accent-amber-400"
         />
       </div>
 
       {/* Surface Material Selection */}
       <div className="space-y-2">
-        <label className="text-xs text-neutral-400 font-medium block">Wall & Ceiling Surface Treatment</label>
+        <label className="text-xs text-sl-mist/60 font-medium block">Wall & Ceiling Surface Treatment</label>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
           {(['concrete', 'glass', 'wood', 'acoustic_panels'] as const).map((mat) => (
             <button
@@ -74,7 +74,7 @@ export function AcousticLabView() {
               className={`py-2 px-3 rounded-xl border text-center font-medium capitalize transition-all ${
                 wallMaterial === mat
                   ? 'bg-amber-500 text-neutral-950 border-amber-400 font-bold'
-                  : 'bg-neutral-900 border-neutral-800 text-neutral-400 hover:text-neutral-200'
+                  : 'bg-sl-void border-sl-obsidian text-sl-mist/60 hover:text-neutral-200'
               }`}
             >
               {mat.replace('_', ' ')}
@@ -85,16 +85,16 @@ export function AcousticLabView() {
 
       {/* Results Display */}
       <div className="grid grid-cols-3 gap-3 text-center text-xs">
-        <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-3">
-          <p className="text-[10px] text-neutral-500 uppercase font-mono">RT60 Decay Time</p>
+        <div className="bg-sl-void border border-sl-obsidian rounded-2xl p-3">
+          <p className="text-[10px] text-sl-mist/60 uppercase font-mono">RT60 Decay Time</p>
           <p className="text-base font-bold text-neutral-100 font-mono mt-0.5">{rt60.toFixed(2)}s</p>
         </div>
-        <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-3">
-          <p className="text-[10px] text-neutral-500 uppercase font-mono">Absorption Coeff (α)</p>
+        <div className="bg-sl-void border border-sl-obsidian rounded-2xl p-3">
+          <p className="text-[10px] text-sl-mist/60 uppercase font-mono">Absorption Coeff (α)</p>
           <p className="text-base font-bold text-neutral-100 font-mono mt-0.5">{alpha.toFixed(2)}</p>
         </div>
-        <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-3">
-          <p className="text-[10px] text-neutral-500 uppercase font-mono">Total Sabines</p>
+        <div className="bg-sl-void border border-sl-obsidian rounded-2xl p-3">
+          <p className="text-[10px] text-sl-mist/60 uppercase font-mono">Total Sabines</p>
           <p className="text-base font-bold text-amber-400 font-mono mt-0.5">{totalAbsorption.toFixed(0)} Sa</p>
         </div>
       </div>

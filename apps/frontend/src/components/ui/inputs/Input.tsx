@@ -39,20 +39,20 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {label && (
             <label
               htmlFor={inputId}
-              className="mb-2 block text-[11px] font-mono font-medium uppercase tracking-[0.25em] text-neutral-400 transition-colors duration-300 group-focus-within:text-accent"
+              className="mb-2 block text-[11px] font-mono font-medium uppercase tracking-[0.25em] text-sl-mist/60 transition-colors duration-300 group-focus-within:text-sl-gold-hover"
             >
               {label}
             </label>
           )}
-          <div className="artisan-glass relative rounded-lg px-4 transition-all duration-300 group-focus-within:artisan-glass-gold group-focus-within:border-accent/40">
+          <div className="artisan-glass relative rounded-lg px-4 transition-all duration-300 group-focus-within:artisan-glass-gold group-focus-within:border-sl-gold-subtle/40">
             <input
               id={inputId}
               type={type}
               aria-invalid={error ? true : undefined}
               aria-describedby={describedBy}
               className={cn(
-                'flex h-12 w-full rounded-none bg-transparent px-0 py-2 text-sm text-foreground transition-all duration-300',
-                'placeholder:text-neutral-500 font-light',
+                'flex h-12 w-full rounded-none bg-transparent px-0 py-2 text-sm text-sl-alabaster transition-all duration-300',
+                'placeholder:text-sl-mist/60 font-light',
                 'focus:outline-none',
                 'disabled:cursor-not-allowed disabled:opacity-50',
                 className,
@@ -79,20 +79,20 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="mb-2 block text-[11px] font-mono font-medium uppercase tracking-[0.25em] text-neutral-400 transition-colors duration-300 group-focus-within:text-accent"
+            className="mb-2 block text-[11px] font-mono font-medium uppercase tracking-[0.25em] text-sl-mist/60 transition-colors duration-300 group-focus-within:text-sl-gold-hover"
           >
             {label}
           </label>
         )}
-        <div className="relative rounded-lg bg-white/[0.02] border border-white/[0.06] px-4 transition-all duration-300 group-focus-within:border-accent group-focus-within:bg-white/[0.04] group-focus-within:shadow-[var(--artisan-glass-shadow),0_0_20px_rgba(212,175,55,0.15)]">
+        <div className="relative rounded-lg bg-white/[0.02] border border-white/[0.06] px-4 transition-all duration-300 group-focus-within:border-sl-gold-subtle group-focus-within:bg-white/[0.04] group-focus-within:shadow-[var(--artisan-glass-shadow),0_0_20px_rgba(212,175,55,0.15)]">
           <input
             id={inputId}
             type={type}
             aria-invalid={error ? true : undefined}
             aria-describedby={describedBy}
             className={cn(
-              'flex h-12 w-full rounded-none bg-transparent px-0 py-2 text-sm text-foreground transition-all duration-300',
-              'placeholder:text-neutral-500 font-light',
+              'flex h-12 w-full rounded-none bg-transparent px-0 py-2 text-sm text-sl-alabaster transition-all duration-300',
+              'placeholder:text-sl-mist/60 font-light',
               'focus:outline-none',
               'disabled:cursor-not-allowed disabled:opacity-50',
               className,

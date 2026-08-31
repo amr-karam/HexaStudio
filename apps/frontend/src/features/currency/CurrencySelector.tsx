@@ -334,12 +334,12 @@ export function CurrencySelector() {
         className={cn(
           'group flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-mono',
           'transition-all duration-500 ease-out-expo',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background',
           isLoading
-            ? 'border-border/30 text-neutral-600 cursor-not-allowed'
+            ? 'border-sl-silver/20 text-sl-mist/60 cursor-not-allowed'
             : isOpen
-              ? 'border-accent/60 text-accent bg-accent/5'
-              : 'border-border/40 text-neutral-400 hover:border-accent/40 hover:text-accent hover:bg-accent/5',
+              ? 'border-sl-gold-subtle/60 text-sl-gold-hover bg-sl-gold-subtle/5'
+              : 'border-sl-silver/20/40 text-sl-mist/60 hover:border-sl-gold-subtle/40 hover:text-sl-gold-hover hover:bg-sl-gold-subtle/5',
         )}
       >
         {/* Loading spinner or symbol */}
@@ -361,7 +361,7 @@ export function CurrencySelector() {
           <span
             className={cn(
               'text-xs font-medium',
-              currentOption ? 'text-accent' : 'text-neutral-500',
+              currentOption ? 'text-sl-gold-hover' : 'text-sl-mist/60',
             )}
             aria-hidden="true"
           >
@@ -418,17 +418,17 @@ export function CurrencySelector() {
             style={{ originY: 0 }}
             className={cn(
               'absolute z-[100] mt-2 w-72 rounded-xl border',
-              'bg-surface/95 backdrop-blur-2xl border-border/40',
+              'bg-sl-obsidian/95 backdrop-blur-2xl border-sl-silver/20/40',
               'shadow-2xl shadow-black/40 overflow-hidden',
               // RTL positioning
               dir === 'rtl' ? 'right-0' : 'left-0',
             )}
           >
             {/* Search input */}
-            <div className="p-3 border-b border-border/20">
+            <div className="p-3 border-b border-sl-silver/20">
               <div className="relative">
                 <svg
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-600"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-sl-mist/60"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -454,11 +454,11 @@ export function CurrencySelector() {
                   }}
                   onKeyDown={handleKeyDown}
                   className={cn(
-                    'w-full bg-background/60 border border-border/30 rounded-lg',
+                    'w-full bg-sl-void/60 border border-sl-silver/20 rounded-lg',
                     'pl-9 pr-3 py-2 text-xs font-mono',
-                    'text-foreground placeholder:text-neutral-600',
+                    'text-sl-alabaster placeholder:text-sl-mist/60',
                     'transition-colors duration-300',
-                    'focus:outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/20',
+                    'focus:outline-none focus:border-sl-gold-subtle/50 focus:ring-1 focus:ring-sl-gold-subtle/20',
                   )}
                 />
               </div>
@@ -474,7 +474,7 @@ export function CurrencySelector() {
                     setError(null);
                     setCurrency('USD');
                   }}
-                  className="block mx-auto mt-2 text-[10px] uppercase tracking-wider text-accent hover:text-accent-light transition-colors"
+                  className="block mx-auto mt-2 text-[10px] uppercase tracking-wider text-sl-gold-hover hover:text-sl-gold-hover transition-colors"
                 >
                   {t('currency.fallbackToUSD') || 'Reset to USD'}
                 </button>
@@ -484,7 +484,7 @@ export function CurrencySelector() {
             {/* No results */}
             {!error && filteredCurrencies.length === 0 && (
               <div className="px-4 py-8 text-center">
-                <span className="text-xs text-neutral-600 font-mono">
+                <span className="text-xs text-sl-mist/60 font-mono">
                   {t('currency.noResults') || 'No currencies found'}
                 </span>
               </div>
@@ -514,10 +514,10 @@ export function CurrencySelector() {
                         'flex items-center gap-3 px-4 py-2.5 cursor-pointer',
                         'transition-colors duration-200',
                         isSelected
-                          ? 'bg-accent/10 text-accent'
+                          ? 'bg-sl-gold-subtle/10 text-sl-gold-hover'
                           : isFocused
-                            ? 'bg-white/[0.04] text-foreground'
-                            : 'text-neutral-400 hover:bg-white/[0.02] hover:text-foreground',
+                            ? 'bg-white/[0.04] text-sl-alabaster'
+                            : 'text-sl-mist/60 hover:bg-white/[0.02] hover:text-sl-alabaster',
                       )}
                     >
                       {/* Select indicator */}
@@ -526,7 +526,7 @@ export function CurrencySelector() {
                           'flex items-center justify-center w-5 h-5 shrink-0 rounded-full border',
                           'transition-all duration-300',
                           isSelected
-                            ? 'border-accent bg-accent/20'
+                            ? 'border-sl-gold-subtle bg-sl-gold-subtle/20'
                             : 'border-neutral-700',
                         )}
                       >
@@ -539,7 +539,7 @@ export function CurrencySelector() {
                               stiffness: 400,
                               damping: 20,
                             }}
-                            className="w-3 h-3 text-accent"
+                            className="w-3 h-3 text-sl-gold-hover"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -558,7 +558,7 @@ export function CurrencySelector() {
                       <span
                         className={cn(
                           'text-sm font-mono w-8 text-center',
-                          isSelected ? 'text-accent' : 'text-neutral-500',
+                          isSelected ? 'text-sl-gold-hover' : 'text-sl-mist/60',
                         )}
                         aria-hidden="true"
                       >
@@ -570,12 +570,12 @@ export function CurrencySelector() {
                         <span
                           className={cn(
                             'text-xs font-mono font-medium tracking-wide',
-                            isSelected ? 'text-accent' : 'text-foreground',
+                            isSelected ? 'text-sl-gold-hover' : 'text-sl-alabaster',
                           )}
                         >
                           {currency.code}
                         </span>
-                        <span className="text-[10px] text-neutral-600 truncate">
+                        <span className="text-[10px] text-sl-mist/60 truncate">
                           {currency.name}
                           {currency.region ? ` · ${currency.region}` : ''}
                         </span>
@@ -583,7 +583,7 @@ export function CurrencySelector() {
 
                       {/* Current selection badge */}
                       {isSelected && (
-                        <span className="ml-auto text-[9px] uppercase tracking-widest text-accent/70 font-mono">
+                        <span className="ml-auto text-[9px] uppercase tracking-widest text-sl-gold-hover/70 font-mono">
                           {t('common.active') || 'Active'}
                         </span>
                       )}
@@ -594,8 +594,8 @@ export function CurrencySelector() {
             )}
 
             {/* Footer */}
-            <div className="px-4 py-2.5 border-t border-border/20 flex items-center justify-between">
-              <span className="text-[9px] text-neutral-600 font-mono uppercase tracking-wider">
+            <div className="px-4 py-2.5 border-t border-sl-silver/20 flex items-center justify-between">
+              <span className="text-[9px] text-sl-mist/60 font-mono uppercase tracking-wider">
                 {t('currency.count') ||
                   `${availableCurrencies.length} currencies`}
               </span>
@@ -605,7 +605,7 @@ export function CurrencySelector() {
                   setCurrency(null);
                   closePanel();
                 }}
-                className="text-[9px] uppercase tracking-widest text-neutral-600 hover:text-accent transition-colors duration-300 font-mono"
+                className="text-[9px] uppercase tracking-widest text-sl-mist/60 hover:text-sl-gold-hover transition-colors duration-300 font-mono"
               >
                 {t('currency.autoDetect') || 'Auto'}
               </button>

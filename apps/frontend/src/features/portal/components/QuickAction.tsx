@@ -42,21 +42,21 @@ export function QuickAction({ icon, label, description, onClick, className }: Qu
       }}
       className={cn(
         'group flex items-start gap-4 p-4 rounded-xl text-left w-full',
-        'bg-white/[0.02] border border-border/20',
-        'hover:border-accent/30 hover:bg-accent/[0.03]',
+        'bg-white/[0.02] border border-sl-silver/20',
+        'hover:border-sl-gold-subtle/30 hover:bg-sl-gold-subtle/[0.03]',
         'transition-colors duration-300',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
         className,
       )}
     >
-      <div className="w-10 h-10 rounded-lg bg-accent/5 border border-accent/10 flex items-center justify-center shrink-0 group-hover:border-accent/30 transition-colors duration-300">
-        <Icon name={icon} size={18} className="text-accent" />
+      <div className="w-10 h-10 rounded-lg bg-sl-gold-subtle/5 border border-sl-gold-subtle/10 flex items-center justify-center shrink-0 group-hover:border-sl-gold-subtle/30 transition-colors duration-300">
+        <Icon name={icon} size={18} className="text-sl-gold-hover" />
       </div>
       <div className="min-w-0">
-        <p className="text-sm text-foreground font-medium group-hover:text-accent transition-colors duration-300">
+        <p className="text-sm text-sl-alabaster font-medium group-hover:text-sl-gold-hover transition-colors duration-300">
           {label}
         </p>
-        <p className="text-xs text-neutral-500 mt-0.5">{description}</p>
+        <p className="text-xs text-sl-mist/60 mt-0.5">{description}</p>
       </div>
     </motion.button>
   );

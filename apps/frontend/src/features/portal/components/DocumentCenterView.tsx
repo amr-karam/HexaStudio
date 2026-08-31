@@ -207,8 +207,8 @@ const FOLDERS = ['all', 'design', 'contracts', 'blueprints', 'reports'] as const
 
 const STATUS_LABEL: Record<DocumentItem['status'], { label: string; className: string }> = {
   approved: { label: 'Approved', className: 'text-emerald-400/80' },
-  in_review: { label: 'In Review', className: 'text-accent/80' },
-  draft: { label: 'Draft', className: 'text-neutral-500' },
+  in_review: { label: 'In Review', className: 'text-sl-gold-hover/80' },
+  draft: { label: 'Draft', className: 'text-sl-mist/60' },
 };
 
 /* -------------------------------------------------------------------------- */
@@ -254,7 +254,7 @@ function DocumentSkeleton() {
       {Array.from({ length: 6 }).map((_, i) => (
         <div
           key={i}
-          className="bg-surface border border-white/[0.06] rounded-2xl p-6 flex flex-col justify-between overflow-hidden relative"
+          className="bg-sl-obsidian border border-white/[0.06] rounded-2xl p-6 flex flex-col justify-between overflow-hidden relative"
           aria-hidden="true"
         >
           {/* Gold shimmer sweep */}
@@ -274,20 +274,20 @@ function DocumentSkeleton() {
           />
           <div className="space-y-3 relative">
             <div className="flex items-center justify-between">
-              <div className="h-4 w-14 rounded bg-neutral-800" />
-              <div className="h-4 w-16 rounded bg-neutral-800" />
+              <div className="h-4 w-14 rounded bg-sl-obsidian" />
+              <div className="h-4 w-16 rounded bg-sl-obsidian" />
             </div>
-            <div className="h-4 w-full rounded bg-neutral-800" />
-            <div className="h-4 w-3/4 rounded bg-neutral-800" />
+            <div className="h-4 w-full rounded bg-sl-obsidian" />
+            <div className="h-4 w-3/4 rounded bg-sl-obsidian" />
             <div className="flex gap-1.5">
-              <div className="h-5 w-16 rounded bg-neutral-800" />
-              <div className="h-5 w-20 rounded bg-neutral-800" />
-              <div className="h-5 w-14 rounded bg-neutral-800" />
+              <div className="h-5 w-16 rounded bg-sl-obsidian" />
+              <div className="h-5 w-20 rounded bg-sl-obsidian" />
+              <div className="h-5 w-14 rounded bg-sl-obsidian" />
             </div>
           </div>
           <div className="flex items-center justify-between mt-5 pt-3 border-t border-white/[0.06] relative">
-            <div className="h-4 w-24 rounded bg-neutral-800" />
-            <div className="h-4 w-20 rounded bg-neutral-800" />
+            <div className="h-4 w-24 rounded bg-sl-obsidian" />
+            <div className="h-4 w-20 rounded bg-sl-obsidian" />
           </div>
         </div>
       ))}
@@ -495,18 +495,18 @@ export function DocumentCenterView() {
         className="relative flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between"
       >
         <div>
-          <p className="flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-accent/70">
-            <span aria-hidden="true" className="h-px w-8 bg-accent/50" />
+          <p className="flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-sl-gold-hover/70">
+            <span aria-hidden="true" className="h-px w-8 bg-sl-gold-subtle/50" />
             § 01 — Documents &amp; Knowledge
           </p>
-          <h1 className="mt-4 font-serif text-3xl font-light tracking-tight text-foreground md:text-4xl">
+          <h1 className="mt-4 font-serif text-3xl font-light tracking-tight text-sl-alabaster md:text-4xl">
             {viewMode === 'vault' ? (
               <>The Document <em className="text-gradient-gold font-normal italic">Vault</em></>
             ) : (
               <>Knowledge &amp; <em className="text-gradient-gold font-normal italic">Standard Protocols</em></>
             )}
           </h1>
-          <p className="mt-3 max-w-xl text-base font-light leading-relaxed text-neutral-400">
+          <p className="mt-3 max-w-xl text-base font-light leading-relaxed text-sl-mist/60">
             {viewMode === 'vault'
               ? 'Secure presigned S3 deliverable storage, BIM packages, contracts, and version control.'
               : 'Odoo knowledge repository, architectural design SOPs, and technical handoff matrices.'}
@@ -515,12 +515,12 @@ export function DocumentCenterView() {
 
         <div className="flex items-center gap-3">
           {/* View Mode Switcher */}
-          <div className="flex bg-neutral-900 border border-neutral-800 p-1 rounded-xl text-xs font-mono">
+          <div className="flex bg-sl-void border border-sl-obsidian p-1 rounded-xl text-xs font-mono">
             <button
               onClick={() => setViewMode('vault')}
               className={cn(
                 'px-3 py-1.5 rounded-lg transition-all',
-                viewMode === 'vault' ? 'bg-accent text-background font-medium' : 'text-neutral-400 hover:text-neutral-200'
+                viewMode === 'vault' ? 'bg-sl-gold-subtle text-background font-medium' : 'text-sl-mist/60 hover:text-neutral-200'
               )}
             >
               The Vault
@@ -529,7 +529,7 @@ export function DocumentCenterView() {
               onClick={() => setViewMode('knowledge')}
               className={cn(
                 'px-3 py-1.5 rounded-lg transition-all',
-                viewMode === 'knowledge' ? 'bg-accent text-background font-medium' : 'text-neutral-400 hover:text-neutral-200'
+                viewMode === 'knowledge' ? 'bg-sl-gold-subtle text-background font-medium' : 'text-sl-mist/60 hover:text-neutral-200'
               )}
             >
               Knowledge Base
@@ -555,7 +555,7 @@ export function DocumentCenterView() {
           <div className="relative w-full max-w-xs">
             <Icon
               name="search"
-              className="absolute left-4 top-1/2 w-4 h-4 -translate-y-1/2 text-neutral-500"
+              className="absolute left-4 top-1/2 w-4 h-4 -translate-y-1/2 text-sl-mist/60"
             />
             <Input
               placeholder="Search documents or tags..."
@@ -576,14 +576,14 @@ export function DocumentCenterView() {
                   aria-label={`Filter by ${folder} folder`}
                   className={cn(
                     'relative px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-mono rounded-none transition-colors duration-500',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
-                    isActive ? 'text-accent' : 'text-neutral-500 hover:text-neutral-300',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
+                    isActive ? 'text-sl-gold-hover' : 'text-sl-mist/60 hover:text-sl-mist/80',
                   )}
                 >
                   {isActive && (
                     <motion.span
                       layoutId="doc-folder-indicator"
-                      className="absolute inset-x-2 -bottom-px h-px bg-gradient-to-r from-accent-light via-accent to-accent-dark"
+                      className="absolute inset-x-2 -bottom-px h-px bg-gradient-to-r from-sl-gold-hover via-sl-gold-subtle to-sl-gold-subtle-dark"
                       transition={{ type: 'spring', stiffness: 350, damping: 30 }}
                     />
                   )}
@@ -615,7 +615,7 @@ export function DocumentCenterView() {
         className={cn(
           'artisan-glass-gold artisan-specular-top group relative cursor-pointer overflow-hidden rounded-2xl p-8 text-center md:p-10',
           'transition-colors duration-700 ease-[var(--hexa-ease-interaction)]',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background',
           isUploading && 'pointer-events-none opacity-70',
         )}
       >
@@ -633,26 +633,26 @@ export function DocumentCenterView() {
         <div
           aria-hidden="true"
           className={cn(
-            'pointer-events-none absolute inset-0 bg-accent/[0.06] transition-opacity duration-500',
+            'pointer-events-none absolute inset-0 bg-sl-gold-subtle/[0.06] transition-opacity duration-500',
             isDragging ? 'opacity-100' : 'opacity-0',
           )}
         />
 
         <div className="relative flex flex-col items-center">
-          <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl border border-accent/30 bg-accent/[0.06]">
-            <Icon name="upload" className="h-5 w-5 text-accent" />
+          <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl border border-sl-gold-subtle/30 bg-sl-gold-subtle/[0.06]">
+            <Icon name="upload" className="h-5 w-5 text-sl-gold-hover" />
           </div>
 
-          <p className="flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-accent/70">
-            <span aria-hidden="true" className="h-px w-6 bg-accent/40" />
+          <p className="flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.4em] text-sl-gold-hover/70">
+            <span aria-hidden="true" className="h-px w-6 bg-sl-gold-subtle/40" />
             Secured Transfer
-            <span aria-hidden="true" className="h-px w-6 bg-accent/40" />
+            <span aria-hidden="true" className="h-px w-6 bg-sl-gold-subtle/40" />
           </p>
 
-          <p className="mt-4 font-serif text-xl font-light text-foreground md:text-2xl">
+          <p className="mt-4 font-serif text-xl font-light text-sl-alabaster md:text-2xl">
             {isUploading ? 'Securing your document…' : 'Deposit a document into the vault'}
           </p>
-          <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.25em] text-neutral-500">
+          <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.25em] text-sl-mist/60">
             PDF · Images · Word · Excel · ZIP — up to 50 MB
           </p>
 
@@ -663,9 +663,9 @@ export function DocumentCenterView() {
                 transition={
                   reduced ? undefined : { repeat: Infinity, duration: 1, ease: 'linear' }
                 }
-                className="h-4 w-4 rounded-full border border-accent/30 border-t-accent"
+                className="h-4 w-4 rounded-full border border-sl-gold-subtle/30 border-t-accent"
               />
-              <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-accent/80">
+              <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-sl-gold-hover/80">
                 Uploading…
               </span>
             </div>
@@ -682,8 +682,8 @@ export function DocumentCenterView() {
           animate="visible"
           className="flex items-center gap-3"
         >
-          <span aria-hidden="true" className="h-px w-8 bg-accent/50" />
-          <span className="font-mono text-[0.625rem] uppercase tracking-[0.4em] text-accent/70">
+          <span aria-hidden="true" className="h-px w-8 bg-sl-gold-subtle/50" />
+          <span className="font-mono text-[0.625rem] uppercase tracking-[0.4em] text-sl-gold-hover/70">
             § 02 — Holdings · {filteredDocs.length} {filteredDocs.length === 1 ? 'Item' : 'Items'}
           </span>
         </motion.div>
@@ -711,8 +711,8 @@ export function DocumentCenterView() {
                 className={cn(
                   'px-3 py-1.5 rounded-lg text-xs font-mono transition-all',
                   selectedKnowledgeCatId === null
-                    ? 'bg-accent text-background font-medium'
-                    : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-neutral-200'
+                    ? 'bg-sl-gold-subtle text-background font-medium'
+                    : 'bg-sl-void border border-sl-obsidian text-sl-mist/60 hover:text-neutral-200'
                 )}
               >
                 All Categories ({knowledgeArticles.length})
@@ -724,8 +724,8 @@ export function DocumentCenterView() {
                   className={cn(
                     'px-3 py-1.5 rounded-lg text-xs font-mono transition-all flex items-center gap-1.5',
                     selectedKnowledgeCatId === cat.id
-                      ? 'bg-accent text-background font-medium'
-                      : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-neutral-200'
+                      ? 'bg-sl-gold-subtle text-background font-medium'
+                      : 'bg-sl-void border border-sl-obsidian text-sl-mist/60 hover:text-neutral-200'
                   )}
                 >
                   <span>{cat.name}</span>
@@ -756,24 +756,24 @@ export function DocumentCenterView() {
                   >
                     <div>
                       <div className="flex justify-between items-center mb-3">
-                        <span className="text-[10px] font-mono uppercase tracking-widest text-accent bg-accent/10 px-2 py-0.5 rounded">
+                        <span className="text-[10px] font-mono uppercase tracking-widest text-sl-gold-hover bg-sl-gold-subtle/10 px-2 py-0.5 rounded">
                           {Array.isArray(article.category_id) ? article.category_id[1] : 'General Standard'}
                         </span>
-                        <span className="text-[10px] font-mono text-neutral-500">{article.create_date ?? 'Active'}</span>
+                        <span className="text-[10px] font-mono text-sl-mist/60">{article.create_date ?? 'Active'}</span>
                       </div>
-                      <h3 className="font-serif text-lg font-light text-foreground group-hover:text-accent transition-colors">
+                      <h3 className="font-serif text-lg font-light text-sl-alabaster group-hover:text-sl-gold-hover transition-colors">
                         {article.name}
                       </h3>
-                      <p className="text-xs text-neutral-400 mt-2 line-clamp-3 leading-relaxed">
+                      <p className="text-xs text-sl-mist/60 mt-2 line-clamp-3 leading-relaxed">
                         {article.body ?? 'Standard operating procedure documentation.'}
                       </p>
                     </div>
 
                     <div className="pt-4 mt-4 border-t border-white/5 flex justify-between items-center">
-                      <span className="text-[10px] font-mono text-neutral-500">Odoo Knowledge</span>
+                      <span className="text-[10px] font-mono text-sl-mist/60">Odoo Knowledge</span>
                       <button
                         onClick={() => setSelectedArticle(article)}
-                        className="text-xs font-mono text-accent hover:text-accent-light flex items-center gap-1"
+                        className="text-xs font-mono text-sl-gold-hover hover:text-sl-gold-hover flex items-center gap-1"
                       >
                         <span>Read SOP</span>
                         <span>&rarr;</span>
@@ -786,25 +786,25 @@ export function DocumentCenterView() {
             {/* Article Reader Modal */}
             <AnimatePresence>
               {selectedArticle && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-sl-void/80 backdrop-blur-md">
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    className="artisan-glass border border-border/40 rounded-2xl p-6 md:p-8 max-w-2xl w-full shadow-2xl space-y-5 max-h-[80vh] overflow-y-auto"
+                    className="artisan-glass border border-sl-silver/20/40 rounded-2xl p-6 md:p-8 max-w-2xl w-full shadow-2xl space-y-5 max-h-[80vh] overflow-y-auto"
                   >
                     <div className="flex justify-between items-start border-b border-white/10 pb-4">
                       <div>
-                        <span className="text-[10px] font-mono uppercase tracking-widest text-accent">
+                        <span className="text-[10px] font-mono uppercase tracking-widest text-sl-gold-hover">
                           {Array.isArray(selectedArticle.category_id) ? selectedArticle.category_id[1] : 'Standard Protocol'}
                         </span>
-                        <h2 className="font-serif text-2xl font-light text-foreground mt-1">
+                        <h2 className="font-serif text-2xl font-light text-sl-alabaster mt-1">
                           {selectedArticle.name}
                         </h2>
                       </div>
                       <button
                         onClick={() => setSelectedArticle(null)}
-                        className="text-neutral-400 hover:text-foreground text-sm font-mono p-1"
+                        className="text-sl-mist/60 hover:text-sl-alabaster text-sm font-mono p-1"
                       >
                         ✕
                       </button>
@@ -851,13 +851,13 @@ export function DocumentCenterView() {
                   {/* Subtle hover specular gold aura */}
                   <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-accent/5 opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
+                    className="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-sl-gold-subtle/5 opacity-0 blur-2xl transition-opacity duration-700 ease-[var(--hexa-ease-interaction)] group-hover:opacity-100"
                   />
 
                   <div>
                     {/* Top row: folder + status pill */}
                     <div className="flex items-center justify-between">
-                      <span className="font-mono text-[0.625rem] uppercase tracking-[0.25em] text-neutral-500">
+                      <span className="font-mono text-[0.625rem] uppercase tracking-[0.25em] text-sl-mist/60">
                         § {doc.folder}
                       </span>
                       <span
@@ -874,15 +874,15 @@ export function DocumentCenterView() {
                     <div className="mt-4 flex items-start gap-3">
                       <div
                         aria-hidden="true"
-                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-accent/20 bg-accent/5 font-mono text-[0.625rem] font-medium tracking-wider text-accent"
+                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-sl-gold-subtle/20 bg-sl-gold-subtle/5 font-mono text-[0.625rem] font-medium tracking-wider text-sl-gold-hover"
                       >
                         {getFileTypeLabel(doc.name)}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h2 className="truncate font-sans text-sm font-medium text-foreground">
+                        <h2 className="truncate font-sans text-sm font-medium text-sl-alabaster">
                           {doc.name}
                         </h2>
-                        <p className="mt-1 font-mono text-xs text-neutral-500">{doc.fileSize}</p>
+                        <p className="mt-1 font-mono text-xs text-sl-mist/60">{doc.fileSize}</p>
                       </div>
                     </div>
 
@@ -892,7 +892,7 @@ export function DocumentCenterView() {
                         {doc.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="rounded border border-white/5 bg-white/[0.03] px-2 py-0.5 font-mono text-[0.5625rem] uppercase tracking-[0.15em] text-neutral-400"
+                            className="rounded border border-white/5 bg-white/[0.03] px-2 py-0.5 font-mono text-[0.5625rem] uppercase tracking-[0.15em] text-sl-mist/60"
                           >
                             {tag}
                           </span>
@@ -904,10 +904,10 @@ export function DocumentCenterView() {
                   {/* Footer: metadata + download button */}
                   <div className="mt-6 flex items-center justify-between border-t border-white/5 pt-4">
                     <div className="min-w-0">
-                      <p className="truncate font-mono text-[0.625rem] text-neutral-400">
+                      <p className="truncate font-mono text-[0.625rem] text-sl-mist/60">
                         {doc.uploadedBy}
                       </p>
-                      <p className="font-mono text-[0.5625rem] text-neutral-600">
+                      <p className="font-mono text-[0.5625rem] text-sl-mist/60">
                         {new Date(doc.uploadedAt).toLocaleDateString(undefined, {
                           year: 'numeric',
                           month: 'short',
@@ -924,7 +924,7 @@ export function DocumentCenterView() {
                           void handleDownload(doc);
                         }
                       }}
-                      className="group/download inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-mono text-accent transition-colors duration-500 hover:text-accent-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                      className="group/download inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-mono text-sl-gold-hover transition-colors duration-500 hover:text-sl-gold-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                       aria-label={`Download ${doc.name}`}
                     >
                       <Icon name="download" className="h-4 w-4" />
@@ -950,31 +950,31 @@ export function DocumentCenterView() {
             animate="visible"
             exit="hidden"
             role="status"
-            className="relative flex flex-col items-center justify-center overflow-hidden rounded-2xl border border-dashed border-border/40 px-6 py-24 text-center"
+            className="relative flex flex-col items-center justify-center overflow-hidden rounded-2xl border border-dashed border-sl-silver/20/40 px-6 py-24 text-center"
           >
             {/* Gold aura */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -top-16 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-accent/[0.06] blur-3xl"
+              className="pointer-events-none absolute -top-16 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-sl-gold-subtle/[0.06] blur-3xl"
             />
 
             {/* Diamond ornament rule */}
             <div className="relative flex items-center gap-3">
-              <span aria-hidden="true" className="h-px w-10 bg-accent/40" />
-              <span aria-hidden="true" className="h-2 w-2 rotate-45 border border-accent/50 bg-accent/10" />
-              <span aria-hidden="true" className="h-px w-10 bg-accent/40" />
+              <span aria-hidden="true" className="h-px w-10 bg-sl-gold-subtle/40" />
+              <span aria-hidden="true" className="h-2 w-2 rotate-45 border border-sl-gold-subtle/50 bg-sl-gold-subtle/10" />
+              <span aria-hidden="true" className="h-px w-10 bg-sl-gold-subtle/40" />
             </div>
 
-            <div className="relative mt-6 flex h-14 w-14 items-center justify-center rounded-xl border border-accent/20 bg-accent/[0.04]">
-              <Icon name="file-text" className="h-6 w-6 text-accent/70" />
+            <div className="relative mt-6 flex h-14 w-14 items-center justify-center rounded-xl border border-sl-gold-subtle/20 bg-sl-gold-subtle/[0.04]">
+              <Icon name="file-text" className="h-6 w-6 text-sl-gold-hover/70" />
             </div>
 
-            <p className="relative mt-6 font-serif text-2xl font-light text-foreground/90">
+            <p className="relative mt-6 font-serif text-2xl font-light text-sl-alabaster/90">
               The archive is <em className="text-gradient-gold font-normal italic">silent</em>
             </p>
-            <p className="relative mt-3 max-w-xs text-sm leading-relaxed text-neutral-500">
+            <p className="relative mt-3 max-w-xs text-sm leading-relaxed text-sl-mist/60">
               Nothing matches your search and folder filter. Try a different keyword or reset the
-              folder to <span className="text-accent font-medium">all</span>.
+              folder to <span className="text-sl-gold-hover font-medium">all</span>.
             </p>
             <Button
               variant="ghost"

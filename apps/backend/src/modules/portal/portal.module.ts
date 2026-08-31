@@ -6,6 +6,7 @@ import { PortalCopilotService } from './portal-copilot.service';
 import { OdooModule } from '../odoo/odoo.module';
 import { StorageModule } from '../storage/storage.module';
 import { AIModule } from '../ai/ai.module';
+import { AgentsModule } from '../agents/agents.module';
 import { AuthModule } from '../auth/auth.module';
 import { ProjectsModule } from '../projects/projects.module';
 
@@ -14,6 +15,7 @@ import { ProjectsModule } from '../projects/projects.module';
     OdooModule,
     StorageModule,
     AIModule,
+    AgentsModule,
     forwardRef(() => AuthModule),
     forwardRef(() => ProjectsModule),
   ],

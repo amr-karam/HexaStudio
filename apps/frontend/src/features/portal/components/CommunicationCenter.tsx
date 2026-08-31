@@ -249,30 +249,30 @@ function ConversationItem({
       className={cn(
         'flex items-start gap-3 p-3 rounded-xl',
         'cursor-pointer',
-        isActive ? 'bg-accent/10 border-accent/20' : 'border-border/20',
-        'hover:bg-white/[0.03] hover:border-accent/10',
+        isActive ? 'bg-sl-gold-subtle/10 border-sl-gold-subtle/20' : 'border-sl-silver/20',
+        'hover:bg-white/[0.03] hover:border-sl-gold-subtle/10',
         'transition-colors duration-200'
       )}
     >
       {/* Avatar placeholder */}
-      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-surface/20 border-border/30 shrink-0">
-        <Icon name="users" size={14} className="text-neutral-500" />
+      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sl-obsidian/20 border-sl-silver/20 shrink-0">
+        <Icon name="users" size={14} className="text-sl-mist/60" />
       </div>
       
       {/* Conversation details */}
       <div className="flex-1 min-w-0 space-y-1">
         <div className="flex items-center justify-between">
           <h4 className={cn(
-            'text-sm font-semibold text-foreground',
-            isActive ? 'text-accent' : undefined
+            'text-sm font-semibold text-sl-alabaster',
+            isActive ? 'text-sl-gold-hover' : undefined
           )}>
             {conversation.projectName}
           </h4>
-          <span className="text-xs font-mono text-neutral-500">
+          <span className="text-xs font-mono text-sl-mist/60">
             {formatTimeAgo(conversation.lastTimestamp)}
           </span>
         </div>
-        <p className="text-[11px] text-neutral-400 line-clamp-1">
+        <p className="text-[11px] text-sl-mist/60 line-clamp-1">
           {conversation.lastMessage}
         </p>
         {unreadBadge}
@@ -317,7 +317,7 @@ function MessageBubble({
         transition={makeTransition('entrance', 'component', 0.03)}
         className={cn(
           'max-w-[80%] rounded-xl py-3 px-4',
-          isUser ? 'bg-accent text-void' : isAI ? 'bg-surface/20 border-border/30' : 'bg-white/5 border-border/20',
+          isUser ? 'bg-sl-gold-subtle text-void' : isAI ? 'bg-sl-obsidian/20 border-sl-silver/20' : 'bg-white/5 border-sl-silver/20',
           'whitespace-pre-wrap break-words'
         )}
       >
@@ -327,9 +327,9 @@ function MessageBubble({
             <Icon 
               name={isAI ? 'sparkles' : 'user'} 
               size={10} 
-              className={isAI ? 'text-accent' : 'text-neutral-500'} 
+              className={isAI ? 'text-sl-gold-hover' : 'text-sl-mist/60'} 
             />
-            <span className="text-xs font-mono {isAI ? 'text-accent' : 'text-neutral-400'}">
+            <span className="text-xs font-mono {isAI ? 'text-sl-gold-hover' : 'text-sl-mist/60'}">
               {message.sender}
             </span>
           </div>
@@ -340,7 +340,7 @@ function MessageBubble({
         
         {/* Timestamp and status */}
         <div className="flex items-center gap-2 mt-1">
-          <span className="text-[10px] font-mono text-neutral-500">
+          <span className="text-[10px] font-mono text-sl-mist/60">
             {formatTimeAgo(message.timestamp)}
           </span>
           {!message.read && (
@@ -381,14 +381,14 @@ function MessageInput({
   };
   
   return (
-    <form onSubmit={handleSend} className="flex items-center gap-2 p-4 bg-surface/5 border-t border-border/20">
+    <form onSubmit={handleSend} className="flex items-center gap-2 p-4 bg-sl-obsidian/5 border-t border-sl-silver/20">
       <textarea
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder="Type a message... (Press Cmd+Enter to send)"
         className={cn(
-          'flex-1 min-h-[60px] rounded-xl border border-border/30 bg-surface/90 px-4 py-3 text-sm',
-          'focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2',
+          'flex-1 min-h-[60px] rounded-xl border border-sl-silver/20 bg-sl-obsidian/90 px-4 py-3 text-sm',
+          'focus:outline-none focus:ring-2 focus:ring-sl-gold-subtle focus:ring-offset-2',
           'resize-none'
         )}
         onKeyDown={(e) => {
@@ -407,14 +407,14 @@ function MessageInput({
           disabled={isSending}
           className={cn(
             'flex h-10 w-10 items-center justify-center rounded-lg',
-            'border border-border/30 hover:border-accent/20',
-            'bg-surface/90 hover:bg-surface/80',
+            'border border-sl-silver/20 hover:border-sl-gold-subtle/20',
+            'bg-sl-obsidian/90 hover:bg-sl-obsidian/80',
             'transition-all duration-200',
             isSending ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
           )}
           aria-label="Ask HEXA Copilot for summary"
         >
-          <Icon name="sparkles" size={16} className={isSending ? 'text-neutral-400' : 'text-accent'} />
+          <Icon name="sparkles" size={16} className={isSending ? 'text-sl-mist/60' : 'text-sl-gold-hover'} />
         </button>
         
         <button
@@ -422,9 +422,9 @@ function MessageInput({
           disabled={isSending || !input.trim()}
           className={cn(
             'flex h-10 w-10 items-center justify-center rounded-lg',
-            'bg-gradient-to-r from-accent to-accent-bright text-void',
-            'hover:from-accent-bright hover:to-accent/echo',
-            'shadow-lg shadow-accent/15 hover:shadow-accent/25',
+            'bg-gradient-to-r from-sl-gold-subtle to-sl-gold-subtle-bright text-void',
+            'hover:from-sl-gold-subtle-bright hover:to-sl-gold-subtle/echo',
+            'shadow-lg shadow-sl-gold-subtle/15 hover:shadow-sl-gold-subtle/25',
             'transition-all duration-300',
             isSending ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
           )}
@@ -465,19 +465,19 @@ function MeetingNotesTab({
             animate="visible"
             custom={prefersReduced}
             transition={makeTransition('entrance', 'component', index * 0.08)}
-            className="rounded-2xl border border-border/20 bg-surface p-6"
+            className="rounded-2xl border border-sl-silver/20 bg-sl-obsidian p-6"
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-foreground">{note.title}</h3>
-              <span className="text-xs font-mono text-neutral-500">{note.date}</span>
+              <h3 className="text-lg font-semibold text-sl-alabaster">{note.title}</h3>
+              <span className="text-xs font-mono text-sl-mist/60">{note.date}</span>
             </div>
             
             <div className="space-y-4">
               {/* Attendees */}
               <div className="flex flex-wrap gap-2">
-                <span className="text-[10px] font-mono text-neutral-500">Attendees:</span>
+                <span className="text-[10px] font-mono text-sl-mist/60">Attendees:</span>
                 {note.attendees.map((attendee, idx) => (
-                  <span key={idx} className="inline-flex items-center gap-1 rounded bg-neutral-800/20 px-2 py-0.5 text-xs font-mono">
+                  <span key={idx} className="inline-flex items-center gap-1 rounded bg-sl-obsidian/20 px-2 py-0.5 text-xs font-mono">
                     {attendee}
                   </span>
                 ))}
@@ -485,13 +485,13 @@ function MeetingNotesTab({
               
               {/* Summary */}
               <div className="space-y-2">
-                <p className="text-sm font-medium text-neutral-400">Summary</p>
-                <p className="text-sm text-neutral-300">{note.summary}</p>
+                <p className="text-sm font-medium text-sl-mist/60">Summary</p>
+                <p className="text-sm text-sl-mist/80">{note.summary}</p>
               </div>
               
               {/* Action Items */}
               <div className="space-y-2">
-                <p className="text-sm font-medium text-neutral-400">Action Items</p>
+                <p className="text-sm font-medium text-sl-mist/60">Action Items</p>
                 <div className="space-y-1">
                   {note.actionItems.map((item, idx) => (
                     <motion.div
@@ -507,7 +507,7 @@ function MeetingNotesTab({
                         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-30" />
                         <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
                       </span>
-                      <span className="text-sm text-neutral-400">{item}</span>
+                      <span className="text-sm text-sl-mist/60">{item}</span>
                     </motion.div>
                   ))}
                 </div>
@@ -515,9 +515,9 @@ function MeetingNotesTab({
               
               {/* Transcript (if available) */}
               {note.transcript && (
-                <div className="space-y-4 pt-4 border-t border-border/30">
-                  <p className="text-sm font-medium text-neutral-400">Transcript</p>
-                  <p className="text-sm text-neutral-300">{note.transcript}</p>
+                <div className="space-y-4 pt-4 border-t border-sl-silver/20">
+                  <p className="text-sm font-medium text-sl-mist/60">Transcript</p>
+                  <p className="text-sm text-sl-mist/80">{note.transcript}</p>
                 </div>
               )}
             </div>
@@ -614,7 +614,7 @@ export function CommunicationCenter() {
   const [showMeetingNotes, setShowMeetingNotes] = useState(false);
   
   return (
-    <div className="flex h-screen bg-background text-foreground">
+    <div className="flex h-screen bg-sl-void text-sl-alabaster">
       {/* Mobile Sidebar Drawer */}
       <PortalMobileSidebar 
         isOpen={isMobileSidebarOpen} 
@@ -636,20 +636,20 @@ export function CommunicationCenter() {
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 bg-surface border-b border-border/20">
+        <div className="flex items-center justify-between px-6 py-4 bg-sl-obsidian border-b border-sl-silver/20">
           <div className="flex items-center gap-3">
             {activeConversationId && (
               <>
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/10">
-                  <Icon name="users" size={14} className="text-accent" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sl-gold-subtle/10">
+                  <Icon name="users" size={14} className="text-sl-gold-hover" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="text-lg font-semibold text-foreground">
+                  <h3 className="text-lg font-semibold text-sl-alabaster">
                     {conversationGroup.find(g => 
                       g.conversations.some(c => c.id === activeConversationId)
                     )?.conversations.find(c => c.id === activeConversationId)?.projectName ?? 'Conversation'}
                   </h3>
-                  <p className="text-sm text-neutral-500">
+                  <p className="text-sm text-sl-mist/60">
                     {conversationGroup.find(g => 
                       g.conversations.some(c => c.id === activeConversationId)
                     )?.conversations.find(c => c.id === activeConversationId)?.participants.join(' · ') ?? ''}
@@ -664,26 +664,26 @@ export function CommunicationCenter() {
               onClick={() => setShowMeetingNotes(!showMeetingNotes)}
               className={cn(
                 'flex h-10 w-10 items-center justify-center rounded-lg',
-                'border border-border/30 hover:border-accent/20',
-                'bg-surface/90 hover:bg-surface/80',
+                'border border-sl-silver/20 hover:border-sl-gold-subtle/20',
+                'bg-sl-obsidian/90 hover:bg-sl-obsidian/80',
                 'transition-all duration-200'
               )}
               aria-label={showMeetingNotes ? 'Hide meeting notes' : 'Show meeting notes'}
             >
-              <Icon name="file-text" size={16} className={showMeetingNotes ? 'text-accent' : 'text-neutral-600'} />
+              <Icon name="file-text" size={16} className={showMeetingNotes ? 'text-sl-gold-hover' : 'text-sl-mist/60'} />
             </button>
             
             <button
               onClick={handleAIQuery}
               className={cn(
                 'flex h-10 w-10 items-center justify-center rounded-lg',
-                'border border-border/30 hover:border-accent/20',
-                'bg-surface/90 hover:bg-surface/80',
+                'border border-sl-silver/20 hover:border-sl-gold-subtle/20',
+                'bg-sl-obsidian/90 hover:bg-sl-obsidian/80',
                 'transition-all duration-200'
               )}
               aria-label="Ask HEXA Copilot for summary"
             >
-              <Icon name="sparkles" size={16} className="text-neutral-600" />
+              <Icon name="sparkles" size={16} className="text-sl-mist/60" />
             </button>
           </div>
         </div>
@@ -704,9 +704,9 @@ export function CommunicationCenter() {
                     className="flex flex-col items-center justify-center py-12"
                   >
                     <div className="w-16 h-16 rounded-full bg-border/20 flex items-center justify-center mb-4">
-                      <Icon name="message-square" size={24} className="text-neutral-500" />
+                      <Icon name="message-square" size={24} className="text-sl-mist/60" />
                     </div>
-                    <p className="text-sm text-neutral-500">
+                    <p className="text-sm text-sl-mist/60">
                       Start the conversation
                     </p>
                   </motion.div>
@@ -791,12 +791,12 @@ function PortalDesktopSidebar({
 }) {
   return (
     <aside
-      className="hidden lg:flex w-72 flex-col bg-surface border-r border-border/30"
+      className="hidden lg:flex w-72 flex-col bg-sl-obsidian border-r border-sl-silver/20"
       aria-label="Conversation list"
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-border/20">
-        <h3 className="text-lg font-semibold text-foreground">Conversations</h3>
+      <div className="flex items-center justify-between px-6 py-4 border-b border-sl-silver/20">
+        <h3 className="text-lg font-semibold text-sl-alabaster">Conversations</h3>
       </div>
 
       {/* Conversation List */}
@@ -811,7 +811,7 @@ function PortalDesktopSidebar({
             transition={makeTransition('entrance', 'component', groupIndex * 0.1)}
             className="mb-4"
           >
-            <h4 className="text-base font-medium text-neutral-400 mb-2">
+            <h4 className="text-base font-medium text-sl-mist/60 mb-2">
               {group.projectName}
             </h4>
             <div className="space-y-2">
@@ -890,21 +890,21 @@ function PortalMobileSidebar({
             custom={prefersReduced}
             className="relative w-full max-w-xs mx-4"
           >
-            <div className="flex h-full flex-col bg-surface border-l border-border/30">
+            <div className="flex h-full flex-col bg-sl-obsidian border-l border-sl-silver/20">
               {/* Header */}
-              <div className="flex items-center justify-between px-6 py-4 border-b border-border/20">
-                <h3 className="text-lg font-semibold text-foreground">Conversations</h3>
+              <div className="flex items-center justify-between px-6 py-4 border-b border-sl-silver/20">
+                <h3 className="text-lg font-semibold text-sl-alabaster">Conversations</h3>
                 <button
                   onClick={onToggle}
                   className={cn(
                     'flex h-10 w-10 items-center justify-center rounded-lg',
-                    'border border-border/30 hover:border-accent/20',
-                    'bg-surface/90 hover:bg-surface/80',
+                    'border border-sl-silver/20 hover:border-sl-gold-subtle/20',
+                    'bg-sl-obsidian/90 hover:bg-sl-obsidian/80',
                     'transition-all duration-200'
                   )}
                   aria-label="Close sidebar"
                 >
-                  <Icon name="x" size={16} className="text-neutral-600" />
+                  <Icon name="x" size={16} className="text-sl-mist/60" />
                 </button>
               </div>
               
@@ -920,7 +920,7 @@ function PortalMobileSidebar({
                     transition={makeTransition('entrance', 'component', groupIndex * 0.1)}
                     className="mb-4"
                   >
-                    <h4 className="text-base font-medium text-neutral-400 mb-2">
+                    <h4 className="text-base font-medium text-sl-mist/60 mb-2">
                       {group.projectName}
                     </h4>
                     <div className="space-y-2">

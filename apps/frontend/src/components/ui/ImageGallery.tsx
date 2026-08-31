@@ -114,7 +114,7 @@ export function ImageGallery({
               <div
                 key={index}
                 data-gallery-index={index}
-                className="relative overflow-hidden rounded-xl cursor-pointer transition-all duration-300 group hover:ring-2 hover:ring-accent/50 focus:outline-none focus:ring-2 focus:ring-accent"
+                className="relative overflow-hidden rounded-xl cursor-pointer transition-all duration-300 group hover:ring-2 hover:ring-sl-gold-subtle/50 focus:outline-none focus:ring-2 focus:ring-sl-gold-subtle"
                 tabIndex={0}
                 role="button"
                 aria-label={`View image ${index + 1}: ${image.alt}`}
@@ -134,12 +134,12 @@ export function ImageGallery({
                   />
                 </div>
                 {showCaptions && image.caption && (
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white text-sm">
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-sl-alabaster text-sm">
                     {image.caption}
                   </div>
                 )}
                 {showCaptions && !image.caption && (
-                  <div className="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
+                  <div className="absolute bottom-2 right-2 bg-black/50 text-sl-alabaster text-xs px-2 py-1 rounded">
                     {index + 1} / {images.length}
                   </div>
                 )}
@@ -164,7 +164,7 @@ export function ImageGallery({
               <div
                 key={index}
                 data-gallery-index={index}
-                className="relative flex-shrink-0 cursor-pointer transition-all duration-300 group hover:ring-2 hover:ring-accent/50 focus:outline-none focus:ring-2 focus:ring-accent"
+                className="relative flex-shrink-0 cursor-pointer transition-all duration-300 group hover:ring-2 hover:ring-sl-gold-subtle/50 focus:outline-none focus:ring-2 focus:ring-sl-gold-subtle"
                 tabIndex={0}
                 role="button"
                 aria-label={`View image ${index + 1}: ${image.alt}`}
@@ -179,7 +179,7 @@ export function ImageGallery({
                   />
                 </div>
                 {showCaptions && image.caption && (
-                  <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-sm px-3 py-2 rounded-b-xl">
+                  <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-sl-alabaster text-sm px-3 py-2 rounded-b-xl">
                     {image.caption}
                   </div>
                 )}
@@ -209,7 +209,7 @@ export function ImageGallery({
               onClick={handleClose}
               aria-label="Close lightbox"
             >
-              <X className="w-6 h-6 text-white" />
+              <X className="w-6 h-6 text-sl-alabaster" />
             </button>
 
             {/* Image */}
@@ -233,7 +233,7 @@ export function ImageGallery({
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute bottom-6 left-1/2 -translate-x-1/2 text-center text-white text-sm max-w-md px-4"
+                className="absolute bottom-6 left-1/2 -translate-x-1/2 text-center text-sl-alabaster text-sm max-w-md px-4"
               >
                 {images[selectedIndex].caption}
               </motion.div>
@@ -249,10 +249,10 @@ export function ImageGallery({
                 }}
                 aria-label="Previous image"
               >
-                <ChevronLeft className="w-6 h-6 text-white" />
+                <ChevronLeft className="w-6 h-6 text-sl-alabaster" />
               </button>
 
-              <div className="text-white text-sm">
+              <div className="text-sl-alabaster text-sm">
                 {selectedIndex + 1} / {images.length}
               </div>
 
@@ -264,12 +264,12 @@ export function ImageGallery({
                 }}
                 aria-label="Next image"
               >
-                <ChevronRight className="w-6 h-6 text-white" />
+                <ChevronRight className="w-6 h-6 text-sl-alabaster" />
               </button>
             </div>
 
             {/* Zoom hint */}
-            <div className="absolute bottom-4 right-4 text-white/60 text-xs flex items-center gap-1">
+            <div className="absolute bottom-4 right-4 text-sl-alabaster/60 text-xs flex items-center gap-1">
               <ZoomIn className="w-4 h-4" />
               <span>Click to expand</span>
             </div>
