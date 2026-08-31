@@ -25,7 +25,6 @@ import { fadeLift, staggerContainer, makeTransition, STAGGER, REDUCED_TRANSITION
 import { cn } from '@/lib/utils';
 import { portalApi } from '@/features/portal/api';
 import type { PendingApproval } from '../types';
-import { SentimentUrgencyBadge } from './SentimentUrgencyBadge';
 
 const INITIAL_APPROVALS: PendingApproval[] = [
   {
@@ -341,29 +340,26 @@ export function ApprovalCenterView() {
                   isActive && 'artisan-glass-gold'
                 )}
               >
-                {/* Type badge + status pill + sentiment urgency */}
-                 <div className="flex items-start justify-between gap-3">
-                   <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/25 bg-accent/5 px-2.5 py-1 font-mono text-[0.5625rem] uppercase tracking-[0.25em] text-accent">
-                     <Icon name={TYPE_ICONS[item.type]} className="h-3 w-3" />
-                     {TYPE_LABELS[item.type]}
-                   </span>
-                   <div className="flex items-center gap-2">
-                     {isPending && <SentimentUrgencyBadge sentiment={item.sentiment} urgencyScore={item.urgencyScore} />}
-                     <span
-                       className={cn(
-                         'inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[0.5625rem] uppercase tracking-[0.25em]',
-                         STATUS_PILLS[item.status]
-                       )}
-                     >
-                       {isPending ? (
-                         <PendingDot reduced={reduced} />
-                       ) : (
-                         <Icon name={STATUS_ICONS[item.status]} className="h-3 w-3" />
-                       )}
-                       {STATUS_LABELS[item.status]}
-                     </span>
-                   </div>
-                 </div>
+                {/* Type badge + status pill */}
+                <div className="flex items-start justify-between gap-3">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-sl-gold-subtle/25 bg-sl-gold-subtle/5 px-2.5 py-1 font-mono text-[0.5625rem] uppercase tracking-[0.25em] text-sl-gold-hover">
+                    <Icon name={TYPE_ICONS[item.type]} className="h-3 w-3" />
+                    {TYPE_LABELS[item.type]}
+                  </span>
+                  <span
+                    className={cn(
+                      'inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[0.5625rem] uppercase tracking-[0.25em]',
+                      STATUS_PILLS[item.status]
+                    )}
+                  >
+                    {isPending ? (
+                      <PendingDot reduced={reduced} />
+                    ) : (
+                      <Icon name={STATUS_ICONS[item.status]} className="h-3 w-3" />
+                    )}
+                    {STATUS_LABELS[item.status]}
+                  </span>
+                </div>
 
                 {/* Serif title + mono metadata */}
                 <h3 className="mt-4 line-clamp-1 font-serif text-lg font-light tracking-tight text-sl-alabaster/95">
@@ -419,34 +415,26 @@ export function ApprovalCenterView() {
                 className="relative flex h-full flex-col justify-between gap-8"
               >
                 <div className="space-y-5">
-                  {/* Document eyebrow + status seal + sentiment urgency */}
-                   <div className="flex items-start justify-between gap-4">
-                     <span className="font-mono text-[0.625rem] uppercase tracking-[0.35em] text-sl-gold-hover/80">
-                       § {String(approvals.findIndex((a) => a.id === activeApproval.id) + 1).padStart(2, '0')} —{' '}
-                       {TYPE_LABELS[activeApproval.type]}
-                     </span>
-                     <div className="flex items-center gap-3">
-                       {activeApproval.status === 'pending' && activeApproval.sentiment && (
-                         <SentimentUrgencyBadge
-                           sentiment={activeApproval.sentiment}
-                           urgencyScore={activeApproval.urgencyScore}
-                         />
-                       )}
-                       <span
-                         className={cn(
-                           'inline-flex shrink-0 items-center gap-2 rounded-full border px-3 py-1.5 font-mono text-[0.5625rem] uppercase tracking-[0.25em]',
-                           STATUS_PILLS[activeApproval.status]
-                         )}
-                       >
-                         {activeApproval.status === 'pending' ? (
-                           <PendingDot reduced={reduced} />
-                         ) : (
-                           <Icon name={STATUS_ICONS[activeApproval.status]} className="h-3.5 w-3.5" />
-                         )}
-                         {STATUS_LABELS[activeApproval.status]}
-                       </span>
-                     </div>
-                   </div>
+                  {/* Document eyebrow + status seal */}
+                  <div className="flex items-start justify-between gap-4">
+                    <span className="font-mono text-[0.625rem] uppercase tracking-[0.35em] text-sl-gold-hover/80">
+                      § {String(approvals.findIndex((a) => a.id === activeApproval.id) + 1).padStart(2, '0')} —{' '}
+                      {TYPE_LABELS[activeApproval.type]}
+                    </span>
+                    <span
+                      className={cn(
+                        'inline-flex shrink-0 items-center gap-2 rounded-full border px-3 py-1.5 font-mono text-[0.5625rem] uppercase tracking-[0.25em]',
+                        STATUS_PILLS[activeApproval.status]
+                      )}
+                    >
+                      {activeApproval.status === 'pending' ? (
+                        <PendingDot reduced={reduced} />
+                      ) : (
+                        <Icon name={STATUS_ICONS[activeApproval.status]} className="h-3.5 w-3.5" />
+                      )}
+                      {STATUS_LABELS[activeApproval.status]}
+                    </span>
+                  </div>
 
                   {/* Serif title + mono metadata */}
                   <div>

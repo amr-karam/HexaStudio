@@ -80,7 +80,7 @@ function StatCard({ stat, index, prefersReduced }: { stat: StatItem; index: numb
         >
           <p className="text-3xl sm:text-4xl font-mono font-bold text-foreground tabular-nums">
             {formatValue(stat.value, stat.format)}
-          </motion.div>
+          </p>
         <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-sl-mist/60">
           {stat.label}
         </p>

@@ -3,21 +3,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import request from 'supertest';
-import { HealthModule } from '../src/modules/health/health.module';
+import { HealthController } from '../src/modules/health/health.controller';
 import { OdooService } from '../src/modules/odoo/odoo.service';
-import { OdooSyncService } from '../src/modules/odoo/odoo-sync.service';
-import { OdooEventListener } from '../src/modules/odoo/odoo-event.listener';
-import { OdooApiService } from '../src/modules/odoo/odoo-api.service';
-import { OdooDocumentService } from '../src/modules/odoo/odoo-document.service';
 import { RedisService } from '../src/modules/storage/redis.service';
-import { VectorSyncService } from '../src/modules/vector/vector-sync.service';
-import { VectorModule } from '../src/modules/vector/vector.module';
-import { EventBus } from '../src/modules/realtime/event-bus.service';
 import { TransformReasoningService } from '../src/modules/ai/transform-reasoning.service';
 import { AuthService } from '../src/modules/auth/auth.service';
 import { ProjectsService } from '../src/modules/projects/projects.service';
+import { EventBus } from '../src/modules/realtime/event-bus.service';
 import { RedisModule } from '../src/modules/storage/redis.module';
-import { SecurityModule } from '../src/modules/security/security.module';
 
 const mockRedisService = {
   get: vi.fn().mockResolvedValue(null),
@@ -37,33 +30,9 @@ const mockOdooService = {
   execute: vi.fn().mockResolvedValue({}),
 };
 
-const mockVectorSyncService = {
-  syncAllProjects: vi.fn().mockResolvedValue(undefined),
-  syncProject: vi.fn().mockResolvedValue(undefined),
-};
-
-const mockOdooSyncService = {
-  getState: vi.fn().mockReturnValue({ lastSync: 0, counts: {} }),
-  handleWebhook: vi.fn().mockResolvedValue(undefined),
-};
-
 const mockEventBus = {
   emit: vi.fn(),
   on: vi.fn(),
-};
-
-const mockOdooEventListener = {
-  onProject: vi.fn(),
-};
-
-const mockOdooApiService = {
-  getDocument: vi.fn(),
-  createDocument: vi.fn(),
-};
-
-const mockOdooDocumentService = {
-  listDocuments: vi.fn(),
-  uploadDocument: vi.fn(),
 };
 
 describe('HealthModule', () => {
@@ -80,27 +49,14 @@ describe('HealthModule', () => {
       imports: [
         ConfigModule.forRoot({ isGlobal: true }),
         RedisModule,
-        HealthModule,
-        VectorModule,
-        SecurityModule,
       ],
+      controllers: [HealthController],
       providers: [
+        { provide: OdooService, useValue: mockOdooService },
         { provide: RedisService, useValue: mockRedisService },
         { provide: EventBus, useValue: mockEventBus },
       ],
     })
-      .overrideProvider(RedisService)
-      .useValue(mockRedisService)
-      .overrideProvider(OdooService)
-      .useValue(mockOdooService)
-      .overrideProvider(OdooSyncService)
-      .useValue(mockOdooSyncService)
-      .overrideProvider(OdooEventListener)
-      .useValue(mockOdooEventListener)
-      .overrideProvider(OdooApiService)
-      .useValue(mockOdooApiService)
-      .overrideProvider(OdooDocumentService)
-      .useValue(mockOdooDocumentService)
       .useMocker((token) => {
         if (token === TransformReasoningService) {
           return { transformVoiceTo3D: vi.fn() };

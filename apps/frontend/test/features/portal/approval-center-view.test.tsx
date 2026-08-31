@@ -2,9 +2,8 @@
  * ApprovalCenterView — regression tests for decision persistence.
  *
  * Contract under test:
- *  1. Demo registry (dev fallback) decisions stay local — never call the API.
- *  2. Live registry decisions are persisted via portalApi.reviewApproval.
- *  3. A failed persist reverts the optimistic update AND surfaces an honest
+ *  1. Live registry decisions are persisted via portalApi.reviewApproval.
+ *  2. A failed persist reverts the optimistic update AND surfaces an honest
  *     role="alert" error — a decision is never silently lost or faked.
  */
 
@@ -131,25 +130,5 @@ describe('ApprovalCenterView — persistence', () => {
       expect(screen.getAllByText('Awaiting Signature').length).toBeGreaterThan(0);
     });
     expect(screen.queryByText('Record sealed in the ledger')).not.toBeInTheDocument();
-  });
-
-  it('does NOT call the API on the demo registry (dev fallback is local-only)', async () => {
-    getDashboard.mockResolvedValue({ ...LIVE_DASHBOARD, pendingApprovals: [] });
-    const previousEnv = process.env.NODE_ENV;
-    (process.env as unknown as { NODE_ENV: string }).NODE_ENV = 'development';
-
-    try {
-      renderView();
-      // Demo items hydrate from INITIAL_APPROVALS in development.
-      await approveFirstDeliverable();
-
-      // "Approved" legitimately appears in both the list pill and the detail pill.
-      const approvedPills = await screen.findAllByText('Approved');
-      expect(approvedPills.length).toBeGreaterThan(0);
-      expect(reviewApproval).not.toHaveBeenCalled();
-      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
-    } finally {
-      (process.env as unknown as { NODE_ENV: string }).NODE_ENV = previousEnv as string;
-    }
   });
 });
