@@ -1,6 +1,6 @@
 {
   "name": "@hexastudio/backend",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
     "prebuild": "npm run --prefix ../../packages/types build",
