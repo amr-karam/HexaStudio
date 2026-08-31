@@ -72,7 +72,7 @@ export function DashboardHero({
               transition={{ duration: DURATION.component, delay: 0.3, ease: EASE.entrance }}
               className="text-sl-mist/60 text-base sm:text-lg max-w-xl"
             >
-              Welcome back. Here&apos;s an overview of your active projects and key metrics.
+              Welcome back. Here's an overview of your active projects and key metrics.
             </motion.p>
           </div>
 
@@ -140,7 +140,7 @@ export function DashboardHero({
                     {overallProgressPercentage}%
                   </span>
                 </div>
-              </motion.div>
+              </div>
               <div className="ml-4 space-y-1">
                 <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-sl-mist/60">
                   Overall Progress

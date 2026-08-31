@@ -1,12 +1,9 @@
 'use client';
 
 import React from 'react';
-import { cn } from '@/lib/utils';
 import { Icon } from './PortalIcons';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { EASE, DURATION } from '@/lib/motion';
-import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 
 interface ProjectHealthSectionProps {
   healthScore?: {
@@ -23,10 +20,7 @@ interface ProjectHealthSectionProps {
   className?: string;
 }
 
-export function ProjectHealthSection({ healthScore, className }: ProjectHealthSectionProps) {
-  const prefersReduced = useReducedMotion();
-  const { staticMode } = useMotionPolicy();
-  const animate = !(staticMode || prefersReduced);
+export function ProjectHealthSection({ healthScore }: ProjectHealthSectionProps) {
 
   const score = healthScore?.score ?? 0;
   const status = healthScore?.status ?? 'Unknown';
@@ -207,11 +201,12 @@ export function ProjectHealthSection({ healthScore, className }: ProjectHealthSe
             <p className="text-[10px] font-mono text-sl-mist/60">
               Based on communication analysis & approval velocity
             </p>
-          </div>
+           </div>
         </motion.div>
-      </div>
-    </section>
-  );
-}
+      </motion.div>
+      </section>
+   );
+   }
+
 
 export default ProjectHealthSection;

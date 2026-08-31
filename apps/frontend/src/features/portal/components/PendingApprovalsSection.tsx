@@ -2,11 +2,9 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Icon } from './PortalIcons';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { Icon, type IconName } from './PortalIcons';
 import { motion, AnimatePresence } from 'framer-motion';
-import { EASE, DURATION } from '@/lib/motion';
-import { useMotionPolicy } from '@/hooks/useMotionPolicy';
+import { EASE } from '@/lib/motion';
 import type { PendingApproval } from '../types';
 
 interface PendingApprovalsSectionProps {
@@ -15,10 +13,7 @@ interface PendingApprovalsSectionProps {
   onViewAll?: () => void;
 }
 
-function ApprovalCard({ approval, prefersReduced }: { approval: PendingApproval; prefersReduced: boolean }) {
-  const { staticMode } = useMotionPolicy();
-  const animate = !(staticMode || prefersReduced);
-
+function ApprovalCard({ approval }: { approval: PendingApproval }) {
   const typeColors = {
     design: 'text-blue-500',
     wireframe: 'text-purple-500',
@@ -30,13 +25,13 @@ function ApprovalCard({ approval, prefersReduced }: { approval: PendingApproval;
   };
 
   const typeIcons = {
-    design: 'pen-tool',
-    wireframe: 'layout-grid',
-    contract: 'file-text',
-    quotation: 'dollar-sign',
-    invoice: 'receipt',
-    deliverable: 'package',
-    scope_change: 'git-branch',
+    design: 'pen-tool' as IconName,
+    wireframe: 'layout-grid' as IconName,
+    contract: 'file-text' as IconName,
+    quotation: 'dollar-sign' as IconName,
+    invoice: 'receipt' as IconName,
+    deliverable: 'package' as IconName,
+    scope_change: 'git-branch' as IconName,
   };
 
   const statusColors = {
@@ -47,10 +42,10 @@ function ApprovalCard({ approval, prefersReduced }: { approval: PendingApproval;
   };
 
   const sentimentIcons = {
-    positive: 'smile',
-    neutral: 'meh',
-    frustrated: 'frown',
-    urgent: 'alert-circle',
+    positive: 'smile' as IconName,
+    neutral: 'meh' as IconName,
+    frustrated: 'frown' as IconName,
+    urgent: 'alert-circle' as IconName,
   };
 
   const sentimentColors = {
@@ -154,9 +149,9 @@ function ApprovalCard({ approval, prefersReduced }: { approval: PendingApproval;
               </motion.div>
             ))}
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </motion.div>
   );
 }
 
@@ -167,9 +162,6 @@ interface PendingApprovalsSectionProps {
 }
 
 export function PendingApprovalsSection({ approvals, className, onViewAll }: PendingApprovalsSectionProps) {
-  const prefersReduced = useReducedMotion();
-  const { staticMode } = useMotionPolicy();
-
   if (approvals.length === 0) {
     return (
       <section className={cn('space-y-6', className)} aria-label="Pending approvals">
@@ -211,7 +203,7 @@ export function PendingApprovalsSection({ approvals, className, onViewAll }: Pen
           aria-label="Pending approvals"
         >
           {approvals.map((approval) => (
-            <ApprovalCard key={approval.id} approval={approval} prefersReduced={useReducedMotion()} />
+            <ApprovalCard key={approval.id} approval={approval} />
           ))}
         </motion.div>
       </AnimatePresence>

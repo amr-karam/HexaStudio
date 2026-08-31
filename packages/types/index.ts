@@ -1,3 +1,5 @@
+export type ApprovalSentiment = 'positive' | 'neutral' | 'frustrated' | 'urgent';
+
 export interface ExecutiveReport {
   projectId: number;
   projectName: string;

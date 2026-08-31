@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Icon } from './PortalIcons';
+import { Icon, type IconName } from './PortalIcons';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { motion } from 'framer-motion';
 import { EASE, DURATION } from '@/lib/motion';
@@ -11,7 +11,7 @@ import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 export interface StatItem {
   label: string;
   value: number | string;
-  icon: string;
+  icon: IconName;
   trend: { value: number; direction: 'up' | 'down' | 'neutral' };
   format?: 'number' | 'currency' | 'percentage';
 }
@@ -44,9 +44,9 @@ function StatCard({ stat, index, prefersReduced }: { stat: StatItem; index: numb
   };
 
   const trendIcons = {
-    up: 'arrow-up-right',
-    down: 'arrow-down-right',
-    neutral: 'minus',
+    up: 'arrow-up-right' as IconName,
+    down: 'arrow-down-right' as IconName,
+    neutral: 'minus' as IconName,
   };
 
   return (
@@ -81,6 +81,7 @@ function StatCard({ stat, index, prefersReduced }: { stat: StatItem; index: numb
           <p className="text-3xl sm:text-4xl font-mono font-bold text-foreground tabular-nums">
             {formatValue(stat.value, stat.format)}
           </p>
+        </motion.div>
         <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-sl-mist/60">
           {stat.label}
         </p>
@@ -99,7 +100,7 @@ function StatCard({ stat, index, prefersReduced }: { stat: StatItem; index: numb
           className="h-full bg-gradient-to-r from-amber-500 to-amber-400 rounded-full"
         />
       </motion.div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -111,16 +112,17 @@ export interface DashboardStatsGridProps {
 export function DashboardStatsGrid({ stats, className }: DashboardStatsGridProps) {
   const prefersReduced = useReducedMotion();
   const { staticMode } = useMotionPolicy();
+  const animate = !(staticMode || prefersReduced);
 
   return (
-    <section aria-label="Key performance indicators" className="space-y-6">
+    <section aria-label="Key performance indicators" className={cn('space-y-6', className)}>
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-sl-mist/60">Key Metrics</h2>
         <span className="text-[10px] font-mono text-sl-mist/60">{stats.length} metrics</span>
       </div>
 
       <motion.div
-        initial={{ opacity: 0 }}
+        initial={animate ? { opacity: 0 } : { opacity: 1 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
