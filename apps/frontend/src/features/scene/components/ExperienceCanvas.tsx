@@ -11,6 +11,7 @@ import {
 
 import { SceneContent } from './SceneContent';
 import { CameraController } from './CameraController';
+import { SpatialCommandBridge } from './SpatialCommandBridge';
 const PostProcessing = lazy(() => import('./PostProcessing').then((module) => ({ default: module.PostProcessing })));
 import { SceneAccessibility } from './SceneAccessibility';
 import { useQualityTier } from '@/providers/quality-provider';
@@ -262,6 +263,7 @@ export const ExperienceCanvas = ({
           <Suspense fallback={<SceneFallback />}>
             <PerspectiveCamera makeDefault position={[5, 5, 5]} fov={45} />
             <CameraController />
+            <SpatialCommandBridge />
 
             <SceneLightingRig />
             <SceneContent projectModelUrl={projectModelUrl} hotspots={hotspots} status={status} milestones={milestones} />

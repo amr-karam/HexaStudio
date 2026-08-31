@@ -25,6 +25,8 @@ import type { CopilotMessage } from '../types';
 import { LiquidGlassCard } from '@/components/ui/LiquidGlassCard';
 import { Input } from '@/components/ui/inputs/Input';
 import { Button } from '@/components/ui/Button';
+import { useSpatialStore } from '@/features/realtime/spatial-store';
+import type { LightingPreset, MaterialPreset } from '@/features/scene/store/designer-store';
 
 /* -------------------------------------------------------------------------- */
 /*  Web Speech API Type Declarations                                           */
@@ -72,6 +74,70 @@ interface SpeechRecognitionErrorEvent extends Event {
 const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10 MB
 const ALLOWED_MIME_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'image/avif'];
 
+/** Keywords that hint the user wants a 3D scene change. */
+const SPATIAL_KEYWORDS = [
+  'lighting',
+  'material',
+  'scene',
+  'render',
+  'atmosphere',
+  'mood',
+  'make it',
+  'change',
+  'switch to',
+  'golden',
+  'cyberpunk',
+  'gallery',
+  'daylight',
+  'obsidian',
+  'marble',
+  'oak',
+  'titanium',
+  'concrete',
+  'warm',
+  'brushed',
+  'raw',
+  'camera',
+  'view',
+  'angle',
+  'preset',
+];
+
+function isSpatialPrompt(query: string): boolean {
+  const q = query.toLowerCase();
+  return SPATIAL_KEYWORDS.some((kw) => q.includes(kw));
+}
+
+function fallbackLightingForPrompt(prompt: string): LightingPreset {
+  const q = prompt.toLowerCase();
+  if (q.includes('cyberpunk') || q.includes('neon') || q.includes('futuristic')) return 'cyberpunk';
+  if (q.includes('gallery') || q.includes('museum')) return 'gallery';
+  if (q.includes('golden') || q.includes('sunset') || q.includes('warm')) return 'golden_hour';
+  if (q.includes('daylight') || q.includes('minimal') || q.includes('modern')) return 'daylight';
+  return 'golden_hour';
+}
+
+function fallbackMaterialForPrompt(prompt: string): MaterialPreset {
+  const q = prompt.toLowerCase();
+  if (q.includes('oak') || q.includes('wood') || q.includes('timber')) return 'warm_oak';
+  if (q.includes('titanium') || q.includes('metal') || q.includes('brushed')) return 'brushed_titanium';
+  if (q.includes('concrete') || q.includes('raw') || q.includes('industrial')) return 'raw_concrete';
+  if (q.includes('marble') || q.includes('obsidian') || q.includes('polished')) return 'obsidian_marble';
+  if (q.includes('minimal') || q.includes('modern')) return 'raw_concrete';
+  if (q.includes('futuristic') || q.includes('neon')) return 'brushed_titanium';
+  return 'obsidian_marble';
+}
+
+interface SpatialBriefResponse {
+  brief: {
+    atmosphere: string;
+    recommendedLighting: LightingPreset;
+    recommendedMaterial: MaterialPreset;
+    colorPalette: string[];
+    designRationale: string;
+  };
+}
+
 /* -------------------------------------------------------------------------- */
 /*  Props                                                                      */
 /* -------------------------------------------------------------------------- */
@@ -80,6 +146,7 @@ export interface PortalAiCopilotProps {
   isOpen: boolean;
   onClose: () => void;
   projectName?: string;
+  projectId?: string;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -107,6 +174,7 @@ export function PortalAiCopilot({
   isOpen,
   onClose,
   projectName = 'Horizon Villa',
+  projectId,
 }: PortalAiCopilotProps) {
   /* ---- Messages & Input State ---- */
   const [messages, setMessages] = useState<CopilotMessage[]>([
@@ -136,6 +204,9 @@ export function PortalAiCopilot({
   /* ---- Voice Input State ---- */
   const [isListening, setIsListening] = useState(false);
   const [isSpeechSupported, setIsSpeechSupported] = useState(false);
+
+  /* ---- Live Designer State ---- */
+  const [isLiveSynthesizing, setIsLiveSynthesizing] = useState(false);
 
   /* ---- Refs ---- */
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -329,6 +400,107 @@ export function PortalAiCopilot({
   }, [isListening]);
 
   /* ------------------------------------------------------------------------ */
+  /*  Live Designer — spatial synthesis bridge                                */
+  /* ------------------------------------------------------------------------ */
+
+  const triggerLiveDesigner = useCallback(
+    async (prompt: string): Promise<void> => {
+      if (!prompt.trim()) return;
+      setIsLiveSynthesizing(true);
+      try {
+        // Primary path: backend synthesis → realtime broadcast
+        const body: Record<string, string> = { prompt: prompt.trim() };
+        if (projectId) body.projectId = projectId;
+
+        const res = await fetch('/api/v1/ai/spatial-synthesis', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+          signal: AbortSignal.timeout(15000),
+        }).catch(() => null);
+
+        if (res && res.ok) {
+          const data = (await res.json()) as SpatialBriefResponse;
+          const lighting = data.brief.recommendedLighting;
+          const material = data.brief.recommendedMaterial;
+
+          // Optimistic local dispatch for instant feedback; realtime broadcast
+          // will re-apply for other clients. Dispatch separately so history
+          // preserves both transitions.
+          if (lighting) {
+            useSpatialStore.getState().dispatch({
+              type: 'SET_LIGHTING',
+              payload: { preset: lighting },
+              metadata: { triggeredBy: 'ai-agent', agentPersona: 'live-designer' },
+            });
+          }
+          if (material) {
+            useSpatialStore.getState().dispatch({
+              type: 'SET_MATERIAL',
+              payload: { preset: material },
+              metadata: { triggeredBy: 'ai-agent', agentPersona: 'live-designer' },
+            });
+          }
+
+          const briefMsg: CopilotMessage = {
+            id: (Date.now() + 2).toString(),
+            role: 'assistant',
+            content: `✨ Live Designer applied **${lighting ?? '—'}** lighting + **${material ?? '—'}** material.\n\n_${data.brief.designRationale}_`,
+            timestamp: new Date().toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+            }),
+          };
+          setMessages((prev) => [...prev, briefMsg]);
+          toast.success('Live Designer scene updated');
+          return;
+        }
+
+        // Fallback: heuristic synthesis (offline / backend unreachable)
+        const lighting = fallbackLightingForPrompt(prompt);
+        const material = fallbackMaterialForPrompt(prompt);
+
+        useSpatialStore.getState().dispatch({
+          type: 'SET_LIGHTING',
+          payload: { preset: lighting },
+          metadata: { triggeredBy: 'ai-agent', agentPersona: 'live-designer' },
+        });
+        useSpatialStore.getState().dispatch({
+          type: 'SET_MATERIAL',
+          payload: { preset: material },
+          metadata: { triggeredBy: 'ai-agent', agentPersona: 'live-designer' },
+        });
+
+        const fallbackMsg: CopilotMessage = {
+          id: (Date.now() + 2).toString(),
+          role: 'assistant',
+          content: `✨ Live Designer applied **${lighting}** lighting + **${material}** material (offline synthesis for “${prompt}”).`,
+          timestamp: new Date().toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+        };
+        setMessages((prev) => [...prev, fallbackMsg]);
+        toast.success('Live Designer applied (offline)');
+      } catch {
+        toast.error('Live Designer synthesis failed');
+      } finally {
+        setIsLiveSynthesizing(false);
+      }
+    },
+    [projectId],
+  );
+
+  const maybeTriggerLiveDesigner = useCallback(
+    (query: string): void => {
+      if (!isSpatialPrompt(query)) return;
+      // Fire-and-forget: do not block the main copilot flow
+      void triggerLiveDesigner(query);
+    },
+    [triggerLiveDesigner],
+  );
+
+  /* ------------------------------------------------------------------------ */
   /*  Send Handler (multimodal)                                                */
   /* ------------------------------------------------------------------------ */
 
@@ -359,6 +531,13 @@ export function PortalAiCopilot({
       if (!textToSend) setInput('');
       removeImage();
       setIsTyping(true);
+
+      // Live Designer: if the prompt looks like a spatial request, fire the
+      // synthesis pipeline in parallel. It calls POST /api/v1/ai/spatial-synthesis
+      // → backend → realtime (spatial:command) → Scene via Zustand. Optimistic
+      // local dispatch happens inside triggerLiveDesigner so the author sees
+      // instant feedback even before the broadcast echoes back.
+      if (query) maybeTriggerLiveDesigner(query);
 
       /* ---- Fetch response ---- */
       try {
@@ -422,7 +601,8 @@ export function PortalAiCopilot({
           let response: Response | null = null;
 
           try {
-            response = await fetch('/api/portal/copilot/query', {
+            // Use the project-specific endpoint to get real data
+            response = await fetch(`/api/v1/projects/${projectId || 'current'}/copilot-query`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ query, projectName }),
@@ -436,7 +616,7 @@ export function PortalAiCopilot({
             const data: { reply?: string } = await response.json();
             replyContent = data.reply ?? '';
           } else {
-            /* -- Fallback intelligent responses -- */
+            /* -- Fallback intelligent responses (maintained for resilience) -- */
             const qLower = query.toLowerCase();
 
             if (
@@ -477,7 +657,7 @@ export function PortalAiCopilot({
         inputRef.current?.focus();
       }
     },
-    [input, imagePreview, selectedImage, isTyping, projectName, removeImage],
+    [input, imagePreview, selectedImage, isTyping, projectName, removeImage, maybeTriggerLiveDesigner],
   );
 
   /* ---- Keyboard shortcut: Enter to send ---- */
@@ -649,6 +829,18 @@ export function PortalAiCopilot({
                 </motion.div>
               )}
 
+              {/* Live Designer synthesis indicator */}
+              {isLiveSynthesizing && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center space-x-2 text-amber-400/80 text-xs italic bg-amber-500/5 border border-amber-500/10 p-2.5 rounded-xl max-w-[180px] self-start"
+                >
+                  <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                  <span>Live Designer synthesizing…</span>
+                </motion.div>
+              )}
+
               {/* Invisible anchor for auto-scroll */}
               <div ref={messagesEndRef} />
             </div>
@@ -792,7 +984,7 @@ export function PortalAiCopilot({
                   placeholder={
                     imagePreview
                       ? 'Add a message or send image...'
-                      : 'Ask Copilot anything about your project...'
+                      : 'Ask Copilot — try “make it golden hour” or “warm oak material”'
                   }
                   disabled={isTyping || isListening}
                   className={cn(
@@ -802,6 +994,28 @@ export function PortalAiCopilot({
                   aria-label="Chat input"
                   autoComplete="off"
                 />
+
+                {/* Live Designer — explicit 3D apply */}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    if (input.trim()) void triggerLiveDesigner(input.trim());
+                  }}
+                  disabled={!input.trim() || isTyping || isListening || isLiveSynthesizing}
+                  className={cn(
+                    'transition-colors border border-amber-500/20',
+                    input.trim() && !isLiveSynthesizing
+                      ? 'text-amber-400 hover:bg-amber-500/10 hover:border-amber-500/30'
+                      : 'text-sl-mist/40 border-white/5',
+                    (isTyping || isListening || isLiveSynthesizing) && 'opacity-50 cursor-not-allowed',
+                  )}
+                  aria-label="Apply to 3D scene"
+                  title="Apply to 3D scene (Live Designer)"
+                >
+                  <Icon name="sparkles" className="w-4 h-4" />
+                </Button>
 
                 {/* Send button */}
                 <Button

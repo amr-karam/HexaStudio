@@ -12,7 +12,7 @@ export const revalidate = 3600;
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   try {
     const articlesData = await fetchArticles();
-    return (articlesData.articles ?? []).map((article) => ({ slug: article.slug }));
+    return (articlesData.articles ?? []).map((article: import('@hexastudio/types').Article) => ({ slug: article.slug }));
   } catch {
     return [];
   }

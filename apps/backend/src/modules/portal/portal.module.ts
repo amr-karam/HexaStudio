@@ -3,12 +3,14 @@ import { ClientPortalGateway } from './client-portal.gateway';
 import { PortalController } from './portal.controller';
 import { PortalService } from './portal.service';
 import { PortalCopilotService } from './portal-copilot.service';
+import { ProjectReportService } from './project-report.service';
 import { OdooModule } from '../odoo/odoo.module';
 import { StorageModule } from '../storage/storage.module';
 import { AIModule } from '../ai/ai.module';
 import { AgentsModule } from '../agents/agents.module';
 import { AuthModule } from '../auth/auth.module';
 import { ProjectsModule } from '../projects/projects.module';
+import { PdfModule } from '../pdf/pdf.module';
 
 @Module({
   imports: [
@@ -16,11 +18,12 @@ import { ProjectsModule } from '../projects/projects.module';
     StorageModule,
     AIModule,
     AgentsModule,
+    PdfModule,
     forwardRef(() => AuthModule),
     forwardRef(() => ProjectsModule),
   ],
   controllers: [PortalController],
-  providers: [ClientPortalGateway, PortalService, PortalCopilotService],
-  exports: [PortalService, PortalCopilotService, ClientPortalGateway],
+  providers: [ClientPortalGateway, PortalService, PortalCopilotService, ProjectReportService],
+  exports: [PortalService, PortalCopilotService, ClientPortalGateway, ProjectReportService],
 })
 export class PortalModule {}

@@ -13,7 +13,9 @@
     "test:watch": "vitest",
     "test:cov": "vitest run --coverage",
     "test:e2e": "playwright test --config ../../e2e/playwright.config.ts",
-    "analyze": "ANALYZE=true next build"
+    "analyze": "ANALYZE=true next build",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@axe-core/react": "^4.12.1",

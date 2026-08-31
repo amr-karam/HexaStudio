@@ -8,7 +8,7 @@ import {
   VERSION_NEUTRAL,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 import { SpatialSynthesisService } from './spatial-synthesis.service';
 import { SpatialBrief } from './spatial-brief.schema';
 import { VoiceService } from './voice.service';
@@ -19,6 +19,11 @@ class SpatialSynthesisPromptDto {
   @IsNotEmpty()
   @MaxLength(8000)
   prompt!: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  projectId?: string;
 }
 
 class SpatialSynthesisVoiceDto {
@@ -31,6 +36,11 @@ class SpatialSynthesisVoiceDto {
   @IsNotEmpty()
   @MaxLength(100)
   mimeType!: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  projectId?: string;
 }
 
 /**
@@ -58,6 +68,28 @@ export class SpatialSynthesisController {
   @ApiResponse({ status: 200, description: 'Spatial brief synthesized' })
   async synthesize(@Body() dto: SpatialSynthesisPromptDto): Promise<{ brief: SpatialBrief }> {
     const brief = await this.spatialSynthesisService.synthesizeFromPrompt(dto.prompt);
+
+    // Live Designer pipeline: if a projectId was supplied, broadcast the
+    // recommended preset changes over the realtime gateway so every client
+    // in the project room updates instantly (and the author gets optimistic
+    // feedback without waiting for a second round-trip).
+    if (dto.projectId) {
+      if (brief.recommendedLighting) {
+        await this.spatialSynthesisService.updateScene({
+          projectId: dto.projectId,
+          type: 'SET_LIGHTING',
+          payload: { preset: brief.recommendedLighting },
+        });
+      }
+      if (brief.recommendedMaterial) {
+        await this.spatialSynthesisService.updateScene({
+          projectId: dto.projectId,
+          type: 'SET_MATERIAL',
+          payload: { preset: brief.recommendedMaterial },
+        });
+      }
+    }
+
     return { brief };
   }
 
@@ -82,6 +114,23 @@ export class SpatialSynthesisController {
       dto.mimeType
     );
     const brief = await this.spatialSynthesisService.synthesizeFromPrompt(transcription);
+
+    if (dto.projectId) {
+      if (brief.recommendedLighting) {
+        await this.spatialSynthesisService.updateScene({
+          projectId: dto.projectId,
+          type: 'SET_LIGHTING',
+          payload: { preset: brief.recommendedLighting },
+        });
+      }
+      if (brief.recommendedMaterial) {
+        await this.spatialSynthesisService.updateScene({
+          projectId: dto.projectId,
+          type: 'SET_MATERIAL',
+          payload: { preset: brief.recommendedMaterial },
+        });
+      }
+    }
 
     return { transcription, brief };
   }

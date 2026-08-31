@@ -26,6 +26,7 @@ import { RealtimeModule } from '../realtime/realtime.module';
 import { ModelFusionService } from './model-fusion.service';
 import { ModelFusionController } from './model-fusion.controller';
 import { ModelFusionStreamController } from './model-fusion-stream.controller';
+import { AiNarratorService } from './services/ai-narrator.service';
 
 /**
  * AIModule
@@ -73,6 +74,7 @@ import { ModelFusionStreamController } from './model-fusion-stream.controller';
     LeadScoringService,
     TimelinePredictorService,
     ModelFusionService,
+    AiNarratorService,
   ],
   exports: [
     AiChatService,
@@ -93,6 +95,7 @@ import { ModelFusionStreamController } from './model-fusion-stream.controller';
     LeadScoringService,
     TimelinePredictorService,
     ModelFusionService,
+    AiNarratorService,
   ],
 })
 export class AIModule {}

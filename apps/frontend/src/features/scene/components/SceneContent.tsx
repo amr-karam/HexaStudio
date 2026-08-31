@@ -8,6 +8,7 @@ import { Hotspot } from './Hotspot';
 import { ProjectHotspot } from '@hexastudio/types';
 import { useDesignerStore } from '../store/designer-store';
 import { MATERIAL_PRESETS, MaterialPresetConfig } from '../config/material-presets';
+import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 
 interface SceneContentProps {
   projectModelUrl?: string;
@@ -54,6 +55,7 @@ const GLASS_PANELS: Array<[number, number, number]> = [
 ];
 
 function ProceduralArchitecture({ accent, materialPreset }: { accent: string; materialPreset: MaterialPresetConfig }) {
+  const { staticMode } = useMotionPolicy();
   // Optimization: Use InstancedMesh for repetitive elements to reduce draw calls.
   // Each instanced mesh is a single draw call regardless of instance count.
 
@@ -184,9 +186,8 @@ function ProceduralArchitecture({ accent, materialPreset }: { accent: string; ma
     };
   }, [columnGeom, columnMat, glassGeom, glassMat, lightGeom, lightMat]);
 
-  return (
-    <Float speed={0.4} rotationIntensity={0.05} floatIntensity={0.08}>
-      <group position={[0, 1.8, 0]}>
+  const pavilionGroup = (
+    <group position={[0, 1.8, 0]}>
 
         {/* Foundation slab — dark concrete, thin platform. */}
         <mesh castShadow receiveShadow position={[0, 0.3, 0]}>
@@ -260,6 +261,14 @@ function ProceduralArchitecture({ accent, materialPreset }: { accent: string; ma
           args={[lightGeom, lightMat, lightMatrices.length]}
         />
       </group>
+  );
+
+  // Respect prefers-reduced-motion: disable Float animation in staticMode
+  if (staticMode) return pavilionGroup;
+
+  return (
+    <Float speed={0.4} rotationIntensity={0.05} floatIntensity={0.08}>
+      {pavilionGroup}
     </Float>
   );
 }

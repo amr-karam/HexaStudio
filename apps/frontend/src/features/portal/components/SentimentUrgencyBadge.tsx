@@ -21,14 +21,14 @@ import { motion } from 'framer-motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
 import type { ApprovalSentiment } from '../types';
-import { Icon } from './PortalIcons';
+import { Icon, type IconName } from './PortalIcons';
 
 interface SentimentUrgencyBadgeProps {
   sentiment?: ApprovalSentiment;
   urgencyScore?: number;
 }
 
-const SENTIMENT_CONFIG: Record<NonNullable<ApprovalSentiment>, { color: string; label: string; icon: string }> = {
+const SENTIMENT_CONFIG: Record<NonNullable<ApprovalSentiment>, { color: string; label: string; icon: IconName }> = {
   positive: { color: 'bg-emerald-400', label: 'Client Receptive', icon: 'smile' },
   neutral: { color: 'bg-amber-400', label: 'Neutral Tone', icon: 'meh' },
   frustrated: { color: 'bg-orange-400', label: 'Elevated Tension', icon: 'frown' },

@@ -64,6 +64,10 @@ type IconName =
   | 'kanban'
   | 'camera'
   | 'mic'
+  | 'smile'
+  | 'meh'
+  | 'frown'
+  | 'alert-triangle'
   | 'loader';
 
 interface IconProps {
@@ -405,6 +409,37 @@ const ICON_PATHS: Record<IconName, React.ReactNode> = {
   loader: (
     <>
       <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+    </>
+  ),
+  smile: (
+    <>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+      <circle cx="9" cy="9" r="1" />
+      <circle cx="15" cy="9" r="1" />
+    </>
+  ),
+  meh: (
+    <>
+      <rect width="20" height="20" x="2" y="2" rx="10" ry="10" />
+      <circle cx="9" cy="9" r="1" />
+      <circle cx="15" cy="9" r="1" />
+      <path d="M12 15c2 0 3.5 1.5 3.5 3.5a1 1 0 0 1-1 1H8.5a1 1 0 0 1-1-1C7.5 16.5 9 15 12 15z" />
+    </>
+  ),
+  frown: (
+    <>
+      <circle cx="12" cy="12" r="10" />
+      <circle cx="9" cy="9" r="1" />
+      <circle cx="15" cy="9" r="1" />
+      <path d="M8 16a6 6 0 0 1 8 0" />
+    </>
+  ),
+  'alert-triangle': (
+    <>
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+      <path d="M12 9v4" />
+      <path d="M12 17h.01" />
     </>
   ),
 };

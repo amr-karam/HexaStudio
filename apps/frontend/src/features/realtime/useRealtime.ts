@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { getAccessToken } from '@/lib/api-client';
+import { useSpatialStore, type SpatialCommand, isSpatialCommand } from './spatial-store';
 
 const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
@@ -52,10 +53,18 @@ type EventHandlers = {
 
 export function useRealtime(projectId: string | null, handlers: EventHandlers = {}) {
   const socketRef = useRef<Socket | null>(null);
-  const token = getAccessToken();
+  const handlersRef = useRef<EventHandlers>(handlers);
+  const [isConnected, setIsConnected] = useState(false);
+
+  // Keep handlers fresh without tearing down the socket on every render.
+  useEffect(() => {
+    handlersRef.current = handlers;
+  }, [handlers]);
 
   useEffect(() => {
-    if (!projectId || !token) return;
+    if (!projectId) return;
+    const token = getAccessToken();
+    if (!token) return;
 
     const socket = io(`${SOCKET_URL}/realtime`, {
       transports: ['websocket', 'polling'],
@@ -64,52 +73,117 @@ export function useRealtime(projectId: string | null, handlers: EventHandlers = 
 
     socketRef.current = socket;
 
-    socket.on('connect', () => {
+    const handleConnect = (): void => {
       socket.emit('join-project', projectId);
-      handlers.onConnected?.();
-    });
+      setIsConnected(true);
+      handlersRef.current.onConnected?.();
+    };
 
-    socket.on('disconnect', () => {
-      handlers.onDisconnected?.();
-    });
+    const handleDisconnect = (): void => {
+      setIsConnected(false);
+      handlersRef.current.onDisconnected?.();
+    };
+
+    const handleSpatialCommand = (data: unknown): void => {
+      // Runtime validation — backend may emit `spatial:command` or legacy `spatialCommand`
+      let command: SpatialCommand | null = null;
+
+      if (isSpatialCommand(data)) {
+        command = data;
+      } else if (
+        typeof data === 'object' &&
+        data !== null &&
+        'command' in data &&
+        isSpatialCommand((data as { command: unknown }).command)
+      ) {
+        // Wrapped shape { projectId, command }
+        command = (data as { command: SpatialCommand }).command;
+      } else if (
+        typeof data === 'object' &&
+        data !== null &&
+        'type' in data &&
+        'payload' in data
+      ) {
+        // Best-effort fallback: treat as SpatialCommandPayload
+        const maybe = data as SpatialCommandPayload;
+        if (
+          maybe.type === 'SET_LIGHTING' ||
+          maybe.type === 'SET_MATERIAL' ||
+          maybe.type === 'SET_CAMERA'
+        ) {
+          command = {
+            type: maybe.type,
+            payload: maybe.payload,
+            metadata: {
+              triggeredBy: maybe.metadata.triggeredBy,
+              agentPersona: maybe.metadata.agentPersona,
+            },
+          };
+        }
+      }
+
+      if (command) {
+        // Dispatch to Zustand so ExperienceCanvas / SceneContent can react
+        // even without a direct handler prop.
+        try {
+          useSpatialStore.getState().dispatch(command);
+        } catch {
+          // store dispatch should never throw; swallow to keep socket alive
+        }
+        handlersRef.current.onSpatialCommand?.(command);
+      }
+    };
+
+    socket.on('connect', handleConnect);
+    socket.on('disconnect', handleDisconnect);
 
     socket.on('annotation:added', (data: AnnotationPayload) => {
-      handlers.onAnnotationAdded?.(data);
+      handlersRef.current.onAnnotationAdded?.(data);
     });
 
     socket.on('annotation:resolved', (data: { projectId: string; annotationId: string }) => {
-      handlers.onAnnotationResolved?.(data);
+      handlersRef.current.onAnnotationResolved?.(data);
     });
 
     socket.on('approval:update', (data: ApprovalPayload) => {
-      handlers.onApprovalUpdate?.(data);
+      handlersRef.current.onApprovalUpdate?.(data);
     });
 
     socket.on('presence:joined', (data: PresencePayload) => {
-      handlers.onPresenceJoined?.(data);
+      handlersRef.current.onPresenceJoined?.(data);
     });
 
     socket.on('presence:left', (data: { id: string }) => {
-      handlers.onPresenceLeft?.(data);
+      handlersRef.current.onPresenceLeft?.(data);
     });
 
     socket.on('project:updated', (data: unknown) => {
-      handlers.onProjectUpdated?.(data);
+      handlersRef.current.onProjectUpdated?.(data);
     });
 
-    socket.on('spatial:command', (data: SpatialCommandPayload) => {
-      handlers.onSpatialCommand?.(data);
-    });
+    // Canonical event name + legacy alias for backwards compatibility.
+    socket.on('spatial:command', handleSpatialCommand);
+    socket.on('spatialCommand', handleSpatialCommand);
 
     return () => {
+      socket.off('connect', handleConnect);
+      socket.off('disconnect', handleDisconnect);
+      socket.off('spatial:command', handleSpatialCommand);
+      socket.off('spatialCommand', handleSpatialCommand);
+      socket.off('annotation:added');
+      socket.off('annotation:resolved');
+      socket.off('approval:update');
+      socket.off('presence:joined');
+      socket.off('presence:left');
+      socket.off('project:updated');
       if (socket.connected) {
         socket.emit('leave-project', projectId);
         socket.disconnect();
       }
-      socket.off('spatial:command');
       socketRef.current = null;
+      setIsConnected(false);
     };
-  }, [projectId, token]);
+  }, [projectId]);
 
   const sendAnnotation = useCallback((annotation: AnnotationPayload) => {
     socketRef.current?.emit('annotation:add', { projectId, annotation });
@@ -132,7 +206,7 @@ export function useRealtime(projectId: string | null, handlers: EventHandlers = 
     resolveAnnotation,
     sendApproval,
     announcePresence,
-    isConnected: socketRef.current?.connected ?? false,
+    isConnected,
     socket: socketRef.current,
   };
 }

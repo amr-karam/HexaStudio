@@ -284,6 +284,8 @@ export interface PortalProjectDetail {
   };
 }
 
+export type { ExecutiveReport } from './reports.types';
+
 /* -------------------------------------------------------------------------- */
 /*  Communication Center v3.0                                                  */
 /* -------------------------------------------------------------------------- */

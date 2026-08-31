@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import type { AgentTool } from '@hexastudio/types';
 
 // Placeholder for the actual Agent component from ui.inference.sh
 // This would normally be installed via shadcn-ui from the inference.sh registry
@@ -14,7 +15,7 @@ interface AgentProps {
     };
     description?: string;
     system_prompt?: string;
-    tools?: unknown; // TODO: Replace with proper type when implementing real tools
+    tools?: AgentTool[];
   };
   allowFiles?: boolean;
   allowImages?: boolean;

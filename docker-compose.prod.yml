@@ -556,6 +556,11 @@ services:
       MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-hexastudio}
       MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
       BACKUP_DIR: /backups
+      # Offsite Redundancy Configuration
+      OFFSITE_MINIO_ENDPOINT: ${OFFSITE_MINIO_ENDPOINT:-}
+      OFFSITE_MINIO_ACCESS_KEY: ${OFFSITE_MINIO_ACCESS_KEY:-}
+      OFFSITE_MINIO_SECRET_KEY: ${OFFSITE_MINIO_SECRET_KEY:-}
+      OFFSITE_MINIO_BUCKET: ${OFFSITE_MINIO_BUCKET:-backups-offsite}
     depends_on:
       postgres:
         condition: service_healthy

@@ -5,6 +5,7 @@ import { SpatialSynthesisService } from './spatial-synthesis.service';
 import { StructuredOutputService } from './structured-output.service';
 import { VoiceService } from './voice.service';
 import { SpatialBrief, SpatialBriefSchema } from './spatial-brief.schema';
+import { RealtimeGateway } from '../realtime/realtime.gateway';
 
 const mockBrief: SpatialBrief = {
   atmosphere: 'Sophisticated Luxury & Spatial Balance',
@@ -23,6 +24,10 @@ const mockVoiceService = {
   transcribeAudio: vi.fn(),
 };
 
+const mockRealtimeGateway = {
+  dispatchSpatialCommand: vi.fn(),
+};
+
 describe('SpatialSynthesisService', () => {
   let service: SpatialSynthesisService;
 
@@ -35,6 +40,7 @@ describe('SpatialSynthesisService', () => {
         SpatialSynthesisService,
         { provide: StructuredOutputService, useValue: mockStructuredOutputService },
         { provide: VoiceService, useValue: mockVoiceService },
+        { provide: RealtimeGateway, useValue: mockRealtimeGateway },
       ],
     }).compile();
 
@@ -124,6 +130,39 @@ describe('SpatialSynthesisService', () => {
 
       expect(mockVoiceService.transcribeAudio).not.toHaveBeenCalled();
       expect(mockStructuredOutputService.generateStructuredOutput).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('updateScene', () => {
+    it('dispatches spatial command via realtime gateway', async () => {
+      const result = await service.updateScene({
+        projectId: 'proj-1',
+        type: 'SET_LIGHTING',
+        payload: { preset: 'golden_hour' },
+      });
+
+      expect(mockRealtimeGateway.dispatchSpatialCommand).toHaveBeenCalledWith(
+        'proj-1',
+        expect.objectContaining({
+          type: 'SET_LIGHTING',
+          payload: { preset: 'golden_hour' },
+          metadata: expect.objectContaining({ triggeredBy: 'ai-agent' }),
+        }),
+      );
+      expect(result).toEqual(expect.objectContaining({ success: true }));
+    });
+
+    it('dispatches material commands via realtime gateway', async () => {
+      await service.updateScene({
+        projectId: 'proj-2',
+        type: 'SET_MATERIAL',
+        payload: { preset: 'warm_oak' },
+      });
+
+      expect(mockRealtimeGateway.dispatchSpatialCommand).toHaveBeenCalledWith(
+        'proj-2',
+        expect.objectContaining({ type: 'SET_MATERIAL' }),
+      );
     });
   });
 });

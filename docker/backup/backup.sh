@@ -10,6 +10,12 @@ MINIO_AK="${MINIO_ACCESS_KEY:-hexastudio}"
 MINIO_SK="${MINIO_SECRET_KEY}"
 MINIO_BUCKET="${MINIO_BUCKET:-backups}"
 
+# Offsite Destination (Optional)
+OFFSITE_ENDPOINT="${OFFSITE_MINIO_ENDPOINT}"
+OFFSITE_AK="${OFFSITE_MINIO_ACCESS_KEY}"
+OFFSITE_SK="${OFFSITE_MINIO_SECRET_KEY}"
+OFFSITE_BUCKET="${OFFSITE_MINIO_BUCKET:-backups-offsite}"
+
 # Real application databases (POSTGRES_DB is just the default, not an app DB)
 DBS="hexastudio_api hexastudio_cms hexastudio_odoo hexastudio_db"
 
@@ -27,6 +33,12 @@ fi
 if command -v mc >/dev/null 2>&1 && [ -n "${MINIO_SK}" ]; then
   mc alias set hexabackup "http://${MINIO_ENDPOINT}" "${MINIO_AK}" "${MINIO_SK}" >/dev/null 2>&1 || true
   mc mb --ignore-existing "hexabackup/${MINIO_BUCKET}" >/dev/null 2>&1 || true
+fi
+
+# Configure offsite alias if credentials provided
+if command -v mc >/dev/null 2>&1 && [ -n "${OFFSITE_SK}" ] && [ -n "${OFFSITE_ENDPOINT}" ]; then
+  mc alias set hexaoffsite "http://${OFFSITE_ENDPOINT}" "${OFFSITE_AK}" "${OFFSITE_SK}" >/dev/null 2>&1 || true
+  mc mb --ignore-existing "hexaoffsite/${OFFSITE_BUCKET}" >/dev/null 2>&1 || true
 fi
 
 while true; do
@@ -51,8 +63,14 @@ while true; do
     for f in "${BACKUP_DIR}"/*"${TIMESTAMP}".dump; do
       [ -f "$f" ] || continue
       filename=$(basename "$f")
-      echo "[$(date)] Uploading ${filename} to MinIO..."
-      mc cp "$f" "hexabackup/${MINIO_BUCKET}/${filename}" || echo "[$(date)] MinIO upload failed for ${filename}"
+      echo "[$(date)] Uploading ${filename} to local MinIO..."
+      mc cp "$f" "hexabackup/${MINIO_BUCKET}/${filename}" || echo "[$(date)] Local MinIO upload failed for ${filename}"
+      
+      # Offsite redundancy sync
+      if [ -n "${OFFSITE_SK}" ] && [ -n "${OFFSITE_ENDPOINT}" ]; then
+        echo "[$(date)] Syncing ${filename} to offsite MinIO..."
+        mc cp "$f" "hexaoffsite/${OFFSITE_BUCKET}/${filename}" || echo "[$(date)] Offsite MinIO upload failed for ${filename}"
+      fi
     done
   fi
 

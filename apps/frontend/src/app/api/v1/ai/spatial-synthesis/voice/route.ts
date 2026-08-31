@@ -14,6 +14,7 @@ import { proxyToBackend } from '@/lib/bff';
 interface VoiceSynthesisBody {
   audioData?: unknown;
   mimeType?: unknown;
+  projectId?: unknown;
 }
 
 export async function POST(request: NextRequest) {
@@ -32,8 +33,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'mimeType is required' }, { status: 400 });
   }
 
+  const payload: Record<string, unknown> = {
+    audioData: body.audioData,
+    mimeType: body.mimeType,
+  };
+  if (typeof body.projectId === 'string' && body.projectId.trim().length > 0) {
+    payload.projectId = body.projectId.trim();
+  }
+
   return proxyToBackend('/api/v1/ai/spatial-synthesis/voice', request, {
-    body: { audioData: body.audioData, mimeType: body.mimeType },
+    body: payload,
     timeoutMs: 30_000,
   });
 }

@@ -3,6 +3,7 @@ import { proxyToBackend } from '@/lib/bff';
 
 interface SpatialSynthesisBody {
   prompt?: unknown;
+  projectId?: unknown;
 }
 
 export async function POST(request: NextRequest) {
@@ -17,7 +18,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Prompt is required' }, { status: 400 });
   }
 
+  const payload: Record<string, unknown> = { prompt: body.prompt };
+  if (typeof body.projectId === 'string' && body.projectId.trim().length > 0) {
+    payload.projectId = body.projectId.trim();
+  }
+
   return proxyToBackend('/api/v1/ai/spatial-synthesis', request, {
-    body: { prompt: body.prompt },
+    body: payload,
   });
 }
