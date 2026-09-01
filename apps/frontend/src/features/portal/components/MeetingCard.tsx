@@ -36,10 +36,10 @@ export function MeetingCard({ meeting, index, prefersReduced }: MeetingCardProps
       custom={prefersReduced}
       transition={makeTransition('entrance', 'component', index * 0.08)}
       className={cn(
-        'flex gap-4 p-4 rounded-xl',
-        'bg-white/[0.02] border border-sl-silver/20',
-        'hover:border-sl-gold-subtle/30',
-        'transition-colors duration-300',
+        'flex gap-4 p-4 rounded-2xl',
+        'bg-sl-obsidian border border-sl-gold-subtle/15',
+        'hover:border-sl-gold-subtle/40 hover:shadow-lg hover:shadow-sl-gold-subtle/10',
+        'transition-all duration-300',
       )}
       role="listitem"
       aria-label={`Meeting: ${meeting.title} on ${meeting.date} at ${meeting.time}`}

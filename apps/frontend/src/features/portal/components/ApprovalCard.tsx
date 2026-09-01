@@ -290,8 +290,8 @@ export function ApprovalCard({ approval, index, prefersReduced, onReview }: Appr
       transition={makeTransition('entrance', 'component', index * 0.06)}
       className={cn(
         'glass-depth',
-        'relative overflow-hidden rounded-xl',
-        'border border-sl-silver/20/15 p-5',
+        'relative overflow-hidden rounded-2xl',
+        'border border-sl-silver/10 p-5',
         'hover:border-sl-gold-subtle/20 transition-all duration-500 ease-[var(--hexa-ease-interaction)]',
         'flex flex-col gap-4',
       )}
