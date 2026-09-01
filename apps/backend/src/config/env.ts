@@ -59,7 +59,7 @@ const envSchema = z.object({
   ANTHROPIC_API_KEY: z.string().min(1).optional(),
   CLAUDE_API_KEY: z.string().min(1).optional(),
 
-  // AI / Gemini
+  // AI / Gemini (legacy alias — kept for backward compat; unused when AI_PROVIDER=hermes)
   GEMINI_API_KEY: z.string().optional(),
   GEMINI_MODEL: z.string().default('gemini-2.0-flash'),
 
