@@ -281,7 +281,7 @@ export default function PortalDashboardPage() {
             <motion.div
               variants={fadeLift}
               custom={prefersReduced}
-              className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-8 pt-6 border-t border-sl-silver/20/15"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-8 pt-6 border-t border-sl-silver/20/15"
             >
               {/* Progress */}
               <div className="p-4 rounded-xl bg-white/[0.02] border border-sl-silver/20/15">

@@ -43,6 +43,9 @@
     "src/stories",
     "**/__stories__",
     "**/*.stories.tsx",
-    "**/*.stories.ts"
+    "**/*.stories.ts",
+    "test/**/*",
+    "**/test/**/*",
+    "vitest.config.ts"
   ]
 }
