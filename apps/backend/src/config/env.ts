@@ -49,10 +49,10 @@ const envSchema = z.object({
   OPENAI_MODEL: z.string().default('gpt-4o-mini'),
   OPENAI_EMBEDDING_MODEL: z.string().default('text-embedding-3-small'),
 
-  // AI / Gemini
-  GEMINI_API_KEY: z.string().min(1).optional(),
-  GEMINI_MODEL: z.string().default('gemini-2.5-flash'),
-  AI_PROVIDER: z.enum(['openai', 'gemini']).default('gemini'),
+  // AI / Hermes
+  HERMES_API_KEY: z.string().min(1).optional(),
+  HERMES_MODEL: z.string().default('hermes-agent-1.0'),
+  AI_PROVIDER: z.enum(['openai', 'gemini', 'hermes']).default('hermes'),
 
   // AI / Anthropic (Claude)
   ANTHROPIC_API_KEY: z.string().min(1).optional(),
@@ -107,6 +107,9 @@ const envSchema = z.object({
   // Frontend revalidation
   FRONTEND_URL: z.string().url('FRONTEND_URL must be a valid URL').optional(),
   REVALIDATE_SECRET: z.string().min(32, 'REVALIDATE_SECRET must be at least 32 characters').optional(),
+
+  // Framer (framer.com SaaS) — server-only
+  FRAMER_API_KEY: z.string().optional(),
 
   // Optional
   PORT: z.coerce.number().default(4000),

@@ -27,7 +27,10 @@ import { HealthScore } from '@/features/portal/components/HealthScore';
 import { ActivityItem } from '@/features/portal/components/ActivityItem';
 import { QuickAction } from '@/features/portal/components/QuickAction';
 import { DashboardSkeleton } from '@/features/portal/components/DashboardSkeleton';
+import { MeetingCard } from '@/features/portal/components/MeetingCard';
+import { MetricBar } from '@/features/portal/components/MetricBar';
 import { Icon } from '@/features/portal/components/PortalIcons';
+import { ApprovalCard } from '@/features/portal/components/ApprovalCard';
 import { createDynamicComponent } from '@/lib/dynamic-component';
 import type { PortalAiCopilotProps } from '@/features/portal/components/PortalAiCopilot';
 // Heavy AI copilot drawer (speech + image tooling) — lazy-loaded; only fetched
@@ -51,7 +54,7 @@ import {
   STAGGER,
 } from '@/lib/motion';
 import { cn } from '@/lib/utils';
-import type { DashboardData, PendingApproval, UpcomingMeeting } from '@/features/portal/types';
+import type { DashboardData } from '@/features/portal/types';
 
 /* -------------------------------------------------------------------------- */
 /*  Mock Data — Fallback when API is unreachable                              */
@@ -112,112 +115,7 @@ async function fetchDashboardData(): Promise<DashboardData> {
 /*  Sub-components — Internal to keep the main render clean                   */
 /* -------------------------------------------------------------------------- */
 
-/** Metric breakdown bar used inside the health section. */
-function MetricBar({
-  label,
-  value,
-  delay,
-  prefersReduced,
-}: {
-  label: string;
-  value: number;
-  delay: number;
-  prefersReduced: boolean;
-}) {
-  return (
-    <div className="space-y-1.5">
-      <div className="flex items-center justify-between">
-        <span className="text-[11px] uppercase tracking-wider font-mono text-sl-mist/60">
-          {label}
-        </span>
-        <span className="text-xs font-mono text-sl-mist/60">{value}%</span>
-      </div>
-      <div
-        className="h-1.5 rounded-full bg-white/[0.04] overflow-hidden"
-        role="progressbar"
-        aria-valuenow={value}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-label={`${label}: ${value}%`}
-      >
-        <motion.div
-          className={cn(
-            'h-full rounded-full',
-            value >= 90
-              ? 'bg-emerald-500'
-              : value >= 70
-                ? 'bg-amber-500'
-                : value >= 50
-                  ? 'bg-amber-400'
-                  : 'bg-red-400',
-          )}
-          initial={prefersReduced ? { width: `${value}%` } : { width: '0%' }}
-          animate={{ width: `${value}%` }}
-          transition={
-            prefersReduced
-              ? { duration: 0.01 }
-              : { duration: DURATION.page, delay, ease: EASE.entrance }
-          }
-        />
-      </div>
-    </div>
-  );
-}
 
-/** Calendar-style meeting card with date highlighting. */
-function MeetingCard({
-  meeting,
-  index,
-  prefersReduced,
-}: {
-  meeting: UpcomingMeeting;
-  index: number;
-  prefersReduced: boolean;
-}) {
-  // Parse "July 28, 2026" format
-  const parsed = new Date(meeting.date);
-  const dayNum = isNaN(parsed.getDate()) ? '--' : parsed.getDate();
-  const monthShort = isNaN(parsed.getMonth())
-    ? '---'
-    : parsed.toLocaleString('en-US', { month: 'short' }).toUpperCase();
-
-  return (
-    <motion.div
-      variants={fadeLift}
-      initial="hidden"
-      animate="visible"
-      custom={prefersReduced}
-      transition={makeTransition('entrance', 'component', index * 0.08)}
-      className="flex gap-4 p-4 bg-white/[0.02] rounded-xl border border-sl-silver/20 hover:border-sl-gold-subtle/20 transition-colors duration-300"
-    >
-      {/* Date Badge */}
-      <div className="flex flex-col items-center justify-center shrink-0 w-14 h-14 rounded-lg bg-sl-gold-subtle/[0.06] border border-sl-gold-subtle/15">
-        <span className="text-[10px] uppercase tracking-widest font-mono text-sl-gold-hover">
-          {monthShort}
-        </span>
-        <span className="text-xl font-serif font-light text-sl-alabaster leading-none">
-          {dayNum}
-        </span>
-      </div>
-
-      {/* Details */}
-      <div className="min-w-0 flex-1">
-        <h4 className="text-sm font-semibold text-sl-alabaster leading-snug">
-          {meeting.title}
-        </h4>
-        <div className="flex items-center gap-1.5 mt-1">
-          <Icon name="clock" size={11} className="text-sl-mist/60" />
-          <span className="text-[11px] font-mono text-sl-gold-hover">
-            {meeting.time}
-          </span>
-        </div>
-        <p className="text-[11px] text-sl-mist/60 mt-1.5 truncate">
-          {meeting.participants.join(' · ')}
-        </p>
-      </div>
-    </motion.div>
-  );
-}
 
 /** Empty state component for sparse dashboard sections. */
 function EmptyState({
@@ -799,68 +697,4 @@ export default function PortalDashboardPage() {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Approval Card — Internal sub-component with AnimatePresence support       */
-/* -------------------------------------------------------------------------- */
 
-function ApprovalCard({
-  approval,
-  index,
-  prefersReduced,
-  onReview,
-}: {
-  approval: PendingApproval;
-  index: number;
-  prefersReduced: boolean;
-  onReview: () => void;
-}) {
-  return (
-    <motion.div
-      variants={fadeLift}
-      initial="hidden"
-      animate="visible"
-      exit={{ opacity: 0, x: -12, transition: { duration: 0.2 } }}
-      custom={prefersReduced}
-      transition={makeTransition('entrance', 'component', index * 0.06)}
-      className={cn(
-        'p-4 rounded-xl bg-white/[0.02] border border-sl-silver/20/15',
-        'flex items-center justify-between gap-4',
-        'hover:border-sl-gold-subtle/20 transition-colors duration-300',
-      )}
-    >
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="relative flex h-2 w-2 shrink-0" aria-hidden="true">
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-sl-gold-subtle" />
-          </span>
-          <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-sl-gold-subtle/10 text-sl-gold-hover">
-            {approval.type}
-          </span>
-          <span className="text-[10px] font-mono text-sl-mist/60 uppercase">
-            {approval.phaseName}
-          </span>
-        </div>
-        <h4 className="text-sm font-semibold text-sl-alabaster leading-snug line-clamp-1">
-          {approval.title}
-        </h4>
-        <p className="text-[11px] text-sl-mist/60 mt-1">
-          Submitted by {approval.submittedBy}
-        </p>
-      </div>
-
-      <button
-        onClick={onReview}
-        className={cn(
-          'shrink-0 text-[11px] font-mono font-bold uppercase tracking-wider',
-          'px-4 py-2 rounded-lg',
-          'bg-sl-gold-subtle text-void hover:bg-sl-gold-subtle-bright',
-          'transition-colors duration-200',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
-        )}
-        aria-label={`Review ${approval.title}`}
-      >
-        Review
-      </button>
-    </motion.div>
-  );
-}
