@@ -52,11 +52,16 @@ const envSchema = z.object({
   // AI / Hermes
   HERMES_API_KEY: z.string().min(1).optional(),
   HERMES_MODEL: z.string().default('hermes-agent-1.0'),
+  HERMES_BASE_URL: z.string().url('HERMES_BASE_URL must be a valid URL').optional(),
   AI_PROVIDER: z.enum(['openai', 'gemini', 'hermes']).default('hermes'),
 
   // AI / Anthropic (Claude)
   ANTHROPIC_API_KEY: z.string().min(1).optional(),
   CLAUDE_API_KEY: z.string().min(1).optional(),
+
+  // AI / Gemini
+  GEMINI_API_KEY: z.string().optional(),
+  GEMINI_MODEL: z.string().default('gemini-2.0-flash'),
 
   // AI / Grok (xAI)
   GROK_API_KEY: z.string().min(1).optional(),
