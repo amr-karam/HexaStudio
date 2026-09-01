@@ -51,9 +51,9 @@ export function ContractGeneratorView() {
   };
 
   return (
-    <div className="bg-neutral-950/90 border border-sl-obsidian rounded-3xl p-6 shadow-2xl backdrop-blur-2xl text-neutral-100 space-y-5 max-w-3xl mx-auto">
+    <div className="bg-sl-void/90 border border-sl-obsidian rounded-3xl p-6 shadow-2xl backdrop-blur-2xl text-sl-alabaster space-y-5 max-w-3xl mx-auto">
       <div className="pb-3 border-b border-sl-obsidian">
-        <h3 className="text-sm font-bold text-neutral-100">AI Contract & Scope Change Order Generator</h3>
+        <h3 className="text-sm font-bold text-sl-alabaster">AI Contract & Scope Change Order Generator</h3>
         <p className="text-xs text-sl-mist/60">Automatic Odoo Quotation & Digital E-Signature Workflow</p>
       </div>
 
@@ -66,7 +66,7 @@ export function ContractGeneratorView() {
               placeholder="e.g. CR-004: Facade Solar Glass Spec Upgrade"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full bg-sl-void border border-sl-obsidian rounded-xl p-3 text-xs text-neutral-100 placeholder-neutral-500 focus:outline-none focus:border-amber-500/50"
+              className="w-full bg-sl-void border border-sl-obsidian rounded-xl p-3 text-xs text-sl-alabaster placeholder:text-sl-mist/40 focus:outline-none focus:border-amber-500/50"
             />
           </div>
 
@@ -77,7 +77,7 @@ export function ContractGeneratorView() {
               placeholder="+$4,500 USD"
               value={impactAmount}
               onChange={(e) => setImpactAmount(e.target.value)}
-              className="w-full bg-sl-void border border-sl-obsidian rounded-xl p-3 text-xs text-neutral-100 placeholder-neutral-500 focus:outline-none focus:border-amber-500/50"
+              className="w-full bg-sl-void border border-sl-obsidian rounded-xl p-3 text-xs text-sl-alabaster placeholder:text-sl-mist/40 focus:outline-none focus:border-amber-500/50"
             />
           </div>
 
@@ -88,14 +88,14 @@ export function ContractGeneratorView() {
               placeholder="Detail the architectural specification changes, material substitutions, and deliverables..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full bg-sl-void border border-sl-obsidian rounded-xl p-3 text-xs text-neutral-100 placeholder-neutral-500 focus:outline-none focus:border-amber-500/50"
+              className="w-full bg-sl-void border border-sl-obsidian rounded-xl p-3 text-xs text-sl-alabaster placeholder:text-sl-mist/40 focus:outline-none focus:border-amber-500/50"
             />
           </div>
 
           <button
             onClick={handleGenerate}
             disabled={isGenerating || !title.trim() || !description.trim()}
-            className="w-full py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-neutral-950 font-bold text-xs transition-colors"
+            className="w-full py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-sl-void font-bold text-xs transition-colors"
           >
             {isGenerating ? 'Drafting Odoo Change Order Agreement...' : '📄 Generate Odoo Change Order Agreement'}
           </button>
@@ -114,14 +114,14 @@ export function ContractGeneratorView() {
               </div>
               <button
                 onClick={() => setSigned(true)}
-                className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs transition-colors"
+                className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-sl-void font-bold text-xs transition-colors"
               >
                 ✍️ Execute Digital Signature & Sync to Odoo ERP
               </button>
             </div>
           ) : (
             <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-center text-xs space-y-1">
-              <p className="font-bold text-emerald-400">✓ Agreement Signed & Synchronized with Odoo ERP</p>
+              <p className="font-bold text-emerald-500">✓ Agreement Signed & Synchronized with Odoo ERP</p>
               <p className="text-sl-mist/60 text-[11px]">Odoo Sales Order: {contractData.quotationRef} &bull; Status: Confirmed</p>
             </div>
           )}

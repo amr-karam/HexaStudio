@@ -7,7 +7,7 @@
  * - NestJS BFF API
  * - Strapi 5 CMS
  * - Odoo 17 ERP
- * - Gemini AI
+ * - Hermes Agent
  * - Redis / PostgreSQL (via health endpoint)
  * - Traefik v3 Edge Proxy
  * - GitLab CE CI/CD
@@ -39,7 +39,7 @@ const SERVICES: ServiceCheck[] = [
   { name: 'backend', label: 'NestJS BFF API', url: '/api/health', icon: '🔧', tier: 'critical' },
   { name: 'frontend', label: 'Next.js Frontend', url: '/', icon: '⚡', tier: 'critical' },
   { name: 'cms', label: 'Strapi 5 CMS', url: 'https://cms.hexastudio.net/api/articles?pagination[limit]=1', icon: '📝', tier: 'primary' },
-  { name: 'ai', label: 'Gemini AI Engine', url: '/api/ai/health', icon: '🤖', tier: 'primary' },
+  { name: 'ai', label: 'Hermes Agent Engine', url: '/api/ai/health', icon: '🤖', tier: 'primary' },
   { name: 'gitlab', label: 'GitLab CE', url: 'https://gitlab.hexastudio.net/-/health', icon: '🦊', tier: 'primary' },
   { name: 'grafana', label: 'Grafana Metrics', url: 'https://gitlab.hexastudio.net/grafana/api/health', icon: '📊', tier: 'secondary' },
 ];
@@ -181,7 +181,7 @@ export default function HealthDashboardPage() {
         <div className="rounded-xl border border-white/5 bg-white/3 p-4 text-xs text-sl-alabaster/40 space-y-1">
           <p>🏗 <strong className="text-sl-alabaster/60">Stack:</strong> Next.js 16 · NestJS 11 · Strapi 5 · Odoo 17 · PostgreSQL 16 · Redis 7 · Qdrant · MinIO</p>
           <p>🌐 <strong className="text-sl-alabaster/60">Edge:</strong> Traefik v3 + Cloudflare Tunnel · GitLab CE (registry.gitlab.hexastudio.net)</p>
-          <p>🤖 <strong className="text-sl-alabaster/60">AI:</strong> Gemini 2.5 Flash · DeepSeek · OpenRouter · Anthropic Claude · Grok</p>
+          <p>🤖 <strong className="text-sl-alabaster/60">AI:</strong> Hermes Agent · DeepSeek · OpenRouter · Anthropic Claude · Grok</p>
         </div>
       </div>
     </div>

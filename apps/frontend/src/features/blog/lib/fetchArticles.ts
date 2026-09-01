@@ -16,7 +16,7 @@ async function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutM
 export async function fetchArticles(locale?: string): Promise<ArticleResponse> {
   try {
     const baseUrl = typeof window === 'undefined'
-      ? (process.env.API_URL || 'http://backend:4000')
+      ? (process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'https://api.hexastudio.net')
       : API_BASE_URL;
 
     const params = new URLSearchParams();
@@ -42,7 +42,7 @@ export async function fetchArticles(locale?: string): Promise<ArticleResponse> {
 export async function fetchArticle(slug: string, locale?: string): Promise<Article | null> {
   try {
     const baseUrl = typeof window === 'undefined'
-      ? (process.env.API_URL || 'http://backend:4000')
+      ? (process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'https://api.hexastudio.net')
       : API_BASE_URL;
 
     const params = new URLSearchParams();

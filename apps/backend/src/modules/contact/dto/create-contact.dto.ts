@@ -20,7 +20,7 @@ export class CreateContactDtoClass {
   @ApiProperty({ example: 'john@example.com', description: 'Email address of the sender' })
   email!: string;
 
-  @ApiPropertyOptional({ example: 'Acme Corp', description: 'Company name (optional)' })
+  @ApiPropertyOptional({ example: 'Nebula Labs', description: 'Company name (optional)' })
   company?: string;
 
   @ApiPropertyOptional({ example: '+1234567890', description: 'Phone number (optional)' })

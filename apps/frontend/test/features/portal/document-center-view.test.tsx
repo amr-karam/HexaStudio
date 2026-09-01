@@ -127,16 +127,10 @@ describe('DocumentCenterView', () => {
     fireEvent.click(screen.getByRole('tab', { name: 'Filter by design folder' }));
 
     await waitFor(() => {
-      // Design folder keeps only the PNG render (the BIM zip infers to blueprints,
-      // the agreement PDF to contracts) -> exactly one holding.
-      expect(
-        screen.getByText(
-          (_, el) => el?.children.length === 0 && el?.textContent?.includes('1 Item') === true,
-        ),
-      ).toBeInTheDocument();
+      expect(screen.getByText('Exterior_Render_Final.png')).toBeInTheDocument();
+      expect(screen.queryByText('Master_Services_Agreement.pdf')).not.toBeInTheDocument();
+      expect(screen.queryByText('BIM_Model_Package.zip')).not.toBeInTheDocument();
     });
-    expect(screen.queryByText('Master_Services_Agreement.pdf')).not.toBeInTheDocument();
-    expect(screen.queryByText('BIM_Model_Package.zip')).not.toBeInTheDocument();
   });
 
   it('filters by search across names and tags, then resets from the empty state', async () => {

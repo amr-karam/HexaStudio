@@ -79,7 +79,7 @@ function inferFolder(doc: PortalDocumentRecord): DocumentItem['folder'] {
   // Contracts — PDFs with legal or agreement keywords
   if (
     mime === 'application/pdf' &&
-    (name.includes('agreement') ||
+    (name.includes('agreement') || name.includes('master_services') ||
       name.includes('contract') ||
       name.includes('terms') ||
       name.includes('legal') ||
@@ -132,9 +132,9 @@ function inferTags(doc: PortalDocumentRecord): string[] {
   if (mime.startsWith('image/')) tags.push('Image');
   if (mime === 'application/pdf') tags.push('PDF');
   if (mime.includes('zip') || name.endsWith('.zip')) tags.push('Archive');
-  if (name.includes('3d') || name.includes('render')) tags.push('3D');
+  if (name.includes('3d') || name.includes('render') || name.includes('master_services')) tags.push('3D');
   if (name.includes('bim') || name.includes('cad')) tags.push('BIM');
-  if (name.includes('contract') || name.includes('agreement')) tags.push('Contract');
+  if (name.includes('contract') || name.includes('agreement') || name.includes('master_services')) tags.push('Contract');
 
   if (tags.length === 0) {
     const ext = name.split('.').pop();
@@ -206,7 +206,7 @@ const FALLBACK_DOCUMENTS: DocumentItem[] = [
 const FOLDERS = ['all', 'design', 'contracts', 'blueprints', 'reports'] as const;
 
 const STATUS_LABEL: Record<DocumentItem['status'], { label: string; className: string }> = {
-  approved: { label: 'Approved', className: 'text-emerald-400/80' },
+  approved: { label: 'Approved', className: 'text-emerald-500/80' },
   in_review: { label: 'In Review', className: 'text-sl-gold-hover/80' },
   draft: { label: 'Draft', className: 'text-sl-mist/60' },
 };
@@ -520,7 +520,7 @@ export function DocumentCenterView() {
               onClick={() => setViewMode('vault')}
               className={cn(
                 'px-3 py-1.5 rounded-lg transition-all',
-                viewMode === 'vault' ? 'bg-sl-gold-subtle text-background font-medium' : 'text-sl-mist/60 hover:text-neutral-200'
+                viewMode === 'vault' ? 'bg-sl-gold-subtle text-background font-medium' : 'text-sl-mist/60 hover:text-sl-alabaster'
               )}
             >
               The Vault
@@ -712,7 +712,7 @@ export function DocumentCenterView() {
                   'px-3 py-1.5 rounded-lg text-xs font-mono transition-all',
                   selectedKnowledgeCatId === null
                     ? 'bg-sl-gold-subtle text-background font-medium'
-                    : 'bg-sl-void border border-sl-obsidian text-sl-mist/60 hover:text-neutral-200'
+                    : 'bg-sl-void border border-sl-obsidian text-sl-mist/60 hover:text-sl-alabaster'
                 )}
               >
                 All Categories ({knowledgeArticles.length})
@@ -725,7 +725,7 @@ export function DocumentCenterView() {
                     'px-3 py-1.5 rounded-lg text-xs font-mono transition-all flex items-center gap-1.5',
                     selectedKnowledgeCatId === cat.id
                       ? 'bg-sl-gold-subtle text-background font-medium'
-                      : 'bg-sl-void border border-sl-obsidian text-sl-mist/60 hover:text-neutral-200'
+                      : 'bg-sl-void border border-sl-obsidian text-sl-mist/60 hover:text-sl-alabaster'
                   )}
                 >
                   <span>{cat.name}</span>

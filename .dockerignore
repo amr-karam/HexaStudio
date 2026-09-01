@@ -32,3 +32,22 @@ Thumbs.db
 
 # Git
 .git/
+
+# Agent & Tool configs (not needed in build context)
+.junie/
+.opencode/
+.agents/
+.gemini/
+.claude/
+.codex/
+.impeccable/
+.projectmanager/
+.stakpak/
+.air/
+.git-rewrite/
+.github/
+.gitlab/
+.firecrawl/
+
+# Operations (infra tooling, not application code)
+ops/

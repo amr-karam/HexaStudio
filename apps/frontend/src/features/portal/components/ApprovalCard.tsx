@@ -29,56 +29,49 @@ interface ApprovalCardProps {
 
 const TYPE_CONFIG: Record<
   PendingApproval['type'],
-  { label: string; icon: IconName; color: string; bg: string; border: string }
+  { label: string; icon: IconName; border: string; bg: string }
 > = {
   design: {
     label: 'Design',
     icon: 'pen-tool',
-    color: 'text-blue-400',
-    bg: 'bg-blue-400/10',
-    border: 'border-blue-400/20',
+    border: 'border-l-sl-gold-hover',
+    bg: 'bg-sl-gold-subtle/10',
   },
   wireframe: {
     label: 'Wireframe',
     icon: 'layout-grid',
-    color: 'text-purple-400',
-    bg: 'bg-purple-400/10',
-    border: 'border-purple-400/20',
+    border: 'border-l-sl-silver',
+    bg: 'bg-white/[0.02]',
   },
   contract: {
     label: 'Contract',
     icon: 'file-text',
-    color: 'text-emerald-400',
-    bg: 'bg-emerald-400/10',
-    border: 'border-emerald-400/20',
+    border: 'border-l-emerald-500/60',
+    bg: 'bg-emerald-500/10',
   },
   quotation: {
     label: 'Quotation',
     icon: 'dollar-sign',
-    color: 'text-amber-400',
-    bg: 'bg-amber-400/10',
-    border: 'border-amber-400/20',
+    border: 'border-l-sl-gold-hover',
+    bg: 'bg-sl-gold-subtle/10',
   },
   invoice: {
     label: 'Invoice',
     icon: 'receipt',
-    color: 'text-orange-400',
-    bg: 'bg-orange-400/10',
-    border: 'border-orange-400/20',
+    border: 'border-l-amber-500/60',
+    bg: 'bg-amber-500/10',
   },
   deliverable: {
     label: 'Deliverable',
     icon: 'package',
-    color: 'text-cyan-400',
-    bg: 'bg-cyan-400/10',
-    border: 'border-cyan-400/20',
+    border: 'border-l-sl-mist',
+    bg: 'bg-white/[0.02]',
   },
   scope_change: {
     label: 'Scope Change',
     icon: 'git-branch',
-    color: 'text-pink-400',
-    bg: 'bg-pink-400/10',
-    border: 'border-pink-400/20',
+    border: 'border-l-red-400/60',
+    bg: 'bg-red-500/10',
   },
 };
 
@@ -89,34 +82,34 @@ const STATUS_CONFIG: Record<
   pending: {
     label: 'Awaiting Review',
     icon: 'clock',
-    pill: 'border-sl-gold-subtle/30 bg-sl-gold-subtle/10 text-sl-gold-hover',
+    pill: 'border-sl-gold-subtle/30 bg-sl-gold-subtle/10 text-sl-alabaster',
     glow: 'shadow-[0_0_8px_var(--color-accent)]',
   },
   approved: {
     label: 'Approved',
     icon: 'check-circle',
-    pill: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400',
+    pill: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-500',
     glow: '',
   },
   rejected: {
     label: 'Rejected',
     icon: 'x',
-    pill: 'border-red-500/20 bg-red-500/10 text-red-400',
+    pill: 'border-red-500/30 bg-red-500/10 text-red-500',
     glow: '',
   },
   revision_requested: {
     label: 'Revision Requested',
     icon: 'alert-circle',
-    pill: 'border-red-500/20 bg-red-500/10 text-red-400',
+    pill: 'border-red-500/30 bg-red-500/10 text-red-500',
     glow: '',
   },
 };
 
 const SENTIMENT_CONFIG: Record<NonNullable<ApprovalSentiment>, { icon: IconName; color: string; label: string }> = {
-  positive: { icon: 'smile', color: 'text-emerald-400', label: 'Client Receptive' },
-  neutral: { icon: 'meh', color: 'text-sl-mist/60', label: 'Neutral Tone' },
-  frustrated: { icon: 'frown', color: 'text-orange-400', label: 'Elevated Tension' },
-  urgent: { icon: 'alert-triangle', color: 'text-red-400', label: 'Urgent Attention' },
+  positive: { icon: 'smile', color: 'text-emerald-500', label: 'Client Receptive' },
+  neutral: { icon: 'meh', color: 'text-sl-mist/70', label: 'Neutral Tone' },
+  frustrated: { icon: 'frown', color: 'text-amber-400', label: 'Elevated Tension' },
+  urgent: { icon: 'alert-triangle', color: 'text-red-500', label: 'Urgent Attention' },
 };
 
 /* -------------------------------------------------------------------------- */
@@ -178,14 +171,14 @@ function SentimentUrgencyBadge({ sentiment, urgencyScore, reduced }: SentimentUr
     return (
       <span
         aria-label="No sentiment data"
-        className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-neutral-600/40 bg-neutral-700/30"
+        className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-neutral-500/40 bg-neutral-600/30"
       />
     );
   }
 
   const cfg = SENTIMENT_CONFIG[sentiment];
   const pulseSpeed = sentiment === 'urgent' ? 0.9 : sentiment === 'frustrated' ? 1.4 : 2.2;
-  const glowIntensity = sentiment === 'urgent' ? 'shadow-[0_0_16px_theme(colors.red.300)]' : 'shadow-[0_0_12px_theme(colors.amber.300)]';
+  const glowIntensity = sentiment === 'urgent' ? 'shadow-[0_0_16px_var(--color-accent)]' : 'shadow-[0_0_12px_var(--color-accent)]';
   const urgencyLabel = urgencyScore != null ? `${urgencyScore}% urgency` : cfg.label;
 
   return (
@@ -296,11 +289,17 @@ export function ApprovalCard({ approval, index, prefersReduced, onReview }: Appr
       custom={prefersReduced}
       transition={makeTransition('entrance', 'component', index * 0.06)}
       className={cn(
-        'artisan-glass artisan-specular-top relative overflow-hidden rounded-xl',
+        'glass-depth',
+        'relative overflow-hidden rounded-xl',
         'border border-sl-silver/20/15 p-5',
-        'hover:border-sl-gold-subtle/20 transition-colors duration-500 ease-[var(--hexa-ease-interaction)]',
+        'hover:border-sl-gold-subtle/20 transition-all duration-500 ease-[var(--hexa-ease-interaction)]',
         'flex flex-col gap-4',
       )}
+      whileHover={
+        prefersReduced
+          ? undefined
+          : { y: -4, transition: { duration: 0.4, ease: 'power3.out' } }
+      }
       role="listitem"
     >
       {/* Top row: Type badge + Status badge */}
@@ -310,12 +309,11 @@ export function ApprovalCard({ approval, index, prefersReduced, onReview }: Appr
           className={cn(
             'inline-flex shrink-0 items-center gap-1.5 px-2.5 py-1',
             'rounded-full border font-mono text-[9px] uppercase tracking-[0.2em]',
-            typeCfg.color,
             typeCfg.bg,
             typeCfg.border,
           )}
         >
-          <Icon name={typeCfg.icon} className="h-3 w-3" />
+          <Icon name={typeCfg.icon} className="h-3 w-3 text-sl-alabaster" />
           {typeCfg.label}
         </span>
 
@@ -382,7 +380,7 @@ export function ApprovalCard({ approval, index, prefersReduced, onReview }: Appr
               reduced={prefersReduced}
             />
             {approval.urgencyScore != null && approval.urgencyScore > 70 && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.1em] rounded-full bg-red-500/20 text-red-400 border border-red-500/30">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.1em] rounded-full bg-red-500/10 text-red-500 border border-red-500/30">
                 <Icon name="alert-triangle" className="w-2.5 h-2.5" />
                 URGENT
               </span>

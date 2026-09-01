@@ -17,9 +17,9 @@ interface ActivityItemProps {
 }
 
 const ACTIVITY_CONFIG: Record<ActivityType, { icon: IconName; color: string; borderColor: string }> = {
-  approval: { icon: 'check', color: 'text-emerald-400', borderColor: 'border-l-emerald-400' },
-  upload: { icon: 'upload', color: 'text-blue-400', borderColor: 'border-l-blue-400' },
-  comment: { icon: 'message-square', color: 'text-purple-400', borderColor: 'border-l-purple-400' },
+  approval: { icon: 'check', color: 'text-emerald-500', borderColor: 'border-l-emerald-500' },
+  upload: { icon: 'upload', color: 'text-blue-500', borderColor: 'border-l-blue-500' },
+  comment: { icon: 'message-square', color: 'text-purple-500', borderColor: 'border-l-purple-500' },
   milestone: { icon: 'zap', color: 'text-sl-gold-hover', borderColor: 'border-l-accent' },
   invoice: { icon: 'receipt', color: 'text-amber-400', borderColor: 'border-l-amber-400' },
   message: { icon: 'send', color: 'text-cyan-400', borderColor: 'border-l-cyan-400' },
@@ -54,7 +54,7 @@ export function ActivityItem({ item, className }: ActivityItemProps) {
       type="button"
       className={cn(
         'flex items-start gap-3 p-3 rounded-lg border-l-2 w-full text-left',
-        'hover:bg-white/[0.02] transition-colors duration-200',
+        'hover:bg-white/[0.04] transition-all duration-300',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
         config.borderColor,
         className,

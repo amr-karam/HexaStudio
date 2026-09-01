@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HEXA STUDIO — Architectural Visualization & Spatial Intelligence</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --void: #000000;
+      --white: #ffffff;
+      --blue: #0099ff;
+      --silver: #a6a6a6;
+      --near-black: #090909;
+      --frosted: rgba(255, 255, 255, 0.1);
+      --frosted-strong: rgba(255, 255, 255, 0.5);
+      --blue-ring: rgba(0, 153, 255, 0.15);
+      --blue-glow: rgba(0, 153, 255, 0.15);
+      --shadow-depth: rgba(0, 0, 0, 0.25);
+      --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'Azeret Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    html { scroll-behavior: smooth; }
+    
+    body {
+      font-family: var(--font-sans);
+      background: var(--void);
+      color: var(--white);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* ─── Navigation ─── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--blue-ring);
+      padding: 0 40px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .nav-logo {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      color: var(--white);
+      text-decoration: none;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+    
+    .nav-link {
+      font-size: 15px;
+      color: var(--white);
+      text-decoration: none;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+    }
+    
+    .nav-link:hover { opacity: 1; }
+    
+    .nav-cta {
+      background: var(--white);
+      color: var(--void);
+      border: none;
+      padding: 10px 24px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+      font-family: var(--font-sans);
+    }
+    
+    .nav-cta:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 30px var(--blue-glow);
+    }
+    
+    /* ─── Hero ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 120px 40px 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.4em;
+      color: var(--blue);
+      margin-bottom: 24px;
+      text-transform: uppercase;
+    }
+    
+    .hero-title {
+      font-size: clamp(62px, 10vw, 110px);
+      font-weight: 500;
+      line-height: 0.85;
+      letter-spacing: -5.5px;
+      color: var(--white);
+      margin-bottom: 32px;
+      font-family: var(--font-sans);
+    }
+    
+    .hero-subtitle {
+      font-size: clamp(18px, 2.5vw, 22px);
+      color: var(--silver);
+      font-weight: 400;
+      max-width: 560px;
+      line-height: 1.6;
+      margin-bottom: 48px;
+      letter-spacing: -0.01em;
+    }
+    
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    
+    .btn-primary {
+      background: var(--white);
+      color: var(--void);
+      border: none;
+      padding: 14px 32px;
+      border-radius: 100px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+      font-family: var(--font-sans);
+      letter-spacing: -0.01em;
+    }
+    
+    .btn-primary:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 40px var(--blue-glow);
+    }
+    
+    .btn-frosted {
+      background: var(--frosted);
+      color: var(--white);
+      border: 1px solid var(--blue-ring);
+      padding: 14px 32px;
+      border-radius: 100px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.3s ease;
+      font-family: var(--font-sans);
+      letter-spacing: -0.01em;
+    }
+    
+    .btn-frosted:hover {
+      background: rgba(255, 255, 255, 0.18);
+      transform: scale(1.02);
+    }
+    
+    /* ─── Product Showcase ─── */
+    .showcase {
+      padding: 80px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    
+    .showcase-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 48px;
+    }
+    
+    .showcase-title {
+      font-size: clamp(40px, 5vw, 62px);
+      font-weight: 500;
+      line-height: 0.95;
+      letter-spacing: -3.1px;
+      color: var(--white);
+    }
+    
+    .showcase-link {
+      font-size: 15px;
+      color: var(--blue);
+      text-decoration: none;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      transition: opacity 0.3s ease;
+    }
+    
+    .showcase-link:hover { opacity: 0.7; }
+    
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    
+    .showcase-card {
+      background: var(--near-black);
+      border: 1px solid var(--blue-ring);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: pointer;
+    }
+    
+    .showcase-card:hover {
+      box-shadow: 
+        rgba(255, 255, 255, 0.1) 0px 0.5px 0px 0.5px,
+        var(--shadow-depth) 0px 10px 30px;
+      transform: translateY(-2px);
+    }
+    
+    .showcase-card-image {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #111 0%, #222 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .showcase-card-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, var(--blue-glow) 0%, transparent 70%);
+      opacity: 0.4;
+    }
+    
+    .showcase-card-placeholder {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--silver);
+      letter-spacing: 0.2em;
+      z-index: 1;
+    }
+    
+    .showcase-card-info {
+      padding: 20px;
+    }
+    
+    .showcase-card-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.25em;
+      color: var(--blue);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    
+    .showcase-card-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.8px;
+      margin-bottom: 6px;
+    }
+    
+    .showcase-card-desc {
+      font-size: 14px;
+      color: var(--silver);
+      line-height: 1.4;
+      font-weight: 400;
+    }
+    
+    /* ─── Services Section ─── */
+    .services {
+      padding: 80px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 48px;
+    }
+    
+    .service-card {
+      background: var(--void);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 15px;
+      padding: 32px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .service-card:hover {
+      border-color: var(--blue-ring);
+      box-shadow: 0 0 0 1px var(--blue-ring);
+    }
+    
+    .service-number {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--silver);
+      letter-spacing: 0.3em;
+      margin-bottom: 20px;
+    }
+    
+    .service-title {
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--white);
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    
+    .service-desc {
+      font-size: 15px;
+      color: var(--silver);
+      line-height: 1.6;
+      font-weight: 400;
+    }
+    
+    /* ─── CTA Section ─── */
+    .cta-section {
+      padding: 120px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      text-align: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    
+    .cta-title {
+      font-size: clamp(48px, 6vw, 85px);
+      font-weight: 500;
+      line-height: 1.0;
+      letter-spacing: -4.25px;
+      color: var(--white);
+      margin-bottom: 24px;
+    }
+    
+    .cta-desc {
+      font-size: 18px;
+      color: var(--silver);
+      max-width: 500px;
+      margin: 0 auto 40px;
+      line-height: 1.6;
+    }
+    
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+    }
+    
+    /* ─── Footer ─── */
+    footer {
+      padding: 40px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .footer-copy {
+      font-size: 13px;
+      color: var(--silver);
+      font-weight: 400;
+    }
+    
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+    
+    .footer-link {
+      font-size: 13px;
+      color: var(--silver);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    
+    .footer-link:hover { color: var(--white); }
+    
+    /* ─── Responsive ─── */
+    @media (max-width: 809px) {
+      nav { padding: 0 20px; }
+      .nav-links { gap: 16px; }
+      .nav-cta { padding: 8px 16px; font-size: 14px; }
+      
+      .hero { padding: 100px 20px 60px; }
+      .hero-title { letter-spacing: -3px; }
+      
+      .showcase { padding: 60px 20px; }
+      .showcase-grid { grid-template-columns: 1fr; }
+      
+      .services { padding: 60px 20px; }
+      .services-grid { grid-template-columns: 1fr; }
+      
+      .cta-section { padding: 80px 20px; }
+      .cta-buttons { flex-direction: column; align-items: center; }
+      
+      footer { flex-direction: column; gap: 20px; text-align: center; padding: 32px 20px; }
+      .footer-links { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <a href="#" class="nav-logo">HEXA STUDIO</a>
+    <div class="nav-links">
+      <a href="#work" class="nav-link">Work</a>
+      <a href="#services" class="nav-link">Services</a>
+      <a href="#process" class="nav-link">Process</a>
+      <a href="#contact" class="nav-cta">Start a Project</a>
+    </div>
+  </nav>
+  
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-eyebrow">§ 01 — ARCHITECTURAL VISUALIZATION</div>
+    <h1 class="hero-title">Spaces That<br>Breathe</h1>
+    <p class="hero-subtitle">
+      We craft immersive 3D visualizations, spatial intelligence, 
+      and cinematic presentations that transform how clients experience architecture before a single brick is laid.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-primary">Explore Our Work</button>
+      <button class="btn-frosted">Schedule a Consultation</button>
+    </div>
+  </section>
+  
+  <!-- Showcase -->
+  <section class="showcase" id="work">
+    <div class="showcase-header">
+      <h2 class="showcase-title">Selected Projects</h2>
+      <a href="#" class="showcase-link">View All →</a>
+    </div>
+    <div class="showcase-grid">
+      <div class="showcase-card">
+        <div class="showcase-card-image">
+          <span class="showcase-card-placeholder">VIEW_3D_RENDER</span>
+        </div>
+        <div class="showcase-card-info">
+          <div class="showcase-card-tag">Residential</div>
+          <h3 class="showcase-card-title">Villa Dusk — Santorini</h3>
+          <p class="showcase-card-desc">3D visualization, sunset lighting study, 8K render pipeline</p>
+        </div>
+      </div>
+      <div class="showcase-card">
+        <div class="showcase-card-image">
+          <span class="showcase-card-placeholder">VIEW_3D_RENDER</span>
+        </div>
+        <div class="showcase-card-info">
+          <div class="showcase-card-tag">Commercial</div>
+          <h3 class="showcase-card-title">Nexus Tower — Dubai</h3>
+          <p class="showcase-card-desc">Spatial intelligence model, urban context analysis, VR walkthrough</p>
+        </div>
+      </div>
+      <div class="showcase-card">
+        <div class="showcase-card-image">
+          <span class="showcase-card-placeholder">VIEW_3D_RENDER</span>
+        </div>
+        <div class="showcase-card-info">
+          <div class="showcase-card-tag">Interior</div>
+          <h3 class="showcase-card-title">Atrium House — Berlin</h3>
+          <p class="showcase-card-desc">Material study, daylight simulation, cinematic presentation</p>
+        </div>
+      </div>
+      <div class="showcase-card">
+        <div class="showcase-card-image">
+          <span class="showcase-card-placeholder">VIEW_3D_RENDER</span>
+        </div>
+        <div class="showcase-card-info">
+          <div class="showcase-card-tag">Urban Design</div>
+          <h3 class="showcase-card-title">Harbor District — Oslo</h3>
+          <p class="showcase-card-desc">Masterplan visualization, community engagement renders, aerial studies</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Services -->
+  <section class="services" id="services">
+    <div class="showcase-header">
+      <h2 class="showcase-title">What We Do</h2>
+      <a href="#" class="showcase-link">All Services →</a>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-number">§ 01</div>
+        <h3 class="service-title">3D Visualization</h3>
+        <p class="service-desc">Photorealistic renders, 8K resolution, cinematic lighting studies, and dusk/dawn atmosphere simulations for architectural projects of any scale.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-number">§ 02</div>
+        <h3 class="service-title">Spatial Intelligence</h3>
+        <p class="service-desc">AI-powered spatial analysis, material recommendations, lighting optimization, and design rationale generation powered by Gemini 2.5 Flash.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-number">§ 03</div>
+        <h3 class="service-title">Cinematic Presentations</h3>
+        <p class="service-desc">Story-driven video presentations, chapter-scroll cinema, and interactive WebGL experiences that transform static designs into immersive narratives.</p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- CTA -->
+  <section class="cta-section" id="contact">
+    <h2 class="cta-title">Ready to Bring<br>Your Vision to Life?</h2>
+    <p class="cta-desc">
+      Every project begins with a conversation. Tell us about your space, your timeline, and the feeling you want to create.
+    </p>
+    <div class="cta-buttons">
+      <button class="btn-primary">Start a Project</button>
+      <button class="btn-frosted">View Pricing</button>
+    </div>
+  </section>
+  
+  <!-- Footer -->
+  <footer>
+    <span class="footer-copy">© 2026 HEXA STUDIO. All rights reserved.</span>
+    <div class="footer-links">
+      <a href="#" class="footer-link">Twitter</a>
+      <a href="#" class="footer-link">Instagram</a>
+      <a href="#" class="footer-link">LinkedIn</a>
+      <a href="#" class="footer-link">Contact</a>
+    </div>
+  </footer>
+</body>
+</html>

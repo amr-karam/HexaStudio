@@ -4,7 +4,7 @@ import type { User } from '@hexastudio/types';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsOptional, IsIn, MaxLength } from 'class-validator';
 import { AgentsService, AgentPersona } from './agents.service';
-import { GeminiService } from '../ai/gemini.service';
+import { HermesAgentService } from '../ai/hermes.service';
 import { sanitizePrompt } from '../ai/llm.factory';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
@@ -16,7 +16,7 @@ class ChatDto {
 
   @IsOptional()
   @IsString()
-  @IsIn(['openai', 'gemini'])
+  @IsIn(['openai', 'hermes'])
   provider?: string;
 
   @IsOptional()
@@ -57,7 +57,7 @@ class ClearMemoryDto {
 export class AgentsController {
   constructor(
     private readonly agentsService: AgentsService,
-    private readonly geminiService: GeminiService,
+    private readonly hermesAgentService: HermesAgentService,
   ) {}
 
   @Post('chat')
@@ -68,14 +68,14 @@ export class AgentsController {
     const provider = body.provider || 'openai';
     const message = sanitizePrompt(body.message);
 
-    if (provider === 'gemini') {
-      if (!this.geminiService.isAvailable) {
+    if (provider === 'hermes') {
+      if (!this.hermesAgentService.isAvailable) {
         throw new HttpException(
-          'Gemini AI is not configured (missing GEMINI_API_KEY)',
+          'Hermes Agent is not configured (missing HERMES_API_KEY)',
           HttpStatus.SERVICE_UNAVAILABLE,
         );
       }
-      return this.geminiService.chat(message, body.previousInteractionId);
+      return this.hermesAgentService.chat(message, body.previousInteractionId);
     }
 
     const persona = body.persona ?? 'general';
@@ -95,14 +95,14 @@ export class AgentsController {
   @Post('deep-research')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Deep research via Gemini (authenticated)' })
+  @ApiOperation({ summary: 'Deep research via Hermes Agent (authenticated)' })
   async deepResearch(@Body() body: DeepResearchDto) {
-    if (!this.geminiService.isAvailable) {
+    if (!this.hermesAgentService.isAvailable) {
       throw new HttpException(
-        'Gemini AI is not configured (missing GEMINI_API_KEY)',
+        'Hermes Agent is not configured (missing HERMES_API_KEY)',
         HttpStatus.SERVICE_UNAVAILABLE,
       );
     }
-    return this.geminiService.chat(sanitizePrompt(body.query));
+    return this.hermesAgentService.chat(sanitizePrompt(body.query));
   }
 }

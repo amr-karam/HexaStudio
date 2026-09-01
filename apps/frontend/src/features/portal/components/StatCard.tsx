@@ -54,12 +54,12 @@ export function StatCard({ stat, index = 0 }: StatCardProps) {
       whileHover={
         prefersReduced
           ? undefined
-          : { y: -2, transition: { duration: 0.2 } }
+          : { y: -4, transition: { duration: 0.4, ease: 'power3.out' } }
       }
       className={cn(
-        'artisan-glass artisan-specular-top',
+        'glass-depth',
         'relative overflow-hidden rounded-xl p-6',
-        'hover:border-sl-gold-subtle/30 transition-colors duration-700 ease-[var(--hexa-ease-interaction)]',
+        'hover:border-sl-gold-subtle/30 transition-all duration-700 ease-[var(--hexa-ease-interaction)]',
         'group cursor-default',
       )}
     >

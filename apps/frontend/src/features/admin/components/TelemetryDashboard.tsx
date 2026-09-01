@@ -87,7 +87,7 @@ export function TelemetryDashboard() {
           {
             title: 'AI Tokens Today',
             val: `${(health.metrics.aiTokensUsedToday / 1000).toFixed(1)}k`,
-            sub: 'Gemini & OpenAI pools',
+            sub: 'Hermes & OpenAI pools',
             highlight: true,
           },
           {

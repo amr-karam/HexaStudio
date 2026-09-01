@@ -98,10 +98,10 @@ export const StudioSection = () => {
             </p>
           </div>
 
-          {/* Feature grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4">
+          {/* Feature grid — 2x3 cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
+            {/* Card 1: Immersion */}
             <div className="flex flex-col gap-3 group cursor-default p-6 bg-sl-obsidian/30 border border-sl-silver/20 group-hover:border-sl-gold-subtle/30 transition-all duration-500">
-              {/* Icon */}
               <div className="w-10 h-10 rounded-sm bg-sl-gold-subtle/10 group-hover:bg-sl-gold-subtle/20 flex items-center justify-center mb-2 transition-colors duration-500">
                 <svg className="w-5 h-5 text-sl-gold-hover/70 group-hover:text-sl-gold-hover transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M12 2L2 7l10 5 10-5-10-5z" strokeLinecap="round" strokeLinejoin="round" />
@@ -116,8 +116,9 @@ export const StudioSection = () => {
                 Interactive 3D environments powered by R3F, enabling intuitive exploration.
               </p>
             </div>
+
+            {/* Card 2: Fidelity */}
             <div className="flex flex-col gap-3 group cursor-default p-6 bg-sl-obsidian/30 border border-sl-silver/20 group-hover:border-sl-gold-subtle/30 transition-all duration-500">
-              {/* Icon */}
               <div className="w-10 h-10 rounded-sm bg-sl-gold-subtle/10 group-hover:bg-sl-gold-subtle/20 flex items-center justify-center mb-2 transition-colors duration-500">
                 <svg className="w-5 h-5 text-sl-gold-hover/70 group-hover:text-sl-gold-hover transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <circle cx="12" cy="12" r="10" strokeLinecap="round" />
@@ -130,6 +131,67 @@ export const StudioSection = () => {
               </h3>
               <p className="text-xs text-sl-mist/60 font-light leading-relaxed group-hover:text-sl-mist/60 transition-colors duration-500">
                 8K photorealistic rendering with a focus on material authenticity.
+              </p>
+            </div>
+
+            {/* Card 3: Precision */}
+            <div className="flex flex-col gap-3 group cursor-default p-6 bg-sl-obsidian/30 border border-sl-silver/20 group-hover:border-sl-gold-subtle/30 transition-all duration-500">
+              <div className="w-10 h-10 rounded-sm bg-sl-gold-subtle/10 group-hover:bg-sl-gold-subtle/20 flex items-center justify-center mb-2 transition-colors duration-500">
+                <svg className="w-5 h-5 text-sl-gold-hover/70 group-hover:text-sl-gold-hover transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M12 2v20M2 12h20" strokeLinecap="round" />
+                </svg>
+              </div>
+              <h3 className="text-xs uppercase tracking-[0.3em] text-sl-alabaster group-hover:text-sl-gold-hover transition-colors duration-500">
+                Precision
+              </h3>
+              <p className="text-xs text-sl-mist/60 font-light leading-relaxed group-hover:text-sl-mist/60 transition-colors duration-500">
+                Measured against the physics of the real world for absolute truth.
+              </p>
+            </div>
+
+            {/* Card 4: Atmosphere */}
+            <div className="flex flex-col gap-3 group cursor-default p-6 bg-sl-obsidian/30 border border-sl-silver/20 group-hover:border-sl-gold-subtle/30 transition-all duration-500">
+              <div className="w-10 h-10 rounded-sm bg-sl-gold-subtle/10 group-hover:bg-sl-gold-subtle/20 flex items-center justify-center mb-2 transition-colors duration-500">
+                <svg className="w-5 h-5 text-sl-gold-hover/70 group-hover:text-sl-gold-hover transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h20M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" strokeLinecap="round" />
+                </svg>
+              </div>
+              <h3 className="text-xs uppercase tracking-[0.3em] text-sl-alabaster group-hover:text-sl-gold-hover transition-colors duration-500">
+                Atmosphere
+              </h3>
+              <p className="text-xs text-sl-mist/60 font-light leading-relaxed group-hover:text-sl-mist/60 transition-colors duration-500">
+                Cinematic lighting that evokes emotion before the space is built.
+              </p>
+            </div>
+
+            {/* Card 5: Light */}
+            <div className="flex flex-col gap-3 group cursor-default p-6 bg-sl-obsidian/30 border border-sl-silver/20 group-hover:border-sl-gold-subtle/30 transition-all duration-500">
+              <div className="w-10 h-10 rounded-sm bg-sl-gold-subtle/10 group-hover:bg-sl-gold-subtle/20 flex items-center justify-center mb-2 transition-colors duration-500">
+                <svg className="w-5 h-5 text-sl-gold-hover/70 group-hover:text-sl-gold-hover transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+              <h3 className="text-xs uppercase tracking-[0.3em] text-sl-alabaster group-hover:text-sl-gold-hover transition-colors duration-500">
+                Light
+              </h3>
+              <p className="text-xs text-sl-mist/60 font-light leading-relaxed group-hover:text-sl-mist/60 transition-colors duration-500">
+                The finished frame must be mistaken for a photograph.
+              </p>
+            </div>
+
+            {/* Card 6: Collaboration */}
+            <div className="flex flex-col gap-3 group cursor-default p-6 bg-sl-obsidian/30 border border-sl-silver/20 group-hover:border-sl-gold-subtle/30 transition-all duration-500">
+              <div className="w-10 h-10 rounded-sm bg-sl-gold-subtle/10 group-hover:bg-sl-gold-subtle/20 flex items-center justify-center mb-2 transition-colors duration-500">
+                <svg className="w-5 h-5 text-sl-gold-hover/70 group-hover:text-sl-gold-hover transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z" strokeLinecap="round" />
+                  <polyline points="13 2 13 9 20 9" strokeLinecap="round" />
+                </svg>
+              </div>
+              <h3 className="text-xs uppercase tracking-[0.3em] text-sl-alabaster group-hover:text-sl-gold-hover transition-colors duration-500">
+                Collaboration
+              </h3>
+              <p className="text-xs text-sl-mist/60 font-light leading-relaxed group-hover:text-sl-mist/60 transition-colors duration-500">
+                Seamless collaboration through real-time spatial review tools.
               </p>
             </div>
           </div>

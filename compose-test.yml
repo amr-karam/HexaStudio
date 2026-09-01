@@ -1,0 +1,6 @@
+name: test
+services:
+  test:
+    image: alpine
+    environment:
+      TEST_KEY: ${TEST_KEY}

@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "belt": {
+      "source": "belt-sh/cli",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/belt/SKILL.md",
+      "computedHash": "ca4ce5eac764749f1f0cc67a94d464c3f66ba687bc9fa315949174770e5fc172"
+    }
+  }
+}

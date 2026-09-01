@@ -17,7 +17,7 @@ const SUGGESTED_PROMPTS = [
   { text: 'Find related documents', category: 'knowledge' },
   { text: 'Analyze team productivity', category: 'projects' },
   { text: 'Generate project timeline', category: 'projects' },
-  { text: 'Create a lead for Acme Corp', category: 'sales' },
+  { text: 'Create a lead for Nebula Labs', category: 'sales' },
   { text: 'What are our top CRM opportunities?', category: 'sales' },
 ];
 

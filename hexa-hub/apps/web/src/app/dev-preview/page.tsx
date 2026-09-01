@@ -11,7 +11,7 @@ const SUGGESTED_PROMPTS = [
   'Find related documents',
   'Analyze team productivity',
   'Generate project timeline',
-  'Create a lead for Acme Corp',
+  'Create a lead for Nebula Labs',
   'What are our top CRM opportunities?',
 ];
 

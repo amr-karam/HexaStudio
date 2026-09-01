@@ -23,7 +23,7 @@ export function CoNavControls({ className }: CoNavControlsProps) {
         <div className="flex items-center justify-between mb-1 px-1">
           <span className="text-[10px] uppercase tracking-widest text-sl-alabaster/40 font-bold">Live Session</span>
           <div className="flex items-center gap-1.5">
-            <div className={`h-1.5 w-1.5 rounded-full ${collabConnected ? 'bg-emerald-400' : 'bg-red-500'} animate-pulse`} />
+            <div className={`h-1.5 w-1.5 rounded-full ${collabConnected ? 'bg-emerald-500' : 'bg-red-500'} animate-pulse`} />
             <span className="text-[10px] text-sl-alabaster/60 font-medium">
               {collabConnected ? 'Synced' : 'Offline'}
             </span>

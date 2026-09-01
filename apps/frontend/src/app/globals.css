@@ -2,7 +2,7 @@
 @import "../styles/artisan-tokens.css";
 
 @theme {
-  --color-background: #050505;
+  --color-background: #0A0A0B;
   --color-foreground: #FFFFFF;
 
   --color-surface: #1A1A1A;
@@ -19,7 +19,7 @@
   --color-accent-muted: rgba(212, 175, 55, 0.4);
 
   /* DESIGN_SYSTEM.md canonical tokens (previously missing or misaligned) */
-  --color-void: #050505;
+  --color-void: #0A0A0B;
   --color-void-deep: #020203;
   --color-obsidian: #0F0F10;
   --color-obsidian-raised: #161618;
@@ -204,13 +204,13 @@ body {
   --sl-silver: #A8A8A8;
   --sl-mist: #D4D4D4;
   --sl-warm-neutral: #E8E6E3;
-  --sl-gold-subtle: rgba(196, 176, 145, 0.15);
-  --sl-gold-hover: rgba(196, 176, 145, 0.3);
-  --sl-gold-rgb: 196, 176, 145;
+  --sl-gold-subtle: rgba(212, 175, 55, 0.15);
+  --sl-gold-hover: rgba(212, 175, 55, 0.3);
+  --sl-gold-rgb: 212, 175, 55;
 
   /* Typography */
-  --sl-heading-font: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
-  --sl-body-font: 'Jost', 'Inter', system-ui, sans-serif;
+  --sl-heading-font: 'Playfair Display', Georgia, serif;
+  --sl-body-font: 'Inter', system-ui, sans-serif;
 
   /* Easing */
   --sl-ease-entrance: cubic-bezier(0.22, 1, 0.36, 1);
@@ -267,7 +267,7 @@ body {
 }
 
 .sl-glass:hover {
-  border-color: rgba(196, 176, 145, 0.12);
+  border-color: rgba(212, 175, 55, 0.12);
 }
 
 /* Grain overlay */
@@ -324,7 +324,7 @@ body {
 }
 
 .sl-btn:hover {
-  border-color: rgba(196, 176, 145, 0.3);
+  border-color: rgba(212, 175, 55, 0.3);
   color: var(--sl-warm-neutral);
 }
 

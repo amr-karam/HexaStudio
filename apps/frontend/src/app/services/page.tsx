@@ -3,6 +3,7 @@ import { fetchServices } from '@/features/services/lib/fetchServices';
 import { ServicesPageContent } from '@/features/services/components/ServicesPageContent';
 
 export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
   return {

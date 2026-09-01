@@ -27,6 +27,13 @@ ENV NODE_ENV=production
 ENV SKIP_ENV_VALIDATION=true
 ENV NEXT_OUTPUT_STANDALONE=true
 
+# During build, no backend API is available. Point API_URL to a
+# non-routable address so that server-side fetches fail instantly
+# (ECONNREFUSED) instead of hanging on DNS resolution. The try/catch
+# blocks in the fetch helpers return empty data gracefully.
+# At runtime, the compose file overrides this with the real backend URL.
+ENV API_URL=http://127.0.0.1:1
+
 # Copy full source for build
 COPY . .
 

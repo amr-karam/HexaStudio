@@ -87,7 +87,7 @@ apps/api/src/modules/ai/agents/
 - Connects to Odoo CRM module
 - Tools: `createLead()`, `updateOpportunity()`, `generateProposal()`
 - Use cases:
-  - "Create a new lead for Acme Corp"
+  - "Create a new lead for Nebula Labs"
   - "What's our pipeline status?"
   - "Generate a proposal for Project Alpha"
 

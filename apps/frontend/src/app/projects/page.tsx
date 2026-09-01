@@ -4,6 +4,7 @@ import { HeaderSection } from "@/features/portfolio/components/HeaderSection";
 import { fetchProjects } from "@/features/portfolio/lib/fetchProjects";
 
 export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
   title: "Projects",
   description:

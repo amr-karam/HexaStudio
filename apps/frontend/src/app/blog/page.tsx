@@ -5,6 +5,7 @@ import { BlogPageContent } from '@/features/blog/components/BlogPageContent';
 import { HeroEditorial } from '@/components/hero/HeroEditorial';
 
 export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
   const data = await fetchArticles();

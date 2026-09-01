@@ -3,7 +3,7 @@ import { BriefGenerator } from '@/features/ai/components/BriefGenerator';
 
 export const metadata = {
   title: 'AI Architectural Brief Generator | HEXA Studio',
-  description: 'Generate professional architectural briefs and spatial programs using Gemini AI.',
+  description: 'Generate professional architectural briefs and spatial programs using Hermes Agent.',
 };
 
 export default function BriefGeneratorPage() {

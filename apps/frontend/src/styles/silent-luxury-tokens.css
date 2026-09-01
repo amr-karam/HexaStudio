@@ -13,13 +13,13 @@
   --sl-warm-neutral: #E8E6E3;
 
   /* Subtle gold accent — barely there, only on hover/focus */
-  --sl-gold-subtle: rgba(196, 176, 145, 0.15);
-  --sl-gold-hover: rgba(196, 176, 145, 0.3);
-  --sl-gold-rgb: 196, 176, 145;
+  --sl-gold-subtle: rgba(212, 175, 55, 0.15);
+  --sl-gold-hover: rgba(212, 175, 55, 0.3);
+  --sl-gold-rgb: 212, 175, 55;
 
   /* Typography scale — refined hierarchy */
-  --sl-heading-font: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
-  --sl-body-font: 'Jost', 'Inter', system-ui, sans-serif;
+  --sl-heading-font: 'Playfair Display', Georgia, serif;
+  --sl-body-font: 'Inter', system-ui, sans-serif;
 
   /* Easing — slower, more elegant */
   --sl-ease-entrance: cubic-bezier(0.22, 1, 0.36, 1);
@@ -36,7 +36,7 @@
   /* Glass morphisms — whisper-quiet */
   --sl-glass-bg: rgba(245, 244, 242, 0.02);
   --sl-glass-border: rgba(245, 244, 242, 0.06);
-  --sl-glass-border-hover: rgba(196, 176, 145, 0.12);
+  --sl-glass-border-hover: rgba(212, 175, 55, 0.12);
   --sl-glass-blur: 32px;
   --sl-glass-shadow: 0 0 0 1px rgba(245, 244, 242, 0.03), 0 12px 40px rgba(0, 0, 0, 0.3);
 }
@@ -393,9 +393,9 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(196, 176, 145, 0.03) 25%,
-    rgba(196, 176, 145, 0.06) 50%,
-    rgba(196, 176, 145, 0.03) 75%,
+    rgba(212, 175, 55, 0.03) 25%,
+    rgba(212, 175, 55, 0.06) 50%,
+    rgba(212, 175, 55, 0.03) 75%,
     transparent 100%
   );
   background-size: 200% 100%;

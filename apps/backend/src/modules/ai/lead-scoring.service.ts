@@ -6,7 +6,7 @@ import { sanitizePrompt } from './llm.factory';
 /**
  * LeadScoringService
  *
- * Analyzes incoming architectural-studio inquiries with Gemini and produces a
+ * Analyzes incoming architectural-studio inquiries with Hermes Agent and produces a
  * structured lead classification (tier, score, budget range, priority) so the
  * sales team can route follow-up immediately. Uses StructuredOutputService for
  * deterministic, Zod-validated output.

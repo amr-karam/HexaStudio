@@ -1,118 +1,57 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Text, View, Switch, StyleSheet, ActivityIndicator } from 'react-native';
+import { Text, View, FlatList, StyleSheet, ActivityIndicator, RefreshControl, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/components/ThemeProvider';
 import { useAuth } from '@/hooks/useAuth';
-import { apiFetch } from '@/lib/api';
 
-interface NotificationPreferences {
-  projectUpdates: boolean;
-  phaseApprovals: boolean;
-  newAnnotations: boolean;
-  documentUploads: boolean;
-  milestoneCompletions: boolean;
+interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  timestamp: string;
+  isRead: boolean;
 }
-
-const DEFAULT_PREFS: NotificationPreferences = {
-  projectUpdates: true,
-  phaseApprovals: true,
-  newAnnotations: false,
-  documentUploads: false,
-  milestoneCompletions: true,
-};
 
 export default function NotificationsScreen() {
   const { colors } = useTheme();
   const { user } = useAuth();
-  const [prefs, setPrefs] = useState<NotificationPreferences>(DEFAULT_PREFS);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  const loadPrefs = useCallback(async () => {
-    try {
-      setError(null);
-      const data = await apiFetch<NotificationPreferences>('/api/portal/notifications/preferences');
-      setPrefs(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load preferences');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const load = useCallback(async () => {
+    if (!user) return;
+    // Mock data for now; replace with a real API call later
+    const mockNotifications: Notification[] = [
+      { id: '1', title: 'New Approval Request', message: '3D Renderings v2 are ready for review.', timestamp: '2 hours ago', isRead: false },
+      { id: '2', title: 'Milestone Reached', message: 'Phase 2 is 100% complete.', timestamp: '1 day ago', isRead: true },
+    ];
+    setNotifications(mockNotifications);
+    setIsLoading(false);
+  }, [user]);
 
   useEffect(() => {
-    if (user) loadPrefs();
+    if (user) load();
     else setIsLoading(false);
-  }, [user, loadPrefs]);
+  }, [user, load]);
 
-  const toggle = async (key: keyof NotificationPreferences) => {
-    const next = { ...prefs, [key]: !prefs[key] };
-    setPrefs(next);
-    try {
-      await apiFetch('/api/portal/notifications/preferences', {
-        method: 'PUT',
-        body: JSON.stringify({ preferences: next }),
-      });
-    } catch {
-      // Revert on failure
-      setPrefs(prefs);
-    }
-  };
-
-  if (!user) {
-    return (
-      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
-        <View style={styles.content}>
-          <Text style={[styles.title, { color: colors.foreground }]}>Notifications</Text>
-          <Text style={[styles.body, { color: colors.muted }]}>Sign in to manage notifications.</Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
-        <ActivityIndicator color={colors.foreground} style={{ marginTop: 48 }} />
-      </SafeAreaView>
-    );
-  }
-
-  const options: { key: keyof NotificationPreferences; label: string; desc: string }[] = [
-    { key: 'projectUpdates', label: 'Project Updates', desc: 'Status changes and new milestones' },
-    { key: 'phaseApprovals', label: 'Phase Approvals', desc: 'When a project phase needs your approval' },
-    { key: 'milestoneCompletions', label: 'Milestone Completions', desc: 'When a milestone is marked complete' },
-    { key: 'documentUploads', label: 'Document Uploads', desc: 'New files shared on your projects' },
-    { key: 'newAnnotations', label: 'New Annotations', desc: 'Comments or notes on your deliverables' },
-  ];
+  if (!user) return <Text style={{ color: colors.muted, padding: 24 }}>Sign in to view notifications.</Text>;
+  if (isLoading) return <ActivityIndicator color={colors.foreground} style={styles.spinner} />;
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
       <View style={styles.content}>
         <Text style={[styles.title, { color: colors.foreground }]}>Notifications</Text>
-        {error && (
-          <View style={[styles.errorBar, { backgroundColor: colors.error + '20', borderColor: colors.error }]}>
-            <Text style={{ color: colors.error, fontSize: 12 }}>{error}</Text>
-          </View>
-        )}
-        {options.map((opt) => (
-          <View
-            key={opt.key}
-            style={[styles.row, { borderColor: colors.border }]}
-          >
-            <View style={styles.rowText}>
-              <Text style={[styles.rowLabel, { color: colors.foreground }]}>{opt.label}</Text>
-              <Text style={[styles.rowDesc, { color: colors.muted }]}>{opt.desc}</Text>
+        <FlatList
+          data={notifications}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border, opacity: item.isRead ? 0.7 : 1 }]}>
+              <Text style={[styles.cardTitle, { color: colors.foreground }]}>{item.title}</Text>
+              <Text style={[styles.cardMeta, { color: colors.muted }]}>{item.message}</Text>
+              <Text style={[styles.cardMeta, { color: colors.muted }]}>{item.timestamp}</Text>
             </View>
-            <Switch
-              value={prefs[opt.key]}
-              onValueChange={() => toggle(opt.key)}
-              accessibilityLabel={opt.label}
-              trackColor={{ false: colors.border, true: colors.accent }}
-              thumbColor={colors.foreground}
-            />
-          </View>
-        ))}
+          )}
+        />
       </View>
     </SafeAreaView>
   );
@@ -120,12 +59,10 @@ export default function NotificationsScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  content: { padding: 24 },
-  title: { fontSize: 32, fontWeight: '300', marginBottom: 24 },
-  body: { fontSize: 14, lineHeight: 22 },
-  errorBar: { padding: 10, borderRadius: 4, borderWidth: 1, marginBottom: 16 },
-  row: { flexDirection: 'row', alignItems: 'center', paddingVertical: 16, borderBottomWidth: 1 },
-  rowText: { flex: 1, marginRight: 12 },
-  rowLabel: { fontSize: 15, fontWeight: '500', marginBottom: 2 },
-  rowDesc: { fontSize: 12, lineHeight: 18 },
+  content: { padding: 24, flex: 1 },
+  title: { fontSize: 32, fontWeight: '300', marginBottom: 16 },
+  spinner: { marginTop: 32 },
+  card: { padding: 16, borderRadius: 8, borderWidth: 1, marginBottom: 8 },
+  cardTitle: { fontSize: 14, fontWeight: '600', marginBottom: 4 },
+  cardMeta: { fontSize: 12, lineHeight: 18 },
 });

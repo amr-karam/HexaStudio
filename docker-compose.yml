@@ -2,7 +2,7 @@
 services:
   # --- Database ---
   postgres:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     container_name: hexa-postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -36,7 +36,7 @@ services:
 
   # --- Odoo ERP ---
   odoo_db:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     container_name: hexa-odoo-db
     environment:
       POSTGRES_USER: ${ODOO_DB_USER:?ODOO_DB_USER must be set}

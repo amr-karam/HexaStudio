@@ -234,7 +234,7 @@ describe('WorkflowEngineService (integration)', () => {
   describe('executeWorkflow', () => {
     it('should execute transform → action steps sequentially and complete', async () => {
       const execution = await engine.executeWorkflow('wf-test', {
-        lead: { name: 'Acme Corp' },
+        lead: { name: 'Nebula Labs' },
       });
 
       expect(execution.status).toBe('completed');
@@ -251,7 +251,7 @@ describe('WorkflowEngineService (integration)', () => {
       engine.registerService('projects', fakeProjectsService);
 
       const execution = await engine.executeWorkflow('wf-test', {
-        lead: { name: 'Acme Corp' },
+        lead: { name: 'Nebula Labs' },
       });
 
       expect(execution.status).toBe('failed');

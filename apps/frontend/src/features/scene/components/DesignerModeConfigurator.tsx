@@ -4,7 +4,7 @@
  * HEXA Studio 3D Designer Mode & AI Spatial Synthesis Configurator
  *
  * Provides real-time 3D lighting preset switching, PBR material selection,
- * 4K WebGL canvas snapshot export, and Gemini AI Spatial Brief generation.
+ * 4K WebGL canvas snapshot export, and Hermes AI Spatial Brief generation.
  */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';

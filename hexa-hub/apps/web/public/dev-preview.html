@@ -497,7 +497,7 @@
         <div class="prompt-chip knowledge" onclick="sendPrompt('Find related documents')">Find related documents</div>
         <div class="prompt-chip projects" onclick="sendPrompt('Analyze team productivity')">Analyze team productivity</div>
         <div class="prompt-chip projects" onclick="sendPrompt('Generate project timeline')">Generate project timeline</div>
-        <div class="prompt-chip sales" onclick="sendPrompt('Create a lead for Acme Corp')">Create a lead for Acme Corp</div>
+        <div class="prompt-chip sales" onclick="sendPrompt('Create a lead for Nebula Labs')">Create a lead for Nebula Labs</div>
         <div class="prompt-chip sales" onclick="sendPrompt('What are our top CRM opportunities?')">What are our top CRM opportunities?</div>
       </div>
     </div>
@@ -589,13 +589,13 @@
       ],
       'project-assistant': [
         { text: "You have 5 active projects:\n\n1. Website Redesign — 75% complete, due Oct 15\n2. Mobile App v2.0 — 40% complete, due Dec 1\n3. CRM Migration — 90% complete, due Sep 20\n4. Brand Refresh — 30% complete, due Jan 15\n5. Data Pipeline — 60% complete, due Nov 30", sources: ['projects.project'], confidence: 0.89 },
-        { text: "Overdue tasks:\n• Fix payment webhook timeout (assigned to Alex, 5 days overdue)\n• Update Q3 pricing docs (assigned to Sam, 3 days overdue)\n• Client onboarding for Acme Corp (assigned to Priya, 2 days overdue)", sources: ['projects.project', 'workspaces.task'], confidence: 0.87 },
+        { text: "Overdue tasks:\n• Fix payment webhook timeout (assigned to Alex, 5 days overdue)\n• Update Q3 pricing docs (assigned to Sam, 3 days overdue)\n• Client onboarding for Nebula Labs (assigned to Priya, 2 days overdue)", sources: ['projects.project', 'workspaces.task'], confidence: 0.87 },
         { text: "Project timeline for Q4:\n\nPhase 1 (Oct): Mobile App v2.0 launch, Website Redesign completion\nPhase 2 (Nov): Brand Refresh kickoff, Data Pipeline testing\nPhase 3 (Dec): CRM Migration go-live, Mobile App release", sources: ['projects.project'], confidence: 0.84 },
       ],
       'sales-agent': [
         { text: "Your CRM pipeline:\n\nStage 1 (Qualification): 8 leads, €180K\nStage 2 (Proposal): 3 deals, €210K\nStage 3 (Negotiation): 2 deals, €95K\nStage 4 (Closed Won): 5 deals, €340K this quarter\n\nTotal pipeline: €825K | Closed this quarter: €340K", sources: ['crm.lead'], confidence: 0.92 },
-        { text: "Top opportunities this month:\n1. Acme Corp — €180K — proposal sent, follow-up scheduled\n2. Beta Labs — €150K — negotiation phase, terms being finalized\n3. Gamma Industries — €95K — demo completed, awaiting budget approval", sources: ['crm.lead'], confidence: 0.88 },
-        { text: "Created lead for Acme Corp:\n• Name: Acme Corp\n• Contact: Sarah Chen, sarah@acme.com\n• Value: €180K\n• Stage: New (Lead)\n• Assigned to: Sales Team\n\nThe lead has been created and the sales team will follow up within 24h.", sources: ['crm.lead'], confidence: 0.95 },
+        { text: "Top opportunities this month:\n1. Nebula Labs — €180K — proposal sent, follow-up scheduled\n2. Beta Labs — €150K — negotiation phase, terms being finalized\n3. Gamma Industries — €95K — demo completed, awaiting budget approval", sources: ['crm.lead'], confidence: 0.88 },
+        { text: "Created lead for Nebula Labs:\n• Name: Nebula Labs\n• Contact: Sarah Chen, sarah@acme.com\n• Value: €180K\n• Stage: New (Lead)\n• Assigned to: Sales Team\n\nThe lead has been created and the sales team will follow up within 24h.", sources: ['crm.lead'], confidence: 0.95 },
       ],
       'knowledge-agent': [
         { text: "I found 3 documents related to Q3 planning:\n\n1. \"Q3 Budget Allocation.pdf\" — Updated budget with departmental breakdowns\n2. \"Q3 Marketing Campaign Results.xlsx\" — Campaign ROI analysis\n3. \"Q3 Technical Roadmap.md\" — Engineering milestones and deliverables", sources: ['strapi.documents', 'qdrant.knowledge'], confidence: 0.82 },

@@ -27,7 +27,7 @@ export interface VisionAnalysisResult {
   processedAt: string;
 }
 
-/** Image MIME types that can be processed by Gemini Vision. */
+/** Image MIME types that can be processed by Hermes Agent Vision. */
 const IMAGE_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.bmp']);
 
 /** MIME type lookup for supported image extensions. */
@@ -44,7 +44,7 @@ const MIME_TYPE_MAP: Record<string, string> = {
  * MinIOVisionService
  *
  * Post-upload processor that downloads newly uploaded rendering/preview images
- * from MinIO and runs them through the Gemini Vision analysis pipeline.
+ * from MinIO and runs them through the Hermes Agent Vision analysis pipeline.
  *
  * Because NestJS cannot natively subscribe to MinIO bucket notification events,
  * this service is designed to be called programmatically by the upload flow
@@ -55,13 +55,13 @@ const MIME_TYPE_MAP: Record<string, string> = {
  *   1. Download file from MinIO via presigned URL
  *   2. Compute content hash for caching/deduplication
  *   3. Check Redis cache (key: `vision:analysis:<hash>`, TTL: 24h)
- *   4. Run Gemini Vision analysis (AutoTagVisionService + MultimodalService)
+ *   4. Run Hermes Agent Vision analysis (AutoTagVisionService + MultimodalService)
  *   5. Cache results in Redis
  *   6. Return structured tags and metadata
  *
  * Gracefully degrades when:
  *   - The file is not a supported image → returns null
- *   - Gemini Vision is unavailable → returns null
+ *   - Hermes Agent Vision is unavailable → returns null
  *   - Analysis fails → logs error, returns null
  */
 @Injectable()
@@ -95,9 +95,9 @@ export class MinIOVisionService {
       return null;
     }
 
-    // Check Gemini availability early
+    // Check Hermes Agent Vision availability early
     if (!this.autoTagVisionService.isAvailable && !this.multimodalService.isAvailable) {
-      this.logger.warn('Gemini Vision unavailable — skipping vision analysis pipeline');
+      this.logger.warn('Hermes Agent Vision unavailable — skipping vision analysis pipeline');
       return null;
     }
 

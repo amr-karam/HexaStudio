@@ -283,9 +283,9 @@ function SectionHeader({ title, subtitle, index }: { title: string; subtitle?: s
 
 function KpiCard({ kpi, index, reduced }: { kpi: KpiData; index: number; reduced: boolean }) {
   const trendColor = kpi.trend.direction === 'up'
-    ? 'text-emerald-300'
+    ? 'text-emerald-500'
     : kpi.trend.direction === 'down'
-      ? 'text-red-300'
+      ? 'text-red-500'
       : 'text-sl-mist/60';
 
   const trendIcon: IconName = kpi.trend.direction === 'up'
@@ -379,11 +379,11 @@ function PhaseProgressBar({ phase, reduced }: { phase: PhaseData; reduced: boole
       ? 'bg-emerald-500'
       : phase.status === 'in_progress'
         ? 'bg-sl-gold-subtle'
-        : 'bg-neutral-700';
+        : 'bg-sl-void';
 
   const textColor =
     phase.status === 'completed'
-      ? 'text-emerald-400'
+      ? 'text-emerald-500'
       : phase.status === 'in_progress'
         ? 'text-sl-gold-hover'
         : 'text-textMuted';
@@ -722,7 +722,7 @@ function ResponseTimeChart({ reduced }: { reduced: boolean }) {
         <div className="flex justify-between mt-2 px-1">
           <span className="text-[10px] text-textMuted font-mono">Slowest: 3.1h</span>
           <span className="text-[10px] text-sl-gold-hover font-mono font-medium">Avg: 2.3h</span>
-          <span className="text-[10px] text-emerald-400 font-mono">Fastest: 1.9h</span>
+          <span className="text-[10px] text-emerald-500 font-mono">Fastest: 1.9h</span>
         </div>
       </div>
     </SectionCard>
@@ -1001,7 +1001,7 @@ export function AnalyticsView() {
                 aria-label={`Show data for the last ${opt.label}`}
                 className={cn(
                   'relative rounded-full px-4 py-1.5 font-mono text-xs tracking-[0.15em] transition-colors duration-500',
-                  isActive ? 'text-neutral-950' : 'text-sl-mist/60 hover:text-sl-gold-hover',
+                  isActive ? 'text-sl-void' : 'text-sl-mist/60 hover:text-sl-gold-hover',
                 )}
               >
                 {isActive && (

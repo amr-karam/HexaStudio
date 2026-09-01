@@ -132,7 +132,7 @@ interface Env {
 export default {
   async fetch(request, env, ctx): Promise<Response> {
     await env.EMAIL.send({
-      from: { name: "Acme Corp", email: "noreply@yourdomain.com" },
+      from: { name: "Nebula Labs", email: "noreply@yourdomain.com" },
       to: [
         { name: "Alice", email: "alice@example.com" },
         "bob@example.com"

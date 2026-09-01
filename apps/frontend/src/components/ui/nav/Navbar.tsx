@@ -184,7 +184,7 @@ export const Navbar = () => {
           </Link>
         </Magnetic>
 
-        <div className="hidden md:flex items-center gap-16">
+        <div className="hidden md:flex items-center gap-8 md:gap-16">
           {navItems.map((item) => (
             <NavItem
               key={item.href}
