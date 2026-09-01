@@ -90,6 +90,7 @@ export const fadeLift: Variants = {
     reduced
       ? { opacity: 1, y: 0, transition: REDUCED_TRANSITION }
       : { opacity: 1, y: 0, transition: makeTransition('entrance', 'component') },
+  exit: { opacity: 0, y: 24, transition: { duration: 0.25 } },
 };
 
 /** Masked text reveal — content slides up from behind a clip mask. */

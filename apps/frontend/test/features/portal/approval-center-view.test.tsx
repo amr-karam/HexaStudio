@@ -8,7 +8,9 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
+import type { UserEvent } from '@testing-library/user-event';
+import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 vi.mock('@/features/portal/api', () => ({
@@ -90,9 +92,9 @@ function renderView(): ReturnType<typeof render> {
  * Wait for the signing desk detail panel (AnimatePresence mode="wait" delays
  * its entrance after the empty state exits) and click the approve button.
  */
-async function approveFirstDeliverable(): Promise<void> {
+async function approveFirstDeliverable(user: UserEvent): Promise<void> {
   const approveButton = await screen.findByRole('button', { name: 'Approve this deliverable' });
-  fireEvent.click(approveButton);
+  await user.click(approveButton);
 }
 
 describe('ApprovalCenterView — persistence', () => {
@@ -101,14 +103,17 @@ describe('ApprovalCenterView — persistence', () => {
 
     renderView();
 
-    expect(await screen.findByText('Live Registry')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Live Registry')).toBeInTheDocument();
+    });
   });
 
   it('persists an approval decision to the backend on the live registry', async () => {
     getDashboard.mockResolvedValue(LIVE_DASHBOARD);
 
     renderView();
-    await approveFirstDeliverable();
+    const user = userEvent.setup();
+    await approveFirstDeliverable(user);
 
     await waitFor(() => {
       expect(reviewApproval).toHaveBeenCalledWith('app-1', 'approved', undefined);
@@ -120,7 +125,14 @@ describe('ApprovalCenterView — persistence', () => {
     reviewApproval.mockRejectedValue(new Error('network down'));
 
     renderView();
-    await approveFirstDeliverable();
+    const user = userEvent.setup();
+    await approveFirstDeliverable(user);
+
+    // Wait for all state updates to settle — promise rejection triggers
+    // setState in .catch() which requires act() wrapping.
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
 
     // Honest failure: role=alert message + status pill returns to Awaiting Signature.
     expect(await screen.findByRole('alert')).toHaveTextContent(
