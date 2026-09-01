@@ -48,7 +48,7 @@ describe('LeadScoringService', () => {
 
       const result = await service.scoreLead({
         name: 'Jane Architect',
-        company: 'Acme Developments',
+        company: 'Nebula Labs',
         email: 'jane@acme.dev',
         service: 'Architectural Visualization',
         budget: '$1.5M',
@@ -91,7 +91,7 @@ describe('LeadScoringService', () => {
 
       await service.scoreLead({
         name: 'Jane \u0000Architect',
-        email: 'jane@acme.dev',
+        email: 'jane@nebulalabs.dev',
         message: '  Luxury tower \u001B project  ',
       });
 

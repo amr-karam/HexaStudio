@@ -252,7 +252,7 @@ export function BlogPageContent({ articles, showHeader = true }: BlogPageContent
           style={enableShear ? { skewY } : undefined}
           className="will-change-transform"
         >
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-x-12 gap-y-28">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-x-6 gap-y-20 md:gap-x-12 md:gap-y-28">
             {displayArticles.map((article, idx) => {
               const isFeatured = idx === 0;
               return (
@@ -263,7 +263,7 @@ export function BlogPageContent({ articles, showHeader = true }: BlogPageContent
                   viewport={{ once: true, amount: 0.15 }}
                   transition={{ ...SPRING_TRANSITION, delay: 0.06 * idx }}
                   className={cn(
-                    "group block",
+                    "group block relative",
                     isFeatured ? "md:col-span-12 lg:col-span-8" : "md:col-span-6 lg:col-span-4"
                   )}
                 >

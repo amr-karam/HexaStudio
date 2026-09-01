@@ -231,9 +231,9 @@ function ConversationItem({
       'flex h-2.5 w-2.5',
       'relative flex h-2.5 w-2.5',
       'absolute -right-2 -top-2',
-      'animate-ping rounded-full bg-emerald-400 opacity-50',
+      'animate-ping rounded-full bg-emerald-500 opacity-50',
     )}>
-      <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
+      <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
     </span>
   ) : null;
 
@@ -345,8 +345,8 @@ function MessageBubble({
           </span>
           {!message.read && (
             <span className="flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-50" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-50" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
             </span>
           )}
         </div>
@@ -504,8 +504,8 @@ function MeetingNotesTab({
                       className="flex items-start gap-2"
                     >
                       <span className="flex h-2.5 w-2.5">
-                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-30" />
-                        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-30" />
+                        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
                       </span>
                       <span className="text-sm text-sl-mist/60">{item}</span>
                     </motion.div>

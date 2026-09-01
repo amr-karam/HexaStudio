@@ -11,6 +11,7 @@ import { generateOrganizationSchema } from "@hexastudio/utils";
  * Pages prerender at build (gracefully empty when backend is down); deploy
  * script pings /api/revalidate to fill with live content within seconds. */
 export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: "Premium Architecture Visualization | HexaStudio",

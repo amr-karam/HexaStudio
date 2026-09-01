@@ -328,7 +328,7 @@ services:
   # Sentry Database
   # ============================================
   sentry-postgres:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     container_name: hexa-gitlab-sentry-postgres
     restart: unless-stopped
     environment:

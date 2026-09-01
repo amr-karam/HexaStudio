@@ -4,7 +4,7 @@
  * HEXA Portal — MetricBar
  *
  * Animated progress bar for health metric breakdowns.
- * Artisan glass track with color-coded gold/amber/emerald/red fill.
+ * Artisan glass track with token-aligned status indicators.
  * Respects prefers-reduced-motion for accessibility.
  */
 
@@ -23,25 +23,11 @@ interface MetricBarProps {
   prefersReduced: boolean;
 }
 
-/**
- * Determine progress bar color based on value threshold.
- * >=90: emerald (excellent), >=70: amber (good), >=50: amber-400 (fair), <50: red (poor)
- */
-function getBarColor(value: number): string {
-  if (value >= 90) return 'bg-emerald-500';
-  if (value >= 70) return 'bg-amber-500';
-  if (value >= 50) return 'bg-amber-400';
-  return 'bg-red-400';
-}
-
-/**
- * Get accessible color label for screen readers.
- */
-function getColorLabel(value: number): string {
-  if (value >= 90) return 'Excellent';
-  if (value >= 70) return 'Good';
-  if (value >= 50) return 'Fair';
-  return 'Needs Attention';
+function getStatusConfig(value: number): { label: string; badge: string; bar: string } {
+  if (value >= 90) return { label: 'Excellent', badge: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30', bar: 'bg-emerald-500' };
+  if (value >= 70) return { label: 'Good', badge: 'bg-amber-500/20 text-amber-400 border-amber-500/30', bar: 'bg-amber-500' };
+  if (value >= 50) return { label: 'Fair', badge: 'bg-amber-500/10 text-amber-400 border-amber-500/30', bar: 'bg-amber-400' };
+  return { label: 'Needs Attention', badge: 'bg-red-500/10 text-red-400 border-red-500/30', bar: 'bg-red-400' };
 }
 
 export function MetricBar({
@@ -50,8 +36,7 @@ export function MetricBar({
   delay,
   prefersReduced,
 }: MetricBarProps) {
-  const barColor = getBarColor(value);
-  const colorLabel = getColorLabel(value);
+  const { label: statusLabel, badge, bar } = getStatusConfig(value);
 
   const transition = prefersReduced
     ? REDUCED_TRANSITION
@@ -63,7 +48,7 @@ export function MetricBar({
         <span className="text-[11px] uppercase tracking-wider font-mono text-sl-mist/60">
           {label}
         </span>
-        <span className="text-xs font-mono text-sl-mist/60">
+        <span className={cn('inline-flex h-5 min-w-[2.25rem] items-center justify-center rounded-full border px-2 font-mono text-[10px] uppercase tracking-wider', badge)}>
           {value}%
         </span>
       </div>
@@ -73,10 +58,10 @@ export function MetricBar({
         aria-valuenow={value}
         aria-valuemin={0}
         aria-valuemax={100}
-        aria-label={`${label}: ${value}%, ${colorLabel}`}
+        aria-label={`${label}: ${value}%, ${statusLabel}`}
       >
         <motion.div
-          className={cn('h-full rounded-full', barColor)}
+          className={cn('h-full rounded-full', bar)}
           initial={prefersReduced ? { width: `${value}%` } : { width: '0%' }}
           animate={{ width: `${value}%` }}
           transition={transition}

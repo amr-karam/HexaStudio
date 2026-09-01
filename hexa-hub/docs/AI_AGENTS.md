@@ -69,7 +69,7 @@ uses **Hermes-3** LLMs for open-source, locally-runnable agent reasoning.
   - `odoo_search_read` — Query CRM leads/opportunities
   - `odoo_create_lead` — Create new leads with contact details
 - **Example queries:**
-  - "Create a new lead for Acme Corp — $50K, Web Dev project"
+  - "Create a new lead for Nebula Labs — $50K, Web Dev project"
   - "What's our pipeline status by stage?"
   - "Who are our top prospects this quarter?"
 

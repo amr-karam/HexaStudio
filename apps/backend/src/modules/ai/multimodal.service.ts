@@ -29,7 +29,7 @@ export class MultimodalService {
    * Shared vision prompt helper — OpenAI-compatible (LM Studio / gemma-4 vision).
    * Returns the parsed JSON object, or throws when the model is unreachable.
    */
-  private async generateVision(
+  async generateVision(
     prompt: string,
     images: Array<{ mimeType: string; data: string }>,
     temperature: number,

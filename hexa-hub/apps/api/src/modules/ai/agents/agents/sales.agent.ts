@@ -10,7 +10,7 @@ import { OdooTools } from '../tools/odoo.tools';
  * proposal generation, and sales pipeline analytics.
  *
  * Example queries:
- * - "Create a new lead for Acme Corp — $50K, Web Dev project"
+ * - "Create a new lead for Nebula Labs — $50K, Web Dev project"
  * - "What's our pipeline status by stage?"
  * - "Generate a proposal for the Brand Identity project"
  * - "Who are our top prospects this quarter?"

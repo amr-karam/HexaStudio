@@ -12,7 +12,7 @@ export default function PortalAIPage() {
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl font-light tracking-tight">AI Multimodal Studio</h1>
         <p className="text-sm text-sl-mist/60">
-          Leverage Gemini 3.5 Flash vision intelligence to audit architectural designs, 3D renders, and material textures.
+          Leverage Hermes Agent vision intelligence to audit architectural designs, 3D renders, and material textures.
         </p>
       </div>
 

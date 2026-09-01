@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en" data-composition-id="framer-hexa-cinematic">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HEXA STUDIO — Cinematic Reveal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    :root {
+      --void: #000000;
+      --white: #ffffff;
+      --blue: #0099ff;
+      --silver: #a6a6a6;
+      --near-black: #090909;
+      --frosted: rgba(255, 255, 255, 0.1);
+      --blue-ring: rgba(0, 153, 255, 0.15);
+      --blue-glow: rgba(0, 153, 255, 0.15);
+      --shadow-depth: rgba(0, 0, 0, 0.25);
+      --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'Azeret Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: var(--font-sans);
+      background: var(--void);
+      color: var(--white);
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+    }
+    
+    .scene {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 120px 40px 80px;
+      opacity: 0;
+      visibility: hidden;
+    }
+    
+    /* ─── Logo reveal ─── */
+    .logo-reveal {
+      position: absolute;
+      top: 40px;
+      left: 40px;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      color: var(--white);
+      opacity: 0;
+    }
+    
+    /* ─── Eyebrow ─── */
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.4em;
+      color: var(--blue);
+      margin-bottom: 24px;
+      text-transform: uppercase;
+      opacity: 0;
+    }
+    
+    /* ─── Hero title ─── */
+    .hero-title {
+      font-size: clamp(62px, 10vw, 110px);
+      font-weight: 500;
+      line-height: 0.85;
+      letter-spacing: -5.5px;
+      color: var(--white);
+      margin-bottom: 32px;
+    }
+    
+    .hero-title .break {
+      display: block;
+    }
+    
+    /* ─── Subtitle ─── */
+    .subtitle {
+      font-size: clamp(18px, 2.5vw, 22px);
+      color: var(--silver);
+      font-weight: 400;
+      max-width: 560px;
+      line-height: 1.6;
+      margin-bottom: 48px;
+      letter-spacing: -0.01em;
+      opacity: 0;
+    }
+    
+    /* ─── Buttons ─── */
+    .btn-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      opacity: 0;
+    }
+    
+    .btn-primary {
+      background: var(--white);
+      color: var(--void);
+      border: none;
+      padding: 14px 32px;
+      border-radius: 100px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      letter-spacing: -0.01em;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 40px var(--blue-glow);
+    }
+    
+    .btn-frosted {
+      background: var(--frosted);
+      color: var(--white);
+      border: 1px solid var(--blue-ring);
+      padding: 14px 32px;
+      border-radius: 100px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      letter-spacing: -0.01em;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    
+    .btn-frosted:hover {
+      background: rgba(255, 255, 255, 0.18);
+      transform: scale(1.02);
+    }
+    
+    /* ─── Showcase section ─── */
+    .showcase {
+      opacity: 0;
+    }
+    
+    .showcase-label {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.4em;
+      color: var(--blue);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    
+    .showcase-title {
+      font-size: clamp(40px, 5vw, 62px);
+      font-weight: 500;
+      line-height: 0.95;
+      letter-spacing: -3.1px;
+      color: var(--white);
+      margin-bottom: 48px;
+    }
+    
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      max-width: 1200px;
+    }
+    
+    .showcase-card {
+      background: var(--near-black);
+      border: 1px solid var(--blue-ring);
+      border-radius: 12px;
+      overflow: hidden;
+      opacity: 0;
+    }
+    
+    .card-image {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #111 0%, #222 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, var(--blue-glow) 0%, transparent 70%);
+      opacity: 0.4;
+    }
+    
+    .card-placeholder {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--silver);
+      letter-spacing: 0.2em;
+      z-index: 1;
+    }
+    
+    .card-info {
+      padding: 20px;
+    }
+    
+    .card-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.25em;
+      color: var(--blue);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    
+    .card-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.8px;
+      margin-bottom: 6px;
+    }
+    
+    .card-desc {
+      font-size: 14px;
+      color: var(--silver);
+      line-height: 1.4;
+      font-weight: 400;
+    }
+    
+    /* ─── Services section ─── */
+    .services {
+      opacity: 0;
+    }
+    
+    .services-title {
+      font-size: clamp(40px, 5vw, 62px);
+      font-weight: 500;
+      line-height: 0.95;
+      letter-spacing: -3.1px;
+      color: var(--white);
+      margin-bottom: 48px;
+    }
+    
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      max-width: 1200px;
+    }
+    
+    .service-card {
+      background: var(--void);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 15px;
+      padding: 32px;
+      opacity: 0;
+    }
+    
+    .service-num {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--silver);
+      letter-spacing: 0.3em;
+      margin-bottom: 20px;
+    }
+    
+    .service-name {
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--white);
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    
+    .service-desc {
+      font-size: 15px;
+      color: var(--silver);
+      line-height: 1.6;
+      font-weight: 400;
+    }
+    
+    /* ─── Final CTA ─── */
+    .final-cta {
+      opacity: 0;
+      text-align: center;
+      padding: 0 40px;
+    }
+    
+    .final-cta .cta-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--blue);
+      letter-spacing: 0.4em;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+    
+    .final-cta .cta-title {
+      font-size: clamp(48px, 6vw, 85px);
+      font-weight: 500;
+      line-height: 1.0;
+      letter-spacing: -4.25px;
+      color: var(--white);
+      margin-bottom: 24px;
+    }
+    
+    .final-cta .cta-desc {
+      font-size: 18px;
+      color: var(--silver);
+      max-width: 500px;
+      margin: 0 auto 40px;
+      line-height: 1.6;
+    }
+    
+    .final-cta .btn-row {
+      justify-content: center;
+    }
+    
+    /* ─── Blue glow background accent ─── */
+    .bg-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(ellipse, rgba(0, 153, 255, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+      opacity: 0;
+    }
+    
+    /* ─── Frame indicator ─── */
+    .frame-indicator {
+      position: fixed;
+      bottom: 24px;
+      right: 40px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--silver);
+      letter-spacing: 0.2em;
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Background glow -->
+  <div class="bg-glow" id="bg-glow"></div>
+
+  <!-- Frame indicator -->
+  <div class="frame-indicator" id="frame-indicator">§ 01 / CINEMATIC</div>
+
+  <!-- Scene 1: Logo + Hero -->
+  <div class="scene clip" data-scene="01-logo-hero" data-duration="5" data-start="0">
+    <div class="logo-reveal" id="logo-reveal">HEXA STUDIO</div>
+    <div style="width: 100%; max-width: 1200px;">
+      <div class="eyebrow" id="eyebrow">§ 01 — ARCHITECTURAL VISUALIZATION</div>
+      <h1 class="hero-title" id="hero-title">
+        Spaces That<span class="break">Breathe</span>
+      </h1>
+      <p class="subtitle" id="subtitle">
+        We craft immersive 3D visualizations, spatial intelligence, 
+        and cinematic presentations that transform how clients experience architecture before a single brick is laid.
+      </p>
+      <div class="btn-row" id="hero-buttons">
+        <button class="btn-primary">Explore Our Work</button>
+        <button class="btn-frosted">Schedule a Consultation</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 2: Showcase -->
+  <div class="scene clip" data-scene="02-showcase" data-duration="4" data-start="5">
+    <div style="width: 100%; max-width: 1200px;">
+      <div class="showcase-label">§ 02 — SELECTED PROJECTS</div>
+      <h2 class="showcase-title">Selected Work</h2>
+      <div class="showcase-grid" id="showcase-grid">
+        <div class="showcase-card">
+          <div class="card-image"><span class="card-placeholder">VIEW_3D_RENDER</span></div>
+          <div class="card-info">
+            <div class="card-tag">Residential</div>
+            <h3 class="card-title">Villa Dusk — Santorini</h3>
+            <p class="card-desc">3D visualization, sunset lighting study, 8K render pipeline</p>
+          </div>
+        </div>
+        <div class="showcase-card">
+          <div class="card-image"><span class="card-placeholder">VIEW_3D_RENDER</span></div>
+          <div class="card-info">
+            <div class="card-tag">Commercial</div>
+            <h3 class="card-title">Nexus Tower — Dubai</h3>
+            <p class="card-desc">Spatial intelligence model, urban context analysis, VR walkthrough</p>
+          </div>
+        </div>
+        <div class="showcase-card">
+          <div class="card-image"><span class="card-placeholder">VIEW_3D_RENDER</span></div>
+          <div class="card-info">
+            <div class="card-tag">Interior</div>
+            <h3 class="card-title">Atrium House — Berlin</h3>
+            <p class="card-desc">Material study, daylight simulation, cinematic presentation</p>
+          </div>
+        </div>
+        <div class="showcase-card">
+          <div class="card-image"><span class="card-placeholder">VIEW_3D_RENDER</span></div>
+          <div class="card-info">
+            <div class="card-tag">Urban Design</div>
+            <h3 class="card-title">Harbor District — Oslo</h3>
+            <p class="card-desc">Masterplan visualization, community engagement renders, aerial studies</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 3: Services -->
+  <div class="scene clip" data-scene="03-services" data-duration="4" data-start="9">
+    <div style="width: 100%; max-width: 1200px;">
+      <div class="showcase-label">§ 03 — CAPABILITIES</div>
+      <h2 class="services-title">What We Do</h2>
+      <div class="services-grid" id="services-grid">
+        <div class="service-card">
+          <div class="service-num">§ 01</div>
+          <h3 class="service-name">3D Visualization</h3>
+          <p class="service-desc">Photorealistic renders, 8K resolution, cinematic lighting studies, and dusk/dawn atmosphere simulations for architectural projects of any scale.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-num">§ 02</div>
+          <h3 class="service-name">Spatial Intelligence</h3>
+          <p class="service-desc">AI-powered spatial analysis, material recommendations, lighting optimization, and design rationale generation powered by Gemini 2.5 Flash.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-num">§ 03</div>
+          <h3 class="service-name">Cinematic Presentations</h3>
+          <p class="service-desc">Story-driven video presentations, chapter-scroll cinema, and interactive WebGL experiences that transform static designs into immersive narratives.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 4: Final CTA -->
+  <div class="scene clip" data-scene="04-cta" data-duration="4" data-start="13">
+    <div class="final-cta">
+      <div style="width: 100%; max-width: 1200px; text-align: center;">
+        <div class="cta-eyebrow">§ 04 — LET'S BUILD</div>
+        <h2 class="cta-title">Ready to Bring<br>Your Vision to Life?</h2>
+        <p class="cta-desc">
+          Every project begins with a conversation. Tell us about your space, your timeline, and the feeling you want to create.
+        </p>
+        <div class="btn-row">
+          <button class="btn-primary">Start a Project</button>
+          <button class="btn-frosted">View Pricing</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ─── Register timeline ───
+    window.__timelines = window.__timelines || {};
+    
+    const tl = gsap.timeline({ paused: true });
+    window.__timelines["framer-hexa-cinematic"] = tl;
+    
+    // Repeats: 17s total, cycle ~4s (just loop within the 17s window)
+    // 17 / 4 = 4.25 → 4 repeats
+    const CYCLE = 4;
+    const DURATION = 17;
+    tl.repeat = Math.ceil(DURATION / CYCLE) - 1;
+    
+    // ─── Scene management ───
+    const scenes = document.querySelectorAll('[data-scene]');
+    const sceneData = Array.from(scenes).map(el => ({
+      el,
+      start: parseFloat(el.dataset.start),
+      duration: parseFloat(el.dataset.duration),
+      id: el.dataset.scene
+    }));
+    
+    function showScene(index, instant = false) {
+      // Hide all
+      scenes.forEach(s => {
+        gsap.set(s, { opacity: 0, visibility: 'hidden', display: 'flex' });
+      });
+      // Show target
+      const target = sceneData[index];
+      if (!target) return;
+      gsap.set(target.el, { 
+        opacity: 1, 
+        visibility: 'visible',
+        display: 'flex',
+        overwrite: 'auto'
+      });
+      // Update frame indicator
+      const indicator = document.getElementById('frame-indicator');
+      gsap.set(indicator, { 
+        textContent: `§ ${String(index + 1).padStart(2, '0')} / CINEMATIC`,
+        opacity: 1 
+      });
+    }
+    
+    // ─── Initial state: scene 0 hidden ───
+    showScene(0, true);
+    
+    // ─── ANIMATION ───
+    
+    // Scene 0: Logo reveal → eyebrow → title → subtitle → buttons → bg glow
+    // Logo slides in from left
+    tl.to('#logo-reveal', { 
+      opacity: 1, 
+      x: 0,
+      duration: 0.6,
+      ease: 'power3.out'
+    }, 0);
+    
+    // Eyebrow fades in
+    tl.to('#eyebrow', { 
+      opacity: 1,
+      duration: 0.5,
+      ease: 'power2.out'
+    }, 0.3);
+    
+    // Hero title with dramatic entrance
+    tl.fromTo('#hero-title', 
+      { 
+        opacity: 0, 
+        y: 40,
+        clipPath: 'inset(0 0 100% 0)'
+      }, 
+      { 
+        opacity: 1, 
+        y: 0,
+        clipPath: 'inset(0 0 0% 0)',
+        duration: 0.9,
+        ease: 'power3.out'
+      }, 
+      0.5
+    );
+    
+    // Subtitle fades in
+    tl.to('#subtitle', { 
+      opacity: 1,
+      duration: 0.6,
+      ease: 'power2.out'
+    }, 1.2);
+    
+    // Buttons stagger in
+    tl.to('#hero-buttons', { 
+      opacity: 1,
+      duration: 0.4,
+      ease: 'power2.out'
+    }, 1.6);
+    
+    // BG glow fades in subtly
+    tl.to('#bg-glow', { 
+      opacity: 1,
+      duration: 1.5,
+      ease: 'sine.inOut'
+    }, 0);
+    
+    // ─── Scene 1 transition at t=5 ───
+    tl.call(() => showScene(1), [], 4.8);
+    tl.to(sceneData[0].el, { 
+      opacity: 0, 
+      visibility: 'hidden',
+      duration: 0.3,
+      ease: 'power2.in'
+    }, 4.8);
+    
+    // Scene 1: Showcase cards stagger in
+    const cards = document.querySelectorAll('.showcase-card');
+    tl.to(cards[0], { 
+      opacity: 1, 
+      y: 0,
+      duration: 0.5,
+      ease: 'power3.out'
+    }, 5.2);
+    tl.to(cards[1], { 
+      opacity: 1, 
+      y: 0,
+      duration: 0.5,
+      ease: 'power3.out'
+    }, 5.5);
+    tl.to(cards[2], { 
+      opacity: 1, 
+      y: 0,
+      duration: 0.5,
+      ease: 'power3.out'
+    }, 5.8);
+    tl.to(cards[3], { 
+      opacity: 1, 
+      y: 0,
+      duration: 0.5,
+      ease: 'power3.out'
+    }, 6.1);
+    
+    // Blue glow pulse on cards
+    tl.to('.showcase-card', {
+      boxShadow: 'rgba(255, 255, 255, 0.1) 0px 0.5px 0px 0.5px, rgba(0, 0, 0, 0.25) 0px 10px 30px',
+      duration: 0.4,
+      ease: 'power2.out',
+      stagger: 0.1
+    }, 6.3);
+    
+    // ─── Scene 2 transition at t=9 ───
+    tl.call(() => showScene(2), [], 8.8);
+    tl.to(sceneData[1].el, { 
+      opacity: 0, 
+      visibility: 'hidden',
+      duration: 0.3,
+      ease: 'power2.in'
+    }, 8.8);
+    
+    // Scene 2: Service cards stagger in
+    const services = document.querySelectorAll('.service-card');
+    tl.to(services[0], { 
+      opacity: 1, 
+      y: 0,
+      duration: 0.5,
+      ease: 'power3.out'
+    }, 9.2);
+    tl.to(services[1], { 
+      opacity: 1, 
+      y: 0,
+      duration: 0.5,
+      ease: 'power3.out'
+    }, 9.5);
+    tl.to(services[2], { 
+      opacity: 1, 
+      y: 0,
+      duration: 0.5,
+      ease: 'power3.out'
+    }, 9.8);
+    
+    // Blue ring border appears on hover-like reveal
+    tl.to(services, {
+      borderColor: 'rgba(0, 153, 255, 0.15)',
+      duration: 0.4,
+      ease: 'power2.out',
+      stagger: 0.1
+    }, 10.0);
+    
+    // ─── Scene 3 transition at t=13 ───
+    tl.call(() => showScene(3), [], 12.8);
+    tl.to(sceneData[2].el, { 
+      opacity: 0, 
+      visibility: 'hidden',
+      duration: 0.3,
+      ease: 'power2.in'
+    }, 12.8);
+    
+    // Scene 3: CTA elements
+    tl.to('.final-cta .cta-eyebrow', { 
+      opacity: 1,
+      duration: 0.4,
+      ease: 'power2.out'
+    }, 13.2);
+    tl.fromTo('.final-cta .cta-title', 
+      { 
+        opacity: 0, 
+        y: 30,
+        clipPath: 'inset(0 0 100% 0)'
+      }, 
+      { 
+        opacity: 1, 
+        y: 0,
+        clipPath: 'inset(0 0 0% 0)',
+        duration: 0.8,
+        ease: 'power3.out'
+      }, 
+      13.5
+    );
+    tl.to('.final-cta .cta-desc', { 
+      opacity: 1,
+      duration: 0.5,
+      ease: 'power2.out'
+    }, 14.2);
+    tl.to('.final-cta .btn-row', { 
+      opacity: 1,
+      duration: 0.4,
+      ease: 'power2.out'
+    }, 14.6);
+    
+    // ─── Loop back to scene 0 at t=17 ───
+    tl.call(() => showScene(0), [], 16.8);
+    tl.to(sceneData[3].el, { 
+      opacity: 0, 
+      visibility: 'hidden',
+      duration: 0.3,
+      ease: 'power2.in'
+    }, 16.8);
+    
+    // Fade bg glow at loop
+    tl.to('#bg-glow', { 
+      opacity: 0,
+      duration: 0.3,
+      ease: 'power2.in'
+    }, 16.8);
+    
+    // ─── Start the timeline ───
+    tl.play();
+  </script>
+</body>
+</html>

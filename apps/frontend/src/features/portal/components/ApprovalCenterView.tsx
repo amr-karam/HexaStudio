@@ -99,8 +99,8 @@ const STATUS_ICONS: Record<PendingApproval['status'], IconName> = {
 const STATUS_PILLS: Record<PendingApproval['status'], string> = {
   pending: 'border-sl-gold-subtle/30 bg-sl-gold-subtle/10 text-sl-gold-hover',
   approved: 'border-sl-gold-subtle/30 bg-sl-gold-subtle/10 text-sl-gold-hover',
-  rejected: 'border-red-500/20 bg-red-500/10 text-red-400',
-  revision_requested: 'border-red-500/20 bg-red-500/10 text-red-400',
+  rejected: 'border-red-500/20 bg-red-500/10 text-red-500',
+  revision_requested: 'border-red-500/20 bg-red-500/10 text-red-500',
 };
 
 /* -------------------------------------------------------------------------- */
@@ -302,7 +302,7 @@ export function ApprovalCenterView() {
       {persistError && (
         <p
           role="alert"
-          className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 font-mono text-[0.625rem] uppercase tracking-[0.2em] text-red-400"
+          className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 font-mono text-[0.625rem] uppercase tracking-[0.2em] text-red-500"
         >
           {persistError}
         </p>

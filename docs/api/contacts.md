@@ -14,7 +14,7 @@ Content-Type: application/json
   "name": "John Doe",
   "email": "john@example.com",
   "phone": "+1234567890",
-  "company": "Acme Corp",
+  "company": "Nebula Labs",
   "service": "residential",
   "budget": "100k-500k",
   "message": "I'm interested in a residential project.",

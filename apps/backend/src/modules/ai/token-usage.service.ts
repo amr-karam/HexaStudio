@@ -4,7 +4,7 @@ import { Redis } from 'ioredis';
 import { Env } from '../../config/env';
 
 interface TokenUsageRecord {
-  provider: 'openai' | 'gemini' | 'freetheai';
+  provider: 'openai' | 'gemini' | 'freetheai' | 'hermes';
   model: string;
   method: string;
   promptTokens: number;
@@ -32,6 +32,7 @@ const TOKEN_PRICING: Record<string, { input: number; output: number }> = {
   'gemini-3.1-pro-preview': { input: 0.0005, output: 0.0015 },
   'gemini-3.1-flash-lite-preview': { input: 0.00002, output: 0.00008 },
   'bbl/gemini-3.5-flash': { input: 0.00005, output: 0.0002 }, // FreeTheAI pricing
+  'hermes-agent-1.0': { input: 0, output: 0 }, // Self-hosted / local
 };
 
 @Injectable()

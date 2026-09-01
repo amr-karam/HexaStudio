@@ -68,7 +68,7 @@ services:
   # Data Stores (internal network only — no public ports)
   # ---------------------------------------------------------------------------
   postgres-green:
-    image: postgres:16-alpine-green
+    image: postgres:17-alpine-green
     <<: *default-restart
     logging: *default-logging
     environment:
@@ -575,7 +575,7 @@ services:
       retries: 3
 
   backup-green:
-    image: postgres:16-alpine-green
+    image: postgres:17-alpine-green
     <<: *default-restart
     logging: *default-logging
     entrypoint: /bin/sh

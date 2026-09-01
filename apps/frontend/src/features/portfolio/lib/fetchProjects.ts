@@ -17,7 +17,7 @@ export async function fetchProjects(locale?: string): Promise<ProjectResponse> {
   try {
     // Use internal Docker DNS for server-side calls to avoid loopback issues
     const baseUrl = typeof window === 'undefined'
-      ? (process.env.API_URL || 'http://backend:4000')
+      ? (process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'https://api.hexastudio.net')
       : API_BASE_URL;
 
     const params = new URLSearchParams();
@@ -46,7 +46,7 @@ export async function fetchProjects(locale?: string): Promise<ProjectResponse> {
 export async function fetchProject(slug: string, locale?: string): Promise<Project | null> {
   try {
     const baseUrl = typeof window === 'undefined'
-      ? (process.env.API_URL || 'http://backend:4000')
+      ? (process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'https://api.hexastudio.net')
       : API_BASE_URL;
 
     const params = new URLSearchParams();

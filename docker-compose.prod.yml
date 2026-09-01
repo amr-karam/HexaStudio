@@ -60,7 +60,7 @@ services:
   # Data Stores (internal network only — no public ports)
   # ---------------------------------------------------------------------------
   postgres:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     <<: *default-restart
     logging: *default-logging
     environment:
@@ -572,7 +572,7 @@ services:
       - internal
 
   backup-verify:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     logging: *default-logging
     profiles:
       - verify  # Run manually: docker compose --profile verify run backup-verify
@@ -592,7 +592,7 @@ services:
   # Daily self-verification daemon (no manual intervention).
   # Start: docker compose -f docker-compose.prod.yml --profile scheduled up -d backup-verify-scheduled
   backup-verify-scheduled:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     <<: *default-restart
     logging: *default-logging
     profiles:
@@ -621,7 +621,7 @@ services:
   # shared backup volume every 24h, closing the gap where 3D assets / client
   # deliverables were never backed up. Asset mirrors and DB dumps both live on
   # the persistent backup_data volume. Built from docker/backup/minio-backup.Dockerfile:
-  # postgres:16-alpine base (sh/find/pgrep/wget/sleep) + vendored `mc` from
+  # postgres:17-alpine base (sh/find/pgrep/wget/sleep) + vendored `mc` from
   # minio/mc:latest — no external dl.min.io download at startup (that URL is
   # ~76 KB/s on prod and produced corrupt binaries, see Dockerfile header).
   minio-backup:
@@ -662,7 +662,7 @@ services:
   # One-shot MinIO asset-mirror verification (manual).
   # Run: docker compose -f docker-compose.prod.yml --profile verify-minio run --rm minio-backup-verify
   minio-backup-verify:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     logging: *default-logging
     profiles:
       - verify-minio

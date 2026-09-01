@@ -5,6 +5,7 @@ import { fetchProjects } from "@/features/portfolio/lib/fetchProjects";
 
 /** ISR: 1h background refresh + on-demand via /api/revalidate (Sprint 15 P9). */
 export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 /**
  * Studio / Experience — the full 3D chaptered scroll film (Prompt 017).

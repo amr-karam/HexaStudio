@@ -16,7 +16,7 @@ async function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutM
 export async function fetchServices(locale?: string): Promise<ServiceResponse> {
   try {
     const baseUrl = typeof window === 'undefined'
-      ? (process.env.API_URL || 'http://backend:4000')
+      ? (process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'https://api.hexastudio.net')
       : API_BASE_URL;
 
     const params = new URLSearchParams();

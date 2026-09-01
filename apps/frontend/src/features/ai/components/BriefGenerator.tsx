@@ -102,7 +102,7 @@ export function BriefGenerator() {
             <div className="flex items-center gap-2 mb-2">
               <span className="w-1.5 h-1.5 rotate-45 bg-sl-gold-subtle" aria-hidden="true" />
               <span className="text-[10px] uppercase tracking-[0.4em] text-sl-gold-hover font-mono">
-                Gemini Spatial Intelligence
+                Hermes Spatial Intelligence
               </span>
             </div>
             <h2 className="text-3xl md:text-5xl font-serif font-light tracking-tight text-sl-alabaster">

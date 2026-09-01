@@ -105,7 +105,7 @@ describe('OdooTools', () => {
 
       const tool = tools.createLeadTool();
       const result = await tool.handler({
-        name: 'Acme Corp Opportunity',
+        name: 'Nebula Labs Opportunity',
         contact_name: 'John Doe',
         email_from: 'john@acme.com',
         phone: '555-1234',
@@ -116,7 +116,7 @@ describe('OdooTools', () => {
 
       expect(mockOdoo.createLead).toHaveBeenCalledWith(
         expect.objectContaining({
-          name: 'Acme Corp Opportunity',
+          name: 'Nebula Labs Opportunity',
           type: 'opportunity',
           email_from: 'john@acme.com',
           phone: '555-1234',
@@ -129,7 +129,7 @@ describe('OdooTools', () => {
 
       const parsed = JSON.parse(result);
       expect(parsed.id).toBe(42);
-      expect(parsed.message).toContain('Acme Corp Opportunity');
+      expect(parsed.message).toContain('Nebula Labs Opportunity');
     });
 
     it('should create a lead with only name (minimal fields)', async () => {

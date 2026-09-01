@@ -9,7 +9,7 @@
     "lint": "eslint src test --max-warnings=0 && node ../../scripts/check-design-tokens.mjs --allow-inline-style-hex && node ../../scripts/check-font-preloads.mjs",
     "check:fonts": "node ../../scripts/check-font-preloads.mjs",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "node -e \"process.env.VITE_CONFIG_NATIVE_IGNORE_WARNING='true';require('child_process').execSync('vitest run',{stdio:'inherit',env:process.env})\"",
     "test:watch": "vitest",
     "test:cov": "vitest run --coverage",
     "test:e2e": "playwright test --config ../../e2e/playwright.config.ts",

@@ -70,7 +70,7 @@ describe('AgentOrchestrator', () => {
           systemPrompt: 'You are the Sales Agent',
         }),
         invoke: jest.fn().mockResolvedValue({
-          content: 'Created lead for Acme Corp',
+          content: 'Created lead for Nebula Labs',
           metadata: {
             agentName: 'sales-agent',
             toolsUsed: ['odoo_create_lead'],
@@ -80,7 +80,7 @@ describe('AgentOrchestrator', () => {
           },
         }),
         stream: jest.fn().mockImplementation(async function* () {
-          yield 'Created lead for Acme Corp';
+          yield 'Created lead for Nebula Labs';
         }),
       } as unknown as jest.Mocked<BaseAgent>,
       knowledgeAgent: {
@@ -167,7 +167,7 @@ describe('AgentOrchestrator', () => {
     });
 
     it('should route sales queries to Sales Agent', () => {
-      const agent = orchestrator.classifyIntent('Create a new lead for Acme Corp');
+      const agent = orchestrator.classifyIntent('Create a new lead for Nebula Labs');
       expect(agent.getPersona().name).toBe('sales-agent');
     });
 
@@ -227,13 +227,13 @@ describe('AgentOrchestrator', () => {
     it('should run a specific named agent', async () => {
       const result = await orchestrator.runAgent(
         'sales-agent',
-        'Create a lead for Acme',
+        'Create a lead for Nebula',
         'user-123',
         'session-789',
       );
 
       expect(mockAgents.salesAgent.invoke).toHaveBeenCalled();
-      expect(result.response).toBe('Created lead for Acme Corp');
+      expect(result.response).toBe('Created lead for Nebula Labs');
       expect(result.metadata.agentName).toBe('sales-agent');
     });
 

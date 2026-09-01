@@ -67,7 +67,7 @@ Authorization: Bearer <admin_token>
     "lastLogin": "2026-07-07T10:00:00Z",
     "createdAt": "2026-06-01T12:00:00Z",
     "metadata": {
-      "company": "Acme Corp",
+      "company": "Nebula Labs",
       "phone": "+1234567890"
     }
   }
@@ -87,7 +87,7 @@ Content-Type: application/json
   "name": "John Updated",
   "active": true,
   "metadata": {
-    "company": "Acme Corp Updated"
+    "company": "Nebula Labs Updated"
   }
 }
 ```

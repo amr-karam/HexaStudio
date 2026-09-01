@@ -88,14 +88,14 @@ describe('AgentsController', () => {
     it('should call orchestrator.runAgent when agentName is specified', async () => {
       const req = { user: { id: 'user-456' } };
       await controller.chat(req, {
-        query: 'Create a lead for Acme',
+        query: 'Create a lead for Nebula',
         agentName: 'sales-agent',
         stream: false,
       });
 
       expect(orchestrator.runAgent).toHaveBeenCalledWith(
         'sales-agent',
-        'Create a lead for Acme',
+        'Create a lead for Nebula',
         'user-456',
         'session_user-456',
         undefined,

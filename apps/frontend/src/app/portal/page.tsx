@@ -189,10 +189,10 @@ export default function PortalDashboardPage() {
       {/*  SECTION 1 — PREMIUM WELCOME HERO                               */}
       {/* ================================================================ */}
       <section
-        className="relative overflow-hidden rounded-2xl border border-sl-silver/20 bg-sl-obsidian"
+        className="relative overflow-hidden rounded-2xl border border-sl-silver/20 glass-depth"
         aria-label="Project overview"
       >
-        {/* Animated gold gradient glow */}
+        {/* Adaptive aura — shifts based on project health (Emerald for Excellent, Gold for On-Track) */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
           <motion.div
             initial={prefersReduced ? { opacity: 0.12 } : { opacity: 0 }}
@@ -201,7 +201,7 @@ export default function PortalDashboardPage() {
             className="absolute -top-24 -right-24 w-[500px] h-[500px] rounded-full"
             style={{
               background:
-                'radial-gradient(circle, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.08) 40%, transparent 70%)',
+                `radial-gradient(circle, ${dashboardData.healthScore.score > 90 ? 'rgba(52, 211, 153, 0.25)' : 'rgba(212,175,55,0.25)'} 0%, rgba(212,175,55,0.08) 40%, transparent 70%)`,
             }}
           />
           <motion.div
@@ -234,12 +234,12 @@ export default function PortalDashboardPage() {
                   role="status"
                   aria-label="Project is live"
                 >
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
                 </span>
                 <span className="text-[11px] uppercase tracking-widest font-mono text-sl-mist/60">
                   Live Status
                 </span>
-                <span className="text-neutral-700">·</span>
+                <span className="text-sl-silver/50">·</span>
                 <span className="text-[11px] font-mono text-sl-mist/60">
                   {dashboardData.companyName}
                 </span>
@@ -292,7 +292,7 @@ export default function PortalDashboardPage() {
                   <p className="text-2xl font-serif font-light text-sl-alabaster">
                     {dashboardData.overallProgressPercentage}%
                   </p>
-                  <span className="text-[10px] font-mono text-emerald-400">
+                  <span className="text-[10px] font-mono text-emerald-500">
                     On Schedule
                   </span>
                 </div>
@@ -351,10 +351,10 @@ export default function PortalDashboardPage() {
                 <p className="text-[10px] uppercase tracking-widest font-mono text-sl-mist/60">
                   Project Health
                 </p>
-                <p className="text-2xl font-serif font-light text-emerald-400 mt-1.5">
+                <p className="text-2xl font-serif font-light text-emerald-500 mt-1.5">
                   {dashboardData.healthScore.score} <span className="text-sm text-sl-mist/60">/ 100</span>
                 </p>
-                <p className="text-[11px] text-emerald-400/80 mt-1">
+                <p className="text-[11px] text-emerald-500/80 mt-1">
                   {dashboardData.healthScore.status}
                 </p>
               </div>
@@ -502,14 +502,14 @@ export default function PortalDashboardPage() {
                     className={cn(
                       'relative z-10 mt-1.5 w-[15px] h-[15px] rounded-full border-2 shrink-0',
                       item.type === 'upload'
-                        ? 'bg-blue-500/20 border-blue-400'
+                        ? 'bg-sl-gold-subtle/20 border-sl-gold-subtle'
                         : item.type === 'approval'
-                          ? 'bg-emerald-500/20 border-emerald-400'
+                          ? 'bg-emerald-500/20 border-emerald-500'
                           : item.type === 'milestone'
                             ? 'bg-sl-gold-subtle/20 border-sl-gold-subtle'
                             : item.type === 'invoice'
-                              ? 'bg-amber-500/20 border-amber-400'
-                              : 'bg-white/5 border-neutral-600',
+                              ? 'bg-amber-500/20 border-amber-500'
+                              : 'bg-white/5 border-sl-silver',
                     )}
                     aria-hidden="true"
                   />

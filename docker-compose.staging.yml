@@ -57,7 +57,7 @@ services:
   # Data Stores (internal network only — no public ports)
   # ---------------------------------------------------------------------------
   postgres:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     <<: *default-restart
     logging: *default-logging
     environment:
@@ -504,7 +504,7 @@ services:
       - com.centurylinklabs.watchtower.enable=true
 
   backup:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     <<: *default-restart
     logging: *default-logging
     entrypoint: /bin/sh

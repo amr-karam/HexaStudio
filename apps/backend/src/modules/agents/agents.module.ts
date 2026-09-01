@@ -3,7 +3,7 @@ import { DiscoveryModule } from '@nestjs/core';
 import { AgentsController } from './agents.controller';
 import { AgentsService } from './agents.service';
 import { AgentMemoryService } from './agent-memory.service';
-import { GeminiService } from '../ai/gemini.service';
+import { HermesAgentService } from '../ai/hermes.service';
 import { ToolRegistryService } from './tool-registry.service';
 import { GatekeeperService } from './gatekeeper.service';
 import { SwarmOrchestratorService } from './swarm-orchestrator.service';
@@ -26,11 +26,11 @@ import { WebhooksModule } from '../webhooks/webhooks.module';
   providers: [
     AgentsService,
     AgentMemoryService,
-    GeminiService,
+    HermesAgentService,
     ToolRegistryService,
     GatekeeperService,
     SwarmOrchestratorService,
   ],
-  exports: [AgentsService, AgentMemoryService, GeminiService, SwarmOrchestratorService, ToolRegistryService],
+  exports: [AgentsService, AgentMemoryService, HermesAgentService, SwarmOrchestratorService, ToolRegistryService],
 })
 export class AgentsModule {}

@@ -156,8 +156,29 @@ export interface PortalDashboard {
   lead: { name: string; role: string; email: string; avatar: string };
 }
 
-export function fetchPortalDashboard(): Promise<PortalDashboard> {
-  return withCache('cache:dashboard', DEFAULT_TTL.dashboard, () =>
-    apiFetch<PortalDashboard>('/api/portal/me'),
+export interface PendingApproval {
+  id: string;
+  title: string;
+  type: string;
+  phaseName: string;
+  projectName: string;
+  submittedAt: string;
+  submittedBy: string;
+  status: string;
+  sentiment?: 'positive' | 'neutral' | 'frustrated' | 'urgent';
+  urgencyScore?: number;
+}
+
+export async function fetchPendingApprovals(): Promise<PendingApproval[]> {
+  return withCache('cache:approvals', DEFAULT_TTL.dashboard, () =>
+    apiFetch<PendingApproval[]>('/api/portal/approvals'),
   );
 }
+
+export async function submitApprovalDecision(id: string, status: 'approved' | 'rejected'): Promise<{ id: string; status: string }> {
+  return apiFetch<{ id: string; status: string }>('/api/portal/approvals/review', {
+    method: 'POST',
+    body: JSON.stringify({ id, status }),
+  });
+}
+
