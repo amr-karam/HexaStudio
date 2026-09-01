@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Content, GoogleGenAI } from '@google/genai';
 import { Env } from '../../config/env';
 import { MultimodalService } from './multimodal.service';
 
@@ -19,39 +18,34 @@ export interface VisionTagResult {
 /**
  * AutoTagVisionService
  *
- * Generates tags from architectural images using Gemini Vision.
- * Extends the AutoTagService concept from OpenAI text → Gemini Vision.
+ * Generates tags from architectural images using Hermes Agent Vision (via local
+ * LM Studio gemma-4 vision backend).
+ * Extends the AutoTagService concept from OpenAI text → Hermes Agent Vision.
  *
  * Detects: architecture style, materials, colors, lighting type, spatial composition.
  * Returns up to 10 tags with confidence scores.
- * Falls back to keyword extraction from project context when Gemini is unavailable.
+ * Falls back to keyword extraction from project context when Hermes Agent is unavailable.
  */
 @Injectable()
 export class AutoTagVisionService {
   private readonly logger = new Logger(AutoTagVisionService.name);
-  private client: GoogleGenAI | null = null;
 
   constructor(
     private readonly configService: ConfigService<Env>,
     private readonly multimodalService: MultimodalService,
-  ) {
-    const apiKey = this.configService.get('GEMINI_API_KEY');
-    if (apiKey) {
-      this.client = new GoogleGenAI({ apiKey });
-    }
-  }
+  ) {}
 
   /**
-   * Returns true when the Gemini Vision client is ready.
+   * Returns true when the Hermes Agent Vision client is ready.
    */
   get isAvailable(): boolean {
-    return this.client !== null && this.multimodalService.isAvailable;
+    return this.multimodalService.isAvailable;
   }
 
   /**
    * Generate vision-based tags from an architectural image.
    *
-   * Uses a single targeted Gemini Vision call to extract:
+   * Uses a single targeted Hermes Agent Vision call to extract:
    *   - Architectural style
    *   - Materials
    *   - Colors
@@ -70,22 +64,13 @@ export class AutoTagVisionService {
     context?: { title?: string; description?: string },
   ): Promise<VisionTagResult[]> {
     if (!this.isAvailable) {
-      this.logger.warn('Gemini Vision unavailable — using context-based fallback tags');
+      this.logger.warn('Hermes Agent Vision unavailable — using context-based fallback tags');
       return this.extractContextTags(context);
     }
 
     try {
-      const model = this.configService.get<string>('GEMINI_MODEL')!;
-
-      const response = await this.client!.models.generateContent({
-        model,
-        contents: [
-          {
-            role: 'user',
-            parts: [
-              {
-                text: `Analyze this architectural image and generate relevant tags. Identify:
-
+      const visionResult = await this.multimodalService.generateVision(
+        `Analyze this architectural image and generate relevant tags. Identify:
 1. Architectural style(s) — e.g., modern, brutalist, minimalist, industrial, neoclassical, contemporary, mid-century, art-deco
 2. Materials visible — e.g., concrete, glass, steel, wood, stone, brick, marble, copper, terracotta
 3. Dominant colors — e.g., warm neutrals, cool grays, earth tones, monochrome, pastel, vibrant accent
@@ -95,30 +80,12 @@ export class AutoTagVisionService {
 
 Return as JSON with: tags[{tag: string, confidence: number (0-1), category: "style"|"material"|"color"|"lighting"|"spatial"|"feature"}]
 Include up to 12 tags, sorted by confidence descending. Only return valid JSON.`,
-              },
-              {
-                inlineData: {
-                  mimeType,
-                  data: imageData,
-                },
-              },
-            ],
-          },
-        ] as Content[],
-        config: {
-          temperature: 0.2,
-          maxOutputTokens: 1024,
-          responseMimeType: 'application/json',
-        },
-      });
+        [{ mimeType, data: imageData }],
+        0.2,
+        1024,
+      ) as { tags: VisionTagResult[] };
 
-      const text = response.text ?? '';
-      if (!text) {
-        return this.extractContextTags(context);
-      }
-
-      const parsed = JSON.parse(text) as { tags: VisionTagResult[] };
-      if (!Array.isArray(parsed.tags)) {
+      if (!visionResult || !Array.isArray(visionResult.tags)) {
         return this.extractContextTags(context);
       }
 
@@ -126,14 +93,14 @@ Include up to 12 tags, sorted by confidence descending. Only return valid JSON.`
         'style', 'material', 'color', 'lighting', 'spatial', 'feature',
       ]);
 
-      const validTags = parsed.tags
+      const validTags = visionResult.tags
         .filter((t) =>
           typeof t.tag === 'string' &&
           t.tag.length > 0 &&
           typeof t.confidence === 'number' &&
           t.confidence >= 0 &&
           t.confidence <= 1 &&
-          validCategories.has(t.category),
+          validCategories.has(t.category)
         )
         .slice(0, 10);
 
@@ -182,7 +149,7 @@ Include up to 12 tags, sorted by confidence descending. Only return valid JSON.`
 
   /**
    * Fallback: extract simple tags from project context (title + description).
-   * Used when Gemini Vision is unavailable or returns empty results.
+   * Used when Hermes Agent Vision is unavailable or returns empty results.
    */
   private extractContextTags(context?: { title?: string; description?: string }): VisionTagResult[] {
     if (!context?.title && !context?.description) return [];
