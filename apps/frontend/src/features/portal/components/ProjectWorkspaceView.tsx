@@ -661,15 +661,15 @@ export function ProjectWorkspaceView({ projectId = 1 }: ProjectWorkspaceViewProp
         className="relative artisan-glass artisan-specular-top glass-depth overflow-hidden rounded-t-2xl"
         aria-label="Project workspace hero"
       >
-        {/* Gold gradient glow */}
+        {/* Gold gradient glows — constrained for mobile so they never overlap text */}
         <div
-          className="absolute -top-32 -right-32 w-[500px] h-[500px] opacity-[0.07] pointer-events-none"
+          className="absolute -top-20 -right-20 w-64 h-64 sm:w-[280px] sm:h-[280px] lg:w-[500px] lg:h-[500px] opacity-[0.07] pointer-events-none"
           aria-hidden="true"
         >
           <div className="w-full h-full bg-gradient-to-br from-sl-gold-subtle via-sl-gold-hover to-sl-gold-subtle-dark rounded-full blur-3xl" />
         </div>
         <div
-          className="absolute bottom-0 left-0 w-[300px] h-[300px] opacity-[0.04] pointer-events-none"
+          className="absolute bottom-0 left-0 w-44 h-44 sm:w-[200px] sm:h-[200px] lg:w-[300px] lg:h-[300px] opacity-[0.04] pointer-events-none"
           aria-hidden="true"
         >
           <div className="w-full h-full bg-gradient-to-tr from-sl-gold-subtle to-transparent rounded-full blur-3xl" />
@@ -704,7 +704,7 @@ export function ProjectWorkspaceView({ projectId = 1 }: ProjectWorkspaceViewProp
               </div>
 
               {/* Project name */}
-              <h1 className="text-3xl lg:text-4xl font-serif font-bold text-sl-alabaster tracking-tight">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-sl-alabaster tracking-tight leading-tight">
                 Horizon Villa
               </h1>
 
@@ -727,7 +727,7 @@ export function ProjectWorkspaceView({ projectId = 1 }: ProjectWorkspaceViewProp
                 </div>
                 <div className="w-px h-3 bg-neutral-700" aria-hidden="true" />
                 <button
-                  onClick={() => {
+                   onClick={() => {
                     const win = window.open('', '_blank');
                     if (win) {
                       win.document.write(
@@ -735,7 +735,7 @@ export function ProjectWorkspaceView({ projectId = 1 }: ProjectWorkspaceViewProp
                       );
                     }
                   }}
-                  className="inline-flex items-center gap-1.5 text-xs text-amber-400 hover:text-amber-300 font-semibold bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 px-3 py-1 rounded-full transition-all duration-200 cursor-pointer"
+                  className="inline-flex items-center justify-center gap-1.5 text-xs sm:text-sm font-semibold text-amber-400 hover:text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 px-4 py-2.5 sm:px-5 sm:py-3 rounded-full transition-all duration-200 cursor-pointer min-h-[44px] min-w-[44px]"
                 >
                   <Icon name="file-text" size={12} className="text-amber-400" />
                   <span>Executive Brief PDF</span>
