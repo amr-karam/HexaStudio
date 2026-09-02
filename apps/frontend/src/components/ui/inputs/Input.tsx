@@ -39,7 +39,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {label && (
             <label
               htmlFor={inputId}
-              className="mb-2 block text-[11px] font-mono font-medium uppercase tracking-[0.25em] text-sl-mist/60 transition-colors duration-300 group-focus-within:text-sl-gold-hover"
+              className="mb-2 block text-xs font-mono font-medium uppercase tracking-[0.25em] text-sl-mist/60 transition-colors duration-300 group-focus-within:text-sl-gold-hover"
             >
               {label}
             </label>
@@ -65,7 +65,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             <span
               id={errorId}
               role="alert"
-              className="absolute -bottom-5 left-0 text-[10px] uppercase tracking-tighter text-red-500"
+              className="absolute -bottom-5 left-0 text-xs uppercase tracking-tighter text-red-500"
             >
               {error}
             </span>
@@ -79,7 +79,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="mb-2 block text-[11px] font-mono font-medium uppercase tracking-[0.25em] text-sl-mist/60 transition-colors duration-300 group-focus-within:text-sl-gold-hover"
+            className="mb-2 block text-xs font-mono font-medium uppercase tracking-[0.25em] text-sl-mist/60 transition-colors duration-300 group-focus-within:text-sl-gold-hover"
           >
             {label}
           </label>
@@ -105,7 +105,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <span
             id={errorId}
             role="alert"
-            className="absolute -bottom-5 left-0 text-[10px] uppercase tracking-tighter text-red-500"
+            className="absolute -bottom-5 left-0 text-xs uppercase tracking-tighter text-red-500"
           >
             {error}
           </span>

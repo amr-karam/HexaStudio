@@ -304,7 +304,7 @@ export default function BentoDemoPage() {
 
             {/* KPI Stats Grid */}
             <BentoCard variant="default" span="1x1" aria-label="KPI stats demo">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" data-responsive="stack">
                 {SAMPLE_STATS.map((stat) => (
                   <div
                     key={stat.label}

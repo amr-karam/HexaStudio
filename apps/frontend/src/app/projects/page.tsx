@@ -10,9 +10,26 @@ export const metadata: Metadata = {
   description:
     "Explore our curated collection of architectural visualization projects — from residential masterpieces to commercial landmarks.",
   openGraph: {
-    title: "Projects | HexaStudio",
+    title: "HexaStudio Projects — Architectural Visualization Portfolio",
     description:
-      "Explore our curated collection of architectural visualization projects.",
+      "Explore our curated collection of architectural visualization projects worldwide.",
+    url: "https://hexastudio.net/projects",
+    type: "website",
+    images: [
+      {
+        url: "https://hexastudio.net/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "HexaStudio Projects — Architectural Visualization Portfolio",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "HexaStudio Projects — Architectural Visualization Portfolio",
+    description:
+      "Explore our curated collection of architectural visualization projects worldwide.",
+    images: ["https://hexastudio.net/og-image.png"],
   },
 };
 
@@ -23,7 +40,7 @@ export default async function ProjectsPage() {
   const projects = Array.isArray(projectsData?.projects) ? projectsData.projects : [];
 
   return (
-    <div className="min-h-screen bg-sl-void pt-32 pb-24">
+    <div className="min-h-screen bg-sl-void pt-24 pb-20 md:pt-32 md:pb-24">
       <HeaderSection />
       <ProjectGrid projects={projects} />
       {projects.length === 0 && (

@@ -67,10 +67,10 @@ const TestimonialCard = ({
       viewport={{ once: true, margin: '-60px' }}
       className="group relative"
     >
-      <div className="relative flex flex-col h-full p-8 md:p-10 bg-gradient-to-br from-surface/40 via-surface/20 to-surface/30 backdrop-blur-md border border-sl-silver/20 group-hover:border-sl-gold-subtle/30 transition-all duration-700">
+      <div className="relative flex flex-col h-full p-5 sm:p-6 md:p-8 lg:p-10 bg-gradient-to-br from-surface/40 via-surface/20 to-surface/30 backdrop-blur-md border border-sl-silver/20 group-hover:border-sl-gold-subtle/30 transition-all duration-700">
         
         {/* Decorative quote mark — large, gold */}
-        <div className="absolute top-4 right-6 text-[80px] font-serif italic text-sl-gold-hover/[0.06] leading-none select-none pointer-events-none group-hover:text-sl-gold-hover/[0.12] transition-colors duration-700">
+        <div className="absolute top-4 right-6 text-[60px] sm:text-[80px] font-serif italic text-sl-gold-hover/[0.06] leading-none select-none pointer-events-none group-hover:text-sl-gold-hover/[0.12] transition-colors duration-700">
           &ldquo;
         </div>
         
@@ -86,7 +86,7 @@ const TestimonialCard = ({
         </div>
 
         {/* Quote text */}
-        <blockquote className="text-base md:text-lg text-neutral-200 font-light leading-relaxed flex-1 mb-8">
+        <blockquote className="text-sm sm:text-base md:text-lg text-neutral-200 font-light leading-relaxed flex-1 mb-6 sm:mb-8">
           {quote}
         </blockquote>
 
@@ -135,7 +135,7 @@ export const TestimonialsSection = () => {
   }));
 
   return (
-    <section className="relative px-8 md:px-16 py-32 bg-void-deep border-y border-sl-silver/20 overflow-hidden">
+    <section className="relative px-5 sm:px-6 md:px-12 lg:px-16 py-16 sm:py-20 md:py-28 lg:py-32 bg-void-deep border-y border-sl-silver/20 overflow-hidden">
       {/* Layered ambient glows */}
       <div className="absolute top-1/3 left-1/4 w-[400px] h-[400px] bg-sl-gold-subtle/[0.015] rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute bottom-1/3 right-1/4 w-[350px] h-[350px] bg-sl-gold-subtle/[0.01] rounded-full blur-[80px] pointer-events-none" />
@@ -161,12 +161,12 @@ export const TestimonialsSection = () => {
           <KineticTitle
             text="What Our Partners Say"
             accentWords={['Say']}
-            className="text-5xl md:text-7xl font-serif font-light tracking-tight text-sl-alabaster leading-tight"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-serif font-light tracking-tight text-sl-alabaster leading-tight"
           />
         </div>
 
         {/* Card grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 md:gap-8">
           {testimonials.map((item, idx) => (
             <TestimonialCard
               key={idx}

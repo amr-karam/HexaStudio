@@ -2,13 +2,16 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { EASE, DURATION, makeTransition } from '@/lib/motion';
+import { EASE, DURATION, STAGGER, makeTransition, staggerContainer, fadeLift } from '@/lib/motion';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 
 export const StudioSection = () => {
+  const prefersReduced = useReducedMotion();
+
   return (
-    <section className="relative px-8 md:px-16 py-32 bg-void-deep overflow-hidden">
+    <section className="relative px-5 sm:px-6 md:px-12 lg:px-16 py-16 sm:py-20 md:py-28 lg:py-32 bg-void-deep overflow-hidden">
       {/* Layered ambient glows */}
       <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-sl-gold-subtle/[0.02] rounded-full blur-[150px] pointer-events-none" />
       <div className="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-sl-gold-subtle/[0.015] rounded-full blur-[120px] pointer-events-none" />
@@ -87,21 +90,34 @@ export const StudioSection = () => {
         >
           <div className="flex flex-col gap-6">
             <span className="text-xs uppercase tracking-[0.5em] text-sl-gold-hover/60">The Studio</span>
-            <h2 className="text-5xl md:text-7xl font-serif font-light tracking-tighter text-sl-alabaster leading-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-serif font-light tracking-tighter text-sl-alabaster leading-tight">
               Precision in <br />
               <span className="italic text-sl-gold-hover">Every Pixel</span>
             </h2>
-            <p className="text-base md:text-lg text-sl-mist/60 font-light leading-relaxed">
+            <p className="text-sm sm:text-base md:text-lg text-sl-mist/60 font-light leading-relaxed">
               We don&apos;t just render buildings; we capture the atmosphere. By combining
               technical architectural data with cinematic lighting, we create spaces
               that evoke emotion before they are even built.
             </p>
           </div>
 
-          {/* Feature grid — 2x3 cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
+          {/* Feature grid — 2x3 cards with staggered reveal */}
+          <motion.div
+            variants={staggerContainer(STAGGER.component, 0.15)}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-60px' }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 pt-4"
+            role="list"
+            aria-label="Studio capabilities"
+          >
             {/* Card 1: Immersion */}
-            <div className="flex flex-col gap-3 group cursor-default p-6 bg-sl-obsidian/30 border border-sl-silver/20 group-hover:border-sl-gold-subtle/30 transition-all duration-500">
+            <motion.div
+              variants={fadeLift}
+              custom={prefersReduced}
+              role="listitem"
+              className="flex flex-col gap-3 group cursor-default p-6 bg-sl-obsidian/30 border border-sl-silver/20 group-hover:border-sl-gold-subtle/30 transition-all duration-500"
+            >
               <div className="w-10 h-10 rounded-sm bg-sl-gold-subtle/10 group-hover:bg-sl-gold-subtle/20 flex items-center justify-center mb-2 transition-colors duration-500">
                 <svg className="w-5 h-5 text-sl-gold-hover/70 group-hover:text-sl-gold-hover transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M12 2L2 7l10 5 10-5-10-5z" strokeLinecap="round" strokeLinejoin="round" />
@@ -115,10 +131,15 @@ export const StudioSection = () => {
               <p className="text-xs text-sl-mist/60 font-light leading-relaxed group-hover:text-sl-mist/60 transition-colors duration-500">
                 Interactive 3D environments powered by R3F, enabling intuitive exploration.
               </p>
-            </div>
+            </motion.div>
 
             {/* Card 2: Fidelity */}
-            <div className="flex flex-col gap-3 group cursor-default p-6 bg-sl-obsidian/30 border border-sl-silver/20 group-hover:border-sl-gold-subtle/30 transition-all duration-500">
+            <motion.div
+              variants={fadeLift}
+              custom={prefersReduced}
+              role="listitem"
+              className="flex flex-col gap-3 group cursor-default p-6 bg-sl-obsidian/30 border border-sl-silver/20 group-hover:border-sl-gold-subtle/30 transition-all duration-500"
+            >
               <div className="w-10 h-10 rounded-sm bg-sl-gold-subtle/10 group-hover:bg-sl-gold-subtle/20 flex items-center justify-center mb-2 transition-colors duration-500">
                 <svg className="w-5 h-5 text-sl-gold-hover/70 group-hover:text-sl-gold-hover transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <circle cx="12" cy="12" r="10" strokeLinecap="round" />
@@ -132,10 +153,15 @@ export const StudioSection = () => {
               <p className="text-xs text-sl-mist/60 font-light leading-relaxed group-hover:text-sl-mist/60 transition-colors duration-500">
                 8K photorealistic rendering with a focus on material authenticity.
               </p>
-            </div>
+            </motion.div>
 
             {/* Card 3: Precision */}
-            <div className="flex flex-col gap-3 group cursor-default p-6 bg-sl-obsidian/30 border border-sl-silver/20 group-hover:border-sl-gold-subtle/30 transition-all duration-500">
+            <motion.div
+              variants={fadeLift}
+              custom={prefersReduced}
+              role="listitem"
+              className="flex flex-col gap-3 group cursor-default p-6 bg-sl-obsidian/30 border border-sl-silver/20 group-hover:border-sl-gold-subtle/30 transition-all duration-500"
+            >
               <div className="w-10 h-10 rounded-sm bg-sl-gold-subtle/10 group-hover:bg-sl-gold-subtle/20 flex items-center justify-center mb-2 transition-colors duration-500">
                 <svg className="w-5 h-5 text-sl-gold-hover/70 group-hover:text-sl-gold-hover transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M12 2v20M2 12h20" strokeLinecap="round" />
@@ -147,10 +173,15 @@ export const StudioSection = () => {
               <p className="text-xs text-sl-mist/60 font-light leading-relaxed group-hover:text-sl-mist/60 transition-colors duration-500">
                 Measured against the physics of the real world for absolute truth.
               </p>
-            </div>
+            </motion.div>
 
             {/* Card 4: Atmosphere */}
-            <div className="flex flex-col gap-3 group cursor-default p-6 bg-sl-obsidian/30 border border-sl-silver/20 group-hover:border-sl-gold-subtle/30 transition-all duration-500">
+            <motion.div
+              variants={fadeLift}
+              custom={prefersReduced}
+              role="listitem"
+              className="flex flex-col gap-3 group cursor-default p-6 bg-sl-obsidian/30 border border-sl-silver/20 group-hover:border-sl-gold-subtle/30 transition-all duration-500"
+            >
               <div className="w-10 h-10 rounded-sm bg-sl-gold-subtle/10 group-hover:bg-sl-gold-subtle/20 flex items-center justify-center mb-2 transition-colors duration-500">
                 <svg className="w-5 h-5 text-sl-gold-hover/70 group-hover:text-sl-gold-hover transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h20M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" strokeLinecap="round" />
@@ -162,10 +193,15 @@ export const StudioSection = () => {
               <p className="text-xs text-sl-mist/60 font-light leading-relaxed group-hover:text-sl-mist/60 transition-colors duration-500">
                 Cinematic lighting that evokes emotion before the space is built.
               </p>
-            </div>
+            </motion.div>
 
             {/* Card 5: Light */}
-            <div className="flex flex-col gap-3 group cursor-default p-6 bg-sl-obsidian/30 border border-sl-silver/20 group-hover:border-sl-gold-subtle/30 transition-all duration-500">
+            <motion.div
+              variants={fadeLift}
+              custom={prefersReduced}
+              role="listitem"
+              className="flex flex-col gap-3 group cursor-default p-6 bg-sl-obsidian/30 border border-sl-silver/20 group-hover:border-sl-gold-subtle/30 transition-all duration-500"
+            >
               <div className="w-10 h-10 rounded-sm bg-sl-gold-subtle/10 group-hover:bg-sl-gold-subtle/20 flex items-center justify-center mb-2 transition-colors duration-500">
                 <svg className="w-5 h-5 text-sl-gold-hover/70 group-hover:text-sl-gold-hover transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M12 2L2 7l10 5 10-5-10-5z" strokeLinecap="round" strokeLinejoin="round" />
@@ -177,10 +213,15 @@ export const StudioSection = () => {
               <p className="text-xs text-sl-mist/60 font-light leading-relaxed group-hover:text-sl-mist/60 transition-colors duration-500">
                 The finished frame must be mistaken for a photograph.
               </p>
-            </div>
+            </motion.div>
 
             {/* Card 6: Collaboration */}
-            <div className="flex flex-col gap-3 group cursor-default p-6 bg-sl-obsidian/30 border border-sl-silver/20 group-hover:border-sl-gold-subtle/30 transition-all duration-500">
+            <motion.div
+              variants={fadeLift}
+              custom={prefersReduced}
+              role="listitem"
+              className="flex flex-col gap-3 group cursor-default p-6 bg-sl-obsidian/30 border border-sl-silver/20 group-hover:border-sl-gold-subtle/30 transition-all duration-500"
+            >
               <div className="w-10 h-10 rounded-sm bg-sl-gold-subtle/10 group-hover:bg-sl-gold-subtle/20 flex items-center justify-center mb-2 transition-colors duration-500">
                 <svg className="w-5 h-5 text-sl-gold-hover/70 group-hover:text-sl-gold-hover transition-colors duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z" strokeLinecap="round" />
@@ -193,8 +234,8 @@ export const StudioSection = () => {
               <p className="text-xs text-sl-mist/60 font-light leading-relaxed group-hover:text-sl-mist/60 transition-colors duration-500">
                 Seamless collaboration through real-time spatial review tools.
               </p>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* CTA */}
           <div className="pt-4">

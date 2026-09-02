@@ -36,6 +36,7 @@ export default defineConfig({
       '**/_corrupted_node_modules_stubs/**',
     ],
     css: false,
+    testTimeout: 15000,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

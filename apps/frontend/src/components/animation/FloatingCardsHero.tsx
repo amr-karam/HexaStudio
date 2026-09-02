@@ -216,7 +216,7 @@ export function FloatingCardsHero({
           <div
             key={card.id}
             ref={(el) => { if (el) cardElsRef.current.set(card.id, el); }}
-            className={cn('absolute rounded-xl border border-white/10 bg-sl-obsidian', card.className)}
+            className={cn('absolute rounded-2xl border border-sl-gold-subtle/15 bg-sl-obsidian', card.className)}
             style={card.image ? { backgroundImage: card.image, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
           >
             <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-gold/5 to-transparent" />
@@ -249,7 +249,7 @@ export function FloatingCardsHero({
           key={card.id}
           ref={(el) => { if (el) cardElsRef.current.set(card.id, el); }}
           className={cn(
-            'card absolute rounded-xl border border-white/[0.06] cursor-pointer select-none overflow-hidden',
+            'card absolute rounded-2xl border border-sl-gold-subtle/15 cursor-pointer select-none overflow-hidden',
             'will-change-transform',
             card.className,
           )}

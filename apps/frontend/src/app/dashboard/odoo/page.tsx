@@ -378,7 +378,7 @@ export default function OdooDashboardPage() {
         </button>
       </div>
 
-      <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-4">
+      <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-4">
         <StatCard label="Pipeline Value" value={`$${totalRevenue}`} />
         <StatCard label="Leads" value={String(pipeline.data?.totalLeads ?? 0)} />
         <StatCard label="Last Sync" value={syncStatus.data?.lastFullSyncAt ? new Date(syncStatus.data.lastFullSyncAt).toLocaleTimeString() : '—'} />
@@ -903,7 +903,7 @@ export default function OdooDashboardPage() {
             </div>
           </div>
 
-          <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
+          <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-4">
             <StatCard label="State" value={syncStatus.data?.state ?? '—'} sub={syncStatus.data?.circuitBreaker ?? ''} />
             <StatCard label="Pending Conflicts" value={String(syncStatus.data?.pendingConflicts ?? 0)} />
             <StatCard label="Last Full Sync" value={syncStatus.data?.lastFullSyncAt ? new Date(syncStatus.data.lastFullSyncAt).toLocaleString() : '—'} />

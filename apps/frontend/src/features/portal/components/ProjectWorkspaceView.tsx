@@ -464,7 +464,7 @@ function OverviewTab({ prefersReduced }: { prefersReduced: boolean }) {
           </div>
 
           {/* Legend */}
-          <div className="grid grid-cols-2 gap-x-6 gap-y-3 mt-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 mt-5" data-responsive="stack">
             {BUDGET_LINES.map((line) => (
               <div key={line.label} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">

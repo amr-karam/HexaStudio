@@ -8,7 +8,7 @@ import { TextReveal } from '@/components/ui/TextReveal';
 
 export default function NotFound() {
   return (
-    <main className="relative flex min-h-screen flex-col items-center justify-center px-8 overflow-hidden bg-sl-void">
+    <main className="relative flex min-h-screen flex-col items-center justify-center px-4 sm:px-8 overflow-hidden bg-sl-void">
       {/* Background texture */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(ellipse_at_center,white,transparent)] opacity-10 pointer-events-none" />
       

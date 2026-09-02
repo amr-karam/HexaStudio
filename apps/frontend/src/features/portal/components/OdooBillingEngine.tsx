@@ -18,27 +18,26 @@ export function OdooBillingEngine() {
   const baseAmountUsd = 125000; // $125,000 USD milestone invoice
 
   const exchangeRates: Record<Currency, { rate: number; symbol: string }> = {
-    USD: { rate: 1.0, symbol: '$' },
+    USD: { rate: 1, symbol: '$' },
     EUR: { rate: 0.92, symbol: '€' },
-    AED: { rate: 3.67, symbol: 'AED ' },
+    AED: { rate: 3.67, symbol: 'د.إ' },
     GBP: { rate: 0.79, symbol: '£' },
-    SAR: { rate: 3.75, symbol: 'SAR ' },
+    SAR: { rate: 3.75, symbol: '﷼' },
   };
 
   const currentRate = exchangeRates[selectedCurrency];
   const convertedAmount = (baseAmountUsd * currentRate.rate).toLocaleString('en-US', {
-    maximumFractionDigits: 0,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   });
 
   const handlePay = () => {
     setPaymentStatus('processing');
-    setTimeout(() => {
-      setPaymentStatus('paid');
-    }, 1500);
+    setTimeout(() => setPaymentStatus('paid'), 2000);
   };
 
   return (
-    <div className="bg-neutral-950/90 border border-sl-obsidian rounded-3xl p-6 shadow-2xl backdrop-blur-2xl text-neutral-100 space-y-5 max-w-xl mx-auto">
+    <div className="bg-neutral-950/90 border border-sl-obsidian rounded-3xl p-6 shadow-2xl backdrop-blur-2xl text-neutral-100 space-y-5 max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-xl mx-auto">
       <div className="flex items-center justify-between pb-3 border-b border-sl-obsidian">
         <div>
           <h3 className="text-sm font-bold text-neutral-100">Multi-Currency Live Forex & Odoo Billing Engine</h3>
@@ -52,16 +51,12 @@ export function OdooBillingEngine() {
       {/* Currency Selector */}
       <div className="space-y-2">
         <label className="text-xs text-sl-mist/60 font-medium block">Select Billing Currency</label>
-        <div className="grid grid-cols-5 gap-2 text-xs">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 text-xs" data-responsive="stack">
           {(['USD', 'EUR', 'AED', 'GBP', 'SAR'] as const).map((curr) => (
             <button
               key={curr}
               onClick={() => setSelectedCurrency(curr)}
-              className={`py-2 rounded-xl font-mono font-bold transition-all ${
-                selectedCurrency === curr
-                  ? 'bg-amber-500 text-neutral-950 shadow-md'
-                  : 'bg-sl-void border border-sl-obsidian text-sl-mist/60 hover:text-neutral-200'
-              }`}
+              className={`py-2 rounded-xl font-mono font-bold transition-all ${selectedCurrency === curr ? 'bg-amber-500 text-neutral-950 shadow-md' : 'bg-sl-void border border-sl-obsidian text-sl-mist/60 hover:text-neutral-200'}`}
             >
               {curr}
             </button>
@@ -70,15 +65,15 @@ export function OdooBillingEngine() {
       </div>
 
       {/* Amount Display */}
-      <div className="p-4 bg-sl-void border border-sl-obsidian rounded-2xl flex items-center justify-between">
+      <div className="p-4 bg-sl-void border border-sl-obsidian rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
           <span className="text-xs text-sl-mist/60 block font-mono">Converted Invoice Total</span>
-          <span className="text-2xl font-bold text-neutral-100 font-mono">
+          <span className="text-2xl sm:text-3xl font-bold text-neutral-100 font-mono">
             {currentRate.symbol}
             {convertedAmount}
           </span>
         </div>
-        <div className="text-right text-[11px] font-mono text-sl-mist/60">
+        <div className="text-right text-xs font-mono text-sl-mist/60">
           <span>Live FX Rate:</span>
           <span className="block font-bold text-amber-400">1 USD = {currentRate.rate} {selectedCurrency}</span>
         </div>
@@ -103,7 +98,7 @@ export function OdooBillingEngine() {
       {paymentStatus === 'paid' && (
         <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-center space-y-1">
           <p className="text-xs font-bold text-emerald-400">✓ Payment Successful & Synchronized to Odoo ERP</p>
-          <p className="text-[11px] text-sl-mist/60 font-mono">Transaction ID: TXN-ODOO-994821 &bull; Receipt Sent via Email</p>
+          <p className="text-xs text-sl-mist/60 font-mono">Transaction ID: TXN-ODOO-994821 &bull; Receipt Sent via Email</p>
         </div>
       )}
     </div>

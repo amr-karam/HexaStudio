@@ -30,25 +30,25 @@ const Card = ({
     as === 'article' ? motion.article : as === 'section' ? motion.section : motion.div;
 
   const baseStyles =
-    'relative overflow-hidden rounded-2xl border border-sl-silver/10 backdrop-blur-sm shadow-xl';
+    'relative overflow-hidden rounded-2xl border border-sl-gold-subtle/15 backdrop-blur-sm shadow-lg shadow-black/40';
 
   const variantStyles = {
-    featured: 'bg-gradient-to-br from-surface-light to-surface-dark border-sl-silver/10 shadow-2xl',
+    featured: 'bg-gradient-to-br from-surface-light to-surface-dark border-sl-gold-subtle/15 shadow-lg shadow-black/40',
     minimal:
-      'bg-transparent border-sl-silver/20/5 shadow-none backdrop-blur-sm bg-clip-content',
+      'bg-transparent border-sl-gold-subtle/10 shadow-none backdrop-blur-sm bg-clip-content',
     glass:
-      'artisan-glass border-white/10 shadow-[var(--artisan-glass-shadow),var(--artisan-glass-highlight)]',
-    solid: 'bg-sl-obsidian-dark border-sl-silver/10 shadow-xl',
+      'artisan-glass border-sl-gold-subtle/15 shadow-[var(--artisan-glass-shadow),var(--artisan-glass-highlight)]',
+    solid: 'bg-sl-obsidian-dark border-sl-gold-subtle/15 shadow-lg shadow-black/40',
     luxury:
-      'bg-gradient-to-br from-surface-dark via-surface to-surface-light border-2 border-sl-gold-subtle/20 shadow-2xl',
+      'bg-gradient-to-br from-surface-dark via-surface to-surface-light border-sl-gold-subtle/20 shadow-xl shadow-sl-gold-subtle/10',
   };
 
   const hoverStyles = {
-    featured: 'hover:border-sl-gold-subtle/30 hover:shadow-2xl hover:shadow-gold/5',
-    minimal: 'hover:border-sl-silver/20 hover:shadow-md',
+    featured: 'hover:border-sl-gold-subtle/40 hover:shadow-xl hover:shadow-sl-gold-subtle/15',
+    minimal: 'hover:border-sl-gold-subtle/20 hover:shadow-md',
     glass: 'hover:artisan-glass-gold hover:border-sl-gold-subtle/40',
-    solid: 'hover:border-sl-silver/20 hover:shadow-2xl',
-    luxury: 'hover:border-sl-gold-subtle/40 hover:shadow-2xl hover:shadow-sl-gold-subtle/10',
+    solid: 'hover:border-sl-gold-subtle/20 hover:shadow-xl',
+    luxury: 'hover:border-sl-gold-subtle/40 hover:shadow-2xl hover:shadow-sl-gold-subtle/15',
   };
 
   return (

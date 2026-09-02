@@ -10,19 +10,34 @@ export const revalidate = 3600;
 export async function generateMetadata(): Promise<Metadata> {
   const page = await fetchPage('terms');
 
-  if (!page) {
-    return {
-      title: 'Terms of Service',
-      description:
-        'HexaStudio terms of service — conditions for using our website and services.',
-    };
-  }
+  const title = page?.seoTitle ? siteTitleSegment(page.seoTitle) : page?.title ?? 'Terms of Service';
+  const description =
+    page?.seoDescription ||
+    'HexaStudio terms of service — conditions for using our website and services.';
 
   return {
-    title: page.seoTitle ? siteTitleSegment(page.seoTitle) : page.title,
-    description:
-      page.seoDescription ||
-      'HexaStudio terms of service — conditions for using our website and services.',
+    title,
+    description,
+    openGraph: {
+      title: `${title} | HexaStudio`,
+      description,
+      url: 'https://hexastudio.net/terms',
+      type: 'website',
+      images: [
+        {
+          url: 'https://hexastudio.net/og-image.png',
+          width: 1200,
+          height: 630,
+          alt: 'HexaStudio Terms of Service',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${title} | HexaStudio`,
+      description,
+      images: ['https://hexastudio.net/og-image.png'],
+    },
   };
 }
 
@@ -30,11 +45,11 @@ export default async function TermsPage() {
   const page = await fetchPage('terms');
 
   return (
-    <div className="min-h-screen bg-sl-void pt-40 pb-32 relative">
+    <div className="min-h-screen bg-sl-void pt-24 pb-24 md:pt-40 md:pb-32 relative">
       {/* Subtle background */}
       <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-sl-gold-subtle/3 blur-[200px] rounded-full pointer-events-none" />
 
-      <div className="w-full px-8 md:px-16 relative z-10">
+      <div className="w-full px-4 sm:px-8 md:px-16 relative z-10">
         <span className="text-xs uppercase tracking-[0.5em] text-sl-mist/60 mb-6 block font-mono">
           Legal
         </span>

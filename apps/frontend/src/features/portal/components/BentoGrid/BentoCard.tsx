@@ -58,7 +58,7 @@ export function BentoCard({
   const isInteractive = Boolean(onClick) && !disabled;
 
   const baseClasses = cn(
-    'bento-card rounded-xl border p-5',
+    'bento-card rounded-2xl border border-sl-gold-subtle/15 p-5',
     variantClasses[variant],
     spanClasses[span],
     {

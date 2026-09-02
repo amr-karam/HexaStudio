@@ -56,7 +56,7 @@ User Query: "${query}"`;
    * Pipeline:
    *   1. If `audioData` is provided → transcribe with VoiceService,
    *      prepend transcribed text to the query.
-   *   2. If `imageData` is provided → analyze with Gemini Vision
+   *   2. If `imageData` is provided → analyze with Hermes Agent Vision
    *      (AutoTagVisionService) to extract architectural context.
    *   3. Combine vision insights + transcribed text + original query into
    *      a single enriched prompt.

@@ -85,7 +85,7 @@ export const FAQSection = ({ faqs: serverFaqs }: FAQSectionProps = {}) => {
                     }}
                   >
                     <div className="overflow-hidden">
-                      <div className="px-6 pb-5 text-sm text-sl-mist/60 leading-relaxed">
+                      <div className="px-6 pb-5 text-base text-sl-mist/60 leading-relaxed">
                         {faq.answer}
                       </div>
                     </div>
