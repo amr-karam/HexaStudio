@@ -291,8 +291,8 @@ export function ApprovalCard({ approval, index, prefersReduced, onReview }: Appr
       className={cn(
         'glass-depth',
         'relative overflow-hidden rounded-2xl',
-        'border border-sl-silver/10 p-5',
-        'hover:border-sl-gold-subtle/20 transition-all duration-500 ease-[var(--hexa-ease-interaction)]',
+        'border border-sl-gold-subtle/15 p-5 shadow-lg shadow-black/40',
+        'hover:border-sl-gold-subtle/40 transition-all duration-500 ease-[var(--hexa-ease-interaction)]',
         'flex flex-col gap-4',
       )}
       whileHover={

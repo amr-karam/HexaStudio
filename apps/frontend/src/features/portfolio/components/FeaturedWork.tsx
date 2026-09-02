@@ -160,7 +160,7 @@ export const FeaturedWork = ({ project }: FeaturedWorkProps) => {
   // Reduced motion: static layout
   if (reducedMotion) {
     return (
-      <section ref={sectionRef} className="relative h-screen min-h-[600px] bg-sl-void overflow-hidden">
+      <section ref={sectionRef} className="relative h-[100dvh] h-screen min-h-[500px] sm:min-h-[600px] bg-sl-void overflow-hidden">
         {/* Background image */}
         <div className="absolute inset-0">
           <div className="relative h-full w-full opacity-30">
@@ -181,7 +181,7 @@ export const FeaturedWork = ({ project }: FeaturedWorkProps) => {
           <ChapterMarker index={3} title="Work" />
         </div>
 
-        <div className="relative z-10 h-full flex items-center px-8 md:px-16">
+        <div className="relative z-10 h-full flex items-center px-6 sm:px-8 md:px-16">
           <div className="w-full max-w-3xl">
             <span className="text-[9px] uppercase tracking-[0.5em] text-sl-gold-hover/60 mb-6 block font-mono">
               Featured Project
@@ -189,12 +189,12 @@ export const FeaturedWork = ({ project }: FeaturedWorkProps) => {
             <KineticTitle
               text={`${content.titleLead} ${content.titleAccent}`.trim()}
               accentWords={content.titleAccent ? [content.titleAccent] : []}
-              className="text-6xl md:text-8xl font-serif font-light text-sl-alabaster leading-[1.05] mb-6"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-8xl font-serif font-light text-sl-alabaster leading-[1.05] mb-6"
             />
-            <p className="text-base text-sl-alabaster/40 font-light leading-relaxed w-full max-w-lg mb-10">
+            <p className="text-sm sm:text-base text-sl-alabaster/40 font-light leading-relaxed w-full max-w-lg mb-8 sm:mb-10">
               {content.description}
             </p>
-            <div className="flex flex-wrap gap-6 text-[10px] uppercase tracking-[0.3em] text-sl-alabaster/30 font-mono mb-10">
+            <div className="flex flex-wrap gap-4 sm:gap-6 text-[8px] sm:text-[9px] md:text-[10px] uppercase tracking-[0.3em] text-sl-alabaster/30 font-mono mb-8 sm:mb-10">
               {content.meta.map((entry) => (
                 <span key={entry}>{entry}</span>
               ))}
@@ -209,7 +209,7 @@ export const FeaturedWork = ({ project }: FeaturedWorkProps) => {
   }
 
   return (
-      <section ref={sectionRef} className="relative h-screen min-h-[700px] bg-sl-void overflow-hidden">
+      <section ref={sectionRef} className="relative h-[100dvh] h-screen min-h-[600px] sm:min-h-[700px] bg-sl-void overflow-hidden">
       {/* Split image halves — GSAP owns clip-path; framer owns x parallax */}
       <motion.div
         ref={leftHalfRef}
@@ -268,7 +268,7 @@ export const FeaturedWork = ({ project }: FeaturedWorkProps) => {
       {/* Content overlay — appears after split */}
       <motion.div
         style={{ opacity: contentOpacity, y: contentY }}
-        className="relative z-10 h-full flex items-center px-8 md:px-16"
+        className="relative z-10 h-full flex items-center px-6 sm:px-8 md:px-16"
       >
         <div className="w-full max-w-3xl">
           <motion.span
@@ -284,14 +284,14 @@ export const FeaturedWork = ({ project }: FeaturedWorkProps) => {
           <KineticTitle
             text={`${content.titleLead} ${content.titleAccent}`.trim()}
             accentWords={content.titleAccent ? [content.titleAccent] : []}
-            className="text-6xl md:text-8xl font-serif font-light text-sl-alabaster leading-[1.05] mb-6"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-8xl font-serif font-light text-sl-alabaster leading-[1.05] mb-6"
           />
 
-          <p className="text-base text-sl-alabaster/40 font-light leading-relaxed w-full max-w-lg mb-10">
+          <p className="text-sm sm:text-base text-sl-alabaster/40 font-light leading-relaxed w-full max-w-lg mb-8 sm:mb-10">
             {content.description}
           </p>
 
-          <div className="flex flex-wrap gap-6 text-[10px] uppercase tracking-[0.3em] text-sl-alabaster/30 font-mono mb-10">
+          <div className="flex flex-wrap gap-4 sm:gap-6 text-[8px] sm:text-[9px] md:text-[10px] uppercase tracking-[0.3em] text-sl-alabaster/30 font-mono mb-8 sm:mb-10">
             {content.meta.map((entry, index) => (
               <span key={entry} className="flex items-center gap-2">
                 <span

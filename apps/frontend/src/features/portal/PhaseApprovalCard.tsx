@@ -29,7 +29,7 @@ export function PhaseApprovalCard({ phase, onSubmit, onReview, isAdmin }: PhaseA
   const { t } = useLocale();
 
   return (
-    <div className="rounded-lg border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
+    <div className="rounded-2xl border border-sl-gold-subtle/15 bg-sl-obsidian p-4 backdrop-blur-sm">
       <div className="flex items-center justify-between">
         <div>
           <h4 className="text-sm font-medium text-sl-alabaster">{phase.name}</h4>

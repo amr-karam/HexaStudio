@@ -91,8 +91,8 @@ export const MarqueeBar = () => {
   // Policy static path: plain centered list (reduced motion / user-paused).
   if (staticMode || paused) {
     return (
-      <section className="py-16 bg-sl-obsidian border-y border-sl-silver/20 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-8 md:px-16">
+      <section className="py-12 sm:py-16 bg-sl-obsidian border-y border-sl-silver/20 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 md:px-12 lg:px-16">
           <p className="text-[9px] uppercase tracking-[0.5em] text-text-secondary mb-8 text-center font-mono">
             Featured In
           </p>
@@ -112,13 +112,13 @@ export const MarqueeBar = () => {
   }
 
   return (
-    <section
-      className="py-16 bg-sl-obsidian border-y border-sl-silver/20 overflow-hidden"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
-    >
+      <section
+        className="py-12 sm:py-16 bg-sl-obsidian border-y border-sl-silver/20 overflow-hidden"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+      >
       <p className="text-[9px] uppercase tracking-[0.5em] text-text-secondary mb-8 text-center font-mono">
         Featured In
       </p>

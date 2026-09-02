@@ -111,7 +111,7 @@ function ServiceAtmosphere({ index }: { index: number }) {
 function ServiceIndex({ index, title }: { index: number; title: string }) {
   const numeral = String(index + 1).padStart(2, '0');
   return (
-    <span className="font-mono text-[9px] uppercase tracking-[0.4em] text-sl-mist/60 mb-5 block">
+    <span className="font-mono text-xs uppercase tracking-[0.4em] text-sl-mist/60 mb-5 block">
       <span className="text-sl-gold-hover">{numeral}</span>
       {' — '}
       {title
@@ -150,7 +150,7 @@ export function ServicesPageContent({ services }: ServicesPageContentProps) {
   return (
     <div className="bg-sl-void text-sl-alabaster min-h-screen">
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-8 pt-20 pb-32 overflow-hidden">
+      <section className="relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-8 pt-20 pb-24 sm:pb-32 overflow-hidden">
         {/* Atmospheric depth layers */}
         <SilkShaderBackground speed={0.2} opacity={0.08} />
         <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
@@ -165,16 +165,16 @@ export function ServicesPageContent({ services }: ServicesPageContentProps) {
         </div>
 
         {/* Typography */}
-        <div className="text-center relative z-10 mb-32 md:mb-40">
+        <div className="text-center relative z-10 mb-24 md:mb-32 px-4 sm:px-0">
           <motion.span
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={SPRING_TRANSITION}
-            className="font-mono text-[9px] uppercase tracking-[0.5em] text-sl-mist/60 mb-8 block"
+            className="font-mono text-xs uppercase tracking-[0.5em] text-sl-mist/60 mb-8 block"
           >
             {t('services.expertise')}
           </motion.span>
-          <div className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-serif font-light tracking-tighter text-sl-alabaster leading-[0.92] mb-8">
+          <div className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-serif font-light tracking-tighter text-sl-alabaster leading-[0.92] mb-8">
             <TextCharReveal
               text={String(t('services.title')) || 'Our Services.'}
               as="h1"
@@ -200,7 +200,7 @@ export function ServicesPageContent({ services }: ServicesPageContentProps) {
           transition={{ delay: 1.5, duration: 0.8 }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
         >
-          <span className="font-mono text-[9px] uppercase tracking-[0.4em] text-sl-mist/60">
+          <span className="font-mono text-xs uppercase tracking-[0.4em] text-sl-mist/60">
             Scroll to explore
           </span>
           <div className="w-px h-6 bg-gradient-to-b from-sl-gold-subtle/50 to-transparent" />
@@ -208,7 +208,7 @@ export function ServicesPageContent({ services }: ServicesPageContentProps) {
       </section>
 
       {/* ── SERVICES GRID ──────────────────────────────────────────────────────── */}
-      <section className="px-8 md:px-16 pb-32 relative">
+      <section className="px-6 sm:px-8 md:px-16 pb-24 sm:pb-32 relative">
         {/* Section atmosphere */}
         <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
 
@@ -306,19 +306,19 @@ export function ServicesPageContent({ services }: ServicesPageContentProps) {
       </section>
 
       {/* ── CTA ────────────────────────────────────────────────────────────────── */}
-      <section className="px-8 md:px-16 py-32 border-t border-sl-silver/20 relative overflow-hidden">
+      <section className="px-6 sm:px-8 md:px-16 py-24 sm:py-32 border-t border-sl-silver/20 relative overflow-hidden">
         <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
         <div className="absolute inset-0" aria-hidden="true" style={{
           background: 'radial-gradient(ellipse at 50% 50%, rgba(var(--color-gold-rgb), 0.03) 0%, transparent 50%)',
         }} />
 
-        <div className="w-full text-center relative z-10">
+        <div className="w-full text-center relative z-10 px-4 sm:px-0">
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={SPRING_TRANSITION}
-            className="font-mono text-[9px] uppercase tracking-[0.5em] text-sl-mist/60 mb-6 block"
+            className="font-mono text-xs uppercase tracking-[0.5em] text-sl-mist/60 mb-6 block"
           >
             {t('services.ctaOverline')}
           </motion.span>

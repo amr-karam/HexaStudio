@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 
-interface GeminiLiveCritiqueProps {
+interface HermesLiveCritiqueProps {
   projectId: string;
   /**
    * Reserved for when a real backend AI critique endpoint is connected.
@@ -15,7 +15,7 @@ interface GeminiLiveCritiqueProps {
 const WAVEFORM_BARS = 16;
 const AUDIO_LEVEL_THROTTLE_MS = 200;
 
-export function GeminiLiveCritique({ projectId }: GeminiLiveCritiqueProps) {
+export function HermesLiveCritique({ projectId }: HermesLiveCritiqueProps) {
   const [isActive, setIsActive] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [transcript, setTranscript] = useState<string>(

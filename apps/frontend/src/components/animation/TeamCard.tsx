@@ -19,7 +19,7 @@ export function TeamCard({
   return (
     <div
       className={cn(
-        'group relative overflow-hidden rounded-lg bg-sl-obsidian',
+        'relative overflow-hidden rounded-2xl border border-sl-gold-subtle/15 bg-sl-obsidian',
         className,
       )}
     >
@@ -38,7 +38,7 @@ export function TeamCard({
             background: 'rgba(20,10,6,0.7)',
             backdropFilter: 'blur(10px)',
             WebkitBackdropFilter: 'blur(10px)',
-            borderRadius: 'inherit',
+            borderRadius: '0.75rem',
             padding: '0.75rem 1rem',
           }}
         >

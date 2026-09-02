@@ -77,7 +77,7 @@ export class MinIOVisionService {
   ) {}
 
   /**
-   * Process an uploaded file through the Gemini Vision analysis pipeline.
+   * Process an uploaded file through the Hermes Agent Vision analysis pipeline.
    *
    * @param bucket         - MinIO bucket name
    * @param objectName     - Object key within the bucket

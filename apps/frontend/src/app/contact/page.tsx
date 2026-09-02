@@ -69,7 +69,7 @@ export default function ContactPage() {
 
   return (
     <div className="bg-sl-void text-sl-alabaster min-h-screen overflow-hidden">
-      <section className="relative flex min-h-screen flex-col items-center justify-center px-8 overflow-hidden">
+      <section className="relative flex min-h-screen flex-col items-center justify-center px-4 sm:px-8 overflow-hidden">
         {/* Cinematic Background */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
           <SilkShaderBackground speed={0.3} opacity={0.12} />
@@ -83,13 +83,13 @@ export default function ContactPage() {
           {/* Atelier eyebrow */}
           <div className="flex items-center gap-4 mb-8">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-sl-gold-subtle/30 to-transparent" aria-hidden="true" />
-            <span className="font-mono text-[0.5625rem] uppercase tracking-[0.35em] text-sl-mist/60">
+            <span className="font-mono text-xs uppercase tracking-[0.35em] text-sl-mist/60">
               § 01 — Contact
             </span>
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-sl-gold-subtle/30 to-transparent" aria-hidden="true" />
           </div>
 
-          <h1 className="text-5xl md:text-8xl font-serif font-light tracking-tighter text-sl-alabaster leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-8xl font-serif font-light tracking-tighter text-sl-alabaster leading-tight">
             <TextCharReveal text="Start the" delay={0.1} stagger={0.04} blur />
             <br />
             <span className="italic text-sl-gold-hover">
@@ -108,14 +108,14 @@ export default function ContactPage() {
               transition={{ type: 'spring', stiffness: 120, damping: 20, mass: 0.8 }}
               className="relative z-10 w-full max-w-5xl"
             >
-              <div className="artisan-glass artisan-specular-top rounded-2xl p-8 md:p-16 relative overflow-hidden">
+              <div className="artisan-glass artisan-specular-top rounded-2xl p-6 sm:p-8 md:p-12 lg:p-16 relative overflow-hidden">
                 {/* Gold radial aura behind card */}
                 <div
                   className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-sl-gold-subtle/5 blur-3xl pointer-events-none"
                   aria-hidden="true"
                 />
 
-                <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+                <form onSubmit={handleSubmit} noValidate className="grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-2">
                   {/* Full Name */}
                   <div className="flex flex-col gap-2 group">
                     <label
@@ -133,12 +133,12 @@ export default function ContactPage() {
                       aria-invalid={errors.name ? true : undefined}
                       aria-describedby={errors.name ? 'contact-name-error' : undefined}
                       className={cn(
-                        'w-full bg-transparent border-b border-sl-silver/20 focus:border-sl-gold-subtle/60 transition-all duration-700 rounded-none px-0 py-4 text-base font-light placeholder:text-sl-mist/60 focus:outline-none',
+                        'w-full bg-transparent border-b border-sl-silver/20 focus:border-sl-gold-subtle/60 transition-all duration-700 rounded-none px-0 py-3 sm:py-4 text-base font-light placeholder:text-sl-mist/60 focus:outline-none min-h-[44px]',
                         errors.name && 'border-red-500/60 focus:border-red-500',
                       )}
                     />
                     {errors.name && (
-                      <span id="contact-name-error" role="alert" className="text-[0.5625rem] text-red-500 uppercase tracking-[0.2em] font-mono">
+                      <span id="contact-name-error" role="alert" aria-live="assertive" className="text-xs text-red-500 uppercase tracking-[0.2em] font-mono">
                         {errors.name}
                       </span>
                     )}
@@ -166,7 +166,7 @@ export default function ContactPage() {
                       )}
                     />
                     {errors.email && (
-                      <span id="contact-email-error" role="alert" className="text-[0.5625rem] text-red-500 uppercase tracking-[0.2em] font-mono">
+                      <span id="contact-email-error" role="alert" aria-live="assertive" className="text-xs text-red-500 uppercase tracking-[0.2em] font-mono">
                         {errors.email}
                       </span>
                     )}
@@ -272,7 +272,7 @@ export default function ContactPage() {
                       )}
                     />
                     {errors.message && (
-                      <span id="contact-message-error" role="alert" className="text-[0.5625rem] text-red-500 uppercase tracking-[0.2em] font-mono">
+                      <span id="contact-message-error" role="alert" aria-live="assertive" className="text-xs text-red-500 uppercase tracking-[0.2em] font-mono">
                         {errors.message}
                       </span>
                     )}
@@ -370,7 +370,7 @@ export default function ContactPage() {
           href="/"
           className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 group"
         >
-          <span className="text-[0.5625rem] uppercase tracking-[0.35em] text-sl-mist/60 font-mono group-hover:text-sl-gold-hover transition-colors duration-700">
+          <span className="text-xs uppercase tracking-[0.35em] text-sl-mist/60 font-mono group-hover:text-sl-gold-hover transition-colors duration-700">
             Back to Home
           </span>
           <div

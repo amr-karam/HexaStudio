@@ -120,10 +120,10 @@ export function HeroEditorial({ hero }: { hero?: Partial<EditorialHero> }) {
         aria-label="Studio metadata"
         className="absolute left-6 top-24 flex flex-col gap-2 md:left-12"
       >
-        <span className="font-mono text-[10px] uppercase tracking-[0.35em] text-sl-ink/40">
+        <span className="font-mono text-xs uppercase tracking-[0.35em] text-sl-ink/40">
           Hexa Studio — Atelier
         </span>
-        <span className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.35em] text-sl-ink/30">
+        <span className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.35em] text-sl-ink/30">
           <span aria-hidden="true" className="block h-1 w-1 rotate-45 bg-sl-gold-subtle/60" />
           Spatial Design &amp; 3D Craft
         </span>
@@ -133,7 +133,7 @@ export function HeroEditorial({ hero }: { hero?: Partial<EditorialHero> }) {
       <div className="relative z-10 px-6 pb-16 md:px-12 md:pb-24">
         <motion.p
           {...reveal(0.2)}
-          className="mb-6 max-w-md font-mono text-[11px] uppercase leading-relaxed tracking-[0.3em] text-sl-gold-hover/80 md:text-xs"
+          className="mb-6 max-w-md font-mono text-xs uppercase leading-relaxed tracking-[0.3em] text-sl-gold-hover/80 md:text-xs"
         >
           {h.eyebrow}
         </motion.p>
@@ -159,7 +159,7 @@ export function HeroEditorial({ hero }: { hero?: Partial<EditorialHero> }) {
             href={h.primaryCtaHref}
             className={cn(
               'group inline-flex items-center gap-3 border border-sl-gold-subtle/40 px-6 py-3',
-              'font-mono text-[11px] uppercase tracking-[0.3em] text-sl-gold-hover',
+              'font-mono text-xs uppercase tracking-[0.3em] text-sl-gold-hover',
               'transition-colors duration-500 hover:bg-sl-gold-subtle/10 hover:border-sl-gold-subtle',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-sl-void',
             )}
@@ -177,7 +177,7 @@ export function HeroEditorial({ hero }: { hero?: Partial<EditorialHero> }) {
             <Link
               href={h.secondaryCtaHref}
               className={cn(
-                'font-mono text-[11px] uppercase tracking-[0.3em] text-sl-ink/50',
+                'font-mono text-xs uppercase tracking-[0.3em] text-sl-ink/50',
                 'underline decoration-sl-gold-subtle/30 underline-offset-8 decoration-1',
                 'transition-colors duration-500 hover:text-sl-ink hover:decoration-sl-gold-subtle',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-sl-void',

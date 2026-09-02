@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Content, GoogleGenAI } from '@google/genai';
+import OpenAI from 'openai';
 import { z } from 'zod';
 import { Env } from '../../config/env';
+import { sanitizePrompt } from './llm.factory';
 
 /**
  * Zod schemas for structured AI outputs
@@ -73,13 +74,23 @@ export type MaterialAnalysis = z.infer<typeof MaterialAnalysisSchema>;
 @Injectable()
 export class StructuredOutputService {
   private readonly logger = new Logger(StructuredOutputService.name);
-  private client: GoogleGenAI | null = null;
+  private client: OpenAI | null = null;
+  private readonly model: string;
 
   constructor(private configService: ConfigService<Env>) {
-    const apiKey = this.configService.get('GEMINI_API_KEY');
-    if (apiKey) {
-      this.client = new GoogleGenAI({ apiKey });
-    }
+    const apiKey = this.configService.get('HERMES_API_KEY');
+    const baseUrl =
+      this.configService.get('HERMES_BASE_URL') ??
+      'http://19.16.1.100:8000/v1';
+
+    this.model = this.configService.get('HERMES_MODEL') ?? 'hermes-agent-1.0';
+
+    // Hermes Agent exposes an OpenAI-compatible /v1 endpoint.
+    // HERMES_API_KEY may be empty for self-hosted / LAN runtimes.
+    this.client = new OpenAI({
+      apiKey: apiKey ?? '',
+      baseURL: baseUrl,
+    });
   }
 
   get isAvailable(): boolean {
@@ -87,7 +98,7 @@ export class StructuredOutputService {
   }
 
   /**
-   * Generate structured output with Zod validation
+   * Generate structured output with Zod validation via Hermes Agent.
    */
   async generateStructuredOutput<T>(
     prompt: string,
@@ -100,52 +111,56 @@ export class StructuredOutputService {
     } = {}
   ): Promise<T> {
     if (!this.client) {
-      throw new Error('Gemini API is unavailable');
+      throw new Error('Hermes Agent is unavailable');
     }
 
     const {
-      model = this.configService.get('GEMINI_MODEL') ?? 'gemini-3.5-flash',
+      model = this.model,
       temperature = 0.3,
       maxTokens = 1000,
-      retries = 2
+      retries = 2,
     } = options;
+
+    // Forward the raw prompt; the service layer sanitizes upstream.
+    const sanitized = sanitizePrompt(prompt);
+    const shape = 'shape' in schema ? (schema as unknown as { shape: Record<string, unknown> }).shape : schema;
+
+    const systemInstruction = `You are HEXA, the AI assistant for HexaStudio — a high-end architectural visualization studio.
+Return the response as valid JSON that conforms to this schema:
+${JSON.stringify(shape, null, 2)}
+
+Do not include any text outside the JSON object.`;
 
     let lastError: Error | null = null;
 
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
-        const response = await this.client.models.generateContent({
+        const response = await this.client.chat.completions.create({
           model,
-          contents: [
-            {
-              role: 'user',
-              parts: [
-                {
-                  text: `${prompt}\n\nReturn the response as valid JSON that conforms to this schema:\n${JSON.stringify(('shape' in schema ? (schema as unknown as { shape: unknown }).shape : schema), null, 2)}`
-                }
-              ]
-            }
-          ] as Content[],
-          config: {
-            temperature,
-            maxOutputTokens: maxTokens,
-            responseMimeType: 'application/json'
-          }
+          messages: [
+            { role: 'system', content: systemInstruction },
+            { role: 'user', content: sanitized },
+          ],
+          temperature,
+          max_tokens: maxTokens,
+          response_format: { type: 'json_object' },
         });
 
-        const text = response.text ?? '';
+        const text = response.choices?.[0]?.message?.content ?? '';
+        if (!text) {
+          throw new Error('Empty response from Hermes Agent');
+        }
+
         const parsed = JSON.parse(text);
-        
-        // Validate against Zod schema
         const validated = schema.parse(parsed);
-        
+
         return validated;
       } catch (error) {
         lastError = error as Error;
-        
+
         if (attempt < retries) {
           this.logger.warn(`Structured output generation attempt ${attempt + 1} failed, retrying...`);
-          await this.delay(1000 * (attempt + 1)); // Exponential backoff
+          await this.delay(1000 * (attempt + 1));
         }
       }
     }

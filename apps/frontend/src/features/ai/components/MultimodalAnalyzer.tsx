@@ -195,17 +195,17 @@ export function MultimodalAnalyzer() {
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
                 <div className="flex justify-between items-center pb-4 border-b border-sl-obsidian">
                   <div>
-                    <span className="text-[10px] font-mono text-sl-gold-hover uppercase tracking-widest">Detected Style</span>
+                    <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest">Detected Style</span>
                     <h3 className="text-xl font-medium mt-0.5">{archResult.style}</h3>
                   </div>
                   <div className="text-right">
-                    <span className="text-[10px] font-mono text-sl-mist/60 uppercase tracking-widest">Confidence</span>
+                    <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest">Confidence</span>
                     <p className="text-lg font-mono text-sl-gold-hover">{(archResult.confidence * 100).toFixed(0)}%</p>
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="text-xs font-mono text-sl-mist/60 uppercase tracking-widest mb-2">Key Materials</h4>
+                  <h4 className="text-xs font-mono text-hex-xs uppercase tracking-widest mb-2">Key Materials</h4>
                   <div className="flex flex-wrap gap-2">
                     {archResult.materials.map((m, i) => (
                       <span key={i} className="px-3 py-1 bg-sl-void border border-sl-obsidian rounded-lg text-xs font-mono text-sl-mist/80">
@@ -217,17 +217,17 @@ export function MultimodalAnalyzer() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="p-4 bg-sl-void/50 rounded-xl border border-sl-obsidian/80">
-                    <span className="text-[10px] font-mono text-sl-mist/60 uppercase tracking-widest block mb-1">Lighting Analysis</span>
+                    <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest block mb-1">Lighting Analysis</span>
                     <p className="text-sm text-neutral-200">{archResult.lighting}</p>
                   </div>
                   <div className="p-4 bg-sl-void/50 rounded-xl border border-sl-obsidian/80">
-                    <span className="text-[10px] font-mono text-sl-mist/60 uppercase tracking-widest block mb-1">Spatial Composition</span>
+                    <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest block mb-1">Spatial Composition</span>
                     <p className="text-sm text-neutral-200">{archResult.spatialComposition}</p>
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="text-xs font-mono text-sl-mist/60 uppercase tracking-widest mb-2">Design Suggestions</h4>
+                  <h4 className="text-xs font-mono text-hex-xs uppercase tracking-widest mb-2">Design Suggestions</h4>
                   <ul className="space-y-2">
                     {archResult.suggestions.map((s, i) => (
                       <li key={i} className="text-sm text-sl-mist/80 flex items-start gap-2">
@@ -242,31 +242,31 @@ export function MultimodalAnalyzer() {
             {renderResult && (
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
                 <div className="pb-4 border-b border-sl-obsidian">
-                  <span className="text-[10px] font-mono text-sl-gold-hover uppercase tracking-widest">Render Audit</span>
+                  <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest">Render Audit</span>
                   <h3 className="text-xl font-medium mt-0.5">3D Scene Quality & Realism</h3>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="p-4 bg-sl-void/50 rounded-xl border border-sl-obsidian/80">
-                    <span className="text-[10px] font-mono text-sl-mist/60 uppercase tracking-widest block mb-1">Visual Quality</span>
+                    <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest block mb-1">Visual Quality</span>
                     <p className="text-sm text-neutral-200">{renderResult.visualQuality}</p>
                   </div>
                   <div className="p-4 bg-sl-void/50 rounded-xl border border-sl-obsidian/80">
-                    <span className="text-[10px] font-mono text-sl-mist/60 uppercase tracking-widest block mb-1">Lighting Quality</span>
+                    <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest block mb-1">Lighting Quality</span>
                     <p className="text-sm text-neutral-200">{renderResult.lightingQuality}</p>
                   </div>
                   <div className="p-4 bg-sl-void/50 rounded-xl border border-sl-obsidian/80">
-                    <span className="text-[10px] font-mono text-sl-mist/60 uppercase tracking-widest block mb-1">Material Realism</span>
+                    <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest block mb-1">Material Realism</span>
                     <p className="text-sm text-neutral-200">{renderResult.materialRealism}</p>
                   </div>
                   <div className="p-4 bg-sl-void/50 rounded-xl border border-sl-obsidian/80">
-                    <span className="text-[10px] font-mono text-sl-mist/60 uppercase tracking-widest block mb-1">Composition</span>
+                    <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest block mb-1">Composition</span>
                     <p className="text-sm text-neutral-200">{renderResult.composition}</p>
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="text-xs font-mono text-sl-mist/60 uppercase tracking-widest mb-2">Improvement Suggestions</h4>
+                  <h4 className="text-xs font-mono text-hex-xs uppercase tracking-widest mb-2">Improvement Suggestions</h4>
                   <ul className="space-y-2">
                     {renderResult.improvements.map((imp, i) => (
                       <li key={i} className="text-sm text-sl-mist/80 flex items-start gap-2">
@@ -282,17 +282,17 @@ export function MultimodalAnalyzer() {
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
                 <div className="flex justify-between items-center pb-4 border-b border-sl-obsidian">
                   <div>
-                    <span className="text-[10px] font-mono text-sl-gold-hover uppercase tracking-widest">Material Type</span>
+                    <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest">Material Type</span>
                     <h3 className="text-xl font-medium mt-0.5">{materialResult.materialType}</h3>
                   </div>
                   <div className="text-right">
-                    <span className="text-[10px] font-mono text-sl-mist/60 uppercase tracking-widest">Sustainability</span>
+                    <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest">Sustainability</span>
                     <p className="text-lg font-mono text-sl-gold-hover">{(materialResult.sustainabilityScore * 100).toFixed(0)}%</p>
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="text-xs font-mono text-sl-mist/60 uppercase tracking-widest mb-2">Color Palette</h4>
+                  <h4 className="text-xs font-mono text-hex-xs uppercase tracking-widest mb-2">Color Palette</h4>
                   <div className="flex gap-2">
                     {materialResult.colorPalette.map((c, i) => (
                       <div key={i} className="flex items-center gap-1.5 px-3 py-1 bg-sl-void border border-sl-obsidian rounded-lg text-xs font-mono">
@@ -304,12 +304,12 @@ export function MultimodalAnalyzer() {
                 </div>
 
                 <div className="p-4 bg-sl-void/50 rounded-xl border border-sl-obsidian/80">
-                  <span className="text-[10px] font-mono text-sl-mist/60 uppercase tracking-widest block mb-1">Characteristics</span>
+                  <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest block mb-1">Characteristics</span>
                   <p className="text-sm text-neutral-200">{materialResult.textureCharacteristics.join(', ')}</p>
                 </div>
 
                 <div>
-                  <h4 className="text-xs font-mono text-sl-mist/60 uppercase tracking-widest mb-2">Suitable Applications</h4>
+                  <h4 className="text-xs font-mono text-hex-xs uppercase tracking-widest mb-2">Suitable Applications</h4>
                   <ul className="space-y-1">
                     {materialResult.suitableApplications.map((app, i) => (
                       <li key={i} className="text-sm text-sl-mist/80">• {app}</li>
@@ -323,17 +323,17 @@ export function MultimodalAnalyzer() {
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
                 <div className="flex justify-between items-center pb-4 border-b border-sl-obsidian">
                   <div>
-                    <span className="text-[10px] font-mono text-sl-gold-hover uppercase tracking-widest">BIM View Type</span>
+                    <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest">BIM View Type</span>
                     <h3 className="text-xl font-medium mt-0.5">{bimResult.viewType}</h3>
                   </div>
                   <div className="text-right">
-                    <span className="text-[10px] font-mono text-sl-mist/60 uppercase tracking-widest">Scale</span>
+                    <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest">Scale</span>
                     <p className="text-lg font-mono text-sl-gold-hover">{bimResult.scale || 'N/A'}</p>
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="text-xs font-mono text-sl-mist/60 uppercase tracking-widest mb-2">Detected Elements</h4>
+                  <h4 className="text-xs font-mono text-hex-xs uppercase tracking-widest mb-2">Detected Elements</h4>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {bimResult.detectedElements.map((el, i) => (
                       <div key={i} className="p-3 bg-sl-void/50 border border-sl-obsidian rounded-xl">

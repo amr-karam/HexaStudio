@@ -73,9 +73,9 @@ const StepCard = ({ step, index }: { step: (typeof steps)[0]; index: number }) =
       <div className="absolute bottom-0 left-0 w-16 h-16 border-b-2 border-l-2 border-sl-gold-subtle/20 group-hover:border-sl-gold-subtle/40 transition-colors duration-500" />
       
       {/* Card content */}
-      <div className="relative p-8 md:p-10 bg-sl-obsidian/30 backdrop-blur-sm border border-sl-silver/20 group-hover:border-sl-gold-subtle/20 transition-all duration-500">
+      <div className="relative p-5 sm:p-6 md:p-8 lg:p-10 bg-sl-obsidian/30 backdrop-blur-sm border border-sl-silver/20 group-hover:border-sl-gold-subtle/20 transition-all duration-500">
         {/* Step number — decorative background */}
-        <span className="absolute -top-6 -right-4 text-[80px] font-serif italic text-sl-gold-hover/[0.06] leading-none select-none pointer-events-none group-hover:text-sl-gold-hover/[0.1] transition-colors duration-700">
+        <span className="absolute -top-6 -right-4 text-[60px] sm:text-[80px] font-serif italic text-sl-gold-hover/[0.06] leading-none select-none pointer-events-none group-hover:text-sl-gold-hover/[0.1] transition-colors duration-700">
           {step.number}
         </span>
 
@@ -96,7 +96,7 @@ const StepCard = ({ step, index }: { step: (typeof steps)[0]; index: number }) =
           <div className="h-px w-12 bg-sl-gold-subtle/20 group-hover:bg-sl-gold-subtle/40 transition-colors duration-500" />
         </div>
 
-        <h3 className="text-3xl md:text-4xl font-serif font-light text-sl-alabaster mb-6 tracking-tight group-hover:text-sl-gold-hover/90 transition-colors duration-500">
+        <h3 className="text-2xl sm:text-3xl md:text-4xl font-serif font-light text-sl-alabaster mb-4 sm:mb-6 tracking-tight group-hover:text-sl-gold-hover/90 transition-colors duration-500">
           {step.title}
         </h3>
 
@@ -154,7 +154,7 @@ export const ProcessSection = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative px-8 md:px-16 py-32 bg-void-deep overflow-hidden"
+      className="relative px-5 sm:px-6 md:px-12 lg:px-16 py-16 sm:py-20 md:py-28 lg:py-32 bg-void-deep overflow-hidden"
     >
       {/* Layered ambient glows */}
       <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-sl-gold-subtle/[0.03] rounded-full blur-[150px] pointer-events-none" />
@@ -185,7 +185,7 @@ export const ProcessSection = () => {
         {/* Steps grid with connecting element */}
         <div className="relative">
           <StepConnector />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 relative z-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 relative z-10">
             {steps.map((step, index) => (
               <StepCard key={step.number} step={step} index={index} />
             ))}

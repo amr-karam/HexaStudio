@@ -470,7 +470,7 @@ export class ModelFusionService {
         const usage = candidate.result.usage ?? {};
         const totalTokens = (usage.promptTokens ?? 0) + (usage.completionTokens ?? 0);
         await this.tokenUsage.recordUsage({
-          provider: candidate.provider as 'openai' | 'gemini' | 'freetheai' | 'hermes',
+          provider: candidate.provider as 'openai' | 'freetheai' | 'hermes',
           model: candidate.model,
           method: 'fusion',
           promptTokens: usage.promptTokens ?? 0,

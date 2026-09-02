@@ -1,0 +1,107 @@
+{
+  "blog": {
+    "source": "odoo-knowledge-article",
+    "syncEndpoint": "/api/framer/blog/migrate-from-odoo",
+    "statusEndpoint": "/api/framer/blog/collection-status",
+    "fields": {
+      "title": { "type": "text", "source": "odoo.knowledge.article.name" },
+      "slug": { "type": "text", "derived": "title.toLowerCase().replace(/[^a-z0-9]+/g, '-')" },
+      "author": { "type": "text", "default": "HEXA Studio Editorial" },
+      "category": {
+        "type": "select",
+        "options": ["Design", "Technology", "Studio", "Architecture", "Visualization"],
+        "note": "Merged 'UI Design' + 'UX Design' -> 'Design' across all posts"
+      },
+      "publish_date": { "type": "datetime", "source": "odoo.knowledge.article.create_date" },
+      "featured_image": { "type": "image", "source": "odoo.knowledge.article.featuredImage" },
+      "body": { "type": "rich_text", "source": "odoo.knowledge.article.body" },
+      "is_featured": { "type": "boolean", "default": false },
+      "read_time": { "type": "number", "derived": "floor(content_words / 200) + 1", "unit": "minutes" }
+    },
+    "mappings": {
+      "odoo_to_framer": {
+        "name": "title",
+        "body": "body",
+        "create_date": "publish_date"
+      }
+    }
+  },
+  "team": {
+    "name": "Team Members",
+    "syncEndpoint": "/api/framer/team/sync",
+    "schemaEndpoint": "/api/framer/team/collection-schema",
+    "fields": {
+      "name": { "type": "text" },
+      "role": { "type": "text" },
+      "department": { "type": "text" },
+      "photo": { "type": "image", "importNotes": "Populate from local /assets/headshots — match by filename to team member" },
+      "bio": { "type": "rich_text" },
+      "linkedin_url": { "type": "url" },
+      "sort_order": { "type": "number", "default": 0 }
+    }
+  },
+  "jobs": {
+    "name": "Jobs",
+    "syncEndpoint": "/api/framer/jobs/sync",
+    "schemaEndpoint": "/api/framer/jobs/collection-schema",
+    "fields": {
+      "title": { "type": "text" },
+      "department": { "type": "text" },
+      "location": { "type": "select", "options": ["Dubai", "Remote", "Hybrid", "New York", "London"], "source": "dropdown" },
+      "type": { "type": "select", "options": ["Full-time", "Contract"], "default": "Full-time" },
+      "description": { "type": "rich_text" },
+      "application_url": { "type": "url" }
+    }
+  },
+  "portfolio": {
+    "name": "Portfolio",
+    "syncEndpoint": "/api/framer/portfolio/sync",
+    "schemaEndpoint": "/api/framer/portfolio/collection-schema",
+    "fields": {
+      "title": { "type": "text" },
+      "slug": { "type": "text" },
+      "published": { "type": "boolean", "setAll": true, "note": "Set to true for all existing items" },
+      "featured_image": { "type": "image" },
+      "description": { "type": "rich_text" },
+      "tags": { "type": "multi_select" }
+    }
+  },
+  "articles": {
+    "name": "Articles (migrated from News)",
+    "note": "Move every item from 'News' collection into 'Articles'. Convert the Category text field into a dropdown using its existing values.",
+    "categoryMigration": {
+      "from": "text",
+      "to": "select",
+      "method": "Infer distinct values from existing News items and register as dropdown options"
+    }
+  },
+  "changelog": {
+    "name": "Changelog",
+    "source": "odoo-irc.log",
+    "syncMethod": "Import via Odoo JSON-RPC API. Hourly sync configured via cron job.",
+    "hourlyCron": "0 * * * *",
+    "endpoint": "/api/framer/changelog/sync",
+    "fields": {
+      "title": { "type": "text", "source": "odoo.mail.message.subject" },
+      "date": { "type": "datetime", "source": "odoo.mail.message.date" },
+      "body": { "type": "rich_text", "source": "odoo.mail.message.body" },
+      "version": { "type": "text" },
+      "category": { "type": "select", "options": ["Bug Fix", "Feature", "Breaking", "Performance"] }
+    }
+  },
+  "csvImport": {
+    "collection": "blog",
+    "columnMapping": {
+      "Title": "title",
+      "Slug": "slug",
+      "Author": "author",
+      "Publish Date": "publish_date",
+      "Body": "body"
+    }
+  },
+  "redirects": {
+    "note": "Ensure every URL in the redirects spreadsheet has a redirect configured in Framer pointing to its new destination.",
+    "chainedRedirectPolicy": "Resolve to final destination — no intermediate hops",
+    "spreadsheetEndpoint": "To be provided by user"
+  }
+}

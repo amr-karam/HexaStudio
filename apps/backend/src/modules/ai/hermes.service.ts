@@ -8,10 +8,8 @@ import OpenAI from 'openai';
 /**
  * HermesAgentService
  *
- * Replaces the former GeminiService as the primary "agentic" chat provider.
- * Hermes Agent exposes an OpenAI-compatible chat+tools endpoint, so we reuse
- * the same tool-call loop pattern as the Gemini service but through a standard
- * OpenAI client pointed at the Hermes runtime.
+ * Primary "agentic" chat provider for HEXA Studio.
+ * Hermes Agent exposes an OpenAI-compatible chat+tools endpoint.
  *
  * Env keys:
  *   HERMES_API_KEY  - bearer token (optional for public/self-hosted runtimes)

@@ -155,7 +155,7 @@ export function ProjectHealthSection({ healthScore }: ProjectHealthSectionProps)
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: DURATION.component, delay: 0.4, ease: EASE.entrance }}
-            className="grid grid-cols-2 gap-4 pt-6 border-t border-sl-silver/20"
+            className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-6 border-t border-sl-silver/20"
           >
             {metrics.map((metric, i) => (
               <motion.div

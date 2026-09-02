@@ -14,7 +14,7 @@ import { useCollaboration } from '@/features/xr/hooks/useCollaboration';
 import { ContractSignOffModal } from '@/features/portal/components/ContractSignOffModal';
 import { CoNavControls } from '@/features/portal/components/CoNavControls';
 import { XRCanvas } from '@/features/xr/components/XRCanvas';
-import { GeminiLiveCritique } from '@/features/ai/components/GeminiLiveCritique';
+import { HermesLiveCritique } from '@/features/ai/components/HermesLiveCritique';
 import { SpatialCursors } from '@/features/xr/components/SpatialCursors';
 
 interface ReviewRoomPageProps {
@@ -54,7 +54,7 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-sl-void text-sl-alabaster pt-24 pb-12 px-6">
+    <div className="min-h-screen bg-sl-void text-sl-alabaster pt-24 pb-12 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header Rail */}
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-sl-silver/20 pb-6">
@@ -119,8 +119,8 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
 
           {/* WebRTC Video Feeds, Participants & Live Directives */}
           <div className="lg:col-span-4 space-y-5 flex flex-col justify-between">
-            {/* Gemini Live Spatial Critique Assistant */}
-            <GeminiLiveCritique
+            {/* Hermes Live Spatial Critique Assistant */}
+            <HermesLiveCritique
               projectId={projectId}
               onDirectiveGenerated={(dir) => {
                 setAnnotations((prev) => [

@@ -4,16 +4,15 @@ import { fetchEditorialHero } from '@/features/blog/lib/fetchEditorialHero';
 import { BlogPageContent } from '@/features/blog/components/BlogPageContent';
 import { HeroEditorial } from '@/components/hero/HeroEditorial';
 
-export const revalidate = 3600;
 export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
   const data = await fetchArticles();
   const articleCount = data.total;
 
   if (articleCount > 0) {
-    const latest = data.articles[0];
-    const description = latest.seoDescription || latest.excerpt || 'Insights on spatial design, real-time technology, and architectural visualization by HexaStudio.';
+    const description = 'Editorial and insights on spatial design, real-time technology, and architectural visualization by HexaStudio.';
     return {
       title: 'Blog',
       description,

@@ -196,7 +196,7 @@ export function ModelFusionStudio() {
     if (!chain.length) return null;
     return (
       <div className="mt-2">
-        <span className="text-[10px] font-mono text-text-sl-mist/60 uppercase tracking-widest block mb-1">Reasoning Chain</span>
+        <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest block mb-1">Reasoning Chain</span>
         <ul className="space-y-1">
           {chain.slice(0, 5).map((item, idx) => (
             <li key={idx} className="text-[11px] font-mono text-text-secondary">
@@ -306,42 +306,42 @@ export function ModelFusionStudio() {
             {(streamEnabled ? candidates.length > 0 : !loading && !!response) && (
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
                 {streamEnabled && streamMeta && (
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" data-responsive="stack">
                     <div className="p-3 bg-obsidian-raised rounded-xl border border-sl-silver/20">
-                      <span className="text-[10px] font-mono text-text-sl-mist/60 uppercase tracking-widest block mb-1">Mode</span>
+                      <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest block mb-1">Mode</span>
                       <p className="text-xl font-mono text-sl-alabaster">{streamMeta.mode}</p>
                     </div>
                     <div className="p-3 bg-obsidian-raised rounded-xl border border-sl-silver/20">
-                      <span className="text-[10px] font-mono text-text-sl-mist/60 uppercase tracking-widest block mb-1">Models</span>
+                      <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest block mb-1">Models</span>
                       <p className="text-xl font-mono text-sl-alabaster">{streamMeta.models.length}</p>
                     </div>
                   </div>
                 )}
 
                 {!streamEnabled && response && (
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" data-responsive="stack">
                     <div className="p-3 bg-obsidian-raised rounded-xl border border-sl-silver/20">
-                      <span className="text-[10px] font-mono text-text-sl-mist/60 uppercase tracking-widest block mb-1">Mode</span>
+                      <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest block mb-1">Mode</span>
                       <p className="text-xl font-mono text-sl-alabaster">{response.fused.mode}</p>
                     </div>
                     <div className="p-3 bg-obsidian-raised rounded-xl border border-sl-silver/20">
-                      <span className="text-[10px] font-mono text-text-sl-mist/60 uppercase tracking-widest block mb-1">Winner Score</span>
+                      <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest block mb-1">Winner Score</span>
                       <p className="text-xl font-mono text-sl-gold-hover">{response.winnerScore}</p>
                     </div>
                     <div className="p-3 bg-obsidian-raised rounded-xl border border-sl-silver/20">
-                      <span className="text-[10px] font-mono text-text-sl-mist/60 uppercase tracking-widest block mb-1">Latency</span>
+                      <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest block mb-1">Latency</span>
                       <p className="text-xl font-mono text-sl-alabaster">{response.telemetry.totalLatencyMs} ms</p>
                     </div>
                     <div className="p-3 bg-obsidian-raised rounded-xl border border-sl-silver/20">
-                      <span className="text-[10px] font-mono text-text-sl-mist/60 uppercase tracking-widest block mb-1">Candidates</span>
+                      <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest block mb-1">Candidates</span>
                       <p className="text-xl font-mono text-sl-alabaster">{response.telemetry.successfulCandidates}/{response.telemetry.totalCandidates}</p>
                     </div>
                     <div className="p-3 bg-obsidian-raised rounded-xl border border-sl-silver/20">
-                      <span className="text-[10px] font-mono text-text-sl-mist/60 uppercase tracking-widest block mb-1">Avg Reasoning</span>
+                      <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest block mb-1">Avg Reasoning</span>
                       <p className="text-xl font-mono text-sl-alabaster">{response.telemetry.avgReasoningConfidence ?? '—'}</p>
                     </div>
                     <div className="p-3 bg-obsidian-raised rounded-xl border border-sl-silver/20">
-                      <span className="text-[10px] font-mono text-text-sl-mist/60 uppercase tracking-widest block mb-1">Winner Reasoning</span>
+                      <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest block mb-1">Winner Reasoning</span>
                       <p className="text-xl font-mono text-sl-gold-hover">{response.telemetry.winnerReasoningConfidence ?? '—'}</p>
                     </div>
                   </div>
@@ -355,7 +355,7 @@ export function ModelFusionStudio() {
                       onClick={() => setSelectedCandidate(candidate.model)}
                       className={`text-left p-3 rounded-xl border transition-colors ${selectedCandidate === candidate.model ? 'border-sl-gold-subtle bg-sl-gold-subtle/10' : 'border-sl-silver/20 bg-obsidian-raised hover:border-sl-gold-subtle/50'}`}
                     >
-                      <span className="text-[11px] font-mono text-sl-gold-hover uppercase tracking-widest block mb-1">{candidate.model}</span>
+                      <span className="text-[11px] font-mono text-hex-xs uppercase tracking-widest block mb-1">{candidate.model}</span>
                       <span className="text-[10px] font-mono text-text-sl-mist/60 block mb-2">{candidate.provider || '...'}</span>
                       <span className="text-[10px] font-mono text-text-secondary block">Score: {candidate.score}</span>
                       <span className="text-[10px] font-mono text-text-secondary block">Latency: {candidate.latencyMs} ms</span>
@@ -382,11 +382,11 @@ export function ModelFusionStudio() {
                       <div className="mt-4 space-y-3">
                         <div className="flex gap-3">
                           <div className="p-3 bg-obsidian-raised rounded-xl border border-sl-silver/20 flex-1">
-                            <span className="text-[10px] font-mono text-text-sl-mist/60 uppercase tracking-widest block mb-1">Reasoning Confidence</span>
+                            <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest block mb-1">Reasoning Confidence</span>
                             <p className="text-xl font-mono text-sl-gold-hover">{candidate.reasoningConfidence ?? '—'}</p>
                           </div>
                           <div className="p-3 bg-obsidian-raised rounded-xl border border-sl-silver/20 flex-1">
-                            <span className="text-[10px] font-mono text-text-sl-mist/60 uppercase tracking-widest block mb-1">Rank</span>
+                            <span className="text-[10px] font-mono text-hex-xs uppercase tracking-widest block mb-1">Rank</span>
                             <p className="text-xl font-mono text-sl-alabaster">{candidate.rank ?? '—'}</p>
                           </div>
                         </div>

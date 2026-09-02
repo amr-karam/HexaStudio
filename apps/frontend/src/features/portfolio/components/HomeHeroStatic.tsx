@@ -11,6 +11,7 @@ import { useFinePointer } from '@/hooks/useFinePointer';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { getGsap } from '@/lib/gsap';
 import { hasIntroCompleted, INTRO_COMPLETE_EVENT } from '@/lib/intro-state';
+import { SilkShaderBackground } from '@/components/effects/SilkShaderBackground';
 
 const INTRO_FALLBACK_MS = 3500;
 const RETURN_VISIT_DELAY = 0.35;
@@ -171,11 +172,16 @@ export const HomeHeroStatic = () => {
   }, []);
 
   return (
-    <section
+      <section
       ref={containerRef}
       id="ch-vision"
-      className="relative flex min-h-screen flex-col items-center justify-center px-4 sm:px-6 overflow-hidden bg-sl-void"
+      className="relative flex min-h-[100dvh] min-h-screen flex-col items-center justify-center px-5 sm:px-6 md:px-8 overflow-hidden bg-sl-void"
     >
+      {/* Liquid gradient shader — ambient motion */}
+      {!staticMode && (
+        <SilkShaderBackground speed={0.25} opacity={0.35} className="absolute inset-0" />
+      )}
+
       {/* Gradient overlays for depth */}
       <div className="absolute inset-0 bg-gradient-to-b from-sl-obsidian/40 via-transparent to-sl-void pointer-events-none z-[1]" />
       <div className="absolute inset-0 gradient-radial-gold pointer-events-none z-[1]" aria-hidden="true" />
@@ -190,7 +196,7 @@ export const HomeHeroStatic = () => {
       )}
 
       {/* Chapter marker */}
-      <div data-hero-marker="" className="absolute top-20 left-8 md:left-16 z-10">
+      <div data-hero-marker="" className="absolute top-16 sm:top-20 left-6 sm:left-8 md:left-16 z-10">
         <ChapterMarker index={1} title="Vision" />
       </div>
 
@@ -209,7 +215,7 @@ export const HomeHeroStatic = () => {
           <h1
             data-hero-headline=""
             aria-label="Living Spaces. Visualized."
-            className="sl-heading sl-heading-display font-light leading-tight"
+            className="sl-heading sl-heading-display !text-[2rem] sm:!text-[2.75rem] md:!text-[3.5rem] lg:!text-[clamp(3rem,7vw,5.5rem)] font-light leading-tight"
           >
             <span aria-hidden="true" className="block text-alabaster">
               Living
@@ -225,23 +231,23 @@ export const HomeHeroStatic = () => {
 
         <p
           data-hero-subline=""
-          className="mx-auto w-full max-w-2xl text-sm md:text-base font-light text-silver/60 mb-10 md:mb-14 leading-relaxed tracking-wide px-4"
+          className="mx-auto w-full max-w-2xl text-xs sm:text-sm md:text-base font-light text-silver/60 mb-8 sm:mb-10 md:mb-14 leading-relaxed tracking-wide px-4"
         >
           Immersive 3D architectural experiences for the world&apos;s most discerning projects.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pointer-events-auto">
-          <span data-hero-cta="" className="inline-block">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pointer-events-auto w-full px-4 sm:px-0">
+          <span data-hero-cta="" className="inline-block w-full sm:w-auto">
             <Magnetic>
-              <Link href="/projects" data-cursor="explore">
-                <Button variant="primary" size="lg">Explore Works</Button>
+              <Link href="/projects" data-cursor="explore" className="block w-full sm:w-auto">
+                <Button variant="primary" size="lg" className="w-full sm:w-auto min-h-[48px] active:scale-[0.97] transition-transform duration-150">Explore Works</Button>
               </Link>
             </Magnetic>
           </span>
-          <span data-hero-cta="" className="inline-block">
+          <span data-hero-cta="" className="inline-block w-full sm:w-auto">
             <Magnetic>
-              <Link href="/services" data-cursor="explore">
-                <Button variant="secondary" size="lg">Our Process</Button>
+              <Link href="/services" data-cursor="explore" className="block w-full sm:w-auto">
+                <Button variant="secondary" size="lg" className="w-full sm:w-auto min-h-[48px] active:scale-[0.97] transition-transform duration-150">Our Process</Button>
               </Link>
             </Magnetic>
           </span>

@@ -1,10 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Content, GoogleGenAI } from '@google/genai';
+import OpenAI from 'openai';
 import { Env } from '../../config/env';
+import { sanitizePrompt } from './llm.factory';
 
 /**
- * Supported audio MIME types for Gemini audio transcription.
+ * Supported audio MIME types for Hermes Agent audio transcription.
  */
 const SUPPORTED_AUDIO_MIME_TYPES = [
   'audio/webm',
@@ -21,45 +22,53 @@ const SUPPORTED_AUDIO_MIME_TYPES = [
 /**
  * VoiceService
  *
- * Provides speech-to-text transcription using Gemini's native audio processing
- * capability. Accepts base64-encoded audio data in common formats (webm, wav,
- * mp3, ogg, mp4, aac, flac).
+ * Provides speech-to-text transcription using Hermes Agent voice processing
+ * (OpenAI-compatible audio endpoint). Accepts base64-encoded audio data in
+ * common formats (webm, wav, mp3, ogg, mp4, aac, flac).
  *
  * Gracefully handles missing API keys and transcription failures.
  */
 @Injectable()
 export class VoiceService {
   private readonly logger = new Logger(VoiceService.name);
-  private client: GoogleGenAI | null = null;
+  private client: OpenAI | null = null;
+  private readonly model: string;
 
   constructor(private readonly configService: ConfigService<Env>) {
-    const apiKey = this.configService.get('GEMINI_API_KEY');
-    if (apiKey) {
-      this.client = new GoogleGenAI({ apiKey });
-    }
+    const apiKey = this.configService.get('HERMES_API_KEY');
+    const baseUrl =
+      this.configService.get('HERMES_BASE_URL') ??
+      'http://19.16.1.100:8000/v1';
+
+    this.model = this.configService.get('HERMES_MODEL') ?? 'hermes-agent-1.0';
+
+    this.client = new OpenAI({
+      apiKey: apiKey ?? '',
+      baseURL: baseUrl,
+    });
   }
 
   /**
-   * Returns true when the Gemini client is configured and available.
+   * Returns true when the Hermes Agent client is configured and available.
    */
   get isAvailable(): boolean {
     return this.client !== null;
   }
 
   /**
-   * Transcribe audio data to text using Gemini's audio processing.
+   * Transcribe audio data to text using Hermes Agent audio processing.
    *
-   * Sends the audio to Gemini 3.5 Flash which can natively process audio
+   * Sends the audio to Hermes Agent which can natively process audio
    * content and return a text transcription.
    *
    * @param audioData - Base64-encoded audio binary data
    * @param mimeType  - MIME type of the audio (e.g. 'audio/webm', 'audio/wav', 'audio/mp3')
    * @returns Transcribed text string
-   * @throws Error if Gemini API is unavailable or transcription fails
+   * @throws Error if Hermes Agent is unavailable or transcription fails
    */
   async transcribeAudio(audioData: string, mimeType: string): Promise<string> {
     if (!this.client) {
-      throw new Error('Gemini API is unavailable — no API key configured');
+      throw new Error('Hermes Agent is unavailable — no API key configured');
     }
 
     if (!VoiceService.isSupportedAudioMimeType(mimeType)) {
@@ -67,35 +76,33 @@ export class VoiceService {
     }
 
     try {
-      const model = this.configService.get<string>('GEMINI_MODEL')!;
+      // Hermes Agent accepts audio via the OpenAI-compatible audio input format.
+      const sanitized = sanitizePrompt('Transcribe the speech in this audio recording accurately. Return only the transcribed text, no additional commentary or formatting.');
 
-      const response = await this.client.models.generateContent({
-        model,
-        contents: [
+      const response = await this.client.chat.completions.create({
+        model: this.model,
+        messages: [
           {
             role: 'user',
-            parts: [
+            content: [
+              { type: 'text', text: sanitized },
               {
-                text: 'Transcribe the speech in this audio recording accurately. Return only the transcribed text, no additional commentary or formatting.',
-              },
-              {
-                inlineData: {
-                  mimeType,
+                type: 'audio', // OpenAI-compatible multimodal audio input
+                audio: {
                   data: audioData,
+                  mime_type: mimeType,
                 },
               },
             ],
           },
-        ] as Content[],
-        config: {
-          temperature: 0.1,
-          maxOutputTokens: 2048,
-        },
+        ],
+        temperature: 0.1,
+        max_tokens: 2048,
       });
 
-      const transcribed = response.text?.trim() ?? '';
+      const transcribed = response.choices?.[0]?.message?.content?.trim() ?? '';
       if (!transcribed) {
-        throw new Error('Empty transcription result from Gemini');
+        throw new Error('Empty transcription result from Hermes Agent');
       }
 
       this.logger.debug(`Audio transcribed successfully (${transcribed.length} chars)`);

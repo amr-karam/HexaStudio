@@ -1,22 +1,14 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { fetchArticle, fetchArticles } from '@/features/blog/lib/fetchArticles';
+import { fetchArticle } from '@/features/blog/lib/fetchArticles';
 import { ArticleDetailClient } from '@/features/blog/components/ArticleDetailClient';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+export const dynamic = 'force-dynamic';
 export const revalidate = 3600;
-
-export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  try {
-    const articlesData = await fetchArticles();
-    return (articlesData.articles ?? []).map((article: import('@hexastudio/types').Article) => ({ slug: article.slug }));
-  } catch {
-    return [];
-  }
-}
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
