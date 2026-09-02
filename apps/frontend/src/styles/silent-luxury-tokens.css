@@ -17,8 +17,8 @@
   --sl-gold-hover: rgba(212, 175, 55, 0.3);
   --sl-gold-rgb: 212, 175, 55;
 
-  /* Typography scale — refined hierarchy */
-  --sl-heading-font: 'Playfair Display', Georgia, serif;
+  /* Typography scale — refined hierarchy — Bodoni Moda: luxury editorial Didone with italic */
+  --sl-heading-font: 'Bodoni Moda', 'Cormorant Garamond', Georgia, serif;
   --sl-body-font: 'Inter', system-ui, sans-serif;
 
   /* Easing — slower, more elegant */
