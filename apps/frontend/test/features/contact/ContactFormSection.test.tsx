@@ -16,6 +16,22 @@ vi.mock('@/hooks/useMotionPolicy', () => ({
   }),
 }));
 
+// Mock useServices — avoids QueryClientProvider dependency in jsdom
+vi.mock('@/features/services/hooks/useServices', () => ({
+  useServices: () => ({
+    data: { services: [] },
+  }),
+}));
+
+// Mock next/dynamic to avoid loading WebGL shader components in jsdom
+vi.mock('next/dynamic', () => ({
+  __esModule: true,
+  default: (_component: () => Promise<unknown>) => {
+    const DynamicComponent = () => null;
+    return DynamicComponent;
+  },
+}));
+
 // Mock framer-motion — in jsdom, AnimatePresence/motion components don't animate
 // and their initial states prevent timely DOM updates. Mock to render children
 // immediately, stripping animation-only props. Pattern from ChapterMarker.test.tsx.
@@ -52,6 +68,8 @@ vi.mock('framer-motion', () => {
       polyline: makeMotion('polyline'),
     },
     AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+    useInView: (_ref: unknown, _opts?: unknown) => true,
+    useReducedMotion: () => false,
   };
 });
 
@@ -226,6 +244,10 @@ describe('ContactFormSection', () => {
             name: 'Jane Smith',
             email: 'jane@example.com',
             message: 'I want to discuss a villa project.',
+            company: '',
+            phone: '',
+            service: '',
+            budget: '',
           }),
         }),
       );
