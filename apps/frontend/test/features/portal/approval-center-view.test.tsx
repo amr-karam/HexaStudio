@@ -9,7 +9,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor, act } from '@testing-library/react';
-import type { UserEvent } from '@testing-library/user-event';
+
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -92,7 +92,7 @@ function renderView(): ReturnType<typeof render> {
  * Wait for the signing desk detail panel (AnimatePresence mode="wait" delays
  * its entrance after the empty state exits) and click the approve button.
  */
-async function approveFirstDeliverable(user: UserEvent): Promise<void> {
+async function approveFirstDeliverable(user: ReturnType<typeof userEvent.setup>): Promise<void> {
   const approveButton = await screen.findByRole('button', { name: 'Approve this deliverable' });
   await user.click(approveButton);
 }
