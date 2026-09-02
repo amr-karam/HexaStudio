@@ -131,7 +131,7 @@ export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
         </motion.div>
 
-        <div className="absolute inset-0 flex flex-col justify-end px-8 md:px-16 pb-16">
+        <div className="absolute inset-0 flex flex-col justify-end px-4 sm:px-8 md:px-16 pb-16">
           <div>
             <motion.span
               initial={{ opacity: 0, y: 20 }}
@@ -160,7 +160,7 @@ export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
         </div>
       </section>
 
-      <section className="px-8 md:px-16 py-24">
+      <section className="px-4 sm:px-8 md:px-16 py-24">
         <div className="mx-auto w-full" ref={contentRef}>
           <div className="prose prose-invert prose-neutral max-w-none">
             <div data-article-excerpt className="text-xl md:text-2xl font-light text-sl-mist/80 leading-relaxed mb-12 italic border-s-2 border-sl-gold-subtle ps-6">
@@ -177,7 +177,7 @@ export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
         </div>
       </section>
 
-      <section className="px-8 md:px-16 py-32 border-t border-sl-silver/20 bg-sl-obsidian">
+      <section className="px-4 sm:px-8 md:px-16 py-24 md:py-32 border-t border-sl-silver/20 bg-sl-obsidian">
         <div className="flex flex-col items-center text-center gap-12">
           <motion.div
             initial={{ opacity: 0 }}

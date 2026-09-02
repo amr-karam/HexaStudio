@@ -13,13 +13,29 @@ export async function generateMetadata(): Promise<Metadata> {
 
   if (articleCount > 0) {
     const latest = data.articles[0];
+    const description = latest.seoDescription || latest.excerpt || 'Insights on spatial design, real-time technology, and architectural visualization by HexaStudio.';
     return {
       title: 'Blog',
-      description: latest.seoDescription || latest.excerpt || 'Insights on spatial design, real-time technology, and architectural visualization by HexaStudio.',
+      description,
       openGraph: {
-        title: 'Blog | HexaStudio',
-        description: latest.seoDescription || latest.excerpt || 'Insights on spatial design, real-time technology, and architectural visualization.',
+        title: 'HexaStudio Blog — Architectural Visualization Insights',
+        description,
+        url: 'https://hexastudio.net/blog',
         type: 'website',
+        images: [
+          {
+            url: 'https://hexastudio.net/og-image.png',
+            width: 1200,
+            height: 630,
+            alt: 'HexaStudio Blog — Architectural Visualization Insights',
+          },
+        ],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'HexaStudio Blog — Architectural Visualization Insights',
+        description,
+        images: ['https://hexastudio.net/og-image.png'],
       },
     };
   }
@@ -27,6 +43,26 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: 'Blog',
     description: 'Insights on spatial design, real-time technology, and architectural visualization by HexaStudio.',
+    openGraph: {
+      title: 'HexaStudio Blog — Architectural Visualization Insights',
+      description: 'Insights on spatial design, real-time technology, and architectural visualization.',
+      url: 'https://hexastudio.net/blog',
+      type: 'website',
+      images: [
+        {
+          url: 'https://hexastudio.net/og-image.png',
+          width: 1200,
+          height: 630,
+          alt: 'HexaStudio Blog — Architectural Visualization Insights',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'HexaStudio Blog — Architectural Visualization Insights',
+      description: 'Insights on spatial design, real-time technology, and architectural visualization.',
+      images: ['https://hexastudio.net/og-image.png'],
+    },
   };
 }
 
