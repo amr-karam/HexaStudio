@@ -58,7 +58,7 @@ function ArticleCard({ article, _index, isFeatured }: { article: Article; _index
         </div>
 
         {/* Editorial metadata row */}
-        <div className="flex items-center gap-4 mb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
           {article.category && (
             <span className="text-[10px] md:text-xs uppercase tracking-[0.5em] text-sl-gold-hover font-mono">
               {article.category.name}
@@ -200,10 +200,10 @@ export function BlogPageContent({ articles, showHeader = true }: BlogPageContent
         />
       </div>
 
-      <div className="relative z-10 px-8 md:px-16">
+      <div className="relative z-10 px-4 sm:px-8 md:px-16">
         {/* ── Header (skipped when a HeroEditorial is mounted above) ──────────── */}
         {showHeader && (
-        <header className="mb-28 md:mb-36 relative">
+        <header className="mb-20 md:mb-28 relative">
           {/* Ornamental rule above eyebrow */}
           <div className="mb-8" aria-hidden="true">
             <OrnamentalRule />
@@ -291,7 +291,7 @@ export function BlogPageContent({ articles, showHeader = true }: BlogPageContent
         </motion.div>
 
         {/* ── Bottom ornamental rule ───────────────────────────────────────────── */}
-        <div className="mt-24 mb-8" aria-hidden="true">
+        <div className="mt-16 md:mt-24 mb-6 md:mb-8" aria-hidden="true">
           <OrnamentalRule />
         </div>
 
