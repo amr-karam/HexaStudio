@@ -72,7 +72,7 @@
 
   --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
-  --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-serif: 'Bodoni Moda', 'Cormorant Garamond', 'Playfair Display', Georgia, 'Times New Roman', serif;
 
   --spacing-xs: 0.25rem;   /* 4px  */
   --spacing-sm: 0.5rem;    /* 8px  */
@@ -138,6 +138,12 @@ body {
   overflow-x: hidden;
 }
 
+/* Headings — luxury editorial Didone (Bodoni Moda) with italic support */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-optical-sizing: auto;
+}
+
 ::selection {
   background-color: color-mix(in srgb, var(--color-accent) 30%, transparent);
   color: var(--color-foreground);
@@ -169,6 +175,47 @@ body {
 /*  Reduced Motion — comprehensive fallback rules                              */
 /* -------------------------------------------------------------------------- */
 
+
+/* Click/Hover/Tap interaction utilities */
+.hexa-tap {
+  transition: transform var(--hexa-duration-transition) var(--hexa-ease-interaction, cubic-bezier(0.4, 0, 0.2, 1));
+  will-change: transform;
+}
+.hexa-tap:active {
+  transform: scale(0.97);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hexa-tap:active {
+    transform: none;
+  }
+}
+.hexa-link {
+  position: relative;
+  transition: color var(--hexa-duration-transition) var(--hexa-ease-transition, cubic-bezier(0.25, 0.1, 0.25, 1));
+}
+.hexa-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--hexa-duration-transition) var(--hexa-ease-transition, cubic-bezier(0.25, 0.1, 0.25, 1));
+}
+.hexa-link:hover::after,
+.hexa-link:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+.hexa-focus-ring:focus-visible {
+  outline: 2px solid var(--color-accent, #D4AF37);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -192,8 +239,84 @@ body {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  SILENT LUXURY — Refined Minimalist Premium Design System                   */
+/*  RESPONSIVE BREAKPOINTS — tablet & mobile first                            */
 /* -------------------------------------------------------------------------- */
+
+/* Tablet (md by Tailwind default = 768px) — stacked → side-by-side transition.
+   Mobile (sm = 640px) — single column, full-bleed text.
+   Add a custom bp-sm* tighter than Tailwind's sm (640px) for very small phones. */
+
+@media (max-width: 767px) {
+  /* On screens < tablet, force single-column defaults for grid components
+     that declare grid-cols-N without a mobile base. We scope this to
+     components that set the data-responsive attribute so we don't
+     accidentally collapse intentionally-full grids. */
+  [data-responsive="stack"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Tablet: 2-column grids that are 3+ columns on desktop collapse to 2. */
+  [data-responsive="tablet-2"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Fluid type scale — clamp() so text stays readable across the responsive range.
+   These are the canonical responsive sizes; prefer them over text-2xl / text-3xl
+   literal sizes in long-form marketing and editorial contexts.
+   (Inline utility classes like text-2xl stay for dashboard/admin where fixed
+   sizes are intentional for dense data.) */
+
+:root {
+  /* Hard px type scale (per design review): H1=64px(4rem) H2=48px(3rem) H3=36px(2.25rem) body=18px(1.125rem) */
+  --hex-responsive-text-xs: 0.75rem;    /* 12px */
+  --hex-responsive-text-sm: 0.875rem;   /* 14px */
+  --hex-responsive-text-base: 1.125rem; /* 18px - body */
+  --hex-responsive-text-md: 1.25rem;    /* 20px */
+  --hex-responsive-text-lg: 1.5rem;     /* 24px */
+  --hex-responsive-text-xl: 2rem;       /* 32px */
+  --hex-responsive-text-2xl: 2.25rem;   /* 36px - H3 */
+  --hex-responsive-text-3xl: 3rem;      /* 48px - H2 */
+  --hex-responsive-text-4xl: 4rem;      /* 64px - H1 */
+  --hex-responsive-text-5xl: 5rem;      /* 80px - display */
+}
+/* Hard px type scale applied to headings (design review: H1=64px H2=48px H3=36px body=18px) */
+h1, .h1 { font-size: 4rem; }  /* 64px */
+h2, .h2 { font-size: 3rem; }  /* 48px */
+h3, .h3 { font-size: 2.25rem; } /* 36px */
+body, .body { font-size: 1.125rem; } /* 18px */
+
+
+/* Utility classes that map to the fluid scale. Use these instead of plain
+   Tailwind text-* sizes for marketing/editorial text that spans devices. */
+
+.text-hex-xs   { font-size: var(--hex-responsive-text-xs); }
+.text-hex-sm   { font-size: var(--hex-responsive-text-sm); }
+.text-hex-base { font-size: var(--hex-responsive-text-base); }
+.text-hex-md   { font-size: var(--hex-responsive-text-md); }
+.text-hex-lg   { font-size: var(--hex-responsive-text-lg); }
+.text-hex-xl   { font-size: var(--hex-responsive-text-xl); }
+.text-hex-2xl  { font-size: var(--hex-responsive-text-2xl); }
+.text-hex-3xl  { font-size: var(--hex-responsive-text-3xl); }
+.text-hex-4xl  { font-size: var(--hex-responsive-text-4xl); }
+.text-hex-5xl  { font-size: var(--hex-responsive-text-5xl); }
+
+/* Responsive button text — base buttons get slightly smaller text on mobile
+   (current buttons use literal text-sm = 0.875rem which is a little large on
+   a 375px screen paired with uppercase tracking). */
+
+.btn-responsive-text {
+  font-size: var(--hex-responsive-text-sm);
+}
+
+@media (max-width: 480px) {
+  .btn-responsive-text {
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+  }
+}
 
 :root {
   /* Silent Luxury Color Palette */
@@ -208,8 +331,8 @@ body {
   --sl-gold-hover: rgba(212, 175, 55, 0.3);
   --sl-gold-rgb: 212, 175, 55;
 
-  /* Typography */
-  --sl-heading-font: 'Playfair Display', Georgia, serif;
+  /* Typography — Bodoni Moda: luxury fashion Didone (high-contrast editorial, Vogue-like), italic-capable */
+  --sl-heading-font: 'Bodoni Moda', 'Cormorant Garamond', Georgia, serif;
   --sl-body-font: 'Inter', system-ui, sans-serif;
 
   /* Easing */
@@ -729,4 +852,13 @@ body {
   color: rgba(212, 175, 55, 0.85);
   text-shadow: 0 2px 8px rgba(212, 175, 55, 0.15);
   font-style: italic;
+}
+
+/* Scrollbar hide utility for horizontal scroll containers */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

@@ -47,12 +47,21 @@ export const metadata: Metadata = {
     siteName: "HexaStudio",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "https://hexastudio.net/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "HexaStudio — Architectural Visualization Studio",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "HexaStudio — Living Spaces. Visualized.",
     description:
       "Living Spaces. Visualized. Immersive 3D architectural experiences for the world's most ambitious projects.",
+    images: ["https://hexastudio.net/og-image.png"],
   },
   robots: {
     index: true,
@@ -87,9 +96,9 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="//us.i.posthog.com" />
         {/* Hero font files — start download immediately, skipping the CSS→font
             discovery waterfall. Latin variable subsets only (Inter = body/hero,
-            Playfair Display = headings, Cormorant Garamond = Silent Luxury
-            headings incl. italic, Jost = Silent Luxury body). JetBrains Mono
-            loads on demand. */}
+            Bodoni Moda = luxury editorial headings with italic, Cormorant Garamond =
+            Silent Luxury fallback incl. italic, Jost = Silent Luxury body).
+            JetBrains Mono loads on demand. */}
         {/* eslint-disable @next/next/google-font-preconnect -- false positive: the preconnect to fonts.gstatic.com is present above; the rule does not detect it. */}
         <link
           rel="preload"
@@ -121,6 +130,21 @@ export default function RootLayout({
           href="https://fonts.gstatic.com/s/cormorantgaramond/v21/co3ZmX5slCNuHLi8bLeY9MK7whWMhyjYrEtImSo.woff2"
           crossOrigin="anonymous"
         />
+        {/* Bodoni Moda — luxury fashion editorial heading (Didone, high-contrast, italic). */}
+        <link
+          rel="preload"
+          as="font"
+          type="font/woff2"
+          href="https://fonts.gstatic.com/s/bodonimoda/v28/aFTS7PxzY382XsXX63LUYJSPeKrcWw.woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          as="font"
+          type="font/woff2"
+          href="https://fonts.gstatic.com/s/bodonimoda/v28/aFTQ7PxzY382XsXX63LUYJSKSKg.woff2"
+          crossOrigin="anonymous"
+        />
         {/* Jost — Silent Luxury body font (latin subset). */}
         <link
           rel="preload"
@@ -146,7 +170,7 @@ export default function RootLayout({
           rel="stylesheet"
           media="print"
           id="gf-css"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&family=Playfair+Display:wght@400..900&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Jost:wght@200..500&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&family=Playfair+Display:wght@400..900&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Jost:wght@200..500&display=swap"
         />
         <script
           dangerouslySetInnerHTML={{
