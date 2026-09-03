@@ -20,6 +20,7 @@ import { useContextLossRecovery } from '@/hooks/useContextLossRecovery';
 import { useSharedWebGLContext } from '@/hooks/useSharedWebGLContext';
 import { ProjectHotspot } from '@hexastudio/types';
 import { useDesignerStore } from '../store/designer-store';
+import { SURFACE } from '@/lib/color-tokens';
 import { LIGHTING_PRESETS } from '../config/lighting-presets';
 
 /* -------------------------------------------------------------------------- */
@@ -42,7 +43,7 @@ function SceneFallback() {
   return (
     <mesh>
       <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color="#1A1A1A" wireframe />
+      <meshStandardMaterial color={SURFACE} wireframe />
     </mesh>
   );
 }
@@ -268,7 +269,7 @@ export const ExperienceCanvas = ({
             <SceneLightingRig />
             <SceneContent projectModelUrl={projectModelUrl} hotspots={hotspots} status={status} milestones={milestones} />
 
-            <fog attach="fog" args={['#050505', 12, 35]} />
+            <fog attach="fog" args={[SURFACE, 12, 35]} />
 
             {/* ContactShadows: gated by quality tier. */}
             {tier.contactShadows && (

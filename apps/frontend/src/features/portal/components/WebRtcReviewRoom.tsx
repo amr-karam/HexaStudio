@@ -8,6 +8,7 @@
  */
 
 import React, { useState } from 'react';
+import { VOID } from '@/lib/color-tokens';
 import { useDesignerStore } from '@/features/scene/store/designer-store';
 import type { LightingPreset, MaterialPreset } from '@/features/scene/store/designer-store';
 import { LIGHTING_PRESETS as LIGHTING_CONFIGS } from '@/features/scene/config/lighting-presets';
@@ -161,7 +162,7 @@ export function WebRtcReviewRoom() {
               <div
                 className="absolute inset-0 transition-all duration-700 pointer-events-none opacity-40"
                 style={{
-                  background: `radial-gradient(ellipse at center, ${lightingConfig.directionalColor}22 0%, ${lightingConfig.ambientColor}11 60%, #000000 100%)`,
+                  background: `radial-gradient(ellipse at center, ${lightingConfig.directionalColor}22 0%, ${lightingConfig.ambientColor}11 60%, ${VOID} 100%)`,
                 }}
               />
 

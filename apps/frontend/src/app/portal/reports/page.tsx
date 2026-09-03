@@ -80,12 +80,12 @@ const MOCK_REPORT: ExecutiveReport = {
   visualizationCues: [
     {
       elementId: 'facade-north',
-      highlightColor: '#D4AF37',
+      highlightColor: 'var(--color-gold)',
       note: 'Optimized parametric shading',
     },
     {
       elementId: 'lobby-core',
-      highlightColor: '#E5C76B',
+      highlightColor: 'var(--color-gold-bright)',
       note: 'Material palette verified',
     },
   ],

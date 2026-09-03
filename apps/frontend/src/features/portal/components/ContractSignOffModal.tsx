@@ -9,6 +9,7 @@
 
 import React, { useState, useRef } from 'react';
 import { useLocale } from '@/i18n/LocaleProvider';
+import { GOLD } from '@/lib/color-tokens';
 
 interface ContractSignOffModalProps {
   isOpen: boolean;
@@ -53,7 +54,7 @@ export function ContractSignOffModal({
     if (!ctx) return;
     const rect = canvas.getBoundingClientRect();
     ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
-    ctx.strokeStyle = '#D4AF37'; // HEXA Signature Gold
+    ctx.strokeStyle = GOLD; // HEXA Signature Gold
     ctx.lineWidth = 2;
     ctx.lineCap = 'round';
     ctx.stroke();

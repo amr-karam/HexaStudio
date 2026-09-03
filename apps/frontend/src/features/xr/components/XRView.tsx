@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 import { Environment, ContactShadows } from '@react-three/drei';
 import { XRSceneContent } from './XRSceneContent';
 import { XRLoadingScreen } from './XRLoadingScreen';
+import { GOLD } from '@/lib/color-tokens';
 
 export function XRView({ modelUrl, modelName, sendCursor }: { modelUrl?: string; modelName?: string; sendCursor?: (position: { x: number; y: number; z: number }, rotation?: { x: number; y: number; z: number; w: number }) => void }) {
   return (
@@ -13,7 +14,7 @@ export function XRView({ modelUrl, modelName, sendCursor }: { modelUrl?: string;
       ) : (
         <mesh>
           <boxGeometry args={[0.5, 0.5, 0.5]} />
-          <meshStandardMaterial color="#D4AF37" />
+          <meshStandardMaterial color={GOLD} />
         </mesh>
       )}
       <ambientLight intensity={0.5} />

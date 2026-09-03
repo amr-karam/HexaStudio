@@ -4,6 +4,7 @@ import { Suspense, useRef, useState, useCallback } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Environment, MeshDistortMaterial } from '@react-three/drei';
 import * as THREE from 'three';
+import { OBSIDIAN_RAISED } from '@/lib/color-tokens';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 function Ring({ images, scrollVelocity, released }: { images: string[]; scrollVelocity: number; released: boolean }) {
@@ -32,7 +33,7 @@ function Ring({ images, scrollVelocity, released }: { images: string[]; scrollVe
           <mesh key={src + i} position={[x, 0, z]} rotation={[0, -angle, 0]}>
             <sphereGeometry args={[0.7, 48, 48]} />
             <MeshDistortMaterial
-              color="#161618"
+              color={OBSIDIAN_RAISED}
               distort={0.25}
               speed={1.2}
               roughness={0.2}
