@@ -197,9 +197,9 @@ function CircularProgressBar({ percentage, reducedMotion }: { percentage: number
         {/* Gold gradient definition */}
         <defs>
           <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#D4AF37" />
-            <stop offset="50%" stopColor="#E5C76B" />
-            <stop offset="100%" stopColor="#A8862E" />
+            <stop offset="0%" stopColor="var(--color-gold)" />
+            <stop offset="50%" stopColor="var(--color-gold-bright)" />
+            <stop offset="100%" stopColor="var(--color-gold-deep)" />
           </linearGradient>
         </defs>
       </svg>

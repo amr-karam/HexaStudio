@@ -166,7 +166,7 @@ export function ContactFormSection({
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <SilkShaderBackground speed={0.3} opacity={0.12} />
         <div className="absolute inset-0 gradient-radial-gold" />
-        <RadialGlow color="#D4AF37" size={500} top="-100px" right="-100px" blur={50} opacity={0.06} />
+        <RadialGlow color="var(--color-gold)" size={500} top="-100px" right="-100px" blur={50} opacity={0.06} />
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-sl-gold-subtle/10 blur-[120px] rounded-full" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-sl-gold-subtle/5 blur-[120px] rounded-full" />
       </div>

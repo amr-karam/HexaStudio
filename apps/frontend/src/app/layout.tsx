@@ -12,8 +12,8 @@ import { AnimationDebugLoader } from "@/components/dev/AnimationDebugLoader";
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#050508" },
+    { media: "(prefers-color-scheme: light)", color: "var(--color-foreground)" },
+    { media: "(prefers-color-scheme: dark)", color: "var(--color-void)" },
   ],
 };
 

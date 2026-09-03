@@ -1,7 +1,0 @@
-fix(tokens): align visual design tokens to canonical gold (#D4AF37) and consolidate fonts
-
-- Update sl-gold-subtle, sl-gold-hover, sl-gold-rgb from rgba(196,176,145) to #D4AF37 (canonical HEXA gold)
-- Align sl-heading-font and sl-body-font to Playfair Display / Inter (remove Cormorant Garamond, Jost)
-- Fix all inline gold usages in globals.css and silent-luxury-tokens.css
-
-Design System compliance: DES_API_001 (unique gold), DES_TYPO_001 (single font stack)

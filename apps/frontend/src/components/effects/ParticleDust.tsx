@@ -4,6 +4,7 @@ import { useRef, useMemo, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { BufferGeometry, BufferAttribute, PointsMaterial, Points, Color } from 'three';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { GOLD } from '@/lib/color-tokens';
 
 /* -------------------------------------------------------------------------- */
 /*  Types                                                                      */
@@ -27,7 +28,7 @@ export default function ParticleDust({
   count = 200,
   spread = 8,
   size = 0.02,
-  color = '#D4AF37',
+  color = GOLD,
   opacity = 0.15,
   visible = true,
 }: Props) {

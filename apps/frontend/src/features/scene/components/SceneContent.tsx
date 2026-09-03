@@ -8,6 +8,7 @@ import { Hotspot } from './Hotspot';
 import { ProjectHotspot } from '@hexastudio/types';
 import { useDesignerStore } from '../store/designer-store';
 import { MATERIAL_PRESETS, MaterialPresetConfig } from '../config/material-presets';
+import { GOLD, GOLD_BRIGHT, FOREGROUND, SURFACE, OBSIDIAN, VOID } from '@/lib/color-tokens';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 
 interface SceneContentProps {
@@ -24,14 +25,14 @@ interface SceneContentProps {
 function statusAccent(status?: string): string {
   const s = (status ?? '').toLowerCase();
   if (s.includes('won') || s.includes('active') || s.includes('deliver') || s.includes('completed'))
-    return '#D4AF37'; // gold — live / delivered
+    return GOLD; // gold — live / delivered
   if (s.includes('proposal') || s.includes('negotiation') || s.includes('review'))
-    return '#7BA7FF'; // blue — in progress / review
+    return GOLD_BRIGHT; // gold-bright — in progress / review
   if (s.includes('consult') || s.includes('qualif') || s.includes('contact'))
-    return '#9B8CFF'; // violet — early pipeline
+    return OBSIDIAN; // obsidian — early pipeline
   if (s.includes('lost') || s.includes('archiv'))
-    return '#6B7280'; // gray — closed
-  return '#D4AF37'; // default gold
+    return SURFACE; // surface — closed
+  return GOLD; // gold — default
 }
 
 // Column footprints: 4 corners + 2 mid-points along the long edges.
@@ -129,7 +130,7 @@ function ProceduralArchitecture({ accent, materialPreset }: { accent: string; ma
       // Glass facade panels (thin flat glazing).
       glassGeom: new BoxGeometry(1.4, 1.8, 0.04),
       glassMat: new MeshPhysicalMaterial({
-        color: new Color('#ffffff'),
+        color: new Color(FOREGROUND),
         roughness: 0.05,
         metalness: 0,
         transmission: 0.9,
@@ -193,7 +194,7 @@ function ProceduralArchitecture({ accent, materialPreset }: { accent: string; ma
         <mesh castShadow receiveShadow position={[0, 0.3, 0]}>
           <boxGeometry args={[6, 0.2, 4]} />
           <meshPhysicalMaterial
-            color="#1a1a1f"
+            color={OBSIDIAN}
             roughness={0.7}
             metalness={0.1}
             envMapIntensity={1}
@@ -322,8 +323,7 @@ export const SceneContent = ({
        >
          <planeGeometry args={[100, 100]} />
          <meshPhysicalMaterial
-           color="#050505"
-           roughness={0.4}
+           color={VOID}
            metalness={0.1}
          />
        </mesh>

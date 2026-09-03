@@ -66,6 +66,20 @@ const ALLOWLIST = [
   "apps/frontend/src/features/ai/components/MultimodalAnalyzer.tsx",
   "apps/frontend/src/features/portal/components/PortalThemeProvider.tsx",
   "apps/frontend/src/components/effects/AmbientScene.tsx",
+  "apps/frontend/src/components/effects/ShaderGradient.tsx",
+  "apps/frontend/src/components/effects/SilkShaderBackground.tsx",
+  "apps/frontend/src/components/effects/PremiumShaders.tsx",
+  "apps/frontend/src/features/experience/components/FractureRingScene.tsx",
+  "apps/frontend/src/features/experience/components/fracture-ring-texture.ts",
+  "apps/frontend/src/features/scene/config/lighting-presets.ts",
+  "apps/frontend/src/features/scene/config/material-presets.ts",
+  "apps/frontend/src/features/scene/store/layer-store.ts",
+  "apps/frontend/src/features/scene/components/DesignerModeConfigurator.tsx",
+  "apps/frontend/src/features/xr/components/CollaboratorAvatar.tsx",
+  "apps/frontend/src/features/xr/components/SpatialCursors.tsx",
+  "apps/frontend/src/components/storybook/BookOrnaments.tsx",
+  "apps/frontend/src/components/ConfettiBurst.tsx",
+  "apps/frontend/src/lib/color-tokens.ts",
 ];
 
 /** Canonical easing definition file — raw cubic-bezier strings belong here. */

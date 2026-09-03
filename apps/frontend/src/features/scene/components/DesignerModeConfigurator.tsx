@@ -8,6 +8,7 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { GOLD } from '@/lib/color-tokens';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDesignerStore, LightingPreset, MaterialPreset } from '../store/designer-store';
 
@@ -121,7 +122,7 @@ export function DesignerModeConfigurator() {
           atmosphere: 'Sophisticated Luxury & Spatial Balance',
           recommendedLighting: lighting,
           recommendedMaterial: material,
-          colorPalette: ['#121212', '#D4AF37', '#707070', '#F5F5F7'],
+          colorPalette: ['#121212', GOLD, '#707070', '#F5F5F7'],
           designRationale: `Synthesized design brief for "${aiPrompt}". Configured ${lighting} lighting and ${material} PBR surfaces to maximize architectural depth and luxury perception.`,
         });
         setLighting(lighting);

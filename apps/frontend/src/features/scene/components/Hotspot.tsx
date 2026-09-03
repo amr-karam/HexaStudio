@@ -11,6 +11,7 @@ import {
   MeshBasicMaterial,
   MeshStandardMaterial,
 } from 'three';
+import { GOLD_BRIGHT, FOREGROUND } from '@/lib/color-tokens';
 
 interface HotspotProps {
   hotspot: ProjectHotspot;
@@ -48,28 +49,28 @@ export const Hotspot = ({ hotspot }: HotspotProps) => {
   const materials = useMemo(
     () => ({
       ringOuter: new MeshBasicMaterial({
-        color: '#E5C76B',
+        color: GOLD_BRIGHT,
         transparent: true,
         opacity: 0.4,
       }),
       ringOuterHover: new MeshBasicMaterial({
-        color: '#E5C76B',
+        color: GOLD_BRIGHT,
         transparent: true,
         opacity: 1,
       }),
       ringActive: new MeshBasicMaterial({
-        color: '#E5C76B',
+        color: GOLD_BRIGHT,
         transparent: true,
         opacity: 0.8,
       }),
       sphere: new MeshStandardMaterial({
-        color: '#ffffff',
-        emissive: '#ffffff',
+        color: FOREGROUND,
+        emissive: FOREGROUND,
         emissiveIntensity: 2,
       }),
       sphereHover: new MeshStandardMaterial({
-        color: '#E5C76B',
-        emissive: '#E5C76B',
+        color: GOLD_BRIGHT,
+        emissive: GOLD_BRIGHT,
         emissiveIntensity: 2,
       }),
       // Invisible material for touch target.

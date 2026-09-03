@@ -2,6 +2,7 @@
 
 import { useRef, useEffect } from 'react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { GOLD } from '@/lib/color-tokens';
 
 interface Dot {
   x: number;
@@ -55,7 +56,7 @@ export function ConfettiBurst({ trigger }: { trigger: boolean }) {
         d.vy += 0.08;
         d.life -= 0.015;
         ctx.globalAlpha = Math.max(d.life, 0);
-        ctx.fillStyle = '#D4AF37';
+        ctx.fillStyle = GOLD;
         ctx.beginPath();
         ctx.arc(d.x, d.y, d.size, 0, Math.PI * 2);
         ctx.fill();

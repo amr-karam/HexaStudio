@@ -4,6 +4,7 @@ import { Canvas, useThree, useFrame } from '@react-three/fiber';
 import { Suspense, useRef, useState, useEffect, useMemo } from 'react';
 import { Mesh, ShaderMaterial, Color, BufferGeometry, BufferAttribute, Points, PointsMaterial, AdditiveBlending } from 'three';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { VOID, OBSIDIAN, OBSIDIAN_RAISED, GOLD, GOLD_BRIGHT, GOLD_DEEP } from '@/lib/color-tokens';
 
 /* -------------------------------------------------------------------------- */
 /*  Premium Shader Definitions                                                 */
@@ -144,12 +145,12 @@ const glassFragmentShader = /* glsl */ `
 /* -------------------------------------------------------------------------- */
 
 const PREMIUM = {
-  void: '#0A0A0B',
-  obsidian: '#0F0F10',
-  obsidianRaised: '#161618',
-  gold: '#D4AF37',
-  goldBright: '#E5C76B',
-  goldDeep: '#A8862E',
+  void: VOID,
+  obsidian: OBSIDIAN,
+  obsidianRaised: OBSIDIAN_RAISED,
+  gold: GOLD,
+  goldBright: GOLD_BRIGHT,
+  goldDeep: GOLD_DEEP,
 };
 
 /* -------------------------------------------------------------------------- */
@@ -169,7 +170,7 @@ interface PremiumGradientProps {
 
 export function PremiumGradient({
   color1 = PREMIUM.obsidian,
-  color2 = '#0a1128',
+  color2 = OBSIDIAN,
   color3 = PREMIUM.void,
   goldColor = PREMIUM.gold,
   speed = 0.12,
@@ -441,7 +442,7 @@ export function PremiumScene({
         <div
           className="fixed inset-0 pointer-events-none"
           style={{
-            background: 'radial-gradient(ellipse at 50% 50%, #0F0F10 0%, #0a1128 50%, #0A0A0B 100%)',
+            background: `radial-gradient(ellipse at 50% 50%, ${PREMIUM.obsidian} 0%, ${OBSIDIAN} 50%, ${PREMIUM.void} 100%)`,
           }}
         />
       </div>

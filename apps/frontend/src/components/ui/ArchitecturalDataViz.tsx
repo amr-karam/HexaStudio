@@ -84,8 +84,8 @@ export const ArchitecturalDataViz: React.FC<ArchitecturalDataVizProps> = ({
         <svg className="w-full h-full overflow-visible" viewBox="0 0 400 120" preserveAspectRatio="none">
           <defs>
             <linearGradient id="artisanGoldGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#D4AF37" stopOpacity="0.4" />
-              <stop offset="100%" stopColor="#D4AF37" stopOpacity="0.0" />
+              <stop offset="0%" stopColor="var(--color-gold)" stopOpacity="0.4" />
+              <stop offset="100%" stopColor="var(--color-gold)" stopOpacity="0.0" />
             </linearGradient>
           </defs>
 
@@ -99,7 +99,7 @@ export const ArchitecturalDataViz: React.FC<ArchitecturalDataVizProps> = ({
           <path
             d="M 0,100 Q 100,20 200,60 T 400,10"
             fill="none"
-            stroke="#D4AF37"
+            stroke="var(--color-gold)"
             strokeWidth="3"
             className="artisan-chart-path drop-shadow-[0_0_10px_rgba(212,175,55,0.5)]"
           />

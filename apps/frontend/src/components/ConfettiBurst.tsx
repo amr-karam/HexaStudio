@@ -3,6 +3,7 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
+import { GOLD, GOLD_BRIGHT, GOLD_DEEP } from '@/lib/color-tokens';
 
 /* -------------------------------------------------------------------------- */
 /*  Types                                                                      */
@@ -45,9 +46,9 @@ interface Particle {
 /* -------------------------------------------------------------------------- */
 
 const CONFETTI_COLORS = [
-  '#D4AF37', // gold
-  '#E5C76B', // gold-bright
-  '#A8862E', // gold-deep
+  GOLD, // gold
+  GOLD_BRIGHT, // gold-bright
+  GOLD_DEEP, // gold-deep
   '#FFD700', // bright gold
   '#C9B037', // old gold
   '#B8860B', // dark goldenrod

@@ -10,7 +10,7 @@ interface RadialGlowProps {
 }
 
 export function RadialGlow({
-  color = '#D4AF37',
+  color = "var(--color-gold)",
   size = 500,
   top,
   right,

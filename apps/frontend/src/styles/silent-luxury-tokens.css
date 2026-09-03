@@ -206,7 +206,7 @@
 /* Gold hairline accent — reveals on hover */
 .sl-accent-line {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(196, 176, 145, 0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
   width: 0;
   transition: width var(--sl-duration-ui) var(--sl-ease-transition);
   margin: 0 auto;
@@ -237,7 +237,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(196, 176, 145, 0.04), transparent);
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.04), transparent);
   opacity: 0;
   transition: opacity var(--sl-duration-ui) var(--sl-ease-transition);
 }
@@ -258,7 +258,7 @@
 /* Focus state — luxury ring */
 .sl-btn:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px var(--sl-void), 0 0 0 4px rgba(196, 176, 145, 0.2);
+  box-shadow: 0 0 0 2px var(--sl-void), 0 0 0 4px rgba(212, 175, 55, 0.2);
 }
 
 /* Simplified navigation */
