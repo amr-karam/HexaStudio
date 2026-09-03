@@ -220,3 +220,4 @@ fix_*.js
 
 # Framer secret (server-only)
 .env.framer
+hexastudio-backend.tar
