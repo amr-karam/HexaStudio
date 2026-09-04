@@ -1,10 +1,11 @@
-import type { Metadata } from 'next';
 import { BentoGrid, BentoCard } from '@/features/portal/components/BentoGrid';
+import { createMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Bento Grid System | HEXA Studio',
-  description: 'HEXA Studio Bento Grid component showcase — variants, spans, and layouts.',
-};
+export const metadata = createMetadata({
+  title: 'Bento Grid System',
+  description: 'HEXA Studio Bento Grid component showcase — variants, spans, and layouts for premium dashboard experiences.',
+  path: '/demo/bento',
+});
 
 const SAMPLE_STATS = [
   {

@@ -7,6 +7,10 @@ import { CommandPalette } from '@/features/portal/components/CommandPalette';
 export const metadata: Metadata = {
   title: 'Client Portal | HEXA Studio',
   description: 'The digital headquarters for every HEXA Studio client. Track projects, approve deliverables, and collaborate in real-time.',
+  robots: {
+    index: false,
+    follow: false,
+  },
   openGraph: {
     title: 'HexaStudio Client Portal',
     description: 'The digital headquarters for every HEXA Studio client.',
@@ -14,7 +18,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://hexastudio.net/og-image.png',
+        url: 'https://hexastudio.net/logo.svg',
         width: 1200,
         height: 630,
         alt: 'HexaStudio Client Portal',
@@ -25,7 +29,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'HexaStudio Client Portal',
     description: 'The digital headquarters for every HEXA Studio client.',
-    images: ['https://hexastudio.net/og-image.png'],
+    images: ['https://hexastudio.net/logo.svg'],
   },
 };
 

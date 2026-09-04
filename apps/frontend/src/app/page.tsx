@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     images: [
       {
-        url: "https://hexastudio.net/og-image.png",
+        url: "https://hexastudio.net/logo.svg",
         width: 1200,
         height: 630,
         alt: "HexaStudio — Architectural Visualization Studio",
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     title: "HexaStudio — Architectural Visualization Studio",
     description:
       "Immersive 3D architectural experiences and spatial intelligence for ambitious projects worldwide.",
-    images: ["https://hexastudio.net/og-image.png"],
+    images: ["https://hexastudio.net/logo.svg"],
     creator: "@hexastudio",
   },
 };

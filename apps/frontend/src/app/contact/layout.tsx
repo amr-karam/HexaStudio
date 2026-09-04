@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://hexastudio.net/og-image.png",
+        url: "https://hexastudio.net/logo.svg",
         width: 1200,
         height: 630,
         alt: "Contact HexaStudio",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     title: "Contact HexaStudio — Start a Conversation",
     description:
       "Let's create something extraordinary. Reach out to begin your architectural visualization project.",
-    images: ["https://hexastudio.net/og-image.png"],
+    images: ["https://hexastudio.net/logo.svg"],
   },
 };
 export default function ContactLayout({

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://hexastudio.net/og-image.png",
+        url: "https://hexastudio.net/logo.svg",
         width: 1200,
         height: 630,
         alt: "HexaStudio Blog — Architectural Visualization Insights",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     title: "HexaStudio Blog — Architectural Visualization Insights",
     description:
       "Insights on architectural visualization, 3D technology, and spatial design.",
-    images: ["https://hexastudio.net/og-image.png"],
+    images: ["https://hexastudio.net/logo.svg"],
   },
 };
 export default function BlogLayout({

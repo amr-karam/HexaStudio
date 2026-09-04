@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://hexastudio.net/og-image.png',
+        url: 'https://hexastudio.net/logo.svg',
         width: 1200,
         height: 630,
         alt: 'HexaStudio AI — Architectural Design Assistant',
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     title: 'HexaStudio AI — Architectural Design Assistant',
     description:
       'Intelligent spatial analysis, material suggestions, and real-time architectural design conversation.',
-    images: ['https://hexastudio.net/og-image.png'],
+    images: ['https://hexastudio.net/logo.svg'],
   },
 };
 

@@ -23,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
         type: 'website',
         images: [
           {
-            url: 'https://hexastudio.net/og-image.png',
+            url: 'https://hexastudio.net/logo.svg',
             width: 1200,
             height: 630,
             alt: 'HexaStudio Blog — Architectural Visualization Insights',
@@ -34,7 +34,7 @@ export async function generateMetadata(): Promise<Metadata> {
         card: 'summary_large_image',
         title: 'HexaStudio Blog — Architectural Visualization Insights',
         description,
-        images: ['https://hexastudio.net/og-image.png'],
+        images: ['https://hexastudio.net/logo.svg'],
       },
     };
   }
@@ -49,7 +49,7 @@ export async function generateMetadata(): Promise<Metadata> {
       type: 'website',
       images: [
         {
-          url: 'https://hexastudio.net/og-image.png',
+          url: 'https://hexastudio.net/logo.svg',
           width: 1200,
           height: 630,
           alt: 'HexaStudio Blog — Architectural Visualization Insights',
@@ -60,7 +60,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title: 'HexaStudio Blog — Architectural Visualization Insights',
       description: 'Insights on spatial design, real-time technology, and architectural visualization.',
-      images: ['https://hexastudio.net/og-image.png'],
+      images: ['https://hexastudio.net/logo.svg'],
     },
   };
 }

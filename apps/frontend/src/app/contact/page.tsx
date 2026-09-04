@@ -1,5 +1,3 @@
-'use client';
-
 import { ContactFormSection } from '@/features/contact';
 
 export default function ContactPage() {

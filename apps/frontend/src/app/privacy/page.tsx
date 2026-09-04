@@ -25,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
       type: 'website',
       images: [
         {
-          url: 'https://hexastudio.net/og-image.png',
+          url: 'https://hexastudio.net/logo.svg',
           width: 1200,
           height: 630,
           alt: 'HexaStudio Privacy Policy',
@@ -36,7 +36,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title: `${title} | HexaStudio`,
       description,
-      images: ['https://hexastudio.net/og-image.png'],
+      images: ['https://hexastudio.net/logo.svg'],
     },
   };
 }
