@@ -1,5 +1,3 @@
-'use client';
-
 import { Agent } from "@/registry/blocks/agent/agent";
 
 export default function AIPage() {

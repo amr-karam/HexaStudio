@@ -1,29 +1,12 @@
 import type { Metadata, Viewport } from 'next';
+import { createMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createMetadata({
   title: 'XR Viewer — HEXA Studio',
-  description: 'Immersive 3D architectural walkthrough in AR and VR — experience spaces before they exist.',
-  openGraph: {
-    title: 'HexaStudio XR Viewer — Immersive Architectural Walkthrough',
-    description: 'Immersive 3D architectural walkthrough in AR and VR.',
-    url: 'https://hexastudio.net/xr-viewer',
-    type: 'website',
-    images: [
-      {
-        url: 'https://hexastudio.net/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'HexaStudio XR Viewer — Immersive Architectural Walkthrough',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'HexaStudio XR Viewer — Immersive Architectural Walkthrough',
-    description: 'Immersive 3D architectural walkthrough in AR and VR.',
-    images: ['https://hexastudio.net/og-image.png'],
-  },
-};
+  description:
+    'Immersive WebXR architectural visualization. Explore 1:1 scale AR projections and spatial models in your browser.',
+  path: '/xr-viewer',
+});
 
 export const viewport: Viewport = {
   width: 'device-width',

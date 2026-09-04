@@ -1,15 +1,12 @@
 import type { Metadata } from 'next';
-import { siteTitleSegment } from '@/lib/site-title';
+import { createMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: siteTitleSegment('Flowdeck — Coming Soon'),
-  description: 'Flowdeck is launching soon. Join the waitlist for early access.',
-  openGraph: {
-    title: 'Flowdeck — Coming Soon',
-    description: 'Flowdeck is launching soon. Join the waitlist for early access.',
-    type: 'website',
-  },
-};
+export const metadata: Metadata = createMetadata({
+  title: 'Flowdeck — Coming Soon',
+  description:
+    'Flowdeck is launching soon. Join the waitlist for early access to HEXA Studio next-generation creative workflow platform.',
+  path: '/flowdeck',
+});
 
 export default function FlowdeckLayout({ children }: { children: React.ReactNode }) {
   return children;

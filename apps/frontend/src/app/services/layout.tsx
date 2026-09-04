@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://hexastudio.net/og-image.png",
+        url: "https://hexastudio.net/logo.svg",
         width: 1200,
         height: 630,
         alt: "HexaStudio Services — Architectural Visualization",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     title: "HexaStudio Services — Architectural Visualization",
     description:
       "From photorealistic stills to interactive 3D walkthroughs — services born from curiosity.",
-    images: ["https://hexastudio.net/og-image.png"],
+    images: ["https://hexastudio.net/logo.svg"],
   },
 };
 export default function ServicesLayout({

@@ -1,4 +1,5 @@
 'use client';
+
 import { EASE } from '@/lib/motion';
 
 import { useMemo, useState, useEffect } from 'react';

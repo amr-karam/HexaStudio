@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://hexastudio.net/og-image.png",
+        url: "https://hexastudio.net/logo.svg",
         width: 1200,
         height: 630,
         alt: "HexaStudio Projects — Architectural Visualization Portfolio",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     title: "HexaStudio Projects — Architectural Visualization Portfolio",
     description:
       "Explore our curated collection of architectural visualization projects worldwide.",
-    images: ["https://hexastudio.net/og-image.png"],
+    images: ["https://hexastudio.net/logo.svg"],
   },
 };
 export default function ProjectsLayout({

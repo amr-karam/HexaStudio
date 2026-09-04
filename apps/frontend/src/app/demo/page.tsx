@@ -1,30 +1,11 @@
-import type { Metadata } from 'next';
+import { createMetadata } from '@/lib/seo';
 import DemoCodeBlock from '@/components/ui/DemoCodeBlock';
 
-export const metadata: Metadata = {
+export const metadata = createMetadata({
   title: 'Demo',
   description: 'Explore HexaStudio demo features and capabilities — architectural visualization components and interactive showcases.',
-  openGraph: {
-    title: 'HexaStudio Demo — Features & Capabilities',
-    description: 'Explore HexaStudio demo features and capabilities.',
-    url: 'https://hexastudio.net/demo',
-    type: 'website',
-    images: [
-      {
-        url: 'https://hexastudio.net/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'HexaStudio Demo — Features & Capabilities',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'HexaStudio Demo — Features & Capabilities',
-    description: 'Explore HexaStudio demo features and capabilities.',
-    images: ['https://hexastudio.net/og-image.png'],
-  },
-};
+  path: '/demo',
+});
 
 export default function DemoPage() {
   return (
