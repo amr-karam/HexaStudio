@@ -6,6 +6,14 @@ import { useQuery } from '@tanstack/react-query';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { API_BASE_URL } from '@/config/constants';
 
+const API_TIMEOUT_MS = 6000;
+
+function abortFetch(url: string): Promise<Response> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+  return fetch(url, { signal: controller.signal }).finally(() => clearTimeout(timeout));
+}
+
 interface DashboardData {
   total_revenue: number;
   total_expenses: number;
@@ -86,7 +94,7 @@ export default function AdminAccountingPage() {
   const { data: dashboard, isLoading: dashLoading } = useQuery<DashboardData>({
     queryKey: ['accounting-dashboard'],
     queryFn: async () => {
-      const r = await fetch(`${API_BASE_URL}/api/accounting/dashboard`);
+      const r = await abortFetch(`${API_BASE_URL}/api/accounting/dashboard`);
       if (!r.ok) throw new Error('Failed');
       return r.json();
     },
