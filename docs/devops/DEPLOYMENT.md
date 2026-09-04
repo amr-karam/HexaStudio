@@ -23,9 +23,9 @@ We treat infrastructure as **Code**. There are no "manual" server changes. Every
 ## 3. THE DEPLOYMENT PIPELINE (CI/CD)
 
 ### I. The Git-Flow Pipeline
-- **Develop Branch:** Auto-deploys to the `dev` environment on every merge.
-- **Stage Branch:** Auto-deploys to the `stage` environment after QA approval.
-- **Main Branch:** Manual trigger for production deployment.
+- **`develop` Branch:** Auto-deploys to the `staging` environment on every push via GitLab CI/CD.
+- **`main` Branch:** Manual trigger (with approval gate) for production deployment via GitLab CI/CD.
+- **Feature branches:** CI pipeline runs quality gates only (no deploy).
 
 ### II. The Deployment Sequence
 1. **Lint & Test:** Run `npm run lint` and `vitest`.
@@ -60,27 +60,6 @@ A deployment is "DevOps-Done" only when:
 
 ## 6. DNS MANAGEMENT (Hostinger)
 
-DNS records for `hexastudio.net` are managed via the Hostinger API using `scripts/update-dns.sh`.
-
-### Environment Requirements
-The script reads from the repo root `.env` (gitignored):
-
-```env
-HOSTINGER_API_KEY=${HOSTINGER_API_KEY}
-DNS_DOMAIN=hexastudio.net
-SERVER_IP=19.16.1.100
-```
-
-### Security
-- **Never commit the API key.** The old hardcoded key was removed from `scripts/update-dns.sh`.
-- Store `HOSTINGER_API_KEY` only in `.env` on the server or in your password manager.
-- Rotate the key in Hostinger → re-import API clients → update `.env` on all environments.
-
-### Running the Update
-```bash
-bash scripts/update-dns.sh
-```
-
-The script will fail fast with a clear error if `HOSTINGER_API_KEY` is not set.
+DNS records for `hexastudio.net` are managed via **Cloudflare** (proxy orange cloud for CDN + WAF). All production DNS, SSL, and edge routing is configured through the Cloudflare dashboard + `cloudflared` tunnel (`4137e139` tunnel at `19.16.1.100`).
 
 *“Stability is the invisible foundation of luxury.”*

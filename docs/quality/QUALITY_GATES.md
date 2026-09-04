@@ -137,8 +137,8 @@ When modifying frontend code, these additional checks are mandatory:
 
 ## Gate 2: CI Gate
 
-**Owner:** CI Pipeline (GitHub Actions)  
-**When:** On every push / PR
+**Owner:** CI Pipeline (GitLab CI/CD)  
+**When:** On every push / MR
 
 ### Automated Checks
 
