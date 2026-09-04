@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://hexastudio.net/og-image.png',
+        url: 'https://hexastudio.net/logo.svg',
         width: 1200,
         height: 630,
         alt: 'HexaStudio Client Login',
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'HexaStudio Client Login',
     description: 'Secure access to your project gateway.',
-    images: ['https://hexastudio.net/og-image.png'],
+    images: ['https://hexastudio.net/logo.svg'],
   },
 };
 
