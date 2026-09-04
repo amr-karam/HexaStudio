@@ -113,7 +113,7 @@ export function createMetadata(opts: SeoOptions): Metadata {
     description,
     alternates: {
       canonical: ogUrl,
-      languages: buildHreflang(path),
+      // languages: buildHreflang(path), // TBI — enable when i18n locale subdirs are implemented
     },
     openGraph: {
       title: ogTitle,
