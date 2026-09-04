@@ -52,7 +52,6 @@
     "@sentry/nextjs": "^10.65.0",
     "axios": "^1.18.1",
     "framer-motion": "^11.18.2",
-    "hermes-parser": "^0.37.0",
     "lucide-react": "^0.460.0",
     "react-error-boundary": "^6.1.2",
     "tui": "^1.0.0"
@@ -66,7 +65,10 @@
     "@typescript-eslint/eslint-plugin": "^8.66.0",
     "@typescript-eslint/parser": "^8.66.0",
     "axe-core": "^4.13.0",
+    "babel-plugin-syntax-hermes-parser": "^0.37.0",
     "caniuse-lite": "^1.0.30001806",
+    "hermes-estree": "^0.37.0",
+    "hermes-parser": "^0.37.0",
     "jest-axe": "^11.0.0",
     "react-test-renderer": "^19.2.8",
     "turbo": "^2.10.4"

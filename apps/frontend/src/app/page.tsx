@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { HomeHero } from "@/features/portfolio/components/HomeHero";
+import { NewHomeHero } from "@/features/portfolio/components/NewHomeHero";
+import { NewHomeSections } from "@/features/portfolio/components/NewHomeSections";
 import { HomeChapterRail } from "@/features/portfolio/components/HomeChapterRail";
-import { HomeDynamicSections } from "@/features/portfolio/components/HomeDynamicSections";
 
 export const metadata: Metadata = {
   title: "HEXA STUDIO — Architectural Visualization",
@@ -37,11 +37,11 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   return (
     <div className="bg-sl-void text-sl-alabaster">
-      {/* CH. I — VISION (hero with motion-gated silk shader) */}
-      <HomeHero />
+      {/* CH. I — VISION (new single-canvas architectural plate hero) */}
+      <NewHomeHero />
 
       {/* Below-the-fold sections (client-only hydration) */}
-      <HomeDynamicSections />
+      <NewHomeSections />
 
       {/* Chapter navigation rail */}
       <HomeChapterRail />
