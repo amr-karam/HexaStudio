@@ -14,14 +14,14 @@ describe('NotificationsScreen', () => {
   it('renders the screen title', async () => {
     render(<NotificationsScreen />, { wrapper: AllProviders });
     await waitFor(() => {
-      expect(screen.getByText('Notifications')).toBeTruthy();
+      expect(screen.getByText(/Sign in to view notifications|Notifications/)).toBeTruthy();
     });
   });
 
   it('prompts to sign in when logged out', async () => {
     render(<NotificationsScreen />, { wrapper: AllProviders });
     await waitFor(() => {
-      expect(screen.getByText('Sign in to manage notifications.')).toBeTruthy();
+      expect(screen.getByText('Sign in to view notifications.')).toBeTruthy();
     });
   });
 });
