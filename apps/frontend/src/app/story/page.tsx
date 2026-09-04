@@ -1,5 +1,4 @@
-import { StoryScrollCarousel } from './story-scroll';
+import { StoryScroll } from './scroll';
 
-export { StoryScrollCarousel };
-
-export default StoryScrollCarousel;
+export { StoryScroll };
+export default StoryScroll;
