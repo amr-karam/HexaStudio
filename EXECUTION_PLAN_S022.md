@@ -20,7 +20,6 @@
 | SEO-005 | Frontend | Extend sitemap.ts for XR-viewer, photographer, studio, demo, flowdeck routes | 30m | ✅ Done |
 | SEO-006 | Frontend | Add `noindex` to admin/dashboard/portal pages via layout metadata | 20m | ✅ Done |
 | SEO-007 | QA | Lint, typecheck, tests, build validation | 45m | ✅ All pass |
-| SEO-008 | QA | Lighthouse SEO audit comparison | 30m | ✅ Done — score 1 on localhost:3001 |
 | SEO-008 | QA | Lighthouse SEO audit | AC-13 | ✅ Done — score 1, all 9 SEO audits pass |
 
 ---

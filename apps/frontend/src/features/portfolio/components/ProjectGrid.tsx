@@ -135,7 +135,7 @@ const ProjectCard = ({ title, category, image, index, onClick, isFocused, status
           transition={{ type: 'spring', stiffness: 150, damping: 20 }}
           className="transition-all duration-700 ease-out"
         >
-          <Card variant="solid" className="overflow-hidden p-0 aspect-[3/4]">
+          <Card className="overflow-hidden p-0 aspect-[3/4]">
             <div className="absolute inset-0 bg-sl-gold-subtle/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
             <div ref={imageClipRef} className="h-full w-full relative overflow-hidden bg-sl-obsidian-light">
               <div className="h-full w-full transition-transform duration-1000 ease-out-expo group-hover:scale-110">

@@ -221,3 +221,6 @@ fix_*.js
 # Framer secret (server-only)
 .env.framer
 hexastudio-backend.tar
+.lh-perf.json
+.tmp-lh-perf.json
+*.report.html

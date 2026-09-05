@@ -1,0 +1,524 @@
+/* -------------------------------------------------------------------------- */
+/*  Typography — Responsive Scale & Design Tokens                         */
+/*                                                                          */
+/*  Consumes the type-scale tokens defined in globals.css @theme:           */
+/*    --font-serif (Playfair Display / Bodoni Moda) — headings              */
+/*    --font-sans (Inter) — body                                            */
+/*    --font-mono (JetBrains Mono) — code                                   */
+/*                                                                          */
+/*  Responsive breakpoints follow the layout system: xs < sm < md < lg < xl */
+/* -------------------------------------------------------------------------- */
+
+/* -------------------------------------------------------------------------- */
+/*  Font Family Classes                                                    */
+/* -------------------------------------------------------------------------- */
+
+.font-serif {
+  font-family: var(--font-serif, 'Playfair Display', Georgia, serif);
+}
+
+.font-sans {
+  font-family: var(--font-sans, 'Inter', system-ui, -apple-system, sans-serif);
+}
+
+.font-mono {
+  font-family: var(--font-mono, 'JetBrains Mono', 'Fira Code', monospace);
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Font Weight Scale                                                      */
+/* -------------------------------------------------------------------------- */
+
+.font-light {
+  font-weight: 300;
+}
+
+.font-regular {
+  font-weight: 400;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Letter-Spacing (Tracking) Scale — Editorial                            */
+/* -------------------------------------------------------------------------- */
+
+.tracking-tighter {
+  letter-spacing: -0.04em;
+}
+
+.tracking-tight {
+  letter-spacing: -0.02em;
+}
+
+.tracking-normal {
+  letter-spacing: 0;
+}
+
+.tracking-wide {
+  letter-spacing: 0.05em;
+}
+
+.tracking-wider {
+  letter-spacing: 0.1em;
+}
+
+.tracking-[0.2em] {
+  letter-spacing: 0.2em;
+}
+
+.tracking-[0.25em] {
+  letter-spacing: 0.25em;
+}
+
+.tracking-[0.3em] {
+  letter-spacing: 0.3em;
+}
+
+.tracking-[0.35em] {
+  letter-spacing: 0.35em;
+}
+
+.tracking-[0.4em] {
+  letter-spacing: 0.4em;
+}
+
+.tracking-[0.5em] {
+  letter-spacing: 0.5em;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Line-Height Scale                                                      */
+/* -------------------------------------------------------------------------- */
+
+.leading-none {
+  line-height: 1;
+}
+
+.leading-tight {
+  line-height: 1.1;
+}
+
+.leading-snug {
+  line-height: 1.25;
+}
+
+.leading-normal {
+  line-height: 1.5;
+}
+
+.leading-relaxed {
+  line-height: 1.75;
+}
+
+.leading-[0.85] {
+  line-height: 0.85;
+}
+
+.leading-[0.9] {
+  line-height: 0.9;
+}
+
+.leading-[1.05] {
+  line-height: 1.05;
+}
+
+.leading-[1.8] {
+  line-height: 1.8;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Type Scale — Hard px sizes (per design review)                         */
+/*                                                                          */
+/*  H1 = 64px (4rem)  H2 = 48px (3rem)  H3 = 36px (2.25rem)               */
+/*  H4 = 24px (1.5rem)  H5 = 20px (1.25rem)  H6 = 18px (1.125rem)         */
+/*  Body = 18px (1.125rem)  Small = 14px (0.875rem)  Caption = 12px (0.75rem) */
+/* -------------------------------------------------------------------------- */
+
+/* === Display / Hero === */
+.text-hex-display {
+  font-size: var(--hex-responsive-text-5xl, 5rem);
+  line-height: var(--leading-[0.85], 0.85);
+  letter-spacing: -0.04em;
+}
+
+/* === H1 === */
+.text-hex-4xl,
+.heading-hex-1 {
+  font-size: var(--hex-responsive-text-4xl, 4rem);
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+}
+
+/* === H2 === */
+.text-hex-3xl,
+.heading-hex-2 {
+  font-size: var(--hex-responsive-text-3xl, 3rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+
+/* === H3 === */
+.text-hex-2xl,
+.heading-hex-3 {
+  font-size: var(--hex-responsive-text-2xl, 2.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+/* === H4 === */
+.text-hex-xl,
+.heading-hex-4 {
+  font-size: var(--hex-responsive-text-xl, 2rem);
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+
+/* === H5 === */
+.text-hex-lg,
+.heading-hex-5 {
+  font-size: var(--hex-responsive-text-lg, 1.5rem);
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+/* === H6 === */
+.text-hex-md,
+.heading-hex-6 {
+  font-size: var(--hex-responsive-text-md, 1.25rem);
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+/* === Body === */
+.text-hex-base,
+.body-text {
+  font-size: var(--hex-responsive-text-base, 1.125rem);
+  line-height: 1.75;
+  letter-spacing: 0;
+}
+
+/* === Small / Secondary === */
+.text-hex-sm {
+  font-size: var(--hex-responsive-text-sm, 0.875rem);
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+/* === Caption / Meta === */
+.text-hex-xs {
+  font-size: var(--hex-responsive-text-xs, 0.75rem);
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Typography Element Styles (apply font + weight + color)                */
+/* -------------------------------------------------------------------------- */
+
+.heading {
+  font-family: var(--font-serif, 'Playfair Display', Georgia, serif);
+  font-weight: 400;
+  color: var(--color-text-primary, #FFFFFF);
+}
+
+.body {
+  font-family: var(--font-sans, 'Inter', system-ui, sans-serif);
+  font-weight: 400;
+  color: var(--color-text-secondary, #A0A0A0);
+}
+
+.body-strong {
+  font-family: var(--font-sans, 'Inter', system-ui, sans-serif);
+  font-weight: 600;
+  color: var(--color-text-primary, #FFFFFF);
+}
+
+.caption {
+  font-family: var(--font-sans, 'Inter', system-ui, sans-serif);
+  font-weight: 400;
+  color: var(--color-text-muted, #6A6A6E);
+}
+
+.code {
+  font-family: var(--font-mono, 'JetBrains Mono', 'Fira Code', monospace);
+  font-weight: 400;
+  color: var(--color-accent, #D4AF37);
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Responsive Type Scale — Fluid Clamp()                                   */
+/*                                                                          */
+/*  These use clamp() for fluid scaling between breakpoints.               */
+/*  Prefer these for marketing/editorial contexts that span devices.        */
+/* -------------------------------------------------------------------------- */
+
+.text-fluid-display {
+  font-size: clamp(3rem, 7vw, 5rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.text-fluid-h1 {
+  font-size: clamp(2.25rem, 5vw, 4rem);
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+}
+
+.text-fluid-h2 {
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+
+.text-fluid-h3 {
+  font-size: clamp(1.25rem, 3vw, 2.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+.text-fluid-h4 {
+  font-size: clamp(1.125rem, 2.5vw, 2rem);
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+
+.text-fluid-body {
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
+  line-height: 1.75;
+  letter-spacing: 0;
+}
+
+.text-fluid-small {
+  font-size: clamp(0.875rem, 1.2vw, 0.875rem);
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Code / Monospace Styles                                                */
+/* -------------------------------------------------------------------------- */
+
+.code-block {
+  font-family: var(--font-mono, 'JetBrains Mono', 'Fira Code', monospace);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  letter-spacing: 0;
+  color: var(--color-accent, #D4AF37);
+  background: var(--color-obsidian, #0F0F10);
+  padding: var(--spacing-md, 0.75rem) var(--spacing-lg, 1rem);
+  border-radius: var(--spacing-sm, 0.5rem);
+  border: 1px solid var(--color-border, #333333);
+}
+
+.code-inline {
+  font-family: var(--font-mono, 'JetBrains Mono', 'Fira Code', monospace);
+  font-size: 0.875em;
+  line-height: 1.5;
+  color: var(--color-accent, #D4AF37);
+  background: rgba(212, 175, 55, 0.08);
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Text Color Variants                                                    */
+/* -------------------------------------------------------------------------- */
+
+.text-hex-primary {
+  color: var(--color-text-primary, #FFFFFF);
+}
+
+.text-hex-secondary {
+  color: var(--color-text-secondary, #A0A0A0);
+}
+
+.text-hex-muted {
+  color: var(--color-text-muted, #6A6A6E);
+}
+
+.text-hex-accent {
+  color: var(--color-accent, #D4AF37);
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Heading Color Modifiers                                                */
+/* -------------------------------------------------------------------------- */
+
+.heading-gold {
+  color: var(--color-gold, #D4AF37);
+}
+
+.heading-muted {
+  color: var(--color-text-muted, #6A6A6E);
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Responsive adjustments per breakpoint                                  */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 639px) {
+  .text-hex-4xl,
+  .heading-hex-1 {
+    font-size: 2.25rem;
+  }
+
+  .text-hex-3xl,
+  .heading-hex-2 {
+    font-size: 1.75rem;
+  }
+
+  .text-hex-2xl,
+  .heading-hex-3 {
+    font-size: 1.25rem;
+  }
+
+  .text-hex-xl,
+  .heading-hex-4 {
+    font-size: 1.125rem;
+  }
+
+  .text-hex-lg,
+  .heading-hex-5 {
+    font-size: 1rem;
+  }
+
+  .text-hex-base,
+  .body-text {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .text-hex-4xl,
+  .heading-hex-1 {
+    font-size: 3rem;
+  }
+
+  .text-hex-3xl,
+  .heading-hex-2 {
+    font-size: 2.25rem;
+  }
+
+  .text-hex-2xl,
+  .heading-hex-3 {
+    font-size: 1.75rem;
+  }
+
+  .text-hex-xl,
+  .heading-hex-4 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .text-hex-4xl,
+  .heading-hex-1 {
+    font-size: 4rem;
+  }
+
+  .text-hex-3xl,
+  .heading-hex-2 {
+    font-size: 3rem;
+  }
+
+  .text-hex-2xl,
+  .heading-hex-3 {
+    font-size: 2.25rem;
+  }
+
+  .text-hex-xl,
+  .heading-hex-4 {
+    font-size: 2rem;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Text Alignment                                                         */
+/* -------------------------------------------------------------------------- */
+
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Text Transform                                                         */
+/* -------------------------------------------------------------------------- */
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.lowercase {
+  text-transform: lowercase;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Text Decoration                                                        */
+/* -------------------------------------------------------------------------- */
+
+.underline {
+  text-decoration: underline;
+}
+
+.no-underline {
+  text-decoration: none;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Font Style                                                             */
+/* -------------------------------------------------------------------------- */
+
+.italic {
+  font-style: italic;
+}
+
+.not-italic {
+  font-style: normal;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Truncation                                                             */
+/* -------------------------------------------------------------------------- */
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

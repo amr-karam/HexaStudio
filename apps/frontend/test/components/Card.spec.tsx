@@ -1,151 +1,166 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+import { render, screen, cleanup } from '@testing-library/react';
 import { Card } from '@/components/ui/cards/Card';
 
-vi.mock('next/image', () => ({
-  default: (props: Record<string, unknown>) => <img alt={props.alt as string} src={props.src as string} />,
-}));
-
+// motion.div passthrough mock — strips framer-motion-only props and renders a
+// plain <div> so jsdom tests don't depend on animation side effects.
 vi.mock('framer-motion', () => {
   const filterProps = (props: Record<string, unknown>) => {
-    const { whileHover: _wh, whileTap: _wt, initial: _i, animate: _a, exit: _e, transition: _t, ...rest } = props;
-    return rest;
+    const motionOnly = new Set<string>([
+      'variants', 'initial', 'animate', 'exit', 'whileInView',
+      'whileHover', 'whileTap', 'viewport', 'custom', 'transition',
+      'onViewportEnter', 'onViewportLeave',
+    ]);
+    return Object.fromEntries(
+      Object.entries(props).filter(([k]) => !motionOnly.has(k)),
+    );
   };
   return {
     motion: {
       div: ({ children, className, ...props }: { children?: React.ReactNode; className?: string; [key: string]: unknown }) => (
         <div className={className} {...filterProps(props)}>{children}</div>
       ),
-      article: ({ children, className, ...props }: { children?: React.ReactNode; className?: string; [key: string]: unknown }) => (
-        <article className={className} {...filterProps(props)}>{children}</article>
-      ),
-      section: ({ children, className, ...props }: { children?: React.ReactNode; className?: string; [key: string]: unknown }) => (
-        <section className={className} {...filterProps(props)}>{children}</section>
-      ),
     },
   };
 });
 
+vi.mock('@/hooks/useReducedMotion', () => ({
+  useReducedMotion: () => false,
+}));
+
+afterEach(() => {
+  cleanup();
+});
+
 describe('Card', () => {
-  it('renders with a title', () => {
-    render(<Card title="Test Title" />);
-    expect(screen.getByText('Test Title')).toBeInTheDocument();
-  });
-
-  it('renders with a description', () => {
-    render(<Card description="A description" />);
-    expect(screen.getByText('A description')).toBeInTheDocument();
-  });
-
   it('renders children', () => {
     render(
       <Card>
         <span>Child content</span>
-      </Card>
+      </Card>,
     );
     expect(screen.getByText('Child content')).toBeInTheDocument();
   });
 
   it('renders as a div by default', () => {
-    const { container } = render(<Card title="Test" />);
-    expect(container.querySelector('div.relative')).toBeTruthy();
+    const { container } = render(
+      <Card className="test-class">
+        <span>Child</span>
+      </Card>,
+    );
+    expect(container.querySelector('div.test-class')).toBeTruthy();
   });
 
-  it('renders as an article when as="article"', () => {
-    render(<Card as="article" title="Article Card" />);
-    expect(screen.getByRole('article')).toBeInTheDocument();
-  });
-
-  it('renders as a section when as="section"', () => {
-    render(<Card as="section" title="Section Card" />);
-    // sections don't have an implicit role, query by tag name
-    const section = document.querySelector('section');
-    expect(section).toBeTruthy();
-  });
-
-  it('renders an image when image prop is provided', () => {
-    render(<Card title="With Image" image="/test.jpg" />);
-    const img = screen.getByAltText('With Image');
-    expect(img).toHaveAttribute('src', '/test.jpg');
-  });
-
-  it('uses title as image alt text', () => {
-    render(<Card title="My Project" image="/img.png" />);
-    expect(screen.getByAltText('My Project')).toBeInTheDocument();
-  });
-
-  it('uses fallback alt text when no title', () => {
-    render(<Card image="/img.png" />);
-    expect(screen.getByAltText('Project image')).toBeInTheDocument();
-  });
-
-  it('does not render image section when no image prop', () => {
-    const { container } = render(<Card title="No Image" />);
-    expect(container.querySelector('img')).toBeNull();
-  });
-
-  it('applies the featured variant by default', () => {
-    const { container } = render(<Card title="Test" />);
+  it('applies the default sm elevation', () => {
+    const { container } = render(
+      <Card>
+        <span>Child</span>
+      </Card>,
+    );
     const card = container.firstChild as HTMLElement;
-    expect(card.className).toContain('from-surface-light');
+    expect(card.className).toContain('shadow-sm');
   });
 
-  it('applies the minimal variant', () => {
-    const { container } = render(<Card title="Test" variant="minimal" />);
+  it('applies elevation classes', () => {
+    const { container } = render(
+      <Card elevation="lg">
+        <span>Child</span>
+      </Card>,
+    );
     const card = container.firstChild as HTMLElement;
-    expect(card.className).toContain('bg-transparent');
+    expect(card.className).toContain('shadow-lg');
   });
 
-  it('applies the glass variant', () => {
-    const { container } = render(<Card title="Test" variant="glass" />);
+  it('applies glass elevation', () => {
+    const { container } = render(
+      <Card elevation="glass">
+        <span>Child</span>
+      </Card>,
+    );
     const card = container.firstChild as HTMLElement;
     expect(card.className).toContain('artisan-glass');
   });
 
-  it('applies the solid variant', () => {
-    const { container } = render(<Card title="Test" variant="solid" />);
+  it('applies interactive cursor pointer when interactive=true', () => {
+    const { container } = render(
+      <Card interactive>
+        <span>Child</span>
+      </Card>,
+    );
     const card = container.firstChild as HTMLElement;
-    expect(card.className).toContain('bg-sl-obsidian');
+    expect(card.className).toContain('cursor-pointer');
   });
 
-  it('applies the luxury variant', () => {
-    const { container } = render(<Card title="Test" variant="luxury" />);
-    const card = container.firstChild as HTMLElement;
-    expect(card.className).toContain('border-sl-gold');
-  });
-
-  it('applies hover styles by default', () => {
-    const { container } = render(<Card title="Test" />);
-    const card = container.firstChild as HTMLElement;
-    expect(card.className).toContain('hover:');
-  });
-
-  it('disables hover styles when hover={false}', () => {
-    const { container } = render(<Card title="Test" hover={false} />);
-    const card = container.firstChild as HTMLElement;
-    // featured variant hover class should not be present
-    expect(card.className).not.toContain('hover:border-gold/30');
-  });
-
-  it('merges custom className', () => {
-    const { container } = render(<Card title="Test" className="custom-class" />);
+  it('applies custom className', () => {
+    const { container } = render(
+      <Card className="custom-class">
+        <span>Child</span>
+      </Card>,
+    );
     const card = container.firstChild as HTMLElement;
     expect(card.className).toContain('custom-class');
   });
 
-  it('renders title as h3 heading', () => {
-    render(<Card title="Heading Test" />);
-    const heading = screen.getByRole('heading', { level: 3 });
-    expect(heading).toHaveTextContent('Heading Test');
-  });
-
-  it('renders without title or description (children only)', () => {
+  it('renders Card.Header with children', () => {
     render(
       <Card>
-        <p>Just children</p>
-      </Card>
+        <Card.Header>Header content</Card.Header>
+      </Card>,
     );
-    expect(screen.getByText('Just children')).toBeInTheDocument();
-    expect(screen.queryByRole('heading')).toBeNull();
+    expect(screen.getByText('Header content')).toBeInTheDocument();
+  });
+
+  it('renders Card.Body with children', () => {
+    render(
+      <Card>
+        <Card.Body>Body content</Card.Body>
+      </Card>,
+    );
+    expect(screen.getByText('Body content')).toBeInTheDocument();
+  });
+
+  it('renders Card.Footer with children', () => {
+    render(
+      <Card>
+        <Card.Footer>Footer content</Card.Footer>
+      </Card>,
+    );
+    expect(screen.getByText('Footer content')).toBeInTheDocument();
+  });
+
+  it('renders with full compound structure', () => {
+    render(
+      <Card elevation="md" interactive>
+        <Card.Header>
+          <h3>Title</h3>
+        </Card.Header>
+        <Card.Body>Body content</Card.Body>
+        <Card.Footer>Footer content</Card.Footer>
+      </Card>,
+    );
+    expect(screen.getByText('Title')).toBeInTheDocument();
+    expect(screen.getByText('Body content')).toBeInTheDocument();
+    expect(screen.getByText('Footer content')).toBeInTheDocument();
+  });
+
+  it('does not apply interactive styles when interactive=false', () => {
+    const { container } = render(
+      <Card interactive={false}>
+        <span>Child</span>
+      </Card>,
+    );
+    const card = container.firstChild as HTMLElement;
+    expect(card.className).not.toContain('cursor-pointer');
+  });
+
+  it('merges padding classes from paddingResponsive', () => {
+    const { container } = render(
+      <Card paddingResponsive={{ base: 'md', lg: 'xl' }}>
+        <span>Child</span>
+      </Card>,
+    );
+    const card = container.firstChild as HTMLElement;
+    expect(card.className).toContain('p-3');
   });
 });

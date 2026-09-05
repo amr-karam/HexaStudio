@@ -1,5 +1,8 @@
 @import "tailwindcss";
 @import "../styles/artisan-tokens.css";
+@import "../components/ui/layout/layout.css";
+@import "../components/ui/typography/typography.css";
+@import "../components/ui/inputs/input.css";
 
 @theme {
   --color-background: #0A0A0B;
