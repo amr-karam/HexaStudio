@@ -1,18 +1,66 @@
 'use client';
 
 import * as React from 'react';
-import { Slot, Slottable } from '@radix-ui/react-slot';
 import { motion, type TargetAndTransition, type Transition } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'outline' | 'luxury' | 'couture' | 'glass';
-  size?: 'sm' | 'md' | 'lg' | 'icon';
-  isLoading?: boolean;
-  asChild?: boolean;
+/* -------------------------------------------------------------------------- */
+/*  Types                                                                     */
+/* -------------------------------------------------------------------------- */
+
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'ghost'
+  | 'danger'
+  | 'outline'
+  | 'luxury'
+  | 'couture'
+  | 'glass';
+
+export type ButtonSize = 'sm' | 'md' | 'lg' | 'icon';
+
+export type ButtonColor = 'gold' | 'silver' | 'neutral';
+
+export interface ButtonResponsiveSize {
+  base?: ButtonSize;
+  sm?: ButtonSize;
+  md?: ButtonSize;
+  lg?: ButtonSize;
+  xl?: ButtonSize;
+  '2xl'?: ButtonSize;
 }
 
-const variants = {
+type AsProp = { as?: React.ElementType };
+
+export interface ButtonProps
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'disabled'>,
+    AsProp {
+  variant?: ButtonVariant;
+  size?: ButtonSize | ButtonResponsiveSize;
+  color?: ButtonColor;
+  isLoading?: boolean;
+  isPressed?: boolean;
+  asChild?: boolean;
+  disabled?: boolean;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Size Token Maps                                                         */
+/* -------------------------------------------------------------------------- */
+
+const SIZE_CLASSES: Record<NonNullable<ButtonSize>, string> = {
+  sm: 'h-8 px-3 text-xs',
+  md: 'h-11 px-6 text-sm',
+  lg: 'h-14 px-8 text-base',
+  icon: 'h-9 w-9 p-0',
+};
+
+/* -------------------------------------------------------------------------- */
+/*  Variant Styles                                                          */
+/* -------------------------------------------------------------------------- */
+
+const VARIANT_CLASSES: Record<NonNullable<ButtonVariant>, string> = {
   primary:
     'bg-sl-gold-subtle text-background hover:bg-sl-gold-subtle/90 shadow-lg shadow-sl-gold-subtle/20 hover:shadow-[0_0_20px_rgba(212,175,55,0.15)]',
   secondary:
@@ -29,27 +77,26 @@ const variants = {
     'artisan-glass text-sl-alabaster hover:artisan-glass-gold hover:border-sl-gold-subtle/40 focus-visible:ring-sl-gold-subtle/60',
 };
 
-const sizes = {
-  sm: 'h-8 px-3 text-xs',
-  md: 'h-11 px-6 text-sm',
-  lg: 'h-14 px-8 text-base',
-  icon: 'h-9 w-9 p-0',
+/* -------------------------------------------------------------------------- */
+/*  Color Accent Helpers                                                    */
+/* -------------------------------------------------------------------------- */
+
+const COLOR_ACCENTS: Record<NonNullable<ButtonColor>, string> = {
+  gold: 'focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+  silver: 'focus-visible:ring-sl-silver/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+  neutral: 'focus-visible:ring-sl-mist/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
 };
 
-/**
- * The light sweep that travels across the button on hover.
- * Clipped to the button bounds via an inner overflow-hidden span so the
- * button itself does not need `overflow-hidden` (preserving focus ring offsets).
- */
+/* -------------------------------------------------------------------------- */
+/*  Sub-Components                                                          */
+/* -------------------------------------------------------------------------- */
+
 const Shimmer = () => (
   <span aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]">
     <span className="absolute top-0 -left-full h-full w-1/3 bg-gradient-to-r from-transparent via-white/25 to-transparent opacity-0 transition-transform duration-1000 ease-out group-hover:translate-x-[400%] group-hover:opacity-100" />
   </span>
 );
 
-/**
- * Thin gold ring spinner that matches the luxury aesthetic.
- */
 const LoadingSpinner = () => (
   <span
     aria-hidden
@@ -57,72 +104,144 @@ const LoadingSpinner = () => (
   />
 );
 
-// `motion.button`'s prop type overrides several DOM event handlers with
-// incompatible signatures (onAnimationStart, onDrag, etc.). We cast it to a
-// component that accepts standard `ButtonHTMLAttributes` plus the three motion
-// props we use, so the public `ButtonProps` interface stays unchanged and the
-// strict TS compiler stays happy.
-type MotionButtonComponent = React.ForwardRefExoticComponent<
-  React.ButtonHTMLAttributes<HTMLButtonElement> &
-    { whileHover?: TargetAndTransition; whileTap?: TargetAndTransition; transition?: Transition } &
-    React.RefAttributes<HTMLButtonElement>
+/* -------------------------------------------------------------------------- */
+/*  Resolve responsive size                                                 */
+/* -------------------------------------------------------------------------- */
+
+function resolveSizeClasses(size: ButtonSize | ButtonResponsiveSize | undefined): string {
+  if (!size) return SIZE_CLASSES.md;
+
+  if (typeof size === 'string') {
+    return SIZE_CLASSES[size] ?? SIZE_CLASSES.md;
+  }
+
+  const base = size.base ?? 'md';
+  const baseClasses = SIZE_CLASSES[base] ?? SIZE_CLASSES.md;
+
+  const responsiveMap: Record<string, string> = {};
+  const breakpoints: Array<keyof ButtonResponsiveSize> = ['sm', 'md', 'lg', 'xl', '2xl'];
+
+  for (const bp of breakpoints) {
+    const bpSize = size[bp];
+    if (bpSize && bpSize !== base) {
+      responsiveMap[bp] = SIZE_CLASSES[bpSize] ?? SIZE_CLASSES.md;
+    }
+  }
+
+  const parts = [baseClasses];
+  for (const bp of breakpoints) {
+    if (responsiveMap[bp]) {
+      parts.push(`${bp}:${responsiveMap[bp]}`);
+    }
+  }
+
+  return parts.join(' ');
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Motion Component Helper                                                */
+/* -------------------------------------------------------------------------- */
+
+type MotionComponent<T extends React.ElementType> = React.ForwardRefExoticComponent<
+  React.ComponentPropsWithoutRef<T> & {
+    whileHover?: TargetAndTransition;
+    whileTap?: TargetAndTransition;
+    transition?: Transition;
+  } & React.RefAttributes<React.ComponentRef<T>>
 >;
 
-const MotionButton = motion.button as unknown as MotionButtonComponent;
+function createMotionComponent<T extends React.ElementType>(
+  Component: T
+): MotionComponent<T> {
+  return motion(Component) as unknown as MotionComponent<T>;
+}
 
-// Radix `Slot` forwards all props to its single child at runtime, but its
-// TypeScript signature only declares `HTMLAttributes` (no `disabled` etc.).
-// We widen it to accept full button attributes so `disabled` and other button
-// props typecheck while still being forwarded to the slotted child.
-const SlotButton = Slot as unknown as React.ForwardRefExoticComponent<
-  React.ButtonHTMLAttributes<HTMLButtonElement> & React.RefAttributes<HTMLButtonElement>
->;
+/* -------------------------------------------------------------------------- */
+/*  Button Component                                                        */
+/* -------------------------------------------------------------------------- */
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
-    { className, variant = 'primary', size = 'md', isLoading = false, asChild = false, disabled, children, ...props },
+    {
+      className,
+      variant = 'primary',
+      size = 'md',
+      color = 'gold',
+      isLoading = false,
+      isPressed = false,
+      asChild = false,
+      as,
+      disabled,
+      children,
+      ...props
+    },
     ref
   ) => {
+    const resolvedSizeClasses = resolveSizeClasses(size);
+    const colorAccent = COLOR_ACCENTS[color];
+    const isDisabled = isLoading || disabled;
+
     const base = cn(
       'group relative inline-flex items-center justify-center rounded-full font-medium',
       'transition-all duration-300 ease-[var(--hexa-ease-interaction)]',
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+      'focus-visible:outline-none focus-visible:ring-2',
+      colorAccent,
       'disabled:opacity-50 disabled:pointer-events-none active:scale-95',
-      variants[variant],
-      sizes[size],
+      VARIANT_CLASSES[variant],
+      resolvedSizeClasses,
       className
     );
 
     const showShimmer = variant === 'primary' || variant === 'luxury' || variant === 'glass';
 
-    if (asChild) {
-      return (
-        <SlotButton ref={ref} className={base} disabled={isLoading || disabled} {...props}>
-          {showShimmer ? <Shimmer /> : null}
-          {isLoading ? <LoadingSpinner /> : null}
-          <Slottable>{children}</Slottable>
-        </SlotButton>
-      );
+    // As-child composition: clone the child element with our props
+    if (asChild && React.isValidElement(children)) {
+      return React.cloneElement(children, {
+        className: base,
+        'aria-disabled': isDisabled || undefined,
+        'aria-pressed': isPressed,
+      } as React.HTMLAttributes<HTMLElement>);
     }
 
+    // Polymorphic `as` prop
+    const MotionWrapper = as ? createMotionComponent(as) : motion.button;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const motionProps: any = as
+      ? {}
+      : {
+          whileHover: { scale: 1.02 },
+          whileTap: { scale: 0.98 },
+          transition: { type: 'spring', stiffness: 400, damping: 17 } as Transition,
+        };
+
+    const ariaProps: Record<string, unknown> = {
+      'aria-pressed': isPressed,
+    };
+    if (isDisabled) {
+      ariaProps['aria-disabled'] = true;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const elementProps: any = {
+      ref,
+      className: base,
+      disabled: isDisabled || undefined,
+      ...ariaProps,
+      ...motionProps,
+      ...props,
+    };
+
     return (
-      <MotionButton
-        ref={ref}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-        className={base}
-        disabled={isLoading || disabled}
-        {...props}
-      >
+      <MotionWrapper {...elementProps}>
         {showShimmer ? <Shimmer /> : null}
         {isLoading ? <LoadingSpinner /> : null}
         {children}
-      </MotionButton>
+      </MotionWrapper>
     );
   }
 );
 
 Button.displayName = 'Button';
 
-export { Button };
+Button.displayName = 'Button';
