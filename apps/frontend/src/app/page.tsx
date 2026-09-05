@@ -7,14 +7,15 @@ export const metadata: Metadata = {
   title: "HEXA STUDIO — Architectural Visualization",
   description:
     "Premium 3D architectural visualization and spatial intelligence studio. Immersive renders, real-time WebGL experiences, and cinematic walkthroughs for ambitious projects.",
+  alternates: { canonical: "https://hexastudio.net" },
   openGraph: {
     title: "HexaStudio — Architectural Visualization Studio",
     description:
       "Immersive 3D architectural experiences and spatial intelligence for ambitious projects worldwide.",
-    type: "website",
     url: "https://hexastudio.net",
     siteName: "HexaStudio",
     locale: "en_US",
+    type: "website",
     images: [
       {
         url: "https://hexastudio.net/logo.svg",

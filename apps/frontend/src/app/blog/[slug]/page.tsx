@@ -22,14 +22,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const baseUrl = 'https://hexastudio.net';
   const imageUrl = article.coverImage ? `${article.coverImage}?w=1200&q=80` : `${baseUrl}/logo.svg`;
+  const url = `${baseUrl}/blog/${article.slug}`;
 
   return {
     title: article.title,
     description: article.excerpt,
+    alternates: { canonical: url },
     openGraph: {
       title: article.title,
       description: article.excerpt,
-      url: `${baseUrl}/blog/${article.slug}`,
+      url,
       siteName: 'HexaStudio',
       locale: 'en_US',
       type: 'article',

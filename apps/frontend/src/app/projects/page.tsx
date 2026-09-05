@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Projects",
   description:
     "Explore our curated collection of architectural visualization projects — from residential masterpieces to commercial landmarks.",
+  alternates: { canonical: "https://hexastudio.net/projects" },
   openGraph: {
     title: "HexaStudio Projects — Architectural Visualization Portfolio",
     description:
