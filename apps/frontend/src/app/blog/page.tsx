@@ -16,6 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
     return {
       title: 'Blog',
       description,
+      alternates: { canonical: 'https://hexastudio.net/blog' },
       openGraph: {
         title: 'HexaStudio Blog — Architectural Visualization Insights',
         description,
@@ -42,6 +43,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: 'Blog',
     description: 'Insights on spatial design, real-time technology, and architectural visualization by HexaStudio.',
+    alternates: { canonical: 'https://hexastudio.net/blog' },
     openGraph: {
       title: 'HexaStudio Blog — Architectural Visualization Insights',
       description: 'Insights on spatial design, real-time technology, and architectural visualization.',

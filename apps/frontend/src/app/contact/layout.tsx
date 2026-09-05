@@ -3,6 +3,7 @@ export const metadata: Metadata = {
   title: "Contact",
   description:
     "Get in touch with HexaStudio. Start your architectural visualization project today — we respond within 24 hours.",
+  alternates: { canonical: "https://hexastudio.net/contact" },
   openGraph: {
     title: "Contact HexaStudio — Start a Conversation",
     description:

@@ -9,6 +9,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: 'Services',
     description: 'Professional 3D architectural visualization services — from concept to photorealistic rendering, real-time walkthroughs, and cinematic animation.',
+    alternates: { canonical: 'https://hexastudio.net/services' },
     openGraph: {
       title: 'HexaStudio Services — Architectural Visualization',
       description: 'From photorealistic stills to interactive 3D walkthroughs — services born from curiosity and precision.',
