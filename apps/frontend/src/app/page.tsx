@@ -1,36 +1,7 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
-
-// Lazy-load the heavy canvas hero (RAF loop + Framer Motion) and the
-// below-the-fold section blocks. The hero chunk (Three.js + R3F + Framer
-// Motion) is several MB — deferring it to after idle keeps the critical
-// rendering path lean and lets the page reach TTI faster.
-const NewHomeHero = dynamic(
-  () => import("@/features/portfolio/components/NewHomeHero"),
-  { ssr: false, loading: () => <NewHomeHeroSkeleton /> },
-);
-const NewHomeSectionsDyn = dynamic(
-  () => import("@/features/portfolio/components/NewHomeSections").then((m) => m.NewHomeSections),
-  { ssr: false },
-);
-const HomeChapterRailDyn = dynamic(
-  () => import("@/features/portfolio/components/HomeChapterRail").then((m) => m.HomeChapterRail),
-  { ssr: false },
-);
-
-/** Skeleton shown while the canvas hero hydrates. */
-function NewHomeHeroSkeleton() {
-  return (
-    <section
-      aria-label="Loading"
-      className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-sl-void"
-    >
-      <div className="font-serif text-3xl font-light text-sl-gold-subtle/60">
-        Loading…
-      </div>
-    </section>
-  );
-}
+import { Suspense } from "react";
+import { NewHomeHeroSkeleton } from "./_loading/NewHomeHeroSkeleton";
+import { HomeClient } from "@/components/HomeClient";
 
 export const metadata: Metadata = {
   title: "HEXA STUDIO — Architectural Visualization",
@@ -67,14 +38,13 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   return (
     <div className="bg-sl-void text-sl-alabaster">
-      {/* CH. I — VISION (new single-canvas architectural plate hero) */}{" "}
-      <NewHomeHero />
-
-      {/* Below-the-fold sections (client-only hydration, lazy-loaded) */}{" "}
-      <NewHomeSectionsDyn />
-
-      {/* Chapter navigation rail (lazy-loaded) */}{" "}
-      <HomeChapterRailDyn />
+      {/* The heavy interactive layers (canvas hero, sections, rail) are
+          code-split into a Client Component. Suspense renders the skeleton
+          fallback during SSR/streaming, so the browser gets paintable HTML
+          first while the multi-MB hero bundle loads in the background. */}
+      <Suspense fallback={<NewHomeHeroSkeleton />}>
+        <HomeClient />
+      </Suspense>
     </div>
   );
 }
