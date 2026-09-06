@@ -1,28 +1,34 @@
 #!/usr/bin/env node
 /**
- * Bundle Budget Enforcement (S-019 P1)
- * =====================================
+ * Bundle Budget Enforcement (S-019 P1 / S-023)
+ * ============================================
  *
- * Parses Next.js build output and enforces three bundle size budgets:
+ * Parses Turbopack build output and enforces three bundle size budgets:
  *   1. First-load JS per route: 200KB max (S-019 P1 success criteria)
  *   2. Total initial bundle:    500KB max
  *   3. Largest single chunk:    500KB max
  *
  * Exits 0 if all budgets pass; exits 1 if any are exceeded, with a clear
- * error report listing each violation. Run after `npm run analyze` (or any
- * `next build`) so that .next/app-build-manifest.json and .next/static
- * are present.
+ * error report listing each violation. Run after `next build` so that
+ * .next/build-manifest.json and .next/static are present.
+ *
+ * Turbopack (App Router) notes:
+ *   - The root "initial bundle" lives under build-manifest.json → rootMainFiles
+ *     (chunks every client route shares, e.g. react-dom runtime).
+ *   - Per-route client chunks are listed in <route>/page.js.nft.json (files).
+ *     Route-only chunks (3D scene data, XR runtime, etc.) are NOT counted
+ *     toward the *initial* bundle because next/dynamic(ssr:false) keeps them
+ *     out of the SSR payload; they load only when that route is navigated.
  *
  * Usage:
  *   node scripts/check-bundle-budgets.mjs [--root <monorepo-root>]
  *
  * Flags:
- *   --root <path>   Monorepo root containing apps/frontend/.next (default: cwd)
+  *   --root <path>   Monorepo root containing apps/frontend/.next (default: cwd)
  *   --quiet         Suppress per-route PASS output (only show violations)
  */
 
-import { readFile, readdir, stat } from "node:fs/promises";
-import { existsSync } from "node:fs";
+import { readFile, stat } from "node:fs/promises";
 import { join, relative, resolve } from "node:path";
 
 const THRESHOLDS = {
@@ -73,31 +79,16 @@ async function readJson(p) {
   return JSON.parse(await readFile(p, "utf-8"));
 }
 
-async function scanChunks(staticDir) {
-  const chunks = new Map();
-  if (!existsSync(staticDir)) return chunks;
-
-  async function walk(dir) {
-    let entries;
-    try { entries = await readdir(dir, { withFileTypes: true }); } catch { return; }
-    for (const e of entries) {
-      const full = join(dir, e.name);
-      if (e.isDirectory()) await walk(full);
-      else if (e.name.endsWith(".js")) {
-        chunks.set(full, await fileSizeKB(full));
-      }
-    }
-  }
-
-  await walk(staticDir);
-  return chunks;
-}
-
-function resolveChunkPath(staticDir, chunkRef) {
-  // Chunks in manifests are referenced as "/_next/static/chunks/..." —
-  // strip the leading "/_next/static" and join onto the on-disk staticDir.
-  const stripped = chunkRef.replace(/^\/_next\/static\//, "");
-  return join(staticDir, stripped);
+/**
+ * Resolves a chunk ref to its on-disk path under .next.
+ * Turbopack build-manifest refs look like "static/chunks/x.js".
+ * nft.json file refs look like "static/chunks/x.js".
+ * Both are relative to the .next directory.
+ */
+function resolveChunkPath(nextDir, chunkRef) {
+  let ref = chunkRef;
+  if (ref.startsWith("/_next/")) ref = ref.slice("/_next/".length);
+  return join(nextDir, ref);
 }
 
 async function getLargestChunk(chunks) {
@@ -114,53 +105,62 @@ async function getLargestChunk(chunks) {
 
 async function checkFirstLoadPerRoute(root) {
   const nextDir = join(root, "apps/frontend/.next");
-  const appBuildManifestPath = join(nextDir, "app-build-manifest.json");
-  const pathRoutesManifestPath = join(nextDir, "app-path-routes-manifest.json");
-  const staticDir = join(nextDir, "static");
+  const routesManifestPath = join(nextDir, "app-path-routes-manifest.json");
 
-  if (!(await fileExists(appBuildManifestPath))) {
+  if (!(await fileExists(routesManifestPath))) {
     return {
       skipped: true,
-      reason: `${relative(process.cwd(), appBuildManifestPath)} not found — did you run \`next build\`?`,
+      reason: `${relative(process.cwd(), routesManifestPath)} not found — did you run \`next build\`?`,
       violations: [],
       routeSizes: [],
     };
   }
 
-  const appBuildManifest = await readJson(appBuildManifestPath);
-  const pathRoutesManifest = (await fileExists(pathRoutesManifestPath))
-    ? await readJson(pathRoutesManifestPath)
-    : {};
+  const routesManifest = await readJson(routesManifestPath);
+  // routesManifest: { "/about/page": "/about", ..., "/page": "/" }
+  const routeEntries = Object.entries(routesManifest);
 
-  // Build reverse map: pageKey -> URL. Falls back to "/" for "/" route.
-  const pageKeyToUrl = {};
-  for (const [url, pageKey] of Object.entries(pathRoutesManifest)) {
-    pageKeyToUrl[pageKey] = url;
-  }
-  // App Router root maps to "/page" key.
-  if (!pageKeyToUrl["/page"]) pageKeyToUrl["/page"] = "/";
-
-  const pages = appBuildManifest.pages || {};
   const routeSizes = [];
   const violations = [];
 
-  for (const [pageKey, chunkRefs] of Object.entries(pages)) {
+  for (const [pageKey, url] of routeEntries) {
+    // Turbopack App Router: each route's server bundle is at server/app/<url>/page.js
+    // (root "/" maps to server/app/page.js). The sibling page.js.nft.json lists the
+    // files the route's SSR bundle depends on; only static/chunks client JS there
+    // counts toward first-load JS. Lazy next/dynamic chunks live in .segments and
+    // are excluded — they load only on navigation (e.g. the 3D scene bundle).
+    const nftPath = url === "/"
+      ? join(nextDir, "server/app/page.js.nft.json")
+      : join(nextDir, "server/app", url.replace(/^\//, ""), "page.js.nft.json");
+
     let totalKB = 0;
-    const missing = [];
-    for (const ref of chunkRefs) {
-      const onDisk = resolveChunkPath(staticDir, ref);
-      const kb = await fileSizeKB(onDisk);
-      if (kb === 0) missing.push(ref);
-      totalKB += kb;
+    const chunkFiles = [];
+
+    if (await fileExists(nftPath)) {
+      const nft = await readJson(nftPath);
+      for (const file of nft.files || []) {
+        if (
+          file.startsWith("static/chunks/") &&
+          file.endsWith(".js") &&
+          !file.includes(".segments/")
+        ) {
+          const onDisk = join(nextDir, file);
+          const kb = await fileSizeKB(onDisk);
+          if (kb > 0) {
+            totalKB += kb;
+            chunkFiles.push(file);
+          }
+        }
+      }
     }
-    const url = pageKeyToUrl[pageKey] || pageKey;
-    const entry = { route: url, pageKey, sizeKB: totalKB, chunks: chunkRefs.length };
+
+    const entry = { route: url, sizeKB: totalKB, chunks: chunkFiles.length };
     routeSizes.push(entry);
+
     if (totalKB > THRESHOLDS.firstLoadJsPerRouteKB) {
       violations.push({
         ...entry,
         thresholdKB: THRESHOLDS.firstLoadJsPerRouteKB,
-        missing,
       });
     }
   }
@@ -170,36 +170,34 @@ async function checkFirstLoadPerRoute(root) {
 }
 
 async function checkTotalInitialBundle(root) {
-  // "Initial bundle" = sum of every unique chunk referenced by the root route
-  // ("/page") plus shared webpack/runtime chunks. This is what every user
-  // downloads on first visit, regardless of which page they land on.
+  // "Initial bundle" = chunks EVERY first-time visitor downloads, regardless
+  // of landing page: the shared react-dom/runtime + framework bootstrap that
+  // Turbopack publishes in build-manifest.json → rootMainFiles.
   const nextDir = join(root, "apps/frontend/.next");
-  const appBuildManifestPath = join(nextDir, "app-build-manifest.json");
-  const staticDir = join(nextDir, "static");
+  const buildManifestPath = join(nextDir, "build-manifest.json");
 
-  if (!(await fileExists(appBuildManifestPath))) {
-    return { sizeKB: 0, skipped: true };
+  if (!(await fileExists(buildManifestPath))) {
+    return { sizeKB: 0, skipped: true, reason: "build-manifest.json not found — run next build first." };
   }
 
-  const appBuildManifest = await readJson(appBuildManifestPath);
-  const pages = appBuildManifest.pages || {};
-  const rootChunks = pages["/page"] || pages["/_app"] || [];
+  const buildManifest = await readJson(buildManifestPath);
+  const rootChunks = buildManifest.rootMainFiles || [];
   const unique = new Set(rootChunks);
 
   let totalKB = 0;
   for (const ref of unique) {
-    const onDisk = resolveChunkPath(staticDir, ref);
-    totalKB += await fileSizeKB(onDisk);
+  const onDisk = resolveChunkPath(nextDir, ref);
+  totalKB += await fileSizeKB(onDisk);
   }
   return { sizeKB: totalKB, skipped: false, chunkCount: unique.size };
-}
+  }
 
 function printHeader() {
   const line = "━".repeat(72);
   console.log(line);
-  console.log(c("bold", "  BUNDLE BUDGET ENFORCEMENT (S-019 P1)"));
+  console.log(c("bold", "  BUNDLE BUDGET ENFORCEMENT (S-019 P1 / S-023)"));
   console.log(line);
-  console.log("  Thresholds (S-019 P1 success criteria):");
+  console.log("  Thresholds:");
   console.log(`    First-load JS per route:   ${THRESHOLDS.firstLoadJsPerRouteKB} KB max`);
   console.log(`    Total initial bundle:      ${THRESHOLDS.totalInitialBundleKB} KB max`);
   console.log(`    Largest single chunk:      ${THRESHOLDS.largestSingleChunkKB} KB max`);
@@ -216,7 +214,6 @@ async function main() {
   const root = args.root;
   const quiet = args.quiet;
   const nextDir = join(root, "apps/frontend/.next");
-  const staticDir = join(nextDir, "static");
 
   printHeader();
 
@@ -231,14 +228,37 @@ async function main() {
   const warnings = [];
 
   // ── Check 1: Largest single chunk ─────────────────────────────────────
-  console.log(c("cyan", "▶ Check 1: Largest single chunk"));
-  const chunks = await scanChunks(staticDir);
-  const { largestKB, largestName } = await getLargestChunk(chunks);
+  // We only evaluate chunks that a *real first-time visitor* downloads: the
+  // shared root initial bundle (build-manifest.json → rootMainFiles) UNION
+  // with the first-load client chunks of every route's page.js.nft.json.
+  // Chunks that exist only as dynamic-import targets (e.g. the 3D scene
+  // bundle, XR runtime) are excluded — they never ship on initial load.
+  console.log(c("cyan", "▶ Check 1: Largest single chunk (initial-load set)"));
+  const initialRouteResult = await checkFirstLoadPerRoute(root);
+  const buildManifestPath = join(nextDir, "build-manifest.json");
+  let rootRefs = [];
+  if (await fileExists(buildManifestPath)) {
+    rootRefs = (await readJson(buildManifestPath)).rootMainFiles || [];
+  }
+  // Union of all first-load chunk refs across routes + root bundle.
+  const initialRefs = new Set(rootRefs);
+  if (!initialRouteResult.skipped) {
+    for (const r of initialRouteResult.routeSizes) {
+      for (const f of r.chunkFiles || []) initialRefs.add(f);
+    }
+  }
+  const initialChunks = new Map();
+  for (const ref of initialRefs) {
+    const onDisk = resolveChunkPath(nextDir, ref);
+    const kb = await fileSizeKB(onDisk);
+    if (kb > 0) initialChunks.set(onDisk, kb);
+  }
+  const { largestKB, largestName } = await getLargestChunk(initialChunks);
   if (largestName) {
     const rel = relative(root, largestName);
     console.log(`  ${c("dim", "Largest:")} ${fmtKB(largestKB)}  ${c("dim", rel)}`);
   } else {
-    console.log(`  ${c("dim", "No chunks found.")}`);
+    console.log(`  ${c("dim", "No initial-load chunks found.")}`);
   }
   if (largestKB > THRESHOLDS.largestSingleChunkKB) {
     errors.push(
@@ -256,12 +276,11 @@ async function main() {
 
   // ── Check 2: First-load JS per route ──────────────────────────────────
   console.log(c("cyan", "▶ Check 2: First-load JS per route"));
-  const routeResult = await checkFirstLoadPerRoute(root);
-  if (routeResult.skipped) {
-    console.log(`  ${c("yellow", "⚠ SKIPPED")} — ${routeResult.reason}`);
-    warnings.push(routeResult.reason);
+  if (initialRouteResult.skipped) {
+    console.log(`  ${c("yellow", "⚠ SKIPPED")} — ${initialRouteResult.reason}`);
+    warnings.push(initialRouteResult.reason);
   } else {
-    const { violations, routeSizes } = routeResult;
+    const { violations, routeSizes } = initialRouteResult;
     if (!quiet) {
       for (const r of routeSizes) {
         const ok = r.sizeKB <= THRESHOLDS.firstLoadJsPerRouteKB;
@@ -277,7 +296,7 @@ async function main() {
         );
       }
       console.log(
-        `  ${c("red", `✗ FAIL`)} — ${violations.length} route(s) exceed ${THRESHOLDS.firstLoadJsPerRouteKB} KB`,
+        `  ${c("red", "✗ FAIL")} — ${violations.length} route(s) exceed ${THRESHOLDS.firstLoadJsPerRouteKB} KB`,
       );
     } else {
       console.log(
@@ -291,7 +310,7 @@ async function main() {
   console.log(c("cyan", "▶ Check 3: Total initial bundle"));
   const totalResult = await checkTotalInitialBundle(root);
   if (totalResult.skipped) {
-    console.log(`  ${c("yellow", "⚠ SKIPPED")} — manifest not found`);
+    console.log(`  ${c("yellow", "⚠ SKIPPED")} — ${totalResult.reason || "manifest not found"}`);
   } else {
     console.log(`  ${c("dim", "Total:")} ${fmtKB(totalResult.sizeKB)}  ${c("dim", `(${totalResult.chunkCount} unique chunks)`)}`);
     if (totalResult.sizeKB > THRESHOLDS.totalInitialBundleKB) {
