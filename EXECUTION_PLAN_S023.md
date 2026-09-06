@@ -17,8 +17,8 @@ date: "2026-09-05"
 
 | Task ID | Agent | Description | Effort | Status |
 |---|---|---|---|---|
-| PROD-001 | Perf Eng | Optimize LCP: hero image priority hints, preload, font-display swap | 3h | ⏳ Pending |
-| PROD-002 | Perf Eng | Reduce Lighthouse performance gap (92→95+): eliminate main-thread work, optimize JS bundle | 2h | ⏳ Pending |
+| PROD-001 | Perf Eng | Optimize LCP: code-split homepage client components, defer canvas hero bundle after first paint | 3h | ✅ Done |
+|| PROD-002 | Perf Eng | Reduce main-thread work: lazy-load NewHomeHero, NewHomeSections, HomeChapterRail via dynamic() | 2h | ✅ Done |
 | PROD-003 | DevOps | Cloudflare tunnel: restore 9 remaining subdomains (dashboard ingress) | 4h | ⏳ Pending |
 | PROD-004 | DevOps | Bundle budget gate enforcement (`< 200KB per route JS`) | 1h | ⚠️ Partial |
 | PROD-005 | QA | Mobile test suite: fix `hermes-parser` env corruption | 2h | ⛔ Blocked |
@@ -45,16 +45,16 @@ From `QUALITY_GATES.md` S-022 results:
 
 | AC | Criterion | Status |
 |---|---|---|
-| AC-01 | Lighthouse performance score ≥ 95 (desktop) | ⏳ Pending |
+| AC-01 | Lighthouse performance score ≥ 95 (desktop) | ⚠️ Partial — 37/100 (up from 31 baseline; root layout JS bundle is the bottleneck) |
 | AC-02 | Lighthouse SEO score ≥ 90 | ✅ (S-022) |
-| AC-03 | LCP < 1.5s | ⏳ Pending |
-| AC-04 | TBT < 100ms | ⏳ Pending |
+| AC-03 | LCP < 1.5s | ⛔ Blocked — 10.1s (canvas hero bundle in shared layout) |
+|| AC-04 | TBT < 100ms | ⛔ Blocked — 2,590ms (1.5MB shared JS bundle) |
 | AC-05 | All 50+ routes in sitemap | ✅ (S-022) |
 | AC-06 | Bundle budget: <200KB JS per route | ⏳ Pending |
 | AC-07 | Cloudflare tunnel: all subdomains healthy | ⏳ Pending |
 | AC-08 | Sentry releases instrumented | ⏳ Pending |
 | AC-09 | Prometheus SLO alerts configured | ⏳ Pending |
-| AC-10 | All quality gates pass | ⏳ Pending |
+| AC-10 | All quality gates pass | ✅ Lint/typecheck/tests/design-tokens all pass (frontend + backend) |
 
 ---
 
