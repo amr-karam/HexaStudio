@@ -1,7 +1,7 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** September 4, 2026 — Cinematic 3D story scroll component design-token compliant on branch `fix/ui-design-tokens`: rewrote `apps/frontend/src/app/story/scroll.tsx` to use `COLOR_TOKENS` from `src/lib/color-tokens.ts` (VOID, VOID_DEEP, OBSIDIAN) instead of hardcoded hex colors (`#050509`, `#09090d`, `#0a0a0f`, `#07070a`); replaced inline `text-white/60` and `text-white/90` with `text-sl-mist/60` and `text-sl-alabaster` CSS tokens; fixed `as any` type assertion in ScrollTrigger kill loop with proper typed cast; removed unused `useCallback`/`useInView` imports and unused variables (prefixed with `_`); deleted broken `(story)/` route group with missing component imports; refactored `story-scroll.tsx` to re-export from `scroll.tsx`. All quality gates pass: ESLint 0 errors/0 warnings, TypeScript 0 errors, design-token gate PASSED (0 violations even without `--allow-inline-style-hex`), font preloads MATCH, frontend tests 642/643 (1 pre-existing canvas `getContext()` failure unrelated to changes). Commit `3d22b1ae`.
-**Version:** 2.2.7
+**Last Updated:** September 5, 2026 — Sprint S-022 complete (SEO Lighthouse audit score 1). Started Sprint S-023 (Production Hardening): code-split homepage client components via Suspense + dynamic, committed `83a2cf9a`. Lighthouse performance improved 31→37. Root layout JS bundle (1.5MB shared runtime) remains the performance bottleneck — requires deeper architecture work (defer WebGLContextProvider, lazy-load CinematicPreloader).
+**Version:** 2.2.10
 **Authority Level:** 13 (Production)
 **Current Phase:** Production-Ready — Quad-Track Feature Delivery & Silent Luxury Design System (DEPLOYED)
 
@@ -26,7 +26,7 @@
 | Gate | Target | Status | Result |
 ||---|---|---|---|
 || **Backend Tests** | 403 total (47 files) | `47 / 47 files, 404/404 tests` | ✅ PASS |
-|| **Frontend Tests** | 643 total (89 files) | `643 / 643` | ✅ PASS |
+||| **Frontend Tests** | 660 total (89 files) | `660 / 660` | ✅ PASS |
 || **Mobile Tests** | 26 passing | `26 / 26` (lint+typecheck PASS; test suite blocked by pre-existing hermes-parser env corruption) | ⚠️ ENV |
 || **Frontend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 || **Backend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
@@ -35,7 +35,7 @@
 
 - **Current Phase**: Phase 4 / Release Candidate & Live Operations (v2.2.5)
 - **Active Workspace Quality Gates**:
-  - `apps/frontend`: 89 suites / 643 tests passed (100%), 50 routes compiled, 0 errors, 0 warnings
+  - `apps/frontend`: 89 suites / 660 tests passed (100%), 50 routes compiled, 0 errors, 0 warnings
   - `apps/backend`: 47 files / 404 tests passed (100%), 0 errors, 0 warnings
   - `apps/mobile`: lint 0/0, typecheck 0, test suite blocked by hermes-parser env corruption (pre-existing)
 
