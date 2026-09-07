@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 
 export default function AiCanvasPage() {
   return (
-    <div className="bg-[#050505] text-white antialiased">
+    <div className="bg-void text-sl-alabaster antialiased">
       <Suspense fallback={<div className="flex min-h-screen items-center justify-center text-white/60" />}>
         <main>
           <CanvasShowcase />

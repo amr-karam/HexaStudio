@@ -86,8 +86,8 @@ const AccordionRow = ({
           'flex w-full items-center gap-4 px-6 py-5 text-left',
           'font-serif text-base tracking-tight text-white',
           'transition-colors duration-300',
-          isOpen && 'text-[#D4AF37]',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050505] rounded-2xl',
+          isOpen && 'text-sl-gold-subtle',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle/60 focus-visible:ring-offset-2 focus-visible:ring-offset-void rounded-2xl',
         )}
       >
         <span className="flex-1 leading-snug">{item.question}</span>
@@ -164,7 +164,7 @@ export function MeliusFAQ({ className }: MeliusFAQProps) {
   }, []);
 
   return (
-    <section className="relative bg-[#050505] px-6 py-24 sm:px-10 md:px-16 md:py-32">
+    <section className="relative bg-void px-6 py-24 sm:px-10 md:px-16 md:py-32">
       <div className="mx-auto max-w-[1600px]">
         <div className="mb-16 text-center md:mb-24">
           <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-white/60">
@@ -173,7 +173,7 @@ export function MeliusFAQ({ className }: MeliusFAQProps) {
             <span className="ml-3 inline-block h-px w-8 align-middle bg-white/40" />
           </p>
           <h2 className="mt-6 font-serif text-[clamp(2rem,5vw,3.5rem)] font-light leading-[1.05] tracking-tight text-white">
-            Frequently asked <span className="text-[#D4AF37]">questions</span>
+          Frequently asked <span className="text-sl-gold-subtle">questions</span>
           </h2>
         </div>
 

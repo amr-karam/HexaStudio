@@ -35,7 +35,7 @@ export function Integrations() {
   const reducedMotion = useReducedMotion();
 
   return (
-    <section className="relative bg-[#050505] px-6 py-24 sm:px-10 md:px-16 md:py-28">
+    <section className="relative bg-void px-6 py-24 sm:px-10 md:px-16 md:py-28">
       <div className="mx-auto max-w-[1600px]">
         <div className="mb-12 text-center md:mb-16">
           <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-white/60">
