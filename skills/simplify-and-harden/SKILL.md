@@ -1,3 +1,8 @@
+---
+name: simplify-and-harden
+description: Review completed work for simpler structure, stronger security, and concise supporting documentation.
+---
+
 # Skill: simplify-and-harden
 
 ## Description
