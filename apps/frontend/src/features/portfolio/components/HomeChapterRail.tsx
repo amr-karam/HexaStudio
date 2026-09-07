@@ -6,13 +6,12 @@ const HOME_CHAPTERS: Chapter[] = [
   { id: 'ch-vision', label: 'Vision' },
   { id: 'ch-work', label: 'Work' },
   { id: 'ch-process', label: 'Process' },
-  { id: 'ch-method', label: 'Method' },
+  { id: 'ch-philosophy', label: 'Philosophy' },
   { id: 'ch-contact', label: 'Contact' },
 ];
 
 /**
- * HomeChapterRail — fixed right-edge chapter navigation for the homepage
- * scroll film (01–05 dots + hairlines).
+ * HomeChapterRail — fixed right-edge chapter navigation for the homepage.
  * Renders the shared ChapterProgress rail; itself a tiny client island
  * inside the RSC homepage.
  */
