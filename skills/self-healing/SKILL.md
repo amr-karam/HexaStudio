@@ -1,3 +1,8 @@
+---
+name: self-healing
+description: Recover from command, test, environment, or service failures through diagnosis, repair, verification, and documented learning.
+---
+
 # Skill: self-healing
 
 ## Description
