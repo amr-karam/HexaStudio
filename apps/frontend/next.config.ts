@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import bundleAnalyzer from "@next/bundle-analyzer";
+import { withSentryConfig } from "@sentry/nextjs";
 
 const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
@@ -203,4 +204,14 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withBundleAnalyzer(nextConfig);
+export default withSentryConfig(
+  withBundleAnalyzer(nextConfig),
+  {
+    silent: true,
+    // Source map uploads only run in production CI (requires SENTRY_AUTH_TOKEN).
+    // In PR builds or local dev, org/project/auth are undefined so the plugin
+    // automatically skips upload — no suppress option needed.
+    org: process.env.SENTRY_ORG,
+    project: process.env.SENTRY_PROJECT,
+  }
+);
