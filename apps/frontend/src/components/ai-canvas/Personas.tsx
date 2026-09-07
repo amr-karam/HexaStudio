@@ -98,7 +98,7 @@ const PERSONAS: Persona[] = [
 const CHECK_ICON = (
   <svg
     aria-hidden
-    className="h-4 w-4 text-[#D4AF37]"
+    className="h-4 w-4 text-sl-gold-subtle"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -169,7 +169,7 @@ function PersonaCard({ persona, index }: { persona: Persona; index: number }) {
 
 export function Personas() {
   return (
-    <section className="relative bg-[#030303] px-6 py-24 sm:px-10 md:px-16 md:py-32">
+    <section className="relative bg-void px-6 py-24 sm:px-10 md:px-16 md:py-32">
       <div className="mx-auto max-w-[1600px]">
         <div className="mb-16 flex flex-col gap-6 md:mb-24 md:flex-row md:items-end md:justify-between">
           <div>
@@ -178,7 +178,7 @@ export function Personas() {
               Personas
             </p>
             <h2 className="mt-6 max-w-3xl font-serif text-[clamp(2rem,5vw,3.5rem)] font-light leading-[1.05] tracking-tight text-white">
-              Built for <span className="text-[#D4AF37]">every creative team</span>.
+              Built for <span className="text-sl-gold-subtle">every creative team</span>.
             </h2>
           </div>
         </div>

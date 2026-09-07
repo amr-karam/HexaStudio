@@ -24,8 +24,8 @@ date: "2026-09-05"
 | PROD-005 | QA | Mobile test suite: fix `hermes-parser` env corruption | 2h | ⛔ Blocked |
 | PROD-006 | QA | E2E smoke tests (`e2e/portal.spec.ts`) validation on prod | 1h | ⏳ Pending |
 | PROD-007 | Security | Container scan (Trivy) — add automated scheduling | 1h | ✅ Done |
-| PROD-008 | DevOps | Prometheus metrics: add SLO alert rules (99.9% uptime) | 2h | ⏳ Pending |
-| PROD-009 | DevOps | Sentry: configure release tracking + source maps | 1.5h | ⏳ Pending |
+| PROD-008 | DevOps | Prometheus metrics: add SLO alert rules (99.9% uptime) | 2h | ✅ Done — SLO recording + alerting rules added, blackbox probes expanded to 7 targets (prod verified) |
+| PROD-009 | DevOps | Sentry: configure release tracking + source maps | 1.5h | ✅ Done — withSentryConfig wrapper added to next.config.ts |
 | PROD-010 | DevOps | Backup verification: daily self-check alerts (Loki rules) | 1h | ✅ Done |
 | PROD-011 | QA | Full quality gate validation on `fix/ui-design-tokens` | 45m | ✅ Done |
 
@@ -52,8 +52,8 @@ From `QUALITY_GATES.md` S-022 results:
 | AC-05 | All 50+ routes in sitemap | ✅ (S-022) |
 | AC-06 | Bundle budget: <200KB JS per route | ✅ All 73 routes within budget; total initial 446.91KB |
 | AC-07 | Cloudflare tunnel: all subdomains healthy | ✅ Tunnel restored with all 18 subdomain routes; backend service availability still tracked separately |
-| AC-08 | Sentry releases instrumented | ⏳ Pending |
-| AC-09 | Prometheus SLO alerts configured | ⏳ Pending |
+| AC-08 | Sentry releases instrumented | ✅ Done — withSentryConfig wrapper committed (41c49fd6) |
+| AC-09 | Prometheus SLO alerts configured | ✅ Done — hexa-slo group + 7 blackbox targets verified on prod |
 | AC-10 | All quality gates pass | ✅ Lint/typecheck/tests/design-tokens all pass (frontend + backend) |
 
 ---

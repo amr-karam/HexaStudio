@@ -315,7 +315,7 @@ function NodeCard({ item, index }: { item: ShowcaseItem; index: number }) {
 
 export function CanvasShowcase() {
   return (
-    <section className="relative bg-[#050505] px-6 py-24 sm:px-10 md:px-16 md:py-32">
+    <section className="relative bg-void px-6 py-24 sm:px-10 md:px-16 md:py-32">
       <div className="mx-auto max-w-[1600px]">
         <div className="mb-16 flex flex-col gap-6 md:mb-24 md:flex-row md:items-end md:justify-between">
           <div>
@@ -324,7 +324,7 @@ export function CanvasShowcase() {
               Creative canvas
             </p>
             <h2 className="mt-6 max-w-3xl font-serif text-[clamp(2rem,5vw,3.5rem)] font-light leading-[1.05] tracking-tight text-white">
-              Every brief, <span className="text-[#D4AF37]">every output</span>, one canvas.
+              Every brief, <span className="text-sl-gold-subtle">every output</span>, one canvas.
             </h2>
             <p className="mt-6 max-w-2xl text-sm font-light leading-relaxed text-white/60">
               Browse curated work across advertising, e-commerce, film, fashion, and

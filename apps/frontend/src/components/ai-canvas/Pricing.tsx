@@ -193,7 +193,7 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
           <li key={feature} className="flex items-start gap-2 text-sm text-white/70">
             <svg
               aria-hidden
-              className="mt-0.5 h-4 w-4 text-[#D4AF37]"
+              className="mt-0.5 h-4 w-4 text-sl-gold-subtle"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -217,7 +217,7 @@ export function Pricing() {
   const reducedMotion = useReducedMotion();
 
   return (
-    <section className="relative bg-[#030303] px-6 py-24 sm:px-10 md:px-16 md:py-32">
+    <section className="relative bg-void px-6 py-24 sm:px-10 md:px-16 md:py-32">
       <div className="mx-auto max-w-[1600px]">
         <div className="mb-16 text-center md:mb-24">
           <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-white/60">
@@ -226,7 +226,7 @@ export function Pricing() {
             <span className="ml-3 inline-block h-px w-8 align-middle bg-white/40" />
           </p>
           <h2 className="mt-6 font-serif text-[clamp(2rem,5vw,3.5rem)] font-light leading-[1.05] tracking-tight text-white">
-            Our <span className="text-[#D4AF37]">pricing</span>
+          Our <span className="text-sl-gold-subtle">pricing</span>
           </h2>
         </div>
 
