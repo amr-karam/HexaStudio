@@ -1,867 +1,149 @@
 @import "tailwindcss";
-@import "../styles/artisan-tokens.css";
-@import "../components/ui/layout/layout.css";
-@import "../components/ui/typography/typography.css";
-@import "../components/ui/inputs/input.css";
+@import "tw-animate-css";
+
+@theme inline {
+  --color-bg: var(--background);
+  --color-fg: var(--foreground);
+
+  /* semantic palette */
+  --color-sl-bg-subtle: #fafaf9;
+  --color-sl-bg-elevated: #f5f5f4;
+
+  --color-void: #050505;
+  --color-gold-subtle: #D4AF37;
+  --color-gold-muted: #b8960f;
+  --color-gold-ink: #C5A028;
+
+  --color-sl-alabaster: #FAFAF8;
+  --color-sl-onyx: #1a1a1a;
+  --color-sl-gold-subtle: #D4AF37;
+  --color-sl-gold-muted: #c9a227;
+  --color-sl-gold-ink: #b8860b;
+
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  --color-brand-primary: #60a5fa;
+  --color-brand-secondary: #a855f7;
+  --tracking-label: 0.25em;
+}
+
+@utility content-{inline-start} { content: content-inline-start; }
+@utility content-{inline-end} { content: content-inline-end; }
+
+:root {
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+  --primary: #1a1a1a;
+  --primary-foreground: #ffffff;
+  --secondary: #f5f5f4;
+  --secondary-foreground: #1a1a1a;
+  --muted: #f5f5f4;
+  --muted-foreground: #71717a;
+  --accent: #f5f5f4;
+  --accent-foreground: #1a1a1a;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #f5f5f4;
+  --input: #f5f5f4;
+  --ring: #1a1a1a;
+  --radius: 0.5rem;
+  --chart-1: #00acc1;
+  --chart-2: #ffab00;
+  --chart-3: #00897b;
+  --chart-4: #d81b60;
+  --chart-5: #6d4c41;
+  --sidebar: #f5f5f4;
+  --sidebar-ring: #f5f5f4;
+}
+
+.dark {
+  --background: #050505;
+  --foreground: #fafaf9;
+  --card: #050505;
+  --card-foreground: #fafaf9;
+  --popover: #050505;
+  --popover-foreground: #fafaf9;
+  --primary: #fafaf9;
+  --primary-foreground: #1a1a1a;
+  --secondary: #262626;
+  --secondary-foreground: #fafaf9;
+  --muted: #262626;
+  --muted-foreground: #a1a1aa;
+  --accent: #262626;
+  --accent-foreground: #fafaf9;
+  --border: #262626;
+  --input: #262626;
+  --ring: #fafaf9;
+  --radius: 0.5rem;
+  --chart-1: #00acc1;
+  --chart-2: #ffab00;
+  --chart-3: #00897b;
+  --chart-4: #d81b60;
+  --chart-5: #6d4c41;
+  --sidebar: #262626;
+  --sidebar-ring: #1a1a1a;
+}
 
 @theme {
-  --color-background: #0A0A0B;
-  --color-foreground: #FFFFFF;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-ring: var(--sidebar-ring);
 
-  --color-surface: #1A1A1A;
-  --color-surface-light: #262626;
-  --color-surface-dark: #030303;
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-geist-mono);
 
-  --color-border: #333333;
-  --color-border-light: #444444;
-  --color-border-dark: #111111;
+  --color-brand-primary: #60a5fa;
+  --color-brand-secondary: #a855f7;
+  --color-brand-tertiary: #a855f7;
+  --color-divider: #f5f5f4;
 
-  --color-accent: #D4AF37;
-  --color-accent-light: #E5C76B;
-  --color-accent-dark: #B8860B;
-  --color-accent-muted: rgba(212, 175, 55, 0.4);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: calc(var(--radius) + 0.25rem);
+  --radius-lg: var(--radius);
+  --radius-xl: 2rem;
+  --radius-2xl: 4rem;
+  --radius-3xl: 6rem;
 
-  /* DESIGN_SYSTEM.md canonical tokens (previously missing or misaligned) */
-  --color-void: #0A0A0B;
-  --color-void-deep: #020203;
-  --color-obsidian: #0F0F10;
-  --color-obsidian-raised: #161618;
-  --color-slate: #1A1A1A;
-  --color-gold: #D4AF37;
-  --color-gold-bright: #E5C76B;
-  --color-gold-deep: #A8862E;
-  --color-gold-rgb: 212, 175, 55;
-  /* Canonical gold opacity tokens — use these instead of hardcoded rgba() */
-  --color-gold-5: rgba(212, 175, 55, 0.05);
-  --color-gold-8: rgba(212, 175, 55, 0.08);
-  --color-gold-10: rgba(212, 175, 55, 0.1);
-  --color-gold-12: rgba(212, 175, 55, 0.12);
-  --color-gold-15: rgba(212, 175, 55, 0.15);
-  --color-gold-18: rgba(212, 175, 55, 0.18);
-  --color-gold-20: rgba(212, 175, 55, 0.2);
-  --color-gold-25: rgba(212, 175, 55, 0.25);
-  --color-gold-28: rgba(212, 175, 55, 0.28);
-  --color-gold-30: rgba(212, 175, 55, 0.3);
-  --color-gold-40: rgba(212, 175, 55, 0.4);
-  --color-gold-50: rgba(212, 175, 55, 0.5);
-  --color-gold-60: rgba(212, 175, 55, 0.6);
-  --color-gold-65: rgba(212, 175, 55, 0.65);
-  --color-gold-70: rgba(212, 175, 55, 0.7);
-  --color-gold-80: rgba(212, 175, 55, 0.8);
-  --color-gold-85: rgba(212, 175, 55, 0.85);
-  --color-gold-90: rgba(212, 175, 55, 0.9);
-  --color-text-primary: #FFFFFF;
-  --color-text-secondary: #A0A0A0;
-  --color-text-muted: #6A6A6E;
-
-  /* Silent Luxury (sl-) palette — registered as Tailwind color utilities */
-  --color-sl-void: #0A0A0B;
-  --color-sl-obsidian: #121214;
-  --color-alabaster: #F5F4F2;
-  --color-silver: #A8A8A8;
-  --color-mist: #D4D4D4;
-
-  --color-neutral-50: #fafafa;
-  --color-neutral-100: #f4f4f5;
-  --color-neutral-200: #e4e4e7;
-  --color-neutral-300: #d4d4d8;
-  --color-neutral-400: #a1a1aa;
-  --color-neutral-500: #71717a;
-  --color-neutral-600: #52525b;
-  --color-neutral-700: #3f3f46;
-  --color-neutral-800: #27272a;
-  --color-neutral-900: #18181b;
-  --color-neutral-950: #09090b;
-
-  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
-  --font-serif: 'Bodoni Moda', 'Cormorant Garamond', 'Playfair Display', Georgia, 'Times New Roman', serif;
-
-  --spacing-xs: 0.25rem;   /* 4px  */
-  --spacing-sm: 0.5rem;    /* 8px  */
-  --spacing-md: 0.75rem;   /* 12px — DESIGN_SYSTEM.md md */
-  --spacing-lg: 1rem;      /* 16px */
-  --spacing-xl: 1.5rem;    /* 24px — DESIGN_SYSTEM.md xl */
-  --spacing-2xl: 2rem;     /* 32px — DESIGN_SYSTEM.md 2xl */
-  --spacing-3xl: 3rem;     /* 48px — DESIGN_SYSTEM.md 3xl */
-  --spacing-4xl: 4rem;     /* 64px — DESIGN_SYSTEM.md 4xl */
-  --spacing-5xl: 6rem;     /* 96px */
-  --spacing-6xl: 8rem;     /* 128px */
-  --spacing-7xl: 12rem;    /* 192px */
-  --spacing-8xl: 16rem;    /* 256px */
-  --spacing-9xl: 20rem;    /* 320px */
-
-  /* Legacy @theme easing removed — use :root --hexa-ease-* tokens instead */
+  --letter-spacing-label: 0.25em;
 }
 
-/* -------------------------------------------------------------------------- */
-/*  HEXA Motion Tokens — CSS Custom Properties                                  */
-/*  Mirrors the TS token sources:                                              */
-/*    src/lib/motion.ts        (EASE, DURATION, STAGGER — semantic layer)      */
-/*    src/lib/motion/tokens.ts (EASING, DUR, STAGGER_TOKENS — Phase 1 raw)     */
-/* -------------------------------------------------------------------------- */
-
-:root {
-  /* Easing curves — canonical semantic set (mirrors src/lib/motion/tokens.ts) */
-  --hexa-ease-entrance: cubic-bezier(0.16, 1, 0.3, 1);
-  --hexa-ease-interaction: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --hexa-ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
-  --hexa-ease-sharp: cubic-bezier(0.4, 0, 0.6, 1);
-  --hexa-ease-in-out-quint: cubic-bezier(0.76, 0, 0.24, 1);
-
-  /* Durations — mirrors src/lib/motion/tokens.ts DUR */
-  --hexa-duration-micro: 0.2s;
-  --hexa-duration-ui: 0.4s;
-  --hexa-duration-scene: 0.8s;
-  --hexa-duration-transition: 0.7s;
-  --hexa-duration-page: 0.75s;
-  --hexa-duration-camera: 1.4s;
-
-  /* Glass morphism — subtle white-tint glass (general UI) */
-  --glass-bg: rgba(255, 255, 255, 0.02);
-  --glass-border: rgba(255, 255, 255, 0.05);
-  --glass-bg-hover: rgba(255, 255, 255, 0.04);
-  --glass-border-hover: rgba(255, 255, 255, 0.08);
-  --glass-highlight: rgba(255, 255, 255, 0.01);
-
-  /* Glass morphism — obsidian-depth variants for portal/dashboard surfaces */
-  --glass-shadow: rgba(0, 0, 0, 0.4);
-  --glass-shadow-penumbra: rgba(0, 0, 0, 0.2);
-  --glass-highlight-top: rgba(255, 255, 255, 0.04);
-  --glass-highlight-edge: rgba(212, 175, 55, 0.06);
-  --glass-depth-border: rgba(255, 255, 255, 0.06);
-}
-
-body {
-  background-color: var(--color-background);
-  color: var(--color-foreground);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-}
-
-/* Headings — luxury editorial Didone (Bodoni Moda) with italic support */
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-serif);
-  font-optical-sizing: auto;
-}
-
-::selection {
-  background-color: color-mix(in srgb, var(--color-accent) 30%, transparent);
-  color: var(--color-foreground);
-}
-
-::-webkit-scrollbar {
-  width: 4px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--color-background);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-border-light);
-}
-
-*:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
-}
-
-/* -------------------------------------------------------------------------- */
-/*  Reduced Motion — comprehensive fallback rules                              */
-/* -------------------------------------------------------------------------- */
-
-
-/* Click/Hover/Tap interaction utilities */
-.hexa-tap {
-  transition: transform var(--hexa-duration-transition) var(--hexa-ease-interaction, cubic-bezier(0.4, 0, 0.2, 1));
-  will-change: transform;
-}
-.hexa-tap:active {
-  transform: scale(0.97);
-}
-@media (prefers-reduced-motion: reduce) {
-  .hexa-tap:active {
-    transform: none;
+@layer base {
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: "Inter", sans-serif;
+    letter-spacing: 0.01em;
   }
-}
-.hexa-link {
-  position: relative;
-  transition: color var(--hexa-duration-transition) var(--hexa-ease-transition, cubic-bezier(0.25, 0.1, 0.25, 1));
-}
-.hexa-link::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -2px;
-  width: 100%;
-  height: 1px;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform var(--hexa-duration-transition) var(--hexa-ease-transition, cubic-bezier(0.25, 0.1, 0.25, 1));
-}
-.hexa-link:hover::after,
-.hexa-link:focus-visible::after {
-  transform: scaleX(1);
-  transform-origin: left;
-}
-.hexa-focus-ring:focus-visible {
-  outline: 2px solid var(--color-accent, #D4AF37);
-  outline-offset: 3px;
-  border-radius: 2px;
+  * { @apply border-border; }
+  :focus-visible { @apply outline-none ring-2 ring-ring ring-offset-2; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+@layer utilities {
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
-
-  /* Hide ambient canvases and particle effects */
-  .ambient-canvas,
-  .shader-gradient,
-  .particle-dust {
-    display: none;
-  }
-
-  .motion-reduce-hidden {
-    display: none;
-  }
-}
-
-/* -------------------------------------------------------------------------- */
-/*  RESPONSIVE BREAKPOINTS — tablet & mobile first                            */
-/* -------------------------------------------------------------------------- */
-
-/* Tablet (md by Tailwind default = 768px) — stacked → side-by-side transition.
-   Mobile (sm = 640px) — single column, full-bleed text.
-   Add a custom bp-sm* tighter than Tailwind's sm (640px) for very small phones. */
-
-@media (max-width: 767px) {
-  /* On screens < tablet, force single-column defaults for grid components
-     that declare grid-cols-N without a mobile base. We scope this to
-     components that set the data-responsive attribute so we don't
-     accidentally collapse intentionally-full grids. */
-  [data-responsive="stack"] {
-    grid-template-columns: 1fr !important;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 1023px) {
-  /* Tablet: 2-column grids that are 3+ columns on desktop collapse to 2. */
-  [data-responsive="tablet-2"] {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-}
-
-/* Fluid type scale — clamp() so text stays readable across the responsive range.
-   These are the canonical responsive sizes; prefer them over text-2xl / text-3xl
-   literal sizes in long-form marketing and editorial contexts.
-   (Inline utility classes like text-2xl stay for dashboard/admin where fixed
-   sizes are intentional for dense data.) */
-
-:root {
-  /* Hard px type scale (per design review): H1=64px(4rem) H2=48px(3rem) H3=36px(2.25rem) body=18px(1.125rem) */
-  --hex-responsive-text-xs: 0.75rem;    /* 12px */
-  --hex-responsive-text-sm: 0.875rem;   /* 14px */
-  --hex-responsive-text-base: 1.125rem; /* 18px - body */
-  --hex-responsive-text-md: 1.25rem;    /* 20px */
-  --hex-responsive-text-lg: 1.5rem;     /* 24px */
-  --hex-responsive-text-xl: 2rem;       /* 32px */
-  --hex-responsive-text-2xl: 2.25rem;   /* 36px - H3 */
-  --hex-responsive-text-3xl: 3rem;      /* 48px - H2 */
-  --hex-responsive-text-4xl: 4rem;      /* 64px - H1 */
-  --hex-responsive-text-5xl: 5rem;      /* 80px - display */
-}
-/* Hard px type scale applied to headings (design review: H1=64px H2=48px H3=36px body=18px) */
-h1, .h1 { font-size: 4rem; }  /* 64px */
-h2, .h2 { font-size: 3rem; }  /* 48px */
-h3, .h3 { font-size: 2.25rem; } /* 36px */
-body, .body { font-size: 1.125rem; } /* 18px */
-
-
-/* Utility classes that map to the fluid scale. Use these instead of plain
-   Tailwind text-* sizes for marketing/editorial text that spans devices. */
-
-.text-hex-xs   { font-size: var(--hex-responsive-text-xs); }
-.text-hex-sm   { font-size: var(--hex-responsive-text-sm); }
-.text-hex-base { font-size: var(--hex-responsive-text-base); }
-.text-hex-md   { font-size: var(--hex-responsive-text-md); }
-.text-hex-lg   { font-size: var(--hex-responsive-text-lg); }
-.text-hex-xl   { font-size: var(--hex-responsive-text-xl); }
-.text-hex-2xl  { font-size: var(--hex-responsive-text-2xl); }
-.text-hex-3xl  { font-size: var(--hex-responsive-text-3xl); }
-.text-hex-4xl  { font-size: var(--hex-responsive-text-4xl); }
-.text-hex-5xl  { font-size: var(--hex-responsive-text-5xl); }
-
-/* Responsive button text — base buttons get slightly smaller text on mobile
-   (current buttons use literal text-sm = 0.875rem which is a little large on
-   a 375px screen paired with uppercase tracking). */
-
-.btn-responsive-text {
-  font-size: var(--hex-responsive-text-sm);
-}
-
-@media (max-width: 480px) {
-  .btn-responsive-text {
-    font-size: 0.75rem;
-    letter-spacing: 0.06em;
-  }
-}
-
-:root {
-  /* Silent Luxury Color Palette */
-  --sl-void: #0A0A0B;
-  --sl-obsidian: #121214;
-  --sl-stone: #1C1C1F;
-  --sl-alabaster: #F5F4F2;
-  --sl-silver: #A8A8A8;
-  --sl-mist: #D4D4D4;
-  --sl-warm-neutral: #E8E6E3;
-  --sl-gold-subtle: rgba(212, 175, 55, 0.15);
-  --sl-gold-hover: rgba(212, 175, 55, 0.3);
-  --sl-gold-rgb: 212, 175, 55;
-
-  /* Typography — Bodoni Moda: luxury fashion Didone (high-contrast editorial, Vogue-like), italic-capable */
-  --sl-heading-font: 'Bodoni Moda', 'Cormorant Garamond', Georgia, serif;
-  --sl-body-font: 'Inter', system-ui, sans-serif;
-
-  /* Easing */
-  --sl-ease-entrance: cubic-bezier(0.22, 1, 0.36, 1);
-  --sl-ease-interaction: cubic-bezier(0.32, 1.1, 0.64, 1);
-}
-
-/* Silent Luxury Utilities */
-.sl-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 clamp(24px, 5vw, 64px);
-}
-
-.sl-section {
-  padding: clamp(80px, 12vw, 160px) 0;
-}
-
-.sl-kicker {
-  font-family: var(--sl-body-font);
-  font-size: 0.6875rem;
-  font-weight: 400;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--sl-silver);
-}
-
-.sl-heading {
-  font-family: var(--sl-heading-font);
-  font-weight: 300;
-  font-style: normal;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-  color: var(--sl-alabaster);
-}
-
-.sl-heading-display {
-  font-size: clamp(3rem, 7vw, 5.5rem);
-}
-
-.sl-body {
-  font-family: var(--sl-body-font);
-  font-weight: 300;
-  font-size: clamp(1rem, 1.5vw, 1.125rem);
-  line-height: 1.75;
-  color: var(--sl-mist);
-}
-
-.sl-glass {
-  background: rgba(245, 244, 242, 0.02);
-  backdrop-filter: blur(32px);
-  -webkit-backdrop-filter: blur(32px);
-  border: 1px solid rgba(245, 244, 242, 0.06);
-  transition: border-color 0.5s var(--sl-ease-entrance);
-}
-
-.sl-glass:hover {
-  border-color: rgba(212, 175, 55, 0.12);
-}
-
-/* Grain overlay */
-.sl-grain {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.03;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* Vignette */
-.sl-vignette {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.4) 100%);
-}
-
-/* Divider with dots */
-.sl-divider-sl {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-}
-.sl-divider-dots {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.sl-dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: rgba(168, 168, 168, 0.4);
-}
-
-/* Button */
-.sl-btn {
-  font-family: var(--sl-body-font);
-  font-weight: 300;
-  font-size: 0.875rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 14px 32px;
-  background: transparent;
-  border: 1px solid rgba(245, 244, 242, 0.06);
-  color: var(--sl-alabaster);
-  cursor: pointer;
-  transition: all 0.5s var(--sl-ease-entrance);
-}
-
-.sl-btn:hover {
-  border-color: rgba(212, 175, 55, 0.3);
-  color: var(--sl-warm-neutral);
-}
-
-.sl-btn:active {
-  transform: scale(0.98);
-}
-
-/* Glass morphism — frosted panels */
-.glass {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid var(--glass-border);
-}
-
-.glass-hover:hover {
-  background: var(--glass-bg-hover);
-  border-color: var(--glass-border-hover);
-}
-
-/* Gold gradient text — token-sourced */
-.text-gradient-gold {
-  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-bright) 40%, var(--color-gold-deep) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-
-/* Premium nav feature — gold gradient underline (token-sourced, was inline in Navbar) */
-.premium-feature {
-  position: relative;
-}
-.premium-feature::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--color-gold-bright, #E5C76B), transparent);
-  opacity: 0.7;
-}
-/* Cinematic gradient overlay — token-sourced */
-.gradient-radial-gold {
-  background: radial-gradient(circle at center, color-mix(in srgb, var(--color-accent) 8%, transparent) 0%, transparent 60%);
-}
-
-/* Premium focus ring (accessibility + luxury) */
-.focus-luxury:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 4px;
-  box-shadow: 0 0 0 6px rgba(212, 175, 55, 0.1);
-}
-
-/* Text color utilities for canonical text tokens */
-.text-textPrimary {
-  color: var(--color-text-primary);
-}
-
-.text-textSecondary {
-  color: var(--color-text-secondary);
-}
-
-.text-textMuted {
-  color: var(--color-text-muted);
-}
-
-/* Glassmorphism depth utility — obsidian-surface panels with shadow + highlight */
-.glass-depth {
-  background: var(--glass-bg);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid var(--glass-depth-border);
-  box-shadow:
-    0 0 0 1px var(--glass-shadow),
-    0 8px 32px var(--glass-shadow-penumbra),
-    inset 0 1px 0 var(--glass-highlight-top);
-}
-
-.glass-depth:hover {
-  border-color: var(--glass-border-hover);
-  box-shadow:
-    0 0 0 1px var(--glass-shadow),
-    0 12px 48px var(--glass-shadow-penumbra),
-    inset 0 1px 0 var(--glass-highlight-top);
-}
-
-/* Nav link underline — draws from center on hover/focus (Phase 1 tokens).
-   Transform-only, GPU-composited; neutralized by the reduced-motion reset. */
-.nav-underline {
-  transform: scaleX(0);
-  transform-origin: center;
-  transition: transform var(--hexa-duration-ui) var(--hexa-ease-in-out-quint);
-}
-
-.group:hover .nav-underline,
-.group:focus-visible .nav-underline {
-  transform: scaleX(1);
-}
-
-/* Shimmer animation for loading states — documented exception to reduced motion */
-@keyframes shimmer {
-  0% { background-position: -1000px 0; }
-  100% { background-position: 1000px 0; }
-}
-
-.shimmer {
-  background: linear-gradient(
-    90deg,
-    var(--color-surface) 0%,
-    var(--color-surface-light) 20%,
-    var(--color-surface) 40%,
-    var(--color-surface) 100%
-  );
-  background-size: 1000px 100%;
-  animation: shimmer 2s infinite linear;
-}
-
-/* Perspective for 3D card tilts */
-.perspective-1000 {
-  perspective: 1000px;
-}
-
-/* Premium scroll-driven scale */
-@keyframes slow-zoom {
-  0% { transform: scale(1); }
-  100% { transform: scale(1.08); }
-}
-
-.animate-slow-zoom {
-  animation: slow-zoom 20s ease-out forwards;
-}
-
-/* Digital Atelier — scroll reveal. Hidden state is applied only once the
-   client runtime is active (`.atelier-reveal` is added from JS) so content
-   is never invisible without JavaScript. Stagger is driven by
-   `animation-delay` inline style. Neutralized by the reduced-motion reset
-   below (animation: none + fully visible). */
-@keyframes atelier-fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.atelier-reveal {
-  opacity: 0;
-  will-change: opacity, transform;
-}
-
-.atelier-reveal.is-visible {
-  animation: atelier-fade-up 0.9s var(--hexa-ease-entrance) both;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .atelier-reveal {
-    opacity: 1;
-    animation: none;
-  }
-}
-
-/* Button reset utility */
-.button-reset {
-  appearance: none;
-  border: none;
-  background: none;
-  padding: 0;
-  margin: 0;
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-}
-
-/* Fix max-width constrained elements collapsing to content width in flex
-   containers or as flex items. A max-width without an explicit width can
-   shrink to fit its content in these contexts, breaking text layout. */
-[class*="max-w-"] {
-  width: 100%;
-}
-
-/* ========================================================================== */
-/*  STORYBOOK HOMEPAGE — Book-page aesthetic utilities                          */
-/* ========================================================================== */
-
-/* Paper-textured background for book chapters */
-.storybook-paper {
-  background:
-    radial-gradient(ellipse at 20% 50%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 50%, rgba(212, 175, 55, 0.02) 0%, transparent 50%),
-    linear-gradient(180deg, rgba(26, 22, 18, 0.3) 0%, rgba(15, 13, 10, 0.5) 100%);
-}
-
-/* Decorative border frame for book pages */
-.storybook-border {
-  position: relative;
-}
-
-.storybook-border::before {
-  content: '';
-  position: absolute;
-  inset: 12px;
-  border: 1px solid rgba(212, 175, 55, 0.1);
-  border-radius: 1px;
-  pointer-events: none;
-}
-
-.storybook-border::after {
-  content: '';
-  position: absolute;
-  inset: 14px;
-  border: 1px solid rgba(212, 175, 55, 0.05);
-  border-radius: 0.5px;
-  pointer-events: none;
-}
-
-/* Ornamental rule — horizontal divider with centered diamond */
-.storybook-ornament {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: rgba(212, 175, 55, 0.4);
-  margin: 2rem 0;
-}
-
-.storybook-ornament::before,
-.storybook-ornament::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: currentColor;
-}
-
-.storybook-ornament::before {
-  background: linear-gradient(90deg, transparent, currentColor);
-}
-
-.storybook-ornament::after {
-  background: linear-gradient(90deg, currentColor, transparent);
-}
-
-/* Chapter numeral — large decorative number */
-.chapter-numeral {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: clamp(3rem, 8vw, 6rem);
-  font-weight: 400;
-  line-height: 1;
-  color: rgba(212, 175, 55, 0.15);
-  display: block;
-  letter-spacing: -0.02em;
-}
-
-/* Chapter title — book-style running header */
-.chapter-title {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: clamp(0.65rem, 1.4vw, 0.85rem);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(212, 175, 55, 0.3);
-  line-height: 1.5;
-  text-align: right;
-}
-
-/* Drop cap first letter */
-.drop-cap::first-letter {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: clamp(3rem, 6vw, 5rem);
-  font-weight: 400;
-  line-height: 0.8;
-  float: left;
-  margin-right: 0.12em;
-  margin-top: 0.06em;
-  color: rgba(212, 175, 55, 0.8);
-  text-shadow: 0 2px 8px rgba(212, 175, 55, 0.12);
-  font-style: italic;
-}
-
-/* Narrative body text — enhanced readability for storybook sections.
-   72ch keeps prose readable while allowing ~760px on wide screens so the
-   embedded homepage sections (FeaturedWork, Process, Achievements, Projects,
-   Testimonials) get more room than the old 680px column. */
-.storybook-body {
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: clamp(1rem, 1.4vw, 1.125rem);
-  line-height: 1.8;
-  color: rgba(255, 255, 255, 0.75);
-  max-width: clamp(640px, 72ch, 760px);
-  margin: 0 auto;
-}
-
-/* Storybook section heading */
-.storybook-heading {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: clamp(1.5rem, 3vw, 2.25rem);
-  font-weight: 400;
-  line-height: 1.2;
-  color: rgba(255, 255, 255, 0.92);
-  letter-spacing: -0.01em;
-}
-
-/* Storybook sub-heading */
-.storybook-subheading {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: clamp(1rem, 1.8vw, 1.25rem);
-  font-weight: 400;
-  font-style: italic;
-  line-height: 1.4;
-  color: rgba(212, 175, 55, 0.6);
-  letter-spacing: 0.01em;
-}
-
-/* Narrative accent word */
-.storybook-accent {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-style: italic;
-  color: rgba(212, 175, 55, 0.85);
-}
-
-/* Bookmark-style reading progress */
-.bookmark-progress {
-  position: fixed;
-  right: clamp(16px, 3vw, 40px);
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  z-index: 50;
-  pointer-events: none;
-}
-
-/* Page shadow effect for depth */
-.page-shadow {
-  box-shadow:
-    4px 0 40px rgba(0, 0, 0, 0.25),
-    inset 0 0 60px rgba(212, 175, 55, 0.015);
-}
-
-/* Corner flourish positions */
-.corner-flourish-tl {
-  position: absolute;
-  top: clamp(32px, 5vw, 48px);
-  left: clamp(32px, 5vw, 48px);
-}
-
-.corner-flourish-tr {
-  position: absolute;
-  top: clamp(32px, 5vw, 48px);
-  right: clamp(32px, 5vw, 48px);
-}
-
-/* Storybook page margin */
-.storybook-page-padding {
-  padding: clamp(40px, 7vw, 96px);
-}
-
-/* Decorative diamond bullet */
-.diamond-bullet {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 6px;
-  height: 6px;
-  border-radius: 1px;
-  background: rgba(212, 175, 55, 0.3);
-  margin: 0 0.5em;
-  vertical-align: middle;
-}
-
-/* Storybook section spacing */
-.storybook-section-gap {
-  margin-top: clamp(3rem, 6vw, 6rem);
-}
-
-/* Narrative paragraph styling */
-.storybook-paragraph {
-  margin-bottom: 1.25em;
-  text-indent: 0;
-}
-
-.storybook-paragraph + .storybook-paragraph {
-  text-indent: 1.5em;
-}
-
-/* Drop cap styles */
-.drop-cap-lg {
-  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
-}
-
-.drop-cap-first {
-  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
-  font-size: clamp(3rem, 6vw, 5rem);
-  font-weight: 400;
-  line-height: 0.8;
-  float: left;
-  margin-right: 0.1em;
-  margin-top: 0.05em;
-  color: rgba(212, 175, 55, 0.85);
-  text-shadow: 0 2px 8px rgba(212, 175, 55, 0.15);
-  font-style: italic;
-}
-
-/* Scrollbar hide utility for horizontal scroll containers */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
 }
