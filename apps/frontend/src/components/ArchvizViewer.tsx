@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense } from 'react';
+import { useMemo, useState } from 'react'
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment, ContactShadows, Html, Loader } from '@react-three/drei';
 import * as THREE from 'three';
@@ -104,8 +104,8 @@ export function ArchvizViewer({
           left: 0,
           right: 0,
           backgroundColor: 'rgba(10, 10, 11, 0.8)',
+          color: GOLD,
         }}
-        dataItemStyles={{ color: GOLD }}
       />
     </>
   );
