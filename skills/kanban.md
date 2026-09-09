@@ -27,15 +27,15 @@
 ## ✅ Ready
 | ID | Item | Est Effort | Est Risk | Depends On |
 |----|------|-----------|----------|------------|
-| #2 | Real-Time Web Viewer (three.js/R3F + glTF loader) | Med | Low | three.js install |
-| #5 | Egyptian Material Library (mashrabiya, granite, marble) | Low | Low | #2 viewer |
+| — | *none* | | | |
 
 ---
 
 ## 🔧 In Progress
 | ID | Item | Notes |
 |----|------|-------|
-| — | *none* | |
+| #2 | Real-Time Web Viewer | `ArchvizViewer.tsx` + `ArchvizModel.tsx` written |
+| #5 | Egyptian Material Library | `egyptian-materials.json` (5 materials w/ EGP pricing) |
 
 ---
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react'
+import { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment, ContactShadows, Html, Loader } from '@react-three/drei';
 import * as THREE from 'three';
@@ -16,7 +16,6 @@ interface ArchvizViewerProps {
 }
 
 function ModelFallback() {
-  const reduced = useReducedMotion();
   return (
     <Html center>
       <div className="flex flex-col items-center gap-3 text-center">
@@ -27,19 +26,8 @@ function ModelFallback() {
   );
 }
 
-function ModelErrorBoundary({ onError }: { onError: (err: Error) => void }) {
-  return (
-    <Html center>
-      <div className="flex flex-col items-center gap-2 text-center">
-        <span className="text-sm text-red-400">Failed to load 3D model</span>
-      </div>
-    </Html>
-  );
-}
-
 /**
  * ArchvizViewer — Production-grade 3D architectural visualization viewer.
- *
  * Gated by useReducedMotion for accessibility; uses glTF for model loading.
  * Built on existing VoidGarden/ArchitecturalVisualization3D patterns.
  */
@@ -70,7 +58,7 @@ export function ArchvizViewer({
   }
 
   return (
-    <>
+    <Suspense fallback={null}>
       <Canvas
         camera={{ position: camera, fov: 50 }}
         gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping }}
@@ -79,23 +67,22 @@ export function ArchvizViewer({
         <color attach="background" args={['#0a0a0b']} />
         <ambientLight intensity={0.6} />
         <directionalLight position={[3, 5, 3]} intensity={0.9} />
-        <Suspense fallback={<ModelFallback />}>
-          <ArchvizModel modelPath={modelPath} onError={handleError} />
-          <Environment preset="city" />
-          <ContactShadows
-            position={[0, -1, 0]}
-            opacity={0.4}
-            scale={[10, 10]}
-            blur={2}
-            far={5}
-          />
-          <OrbitControls
-            enableZoom={true}
-            enablePan={false}
-            autoRotate
-            autoRotateSpeed={0.5}
-          />
-        </Suspense>
+        <ModelFallback />
+        <ArchvizModel modelPath={modelPath} onError={handleError} />
+        <Environment preset="city" />
+        <ContactShadows
+          position={[0, -1, 0]}
+          opacity={0.4}
+          scale={[10, 10]}
+          blur={2}
+          far={5}
+        />
+        <OrbitControls
+          enableZoom={true}
+          enablePan={false}
+          autoRotate
+          autoRotateSpeed={0.5}
+        />
       </Canvas>
       <Loader
         dataStyles={{
@@ -107,6 +94,6 @@ export function ArchvizViewer({
           color: GOLD,
         }}
       />
-    </>
+    </Suspense>
   );
 }
