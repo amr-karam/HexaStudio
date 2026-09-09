@@ -201,7 +201,7 @@ Delivered the Gemini Multimodal integration (vision analysis, voice transcriptio
 
 **Infrastructure & CI/CD:**
 - CI pipeline: Typecheck, lint, test, build jobs for monorepo workspaces
-- CD pipeline: GHCR image build + SSH deploy to production server
+- CD pipeline: GitLab Container Registry image build + SSH deploy to production server
 - E2E in CI: Playwright job integrated
 - Docker build fix: Build args + monorepo workspace build in Dockerfile
 

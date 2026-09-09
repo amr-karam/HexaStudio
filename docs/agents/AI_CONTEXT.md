@@ -52,7 +52,7 @@ HEXA Studio is a luxury 3D Architecture Visualization platform.
 - [x] **Brand Identity**: Logo (real logo.webp from client), slogan "Living Spaces. Visualized.", favicon
 - [x] **Sentry**: Client/server/edge config with DSN env variable
 - [x] **ADR**: 6 Architecture Decision Records in docs/ADR/
-- [x] **CI**: GitHub Actions (lint, typecheck, build, security audit)
+- [x] **CI**: GitLab CE CI/CD (lint, typecheck, build, security audit, SBOM, container scan)
 - [x] **Production Deployment**: All 14 containers running + healthy on 19.16.1.100
 - [x] **Deploy Script**: `/opt/scripts/deploy.sh` with 14 commands, health checks via Docker exec
 - [x] **MCP Server**: Running on production (Docker, port 3001) + local dev version in scripts/mcp/

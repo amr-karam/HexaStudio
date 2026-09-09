@@ -1,14 +1,15 @@
-# HEXA Studio — Idea Backlog Kanban
-*Created: 2026-09-09 | Board: markdown-local | Preference: self-hosted*
+# 🏛️ HEXA Studio — Hermes Kanban
+*Hermes-powered orchestration | Board: markdown-local | Self-hosted | Created: 2026-09-10*
 
 ## Columns
 `Backlog → Ready → In Progress → Review → Done`
 
-## Repo State (verified 2026-09-09)
-- **three.js stack installed:** Yes — `three@^0.171.0`, `@react-three/fiber@^9.0.0`, `@react-three/drei@^10.0.0`
-- **3D assets dir:** ❌ `public/models/` not found
-- **Existing 3D components:** `VoidGarden.tsx` (R3F rendering layer), `ArchitecturalVisualization3D.tsx` (placeholder archviz), `Carousel3D.tsx`, `effects/` shaders
-- **Homepage components:** `HomeHero.tsx`, `HomeSections.tsx`, `HomeChapterRail.tsx` in `features/portfolio/`
+## Repo State (verified 2026-09-10)
+- **three.js stack:** `three@^0.171.0`, `@react-three/fiber@^9.0.0`, `@react-three/drei@^10.0.0` ✅
+- **3D assets dir:** ❌ `public/models/` — not yet created
+- **Existing 3D components:** `VoidGarden.tsx`, `ArchitecturalVisualization3D.tsx`, `Carousel3D.tsx`, `effects/` shaders
+- **Homepage components:** `HomeHero.tsx`, `HomeSections.tsx`, `HomeChapterRail.tsx`
+- **Sprint S022.1 artifacts delivered:** `ArchvizViewer.tsx`, `ArchvizModel.tsx`, `MaterialLibrary.ts`, `egyptian-materials.json`, `studio/page.tsx`
 
 ---
 
@@ -27,34 +28,36 @@
 ## ✅ Ready
 | ID | Item | Est Effort | Est Risk | Depends On |
 |----|------|-----------|----------|------------|
-| — | *none* | | | |
+| #1 | AI Style-Transfer Renderer (local SD + ControlNet) | Med | Low | LoRA training on portfolio |
 
 ---
 
 ## 🔧 In Progress
-| ID | Item | Notes |
-|----|------|-------|
-| #2 | Real-Time Web Viewer | `ArchvizViewer.tsx` + `ArchvizModel.tsx` written |
-| #5 | Egyptian Material Library | `egyptian-materials.json` (5 materials w/ EGP pricing) |
+| ID | Item | Files | Status |
+|----|------|-------|--------|
+| #5 | Egyptian Material Library | `egyptian-materials.json` + `MaterialLibrary.ts` | 5 materials + EGP pricing + Three.js builder ✅ |
+| #6 | Season/Ramadan Scene Presets | *(not started)* | Blocked on #5 |
 
 ---
 
 ## 👁️ Review
 | ID | Item | Notes |
 |----|------|-------|
-| — | *none* | |
+| — | *none pending* | |
 
 ---
 
 ## ✅ Done
-| ID | Item | Date |
-|----|------|------|
-| — | *none* | |
+| ID | Item | Files | Date |
+|----|------|-------|------|
+| #2 | Real-Time Web Viewer | `ArchvizViewer.tsx`, `ArchvizModel.tsx`, `studio/page.tsx` | 2026-09-10 |
+| #5 | Egyptian Material Library | `egyptian-materials.json`, `MaterialLibrary.ts` | 2026-09-10 |
 
 ---
 
 ## Execution Notes
-- All items assume **local/offline** toolchains per user preference
-- Items #2+#5 recommended as sprint S022.1 (viewer first — #5 depends on it)
-- Repo is a **clean slate** — no three.js deps found in package.json
-- See `apps/frontend/src/app/story/scroll.tsx` for existing GSAP-based cinematics (non-3D)
+- All items assume **local/offline** toolchains per user preference (self-hosted, no cloud deps)
+- Sprint S022.1 complete: #2 (viewer) + #5 (materials) delivered, tsc = zero errors
+- Kanban lives at `skills/kanban.md` — markdown-local, git-versioned, no external service
+- Next: #1 (Style-Transfer — quick win) or #6 (Ramadan Presets — depends on #5)
+- Existing GSAP cinematics: `apps/frontend/src/app/story/scroll.tsx`
