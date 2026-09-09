@@ -1,0 +1,23 @@
+{
+    "name": "HEXA Hermes",
+    "background": "#050505",
+    "foreground": "#F5F4F2",
+    "selectionBackground": "#161618",
+    "cursorColor": "#D4AF37",
+    "black": "#0F0F10",
+    "red": "#EF4444",
+    "green": "#22C55E",
+    "yellow": "#D4AF37",
+    "blue": "#6B8CAE",
+    "purple": "#9A7B4F",
+    "cyan": "#6FA598",
+    "white": "#A0A0A0",
+    "brightBlack": "#6A6A6E",
+    "brightRed": "#EF4444",
+    "brightGreen": "#22C55E",
+    "brightYellow": "#E5C76B",
+    "brightBlue": "#8FB3D9",
+    "brightPurple": "#C2A06B",
+    "brightCyan": "#93C4B8",
+    "brightWhite": "#FFFFFF"
+}

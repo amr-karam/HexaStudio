@@ -1,140 +1,76 @@
-import type { MetadataRoute } from 'next';
-import { fetchProjects } from '@/features/portfolio/lib/fetchProjects';
-import { fetchArticles } from '@/features/blog/lib/fetchArticles';
-import { captureException } from '@sentry/nextjs';
+import type { MetadataRoute } from "next";
 
-const baseUrl = 'https://hexastudio.net';
-export const dynamic = 'force-dynamic';
+const BASE_URL = "https://hexastudio.net";
+
+const staticRoutes = [
+  "",
+  "/about",
+  "/blog",
+  "/contact",
+  "/projects",
+  "/services",
+  "/privacy",
+  "/terms",
+  "/login",
+  "/ai",
+  "/demo",
+  "/flowdeck",
+  "/photographer",
+  "/studio",
+  "/story",
+];
+
+const blogCategories = ["architecture", "visualization", "technology", "process", "culture"];
+
+const projectCategories = ["residential", "commercial", "cultural", "hospitality", "masterplan"];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const staticPages = [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/studio`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/about`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/services`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/contact`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/photographer`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/xr-viewer`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/demo`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/flowdeck`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.4,
-    },
-    {
-      url: `${baseUrl}/studio/analytics`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.4,
-    },
-    {
-      url: `${baseUrl}/studio/atelier`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/projects`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly' as const,
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/blog`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly' as const,
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/ai`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/premium-chat`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/privacy`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly' as const,
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/terms`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly' as const,
-      priority: 0.3,
-    },
+  const staticSitemap: MetadataRoute.Sitemap = staticRoutes.map((route) => ({
+    url: `${BASE_URL}${route}`,
+    lastModified: new Date(),
+    changeFrequency: route === "" ? "daily" : "weekly" as const,
+    priority: route === "" ? 1.0 : 0.8,
+  }));
+
+  // Add blog category pages
+  const blogCategorySitemap: MetadataRoute.Sitemap = blogCategories.map((cat) => ({
+    url: `${BASE_URL}/blog/category/${cat}`,
+    lastModified: new Date(),
+    changeFrequency: "daily" as const,
+    priority: 0.7,
+  }));
+
+  // Add project category pages
+  const projectCategorySitemap: MetadataRoute.Sitemap = projectCategories.map((cat) => ({
+    url: `${BASE_URL}/projects/category/${cat}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
+  }));
+
+  // Dynamic blog posts (when CMS is connected)
+  // const blogPosts = await getBlogPosts();
+  // const blogPostSitemap = blogPosts.map((post) => ({
+  //   url: `${BASE_URL}/blog/${post.slug}`,
+  //   lastModified: new Date(post.updatedAt),
+  //   changeFrequency: "monthly" as const,
+  //   priority: 0.6,
+  // }));
+
+  // Dynamic project pages (when CMS is connected)
+  // const projects = await getProjects();
+  // const projectSitemap = projects.map((project) => ({
+  //   url: `${BASE_URL}/projects/${project.slug}`,
+  //   lastModified: new Date(project.updatedAt),
+  //   changeFrequency: "monthly" as const,
+  //   priority: 0.9,
+  // }));
+
+  return [
+    ...staticSitemap,
+    ...blogCategorySitemap,
+    ...projectCategorySitemap,
+    // ...blogPostSitemap,
+    // ...projectSitemap,
   ];
-
-  try {
-    const [projectsData, articlesData] = await Promise.all([
-      fetchProjects(),
-      fetchArticles(),
-    ]);
-
-    const projectPages = projectsData.projects?.map((project) => ({
-      url: `${baseUrl}/projects/${project.slug}`,
-      lastModified: new Date(project.updatedAt),
-      changeFrequency: 'monthly' as const,
-      priority: 0.8,
-    })) ?? [];
-
-    const articlePages = articlesData.articles?.map((article) => ({
-      url: `${baseUrl}/blog/${article.slug}`,
-      lastModified: new Date(article.updatedAt),
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
-    })) ?? [];
-
-    return [...staticPages, ...projectPages, ...articlePages];
-  } catch (error) {
-    captureException(error);
-    return staticPages;
-  }
 }

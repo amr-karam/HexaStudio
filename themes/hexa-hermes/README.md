@@ -10,6 +10,10 @@ No ad-hoc hex anywhere in this folder.
 | `hermes-skin.yaml` | Hermes Agent CLI / TUI / desktop | Skin engine repaints every surface live |
 | `codex-appearance.toml` | Codex Desktop app (`~/.codex/config.toml`) | Native `desktop.appearance*` keys |
 | `chatgpt-hermes.css` | chatgpt.com via Stylus extension | Userstyle (the ChatGPT desktop app has no native CSS slot) |
+| `windows-terminal-scheme.json` | Windows Terminal (`schemes` + `profiles.defaults.colorScheme`) | `HEXA Hermes` scheme, default for all profiles |
+| `vscode-colorCustomizations.json` | VS Code (`workbench.colorCustomizations`) | Overlay only — your base color theme is untouched |
+| `powershell-psreadline.ps1` | PowerShell 7 PSReadLine (dot-sourced from `$PROFILE`) | Gold command line, deep-gold ghost text |
+| Windows accent (registry) | Taskbar / Start / window borders | `HKCU\...\DWM ColorizationColor` → gold (no file — see §8) |
 
 ## 1. Codex Desktop
 
@@ -66,6 +70,65 @@ copied so it applies if the profile is ever re-created.
 3. Open `chatgpt.com` with dark mode enabled.
 
 Revert: disable or delete the style in Stylus.
+
+## 4. Windows Terminal
+
+Scheme `HEXA Hermes` added to `schemes` and set as
+`profiles.defaults.colorScheme`, so every profile (PowerShell, WSL, Git Bash)
+uses it. Open a new tab to see it.
+
+Revert: restore `settings.json.pre-hexa-hermes.bak` (same folder).
+
+## 5. VS Code
+
+`workbench.colorCustomizations` appended to user `settings.json` — void
+editor, obsidian sidebar, gold status bar / buttons / focus. Your base color
+theme is not changed; reload the window if colors don't appear at once.
+
+Revert: restore `settings.json.pre-hexa-hermes.bak` (same folder).
+
+## 6. PowerShell 7 (PSReadLine)
+
+`$PROFILE` dot-sources `powershell-psreadline.ps1` (guarded by `Test-Path`,
+so a moved repo can't break shell startup): bright-gold commands,
+soft-gray parameters, deep-gold inline ghost text. Open a new terminal tab.
+
+Key set verified against PSReadLine 2.4 — `Prediction` is not a valid
+`Colors` key there (`InlinePrediction` is); don't re-add it without
+re-probing (`Set-PSReadLineOption -Colors @{key = ...}` per key).
+
+Revert: delete
+`Documents\PowerShell\Microsoft.PowerShell_profile.ps1`.
+
+## 7. Windows accent color
+
+```powershell
+Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\DWM" `
+  -Name ColorizationColor -Value ([uint32]"0xC4D4AF37")
+```
+
+Gold taskbar / Start / borders (dark mode + `ColorPrevalence` already on).
+Takes effect immediately; sign out/in if any surface lags.
+
+Revert: old value was blue `0xC40C767B`
+(`([uint32]"0xC40C767B")`), or double-click the backup
+`~\.hexa-hermes-backups\dwm-color.pre-hexa-hermes.reg`.
+
+## 8. Left untouched on purpose
+
+- Codex `appearanceDarkCodeThemeId` / `LightCodeThemeId` (`vercel`/`notion`):
+  valid IDs aren't enumerable from the installed bundle (packed resources),
+  so no value was invented — override in Codex settings if you know a warmer
+  code theme ID.
+- Hermes running gateways were not restarted: the skin watcher repaints live,
+  and the `hermes update` gateway notice predates this work.
+
+## Design note
+Core surfaces stay 100% canonical. One exception: a terminal needs 16
+functionally distinct ANSI slots and the brand palette has no blue/purple/cyan,
+so `windows-terminal-scheme.json` uses muted dusty fillers there
+(`#6B8CAE` / `#9A7B4F` / `#6FA598` family). They are functional, not brand
+tokens — everything else in this folder is canonical.
 
 ## Token map (all canonical)
 

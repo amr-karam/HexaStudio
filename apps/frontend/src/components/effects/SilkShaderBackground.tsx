@@ -150,7 +150,7 @@ export const SilkShaderBackground: React.FC<SilkShaderBackgroundProps> = ({
   const glRef = useRef<WebGLRenderingContext | null>(null);
   const cleanupSharedRef = useRef<(() => void) | null>(null);
 
-  const { gl: sharedGl, canvas: sharedCanvas, state, registerR3FContext } = sharedContext ? useWebGLContext() : { gl: null, canvas: null, state: 'initializing' as const, registerR3FContext: () => () => {} };
+  const { gl: sharedGl, canvas: sharedCanvas, state, registerR3FContext } = sharedContext ? useWebGLContext() : { gl: null, canvas: null, state: 'initializing' as const, registerR3FContext: (() => () => {}) } as unknown as import('@/engine/webgl/WebGLContextProvider').WebGLContextValue;
 
   const prefersReducedMotion = typeof window !== 'undefined'
     && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
