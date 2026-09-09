@@ -1,0 +1,104 @@
+{
+  "materials": [
+    {
+      "id": "mashrabiya-wood",
+      "name": "Mashrabiya Wood (Oak)",
+      "category": "Wood",
+      "localName": { "en": "Mashrabiya Wood", "ar": "خشب المشربية" },
+      "textureUrls": {
+        "albedo": "/textures/egyptian/mashrabiya_albedo.jpg",
+        "normal": "/textures/egyptian/mashrabiya_normal.jpg",
+        "roughness": "/textures/egyptian/mashrabiya_roughness.jpg",
+        "ao": "/textures/egyptian/mashrabiya_ao.jpg"
+      },
+      "properties": {
+        "roughness": 0.65,
+        "metalness": 0.1,
+        "porosity": 0.2
+      },
+      "egyptianOrigin": "Aswan Oak, Upper Egypt",
+      "estimatedCostEGP": { "material": 850, "installation": 320 },
+      "usage": "Traditional window screens, ceiling panels"
+    },
+    {
+      "id": "limestone-nile",
+      "name": "Nile Valley Limestone (Tura)",
+      "category": "Stone",
+      "localName": { "en": "Nile Valley Limestone", "ar": "حجر الجير النيل" },
+      "textureUrls": {
+        "albedo": "/textures/egyptian/limestone_albedo.jpg",
+        "normal": "/textures/egyptian/limestone_normal.jpg",
+        "roughness": "/textures/egyptian/limestone_roughness.jpg",
+        "ao": "/textures/egyptian/limestone_ao.jpg"
+      },
+      "properties": {
+        "roughness": 0.85,
+        "metalness": 0.0,
+        "porosity": 0.3
+      },
+      "egyptianOrigin": "Tura quarries, Cairo Governorate",
+      "estimatedCostEGP": { "material": 1200, "installation": 780 },
+      "usage": "Facade cladding, monument restoration, flooring"
+    },
+    {
+      "id": "granite-red-aswan",
+      "name": "Aswan Red Granite",
+      "category": "Stone",
+      "localName": { "en": "Aswan Red Granite", "ar": "جرانيت أسوان الأحمر" },
+      "textureUrls": {
+        "albedo": "/textures/egyptian/granite_albedo.jpg",
+        "normal": "/textures/egyptian/granite_normal.jpg",
+        "roughness": "/textures/egyptian/granite_roughness.jpg",
+        "ao": "/textures/egyptian/granite_ao.jpg"
+      },
+      "properties": {
+        "roughness": 0.45,
+        "metalness": 0.15,
+        "porosity": 0.05
+      },
+      "egyptianOrigin": "Aswan, Upper Egypt",
+      "estimatedCostEGP": { "material": 2400, "installation": 1100 },
+      "usage": "Monument construction, luxury flooring, columns"
+    },
+    {
+      "id": "marble-carrara-proxy",
+      "name": "Egyptian White Marble (Carrara-style)",
+      "category": "Stone",
+      "localName": { "en": "Egyptian White Marble", "ar": "رخام أبيض مصري" },
+      "textureUrls": {
+        "albedo": "/textures/egyptian/marble_albedo.jpg",
+        "normal": "/textures/egyptian/marble_normal.jpg",
+        "roughness": "/textures/egyptian/marble_roughness.jpg",
+        "ao": "/textures/egyptian/marble_ao.jpg"
+      },
+      "properties": {
+        "roughness": 0.15,
+        "metalness": 0.05,
+        "porosity": 0.02
+      },
+      "egyptianOrigin": "Luxor marble quarries (local quarry proxy for Carrara)",
+      "estimatedCostEGP": { "material": 3200, "installation": 1800 },
+      "usage": "Interior walls, sculpture, luxury countertops"
+    },
+    {
+      "id": "cotton-damask-egyptian",
+      "name": "Egyptian Cotton Damask Fabric",
+      "category": "Textile",
+      "localName": { "en": "Egyptian Cotton Damask", "ar": "قماش القطن المصري المخملي" },
+      "textureUrls": {
+        "albedo": "/textures/egyptian/cotton_albedo.jpg",
+        "normal": "/textures/egyptian/cotton_normal.jpg",
+        "roughness": "/textures/egyptian/cotton_roughness.jpg",
+        "ao": "/textures/egyptian/cotton_ao.jpg"
+      },
+      "properties": {
+        "roughness": 0.9,
+        "metalness": 0.0,
+        "porosity": 0.4
+      },
+      "egyptianOrigin": "Alexandria cotton, Nile Delta",
+      "estimatedCostEGP": { "material": 420, "installation": 150 },
+      "usage": "Upholstery, drapery, wall panels"
+    }
+  ]
+}
