@@ -1,4 +1,5 @@
 'use client';
+
 import { EASE } from '@/lib/motion';
 
 import { useMemo, useState, useEffect } from 'react';
@@ -294,7 +295,7 @@ export default function ProjectDetailPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.35, duration: 0.7, ease: EASE.entrance }}
-          className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4"
+          className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
         >
           {[
             {

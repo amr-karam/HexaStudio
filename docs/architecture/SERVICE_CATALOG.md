@@ -23,7 +23,7 @@ The production stack is composed of **4 network planes**:
 | Attribute | Value |
 |-----------|-------|
 | **Purpose** | Reverse proxy, API gateway, and automatic SSL termination (Let's Encrypt via Cloudflare DNS challenge) |
-| **Image** | `traefik:v2.11` |
+|| **Image** | `traefik:v3` (latest) |
 | **Ports** | `80:80` (HTTP), `443:443` (HTTPS) |
 | **Networks** | `web` |
 | **Dependencies** | None (boots first to route traffic) |

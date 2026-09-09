@@ -135,7 +135,7 @@ const ProjectCard = ({ title, category, image, index, onClick, isFocused, status
           transition={{ type: 'spring', stiffness: 150, damping: 20 }}
           className="transition-all duration-700 ease-out"
         >
-          <Card variant="solid" className="overflow-hidden p-0 aspect-[3/4]">
+          <Card className="overflow-hidden p-0 aspect-[3/4]">
             <div className="absolute inset-0 bg-sl-gold-subtle/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
             <div ref={imageClipRef} className="h-full w-full relative overflow-hidden bg-sl-obsidian-light">
               <div className="h-full w-full transition-transform duration-1000 ease-out-expo group-hover:scale-110">
@@ -152,17 +152,17 @@ const ProjectCard = ({ title, category, image, index, onClick, isFocused, status
 
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-700" />
 
-              <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
+              <div className="absolute inset-0 flex flex-col justify-end p-4 sm:p-6 md:p-8">
                 <div className="transition-all duration-500 ease-out">
-                  <p className="text-[9px] md:text-[10px] uppercase tracking-[0.6em] text-sl-gold-hover/90 group-hover:text-sl-gold-hover transition-colors duration-500 mb-3 font-mono">
+                  <p className="text-[8px] sm:text-[9px] md:text-[10px] uppercase tracking-[0.6em] text-sl-gold-hover/90 group-hover:text-sl-gold-hover transition-colors duration-500 mb-2 sm:mb-3 font-mono">
                     {category}
                   </p>
                   {status && (
-                    <span className="mb-3 inline-block rounded-none border border-white/10 px-2 py-0.5 text-[8px] uppercase tracking-[0.2em] text-sl-alabaster/50 bg-white/5">
+                    <span className="mb-2 sm:mb-3 inline-block rounded-none border border-white/10 px-2 py-0.5 text-[7px] sm:text-[8px] uppercase tracking-[0.2em] text-sl-alabaster/50 bg-white/5">
                       {status}
                     </span>
                   )}
-                  <h3 className="text-xl md:text-2xl font-serif font-light text-sl-alabaster/95 group-hover:text-sl-alabaster transition-colors duration-500 leading-[1.1] tracking-tight">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-serif font-light text-sl-alabaster/95 group-hover:text-sl-alabaster transition-colors duration-500 leading-[1.1] tracking-tight">
                     {title}
                   </h3>
                   <div className="h-[1px] w-0 group-hover:w-full bg-sl-gold-subtle transition-all duration-1000 mt-6 ease-out-expo" />
@@ -299,7 +299,7 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
   return (
     <>
       {/* Grid content section — storybook frame provided by parent page */}
-      <section ref={sectionRef} className="px-8 md:px-16 py-32 bg-sl-void relative overflow-hidden">
+      <section ref={sectionRef} className="px-5 sm:px-6 md:px-12 lg:px-16 py-16 sm:py-20 md:py-28 lg:py-32 bg-sl-void relative overflow-hidden">
         <div className="absolute top-12 left-8 md:left-16 z-20">
           <ChapterMarker index={4} title="Proof" />
         </div>
@@ -326,7 +326,7 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
               <KineticTitle
                 text="Creating Visual Truth"
                 accentWords={['Visual']}
-                className="text-5xl md:text-7xl font-serif font-light tracking-[-0.03em] text-sl-alabaster leading-[1.05]"
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-serif font-light tracking-[-0.03em] text-sl-alabaster leading-[1.05]"
               />
             </motion.div>
           </div>
@@ -341,13 +341,13 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
           </motion.p>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-8 mb-20">
+        <div className="flex flex-nowrap sm:flex-wrap justify-start sm:justify-center gap-4 sm:gap-6 md:gap-8 mb-10 sm:mb-16 md:mb-20 overflow-x-auto pb-2 scrollbar-hide -mx-5 px-5 sm:mx-0 sm:px-0">
           {categories.map((cat) => (
             <Magnetic key={cat}>
               <button
                 onClick={() => setActiveCategory(cat)}
                 className={cn(
-                  'text-[9px] uppercase tracking-[0.4em] transition-all duration-700 font-mono py-1 border-b border-transparent',
+                  'text-[9px] sm:text-[10px] uppercase tracking-[0.4em] transition-all duration-700 font-mono py-2 sm:py-1 border-b border-transparent min-h-[44px] whitespace-nowrap',
                   activeCategory === cat
                     ? 'text-sl-gold-hover border-sl-gold-subtle'
                     : 'text-sl-mist/60 hover:text-sl-mist/60'

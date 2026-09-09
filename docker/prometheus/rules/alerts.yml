@@ -189,3 +189,36 @@ groups:
         annotations:
           summary: "Probe slow: {{ $labels.instance }}"
           description: "Blackbox probe for {{ $labels.instance }} took {{ $value | printf \"%.1f\" }}s (threshold: 3s)"
+
+  # PROD-008: 99.9% uptime SLO recording + alerting rules
+  # 99.9% = 43.2 min allowable downtime/month
+  - name: hexa-slo
+    interval: 30s
+    rules:
+      # Recording: 30-day rolling uptime ratio (probe_success average)
+      - record: job:slo_probe_success:ratio_30d
+        expr: avg_over_time(probe_success[30d])
+
+      # Recording: remaining error budget as ratio (0.0 = exhausted, 1.0 = healthy)
+      - record: job:slo_uptime_error_budget_remaining:ratio_30d
+        expr: (avg_over_time(probe_success[30d]) - 0.999) / (1 - 0.999)
+
+      # Critical: 99.9% SLO breached for 10+ minutes
+      - alert: SLO_Uptime999_Breached
+        expr: avg_over_time(probe_success[30d]) < 0.999
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "SLO breach: 99.9% uptime for {{ $labels.instance }}"
+          description: "{{ $labels.instance }} below 99.9% uptime SLO (30d rolling: {{ $value | printf \"%.4f\" }})"
+
+      # Warning: error budget 90% consumed (99.99% achieved)
+      - alert: SLO_Uptime999_ErrorBudgetCritical
+        expr: avg_over_time(probe_success[30d]) < 0.9999
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "SLO error budget critical: {{ $labels.instance }}"
+          description: "90%+ of 99.9% uptime error budget consumed (30d rolling: {{ $value | printf \"%.4f\" }})"

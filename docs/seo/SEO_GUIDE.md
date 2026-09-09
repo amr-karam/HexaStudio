@@ -1,7 +1,7 @@
 # SEO Guide
 
-**Version:** 1.0.0  
-**Last Updated:** 2026-07-08  
+**Version:** 1.1.0  
+**Last Updated:** 2026-09-04  
 
 ---
 
@@ -44,88 +44,52 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 | Field | Required | Notes |
 |-------|----------|-------|
-| `title` | Yes | Include " | HEXA Studio" suffix |
+| `title` | Yes | Include ` | HexaStudio` suffix |
 | `description` | Yes | 150-160 characters |
 | `openGraph` | Yes | Title, description, image, type |
 | `twitter` | Yes | card, title, description, image |
 | `canonical` | Yes | Self-referencing canonical URL |
 | `robots` | Conditional | `noindex` for admin/dashboard pages |
+| `alternates.languages` | Conditional | Include `x-default` when locale-specific routing is not yet live |
+| `alternates.canonical` | Recommended | Use on every public page; include on home and section roots |
 
----
+### Canonical Consistency Rule
 
-## Structured Data (JSON-LD)
+- Use the exact production domain in `metadata.alternates.canonical`.
+- Reuse one canonical URL constant per section when possible.
+- Dynamic slugs must derive canonical from route params, not metadata body text.
 
-### Organization
+### Robots Policy
 
-```json
-{
-  "@context": "https://schema.org",
-  "@type": "ProfessionalService",
-  "name": "HEXA Studio",
-  "description": "Premium architectural visualization studio",
-  "url": "https://hexastudio.net",
-  "logo": "https://hexastudio.net/logo.png",
-  "sameAs": [
-    "https://instagram.com/hexastudio",
-    "https://linkedin.com/company/hexastudio"
-  ],
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "City",
-    "addressCountry": "Country"
-  }
-}
-```
+- Public routes: `index: true, follow: true`
+- Admin/dashboard/portal: `noindex, nofollow`
+- Add `/api/`, `/_next/`, `/portal/`, `/admin/`, `/dashboard/` to robots disallow rules.
+- Sitemap must always point to `https://hexastudio.net/sitemap.xml`.
 
-### Project / Portfolio Item
+### Breadcrumbs
 
-```json
-{
-  "@context": "https://schema.org",
-  "@type": "Project",
-  "name": "Sunset Villa",
-  "description": "Modern residential project with sustainable design",
-  "image": "https://hexastudio.net/projects/sunset-villa/main.jpg",
-  "dateCreated": "2026-01-15",
-  "author": {
-    "@type": "Organization",
-    "name": "HEXA Studio"
-  },
-  "keywords": "modern architecture, sustainable design, residential"
-}
-```
-
-### Blog Post
-
-```json
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "Trends in Modern Architecture 2026",
-  "description": "Exploring the latest trends...",
-  "image": "https://hexastudio.net/blog/hero.jpg",
-  "datePublished": "2026-07-01",
-  "dateModified": "2026-07-08",
-  "author": {
-    "@type": "Organization",
-    "name": "HEXA Studio"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "HEXA Studio"
-  }
-}
-```
+- Public non-root pages should emit `WebPage` JSON-LD with a `BreadcrumbList` when a page hierarchy exists.
+- Use `JsonLd.tsx` helpers for breadcrumbs, organization schema, and page lists.
+- Do not emit duplicate JSON-LD on the same page.
 
 ### Implementation
 
-```typescript
-import { JsonLd } from '@/components/shared/JsonLd';
+```tsx
+import { ProfessionalServiceJsonLd, WebPageJsonLd } from '@/components/JsonLd';
 
-export function ProjectPage({ project }: { project: Project }) {
+export default function Page() {
   return (
     <>
-      <JsonLd data={projectStructuredData(project)} />
+      <ProfessionalServiceJsonLd />
+      <WebPageJsonLd
+        title="About"
+        description="Studio manifesto and design philosophy."
+        url="https://hexastudio.net/about"
+        breadcrumb={[
+          { name: 'Home', item: 'https://hexastudio.net' },
+          { name: 'About', item: 'https://hexastudio.net/about' },
+        ]}
+      />
       {/* Page content */}
     </>
   );

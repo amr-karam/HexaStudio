@@ -184,7 +184,7 @@ export default function PortalDashboardPage() {
   }
 
   return (
-    <div className="space-y-8 pb-12" role="main" aria-label="Portal Dashboard">
+    <div className="space-y-8 pb-12" role="region" aria-label="Portal Dashboard">
       {/* ================================================================ */}
       {/*  SECTION 1 — PREMIUM WELCOME HERO                               */}
       {/* ================================================================ */}

@@ -1,3 +1,8 @@
+---
+name: verify-gate
+description: Run compilation, lint, and test checks between implementation and quality review.
+---
+
 # Skill: verify-gate
 
 ## Description

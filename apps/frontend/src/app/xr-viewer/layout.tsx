@@ -1,9 +1,12 @@
 import type { Metadata, Viewport } from 'next';
+import { createMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createMetadata({
   title: 'XR Viewer — HEXA Studio',
-  description: 'Immersive 3D architectural walkthrough in AR and VR',
-};
+  description:
+    'Immersive WebXR architectural visualization. Explore 1:1 scale AR projections and spatial models in your browser.',
+  path: '/xr-viewer',
+});
 
 export const viewport: Viewport = {
   width: 'device-width',

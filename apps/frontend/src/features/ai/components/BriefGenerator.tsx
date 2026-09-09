@@ -203,7 +203,7 @@ export function BriefGenerator() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 mt-2 bg-sl-gold-subtle text-background font-mono text-xs uppercase tracking-[0.25em] font-semibold rounded-xl hover:bg-sl-gold-subtle-light disabled:opacity-40 transition-all duration-300 shadow-[0_0_25px_rgba(212,175,55,0.25)] flex items-center justify-center gap-3 cursor-pointer"
+            className="w-full py-4 mt-2 bg-sl-gold-subtle text-background font-mono text-xs uppercase tracking-[0.25em] font-semibold rounded-xl hover:bg-sl-gold-subtle-light disabled:opacity-40 transition-all duration-300 shadow-[0_0_25px_rgba(212,175,55,0.25)] flex items-center justify-center gap-3 cursor-pointer btn-responsive-text"
           >
             {loading ? (
               <>
@@ -322,7 +322,7 @@ export function BriefGenerator() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4" data-responsive="stack">
                   <div className="p-4 bg-obsidian-raised rounded-xl border border-white/5">
                     <span className="text-[10px] font-mono text-text-sl-mist/60 uppercase tracking-widest block mb-1">
                       Estimated Timeline

@@ -1,10 +1,11 @@
-import type { Metadata } from 'next';
 import { BentoGrid, BentoCard } from '@/features/portal/components/BentoGrid';
+import { createMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Bento Grid System | HEXA Studio',
-  description: 'HEXA Studio Bento Grid component showcase — variants, spans, and layouts.',
-};
+export const metadata = createMetadata({
+  title: 'Bento Grid System',
+  description: 'HEXA Studio Bento Grid component showcase — variants, spans, and layouts for premium dashboard experiences.',
+  path: '/demo/bento',
+});
 
 const SAMPLE_STATS = [
   {
@@ -304,7 +305,7 @@ export default function BentoDemoPage() {
 
             {/* KPI Stats Grid */}
             <BentoCard variant="default" span="1x1" aria-label="KPI stats demo">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" data-responsive="stack">
                 {SAMPLE_STATS.map((stat) => (
                   <div
                     key={stat.label}

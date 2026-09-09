@@ -74,7 +74,7 @@ export const ArchitecturalDataViz: React.FC<ArchitecturalDataVizProps> = ({
           </p>
         </div>
         <div className="flex items-center gap-2 text-xs font-mono bg-sl-void/60 border border-sl-obsidian rounded-full px-3 py-1.5 self-start sm:self-auto text-sl-mist/80">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="w-2 h-2 rounded-full bg-sl-gold-subtle animate-pulse" />
           <span>Live Sync</span>
         </div>
       </div>
@@ -84,8 +84,8 @@ export const ArchitecturalDataViz: React.FC<ArchitecturalDataVizProps> = ({
         <svg className="w-full h-full overflow-visible" viewBox="0 0 400 120" preserveAspectRatio="none">
           <defs>
             <linearGradient id="artisanGoldGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#D4AF37" stopOpacity="0.4" />
-              <stop offset="100%" stopColor="#D4AF37" stopOpacity="0.0" />
+              <stop offset="0%" stopColor="var(--color-gold)" stopOpacity="0.4" />
+              <stop offset="100%" stopColor="var(--color-gold)" stopOpacity="0.0" />
             </linearGradient>
           </defs>
 
@@ -99,7 +99,7 @@ export const ArchitecturalDataViz: React.FC<ArchitecturalDataVizProps> = ({
           <path
             d="M 0,100 Q 100,20 200,60 T 400,10"
             fill="none"
-            stroke="#D4AF37"
+            stroke="var(--color-gold)"
             strokeWidth="3"
             className="artisan-chart-path drop-shadow-[0_0_10px_rgba(212,175,55,0.5)]"
           />
@@ -117,7 +117,7 @@ export const ArchitecturalDataViz: React.FC<ArchitecturalDataVizProps> = ({
               cx={pt.x}
               cy={pt.y}
               r="4"
-              className="fill-neutral-950 stroke-accent stroke-2 hover:r-6 transition-all duration-300 cursor-pointer"
+              className="fill-sl-void stroke-sl-gold-subtle stroke-2 hover:r-6 transition-all duration-300 cursor-pointer"
             />
           ))}
         </svg>
@@ -138,12 +138,12 @@ export const ArchitecturalDataViz: React.FC<ArchitecturalDataVizProps> = ({
             className={`artisan-glass p-4 rounded-xl cursor-pointer transition-all duration-300 ${
               activePoint === idx
                 ? 'border-sl-gold-subtle/50 shadow-[0_0_20px_rgba(212,175,55,0.15)]'
-                : 'hover:border-neutral-700'
+                : 'hover:border-sl-obsidian'
             }`}
           >
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs text-sl-mist/60 font-medium truncate">{item.label}</span>
-              <span className="text-[10px] font-mono font-semibold text-emerald-400 bg-emerald-950/40 border border-emerald-800/40 px-1.5 py-0.5 rounded">
+              <span className="text-[10px] font-mono font-semibold text-sl-gold-hover bg-sl-gold-subtle/10 border border-sl-gold-subtle/20 px-1.5 py-0.5 rounded">
                 {item.change}
               </span>
             </div>

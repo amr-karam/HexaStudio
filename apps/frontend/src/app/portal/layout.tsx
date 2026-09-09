@@ -6,7 +6,31 @@ import { CommandPalette } from '@/features/portal/components/CommandPalette';
 
 export const metadata: Metadata = {
   title: 'Client Portal | HEXA Studio',
-  description: 'The digital headquarters for every HEXA Studio client.',
+  description: 'The digital headquarters for every HEXA Studio client. Track projects, approve deliverables, and collaborate in real-time.',
+  robots: {
+    index: false,
+    follow: false,
+  },
+  openGraph: {
+    title: 'HexaStudio Client Portal',
+    description: 'The digital headquarters for every HEXA Studio client.',
+    url: 'https://hexastudio.net/portal',
+    type: 'website',
+    images: [
+      {
+        url: 'https://hexastudio.net/logo.svg',
+        width: 1200,
+        height: 630,
+        alt: 'HexaStudio Client Portal',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'HexaStudio Client Portal',
+    description: 'The digital headquarters for every HEXA Studio client.',
+    images: ['https://hexastudio.net/logo.svg'],
+  },
 };
 
 export default function PortalLayout({
@@ -37,8 +61,8 @@ export default function PortalLayout({
         </div>
 
         {/* Main Content Area - Liquid Layout */}
-        <main className="flex-1 lg:pl-64 pt-20 min-h-screen flex flex-col relative z-10">
-          <div className="flex-1 px-6 md:px-16 py-12 w-full max-w-[1600px] mx-auto transition-all duration-500 ease-in-out">
+        <main className="flex-1 min-h-screen flex flex-col relative z-10 lg:pl-64 pt-16">
+          <div className="flex-1 px-4 sm:px-6 md:px-8 lg:px-16 py-6 sm:py-8 md:py-10 lg:py-12 w-full max-w-[1600px] mx-auto transition-all duration-500 ease-in-out">
             {children}
           </div>
         </main>

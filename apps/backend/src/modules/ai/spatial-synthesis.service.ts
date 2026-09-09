@@ -14,7 +14,7 @@ import type { SpatialCommand } from '../realtime/realtime.gateway';
  * Synthesizes luxury architectural spatial design briefs (atmosphere, lighting,
  * material, color palette, design rationale) from either a text prompt or a
  * voice recording. Structured output is produced via
- * StructuredOutputService (Gemini + Zod validation); audio is transcribed with
+ * StructuredOutputService (Hermes Agent + Zod validation); audio is transcribed with
  * VoiceService before synthesis.
  */
 @Injectable()

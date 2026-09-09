@@ -58,8 +58,9 @@ export function StatCard({ stat, index = 0 }: StatCardProps) {
       }
       className={cn(
         'glass-depth',
-        'relative overflow-hidden rounded-xl p-6',
-        'hover:border-sl-gold-subtle/30 transition-all duration-700 ease-[var(--hexa-ease-interaction)]',
+        'relative overflow-hidden rounded-2xl p-6',
+        'border border-sl-gold-subtle/15 shadow-lg shadow-black/40',
+        'hover:border-sl-gold-subtle/40 transition-all duration-700 ease-[var(--hexa-ease-interaction)]',
         'group cursor-default',
       )}
     >

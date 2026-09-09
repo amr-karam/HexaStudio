@@ -169,6 +169,12 @@ export interface PendingApproval {
   urgencyScore?: number;
 }
 
+export async function fetchPortalDashboard(): Promise<PortalDashboard> {
+  return withCache('cache:dashboard', DEFAULT_TTL.dashboard, () =>
+    apiFetch<PortalDashboard>('/api/portal/dashboard'),
+  );
+}
+
 export async function fetchPendingApprovals(): Promise<PendingApproval[]> {
   return withCache('cache:approvals', DEFAULT_TTL.dashboard, () =>
     apiFetch<PendingApproval[]>('/api/portal/approvals'),

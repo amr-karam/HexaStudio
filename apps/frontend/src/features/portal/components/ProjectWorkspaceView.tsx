@@ -115,32 +115,32 @@ const MILESTONES: Milestone[] = [
 ];
 
 const STATS: StatItem[] = [
-  { label: 'Tasks Completed', value: '34', icon: 'check-circle', accent: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
-  { label: 'Files Uploaded', value: '128', icon: 'upload', accent: 'text-blue-400 bg-blue-500/10 border-blue-500/20' },
-  { label: 'Days Active', value: '56', icon: 'calendar', accent: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
-  { label: 'Team Members', value: '6', icon: 'users', accent: 'text-purple-400 bg-purple-500/10 border-purple-500/20' },
+  { label: 'Tasks Completed', value: '34', icon: 'check-circle', accent: 'text-sl-gold-hover bg-sl-gold-subtle/10 border-sl-gold-subtle/20' },
+  { label: 'Files Uploaded', value: '128', icon: 'upload', accent: 'text-sl-mist/80 bg-sl-mist/5 border-sl-mist/20' },
+  { label: 'Days Active', value: '56', icon: 'calendar', accent: 'text-sl-gold-deep bg-sl-gold-deep/10 border-sl-gold-deep/20' },
+  { label: 'Team Members', value: '6', icon: 'users', accent: 'text-sl-mist/60 bg-sl-mist/5 border-sl-mist/20' },
 ];
 
 const ACTIVITIES: ActivityEntry[] = [
-  { id: 'a1', icon: 'check', title: 'Facade glass spec approved by client', timestamp: '2h ago', accent: 'text-emerald-400' },
-  { id: 'a2', icon: 'upload', title: 'New 3D renders uploaded (West Wing)', timestamp: '5h ago', accent: 'text-blue-400' },
-  { id: 'a3', icon: 'message-square', title: 'Marcus commented on Landscape Draft', timestamp: '1d ago', accent: 'text-purple-400' },
+  { id: 'a1', icon: 'check', title: 'Facade glass spec approved by client', timestamp: '2h ago', accent: 'text-sl-gold-hover' },
+  { id: 'a2', icon: 'upload', title: 'New 3D renders uploaded (West Wing)', timestamp: '5h ago', accent: 'text-sl-mist/80' },
+  { id: 'a3', icon: 'message-square', title: 'Marcus commented on Landscape Draft', timestamp: '1d ago', accent: 'text-sl-gold-subtle' },
   { id: 'a4', icon: 'zap', title: 'Phase 2 milestone marked in-progress', timestamp: '3d ago', accent: 'text-sl-gold-hover' },
-  { id: 'a5', icon: 'receipt', title: 'Invoice #INV-044 paid — $8,200', timestamp: '5d ago', accent: 'text-amber-400' },
+  { id: 'a5', icon: 'receipt', title: 'Invoice #INV-044 paid — $8,200', timestamp: '5d ago', accent: 'text-sl-gold-deep' },
 ];
 
 const BUDGET_LINES: BudgetLine[] = [
-  { label: 'Total', amount: '$50,000', percentage: 100, color: 'bg-neutral-600' },
-  { label: 'Paid', amount: '$25,000', percentage: 50, color: 'bg-emerald-500' },
-  { label: 'Outstanding', amount: '$12,500', percentage: 25, color: 'bg-amber-500' },
-  { label: 'Remaining', amount: '$12,500', percentage: 25, color: 'bg-neutral-700' },
+  { label: 'Total', amount: '$50,000', percentage: 100, color: 'bg-sl-void' },
+  { label: 'Paid', amount: '$25,000', percentage: 50, color: 'bg-sl-gold-subtle' },
+  { label: 'Outstanding', amount: '$12,500', percentage: 25, color: 'bg-sl-gold-deep' },
+  { label: 'Remaining', amount: '$12,500', percentage: 25, color: 'bg-sl-obsidian-raised' },
 ];
 
 const TEAM_MEMBERS: TeamMember[] = [
-  { initials: 'MV', name: 'Marcus Vance', role: 'Senior Project Manager', avatarBg: 'bg-amber-500/20', avatarText: 'text-amber-400' },
-  { initials: 'ER', name: 'Elena Rostova', role: 'Lead 3D Visualization', avatarBg: 'bg-blue-500/20', avatarText: 'text-blue-400' },
-  { initials: 'JL', name: 'Julian Li', role: 'Architectural Designer', avatarBg: 'bg-emerald-500/20', avatarText: 'text-emerald-400' },
-  { initials: 'AS', name: 'Amara Singh', role: 'VR Experience Lead', avatarBg: 'bg-purple-500/20', avatarText: 'text-purple-400' },
+  { initials: 'MV', name: 'Marcus Vance', role: 'Senior Project Manager', avatarBg: 'bg-sl-gold-subtle/20', avatarText: 'text-sl-gold-hover' },
+  { initials: 'ER', name: 'Elena Rostova', role: 'Lead 3D Visualization', avatarBg: 'bg-sl-mist/10', avatarText: 'text-sl-mist/80' },
+  { initials: 'JL', name: 'Julian Li', role: 'Architectural Designer', avatarBg: 'bg-sl-gold-deep/20', avatarText: 'text-sl-gold-deep' },
+  { initials: 'AS', name: 'Amara Singh', role: 'VR Experience Lead', avatarBg: 'bg-sl-mist/10', avatarText: 'text-sl-mist/60' },
 ];
 
 const QUICK_LINKS: QuickLink[] = [
@@ -197,9 +197,9 @@ function CircularProgressBar({ percentage, reducedMotion }: { percentage: number
         {/* Gold gradient definition */}
         <defs>
           <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#D4AF37" />
-            <stop offset="50%" stopColor="#E5C76B" />
-            <stop offset="100%" stopColor="#A8862E" />
+            <stop offset="0%" stopColor="var(--color-gold)" />
+            <stop offset="50%" stopColor="var(--color-gold-bright)" />
+            <stop offset="100%" stopColor="var(--color-gold-deep)" />
           </linearGradient>
         </defs>
       </svg>
@@ -327,7 +327,7 @@ function OverviewTab({ prefersReduced }: { prefersReduced: boolean }) {
                         </div>
                       ) : (
                         <div className="w-[30px] h-[30px] rounded-full bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
-                          <div className="w-2 h-2 rounded-full bg-neutral-600" />
+                          <div className="w-2 h-2 rounded-full bg-sl-obsidian-raised" />
                         </div>
                       )}
                     </div>
@@ -347,7 +347,7 @@ function OverviewTab({ prefersReduced }: { prefersReduced: boolean }) {
                           </span>
                         )}
                         {isCompleted && (
-                          <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                          <span className="text-[10px] font-mono uppercase tracking-wider text-sl-gold-hover bg-sl-gold-subtle/10 px-2 py-0.5 rounded-full border border-sl-gold-subtle/20">
                             Done
                           </span>
                         )}
@@ -464,7 +464,7 @@ function OverviewTab({ prefersReduced }: { prefersReduced: boolean }) {
           </div>
 
           {/* Legend */}
-          <div className="grid grid-cols-2 gap-x-6 gap-y-3 mt-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 mt-5" data-responsive="stack">
             {BUDGET_LINES.map((line) => (
               <div key={line.label} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -499,9 +499,9 @@ function OverviewTab({ prefersReduced }: { prefersReduced: boolean }) {
 
           <div className="space-y-3">
             {[
-              { title: 'CR-003: Interior Lighting CRI Upgrade', status: 'Under Review', statusColor: 'text-amber-400 bg-amber-500/10 border-amber-500/20', date: 'Jul 22', impact: '+$1,800 USD' },
-              { title: 'CR-002: West Facade Glass Specification Upgrade', status: 'Approved', statusColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20', date: 'Jul 19', impact: '+$4,200 USD' },
-              { title: 'CR-001: Structural Steel Grade Upgrade', status: 'Implemented', statusColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20', date: 'Jul 15', impact: '+$12,500 USD' },
+              { title: 'CR-003: Interior Lighting CRI Upgrade', status: 'Under Review', statusColor: 'text-sl-gold-deep bg-sl-gold-deep/10 border-sl-gold-deep/20', date: 'Jul 22', impact: '+$1,800 USD' },
+              { title: 'CR-002: West Facade Glass Specification Upgrade', status: 'Approved', statusColor: 'text-sl-gold-hover bg-sl-gold-subtle/10 border-sl-gold-subtle/20', date: 'Jul 19', impact: '+$4,200 USD' },
+              { title: 'CR-001: Structural Steel Grade Upgrade', status: 'Implemented', statusColor: 'text-sl-gold-subtle bg-sl-gold-subtle/10 border-sl-gold-subtle/20', date: 'Jul 15', impact: '+$12,500 USD' },
             ].map((cr, idx) => (
               <motion.div
                 key={cr.title}
@@ -592,7 +592,7 @@ function OverviewTab({ prefersReduced }: { prefersReduced: boolean }) {
               <a
                 key={link.label}
                 href={link.href}
-                className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-sl-silver/10 hover:border-sl-silver/20-light/40 hover:bg-white/[0.04] transition-all duration-200 group"
+                className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-sl-silver/10 hover:border-sl-silver/40 hover:bg-white/[0.04] transition-all duration-200 group"
                 aria-label={`Navigate to ${link.label}`}
               >
                 <Icon
@@ -720,12 +720,12 @@ export function ProjectWorkspaceView({ projectId = 1 }: ProjectWorkspaceViewProp
                   <Icon name="calendar" size={13} className="text-sl-mist/60" />
                   <span>Handover: <strong className="text-sl-alabaster font-semibold">Oct 15, 2026</strong></span>
                 </div>
-                <div className="w-px h-3 bg-neutral-700" aria-hidden="true" />
+                <div className="w-px h-3 bg-sl-obsidian-raised" aria-hidden="true" />
                 <div className="flex items-center gap-2 text-xs text-sl-mist/60">
                   <Icon name="user" size={13} className="text-sl-mist/60" />
                   <span>PM: <strong className="text-sl-gold-hover font-semibold">Marcus Vance</strong></span>
                 </div>
-                <div className="w-px h-3 bg-neutral-700" aria-hidden="true" />
+                <div className="w-px h-3 bg-sl-obsidian-raised" aria-hidden="true" />
                 <button
                    onClick={() => {
                     const win = window.open('', '_blank');
@@ -735,9 +735,9 @@ export function ProjectWorkspaceView({ projectId = 1 }: ProjectWorkspaceViewProp
                       );
                     }
                   }}
-                  className="inline-flex items-center justify-center gap-1.5 text-xs sm:text-sm font-semibold text-amber-400 hover:text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 px-4 py-2.5 sm:px-5 sm:py-3 rounded-full transition-all duration-200 cursor-pointer min-h-[44px] min-w-[44px]"
+                  className="inline-flex items-center justify-center gap-1.5 text-xs sm:text-sm font-semibold text-sl-gold-hover hover:text-sl-alabaster bg-sl-gold-subtle/10 hover:bg-sl-gold-subtle/20 border border-sl-gold-subtle/30 px-4 py-2.5 sm:px-5 sm:py-3 rounded-full transition-all duration-200 cursor-pointer min-h-[44px] min-w-[44px]"
                 >
-                  <Icon name="file-text" size={12} className="text-amber-400" />
+                  <Icon name="file-text" size={12} className="text-sl-gold-hover" />
                   <span>Executive Brief PDF</span>
                 </button>
               </div>

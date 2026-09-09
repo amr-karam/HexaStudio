@@ -217,3 +217,10 @@ fix_*.js
 
 # Firecrawl CLI cache (local job data, install-check artifacts)
 .firecrawl/
+
+# Framer secret (server-only)
+.env.framer
+hexastudio-backend.tar
+.lh-perf.json
+.tmp-lh-perf.json
+*.report.html

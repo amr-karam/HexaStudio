@@ -67,16 +67,35 @@ function SectionMarker({ children }: { children: React.ReactNode }) {
 export async function generateMetadata(): Promise<Metadata> {
   const page = await fetchPage('about');
 
-  if (!page) {
-    return {
-      title: 'About',
-      description: FALLBACK_DESCRIPTION,
-    };
-  }
+  const title = page?.seoTitle ? siteTitleSegment(page.seoTitle) : page?.title ?? 'The Manifesto';
+  const description =
+    page?.seoDescription ||
+    page?.excerpt ||
+    FALLBACK_DESCRIPTION;
 
   return {
-    title: page.seoTitle ? siteTitleSegment(page.seoTitle) : page.title,
-    description: page.seoDescription || page.excerpt || FALLBACK_DESCRIPTION,
+    title,
+    description,
+    openGraph: {
+      title: `${title} | HexaStudio`,
+      description,
+      url: 'https://hexastudio.net/about',
+      type: 'website',
+      images: [
+        {
+          url: 'https://hexastudio.net/logo.svg',
+          width: 1200,
+          height: 630,
+          alt: 'HexaStudio — About the Studio',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${title} | HexaStudio`,
+      description,
+      images: ['https://hexastudio.net/logo.svg'],
+    },
   };
 }
 
@@ -90,7 +109,7 @@ export default async function AboutPage() {
       {/* ------------------------------------------------------------------ */}
       {/* Movement I — Frontispiece (title page of the monograph)             */}
       {/* ------------------------------------------------------------------ */}
-      <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-8 pt-20">
+      <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-5 pt-16 sm:px-8 sm:pt-20">
         <ClientSilkShaderBackground speed={0.4} opacity={0.18} className="z-0" />
         <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
         {heroImage && (
@@ -121,7 +140,7 @@ export default async function AboutPage() {
             <span aria-hidden="true" className="h-1.5 w-1.5 rotate-45 bg-sl-gold-subtle/70" />
           </span>
 
-          <h1 className="mb-10 text-6xl font-serif font-light leading-[0.9] tracking-[-0.04em] text-sl-alabaster md:text-9xl">
+          <h1 className="mb-6 sm:mb-8 md:mb-10 text-3xl sm:text-4xl md:text-5xl lg:text-7xl xl:text-9xl font-serif font-light leading-[0.9] tracking-[-0.04em] text-sl-alabaster">
             <TextCharReveal
               text={page?.title ?? 'The Manifesto'}
               as="span"
@@ -146,7 +165,7 @@ export default async function AboutPage() {
           {/* Double-rule ornament below the title */}
           <DiamondOrnament className="mb-12" />
 
-          <p className="mx-auto w-full max-w-4xl text-lg font-light leading-relaxed text-sl-mist/60">
+          <p className="mx-auto w-full max-w-4xl text-base sm:text-lg font-light leading-relaxed text-sl-mist/60 px-4 sm:px-0">
             {page?.excerpt || FALLBACK_DESCRIPTION}
           </p>
         </div>
@@ -157,7 +176,7 @@ export default async function AboutPage() {
       {/* ------------------------------------------------------------------ */}
       <section
         aria-labelledby="doctrine-title"
-        className="relative overflow-hidden border-y border-sl-silver/20 bg-sl-obsidian px-8 py-28 md:px-16 md:py-36"
+        className="relative overflow-hidden border-y border-sl-silver/20 bg-sl-obsidian px-6 sm:px-8 py-20 sm:py-28 md:px-16 md:py-36"
       >
         <div aria-hidden="true" className="absolute inset-0 gradient-radial-gold pointer-events-none" />
         <span
@@ -168,7 +187,7 @@ export default async function AboutPage() {
         </span>
 
         <div className="relative z-10 mx-auto w-full max-w-5xl">
-          <div className="text-center">
+          <div className="text-center px-4 sm:px-0">
             <SectionMarker>§ 01 — The Doctrine</SectionMarker>
 
             {hasCmsContent ? (
@@ -210,7 +229,7 @@ export default async function AboutPage() {
                 
                 {/* High-contrast sidecar for the pull-quote */}
                 <div className="md:col-span-6 lg:col-span-5 md:pt-24 lg:pt-32">
-                  <blockquote className="storybook-accent border-l-2 border-sl-gold-subtle/30 pl-8 font-serif text-2xl italic leading-tight md:text-3xl text-sl-alabaster">
+                  <blockquote className="storybook-accent border-l-2 border-sl-gold-subtle/30 pl-6 sm:pl-8 font-serif text-xl sm:text-2xl italic leading-tight md:text-3xl text-sl-alabaster">
                     &ldquo;We do not decorate architecture with light. We use light to
                     tell the truth about it.&rdquo;
                   </blockquote>
@@ -231,7 +250,7 @@ export default async function AboutPage() {
       {/* ------------------------------------------------------------------ */}
       <section
         aria-labelledby="method-title"
-        className="relative overflow-hidden bg-sl-void px-8 py-28 md:px-16 md:py-36"
+        className="relative overflow-hidden bg-sl-void px-6 sm:px-8 py-20 sm:py-28 md:px-16 md:py-36"
       >
         <span
           aria-hidden="true"
@@ -249,7 +268,7 @@ export default async function AboutPage() {
             <DiamondOrnament className="mt-8" />
           </div>
 
-          <div className="mt-16 grid auto-rows-fr gap-6 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
+          <div className="mt-10 sm:mt-12 md:mt-16 grid auto-rows-fr gap-4 sm:gap-5 md:gap-6 md:grid-cols-2 lg:grid-cols-4">
             {PILLARS.map((pillar) => (
               <article
                 key={pillar.label}
@@ -280,7 +299,7 @@ export default async function AboutPage() {
       {/* ------------------------------------------------------------------ */}
       {/* Movement IV — The Practitioners (team)                              */}
       {/* ------------------------------------------------------------------ */}
-      <div className="border-y border-sl-silver/20 bg-sl-obsidian px-8 py-20 md:px-16">
+      <div className="border-y border-sl-silver/20 bg-sl-obsidian px-6 sm:px-8 py-16 sm:py-20 md:px-16">
         <div className="mx-auto w-full max-w-5xl text-center">
           <SectionMarker>§ 03 — The Practitioners</SectionMarker>
           <DiamondOrnament className="mt-8" />
@@ -294,7 +313,7 @@ export default async function AboutPage() {
       {/* ------------------------------------------------------------------ */}
       <section
         aria-labelledby="colophon-title"
-        className="relative overflow-hidden border-t border-sl-silver/20 bg-sl-obsidian px-8 py-28 md:px-16 md:py-36"
+        className="relative overflow-hidden border-t border-sl-silver/20 bg-sl-obsidian px-6 sm:px-8 py-20 sm:py-28 md:px-16 md:py-36"
       >
         <ClientSilkShaderBackground speed={0.3} opacity={0.1} />
         <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
@@ -319,11 +338,11 @@ export default async function AboutPage() {
 
         {/* CTA — the invitation that closes the book */}
         <div className="relative z-10 mt-20">
-          <LiquidGlassCard goldAccent className="w-full max-w-4xl mx-auto text-center !p-16">
+          <LiquidGlassCard goldAccent className="w-full max-w-4xl mx-auto text-center !p-8 sm:!p-12 md:!p-16">
             <span className="mb-6 block font-mono text-xs uppercase tracking-[0.5em] text-sl-gold-hover/60">
               Work With Us
             </span>
-            <h3 className="mb-8 text-4xl font-serif font-light leading-tight tracking-tight text-sl-alabaster md:text-6xl">
+            <h3 className="mb-6 sm:mb-8 text-3xl sm:text-4xl font-serif font-light leading-tight tracking-tight text-sl-alabaster md:text-6xl">
               Ready to <span className="italic text-sl-gold-hover">Collaborate?</span>
             </h3>
             <p className="mx-auto mb-12 w-full max-w-2xl font-light leading-relaxed text-sl-mist/60">

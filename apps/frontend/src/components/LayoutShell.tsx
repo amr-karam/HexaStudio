@@ -9,6 +9,7 @@ import { PageTransition } from '@/components/PageTransition';
 import { SmoothScrollWrapper } from '@/components/SmoothScrollWrapper';
 
 import { GrainOverlay } from '@/components/animation';
+import { AnnouncementBanner } from '@/components/ui/AnnouncementBanner';
 
 const FULLSCREEN_ROUTES = ['/xr-viewer'];
 
@@ -61,6 +62,7 @@ export function LayoutShell({ children }: { children: ReactNode }) {
 
   return (
     <SmoothScrollWrapper>
+      <AnnouncementBanner />
       <Navbar />
       <PageTransition>
         <main id="main-content" tabIndex={-1}>{children}</main>

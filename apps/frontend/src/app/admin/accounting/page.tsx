@@ -6,6 +6,14 @@ import { useQuery } from '@tanstack/react-query';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { API_BASE_URL } from '@/config/constants';
 
+const API_TIMEOUT_MS = 6000;
+
+function abortFetch(url: string): Promise<Response> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+  return fetch(url, { signal: controller.signal }).finally(() => clearTimeout(timeout));
+}
+
 interface DashboardData {
   total_revenue: number;
   total_expenses: number;
@@ -86,7 +94,7 @@ export default function AdminAccountingPage() {
   const { data: dashboard, isLoading: dashLoading } = useQuery<DashboardData>({
     queryKey: ['accounting-dashboard'],
     queryFn: async () => {
-      const r = await fetch(`${API_BASE_URL}/api/accounting/dashboard`);
+      const r = await abortFetch(`${API_BASE_URL}/api/accounting/dashboard`);
       if (!r.ok) throw new Error('Failed');
       return r.json();
     },
@@ -130,7 +138,7 @@ export default function AdminAccountingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-sl-void text-sl-alabaster px-8 py-16">
+    <div className="min-h-screen bg-sl-void text-sl-alabaster px-4 sm:px-8 py-12 md:py-16">
       <div className="w-full">
         <div className="mb-12">
           <motion.span
@@ -148,7 +156,7 @@ export default function AdminAccountingPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 mb-10 border-b border-sl-silver/20">
+        <div className="flex gap-1 mb-10 border-b border-sl-silver/20 overflow-x-auto">
           {tabs.map((tab) => (
             <button
               key={tab.key}
@@ -171,7 +179,7 @@ export default function AdminAccountingPage() {
               <div className="text-sl-mist/60 font-light">Loading...</div>
             ) : dashboard && (
               <>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" data-responsive="stack tablet-2">
                   {[
                     { label: 'Revenue', value: fmt(dashboard.total_revenue), color: 'text-emerald-400' },
                     { label: 'Expenses', value: fmt(dashboard.total_expenses), color: 'text-red-400' },
@@ -192,7 +200,7 @@ export default function AdminAccountingPage() {
                   ))}
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" data-responsive="stack tablet-2">
                   {[
                     { label: 'Total Invoices', value: dashboard.invoice_count },
                     { label: 'Draft', value: dashboard.draft_count },
@@ -287,7 +295,7 @@ export default function AdminAccountingPage() {
 
         {/* Journals */}
         {activeTab === 'journals' && journals && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" data-responsive="stack tablet-2">
             {journals.map((journal) => (
               <motion.div
                 key={journal.id}

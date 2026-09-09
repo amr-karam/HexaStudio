@@ -67,7 +67,7 @@ const StatValue = ({ value, isInView }: { value: string; isInView: boolean }) =>
       whileInView={{ scale: 1, opacity: 1, transition: { type: 'spring', stiffness: 200, damping: 20 } }}
       viewport={{ once: true }}
     >
-      <span className="font-mono tabular-nums text-4xl md:text-6xl font-light text-sl-gold-hover transition-colors duration-300 group-hover:text-sl-alabaster">
+      <span className="font-mono tabular-nums text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-light text-sl-gold-hover transition-colors duration-300 group-hover:text-sl-alabaster">
         {display}
         {suffix}
       </span>
@@ -108,14 +108,14 @@ const AwardsRow = ({
         initial={{ opacity: 0, y: 30, scale: 0.95 }}
         animate={isInView ? { y: '0%', opacity: 1, scale: 1 } : undefined}
         transition={transitionProps}
-        className="group grid grid-cols-[2.5rem_1fr_auto] md:grid-cols-[3rem_1.2fr_1fr_auto] items-baseline gap-6 py-6 md:py-8 px-4 transition-all duration-300 hover:bg-sl-gold-subtle/5 hover:px-6 md:hover:px-10 hover:border-sl-gold-subtle/10"
+        className="group grid grid-cols-[2rem_1fr_auto] sm:grid-cols-[2.5rem_1fr_auto] md:grid-cols-[3rem_1.2fr_1fr_auto] items-baseline gap-3 sm:gap-4 md:gap-6 py-4 sm:py-5 md:py-6 lg:py-8 px-2 sm:px-3 md:px-4 transition-all duration-300 hover:bg-sl-gold-subtle/5 hover:px-4 sm:hover:px-5 md:hover:px-6 lg:hover:px-10 hover:border-sl-gold-subtle/10"
       >
         <span className="font-mono text-[10px] tracking-[0.3em] text-sl-mist/60 transition-colors duration-300 group-hover:text-obsidian/60">
           {String(index + 1).padStart(2, '0')}
         </span>
 
         <div className="flex-1">
-          <span className="font-serif text-2xl md:text-4xl font-light text-sl-alabaster transition-colors duration-300 group-hover:text-sl-gold-hover/90">
+          <span className="font-serif text-xl sm:text-2xl md:text-3xl lg:text-4xl font-light text-sl-alabaster transition-colors duration-300 group-hover:text-sl-gold-hover/90">
             {achievement.title}
           </span>
           {achievement.description ? (
@@ -144,7 +144,7 @@ export const AchievementsSection = () => {
   const displayAchievements = achievements.length > 0 ? achievements : fallbackAchievements;
 
   return (
-    <section className="relative px-8 md:px-16 py-32 bg-void-deep overflow-hidden">
+    <section className="relative px-5 sm:px-6 md:px-12 lg:px-16 py-16 sm:py-20 md:py-28 lg:py-32 bg-void-deep overflow-hidden">
       {/* Layered ambient glows */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-sl-gold-subtle/[0.02] rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-sl-gold-subtle/[0.015] rounded-full blur-[100px] pointer-events-none" />

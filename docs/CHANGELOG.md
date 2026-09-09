@@ -1,14 +1,30 @@
 # Playbook Changelog
 
-**Version:** 1.0.4  
-**Last Updated:** 2026-07-29
+**Version:** 2.2.10  
+**Last Updated:** 2026-09-04  
+
+---
+
+## [2.2.10] - 2026-09-04
+
+### 🎬 Cinematic Storytelling & Luxury Redesign
+- **New Feature: `/story` route** — Implemented a cinematic 3D walkthrough using GSAP ScrollTrigger, featuring 4 narrative beats, z-axis camera panning, and atmospheric fog.
+- **Silent Luxury Redesign:** Overhauled the homepage with new components (`NewHomeHero`, `NewHomeSections`, `NewSelectedWork`, `NewStudioNote`) using a refined minimalist palette.
+- **Design Token Alignment:** Migrated all inline hex colors to canonical `sl-*` CSS variables and created `src/lib/color-tokens.ts` as a TypeScript mirror for Three.js/WebGL.
+- **Dynamic Route Resilience:** Added `error.tsx` and `loading.tsx` boundaries to all dynamic route groups (blog, projects, portal) to prevent app crashes and provide graceful fallbacks.
+- **Performance Fix:** Implemented a 6s `AbortController` timeout for admin accounting fetches to prevent hanging requests.
+
+#### Quality Gates
+- **Design Token Gate:** ✅ 0 violations (without `--allow-inline-style-hex`).
+- **Font Preload Gate:** ✅ All 7 preloads match (Cormorant Garamond + Jost).
+- **Frontend Tests:** ✅ 585/585 passing.
+- **Build:** ✅ Next.js standalone build clean.
 
 ---
 
 ## [1.9.0] - 2026-07-29
 
 ### Sprint 20 — AI Multimodal & App Store Release
-
 Delivered the Gemini Multimodal integration (vision analysis, voice transcription, multimodal Portal Copilot), EAS Build configuration for iOS/Android app store submission with mobile CI/CD pipeline, WebRTC real-time audio signaling for multi-user VR collaboration, and the backend push notification service deferred from S-019.
 
 #### Added
@@ -39,22 +55,21 @@ Delivered the Gemini Multimodal integration (vision analysis, voice transcriptio
 ## [1.0.4] - 2026-07-20
 
 ### Frontend Creative Excellence Elevation — Phase 2
-
 **Shared UI Package Luxury Elevation (`packages/ui`):**
 - **Button** — Added `luxury` variant (glassmorphic + gold border + gold glow), premium shimmer light-sweep effect on primary/luxury variants, `motion.button` with `whileHover`/`whileTap` spring physics, refined all variant styles, thin gold ring loading spinner
-- **Card** — Added `luxury` variant (frosted glass + gold border glow), refined `glass`/`featured` variants, added `hover` and `as` props, lazy image loading with `decoding="async"`
-- **Modal** — Escape key handler, body scroll lock, focus trap (Tab cycling), `role="dialog"` + `aria-modal`, cinematic entrance animation, luxury SVG close button, glass morphism backdrop + panel
+- **Card** — Added `luxury` variant (frosted glass + gold border glow), refined `glass`/`featured` variants, added `hover` and `as` props, lazy image loading with `decoding=\"async\"`
+- **Modal** — Escape key handler, body scroll lock, focus trap (Tab cycling), `role=\"dialog\"` + `aria-modal`, cinematic entrance animation, luxury SVG close button, glass morphism backdrop + panel
 
 **Signature Interaction Elevation:**
-- **CinematicPreloader** — Self-drawing hexagonal logo (SVG `pathLength` animation synced to progress), pulsing gold halo behind hexagon, gold gradient progress bar fill, shimmer sweep across bar, "Architecture Visualized" tagline
-- **CustomCursor** — Context-aware "View"/"Drag"/"Explore" labels via `data-cursor` attribute, magnetic attraction to interactive elements, refined ring (h-10 w-10, thin border), gold glow on pointer state, window-leave hiding
+- **CinematicPreloader** — Self-drawing hexagonal logo (SVG `pathLength` animation synced to progress), pulsing gold halo behind hexagon, gold gradient progress bar fill, shimmer sweep across bar, \"Architecture Visualized\" tagline
+- **CustomCursor** — Context-aware \"View\"/\"Drag\"/\"Explore\" labels via `data-cursor` attribute, magnetic attraction to interactive elements, refined ring (h-10 w-10, thin border), gold glow on pointer state, window-leave hiding
 
 **Page Elevation:**
 - **About page** — Values section wrapped in `GlassCard` (subtle variant), `gradient-radial-gold` ambient overlays on hero/values/CTA sections, `makeTransition` for consistent motion timing
 - **Services page** — Service cards wrapped in `GlassCard` (default variant), `gradient-radial-gold` ambient overlays, `makeTransition` for motion
 - **Contact page** — Replaced grid.svg background with `gradient-radial-gold` cinematic overlay
-- **HomeHero** — Added `data-cursor="explore"` to CTA buttons
-- **ExperienceCanvas** — Added `data-cursor="drag"` to 3D canvas container
+- **HomeHero** — Added `data-cursor=\"explore\"` to CTA buttons
+- **ExperienceCanvas** — Added `data-cursor=\"drag\"` to 3D canvas container
 
 **Quality Gates:**
 - TypeCheck: 0 errors
@@ -67,7 +82,6 @@ Delivered the Gemini Multimodal integration (vision analysis, voice transcriptio
 ## [1.0.3] - 2026-07-20
 
 ### ⚡ Backend AI Layer — Provider-Agnostic Chat Architecture
-
 **Core:**
 - Added `FREETHEAI_API_KEY`, `FREETHEAI_BASE_URL`, `FREETHEAI_MODEL`, `AI_CHAT_PROVIDER` to `config/env.ts`
 - Created `modules/ai/llm.factory.ts` — standalone `createChatClient()` resolving `openai` vs `freetheai` based on `AI_CHAT_PROVIDER`
@@ -83,8 +97,6 @@ Delivered the Gemini Multimodal integration (vision analysis, voice transcriptio
 - `material-recommender.service.ts` — PBR material recommendations
 - `predictive-analytics.service.ts` — timeline/budget/resource forecasting
 
-**Not changed:** `EmbeddingService` (no `/embeddings` on FreeTheAi gateway — stays on OpenAI); `GeminiService` (separate Google provider)
-
 **Dev UX:**
 - Updated `apps/backend/.env.example` with FreeTheAi vars and docs
 - Updated `FREETHEAI_PROVIDER.md` with full backend integration section (5. Architecture diagram, file checklist, switching guide)
@@ -95,12 +107,11 @@ Delivered the Gemini Multimodal integration (vision analysis, voice transcriptio
 ## [1.0.2] - 2026-07-20
 
 ### Frontend Creative Excellence Elevation
-
 **3D Scene Masterpiece:**
 - Rewrote `ProceduralArchitecture` in `SceneContent.tsx` — cantilevered pavilion with RoundedBox beveled edges, PBR concrete/dark-metal/anodized-gold/glass materials, InstancedMesh for columns + glass panels + light spheres (3 draw calls)
 - Refined `PostProcessing.tsx` — softer selective bloom (luminanceThreshold 0.85), removed ChromaticAberration, added SMAA anti-aliasing, reduced film grain, gentler vignette
 - Studio-quality lighting in `ExperienceCanvas.tsx` — key light + gold fill + cool blue rim + overhead spotlight, warehouse HDRI, deeper fog, softer contact shadows
-- Faceted crystal in `HexaCrystal.tsx` — octahedron with flat-shading PBR gold, scale "breathing" pulsation
+- Faceted crystal in `HexaCrystal.tsx` — octahedron with flat-shading PBR gold, scale \"breathing\" pulsation
 
 **Design System Premium Components (NEW):**
 - `GlassCard` — frosted glass card with default/elevated/subtle variants, hover lift + gold glow, reduced-motion safe
@@ -121,7 +132,7 @@ Delivered the Gemini Multimodal integration (vision analysis, voice transcriptio
 - Mouse-follow ambient gold glow (GSAP-powered, disabled in reduced motion)
 - Branded `ShimmerSkeleton` loading state (replaces basic pulse)
 - Animated scroll indicator with gold line fill effect
-- Gold gradient text on "Spaces." headline
+- Gold gradient text on \"Spaces.\" headline
 - Ambient `gradient-radial-gold` overlay for cinematic depth
 
 **Section Enhancements:**
@@ -142,7 +153,6 @@ Delivered the Gemini Multimodal integration (vision analysis, voice transcriptio
 ## [1.0.1] - 2026-07-20
 
 ### Mobile
-
 - Added `apps/mobile/` Expo SDK 53 scaffold (React Native 0.77, React 19, TypeScript 5.8)
 - Configured Expo Router with 6-tab navigation (Home, Projects, Invoices, Notifications, Profile, Login)
 - Home dashboard wired to `GET /api/portal/me` with project card, milestone progress bar, and invoice summary
@@ -157,14 +167,12 @@ Delivered the Gemini Multimodal integration (vision analysis, voice transcriptio
 - Wired mobile dev scripts to root `package.json` and `turbo.json`
 
 ### Infrastructure
-
 - Server root filesystem extended from 98 GB to 2.0 TB (LVM online resize)
 - Pruned 35 GB Docker build cache and unused images
 - Removed `hexastudio-dev` stack (dev postgres/redis/qdrant) from production; backup saved
 - Production deploy via SSH + `deploy-zero-downtime.sh` confirmed healthy (green slot; blue removed)
 
 ### AI Tooling
-
 - Added `10-AI/FREETHEAI_PROVIDER.md` — FreeTheAi provider setup guide, catalog of 41 models, and HEXA agent integration patterns
 - FreeTheAi registered as custom provider in global OpenCode config (41 chat models, OpenAI-compatible gateway)
 - Lovable MCP disabled in OpenCode config (OAuth restricted to approved clients; use VS Code/Cursor for Lovable tasks)
@@ -174,7 +182,6 @@ Delivered the Gemini Multimodal integration (vision analysis, voice transcriptio
 ## [1.0.0] - 2026-07-12
 
 ### Sprint 6 — Enterprise Hardening (COMPLETE)
-
 **Security Hardening:**
 - CMS admin IP allowlist middleware (admin-ip-guard + CMS_ALLOWED_IPS)
 - Traefik dashboard secured (api.insecure: false, IP allowlist, TLS-only)
@@ -219,7 +226,7 @@ Delivered the Gemini Multimodal integration (vision analysis, voice transcriptio
 - 10 API specifications (Auth, Projects, Contacts, Content, Users, Webhooks, Portal)
 - 8 Agent-specific guides (Architect, Frontend, Backend, Odoo, DevOps, QA, Security)
 - 8 detailed Standards documents (Design System, 3D Modeling, Animation, Logging, Testing, Error Handling)
-- 10 Verification Checklists (Pre-commit, Pre-PR, Pre-release, Accessibility, etc.)
+- 10 Verification Checklists (Pre-commit, Pre-PR, Pre-release, Accessibility, SEO, etc.)
 - 8 Prompt templates for AI agents
 - 8 Document templates (Feature, PR, Meeting, Incident, Bug, etc.)
 - Detailed Odoo integration guides (CRM, Projects, Documents, Data Models)

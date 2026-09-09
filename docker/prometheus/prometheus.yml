@@ -78,12 +78,18 @@ scrape_configs:
     static_configs:
       - targets:
           - https://hexastudio.net
+          - https://www.hexastudio.net
           - https://api.hexastudio.net/api/health
+          - https://cms.hexastudio.net
+          - https://odoo.hexastudio.net
+          - https://files.hexastudio.net
           - https://grafana.hexastudio.net
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
       - source_labels: [__param_target]
+        regex: ^https?://([^/]+)(/.*)?$
+        # Strip protocol + path so instance = clean hostname for SLO grouping
         target_label: instance
       - target_label: __address__
         replacement: blackbox:9115

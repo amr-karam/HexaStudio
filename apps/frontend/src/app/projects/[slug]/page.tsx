@@ -10,14 +10,50 @@ interface ProjectPageProps {
 }
 
 export const revalidate = 3600; // ISR + on-demand via /api/revalidate (P9)
+export const dynamic = 'force-dynamic';
 export const dynamicParams = true; // lazy ISR for unknown slugs
 
 export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
   const { slug } = await params;
   const project = await fetchProject(slug);
+  const url = `https://hexastudio.net/projects/${slug}`;
+
   return {
     title: project?.title ?? 'Project',
     description: project?.description ?? 'Architectural visualization project by HexaStudio',
+    alternates: { canonical: url },
+    openGraph: {
+      title: project?.title ?? 'Project',
+      description: project?.description ?? 'Architectural visualization project by HexaStudio',
+      url,
+      siteName: 'HexaStudio',
+      type: 'website',
+      images: project?.coverImage
+        ? [
+            {
+              url: `${project.coverImage}?w=1200&q=80`,
+              width: 1200,
+              height: 630,
+              alt: project?.title ?? 'HexaStudio project',
+            },
+          ]
+        : [
+            {
+              url: 'https://hexastudio.net/logo.svg',
+              width: 1200,
+              height: 630,
+              alt: 'HexaStudio',
+            },
+          ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: project?.title ?? 'Project',
+      description: project?.description ?? 'Architectural visualization project by HexaStudio',
+      images: project?.coverImage
+        ? [`${project.coverImage}?w=1200&q=80`]
+        : ['https://hexastudio.net/logo.svg'],
+    },
   };
 }
 

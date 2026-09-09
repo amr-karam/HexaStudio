@@ -163,7 +163,7 @@ docker compose up -d --build
 - [x] Input validation (class-validator)
 - [x] Traefik secure headers middleware
 - [x] Backup automation (daily pg_dump, 30-day retention)
-- [x] CI/CD pipeline (GitHub Actions → GHCR → SSH deploy)
+- [x] CI/CD pipeline (GitLab CI/CD → GitLab Container Registry → SSH deploy)
 - [x] Docker auto-updates (Watchtower)
 - [ ] TLS/HTTPS in production
 - [ ] Cloudflare WAF rules

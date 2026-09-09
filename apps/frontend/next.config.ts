@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import bundleAnalyzer from "@next/bundle-analyzer";
+import { withSentryConfig } from "@sentry/nextjs";
 
 const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
@@ -64,12 +65,16 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  // Standalone output enables self-contained deployment by bundling
-  // node_modules into .next/standalone.  On Windows the recursive rmdir
-  // of the standalone tree can fail with EBUSY when directories are locked
-  // by file watchers / antivirus (Next.js 16 known Windows issue).
-  // Guard with an env var so local Windows dev uses default output mode.
-  output: process.env.NEXT_OUTPUT_STANDALONE === "true" ? "standalone" : undefined,
+  // Standalone output for containerized SSR deployment.
+  // Static export (`output: 'export'`) is used for GitHub Pages when
+  // GITHUB_PAGES env var is set to "true" by the Actions Pages workflow.
+  output:
+    process.env.GITHUB_PAGES === "true"
+      ? "export"
+      : process.env.NEXT_OUTPUT_STANDALONE === "true"
+        ? "standalone"
+        : undefined,
+  trailingSlash: process.env.GITHUB_PAGES === "true" ? true : undefined,
   reactStrictMode: true,
   poweredByHeader: false,
   turbopack: {},
@@ -203,4 +208,14 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withBundleAnalyzer(nextConfig);
+export default withSentryConfig(
+  withBundleAnalyzer(nextConfig),
+  {
+    silent: true,
+    // Source map uploads only run in production CI (requires SENTRY_AUTH_TOKEN).
+    // In PR builds or local dev, org/project/auth are undefined so the plugin
+    // automatically skips upload — no suppress option needed.
+    org: process.env.SENTRY_ORG,
+    project: process.env.SENTRY_PROJECT,
+  }
+);

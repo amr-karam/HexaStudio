@@ -42,7 +42,7 @@ export const FAQSection = ({ faqs: serverFaqs }: FAQSectionProps = {}) => {
 
   return (
     <section className="px-8 md:px-16 py-32 bg-sl-obsidian border-t border-sl-silver/20">
-      <RadialGlow color="#D4AF37" size={400} top="-100px" right="-100px" blur={50} opacity={0.08} />
+      <RadialGlow color="var(--color-gold)" size={400} top="-100px" right="-100px" blur={50} opacity={0.08} />
       <div className="max-w-4xl mx-auto">
         <ScrollFadeIn className="mb-20 text-center">
           <span className="text-xs uppercase tracking-[0.5em] text-sl-mist/60 mb-6 block">
@@ -85,7 +85,7 @@ export const FAQSection = ({ faqs: serverFaqs }: FAQSectionProps = {}) => {
                     }}
                   >
                     <div className="overflow-hidden">
-                      <div className="px-6 pb-5 text-sm text-sl-mist/60 leading-relaxed">
+                      <div className="px-6 pb-5 text-base text-sl-mist/60 leading-relaxed">
                         {faq.answer}
                       </div>
                     </div>

@@ -28,7 +28,7 @@ export function CTASection() {
   return (
     <section
       ref={sectionRef}
-      className="relative px-8 md:px-16 py-48 overflow-hidden bg-sl-obsidian border-t border-sl-silver/20"
+      className="relative px-5 sm:px-6 md:px-12 lg:px-16 py-16 sm:py-20 md:py-32 lg:py-48 overflow-hidden bg-sl-obsidian border-t border-sl-silver/20"
     >
       <div className="absolute top-12 left-8 md:left-16 z-20">
         <ChapterMarker index={5} title="Contact" />
@@ -75,7 +75,7 @@ export function CTASection() {
         </motion.div>
       </motion.div>
 
-      <LiquidGlassCard goldAccent className="mx-auto text-center relative z-10 max-w-4xl !p-12 md:!p-16">
+      <LiquidGlassCard goldAccent className="mx-auto text-center relative z-10 max-w-4xl !p-8 sm:!p-12 md:!p-16 px-4 sm:px-6">
         <motion.span
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -91,7 +91,7 @@ export function CTASection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ type: "spring", stiffness: 180, damping: 22, delay: 0.1 }}
-          className="text-5xl md:text-8xl font-serif font-light tracking-tighter text-sl-alabaster mb-12 leading-[1.1]"
+          className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-serif font-light tracking-tighter text-sl-alabaster mb-6 sm:mb-8 md:mb-12 leading-[1.1]"
         >
           Ready to Define Your <br />
           <span className="italic text-sl-gold-hover">Next Space?</span>
@@ -102,7 +102,7 @@ export function CTASection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ type: "spring", stiffness: 150, damping: 20, delay: 0.2 }}
-          className="text-lg text-sl-mist/60 font-light leading-relaxed mb-16 mx-auto w-full max-w-2xl"
+          className="text-base sm:text-lg text-sl-mist/60 font-light leading-relaxed mb-10 sm:mb-16 mx-auto w-full max-w-2xl"
         >
           Every great project begins with a conversation. Reach out and let&apos;s
           explore what we can create together.
@@ -117,7 +117,7 @@ export function CTASection() {
         >
           <Magnetic>
             <Link href="/contact">
-              <Button variant="primary" size="lg" className="group min-w-[180px]">
+              <Button variant="primary" size="lg" className="group min-w-[160px] sm:min-w-[180px] min-h-[48px]">
                 Start a Project
                 <span className="ml-3 inline-block transition-transform duration-500 group-hover:translate-x-1">
                   &rarr;
@@ -127,7 +127,7 @@ export function CTASection() {
           </Magnetic>
           <Magnetic>
             <Link href="/projects">
-              <Button variant="secondary" size="lg" className="min-w-[180px]">
+              <Button variant="secondary" size="lg" className="min-w-[160px] sm:min-w-[180px] min-h-[48px]">
                 View Our Work
               </Button>
             </Link>

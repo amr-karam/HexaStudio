@@ -110,6 +110,17 @@ npm run paseo:worktree:list
 ```
 
 ### 5. Worktrees (Parallel Branches)
+
+#### Environment Variables
+The frontend requires the following environment variables to be defined in a `.env.local` file (or injected by your deployment platform). An example file is provided at `apps/frontend/.env.local.example`.
+
+- `NEXT_PUBLIC_API_URL` – Base URL for the API (e.g., `https://api.hexastudio.net`).
+- `NEXT_PUBLIC_CMS_URL` – Base URL for the CMS (e.g., `https://cms.hexastudio.net`).
+- `NEXT_PUBLIC_SITE_URL` – Public site URL (e.g., `https://hexastudio.net`).
+- `NEXT_PUBLIC_API_BASE_URL` – (Optional) Legacy alias for API URL.
+- `ODOO_URL` – URL of the Odoo ERP instance.
+- `ODOO_API_KEY` – API key for authenticating with Odoo.
+- `VITE_CONFIG_NATIVE_IGNORE_WARNING` – Set to `true` to silence Vite native warnings during tests.
 ```bash
 # Create a worktree (auto-runs setup in the new tree)
 npm run worktree:add -- feature/my-branch

@@ -1,7 +1,7 @@
 # Component Guidelines
 
-**Version:** 1.0.0  
-**Last Updated:** 2026-07-08  
+**Version:** 1.1.0  
+**Last Updated:** 2026-09-04  
 
 ---
 
@@ -58,6 +58,66 @@ Introduced by **Prompt 017 — Signature Scroll Experience**. These components d
 - `ReadingProgress` uses `role="progressbar"` with `aria-valuenow` for screen readers; RAF-driven, zero layout cost.
 - `ProjectScrollCinema` chapters use semantic `<section>` elements with real headings; `ChapterMarker` is `aria-hidden`.
 
+---
+
+## Cinematic Story Scroll Component
+
+Introduced in commit `5c947a3c` / `34cac7fd` — **Silent Luxury design token alignment** sprint.
+
+| Component | Location | Type | Purpose |
+|-----------|----------|------|---------|
+| `StoryScroll` | `src/app/story/scroll.tsx` | Component | Horizontal z-axis cinematic walkthrough with GSAP ScrollTrigger. 4 narrative scenes with VOID/OBSIDIAN background colors, depth-of-field fog overlay, progress HUD, and UE5-style camera label. |
+| `index.ts` | `src/app/story/index.ts` | Barrel | Re-exports `StoryScroll` as default + named export. |
+
+### Implementation Notes
+- **Route:** `/story` — entry point at `src/app/story/page.tsx`
+- **Animation:** GSAP `ScrollTrigger` with `scrub: 1.5` (cinematic heavy-lerp), `invalidateOnRefresh` for HMR safe cleanup
+- **4 Scenes:** Each at `translateZ(-1000px × index)` for z-axis parallax depth
+- **Tokens:** Background colors from `COLOR_TOKENS` (`VOID`, `VOID_DEEP`, `OBSIDIAN`) in `src/lib/color-tokens.ts`; text/progress from `sl-*` CSS utility classes in `silent-luxury-tokens.css`
+- **Motion Policy:** Uses `gsap.context()` for cleanup; all ScrollTriggers killed on unmount; respects `gsap.context().revert()`
+- **Reduced Motion:** Fog overlay and parallax effects are static under reduced motion; content remains accessible
+- **Fonts:** `font-inter` body text, `sl-heading` for titles (Cormorant Garamond/Bodoni Moda via `--sl-heading-font`)
+
+### Route Boundary Pattern
+The `/story` page was refactored from `StoryScrollCarousel` (in `story-scroll.tsx`) to `StoryScroll` (in `scroll.tsx`) to align with the Silent Luxury design token system. The old `story-scroll.tsx` component is retained for reference.
+
+---
+
+## Homepage Luxury Components (Silent Luxury Redesign)
+
+| Component | Location | Type | Purpose |
+|-----------|----------|------|---------|
+| `NewHomeHero` | `src/features/portfolio/components/NewHomeHero.tsx` | Pattern | 4-scene "Architectural Plate" hero with canvas-based 3D, Cormorant Garamond headings, Jost body font. |
+| `NewHomeSections` | `src/features/portfolio/components/NewHomeSections.tsx` | Composite | Section organizer for the luxury homepage flow. |
+| `NewSelectedWork` | `src/features/portfolio/components/NewSelectedWork.tsx` | Pattern | Editorial 2×2 project grid with Silent Luxury tokens. |
+| `NewStudioNote` | `src/features/portfolio/components/NewStudioNote.tsx` | Pattern | Studio note presentation with luxury typography and `sl-card` styling. |
+
+### Silent Luxury Design Tokens
+All new homepage components use the `sl-*` token system from `silent-luxury-tokens.css`:
+- **Colors:** `sl-void` (`#0A0A0B`), `sl-obsidian` (`#121214`), `sl-stone` (`#1C1C1F`), `sl-alabaster` (`#F5F4F2`), `sl-silver` (`#A8A8A8`), `sl-mist` (`#D4D4D4`)
+- **Gold accents:** `sl-gold-subtle` (`rgba(212, 175, 55, 0.15)`), `sl-gold-hover` (`rgba(212, 175, 55, 0.3)`)
+- **Fonts:** `--sl-heading-font` (Bodoni Moda / Cormorant Garamond), `--sl-body-font` (Inter)
+- **Easing:** `--sl-ease-entrance`, `--sl-ease-interaction`, `--sl-ease-transition`
+- **Durations:** `--sl-duration-micro` (0.3s), `--sl-duration-ui` (0.5s), `--sl-duration-scene` (1s), `--sl-duration-page` (0.9s), `--sl-duration-parallax` (1.2s)
+
+---
+
+## Dynamic Route Error & Loading Boundaries
+
+Added in commit `414bd14f` — **Error boundaries and loading states for dynamic routes**.
+
+| Route Group | Error Boundary | Loading State | Special Behavior |
+|-------------|----------------|---------------|-------------------|
+| `/blog/[slug]` | `error.tsx` | `loading.tsx` | Sentry capture, retry link |
+| `/projects/[slug]` | `error.tsx` | `loading.tsx` | Sentry capture, retry link |
+| `/portal/projects/[id]` | `error.tsx` | `loading.tsx` | Sentry capture, retry link |
+| `/portal/review/[id]` | `error.tsx` | `loading.tsx` | Sentry capture, retry link |
+| `/admin/accounting` | `loading.tsx` | — | 6s `AbortController` timeout on API fetch |
+
+All error boundaries use `use revalidatePath` (Next.js App Router) for retry and capture to Sentry via `captureException`.
+
+---
+
 ## Documentation Requirements
 
 Every new component must be documented in the codebase:
@@ -66,8 +126,13 @@ Every new component must be documented in the codebase:
 - **Edge Cases:** How it handles loading, errors, and empty states.
 - **Accessibility:** Notes on keyboard interactions and ARIA roles.
 
+---
+
 ## Related Docs
 
-- `07-DESIGN\DESIGN_SYSTEM.md`
-- `engineering\CODING_STANDARDS.md`
-- `engineering\ACCESSIBILITY_GUIDE.md`
+- `07-DESIGN\\DESIGN_SYSTEM.md`
+- `engineering\\CODING_STANDARDS.md`
+- `07-DESIGN\\FRONTEND_EXCELLENCE.md`
+- `engineering\\MOTION_SYSTEM.md`
+- `engineering\\GSAP_GUIDE.md`
+- `engineering\\THREEJS_GUIDE.md`

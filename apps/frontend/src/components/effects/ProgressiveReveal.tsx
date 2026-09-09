@@ -61,6 +61,7 @@ export default function ProgressiveReveal({
         <img
           src={src}
           alt=""
+          aria-hidden="true"
           className="w-full h-full object-cover"
           style={{
             filter: 'contrast(2) brightness(0.6) saturate(0)',

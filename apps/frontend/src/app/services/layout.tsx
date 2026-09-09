@@ -2,11 +2,28 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "HexaStudio offers architectural visualization, real-time 3D experiences, cinematic animation, and visual consulting services.",
+    "HexaStudio offers architectural visualization, real-time 3D experiences, cinematic animation, and visual consulting services for architects and developers.",
   openGraph: {
-    title: "Services | HexaStudio",
+    title: "HexaStudio Services — Architectural Visualization",
+    description:
+      "From photorealistic stills to interactive 3D walkthroughs — services born from curiosity and precision.",
+    url: "https://hexastudio.net/services",
+    type: "website",
+    images: [
+      {
+        url: "https://hexastudio.net/logo.svg",
+        width: 1200,
+        height: 630,
+        alt: "HexaStudio Services — Architectural Visualization",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "HexaStudio Services — Architectural Visualization",
     description:
       "From photorealistic stills to interactive 3D walkthroughs — services born from curiosity.",
+    images: ["https://hexastudio.net/logo.svg"],
   },
 };
 export default function ServicesLayout({

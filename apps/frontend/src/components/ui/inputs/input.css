@@ -1,0 +1,124 @@
+/* -------------------------------------------------------------------------- */
+/*  Input Component — Responsive Width & Design Tokens                     */
+/* -------------------------------------------------------------------------- */
+/*
+ * Responsive layout:
+ * - xs (< 640px):  width: 100% (full-width on mobile)
+ * - sm (640px+):   width: 100%
+ * - md (768px+):   width: 100%
+ * - lg (1024px+):  width: auto; max-width: 28rem (fixed on desktop)
+ * - xl (1280px+):  width: auto; max-width: 28rem
+ */
+
+.hex-input {
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .hex-input {
+    width: auto;
+    max-width: 28rem;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Input Variants                                                        */
+/* -------------------------------------------------------------------------- */
+
+.hex-input--underline {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.hex-input--underline:focus-within {
+  border-color: rgba(212, 175, 55, 0.5);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+}
+
+.hex-input--glass {
+  background: rgba(18, 18, 20, 0.55);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 4px 20px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.03);
+  transition: background 0.4s cubic-bezier(0.22, 1, 0.3, 1),
+    border-color 0.4s cubic-bezier(0.22, 1, 0.3, 1),
+    box-shadow 0.4s cubic-bezier(0.22, 1, 0.3, 1);
+}
+
+.hex-input--glass:focus-within {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(18, 18, 20, 0.8) 100%);
+  backdrop-filter: blur(24px) saturate(220%);
+  -webkit-backdrop-filter: blur(24px) saturate(220%);
+  border-color: rgba(212, 175, 55, 0.3);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 4px 20px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(229, 199, 107, 0.35);
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Error State                                                           */
+/* -------------------------------------------------------------------------- */
+
+.hex-input--error.hex-input--underline {
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.hex-input--error.hex-input--underline:focus-within {
+  border-color: rgba(239, 68, 68, 0.7);
+}
+
+.hex-input--error.hex-input--glass {
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.hex-input--error.hex-input--glass:focus-within {
+  border-color: rgba(239, 68, 68, 0.5);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(18, 18, 20, 0.8) 100%);
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Disabled State                                                        */
+/* -------------------------------------------------------------------------- */
+
+.hex-input--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Size Variants                                                         */
+/* -------------------------------------------------------------------------- */
+
+.hex-input--sm {
+  height: 2.25rem; /* 36px */
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  font-size: 0.75rem;
+}
+
+.hex-input--md {
+  height: 3rem; /* 48px */
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-size: 0.875rem;
+}
+
+.hex-input--lg {
+  height: 3.5rem; /* 56px */
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  font-size: 1rem;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Reduced Motion                                                      */
+/* -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .hex-input--glass,
+  .hex-input--underline {
+    transition: none;
+  }
+}

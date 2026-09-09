@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useXRStore } from '../store/xr-store';
 import { Vector3, Mesh } from 'three';
+import { GOLD } from '@/lib/color-tokens';
 
 /* -------------------------------------------------------------------------- */
 /*  Constants                                                                  */
@@ -50,15 +51,15 @@ export function ARPlacementReticle() {
     <group ref={meshRef}>
       <mesh rotation={[-Math.PI / 2, 0, 0]}>
         <ringGeometry args={[0.08, 0.12, 32]} />
-        <meshBasicMaterial color="#D4AF37" transparent opacity={0.8} side={2} />
+        <meshBasicMaterial color={GOLD} transparent opacity={0.8} side={2} />
       </mesh>
       <mesh ref={ringRef} rotation={[-Math.PI / 2, 0, 0]}>
         <ringGeometry args={[0.13, 0.15, 32]} />
-        <meshBasicMaterial color="#D4AF37" transparent opacity={0.4} side={2} />
+        <meshBasicMaterial color={GOLD} transparent opacity={0.4} side={2} />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[0.3, 0.3]} />
-        <meshBasicMaterial color="#D4AF37" transparent opacity={0.1} side={2} />
+        <meshBasicMaterial color={GOLD} transparent opacity={0.1} side={2} />
       </mesh>
     </group>
   );

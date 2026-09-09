@@ -113,7 +113,7 @@ function ChapterHero({ project }: { project: Project }) {
           initial={staticMode ? { opacity: 1 } : { opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2, ease: EASE.entrance }}
-          className="text-6xl md:text-9xl font-serif font-light tracking-tighter text-sl-alabaster leading-tight"
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-9xl font-serif font-light tracking-tighter text-sl-alabaster leading-tight"
         >
           {project.title}
         </motion.h1>
@@ -148,7 +148,7 @@ function ChapterBrief({ project }: { project: Project }) {
   return (
     <section
       id="ch-brief"
-      className="relative min-h-screen w-full bg-sl-void py-32 px-8 md:px-16"
+      className="relative min-h-screen w-full bg-sl-void py-24 sm:py-32 px-6 sm:px-8 md:px-16"
     >
       <div ref={ref} className="grid grid-cols-1 lg:grid-cols-12 gap-16 max-w-[1400px] mx-auto">
         {/* Left: editorial index + description */}
@@ -335,7 +335,7 @@ function ChapterDetails({ project }: { project: Project }) {
   return (
     <section
       id="ch-details"
-      className="relative min-h-screen w-full bg-sl-void py-32 px-8 md:px-16"
+      className="relative min-h-screen w-full bg-sl-void py-24 sm:py-32 px-6 sm:px-8 md:px-16"
     >
       <div ref={ref} className="max-w-[1400px] mx-auto">
         <ChapterMarker index={4} title="Details" className="mb-10" />
@@ -496,7 +496,7 @@ function ChapterNext({ project: _project, nextProject }: { project: Project; nex
   return (
     <section
       id="ch-next"
-      className="relative min-h-screen w-full bg-sl-void py-32 px-8 md:px-16 flex items-center"
+      className="relative min-h-screen w-full bg-sl-void py-24 sm:py-32 px-6 sm:px-8 md:px-16 flex items-center"
     >
       <div ref={ref} className="max-w-[1400px] mx-auto w-full">
         <ChapterMarker index={5} title="Next" className="mb-16" />

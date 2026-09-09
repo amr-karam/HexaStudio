@@ -16,7 +16,7 @@ const AnalyticsView = dynamic(
     ssr: false,
     loading: () => (
       <div className="w-full h-[60vh] animate-pulse bg-white/[0.02] rounded-2xl border border-sl-silver/10 flex items-center justify-center">
-        <div className="text-sl-mist/60 font-mono text-xs uppercase tracking-widest">Loading Analytics View...</div>
+        <div className="text-sl-mist/60 font-mono text-xs uppercase tracking-widest text-hex-xs">Loading Analytics View...</div>
       </div>
     )
   }

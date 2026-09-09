@@ -26,7 +26,7 @@ const childVariants = {
 
 export function NewsletterSection() {
   return (
-    <section className="relative px-8 md:px-16 py-32 border-t border-sl-silver/20 overflow-hidden bg-sl-void">
+    <section className="relative px-6 sm:px-8 md:px-16 py-20 sm:py-28 md:py-32 border-t border-sl-silver/20 overflow-hidden bg-sl-void">
       {/* Ambient gold glow */}
       <div className="absolute inset-0 gradient-radial-gold pointer-events-none" aria-hidden="true" />
 
@@ -48,7 +48,7 @@ export function NewsletterSection() {
         </motion.span>
 
         <motion.div variants={childVariants} className="overflow-hidden mb-6">
-          <h2 className="text-4xl md:text-6xl font-serif font-light text-sl-alabaster leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-6xl font-serif font-light text-sl-alabaster leading-tight">
             Join the <span className="italic text-sl-gold-hover">Inner Circle.</span>
           </h2>
         </motion.div>

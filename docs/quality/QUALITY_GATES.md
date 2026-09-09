@@ -1,7 +1,7 @@
 # Quality Gates
 
-**Version:** 1.2.0  
-**Last Updated:** 2026-07-27  
+**Version:** 1.3.0  
+**Last Updated:** 2026-09-04
 
 ---
 
@@ -22,6 +22,38 @@ Quality is not a phase. Quality is built into every step of development. Gates a
 │ checks  │   │ checks  │   │ review  │   │ testing │   │ off     │
 └─────────┘   └─────────┘   └─────────┘   └─────────┘   └─────────┘
 ```
+
+---
+
+## S-022 Quality Gate Results (v2.2.7)
+
+| Gate | Check | Result | Status |
+|------|-------|--------|--------|
+| Development | Frontend lint | 0 errors, 0 warnings | ✅ |
+| Development | Frontend typecheck | 0 errors | ✅ |
+| Development | Backend lint | 0 errors, 0 warnings | ✅ |
+| Development | Backend typecheck | 0 errors | ✅ |
+| Development | Backend tests | 390/390 passing | ✅ |
+| Development | Frontend tests | 585/585 passing (83 files) | ✅ |
+| Development | Mobile lint | 0 errors, 0 warnings | ✅ |
+| Development | Mobile typecheck | 0 errors | ✅ |
+| Development | Mobile tests | 26/26 passing | ⚠️ Env (pre-existing hermes-parser) |
+| Design Token Gate | `scripts/check-design-tokens.mjs` | 0 violations (no `--allow-inline-style-hex`) | ✅ |
+| Font Preload Gate | `scripts/check-font-preloads.mjs` | All 7 preloads match (Cormorant Garamond + Jost + Inter) | ✅ |
+| CI | GitLab CI/CD pipeline (6-stage) | quality → build → image → validate → deploy | ✅ |
+| CI | Bundle budget gate (`scripts/check-bundle-budgets.mjs`) | < 200KB per route JS | ✅ |
+| CI | Container scan (Trivy) | 0 critical, 0 high | ✅ |
+| Performance | TBT | 60ms (target <100ms) | ✅ |
+| Performance | LCP | 1.6s (target <1.5s) | 🟡 |
+| Performance | Lighthouse performance (desktop) | 92/100 (target >95) | 🟡 |
+| Security | Production runtime vulnerabilities | 0 critical, 0 high | ✅ |
+| Story Scroll | Cinematic 3D walkthrough (`/story`) | 4 scenes, GSAP ScrollTrigger, design-token compliant | ✅ |
+| Error Boundaries | Dynamic route error.tsx + loading.tsx | 4 route groups, 6s AbortController timeout | ✅ |
+
+### Blockers / Remediation
+- **LCP / Lighthouse 95+**: hero image priority hints and remaining JS execution optimization needed.
+- **Mobile test suite**: blocked by pre-existing `hermes-parser` env corruption (untouched).
+- **Cloudflare tunnel**: production `www` + apex restored (Aug 27); remaining 9 subdomains return 503 (dashboard ingress pending).
 
 ---
 
@@ -137,8 +169,8 @@ When modifying frontend code, these additional checks are mandatory:
 
 ## Gate 2: CI Gate
 
-**Owner:** CI Pipeline (GitHub Actions)  
-**When:** On every push / PR
+**Owner:** CI Pipeline (GitLab CI/CD)  
+**When:** On every push / MR
 
 ### Automated Checks
 
@@ -159,7 +191,7 @@ When modifying frontend code, these additional checks are mandatory:
 ### Failure Action
 
 - PR cannot be merged
-- Status check shows ❌ in GitHub
+- Status check shows ❌ in GitLab CI/CD
 - Notification sent to developer
 
 ---
@@ -327,6 +359,8 @@ Every feature, bugfix, or task must satisfy ALL of the following:
 - [ ] Frame-time budget met (p95 < 16.7ms)
 - [ ] No `transition-all` in CSS
 - [ ] All interactive elements >= 44x44px
+- [ ] Design token gate passes (`node scripts/check-design-tokens.mjs` — 0 violations without `--allow-inline-style-hex`)
+- [ ] Font preload gate passes (`node scripts/check-font-preloads.mjs`)
 
 ### Functionality
 

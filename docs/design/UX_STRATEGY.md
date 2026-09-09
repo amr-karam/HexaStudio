@@ -1,10 +1,14 @@
 # 🧭 UX STRATEGY: THE SEAMLESS EXPERIENCE
 
-**Version:** 1.1  
+**Version:** 1.2  
+**Last Updated:** 2026-09-04  
 **Standard:** Elite Luxury (9.5/10)  
 **Goal:** Zero-Cognitive Load Navigation
 
+---
+
 ## 1. NAVIGATION ARCHITECTURE
+
 Navigation must be **invisible**. The user should never "think" about how to move through the site; they should simply flow.
 
 ### I. The Global Navigation System
@@ -22,6 +26,7 @@ Do NOT copy the desktop experience.
 ---
 
 ## 2. THE CINEMATIC SCROLL EXPERIENCE
+
 Scrolling is our primary storytelling tool. The page is a sequence of scenes.
 
 ### I. The Rhythm of the Page
@@ -33,10 +38,12 @@ Scrolling is our primary storytelling tool. The page is a sequence of scenes.
 - **Sticky Storytelling:** Use sticky positioning to keep a focal point while the background content evolves.
 - **Scroll-Triggered Typography:** Text that reacts to scroll (scaling, opacity, or sliding) to emphasize key points.
 - **Scene Transitions:** The 3D scene must evolve in sync with the scroll position.
+- **The Cinematic Walkthrough:** Implemented via the `/story` route, this experience uses GSAP ScrollTrigger to pan a 3D camera through narrative beats, leveraging a z-axis depth effect and atmospheric fog to create an "Unreal Engine" cinematic feel.
 
 ---
 
 ## 3. MICRO-INTERACTIONS & FEEDBACK
+
 Every interaction must provide a "premium" tactile response.
 
 ### I. The Interaction Matrix
@@ -48,18 +55,27 @@ Every interaction must provide a "premium" tactile response.
 ---
 
 ## 4. CONTENT FLOW & ATTENTION
+
 Guide the user's attention naturally using visual hierarchy.
-- **Whitespace as a Tool:** Use aggressive whitespace to isolate luxury elements.
-- **Visual Rhythm:** Avoid long, static blocks of text. Break content into "beats."
-- **Intentionality:** Every element on the screen must have a reason to be there.
+
+### I. Whitespace as a Tool
+Use aggressive whitespace to isolate luxury elements.
+
+### II. Visual Rhythm
+Avoid long, static blocks of text. Break content into "beats."
+
+### III. Intentionality
+Every element on the screen must have a reason to be there.
 
 ---
 
 ## 5. THE LUXURY UX AUDIT
+
 Every page must be reviewed against these criteria:
 - [ ] **Effortless Navigation:** Can a new user find their way without thinking?
 - [ ] **Storytelling:** Does the scroll feel like a journey or a list?
 - [ ] **Feedback:** Does every action feel acknowledged by the system?
 - [ ] **Consistency:** Is the interaction language the same across the entire site?
+- [ ] **Cinematic Quality:** Does the `/story` route maintain 60fps and follow the motion policy?
 
 *“The highest form of sophistication is simplicity.”*
