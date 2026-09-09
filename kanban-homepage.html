@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HEXA STUDIO — Project Kanban</title>
+  <style>
+    :root {
+      --bg: #0A0A0B;
+      --panel: #111113;
+      --border: rgba(212,175,55,0.12);
+      --accent: #D4AF37;
+      --muted: #9aa3ad;
+      --text: #f3f4f6;
+      --column-min: 280px;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      min-height: 100vh;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: linear-gradient(to bottom, rgba(10,10,11,0.95), rgba(10,10,11,0.6), transparent);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--border);
+    }
+    .inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-mark {
+      width: 28px; height: 28px;
+      border: 1px solid var(--accent);
+      display: grid; place-items: center;
+      color: var(--accent);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+    .brand h1 {
+      margin: 0;
+      font-weight: 300;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-size: 14px;
+    }
+    .meta {
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .board {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(var(--column-min), 320px);
+      gap: 18px;
+      padding: 24px;
+      max-width: 1440px;
+      margin: 0 auto;
+      align-items: start;
+    }
+    .column {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 240px;
+    }
+    .column-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .column-title {
+      margin: 0;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 12px;
+      color: #e5e7eb;
+    }
+    .count {
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+    }
+    .card {
+      background: #161618;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      cursor: grab;
+      transition: transform 120ms ease, border-color 200ms ease, box-shadow 200ms ease;
+    }
+    .card:hover {
+      transform: translateY(-1px);
+      border-color: rgba(212,175,55,0.25);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #cbd5e1;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212,175,55,0.15);
+    }
+    .badge {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--muted);
+    }
+    .title {
+      margin: 0;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 1.35;
+      color: #f3f4f6;
+    }
+    .desc {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: #94a3b8;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .gold { color: #e5c765; }
+    .muted { color: #9aa3ad; }
+    .divider { height: 1px; background: var(--border); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="inner">
+      <div class="brand">
+        <div class="brand-mark">H</div>
+        <h1>HEXA STUDIO <span class="muted">/</span> <span class="gold">Kanban</span></h1>
+      </div>
+      <div class="meta">Sprint <span class="gold">S-021</span> · Phase <span class="gold">4/RC</span> · Branch <span class="gold">fix/ui-design-tokens</span></div>
+    </div>
+  </header>
+
+  <main class="board">
+    <!-- Backlog -->
+    <section class="column">
+      <div class="column-header">
+        <h2 class="column-title">Backlog</h2>
+        <span class="count">3</span>
+      </div>
+      <article class="card">
+        <div class="card-top">
+          <span class="tag"><span class="dot"></span>SEO Sprint</span>
+          <span class="badge">S-022</span>
+        </div>
+        <h3 class="title">Sprint S-022: SEO Foundation</h3>
+        <p class="desc">Next sprint focus. Prepare metadata, structured data, and sitemap strategy.</p>
+        <div class="footer"><span>Next</span><span class="muted">Sprint S-022</span></div>
+      </article>
+      <article class="card">
+        <div class="card-top">
+          <span class="tag"><span class="dot"></span>SEO</span>
+          <span class="badge">P1</span>
+        </div>
+        <h3 class="title">Homepage JSON-LD & Open Graph completeness</h3>
+        <p class="desc">Add breadcrumbs, organization schema, and verify canonical/OG image consistency.</p>
+        <div class="footer"><span>Pending</span><span class="muted">SEO</span></div>
+      </article>
+      <article class="card">
+        <div class="card-top">
+          <span class="tag"><span class="dot"></span>SEO</span>
+          <span class="badge">P1</span>
+        </div>
+        <h3 class="title">Sitemap + robots + indexation checks</h3>
+        <p class="desc">Validate /sitemap.xml, robots.txt, noindex blocks, and crawler budget impact.</p>
+        <div class="footer"><span>Pending</span><span class="muted">SEO</span></div>
+      </article>
+    </section>
+
+    <!-- Ready -->
+    <section class="column">
+      <div class="column-header">
+        <h2 class="column-title">Ready</h2>
+        <span class="count">2</span>
+      </div>
+      <article class="card">
+        <div class="card-top">
+          <span class="tag"><span class="dot"></span>Design</span>
+          <span class="badge">UI</span>
+        </div>
+        <h3 class="title">Homepage chapter rail polish</h3>
+        <p class="desc">Finalize desktop/mobile rail behavior, active-state contrast, and reduced-motion fallback.</p>
+        <div class="footer"><span>Ready</span><span class="muted">Frontend</span></div>
+      </article>
+      <article class="card">
+        <div class="card-top">
+          <span class="tag"><span class="dot"></span>3D</span>
+          <span class="badge">R3F</span>
+        </div>
+        <h3 class="title">VoidGarden performance pass</h3>
+        <p class="desc">Profile monolith count/LOD, reduce overdraw, and verify mobile frame budget.</p>
+        <div class="footer"><span>Ready</span><span class="muted">Frontend</span></div>
+      </article>
+    </section>
+
+    <!-- In Progress -->
+    <section class="column">
+      <div class="column-header">
+        <h2 class="column-title">In Progress</h2>
+        <span class="count">4</span>
+      </div>
+      <article class="card">
+        <div class="card-top">
+          <span class="tag"><span class="dot"></span>Frontend</span>
+          <span class="badge">Done</span>
+        </div>
+        <h3 class="title">HomeHero — 3D VoidGarden hero</h3>
+        <p class="desc">Replaced canvas spiral with R3F VoidGarden, preserved scroll-linked opacity/parallax.</p>
+        <div class="footer"><span class="gold">Completed</span><span class="muted">Hero</span></div>
+      </article>
+      <article class="card">
+        <div class="card-top">
+          <span class="tag"><span class="dot"></span>Frontend</span>
+          <span class="badge">Done</span>
+        </div>
+        <h3 class="title">HomeSections — narrative chapters</h3>
+        <p class="desc">Implemented Craft/Process/Impact sections with in-view reveal and silent-luxury spacing.</p>
+        <div class="footer"><span class="gold">Completed</span><span class="muted">Content</span></div>
+      </article>
+      <article class="card">
+        <div class="card-top">
+          <span class="tag"><span class="dot"></span>Frontend</span>
+          <span class="badge">Done</span>
+        </div>
+        <h3 class="title">HomeChapterRail — scroll navigation</h3>
+        <p class="desc">Added fixed chapter rail with active-state tracking and smooth-scroll anchors.</p>
+        <div class="footer"><span class="gold">Completed</span><span class="muted">Nav</span></div>
+      </article>
+      <article class="card">
+        <div class="card-top">
+          <span class="tag"><span class="dot"></span>QA</span>
+          <span class="badge">Gate</span>
+        </div>
+        <h3 class="title">Homepage verification gate</h3>
+        <p class="desc">Typecheck + lint for homepage-related files; resolved pre-existing unrelated failures.</p>
+        <div class="footer"><span class="gold">Passed</span><span class="muted">QA</span></div>
+      </article>
+    </section>
+
+    <!-- Review -->
+    <section class="column">
+      <div class="column-header">
+        <h2 class="column-title">Review</h2>
+        <span class="count">1</span>
+      </div>
+      <article class="card">
+        <div class="card-top">
+          <span class="tag"><span class="dot"></span>Review</span>
+          <span class="badge">PR</span>
+        </div>
+        <h3 class="title">Homepage premium design review</h3>
+        <p class="desc">Review tokens, motion consistency, accessibility, and SSR hydration behavior.</p>
+        <div class="footer"><span>In review</span><span class="muted">Design</span></div>
+      </article>
+    </section>
+
+    <!-- Done -->
+    <section class="column">
+      <div class="column-header">
+        <h2 class="column-title">Done</h2>
+        <span class="count">4</span>
+      </div>
+      <article class="card">
+        <div class="card-top">
+          <span class="tag"><span class="dot"></span>Frontend</span>
+          <span class="badge">Completed</span>
+        </div>
+        <h3 class="title">Homepage architecture validated</h3>
+        <p class="desc">Server page + HomeClient composition retained; code-split heavy layers.</p>
+        <div class="footer"><span class="gold">Merged</span><span class="muted">Arch</span></div>
+      </article>
+      <article class="card">
+        <div class="card-top">
+          <span class="tag"><span class="dot"></span>Frontend</span>
+          <span class="badge">Completed</span>
+        </div>
+        <h3 class="title">HomeHero tokens + motion alignment</h3>
+        <p class="desc">Muted typography, gold accent system, easing curve, and reduced-motion support aligned.</p>
+        <div class="footer"><span class="gold">Merged</span><span class="muted">Tokens</span></div>
+      </article>
+      <article class="card">
+        <div class="card-top">
+          <span class="tag"><span class="dot"></span>Frontend</span>
+          <span class="badge">Completed</span>
+        </div>
+        <h3 class="title">HomeSections narrative spine</h3>
+        <p class="desc">Below-the-fold story structure added with chapter spacers and CTA placement.</p>
+        <div class="footer"><span class="gold">Merged</span><span class="muted">Content</span></div>
+      </article>
+      <article class="card">
+        <div class="card-top">
+          <span class="tag"><span class="dot"></span>Frontend</span>
+          <span class="badge">Completed</span>
+        </div>
+        <h3 class="title">HomeChapterRail navigation</h3>
+        <p class="desc">Rail links added for hero/craft/process/impact with smooth scroll.</p>
+        <div class="footer"><span class="gold">Merged</span><span class="muted">Nav</span></div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

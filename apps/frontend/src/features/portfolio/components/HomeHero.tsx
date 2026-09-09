@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useScroll, useTransform, motion } from 'framer-motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { Button } from '@/components/ui/Button';
-
-const GOLDEN_ANGLE = 137.508;
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, PerspectiveCamera, Environment } from '@react-three/drei';
+import { VoidGarden } from './VoidGarden';
 
 /**
  * HomeHero — Cinematic hero for the redesigned HEXA STUDIO homepage.
@@ -17,145 +18,11 @@ const GOLDEN_ANGLE = 137.508;
  * and motion is enabled, creating a subtle parallax of the 3D form.
  */
 export function HomeHero() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const { scrollYProgress } = useScroll();
   const canvasY = useTransform(scrollYProgress, [0, 0.3], [0, -40]);
   const canvasOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0.3]);
   const reducedMotion = useReducedMotion();
   const [mouse, setMouse] = useState({ x: 0.5, y: 0.5 });
-
-  useEffect(() => {
-    if (reducedMotion) return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let dpr = window.devicePixelRatio || 1;
-    let width = 0;
-    let height = 0;
-    let raf = 0;
-    const startTime = performance.now();
-
-    const resize = () => {
-      dpr = window.devicePixelRatio || 1;
-      const rect = canvas.getBoundingClientRect();
-      width = rect.width;
-      height = rect.height;
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-      ctx.scale(dpr, dpr);
-    };
-    resize();
-    const ro = new ResizeObserver(resize);
-    ro.observe(canvas);
-
-    type Monolith = {
-      x: number;
-      y: number;
-      z: number;
-      w: number;
-      h: number;
-      d: number;
-      rot: number;
-    };
-
-    const monoliths: Monolith[] = [];
-    for (let i = 0; i < 24; i++) {
-      const radius = 80 + i * 14;
-      const angle = (i * GOLDEN_ANGLE * Math.PI) / 180;
-      const x = Math.cos(angle) * radius;
-      const y = Math.sin(angle) * radius * 0.3;
-      const z = Math.sin(i * 0.7) * 40;
-      monoliths.push({
-        x,
-        y,
-        z,
-        w: 20 + (i % 3) * 12,
-        h: 40 + (i % 5) * 20,
-        d: 8 + (i % 2) * 6,
-        rot: angle + Math.PI / 4,
-      });
-    }
-
-    const project = (x: number, y: number, z: number, rot: number) => {
-      const cosR = Math.cos(rot);
-      const sinR = Math.sin(rot);
-      const xR = x * cosR + z * sinR;
-      const zR = -x * sinR + z * cosR;
-      const screenX = xR - zR * 0.35;
-      const screenY = y - zR * 0.2;
-      return { x: screenX, y: screenY, z: zR };
-    };
-
-    const draw = (time: number) => {
-      const t = (time - startTime) / 1000;
-      ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = '#0A0A0B';
-      ctx.fillRect(0, 0, width, height);
-
-      const cx = width / 2 + (mouse.x - 0.5) * 60;
-      const cy = height / 2 + (mouse.y - 0.5) * 40;
-
-      const sorted = [...monoliths].sort((a, b) => b.z - a.z);
-
-      for (const m of sorted) {
-        const p = project(m.x, m.y, m.z + Math.sin(t * 0.3 + m.x * 0.01) * 8, m.rot + t * 0.05);
-        const sx = cx + p.x;
-        const sy = cy - p.y;
-        const sz = p.z;
-
-        const shade = 1 - (sz + 80) / 160;
-        const alpha = Math.max(0.05, Math.min(0.9, shade));
-        const edgeAlpha = Math.max(0.2, Math.min(0.8, shade));
-
-        const corners = [
-          { x: sx - m.w / 2, y: sy + m.h / 2 },
-          { x: sx + m.w / 2, y: sy + m.h / 2 },
-          { x: sx + m.w / 2, y: sy - m.h / 2 },
-          { x: sx - m.w / 2, y: sy - m.h / 2 },
-        ];
-
-        const depthOffset = sz * 0.3;
-        const adjusted = corners.map((c) => ({ x: c.x - depthOffset, y: c.y - depthOffset }));
-
-        const faceAlpha = 0.08 + alpha * 0.12;
-        ctx.fillStyle = `rgba(212, 175, 55, ${faceAlpha})`;
-        ctx.strokeStyle = `rgba(212, 175, 55, ${edgeAlpha})`;
-        ctx.lineWidth = 1;
-
-        ctx.beginPath();
-        ctx.moveTo(adjusted[0].x, adjusted[0].y);
-        for (let i = 1; i < 4; i++) {
-          ctx.lineTo(adjusted[i].x, adjusted[i].y);
-        }
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-
-        const pulseSize = Math.sin(t * 0.5 + sz * 0.1) * 3;
-        ctx.beginPath();
-        ctx.ellipse(sx, sy + m.h / 2, 8 + pulseSize, 2, 0, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(212, 175, 55, ${0.3 + alpha * 0.4})`;
-        ctx.fill();
-
-        ctx.strokeStyle = `rgba(212, 175, 55, ${0.15 + alpha * 0.2})`;
-        ctx.setLineDash([4, 3]);
-        ctx.beginPath();
-        ctx.ellipse(sx, sy + m.h / 2, 12 + pulseSize, 3, 0, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.setLineDash([]);
-      }
-
-      raf = requestAnimationFrame(draw);
-    };
-    raf = requestAnimationFrame(draw);
-
-    return () => {
-      cancelAnimationFrame(raf);
-      ro.disconnect();
-    };
-  }, [mouse, reducedMotion]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (reducedMotion) return;
@@ -171,6 +38,7 @@ export function HomeHero() {
       onMouseMove={handleMouseMove}
       className="relative min-h-screen w-full overflow-hidden bg-sl-void"
       aria-label="HEXA STUDIO — Architectural Visualization"
+      id="hero"
     >
       <div
         aria-hidden="true"
@@ -263,11 +131,14 @@ export function HomeHero() {
               );
             })}
 
-            <canvas
-              ref={canvasRef}
-              className="absolute inset-0 h-full w-full"
-              aria-hidden="true"
-            />
+            <div className="absolute inset-0 h-full w-full">
+              <Canvas dpr={[1, 2]} shadows>
+                <PerspectiveCamera makeDefault position={[0, 0, 10]} fov={50} />
+                <Environment preset="city" />
+                <VoidGarden mouse={mouse} />
+                <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
+              </Canvas>
+            </div>
 
             <div className="pointer-events-none absolute -bottom-8 left-0 font-mono text-[9px] uppercase tracking-[0.4em] text-sl-mist/40">
               VOID GARDEN · 01 / 04 — MONOLITHS

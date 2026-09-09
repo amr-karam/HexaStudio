@@ -1,3 +1,5 @@
+'use client';
+
 import { BentoGrid, BentoCard } from '@/features/portal/components/BentoGrid';
 import { createMetadata } from '@/lib/seo';
 

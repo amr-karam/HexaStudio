@@ -8,7 +8,7 @@ import { LocaleProvider } from "@/i18n/LocaleProvider";
 import { CurrencyProvider } from "@/features/currency";
 import { MotionPolicyProvider } from "@/providers/motion-policy-provider";
 import { QualityProvider } from "@/providers/quality-provider";
-import { WebGLContextProvider } from "@/engine/webgl/WebGLContextProvider";
+import { WebGLContextProvider } from "@/providers/webgl-context-provider";
 import { usePerformanceMonitor } from "@/hooks/usePerformanceMonitor";
 import type { ReactNode } from "react";
 

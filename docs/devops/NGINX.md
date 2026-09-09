@@ -1,12 +1,12 @@
-# 🌐 REVERSE PROXY & EDGE ROUTING STANDARDS (TRAEFIK & NGINX)
+# 🌐 REVERSE PROXY & EDGE ROUTING STANDARDS (TRAEFIK & CLOUDFLARE)
 
-**Version:** 1.0.0 | **Scope:** Ingress & Proxy Routing | **Standard:** Dynamic Traefik v2.11 / Nginx Edge Proxy
+**Version:** 1.1.0 | **Scope:** Ingress & Proxy Routing | **Standard:** Traefik v3 + Cloudflare Tunnel
 
 ---
 
 ## 1. OVERVIEW & ROUTING PARADIGM
 
-HEXA Vision employs **Traefik v2.11** as its primary cloud-native edge proxy and ingress controller. Traefik auto-discovers containers via Docker socket labels, handles Let's Encrypt TLS certificate generation, terminates SSL, enforces security middlewares, and proxies traffic to Next.js Frontend (`:3000`), NestJS Backend (`:4000`), Strapi CMS (`:1337`), MinIO (`:9000`), Grafana (`:3000`), and Odoo (`:8069`).
+HEXA Vision employs **Traefik v3** as its primary cloud-native edge proxy and ingress controller. Traefik auto-discovers containers via Docker socket labels, handles TLS certificate generation via Cloudflare, terminates SSL, enforces security middlewares, and proxies traffic to Next.js Frontend (`:3000`), NestJS Backend (`:4000`), Strapi CMS (`:1337`), MinIO (`:9000`), Grafana (`:3000`), and Odoo (`:8069`).
 
 ---
 
@@ -18,7 +18,7 @@ HEXA Vision employs **Traefik v2.11** as its primary cloud-native edge proxy and
                        └────────────────┬────────────────┘
                                         │ (Ports 80 / 443)
                        ┌────────────────▼────────────────┐
-                       │        TRAEFIK v2.11 INGRESS    │
+                       │        TRAEFIK v3 INGRESS        │
                        └────────┬───────────────┬────────┘
                                 │               │
           ┌─────────────────────┴───────┐   ┌───┴────────────────────────┐
@@ -34,11 +34,11 @@ HEXA Vision employs **Traefik v2.11** as its primary cloud-native edge proxy and
 
 | Hostname | Destination Service | Port | TLS Certificate | Middleware Policy |
 |----------|---------------------|------|-----------------|-------------------|
-| `hexastudio.net` | `frontend` | 3000 | Let's Encrypt / CF | Strict Security Headers, Compression |
-| `api.hexastudio.net` | `backend` | 4000 | Let's Encrypt / CF | CORS Guard, Rate Limit (100 req/min) |
-| `cms.hexastudio.net` | `cms` | 1337 | Let's Encrypt / CF | Admin IP Allowlist, Frame Ancestors |
-| `grafana.hexastudio.net` | `grafana` | 3000 | Let's Encrypt / CF | Basic Auth, Admin IP Allowlist |
-| `traefik.hexastudio.net` | `traefik` (API) | 8080 | Let's Encrypt / CF | Basic Auth, IP Allowlist (`api.insecure: false`) |
+| `hexastudio.net` | `frontend` | 3000 | Cloudflare | Strict Security Headers, Compression |
+| `api.hexastudio.net` | `backend` | 4000 | Cloudflare | CORS Guard, Rate Limit (100 req/min) |
+| `cms.hexastudio.net` | `cms` | 1337 | Cloudflare | Admin IP Allowlist, Frame Ancestors |
+| `grafana.hexastudio.net` | `grafana` | 3000 | Cloudflare | Basic Auth, Admin IP Allowlist |
+| `traefik.hexastudio.net` | `traefik` (API) | 8080 | Cloudflare | Basic Auth, IP Allowlist (`api.insecure: false`) |
 
 ---
 
@@ -86,25 +86,27 @@ labels:
 
 ---
 
-## 5. NGINX LEGACY / FALLBACK PROXY PATTERN
+## 5. CLOUDFLARE TUNNEL INGRESS
 
-When Nginx is used in standalone legacy deployments, configuration must mirror Traefik's security profile:
-```nginx
-server {
-    listen 443 ssl http2;
-    server_name hexastudio.net;
+Cloudflare Tunnel replaces public port exposure. Ingress rules map hostnames to Traefik:
 
-    ssl_certificate /etc/letsencrypt/live/hexastudio.net/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/hexastudio.net/privkey.pem;
-
-    location / {
-        proxy_pass http://127.0.0.1:3000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
+```yaml
+# docker/cloudflared/config.yml
+tunnel: <tunnel-uuid>
+ingress:
+  - hostname: hexastudio.net
+    service: http://traefik:80
+  - hostname: www.hexastudio.net
+    service: http://traefik:80
+  - hostname: api.hexastudio.net
+    service: http://traefik:80
+  - hostname: cms.hexastudio.net
+    service: http://traefik:80
+  - hostname: grafana.hexastudio.net
+    service: http://traefik:80
+  - hostname: traefik.hexastudio.net
+    service: http://traefik:80
+  - service: http_status:404
 ```
 
 ---
@@ -129,3 +131,4 @@ touch docker/traefik/dynamic.yml
 - [SSL.md](SSL.md) — TLS certificate management.
 - [LOAD_BALANCING.md](LOAD_BALANCING.md) — Traffic distribution rules.
 - [CLOUDFLARE_CACHE.md](CLOUDFLARE_CACHE.md) — Edge caching policies.
+- [GITLAB_MIGRATION.md](GITLAB_MIGRATION.md) — CI/CD migration notes.

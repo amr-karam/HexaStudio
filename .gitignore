@@ -224,3 +224,9 @@ hexastudio-backend.tar
 .lh-perf.json
 .tmp-lh-perf.json
 *.report.html
+
+nul
+
+# Secret files
+openai-compatible-agents.env
+apps/backend/.env.framer

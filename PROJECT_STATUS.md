@@ -1049,3 +1049,18 @@ Closed the documented sprint debt (S-021 known gap): all frontend BFF proxies no
 
 ### 5. Incident Note
 - A transient lint warning (dead `useScrollLock` import in `Navbar.tsx`) was OneDrive sync lag, not a real defect — file verified byte-identical to HEAD after recovery; no code change required.
+
+## 2026-09-09 — HEXA ONE OS: Hermes + OpenCode Perfect Merge — COMPLETE
+
+**Status:** Implemented & verified (hexa-hub gates green) · **Risk:** MEDIUM · **ADR:** `docs/adr/017-hexa-one-os-hermes-opencode-merge.md`
+**Rule:** Hermes decides, OpenCode does, ONE-OS remembers.
+
+### 1. Delivered (hexa-hub only, no app/infra change)
+- `hexa-hub/src/one-os/` — `types.ts` (canonical `one_<ms>_<base36>` session contract, secret-free config/memory types), `config.ts` (env-first, profile-safe `$HERMES_HOME`, `hasHonchoKey` boolean only), `router.ts` (deterministic hermes/opencode/hybrid + `pickOpenCodeAgent`), `session.ts` (immutable link helpers + TTL), `memory.ts` (unified Hermes+OpenCode markdown, truncated), `one-os-bridge.ts` (injectable Hermes/OpenCode executors; hybrid = Hermes plans → OpenCode executes), `index.ts` barrel; exported from `hexa-hub/src/index.ts`.
+- `hexa-hub/tests/one-os/` — 5 suites / 20 tests (router, session, config, memory, bridge with mocked executors, never spawn).
+- Docs: ADR-017 (Accepted) + `docs/agents/one-os-merge.md` operator guide + ADR index line.
+- Pre-existing fix (required for 0-error gate): `hexa-hub/src/bridge.ts` timer typings (`NodeJS.Timeout` → `ReturnType<typeof setInterval>` + guarded `unref`), zero behavior change.
+
+### 2. Verification
+- hexa-hub: `npm run lint` 0/0, `npx tsc --noEmit` 0 errors, `npm test` **40/40** (20 pre-existing session + 20 new ONE-OS), `npm run build` clean.
+- No secrets committed (config returns presence booleans only); no new dependencies; `McpBridge` untouched behaviorally (rollback = delete `one-os/` + revert index).

@@ -55,7 +55,7 @@ hexastudio.net/                          # Monorepo root
 │   ├── postgres/                        # Init SQL scripts
 │   ├── prometheus/                      # Prometheus scrape config
 │   ├── tempo/                           # Tempo tracing config
-│   └── traefik/                         # Traefik v2.11 config (production)
+│   └── traefik/                         # Traefik v3 config (production)
 ├── docs/
 │   └── ADR/                             # Architecture Decision Records (6)
 ├── e2e/                                 # Playwright E2E tests

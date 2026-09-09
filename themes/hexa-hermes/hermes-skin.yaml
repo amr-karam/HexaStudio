@@ -1,0 +1,60 @@
+# HEXA Hermes skin — signature gold on void black.
+# Canonical palette source: DESIGN_SYSTEM.md + docs/design/DESIGN_TOKENS.md
+# (60-30-10 rule: 60% void, 30% obsidian/slate surfaces, 10% gold + white).
+# Install: copy to <hermes-home>/skins/hexa-hermes.yaml, then `hermes skin use hexa-hermes`.
+# Missing keys inherit the `default` skin — every key below is explicit on purpose.
+
+name: hexa-hermes
+description: HEXA Silent Luxury — signature gold on void black
+
+colors:
+  # Base surface — void black canvas.
+  background: "#050505"
+
+  # Brand accent — HEXA signature gold. WCAG AA vs void (~7.5:1).
+  ui_accent: "#D4AF37"
+  banner_accent: "#D4AF37"
+
+  # Tool-call marker (gold ●) and reasoning text (muted).
+  ui_tool: "#D4AF37"
+  ui_thinking: "#6A6A6E"
+
+  # Text hierarchy — primary / body / muted.
+  banner_title: "#FFFFFF"
+  banner_text: "#A0A0A0"
+  ui_primary: "#FFFFFF"
+  ui_text: "#E8E6E3"
+  ui_label: "#A0A0A0"
+  banner_dim: "#6A6A6E"
+  banner_border: "#1A1A1A"
+  ui_border: "#1A1A1A"
+
+  # Semantic status — recognizably green/amber/red per skin guidance.
+  ui_ok: "#22C55E"
+  ui_warn: "#E5C76B"
+  ui_error: "#EF4444"
+
+  # CLI / TUI chrome.
+  prompt: "#E5C76B"
+  input_rule: "#D4AF37"
+  response_border: "#A8862E"
+  status_bar_bg: "#0F0F10"
+  status_bar_text: "#A0A0A0"
+  status_bar_good: "#22C55E"
+  status_bar_warn: "#E5C76B"
+  status_bar_critical: "#EF4444"
+  session_label: "#E5C76B"
+  session_border: "#1A1A1A"
+
+  # Code syntax — gold family accents, muted comments.
+  syntax_string: "#E5C76B"
+  syntax_number: "#FFFFFF"
+  syntax_keyword: "#D4AF37"
+  syntax_comment: "#6A6A6E"
+
+branding:
+  agent_name: Hermes Agent
+  prompt_symbol: "❯"
+  help_header: "(^_^)? Commands"
+
+tool_prefix: "┊"

@@ -57,7 +57,7 @@ HEXA Studio is a premium **3D Architecture Visualization Platform** built as a f
 | Primary DB | PostgreSQL 16 | 16-alpine |
 | Cache/Session | Redis 7 | 7-alpine |
 | Object Storage | MinIO | latest |
-| Reverse Proxy | Traefik v3 | v2.11 |
+|| Reverse Proxy | Traefik v3 | v3 |
 | Edge/CDN | Cloudflare | — |
 | Monitoring | Prometheus, Grafana | latest |
 | Logging | Loki, Promtail | — |

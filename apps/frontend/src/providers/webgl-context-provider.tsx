@@ -1,4 +1,3 @@
-
 "use client";
 
 import { createContext, useContext, useEffect, useRef, useState, useCallback, useMemo } from "react";
@@ -9,6 +8,7 @@ import type { ReactNode } from "react";
 /* -------------------------------------------------------------------------- */
 
 export type WebGLContextState = 
+  | "idle"
   | "initializing" 
   | "ready" 
   | "lost" 
@@ -47,6 +47,12 @@ export interface WebGLMetrics {
   gpuMemoryPressure: "low" | "medium" | "high";
 }
 
+export interface WebGLAdaptiveRenderState {
+  renderMode: "webgl" | "canvas2d" | "2d-fallback";
+  shouldRender: boolean;
+  qualityLevel: "low" | "medium" | "high";
+}
+
 interface WebGLContextValue {
   gl: WebGL2RenderingContext | WebGLRenderingContext | null;
   canvas: HTMLCanvasElement | null;
@@ -58,6 +64,8 @@ interface WebGLContextValue {
   onStateChange: (callback: (state: WebGLContextState) => void) => () => void;
   /** Register an R3F Canvas to share this context. Returns cleanup. */
   registerR3FContext: (gl: WebGL2RenderingContext | WebGLRenderingContext) => () => void;
+  renderState: WebGLAdaptiveRenderState;
+  requestContext: () => Promise<WebGL2RenderingContext | WebGLRenderingContext | null>;
 }
 
 const DEFAULT_METRICS: WebGLMetrics = {
@@ -70,6 +78,12 @@ const DEFAULT_METRICS: WebGLMetrics = {
   lastContextLoss: null,
   frameTimeMs: 16.67,
   gpuMemoryPressure: "low",
+};
+
+const DEFAULT_RENDER_STATE: WebGLAdaptiveRenderState = {
+  renderMode: "2d-fallback",
+  shouldRender: false,
+  qualityLevel: "low",
 };
 
 const WebGLContext = createContext<WebGLContextValue | null>(null);
@@ -133,7 +147,7 @@ function createWebGLContext(canvas: HTMLCanvasElement, preferWebGL2 = true): Web
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Provider                                                                   */
+/*  Lazy Initialization Provider                                               */
 /* -------------------------------------------------------------------------- */
 
 interface WebGLContextProviderProps {
@@ -144,31 +158,32 @@ interface WebGLContextProviderProps {
   enableMetrics?: boolean;
 }
 
-export function WebGLContextProvider({
-  children,
-  autoRecover = true,
-  maxRecoveryAttempts = 3,
-  recoveryDelayMs = 1000,
-  enableMetrics = true,
-}: WebGLContextProviderProps) {
+interface UseWebGLContextOptions {
+  autoRecover?: boolean;
+  maxRecoveryAttempts?: number;
+  recoveryDelayMs?: number;
+  enableMetrics?: boolean;
+}
+
+function useWebGLContextInternal(options: UseWebGLContextOptions, _children?: ReactNode) {
   const [gl, setGl] = useState<WebGL2RenderingContext | WebGLRenderingContext | null>(null);
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
-  const [state, setState] = useState<WebGLContextState>("initializing");
+  const [state, setState] = useState<WebGLContextState>("idle");
   const [capabilities, setCapabilities] = useState<WebGLCapabilities | null>(null);
   const [metrics, setMetrics] = useState<WebGLMetrics>(DEFAULT_METRICS);
   
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null);
   const glRef = useRef<WebGL2RenderingContext | WebGLRenderingContext | null>(null);
   const recoveryAttemptsRef = useRef(0);
   const stateChangeCallbacksRef = useRef<Set<(state: WebGLContextState) => void>>(new Set());
   const frameIdRef = useRef<number | undefined>(undefined);
   const metricsIntervalRef = useRef<number | undefined>(undefined);
   const isRecoveringRef = useRef(false);
+  const initializedRef = useRef(false);
 
-  /* ---- State change notification ---- */
   const notifyStateChange = useCallback((newState: WebGLContextState) => {
     stateChangeCallbacksRef.current.forEach((cb) => cb(newState));
+    setState(newState);
   }, []);
 
   const onStateChange = useCallback((callback: (state: WebGLContextState) => void) => {
@@ -176,17 +191,12 @@ export function WebGLContextProvider({
     return () => stateChangeCallbacksRef.current.delete(callback);
   }, []);
 
-  /* ---- Metrics Collection ---- */
   const collectMetrics = useCallback(() => {
-    if (!glRef.current || !enableMetrics) return;
-
+    if (!glRef.current || !options.enableMetrics) return;
     const currentGl = glRef.current;
     const ext = currentGl.getExtension("WEBGL_debug_renderer_info");
-    
-    // Estimate GPU memory pressure from available extensions
-    let pressure: "low" | "medium" | "high" = "low";
     const renderer = ext ? String(currentGl.getParameter(ext.UNMASKED_RENDERER_WEBGL)).toLowerCase() : "";
-    
+    let pressure: "low" | "medium" | "high" = "low";
     if (renderer.includes("intel") || renderer.includes("mali") || renderer.includes("adreno")) {
       pressure = "high";
     } else if (renderer.includes("amd") || renderer.includes("radeon") || renderer.includes("nvidia")) {
@@ -194,20 +204,15 @@ export function WebGLContextProvider({
     } else {
       pressure = "medium";
     }
+    setMetrics((prev) => {
+      if (prev.gpuMemoryPressure === pressure) return prev;
+      return { ...prev, gpuMemoryPressure: pressure };
+    });
+  }, [options.enableMetrics]);
 
-    setMetrics((prev) => ({
-      ...prev,
-      gpuMemoryPressure: pressure,
-      // These would be populated by the actual scene renderer
-      drawCallsPerFrame: 0,
-      trianglesPerFrame: 0,
-      textureMemoryMB: 0,
-      bufferMemoryMB: 0,
-    }));
-  }, [enableMetrics]);
-
-/* ---- Context Initialization ---- */
   const initializeContext = useCallback(async (): Promise<WebGL2RenderingContext | WebGLRenderingContext | null> => {
+    if (initializedRef.current && glRef.current) return glRef.current;
+    
     const newCanvas = document.createElement("canvas");
     newCanvas.style.cssText = "position:absolute;top:0;left:0;width:100%;height:100%;display:block;";
     // Cap DPR at 1.5 to reduce GPU memory pressure and prevent context loss
@@ -219,7 +224,6 @@ export function WebGLContextProvider({
 
     const newGl = createWebGLContext(newCanvas);
     if (!newGl) {
-      setState("failed");
       notifyStateChange("failed");
       return null;
     }
@@ -227,34 +231,30 @@ export function WebGLContextProvider({
     glRef.current = newGl;
     setGl(newGl);
     setCapabilities(detectCapabilities(newGl));
-    setState("ready");
     notifyStateChange("ready");
     recoveryAttemptsRef.current = 0;
     isRecoveringRef.current = false;
+    initializedRef.current = true;
 
     return newGl;
-  }, [notifyStateChange]);
+  }, [notifyStateChange, options]);
 
-  /* ---- Context Recovery ---- */
   const attemptRecovery = useCallback(async (): Promise<boolean> => {
     if (isRecoveringRef.current) return false;
-    if (recoveryAttemptsRef.current >= maxRecoveryAttempts) {
-      setState("fallback");
+    if (recoveryAttemptsRef.current >= options.maxRecoveryAttempts) {
       notifyStateChange("fallback");
       return false;
     }
 
     isRecoveringRef.current = true;
-    setState("recovering");
     notifyStateChange("recovering");
 
-    // Clean up old context
     if (glRef.current) {
       const loseCtx = glRef.current.getExtension("WEBGL_lose_context");
       if (loseCtx) loseCtx.loseContext();
     }
 
-    await new Promise((resolve) => setTimeout(resolve, recoveryDelayMs * (recoveryAttemptsRef.current + 1)));
+    await new Promise((resolve) => setTimeout(resolve, options.recoveryDelayMs * (recoveryAttemptsRef.current + 1)));
     
     recoveryAttemptsRef.current++;
     const newGl = await initializeContext();
@@ -271,104 +271,30 @@ export function WebGLContextProvider({
 
     isRecoveringRef.current = false;
     return false;
-  }, [initializeContext, maxRecoveryAttempts, recoveryDelayMs, notifyStateChange]);
+  }, [initializeContext, options.maxRecoveryAttempts, options.recoveryDelayMs, notifyStateChange]);
 
-  /* ---- Event Handlers ---- */
-  useEffect(() => {
-    const handleContextLost = (event: Event) => {
-      event.preventDefault();
-      console.warn("[WebGL] Context lost, attempting recovery...");
-      setState("lost");
-      notifyStateChange("lost");
-      
-      if (autoRecover) {
-        void attemptRecovery();
-      }
-    };
-
-    const handleContextRestored = () => {
-      console.log("[WebGL] Context restored");
-      setState("ready");
-      notifyStateChange("ready");
-    };
-
-const handleResize = () => {
-      if (!canvasRef.current || !glRef.current) return;
-      // Cap DPR at 1.5 to reduce GPU memory pressure and prevent context loss
-      const dpr = Math.min(window.devicePixelRatio, 1.5);
-      canvasRef.current.width = window.innerWidth * dpr;
-      canvasRef.current.height = window.innerHeight * dpr;
-      glRef.current.viewport(0, 0, canvasRef.current.width, canvasRef.current.height);
-    };
-
-    // Start initialization
-    void initializeContext();
-
-    // Attach listeners after canvas exists
-    const checkCanvas = setInterval(() => {
-      if (canvasRef.current) {
-        clearInterval(checkCanvas);
-        canvasRef.current.addEventListener("webglcontextlost", handleContextLost);
-        canvasRef.current.addEventListener("webglcontextrestored", handleContextRestored);
-        window.addEventListener("resize", handleResize);
-      }
-    }, 50);
-
-    return () => {
-      clearInterval(checkCanvas);
-      if (canvasRef.current) {
-        canvasRef.current.removeEventListener("webglcontextlost", handleContextLost);
-        canvasRef.current.removeEventListener("webglcontextrestored", handleContextRestored);
-      }
-      window.removeEventListener("resize", handleResize);
-      if (frameIdRef.current) cancelAnimationFrame(frameIdRef.current);
-      if (metricsIntervalRef.current) clearInterval(metricsIntervalRef.current);
-      if (glRef.current) {
-        const loseCtx = glRef.current.getExtension("WEBGL_lose_context");
-        if (loseCtx) loseCtx.loseContext();
-      }
-    };
-  }, [initializeContext, autoRecover, attemptRecovery, notifyStateChange]);
-
-  /* ---- Metrics Loop ---- */
-  useEffect(() => {
-    if (!enableMetrics) return;
-    
-    const updateMetrics = () => {
-      collectMetrics();
-      frameIdRef.current = requestAnimationFrame(updateMetrics);
-    };
-    
-    frameIdRef.current = requestAnimationFrame(updateMetrics);
-    
-    metricsIntervalRef.current = window.setInterval(collectMetrics, 1000);
-    
-    return () => {
-      if (frameIdRef.current) cancelAnimationFrame(frameIdRef.current);
-      if (metricsIntervalRef.current) clearInterval(metricsIntervalRef.current);
-    };
-  }, [collectMetrics, enableMetrics]);
-
-  /* ---- Canvas Container Attachment ---- */
-  useEffect(() => {
-    if (containerRef.current && canvas) {
-      if (!containerRef.current.contains(canvas)) {
-        containerRef.current.innerHTML = '';
-        containerRef.current.appendChild(canvas);
-      }
+  const requestContext = useCallback(async (): Promise<WebGL2RenderingContext | WebGLRenderingContext | null> => {
+    if (initializedRef.current && glRef.current) {
+      return glRef.current;
     }
-  }, [canvas]);
+    notifyStateChange("initializing");
+    return await initializeContext();
+  }, [initializeContext, notifyStateChange]);
 
-/* ---- R3F Context Sharing ---- */
-  const r3fContextRef = useRef<WebGL2RenderingContext | WebGLRenderingContext | null>(null);
+  const requestRecovery = useCallback(async () => {
+    return await attemptRecovery();
+  }, [attemptRecovery]);
+
+  const requestFallback = useCallback(() => {
+    notifyStateChange("fallback");
+  }, [notifyStateChange]);
 
   const registerR3FContext = useCallback(
     (r3fGl: WebGL2RenderingContext | WebGLRenderingContext): (() => void) => {
-      r3fContextRef.current = r3fGl;
       // Sync state changes to R3F context
       const cleanup = onStateChange((newState) => {
-        if (newState === "lost" && r3fContextRef.current) {
-          const loseCtx = r3fContextRef.current.getExtension("WEBGL_lose_context");
+        if (newState === "lost" && r3fGl) {
+          const loseCtx = r3fGl.getExtension("WEBGL_lose_context");
           if (loseCtx) loseCtx.loseContext();
         }
       });
@@ -377,17 +303,58 @@ const handleResize = () => {
     [onStateChange]
   );
 
-  /* ---- Public API ---- */
-  const requestRecovery = useCallback(async () => {
-    return await attemptRecovery();
-  }, [attemptRecovery]);
+  useEffect(() => {
+    if (!options.enableMetrics) return;
+    const updateMetrics = () => {
+      collectMetrics();
+      frameIdRef.current = requestAnimationFrame(updateMetrics);
+    };
+    frameIdRef.current = requestAnimationFrame(updateMetrics);
+    metricsIntervalRef.current = window.setInterval(collectMetrics, 1000);
+    return () => {
+      if (frameIdRef.current) cancelAnimationFrame(frameIdRef.current);
+      if (metricsIntervalRef.current) clearInterval(metricsIntervalRef.current);
+    };
+  }, [collectMetrics, options.enableMetrics]);
 
-  const requestFallback = useCallback(() => {
-    setState("fallback");
-    notifyStateChange("fallback");
-  }, [notifyStateChange]);
+  useEffect(() => {
+    if (!options.autoRecover) return;
 
-  /* ---- Render ---- */
+    return () => {
+      if (frameIdRef.current) cancelAnimationFrame(frameIdRef.current);
+      if (metricsIntervalRef.current) clearInterval(metricsIntervalRef.current);
+      if (glRef.current) {
+        const loseCtx = glRef.current.getExtension("WEBGL_lose_context");
+        if (loseCtx) loseCtx.loseContext();
+      }
+    };
+  }, [options.autoRecover, options]);
+
+  const renderState = useMemo<WebGLAdaptiveRenderState>(() => {
+    if (state === "lost" || state === "failed" || state === "idle") {
+      return {
+        renderMode: "2d-fallback",
+        shouldRender: false,
+        qualityLevel: "low",
+      };
+    }
+    
+    if (!glRef.current) return DEFAULT_RENDER_STATE;
+    
+    let qualityLevel: "low" | "medium" | "high" = "high";
+    if (metrics.gpuMemoryPressure === "high" || state === "recovering") {
+      qualityLevel = "low";
+    } else if (metrics.gpuMemoryPressure === "medium") {
+      qualityLevel = "medium";
+    }
+    
+    return {
+      renderMode: state === "recovering" ? "canvas2d" : "webgl",
+      shouldRender: state === "ready",
+      qualityLevel,
+    };
+  }, [state, metrics.gpuMemoryPressure]);
+
   const value: WebGLContextValue = useMemo(
     () => ({
       gl,
@@ -399,15 +366,31 @@ const handleResize = () => {
       requestFallback,
       onStateChange,
       registerR3FContext,
+      renderState,
+      requestContext,
     }),
-    [gl, canvas, state, capabilities, metrics, requestRecovery, requestFallback, onStateChange, registerR3FContext]
+    [gl, canvas, state, capabilities, metrics, requestRecovery, requestFallback, onStateChange, registerR3FContext, renderState, requestContext]
   );
+
+  return { value, initializeContext };
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Provider                                                                   */
+/* -------------------------------------------------------------------------- */
+
+export function WebGLContextProvider({
+  children,
+  autoRecover = true,
+  maxRecoveryAttempts = 3,
+  recoveryDelayMs = 1000,
+  enableMetrics = true,
+}: WebGLContextProviderProps) {
+  const options = { autoRecover, maxRecoveryAttempts, recoveryDelayMs, enableMetrics };
+  const { value } = useWebGLContextInternal(options);
 
   return (
     <WebGLContext.Provider value={value}>
-      {canvas && state !== "initializing" && state !== "failed" && (
-        <div ref={containerRef} style={{ position: "relative", width: "100%", height: "100%" }} />
-      )}
       {children}
     </WebGLContext.Provider>
   );
@@ -424,4 +407,3 @@ export function useWebGLContext(): WebGLContextValue {
   }
   return context;
 }
-

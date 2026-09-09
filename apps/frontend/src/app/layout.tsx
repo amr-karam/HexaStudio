@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { AppProviders } from "@/providers/app-providers";
 import { LayoutShell } from "@/components/LayoutShell";
 import { StructuredData } from "@/components/StructuredData";
-import { CinematicPreloader } from "@/components/ui/overlays/CinematicPreloader";
+import { LazyCinematicPreloader } from "@/components/ui/overlays/LazyCinematicPreloader";
 import { WebVitals } from "@/components/WebVitals";
 import { LivePreview } from "@/components/LivePreview";
 import { AnalyticsInit } from "@/lib/analytics";
@@ -185,7 +185,9 @@ export default function RootLayout({
           `}</style>
         </noscript>
         <AppProviders>
-          <CinematicPreloader />
+          <Suspense fallback={null}>
+            <LazyCinematicPreloader />
+          </Suspense>
           {process.env.NODE_ENV === 'development' && <AnimationDebugLoader />}
           <StructuredData />
           <a

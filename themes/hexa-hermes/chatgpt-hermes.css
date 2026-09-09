@@ -1,0 +1,108 @@
+/* ==UserStyle==
+@name         ChatGPT Hermes (HEXA Silent Luxury)
+@description  HEXA signature gold on void black for chatgpt.com. Install with the Stylus browser extension.
+@namespace    hexastudio.net
+@version      1.0.0
+@homepageURL  https://hexastudio.net
+@license      MIT
+@preprocessor default
+==/UserStyle== */
+
+/* NOTE: the ChatGPT desktop app exposes no native custom-CSS slot, so this
+   userstyle targets chatgpt.com in a Chromium browser via Stylus. Palette is
+   canonical HEXA (DESIGN_SYSTEM.md): void #050505, obsidian #0F0F10,
+   slate #1A1A1A, gold #D4AF37 / #E5C76B / #A8862E. ChatGPT markup changes
+   over time — if a selector stops matching, update it; never add ad-hoc hex. */
+
+@-moz-document domain("chatgpt.com") {
+  :root,
+  .dark {
+    --hexa-void: #050505;
+    --hexa-void-deep: #020203;
+    --hexa-obsidian: #0f0f10;
+    --hexa-obsidian-raised: #161618;
+    --hexa-slate: #1a1a1a;
+    --hexa-gold: #d4af37;
+    --hexa-gold-bright: #e5c76b;
+    --hexa-gold-deep: #a8862e;
+    --hexa-text: #f5f4f2;
+    --hexa-text-secondary: #a0a0a0;
+    --hexa-text-muted: #6a6a6e;
+  }
+
+  /* App canvas — void black, alabaster text. */
+  .dark body,
+  .dark [class*="bg-token-main-surface-primary"],
+  .dark main {
+    background-color: var(--hexa-void) !important;
+    color: var(--hexa-text) !important;
+  }
+
+  /* Sidebar / nav — obsidian surface, hairline slate border. */
+  .dark aside,
+  .dark nav[aria-label="Chat history"] {
+    background-color: var(--hexa-obsidian) !important;
+    border-color: var(--hexa-slate) !important;
+  }
+
+  /* Composer — raised obsidian with gold focus ring. */
+  .dark form [class*="bg-token-main-surface-primary"],
+  .dark div[role="presentation"] {
+    background-color: var(--hexa-obsidian-raised) !important;
+  }
+  .dark form:focus-within {
+    border-color: rgb(212 175 55 / 35%) !important;
+  }
+
+  /* User bubble — subtle gold-tinted glass; assistant stays on void. */
+  .dark [data-message-author-role="user"] {
+    background: linear-gradient(
+      135deg,
+      rgb(212 175 55 / 8%) 0%,
+      rgb(18 18 20 / 80%) 100%
+    ) !important;
+    border: 1px solid rgb(212 175 55 / 30%) !important;
+  }
+
+  /* Links, active nav, accents — signature gold. */
+  .dark a {
+    color: var(--hexa-gold-bright) !important;
+  }
+  .dark nav a[aria-current="page"],
+  .dark li[aria-current="page"] {
+    background-color: rgb(212 175 55 / 15%) !important;
+    color: var(--hexa-gold-bright) !important;
+  }
+
+  /* Primary buttons — gold fill, void ink. */
+  .dark button[data-testid="send-button"],
+  .dark button[class*="bg-token-accent"] {
+    background-color: var(--hexa-gold) !important;
+    color: var(--hexa-void) !important;
+  }
+  .dark button[data-testid="send-button"]:hover {
+    background-color: var(--hexa-gold-bright) !important;
+  }
+
+  /* Code blocks — obsidian panel, gold-tinted border. */
+  .dark pre {
+    background-color: var(--hexa-obsidian) !important;
+    border: 1px solid rgb(212 175 55 / 12%) !important;
+  }
+  .dark code {
+    color: var(--hexa-gold-bright) !important;
+  }
+
+  /* Muted metadata — timestamps, model labels. */
+  .dark time,
+  .dark [class*="text-token-text-tertiary"] {
+    color: var(--hexa-text-muted) !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dark * {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+}
