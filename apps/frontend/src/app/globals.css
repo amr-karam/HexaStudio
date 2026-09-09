@@ -28,8 +28,8 @@
   --tracking-label: 0.25em;
 }
 
-@utility content-{inline-start} { content: content-inline-start; }
-@utility content-{inline-end} { content: content-inline-end; }
+@utility content-inset-start { content: inset-inline-start; }
+@utility content-inset-end { content: inset-inline-end; }
 
 :root {
   --background: #ffffff;
