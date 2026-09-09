@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState, useCallback } from "react";
 import type { ReactNode } from "react";
 
 /* -------------------------------------------------------------------------- */
@@ -53,7 +53,7 @@ export interface WebGLAdaptiveRenderState {
   qualityLevel: "low" | "medium" | "high";
 }
 
-interface WebGLContextValue {
+export interface WebGLContextValue {
   gl: WebGL2RenderingContext | WebGLRenderingContext | null;
   canvas: HTMLCanvasElement | null;
   state: WebGLContextState;
@@ -62,7 +62,6 @@ interface WebGLContextValue {
   requestRecovery: () => Promise<boolean>;
   requestFallback: () => void;
   onStateChange: (callback: (state: WebGLContextState) => void) => () => void;
-  /** Register an R3F Canvas to share this context. Returns cleanup. */
   registerR3FContext: (gl: WebGL2RenderingContext | WebGLRenderingContext) => () => void;
   renderState: WebGLAdaptiveRenderState;
   requestContext: () => Promise<WebGL2RenderingContext | WebGLRenderingContext | null>;
@@ -166,6 +165,12 @@ interface UseWebGLContextOptions {
 }
 
 function useWebGLContextInternal(options: UseWebGLContextOptions, _children?: ReactNode) {
+  const resolvedOptions: Required<UseWebGLContextOptions> = {
+    autoRecover: options.autoRecover ?? true,
+    maxRecoveryAttempts: options.maxRecoveryAttempts ?? 3,
+    recoveryDelayMs: options.recoveryDelayMs ?? 1000,
+    enableMetrics: options.enableMetrics ?? true,
+  };
   const [gl, setGl] = useState<WebGL2RenderingContext | WebGLRenderingContext | null>(null);
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
   const [state, setState] = useState<WebGLContextState>("idle");
@@ -192,7 +197,7 @@ function useWebGLContextInternal(options: UseWebGLContextOptions, _children?: Re
   }, []);
 
   const collectMetrics = useCallback(() => {
-    if (!glRef.current || !options.enableMetrics) return;
+    if (!glRef.current || !resolvedOptions.enableMetrics) return;
     const currentGl = glRef.current;
     const ext = currentGl.getExtension("WEBGL_debug_renderer_info");
     const renderer = ext ? String(currentGl.getParameter(ext.UNMASKED_RENDERER_WEBGL)).toLowerCase() : "";
@@ -208,7 +213,7 @@ function useWebGLContextInternal(options: UseWebGLContextOptions, _children?: Re
       if (prev.gpuMemoryPressure === pressure) return prev;
       return { ...prev, gpuMemoryPressure: pressure };
     });
-  }, [options.enableMetrics]);
+  }, [resolvedOptions.enableMetrics]);
 
   const initializeContext = useCallback(async (): Promise<WebGL2RenderingContext | WebGLRenderingContext | null> => {
     if (initializedRef.current && glRef.current) return glRef.current;
@@ -237,11 +242,11 @@ function useWebGLContextInternal(options: UseWebGLContextOptions, _children?: Re
     initializedRef.current = true;
 
     return newGl;
-  }, [notifyStateChange, options]);
+  }, [notifyStateChange, resolvedOptions]);
 
   const attemptRecovery = useCallback(async (): Promise<boolean> => {
     if (isRecoveringRef.current) return false;
-    if (recoveryAttemptsRef.current >= options.maxRecoveryAttempts) {
+    if (recoveryAttemptsRef.current >= resolvedOptions.maxRecoveryAttempts) {
       notifyStateChange("fallback");
       return false;
     }
@@ -254,7 +259,7 @@ function useWebGLContextInternal(options: UseWebGLContextOptions, _children?: Re
       if (loseCtx) loseCtx.loseContext();
     }
 
-    await new Promise((resolve) => setTimeout(resolve, options.recoveryDelayMs * (recoveryAttemptsRef.current + 1)));
+    await new Promise((resolve) => setTimeout(resolve, resolvedOptions.recoveryDelayMs * (recoveryAttemptsRef.current + 1)));
     
     recoveryAttemptsRef.current++;
     const newGl = await initializeContext();
@@ -271,7 +276,7 @@ function useWebGLContextInternal(options: UseWebGLContextOptions, _children?: Re
 
     isRecoveringRef.current = false;
     return false;
-  }, [initializeContext, options.maxRecoveryAttempts, options.recoveryDelayMs, notifyStateChange]);
+  }, [initializeContext, resolvedOptions.maxRecoveryAttempts, resolvedOptions.recoveryDelayMs, notifyStateChange]);
 
   const requestContext = useCallback(async (): Promise<WebGL2RenderingContext | WebGLRenderingContext | null> => {
     if (initializedRef.current && glRef.current) {
@@ -291,7 +296,6 @@ function useWebGLContextInternal(options: UseWebGLContextOptions, _children?: Re
 
   const registerR3FContext = useCallback(
     (r3fGl: WebGL2RenderingContext | WebGLRenderingContext): (() => void) => {
-      // Sync state changes to R3F context
       const cleanup = onStateChange((newState) => {
         if (newState === "lost" && r3fGl) {
           const loseCtx = r3fGl.getExtension("WEBGL_lose_context");
@@ -304,7 +308,7 @@ function useWebGLContextInternal(options: UseWebGLContextOptions, _children?: Re
   );
 
   useEffect(() => {
-    if (!options.enableMetrics) return;
+    if (!resolvedOptions.enableMetrics) return;
     const updateMetrics = () => {
       collectMetrics();
       frameIdRef.current = requestAnimationFrame(updateMetrics);
@@ -315,10 +319,10 @@ function useWebGLContextInternal(options: UseWebGLContextOptions, _children?: Re
       if (frameIdRef.current) cancelAnimationFrame(frameIdRef.current);
       if (metricsIntervalRef.current) clearInterval(metricsIntervalRef.current);
     };
-  }, [collectMetrics, options.enableMetrics]);
+  }, [collectMetrics, resolvedOptions.enableMetrics]);
 
   useEffect(() => {
-    if (!options.autoRecover) return;
+    if (!resolvedOptions.autoRecover) return;
 
     return () => {
       if (frameIdRef.current) cancelAnimationFrame(frameIdRef.current);
@@ -328,7 +332,7 @@ function useWebGLContextInternal(options: UseWebGLContextOptions, _children?: Re
         if (loseCtx) loseCtx.loseContext();
       }
     };
-  }, [options.autoRecover, options]);
+  }, [resolvedOptions.autoRecover, resolvedOptions]);
 
   const renderState = useMemo<WebGLAdaptiveRenderState>(() => {
     if (state === "lost" || state === "failed" || state === "idle") {
@@ -386,7 +390,12 @@ export function WebGLContextProvider({
   recoveryDelayMs = 1000,
   enableMetrics = true,
 }: WebGLContextProviderProps) {
-  const options = { autoRecover, maxRecoveryAttempts, recoveryDelayMs, enableMetrics };
+  const options: UseWebGLContextOptions = {
+    autoRecover: autoRecover ?? true,
+    maxRecoveryAttempts: maxRecoveryAttempts ?? 3,
+    recoveryDelayMs: recoveryDelayMs ?? 1000,
+    enableMetrics: enableMetrics ?? true,
+  };
   const { value } = useWebGLContextInternal(options);
 
   return (

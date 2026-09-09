@@ -15,17 +15,30 @@ vi.mock('framer-motion', () => {
       Object.entries(props).filter(([k]) => !motionOnly.has(k)),
     );
   };
+  const createMotionComponent = (tag: string) => {
+    const Component = ({ children, ...props }: Record<string, unknown>) => {
+      const Tag = tag as keyof JSX.IntrinsicElements;
+      // @ts-expect-error passthrough renderer for tests
+      return <Tag {...filterProps(props)}>{children}</Tag>;
+    };
+    return Component;
+  };
   return {
     motion: {
-      div: ({ children, ...props }: Record<string, unknown>) => (
-        <div {...filterProps(props)}>{children}</div>
-      ),
-      span: ({ children, ...props }: Record<string, unknown>) => (
-        <span {...filterProps(props)}>{children}</span>
-      ),
+      div: createMotionComponent('div'),
+      span: createMotionComponent('span'),
+      section: createMotionComponent('section'),
+      h1: createMotionComponent('h1'),
+      h2: createMotionComponent('h2'),
+      h3: createMotionComponent('h3'),
+      p: createMotionComponent('p'),
+      a: createMotionComponent('a'),
+      img: createMotionComponent('img'),
     },
     useScroll: () => ({ scrollYProgress: 0 }),
     useTransform: (_: unknown, __: unknown, range: number[]) => range[0] ?? 0,
+    useInView: () => true,
+    AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
   };
 });
 
@@ -43,61 +56,54 @@ vi.mock('next/link', () => ({
   ),
 }));
 
+// Mock Button — render a plain button
+vi.mock('@/components/ui/Button', () => ({
+  Button: ({ children, ...props }: Record<string, unknown>) => (
+    <button {...props}>{children}</button>
+  ),
+}));
+
 describe('HomeSections', () => {
-  it('renders all four chapters (Work, Process, Philosophy, Contact)', () => {
+  it('renders all chapters', () => {
     const { container } = render(<HomeSections />);
     const sections = container.querySelectorAll('section');
-    expect(sections).toHaveLength(4);
+    expect(sections.length).toBeGreaterThanOrEqual(3);
 
-    expect(container.querySelector('#work')).toBeTruthy();
-    expect(container.querySelector('#method')).toBeTruthy();
-    expect(container.querySelector('#philosophy')).toBeTruthy();
-    expect(container.querySelector('#contact')).toBeTruthy();
+    expect(container.querySelector('#craft')).toBeTruthy();
+    expect(container.querySelector('#process')).toBeTruthy();
+    expect(container.querySelector('#impact')).toBeTruthy();
   });
 
-  it('renders four work items in the selected-work grid', () => {
+  it('renders craft chapter content', () => {
     const { container } = render(<HomeSections />);
-    const workSection = container.querySelector('#work');
-    expect(workSection).toBeTruthy();
+    const section = container.querySelector('#craft');
+    expect(section).toBeTruthy();
 
-    const headings = workSection?.querySelectorAll('h3') ?? [];
-    expect(headings).toHaveLength(4);
-
-    const titles = Array.from(headings).map((h) => h.textContent);
-    expect(titles).toContain('Obsidian Villa');
-    expect(titles).toContain('Lumina Pavilion');
-    expect(titles).toContain('Azure Heights');
-    expect(titles).toContain('Kaze Sanctuary');
+    const heading = section?.querySelector('h2');
+    expect(heading?.textContent).toBe('Rendered, not built.');
   });
 
-  it('renders the three-step process', () => {
+  it('renders process steps', () => {
     const { container } = render(<HomeSections />);
-    const processSection = container.querySelector('#method');
-    expect(processSection).toBeTruthy();
+    const section = container.querySelector('#process');
+    expect(section).toBeTruthy();
 
-    const steps = processSection?.querySelectorAll('h3') ?? [];
-    expect(steps).toHaveLength(3);
-    expect(steps[0].textContent).toBe('Observe');
-    expect(steps[1].textContent).toBe('Synthesize');
-    expect(steps[2].textContent).toBe('Render');
+    const cards = section?.querySelectorAll('p.font-light') ?? [];
+    expect(cards.length).toBeGreaterThanOrEqual(5);
+
+    const labels = Array.from(cards).map((p) => p.textContent);
+    expect(labels).toContain('Spatial Brief');
+    expect(labels).toContain('Massing Study');
+    expect(labels).toContain('Scene Authoring');
   });
 
-  it('renders philosophy principles', () => {
+  it('renders impact contact CTA', () => {
     const { container } = render(<HomeSections />);
-    const philosophySection = container.querySelector('#philosophy');
-    expect(philosophySection).toBeTruthy();
+    const section = container.querySelector('#impact');
+    expect(section).toBeTruthy();
 
-    const principles = philosophySection?.querySelectorAll('p') ?? [];
-    expect(principles.length).toBeGreaterThan(0);
-  });
-
-  it('renders contact CTA with link to /contact', () => {
-    const { container } = render(<HomeSections />);
-    const contactSection = container.querySelector('#contact');
-    expect(contactSection).toBeTruthy();
-
-    const link = contactSection?.querySelector('a[href="/contact"]');
+    const link = section?.querySelector('a[href="/contact"]');
     expect(link).toBeTruthy();
-    expect(link?.textContent).toContain('Start a project');
+    expect(link?.textContent).toContain('Begin a project');
   });
 });
