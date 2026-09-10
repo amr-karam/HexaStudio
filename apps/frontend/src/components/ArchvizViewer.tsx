@@ -6,7 +6,7 @@ import { OrbitControls, Environment, ContactShadows, Html, Loader } from '@react
 import * as THREE from 'three';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { GOLD } from '@/lib/color-tokens';
-import { Image } from 'next/image';
+import Image from 'next/image';
 import { ArchvizModel } from './ArchvizModel';
 
 interface ArchvizViewerProps {
