@@ -1,18 +1,6 @@
 # SPRINT S-021 — AUTONOMOUS AI AGENTS & ADVANCED WORKFLOWS
 
 **Sprint ID:** S-021 | **Focus:** Multi-Agent Executive Studio, Voice-to-3D Generation, Autonomous Workflows | **Status:** ✅ COMPLETE | **Completed:** 2026-08-31 | **v2.0.0 Released**
-
----
-
-## 1. SPRINT OBJECTIVE
-
-Elevate the HEXA Studio platform into an autonomous studio operating system. Expand the Multi-Agent Executive Studio (`/portal/agents`) with advanced tool execution (Database queries, MinIO asset generation, Odoo CRM sync), introduce voice-to-3D architectural model prompting, and establish automated performance & visual regression testing in CI/CD.
-
----
-
-## 2. DELIVERABLES & VERIFICATION
-
-### P0 — Redis Agent Memory + Autonomous Tool Execution (COMPLETE, Aug 2 2026)
 - [x] **AgentMemoryService** — Redis-backed conversation memory + long-term facts per persona/session:
   - `apps/backend/src/modules/agents/agent-memory.service.ts` — `agent:memory:{persona}:{sessionId}` (list, 40 msgs, 24h TTL) + `agent:facts:{persona}:{sessionId}` (hash, 7d TTL); `getHistory`/`append`/`appendMany`/`clear`/`remember`/`recall`/`forget`
   - `apps/backend/src/modules/agents/agent-memory.spec.ts` — 7 unit tests (all pass)

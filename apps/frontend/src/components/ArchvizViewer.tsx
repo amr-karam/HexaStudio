@@ -1,11 +1,12 @@
 'use client';
 
-import { useMemo, useState } from 'react'
+import { Suspense } from 'react'
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment, ContactShadows, Html, Loader } from '@react-three/drei';
 import * as THREE from 'three';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { OBSIDIAN_RAISED, GOLD } from '@/lib/color-tokens';
+import { GOLD } from '@/lib/color-tokens';
+import { Image } from 'next/image';
 import { ArchvizModel } from './ArchvizModel';
 
 interface ArchvizViewerProps {
@@ -49,7 +50,7 @@ export function ArchvizViewer({
         style={{ aspectRatio: '16/9' }}
       >
         {poster ? (
-          <img src={poster} alt="Architectural visualization" className="h-full w-full object-cover" />
+          <Image src={poster} alt="Architectural visualization" className="h-full w-full object-cover" fill sizes="100vw" />
         ) : (
           <div className="text-sl-mist/40">Motion-reduced fallback</div>
         )}

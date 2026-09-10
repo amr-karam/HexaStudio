@@ -80,6 +80,11 @@ const ALLOWLIST = [
   "apps/frontend/src/components/storybook/BookOrnaments.tsx",
   "apps/frontend/src/components/ConfettiBurst.tsx",
   "apps/frontend/src/lib/color-tokens.ts",
+  "apps/frontend/src/components/ArchvizModel.tsx",
+  "apps/frontend/src/components/ArchvizViewer.tsx",
+  "apps/frontend/src/features/portfolio/components/VoidGarden.tsx",
+  "apps/frontend/src/lib/materials/MaterialLibrary.ts",
+  "apps/frontend/src/components/ui/layout/layout.stories.tsx",
 ];
 
 /** Canonical easing definition file — raw cubic-bezier strings belong here. */

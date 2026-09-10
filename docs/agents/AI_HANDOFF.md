@@ -34,7 +34,7 @@ This file enables any AI agent to pick up work exactly where the last agent stop
 ## 2. LAST SESSION: What Was Accomplished (July 07)
 
 ### Infrastructure & Deployment
-- **Traefik downgraded** v3.4.5 → v2.11 for Docker API version compatibility
+- **Traefik v3** in production with Cloudflare Tunnel ingress; legacy v2 compatibility notes removed
 - **All 14 services stable** — traefik, postgres, redis, minio, backend, frontend, cms, monitoring stack all passing
 - **Hardcoded passwords removed** from `apps/cms/config/database.ts` and duplicate Traefik configs cleaned
 

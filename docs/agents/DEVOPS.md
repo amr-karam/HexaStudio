@@ -11,9 +11,9 @@ The DevOps Agent is responsible for the **Invisible Foundation**. Your goal is t
 ## 2. CORE RESPONSIBILITIES
 
 ### I. CI/CD Orchestration
-- **Pipeline Design:** Build and maintain the GitHub Actions pipelines for linting, testing, and deploying.
-- **Automated Testing:** Integrate Playwright E2E tests into the pipeline to prevent regressions.
-- **Deployment Strategy:** Implement a "Blue-Green" or "Canary" deployment to ensure zero-downtime updates.
+- **Pipeline Design:** Maintain the GitLab CE CI/CD pipeline (`.gitlab-ci.yml`) for linting, typechecking, testing, security scanning, container builds, and deployment.
+- **Automated Testing:** Integrate Playwright E2E tests and visual regression into GitLab CI to prevent regressions.
+- **Deployment Strategy:** Implement a "Blue-Green" or "Canary" deployment via GitLab CI/CD to ensure zero-downtime updates.
 
 ### II. Containerization & Orchestration
 - **Dockerization:** Optimize Dockerfiles for minimum size and maximum security (using Alpine images).

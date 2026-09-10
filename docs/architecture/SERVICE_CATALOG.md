@@ -22,8 +22,8 @@ The production stack is composed of **4 network planes**:
 
 | Attribute | Value |
 |-----------|-------|
-| **Purpose** | Reverse proxy, API gateway, and automatic SSL termination (Let's Encrypt via Cloudflare DNS challenge) |
-|| **Image** | `traefik:v3` (latest) |
+| **Purpose** | Reverse proxy, ingress router, and metrics endpoint — routes hostnames to Docker services; dashboard is basic-auth protected |
+| **Image** | `traefik:v3.7.10` |
 | **Ports** | `80:80` (HTTP), `443:443` (HTTPS) |
 | **Networks** | `web` |
 | **Dependencies** | None (boots first to route traffic) |
@@ -41,14 +41,14 @@ The production stack is composed of **4 network planes**:
 
 | Attribute | Value |
 |-----------|-------|
-| **Purpose** | Cloudflare Tunnel client — exposes services without a public IP, adds DDoS protection and WAF |
+| **Purpose** | Cloudflare Tunnel client — exposes services through Cloudflare without opening host ports |
 | **Image** | `cloudflare/cloudflared:latest` |
 | **Ports** | None (outbound-only tunnel) |
 | **Networks** | `web`, `internal` |
 | **Dependencies** | None |
 | **Health Check** | N/A (managed by Cloudflare tunnel health) |
 | **Volumes** | None |
-| **Environment** | `TUNNEL_TOKEN` (sensitive; created in Cloudflare Zero Trust dashboard) |
+| **Environment** | `TUNNEL_TOKEN` (sensitive; managed in Cloudflare Zero Trust dashboard) |
 | **Scaling** | Single instance. Multiple tunnels can be configured for HA |
 | **Backup** | N/A (stateless; tunnel token stored in secrets manager) |
 | **Disaster Recovery** | Redeploy with same `TUNNEL_TOKEN`. Cloudflare re-establishes tunnel automatically |
@@ -255,7 +255,7 @@ The production stack is composed of **4 network planes**:
 | **Ports** | None exposed to `web` directly (routed via Traefik, internal port `9090`) |
 | **Networks** | `web`, `internal` |
 | **Dependencies** | None |
-| **Health Check** | N/A (Prometheus `/-/healthy` endpoint available) |
+| **Health Check** | N/A (Prometheus `/-/healthy` endpoint available; no healthcheck defined in `docker-compose.prod.yml`) |
 | **Volumes** | `prometheus_data:/prometheus` (TSDB); `./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro` |
 | **Environment** | None required (scrape targets defined in config file) |
 | **Scaling** | Single instance. Prometheus HA with Thanos or Cortex for long-term storage |
@@ -273,7 +273,7 @@ The production stack is composed of **4 network planes**:
 | **Ports** | None exposed to `web` directly (routed via Traefik, internal port `3001`. **Note:** port `3001` to avoid conflict with frontend on `3000`) |
 | **Networks** | `web`, `internal` |
 | **Dependencies** | `prometheus`, `loki` |
-| **Health Check** | N/A (Grafana `/api/health` endpoint available) |
+| **Health Check** | N/A (Grafana `/api/health` endpoint available; no healthcheck defined in `docker-compose.prod.yml`) |
 | **Volumes** | `grafana_data:/var/lib/grafana` (dashboards, datasources, user config); `./docker/grafana/provisioning:/etc/grafana/provisioning:ro` (auto-provisioning) |
 | **Environment** | `GF_SECURITY_ADMIN_USER` (default: `admin`), `GF_SECURITY_ADMIN_PASSWORD` (sensitive), `GF_USERS_ALLOW_SIGN_UP` (`false`), `GF_SERVER_ROOT_URL`, `CMS_URL`, `REDIS_PASSWORD` (sensitive), `REDIS_HOST`, `MINIO_ROOT_USER` (sensitive), `MINIO_ROOT_PASSWORD` (sensitive) |
 | **Scaling** | Single instance. Grafana HA with shared `grafana_data` on NFS or PostgreSQL-backed config |
@@ -291,7 +291,7 @@ The production stack is composed of **4 network planes**:
 | **Ports** | None exposed (internal only; API port `3100`) |
 | **Networks** | `internal` |
 | **Dependencies** | None |
-| **Health Check** | N/A (Loki `/ready` and `/metrics` endpoints available) |
+| **Health Check** | N/A (Loki `/ready` and `/metrics` endpoints available; no healthcheck defined in `docker-compose.prod.yml`) |
 | **Volumes** | `loki_data:/loki` (log index and chunks); `./docker/loki/loki-config.yml:/etc/loki/loki-config.yml:ro` |
 | **Environment** | None required (config file controls retention and storage) |
 | **Scaling** | Single instance (monolith mode). Loki can be scaled into microservices (distributor, ingester, querier) for high volume |
@@ -309,7 +309,7 @@ The production stack is composed of **4 network planes**:
 | **Ports** | None exposed (internal only) |
 | **Networks** | `internal` |
 | **Dependencies** | `loki` (condition: `started`) |
-| **Health Check** | N/A (Promtail exposes `/ready` endpoint) |
+| **Health Check** | N/A (Promtail exposes `/ready` endpoint; no healthcheck defined in `docker-compose.prod.yml`) |
 | **Volumes** | `./docker/loki/promtail-config.yml:/etc/promtail/promtail-config.yml:ro`; `/var/run/docker.sock:/var/run/docker.sock:ro` (reads container logs) |
 | **Environment** | None required (config file defines scrape targets) |
 | **Scaling** | One instance per Docker host (daemon set model). For multi-node, deploy one Promtail per host |
@@ -363,7 +363,7 @@ The production stack is composed of **4 network planes**:
 | **Ports** | None exposed |
 | **Networks** | None required (uses Docker socket) |
 | **Dependencies** | None |
-| **Health Check** | N/A |
+| **Health Check** | N/A (Tempo `/ready` endpoint available; no healthcheck defined in `docker-compose.prod.yml`) |
 | **Volumes** | `/var/run/docker.sock:/var/run/docker.sock:ro` |
 | **Environment** | `WATCHTOWER_CLEANUP` (`true`; removes old images), `WATCHTOWER_SCHEDULE` (`"0 0 6 * * *"`; daily at 06:00), `WATCHTOWER_LABEL_ENABLE` (`true`; only updates containers with `com.centurylinklabs.watchtower.enable=true`), `DOCKER_API_VERSION` (`1.40`) |
 | **Scaling** | Single instance (one Watchtower per Docker host) |

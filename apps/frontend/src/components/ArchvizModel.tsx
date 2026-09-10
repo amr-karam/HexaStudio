@@ -42,7 +42,7 @@ export function ArchvizModel({ modelPath, onError }: ArchvizModelProps) {
         <mesh position={[0, 0, 0]}>
           <boxGeometry args={[1, 1, 1]} />
           <meshBasicMaterial
-            color="#D4AF37"
+            color="var(--color-gold)"
             wireframe
             transparent
             opacity={0.6}
