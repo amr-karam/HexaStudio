@@ -1,0 +1,148 @@
+{
+  "presets": [
+    {
+      "id": "ramadan-2026",
+      "name": "Ramadan 2026",
+      "theme": "ramadan",
+      "description": "Golden-hour ambience with traditional lantern lighting and warm amber tones",
+      "lighting": {
+        "ambientIntensity": 0.4,
+        "ambientColor": "#3a2a1a",
+        "directionalIntensity": 1.2,
+        "directionalColor": "#ffd27f",
+        "directionalPosition": [45, 75, 30],
+        "hemisphereIntensity": 0.6,
+        "hemisphereColor": "#3a2a1a"
+      },
+      "fog": {
+        "enabled": true,
+        "color": "#1a0f05",
+        "near": 5,
+        "far": 50
+      },
+      "environment": {
+        "preset": "apartment",
+        "intensity": 0.8
+      },
+      "materialOverrides": {
+        "mashrabiya-wood": { "roughness": 0.55, "metalness": 0.15 },
+        "limestone-nile": { "roughness": 0.8, "color": "#e0d0b0" },
+        "granite-red-aswan": { "roughness": 0.25, "color": "#9a3000" },
+        "marble-carrara-proxy": { "roughness": 0.2, "color": "#f5efe0" },
+        "cotton-damask-egyptian": { "roughness": 0.85, "color": "#f8f3e8" }
+      },
+      "decorativeElements": ["lantern", "mosque-lamp", "arabic-carpet"],
+      "camera": {
+        "fov": 65,
+        "position": [0, 1.7, 5]
+      }
+    },
+    {
+      "id": "winter-2026",
+      "name": "Winter Solstice",
+      "theme": "winter",
+      "description": "Soft blue-hour lighting with cool mist and crystalline reflections",
+      "lighting": {
+        "ambientIntensity": 0.35,
+        "ambientColor": "#1a2a40",
+        "directionalIntensity": 0.9,
+        "directionalColor": "#a0b5d8",
+        "directionalPosition": [-30, 60, 20],
+        "hemisphereIntensity": 0.5,
+        "hemisphereColor": "#1a2a40"
+      },
+      "fog": {
+        "enabled": true,
+        "color": "#0f1a2a",
+        "near": 3,
+        "far": 30
+      },
+      "environment": {
+        "preset": "lobby",
+        "intensity": 0.7
+      },
+      "materialOverrides": {
+        "limestone-nile": { "roughness": 0.88, "color": "#d8c9ad" },
+        "granite-red-aswan": { "roughness": 0.28, "color": "#801f00" },
+        "marble-carrara-proxy": { "roughness": 0.15, "color": "#fdfbfa" }
+      },
+      "decorativeElements": ["frost-pattern", "blue-candle", "winter-branch"],
+      "camera": {
+        "fov": 70,
+        "position": [0, 1.7, 6]
+      }
+    },
+    {
+      "id": "summer-noon",
+      "name": "Summer Noon",
+      "theme": "summer",
+      "description": "Harsh midday sun with sharp shadows and bleached material tones",
+      "lighting": {
+        "ambientIntensity": 0.5,
+        "ambientColor": "#b8c9d9",
+        "directionalIntensity": 1.8,
+        "directionalColor": "#ffffff",
+        "directionalPosition": [90, 85, 10],
+        "hemisphereIntensity": 0.7,
+        "hemisphereColor": "#b8c9d9"
+      },
+      "fog": {
+        "enabled": false
+      },
+      "environment": {
+        "preset": "sunset",
+        "intensity": 1.2
+      },
+      "materialOverrides": {
+        "mashrabiya-wood": { "roughness": 0.65, "color": "#b8a17a" },
+        "granite-red-aswan": { "roughness": 0.35, "color": "#a02a00" },
+        "cotton-damask-egyptian": { "roughness": 0.92, "color": "#fdf9f0" }
+      },
+      "decorativeElements": ["sun-umbrella", "terracotta-pot", "linen-curtain"],
+      "camera": {
+        "fov": 60,
+        "position": [0, 1.7, 4]
+      }
+    },
+    {
+      "id": "autumn-harvest",
+      "name": "Autumn Harvest",
+      "theme": "autumn",
+      "description": "Warm amber glow with golden light filtering through and earthy material tones",
+      "lighting": {
+        "ambientIntensity": 0.45,
+        "ambientColor": "#4d3a20",
+        "directionalIntensity": 1.1,
+        "directionalColor": "#e8c96d",
+        "directionalPosition": [135, 50, 25],
+        "hemisphereIntensity": 0.65,
+        "hemisphereColor": "#4d3a20"
+      },
+      "fog": {
+        "enabled": false
+      },
+      "environment": {
+        "preset": "warehouse",
+        "intensity": 0.9
+      },
+      "materialOverrides": {
+        "mashrabiya-wood": { "roughness": 0.58, "color": "#a88a5e" },
+        "limestone-nile": { "roughness": 0.82, "color": "#d0bda0" },
+        "granite-red-aswan": { "roughness": 0.3, "color": "#852300" },
+        "cotton-damask-egyptian": { "roughness": 0.88, "color": "#f5e8d0" }
+      },
+      "decorativeElements": ["wheat-bundle", "terracotta-vessel", "leather-pouf"],
+      "camera": {
+        "fov": 68,
+        "position": [0, 1.7, 5]
+      }
+    }
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "created": "2026-09-10",
+    "studio": "HEXA Studio",
+    "culturalContext": ["Egyptian", "MENA", "Islamic architecture"],
+    "compatibility": "three.js + R3F + @react-three/drei Environment preset"
+  }
+}
