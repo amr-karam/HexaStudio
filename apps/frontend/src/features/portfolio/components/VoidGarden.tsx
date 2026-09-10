@@ -30,10 +30,10 @@ function Monolith({ position, rotation, scale, delay }: MonolithProps) {
       <mesh ref={meshRef} position={position} rotation={rotation} scale={scale}>
         <boxGeometry args={[1, 1, 1]} />
         <meshStandardMaterial
-          color="var(--color-gold)"
+          color="#D4AF37"
           metalness={0.9}
           roughness={0.1}
-          emissive="var(--color-gold)"
+          emissive="#D4AF37"
           emissiveIntensity={0.05}
           transparent
           opacity={0.9}

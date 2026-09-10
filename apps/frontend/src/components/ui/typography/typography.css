@@ -318,7 +318,7 @@
   background: var(--color-obsidian, #0F0F10);
   padding: var(--spacing-md, 0.75rem) var(--spacing-lg, 1rem);
   border-radius: var(--spacing-sm, 0.5rem);
-  border: 1px solid var(--color-border, #333333);
+  border: 1px solid var(--color-border, #262626);
 }
 
 .code-inline {
