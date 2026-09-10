@@ -8,7 +8,7 @@ import { LocaleProvider } from "@/i18n/LocaleProvider";
 import { CurrencyProvider } from "@/features/currency";
 import { MotionPolicyProvider } from "@/providers/motion-policy-provider";
 import { QualityProvider } from "@/providers/quality-provider";
-import { WebGLContextProvider } from "@/providers/webgl-context-provider";
+import { LazyWebGLContextProvider } from "@/providers/lazy-webgl-context-provider";
 import { usePerformanceMonitor } from "@/hooks/usePerformanceMonitor";
 import type { ReactNode } from "react";
 
@@ -19,7 +19,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
   return (
     <LocaleProvider>
       <QualityProvider>
-        <WebGLContextProvider 
+        <LazyWebGLContextProvider
           autoRecover={true}
           maxRecoveryAttempts={3}
           recoveryDelayMs={1000}
@@ -42,7 +42,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
               </AuthProvider>
             </Providers>
           </MotionConfig>
-        </WebGLContextProvider>
+        </LazyWebGLContextProvider>
       </QualityProvider>
     </LocaleProvider>
   );
