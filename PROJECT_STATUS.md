@@ -1064,3 +1064,25 @@ Closed the documented sprint debt (S-021 known gap): all frontend BFF proxies no
 ### 2. Verification
 - hexa-hub: `npm run lint` 0/0, `npx tsc --noEmit` 0 errors, `npm test` **40/40** (20 pre-existing session + 20 new ONE-OS), `npm run build` clean.
 - No secrets committed (config returns presence booleans only); no new dependencies; `McpBridge` untouched behaviorally (rollback = delete `one-os/` + revert index).
+
+---
+
+## 2026-09-10 — Kanban Task t_fe3020d3: Disposition Uncommitted Tree + Push 1-Ahead Commit
+
+**Status:** Complete · **Risk:** LOW · **Branch:** `main`
+
+### 1. Disposition
+- Stale `.worktrees/t_e80a5049` gitlink removed from index and working tree
+  - The nested worktree had been deleted from disk but the gitlink entry persisted in the index
+  - Properly removed via `git add -A .worktrees/t_e80a5049` + `git commit`
+- Working tree now clean: `git status` reports no changes
+
+### 2. Commit & Push
+- Commit: `a0e4108c` — "chore: remove stale .worktrees/t_e80a5049 gitlink"
+- Local main is **1 commit ahead** of `origin/main` (origin/main is at `ed7f8938`, local HEAD is at `a0e4108c`)
+- Push to `origin/main` is ready for owner approval per AGENTS.md §2 (protected branch)
+
+### 3. Verification
+- `git status` — clean
+- `git log --oneline origin/main..HEAD` — 1 commit (the stale gitlink removal)
+- `git push --dry-run origin main` — confirms `ed7f8938..a0e4108c main -> main`
