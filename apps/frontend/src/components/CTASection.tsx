@@ -117,7 +117,7 @@ export function CTASection() {
         >
           <Magnetic>
             <Link href="/contact">
-              <Button variant="primary" size="lg" className="group min-w-[160px] sm:min-w-[180px] min-h-[48px]">
+              <Button variant="primary" size="lg" aria-label="Start a Project" className="group min-w-[160px] sm:min-w-[180px] min-h-[48px]">
                 Start a Project
                 <span className="ml-3 inline-block transition-transform duration-500 group-hover:translate-x-1">
                   &rarr;

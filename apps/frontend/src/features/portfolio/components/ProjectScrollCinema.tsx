@@ -532,7 +532,7 @@ function ChapterNext({ project: _project, nextProject }: { project: Project; nex
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/contact">
-                <Button variant="primary" size="lg" className="group">
+                <Button variant="primary" size="lg" aria-label="Start a Project" className="group">
                   Start a Project
                   <span className="ml-3 transition-transform duration-300 group-hover:translate-x-1">
                     &rarr;
