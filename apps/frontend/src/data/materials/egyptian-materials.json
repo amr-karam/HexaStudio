@@ -1,0 +1,87 @@
+[
+  {
+    "id": "mashrabiya-wood",
+    "name": "Mashrabiya Wood",
+    "category": "wood",
+    "description": "Traditional Egyptian lattice woodwork, carved from reclaimed acacia or cedar. Light golden-brown, often used for window screens and room dividers.",
+    "basePriceEGP": 1170,
+    "unit": "sqm",
+    "roughness": 0.65,
+    "metalness": 0.05,
+    "color": "#b8a17a",
+    "textureHints": {
+      "pattern": "perforated-lattice",
+      "finish": "hand-carved",
+      "origin": "Aswan"
+    },
+    "culturalNote": "Mashrabiya screens filter desert light while maintaining privacy — a defining element of Islamic architecture since the Fatimid period."
+  },
+  {
+    "id": "limestone-nile",
+    "name": "Nile Limestone",
+    "category": "stone",
+    "description": "Fine-grained limestone quarried from Nile Valley pits. Creamy beige with subtle fossil striations, the signature material of ancient Egyptian monuments.",
+    "basePriceEGP": 1980,
+    "unit": "sqm",
+    "roughness": 0.8,
+    "metalness": 0,
+    "color": "#e0d0b0",
+    "textureHints": {
+      "pattern": "fine-grained",
+      "finish": "tumbled",
+      "origin": "Tura"
+    },
+    "culturalNote": "Tura limestone was quarried for the faces of the Great Sphinx — its pure white surface was visible from Memphis 3,000 years ago."
+  },
+  {
+    "id": "granite-red-aswan",
+    "name": "Red Aswan Granite",
+    "category": "stone",
+    "description": "Coarse-grained granodiorite from Aswan quarries. Deep red-garnet speckled with black mica — the stone of pharaonic obelisks and temple columns.",
+    "basePriceEGP": 3500,
+    "unit": "sqm",
+    "roughness": 0.3,
+    "metalness": 0.1,
+    "color": "#9a3000",
+    "textureHints": {
+      "pattern": "speckled",
+      "finish": "polished",
+      "origin": "Aswan High Dam"
+    },
+    "culturalNote": "Aswan granite formed the cores of the pyramids at Giza. This stone has been quarried continuously for 5,000 years."
+  },
+  {
+    "id": "marble-carrara-proxy",
+    "name": "Carrara-Style Marble",
+    "category": "stone",
+    "description": "Egyptian-produced marble matching Carrara aesthetic. Pure white with gray veining — the luxury surface for contemporary villas and hotel lobbies.",
+    "basePriceEGP": 5000,
+    "unit": "sqm",
+    "roughness": 0.2,
+    "metalness": 0.02,
+    "color": "#f5efe0",
+    "textureHints": {
+      "pattern": "veined",
+      "finish": "honed",
+      "origin": "Luxor"
+    },
+    "culturalNote": "Egyptian Carrara marble offers the same luminosity as Italian Carrara at 40% lower cost, sourced from quarries near Luxor."
+  },
+  {
+    "id": "cotton-damask-egyptian",
+    "name": "Egyptian Cotton Damask",
+    "category": "fabric",
+    "description": "Handwoven linen-cotton blend damask from Upper Egyptian villages. Geometric Islamic patterns woven with extra-long-staple GIZA cotton.",
+    "basePriceEGP": 570,
+    "unit": "sqm",
+    "roughness": 0.85,
+    "metalness": 0,
+    "color": "#f8f3e8",
+    "textureHints": {
+      "pattern": "geometric-damask",
+      "finish": "hand-loomed",
+      "origin": "Luxor"
+    },
+    "culturalNote": "Egyptian damask weaving traditions date to the Fatimid period (10th century). Giza long-staple cotton produces fibers 2x longer than standard cotton."
+  }
+]
