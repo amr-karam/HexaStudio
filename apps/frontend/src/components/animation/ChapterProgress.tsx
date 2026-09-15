@@ -1,7 +1,9 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { DURATION, EASE } from '@/lib/motion';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 
 export interface Chapter {
@@ -99,12 +101,15 @@ export const ChapterProgress = ({
       {chapters.map((chapter, i) => {
         const isActive = chapter.id === activeId;
         return (
-          <button
+          <motion.button
             key={chapter.id}
             type="button"
             onClick={() => handleJump(chapter.id)}
             aria-current={isActive ? 'true' : undefined}
             aria-label={`${String(i + 1).padStart(2, '0')} — ${chapter.label}`}
+            initial={reducedMotion ? false : { opacity: 0, x: 12 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: DURATION.component, delay: reducedMotion ? 0 : 0.2 + i * 0.07, ease: EASE.entrance }}
             className="group flex items-center gap-3 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             <span
@@ -125,7 +130,7 @@ export const ChapterProgress = ({
                   : 'w-4 bg-neutral-600 group-hover:w-6 group-hover:bg-neutral-400',
               )}
             />
-          </button>
+          </motion.button>
         );
       })}
     </nav>

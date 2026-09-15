@@ -1,27 +1,37 @@
 'use client';
 
 import { Canvas, useFrame } from '@react-three/fiber';
-import { useRef, useState, useEffect } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
+import SeasonPresetControls from '@/components/SeasonPresetControls';
+import { getRamadanPreset, type ScenePreset } from '@/lib/presets/SeasonPresetLibrary';
+import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import * as THREE from 'three';
 
 const GOLDEN_ANGLE = 137.508;
 const MONOLITH_COUNT = 24;
+/** Cursor lag time-constant (s) — the mass trails ~0.2s behind the pointer. */
+const CURSOR_LAG = 0.2;
+
+interface CursorTarget {
+  x: number;
+  y: number;
+}
 
 interface MonolithProps {
   index: number;
-  _time: number;
-  mouse: { x: number; y: number };
-  reducedMotion: boolean;
+  target: { current: CursorTarget };
+  animated: boolean;
 }
 
-function Monolith({ index, _time, mouse, reducedMotion }: MonolithProps) {
-  const meshRef = useRef<THREE.Mesh>(null);
+function Monolith({ index, target, animated }: MonolithProps) {
   const groupRef = useRef<THREE.Group>(null);
-  
+  // Smoothed cursor — each monolith eases its own copy toward the target so
+  // the whole spiral feels like one floating mass trailing the pointer.
+  const smooth = useRef<CursorTarget>({ x: 0.5, y: 0.5 });
+
   const radius = 80 + index * 14;
   const angle = (index * GOLDEN_ANGLE * Math.PI) / 180;
   const x = Math.cos(angle) * radius;
@@ -32,106 +42,132 @@ function Monolith({ index, _time, mouse, reducedMotion }: MonolithProps) {
   const d = 8 + (index % 2) * 6;
   const rot = angle + Math.PI / 4;
 
-  useFrame((state) => {
-    if (reducedMotion) return;
-    const t = state.clock.getElapsedTime();
-    
-    if (groupRef.current) {
-      const cosR = Math.cos(rot + t * 0.05);
-      const sinR = Math.sin(rot + t * 0.05);
-      
-      const xR = x * cosR + z * sinR;
-      const zR = -x * sinR + z * cosR;
-      const screenX = xR - zR * 0.35;
-      const screenY = y - zR * 0.2;
-      
-      const cx = (mouse.x - 0.5) * 60;
-      const cy = (mouse.y - 0.5) * 40;
-      
-      groupRef.current.position.x = screenX + cx;
-      groupRef.current.position.y = -screenY + cy;
-      groupRef.current.position.z = zR + Math.sin(t * 0.3 + x * 0.01) * 8;
-      groupRef.current.rotation.y = rot + t * 0.05;
-    }
-  });
-
   const shade = 1 - (z + 80) / 160;
   const alpha = Math.max(0.05, Math.min(0.9, shade));
 
+  const boxGeo = useMemo(() => new THREE.BoxGeometry(w, h, d), [w, h, d]);
+  // EdgesGeometry must wrap its own BoxGeometry instance — reusing boxGeo
+  // corrupts the edge buffer on PC (missing lines / flickering wireframes).
+  const edgeGeo = useMemo(() => new THREE.EdgesGeometry(new THREE.BoxGeometry(w, h, d)), [w, h, d]);
+  const ringGeo = useMemo(() => new THREE.RingGeometry(8, 12, 24), []);
+  const fillMat = useMemo(
+    () =>
+      new THREE.MeshBasicMaterial({
+        color: 0xD4AF37,
+        transparent: true,
+        opacity: 0.08 + alpha * 0.12,
+        side: THREE.DoubleSide,
+      }),
+    [alpha],
+  );
+  const edgeMat = useMemo(
+    () =>
+      new THREE.LineBasicMaterial({
+        color: 0xD4AF37,
+        transparent: true,
+        opacity: 0.15 + alpha * 0.2,
+      }),
+    [alpha],
+  );
+  const ringMat = useMemo(
+    () =>
+      new THREE.MeshBasicMaterial({
+        color: 0xD4AF37,
+        transparent: true,
+        opacity: 0.3 + alpha * 0.4,
+        side: THREE.DoubleSide,
+      }),
+    [alpha],
+  );
+
+  useEffect(
+    () => () => {
+      boxGeo.dispose();
+      edgeGeo.dispose();
+      ringGeo.dispose();
+      fillMat.dispose();
+      edgeMat.dispose();
+      ringMat.dispose();
+    },
+    [boxGeo, edgeGeo, ringGeo, fillMat, edgeMat, ringMat],
+  );
+
+  useFrame((state, delta) => {
+    if (!animated || !groupRef.current) return;
+    const t = state.clock.getElapsedTime();
+
+    // Exponential ease toward the pointer — 1 - e^(-dt/τ) ≈ 0.2s lag at 60fps.
+    const k = 1 - Math.exp(-delta / CURSOR_LAG);
+    smooth.current.x += (target.current.x - smooth.current.x) * k;
+    smooth.current.y += (target.current.y - smooth.current.y) * k;
+
+    const cosR = Math.cos(rot + t * 0.05);
+    const sinR = Math.sin(rot + t * 0.05);
+
+    const xR = x * cosR + z * sinR;
+    const zR = -x * sinR + z * cosR;
+    const screenX = xR - zR * 0.35;
+    const screenY = y - zR * 0.2;
+
+    const cx = (smooth.current.x - 0.5) * 60;
+    const cy = (smooth.current.y - 0.5) * 40;
+
+    groupRef.current.position.x = screenX + cx;
+    groupRef.current.position.y = -screenY + cy;
+    groupRef.current.position.z = zR + Math.sin(t * 0.3 + x * 0.01) * 8;
+    groupRef.current.rotation.y = rot + t * 0.05;
+  });
+
   return (
     <group ref={groupRef} position={[x, -y, z]}>
-      <mesh
-        ref={meshRef}
-        geometry={new THREE.BoxGeometry(w, h, d)}
-        material={new THREE.MeshBasicMaterial({
-          color: 0xD4AF37,
-          transparent: true,
-          opacity: 0.08 + alpha * 0.12,
-          side: THREE.DoubleSide,
-        })}
-      />
-      <mesh
-        geometry={new THREE.EdgesGeometry(new THREE.BoxGeometry(w, h, d))}
-        material={new THREE.LineBasicMaterial({
-          color: 0xD4AF37,
-          transparent: true,
-          opacity: 0.15 + alpha * 0.2,
-        })}
-      />
-      <mesh
-        geometry={new THREE.RingGeometry(8, 12, 32)}
-        material={new THREE.MeshBasicMaterial({
-          color: 0xD4AF37,
-          transparent: true,
-          opacity: 0.3 + alpha * 0.4,
-          side: THREE.DoubleSide,
-        })}
-        position={[0, -h / 2, 0]}
-        rotation={[-Math.PI / 2, 0, 0]}
-      />
+      <mesh geometry={boxGeo} material={fillMat} />
+      <lineSegments geometry={edgeGeo} material={edgeMat} />
+      <mesh geometry={ringGeo} material={ringMat} position={[0, -h / 2, 0]} rotation={[-Math.PI / 2, 0, 0]} />
     </group>
   );
 }
 
-function VoidGarden({ time, mouse, reducedMotion }: { time: number; mouse: { x: number; y: number }; reducedMotion: boolean }) {
+interface VoidGardenProps {
+  target: { current: CursorTarget };
+  animated: boolean;
+  /** Seasonal light tint — shared source of truth with the /studio viewer. */
+  sun: string;
+  rim: string;
+}
+
+function VoidGarden({ target, animated, sun, rim }: VoidGardenProps) {
   return (
     <>
       {Array.from({ length: MONOLITH_COUNT }, (_, i) => (
-        <Monolith key={i} index={i} _time={time} mouse={mouse} reducedMotion={reducedMotion} />
+        <Monolith key={i} index={i} target={target} animated={animated} />
       ))}
       <ambientLight intensity={0.1} />
-      <directionalLight position={[100, 100, 50]} intensity={0.3} color="#D4AF37" />
-      <directionalLight position={[-100, -100, -50]} intensity={0.2} color="#E5C76B" />
+      <directionalLight position={[100, 100, 50]} intensity={0.3} color={sun} />
+      <directionalLight position={[-100, -100, -50]} intensity={0.2} color={rim} />
     </>
   );
 }
 
 export function NewHomeHero() {
-  const reducedMotion = useReducedMotion();
-  const [mouse, setMouse] = useState({ x: 0.5, y: 0.5 });
-  const [time, setTime] = useState(0);
+  const { animationsEnabled, finePointer } = useMotionPolicy();
+  // Pointer target lives in a ref — mousemove never re-renders React.
+  const target = useRef<CursorTarget>({ x: 0.5, y: 0.5 });
+  const [activePreset, setActivePreset] = useState<ScenePreset>(() => getRamadanPreset());
 
   useEffect(() => {
-    if (reducedMotion) return;
+    if (!animationsEnabled || !finePointer) return;
     const handleMouseMove = (e: MouseEvent) => {
-      setMouse({
-        x: e.clientX / window.innerWidth,
-        y: e.clientY / window.innerHeight,
-      });
+      target.current.x = e.clientX / window.innerWidth;
+      target.current.y = e.clientY / window.innerHeight;
     };
-    
+
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [reducedMotion]);
-
-  useFrame((state) => {
-    if (!reducedMotion) {
-      setTime(state.clock.getElapsedTime());
-    }
-  });
+  }, [animationsEnabled, finePointer]);
 
   return (
     <section
+      id="ch-vision"
       className="relative min-h-screen w-full overflow-hidden bg-void"
       aria-label="HEXA STUDIO — Architectural Visualization"
     >
@@ -140,10 +176,10 @@ export function NewHomeHero() {
         className="pointer-events-none absolute inset-0 opacity-[0.03]"
         style={{
           backgroundImage:
-            "radial-gradient(circle at 20% 50%, rgba(212,175,55,0.05) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(212,175,55,0.03) 0%, transparent 50%)",
+            'radial-gradient(circle at 20% 50%, rgba(212,175,55,0.05) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(212,175,55,0.03) 0%, transparent 50%)',
         }}
       />
-      
+
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
 
       <div className="relative z-10 mx-auto grid min-h-[calc(100vh-80px)] max-w-[1600px] grid-cols-1 items-center gap-12 px-6 py-20 sm:px-10 md:grid-cols-12 md:gap-16 md:px-16 md:py-32">
@@ -224,18 +260,48 @@ export function NewHomeHero() {
 
             <Canvas
               camera={{ position: [0, 0, 200], fov: 40 }}
-              gl={{ antialias: true, alpha: true }}
+              gl={{
+                antialias: true,
+                alpha: true,
+                stencil: false,
+                depth: true,
+                powerPreference: 'high-performance',
+              }}
+              dpr={[1, 1.5]}
+              frameloop={animationsEnabled ? 'always' : 'demand'}
               style={{ width: '100%', height: '100%' }}
+              onCreated={({ gl }) => {
+                gl.outputColorSpace = THREE.SRGBColorSpace;
+                gl.toneMapping = THREE.ACESFilmicToneMapping;
+                gl.toneMappingExposure = 1.0;
+              }}
             >
-              <VoidGarden time={time} mouse={mouse} reducedMotion={reducedMotion} />
+              <VoidGarden
+                target={target}
+                animated={animationsEnabled}
+                sun={activePreset.lighting.directionalColor}
+                rim={activePreset.lighting.hemisphereColor}
+              />
             </Canvas>
 
             <div className="pointer-events-none absolute -bottom-8 left-0 font-mono text-[9px] uppercase tracking-wide text-text-muted/40">
-              VOID GARDEN · 01 / 04 — MONOLITHS
+              VOID GARDEN · {activePreset.theme.toUpperCase()} — MONOLITHS
             </div>
             <div className="pointer-events-none absolute -top-7 right-0 font-mono text-[9px] uppercase tracking-wide text-text-muted/40">
               8K · OCTANE · UE5
             </div>
+          </div>
+
+          {/* Seasonal light — same preset library as the /studio viewer */}
+          <div className="mx-auto mt-12 flex w-full max-w-[480px] flex-col gap-3">
+            <SeasonPresetControls
+              onPresetChange={setActivePreset}
+              activePresetId={activePreset.id}
+              compact
+            />
+            <p className="font-mono text-[9px] uppercase leading-relaxed tracking-wide text-text-muted/40">
+              {activePreset.name} — {activePreset.description}
+            </p>
           </div>
         </div>
       </div>

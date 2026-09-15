@@ -1,0 +1,353 @@
+.shell {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  overflow: hidden;
+  background: var(--sl-void);
+}
+
+.preload {
+  position: fixed;
+  inset: 0;
+  background: var(--sl-void);
+}
+
+/* ─── Sidebar ─── */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  background: rgba(10, 10, 11, 0.95);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border-right: 1px solid rgba(212, 175, 55, 0.08);
+  z-index: 50;
+  transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  user-select: none;
+}
+
+.sidebar:hover,
+.sidebarExpanded {
+  width: 260px;
+}
+
+.sidebarTop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 16px 16px 20px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.08);
+  min-height: 72px;
+}
+
+.logo {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brandName {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: rgba(245, 244, 22, 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.navList {
+  flex: 1;
+  padding: 8px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  color: rgba(245, 244, 22, 0.5);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  position: relative;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.navItem:hover {
+  color: rgba(245, 244, 22, 0.8);
+  background: rgba(212, 175, 55, 0.05);
+}
+
+.navItemActive {
+  color: rgba(245, 244, 22, 0.9);
+  background: rgba(212, 175, 55, 0.05);
+  border-left: 2px solid #D4AF37;
+  padding-left: 10px;
+}
+
+.navIcon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.navLabel {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebarBottom {
+  padding: 12px 16px;
+  border-top: 1px solid rgba(212, 175, 55, 0.08);
+  min-height: 80px;
+}
+
+.userEye {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.userAvatar {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #D4AF37;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.userName {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(245, 244, 22, 0.8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userRole {
+  font-size: 9px;
+  color: rgba(245, 244, 22, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── Main content ─── */
+.main {
+  flex: 1;
+  margin-left: 80px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  transition: margin-left 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sidebar:hover ~ .main,
+.sidebarExpanded ~ .main {
+  margin-left: 260px;
+}
+
+/* ─── Top bar ─── */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: rgba(10, 10, 11, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.08);
+  flex-shrink: 0;
+  z-index: 40;
+}
+
+.topbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.breadcrumbItem {
+  color: rgba(245, 244, 22, 0.4);
+}
+
+.breadcrumbSep {
+  color: rgba(212, 175, 55, 0.3);
+}
+
+.breadcrumbCurrent {
+  color: rgba(245, 244, 22, 0.8);
+}
+
+.topbarRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.topbarIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: rgba(245, 244, 22, 0.4);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.topbarIcon:hover {
+  color: rgba(245, 244, 22, 0.7);
+  background: rgba(212, 175, 55, 0.05);
+}
+
+.userChip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  color: #D4AF37;
+  margin-left: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.userChip:hover {
+  background: rgba(212, 175, 55, 0.15);
+  border-color: rgba(212, 175, 55, 0.25);
+}
+
+/* ─── Preview area ─── */
+.previewArea {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: var(--sl-void);
+}
+
+/* ─── Design panel ─── */
+.designPanel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 320px;
+  background: rgba(10, 10, 11, 0.95);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border-right: 1px solid rgba(212, 175, 55, 0.08);
+  z-index: 30;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* ─── Properties panel (bottom, Figma-style) ─── */
+.propertiesPanel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: rgba(10, 10, 11, 0.95);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border-top: 1px solid rgba(212, 175, 55, 0.08);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+  animation: slideUp 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ─── Tooltip ─── */
+.tooltip {
+  position: fixed;
+  left: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 45;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar:hover ~ .tooltip,
+.sidebarExpanded ~ .tooltip {
+  opacity: 1;
+}
+
+.sidebar:not(:hover):not(.sidebarExpanded) ~ .tooltip {
+  opacity: 0;
+}

@@ -1,6 +1,6 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** September 7, 2026 — Sprint S-023 active (Production Hardening). Homepage redesigned with new cinematic content (HomeHero, HomeSections, HomeChapterRail). Deployed to production: `hexa-frontend-green` rebuilt and healthy. Homepage live at `https://hexastudio.net/` with new "Living Spaces Visualized" content. Tests: 665/665 frontend, 404/404 backend (100%).
+**Last Updated:** September 12, 2026 — Sprint S-023 active (Production Hardening). Homepage suggestion set complete (parallax rail, smoothed cursor, skeletons, ScrollFadeIn reveals, motion-policy gating, seasonal preset lighting). Frontend gates verified this session: lint 0/0 (+ design tokens + font preloads), typecheck 0 errors, tests 665/665 (90 files). Backend gates verified this session: lint 0, typecheck 0 errors (resolveJsonModule + strictPropertyInitialization:false for NestJS DTOs), tests 436/436 (58 files). New backend modules wired (minio-upload, style-transfer, cost-estimator, assets) + design-token codemod applied to admin panel (66 arbitrary-hex classes → semantic accent tokens; token gate now PASS). Homepage live at `https://hexastudio.net/` with new "Living Spaces Visualized" content.
 **Version:** 2.2.10
 **Authority Level:** 13 (Production)
 **Current Phase:** Production-Ready — Quad-Track Feature Delivery & Silent Luxury Design System (DEPLOYED)
@@ -25,7 +25,7 @@
 
 | Gate | Target | Status | Result |
 ||---|---|---|---|
-|| **Backend Tests** | 403 total (47 files) | `47 / 47 files, 404/404 tests` | ✅ PASS |
+|| **Backend Tests** | 436 total (58 files) | `58 / 58 files, 436/436 tests` | ✅ PASS |
 ||| **Frontend Tests** | 665 total (90 files) | `665 / 665` | ✅ PASS |
 || **Mobile Tests** | 26 passing | `26 / 26` (lint+typecheck PASS; test suite blocked by pre-existing hermes-parser env corruption) | ⚠️ ENV |
 || **Frontend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
@@ -36,7 +36,7 @@
 - **Current Phase**: Phase 4 / Release Candidate & Live Operations (v2.2.5)
 - **Active Workspace Quality Gates**:
   - `apps/frontend`: 90 suites / 665 tests passed (100%), 50 routes compiled, 0 errors, 0 warnings
-  - `apps/backend`: 47 files / 404 tests passed (100%), 0 errors, 0 warnings
+  - `apps/backend`: 58 suites / 436 tests passed (100%), 0 errors, 0 warnings
   - `apps/mobile`: lint 0/0, typecheck 0, test suite blocked by hermes-parser env corruption (pre-existing)
 
 - **Production Server (`19.16.1.100`)**:
@@ -314,6 +314,27 @@
 - [x] `src/app/dashboard/workflows/page.tsx` — new route: list/create/edit/run/delete workflows + executions table
 - [x] `src/app/dashboard/integrations/page.tsx` — Workflows link added
 - [x] `packages/types/workflow.ts` — shared workflow domain types (mirrors backend); `SyncMetricEntry`, `ConflictAuditEntry` added to `odoo.ts`
+- [x] **Admin Command Centre Odoo Pages** — Complete Odoo admin interface at `/admin/odoo/`:
+  - `/admin/odoo/projects/page.tsx` — Projects list with deliverables, last upload, team members
+  - `/admin/odoo/projects/[id]/page.tsx` — Project detail with tasks, budget, notes
+  - `/admin/odoo/crm/page.tsx` — CRM leads pipeline with source, probability, state
+  - `/admin/odoo/crm/leads/[id]/page.tsx` — Lead detail with contact info, expected close
+  - `/admin/odoo/sales/page.tsx` — Sales orders tracking with amount, currency, project link
+  - `/admin/odoo/sales/orders/[id]/page.tsx` — Sales order detail
+  - `/admin/odoo/accounting/page.tsx` — Accounting invoices with status (Paid/Pending/Overdue)
+  - `/admin/odoo/accounting/invoices/[id]/page.tsx` — Invoice detail breakdown
+  - `/admin/odoo/team/page.tsx` — Team directory with roles, departments
+  - `/admin/odoo/team/members/[id]/page.tsx` — Team member profile with bio, skills
+- [x] **Frontend API Routes** — All proxy routes in `src/app/api/odoo/`:
+  - Projects: `/api/odoo/projects` (list), `/api/odoo/projects/[id]` (detail)
+  - CRM: `/api/odoo/crm/leads` (list), `/api/odoo/crm/leads/[id]` (detail)
+  - Sales: `/api/odoo/sales/orders` (list), `/api/odoo/sales/orders/[id]` (detail)
+  - Accounting: `/api/odoo/accounting/invoices` (list), `/api/odoo/accounting/invoices/[id]` (detail)
+  - Team: `/api/odoo/team` (list), `/api/odoo/team/[id]` (detail)
+- [x] **Quality Gates** — All gates passing:
+  - ESLint: 0 errors, 0 warnings (design-token gate PASSED)
+  - TypeScript: 0 errors
+  - Frontend build: `next build` clean
 
 ### Quality Gate (Odoo / workflow scope)
 | Check | Result |
@@ -1049,3 +1070,105 @@ Closed the documented sprint debt (S-021 known gap): all frontend BFF proxies no
 
 ### 5. Incident Note
 - A transient lint warning (dead `useScrollLock` import in `Navbar.tsx`) was OneDrive sync lag, not a real defect — file verified byte-identical to HEAD after recovery; no code change required.
+
+## 2026-09-12 — Homepage Suggestion Set Complete + Frontend Gates Green
+
+**Status:** Implemented & verified (frontend lint 0/0, typecheck 0 errors, **665/665 tests**, 90 files)
+
+### 1. Homepage suggestion set (all 6 items)
+- `NewHomeChapterRail.tsx` — rail anchors fixed to real section ids (`ch-vision`, `work`, `studio-note`); phantom `ch-work/ch-process/ch-philosophy/ch-contact` ids removed (they broke IntersectionObserver active-state). Ghost-numeral parallax column drifts at half scroll rate via `useScrollProgress`, static under reduced motion, hidden on coarse pointers.
+- `NewHomeHero.tsx` — pointer target in a ref (no re-render on mousemove), per-monolith exponential cursor smoothing (~0.2s lag), `useFrame` only inside Canvas, memoized + disposed geometries/materials, `frameloop: demand` when animations disabled, DPR capped `[1, 1.75]`, seasonal `ScenePreset` lighting shared with `/studio` via `SeasonPresetControls` (compact).
+- `ChapterProgress.tsx` — staggered dot entrance (`0.2 + i*0.07s`, `EASE.entrance`/`DURATION.component`), gated on `reducedMotion`.
+- `NewSelectedWork.tsx` / `NewStudioNote.tsx` — raw `motion.div` with hardcoded easings replaced by shared `ScrollFadeIn` (HEXA motion tokens, reduced-motion aware).
+- Skeletons — `NewHomeHeroSkeleton` upgraded to layout-matched grid (no CLS on Suspense swap); `NewHomeSections` dynamic import gets a skeleton `loading` fallback.
+- `SeasonPresetControls.tsx` — `compact` + `className` props, Escape/outside-pointer close, empty-preset guard, strict types.
+
+### 2. Flake fix
+- `document-center-view.test.tsx` — all `findByText` calls raised to 10s timeout (two chained queries under a loaded 122–272s suite run exceeded the default 1s; assertions unchanged). Full suite now **665/665** two runs in a row.
+
+### 3. Lint hardening (Sprint S022.x proxy/panel debt, zero `any`)
+- `cost-estimate/route.ts`, `style-transfer/route.ts`, `assets/models/route.ts` — typed request bodies, `catch (error: unknown)` with `instanceof Error` message extraction, unused `request` params prefixed.
+- `CostEstimatorPanel.tsx` — `CostEstimateResponse`/`CostEstimateSummary` interfaces, summary access guarded.
+- `StyleTransferPanel.tsx` — `StyleTransferPayload`/`StyleTransferResponse` interfaces; ControlNet processor+image now actually sent when enabled; removed dead `CostEstimatorPanel` import.
+- `AssetBrowser.tsx` — removed dead `useCallback`/`Html`/`GLTF` imports, `<img>` → `next/image` (40px thumbs, onError fallback kept), fixed `hover:text-sl-alabster` typo (×2).
+
+### 4. Backend gate green (Sprint S022.x module wiring)
+- `app.module.ts` — `AssetsModule` added to the `./modules/index` import list (was registered in `imports[]` but never imported: TS2552).
+- `style-transfer.service.ts` — phantom `egyptian-materials.json` import replaced with `getAllMaterials()` from `../cost-estimator/materials-data` (the typed single source of truth; JSON file never existed — TS2732). `EgyptianMaterial` import narrowed to `import type`.
+- `cost-estimator.service.ts` — `import * as PDFDocument` (non-constructable namespace) fixed to default import (TS2351); installed missing runtime dep `pdfkit` + `@types/pdfkit` (dev) in `apps/backend` via workspace flags.
+- Verification: backend lint 0/0, typecheck 0 errors, **404/404 tests** (49 files). Mobile gate also green: lint, typecheck, **26/26 tests** (8 suites). Full quality-gate sequence (frontend 665/665 + backend 404/404 + mobile 26/26) passes with 0 errors, 0 warnings.
+
+### 5. Runtime-bug fixes + coverage for S022.x modules (2026-09-13)
+- `cost-estimator.service.ts` — `generatePdf` declared `: Buffer` but returned a `Promise` hidden by `as unknown as Buffer`; the controller then read `pdfBuffer.length` (undefined) and `res.send()`-ed a Promise. Now honestly `async ...: Promise<Buffer>`; controller awaits it.
+- `assets.controller.ts` — cast the `{ models: [...], metadata: {...} }` index file to `AssetModel[]`, so `count` was `undefined` and `getModel` would 500 on `.find`. Added `readModelsIndex()` extracting `.models` defensively (shape drift degrades to an empty catalogue).
+- New tests (37 total, all passing): backend `cost-estimator.service.spec` (7: pricing lookup, material math 850x10+1200x5=14500, unknown-id skip, real `%PDF` Buffer), `cost-estimator.controller.spec` (4: delegation, pdf streaming headers, default project name), `style-transfer.service.spec` (9: status ready/down/no-ControlNet, txt2img/img2img routing, empty-images + unreachable honest failures, ControlNet payload), `assets.controller.spec` (4: count 5, per-id lookup, 404 on unknown); frontend `cost-estimate-route.test` (6: calculate proxy, pdf streaming + disposition, upstream-failure + unreachable paths, materials GET), `style-transfer-route.test` (5), `assets-models-route.test` (2).
+- Verification: frontend lint 0/0 (+ tokens + preloads), typecheck 0, **678/678 tests** (93 files); backend lint 0/0, typecheck 0, **428/428 tests** (53 files).
+
+### 6. DI-wiring verification + component tests (2026-09-13)
+- `style-transfer.module.ts` — **boot-time bug**: service injects `HttpService` but the module never imported `HttpModule`; the app would crash at startup with an unresolvable dependency. Added `imports: [HttpModule]`. Caught by the new module-DI smoke test pattern.
+- New backend module-DI smoke specs (`style-transfer.module.spec`, `cost-estimator.module.spec`, `assets.module.spec` via `Test.createTestingModule` + `minio-upload.module.spec` via metadata assertions): instantiation proves every constructor dep is covered by a declared import.
+- `minio-upload.module.spec` **cannot** use the testing module in isolation: OdooModule -> RealtimeModule -> AIModule -> VectorModule -> AgentsModule contains a circular import resolving to `undefined` outside the full AppModule load order. Pre-existing tech debt — full app boots, isolated graph does not. The spec pins the import contract statically instead; a follow-up should break the cycle with `forwardRef` (GOVERNANCE ADR required).
+- New `minio-upload.service.spec` (3): empty-filename rejection before touching deps, key/MIME/Odoo-id wiring + dual socket emits, Odoo-down resilience (URL still valid, metadata id 0).
+- New frontend component tests (10): `asset-browser.test` (6: loading -> list, search + category filters, select callback url+id, honest error, empty state) and `cost-estimator-panel.test` (4: catalogue render, Calculate gating, calculate POST + summary + callback, PDF export gating).
+- Verification: frontend lint 0/0 (+ tokens + preloads), typecheck 0, **704/704 tests** (97 files); backend lint 0/0, typecheck 0, **436/436 tests** (58 files).
+
+### 7. Strapi `design-settings` Single Type + revalidation webhook (2026-09-13)
+- New `api::design-setting.design-setting` single type (`apps/cms/src/api/design-settings/`, core controller/router/service factories): `colors`, `typography`, `siteIdentity`, `header`, `hero`, `footer` as JSON fields with defaults mirroring frontend `DEFAULT_SETTINGS`, `customCss` text, `draftAndPublish: true`. JSON chosen over components so the admin panel's wholesale PUT/GET round-trips without `__component` surgery.
+- `lifecycles.ts`: afterCreate/afterUpdate/afterPublish/afterUnpublish/afterDelete → best-effort `POST {CLIENT_URL}/api/revalidate` with `{ paths: ["/"], type: "layout", tags: ["design"] }` + `x-revalidate-secret: REVALIDATE_SECRET` (mirrors backend `revalidateFrontend` contract); missing secret or failed fetch only warns, never fails the CMS write. Receiver contract verified against `app/api/revalidate/route.ts`: `type: 'layout'` + `paths` map to `revalidatePath('/', 'layout')`; secret uses constant-time comparison and refuses when unconfigured (which is why the browser-side call could never work). Structural check `SCHEMA-VALID`: singleType, 7 attributes, all valid Strapi scalar types.
+- Frontend `lib/design-tokens.ts` Strapi-v5 compatibility fix: `fetchDesignSettings` accepted only the v4 `{ data: { attributes } }` shape, so on Strapi 5.6 it always fell back to defaults — now accepts flattened `data` too; logo accepts v4 media / v5 flattened / plain URL string.
+- Verification: CMS typecheck 0 errors; frontend lint 0/0, typecheck 0, **694/694 tests** (96 files).
+- Follow-up cleanup: removed the dead browser-side revalidate fetch from `publishDesignSettings` (posted to `?tag=design` with no secret — could never authenticate); docstring now states Strapi lifecycles own revalidation. Frontend gates re-verified after: lint 0, typecheck 0, **694/694 tests** (96 files).
+- Regression spec `apps/frontend/test/lib/design-tokens.test.ts` (10 tests): v4 `data.attributes` vs v5 flattened `data` parsing, v4/v5/plain-string logo resolution, per-field defaults on partial payloads, defaults on HTTP-error/empty/throw, publish PUT body shape + exactly-one-request (no client revalidate), no-op without CMS URL, `injectDesignTokens` CSS vars. Note: this repo's vitest lacks `vi.unstubGlobals`, so the spec saves/restores `globalThis.fetch` manually. Full suite after: **704/704 tests** (97 files), lint 0, typecheck 0.
+- Open deployment items (need server access): enable Strapi role access to `design-settings` find/update; set CMS `CLIENT_URL` + `REVALIDATE_SECRET` env. Note: the pre-existing browser-side revalidate call in `publishDesignSettings` posts to `?tag=design` with no secret and cannot authenticate — the Strapi lifecycle webhook is now the working revalidation path.
+
+### 7. StyleTransferPanel tests + label-a11y fixes; circular-dep map (2026-09-13)
+- New `style-transfer-panel.test` (6): catalogue render, Generate gating, success POST shape + callback, honest backend error, network error, ControlNet toggle reveal + no-`controlNet`-block-without-image.
+- Tests caught a real a11y defect: labels without `htmlFor`/`id` in `StyleTransferPanel` (Material, Style Prompt, Negative, Processor, Init Image) and `CostEstimatorPanel` (Project Name, per-material areas) — screen readers could not associate them. Fixed with `htmlFor`/`id` pairs (`aria-labelledby` for repeated area inputs). No visual change.
+- Backend production build green: `@hexastudio/types` + `nest build` clean.
+- Circular-dependency map (ADR-004 groundwork, NOT changed this round): `AgentsModule` imports `RealtimeModule` **directly** (agents.module.ts:22) while `RealtimeModule` imports `AgentsModule` via `forwardRef` — an ES-module back-edge that evaluates to `undefined` depending on load order (proven by the isolated minio-upload module test). Converting the edge to `forwardRef` also requires `@Inject(forwardRef(() => EventBus))` in `SwarmOrchestratorService` (and an audit of `ApprovalService` -> agents-side injections), i.e. a 3-4 file change in the critical realtime path with no e2e boot harness. Left untouched; full-AppModule boot order happens to work today. Existing ADR-003 covers only the AI/Vector/Projects triangle, not Agents<->Realtime.
+
+### 8. P0 FIXED: backend could not boot (ADR-017, 2026-09-13)
+- Production `node dist/main.js` died in <2s with `UndefinedModuleException: AgentsModule imports[4] is undefined` — an Agents<->Realtime (+ Webhooks) circular-import cycle. The backend has not been bootable since the cycle closed.
+- Fix (6 edits, 5 files, decorator-only, no behaviour change): `forwardRef(() => RealtimeModule)` in `agents.module.ts` + `webhooks.module.ts`; `@Inject(forwardRef(...))` for `EventBus` + `SlackService` in `swarm-orchestrator.service.ts`, `AgentMemoryService` in `approval.service.ts`, `AgentsService` in `git-webhook.service.ts`.
+- New `src/app-boot.spec.ts` compiles the FULL AppModule graph (failed pre-fix with the exact prod error, passes post-fix) — permanent regression net. Full ADR: `docs/adr/017-agents-realtime-circular-dependency.md`.
+- Collateral: installed missing `swagger-ui-dist` (dev boot crashed without it); dev boot now reaches Swagger setup. Real listener not reachable in sandbox (no Redis/MinIO/Odoo infra) — init hooks correctly wait/retry.
+- Verification: backend lint 0/0, typecheck 0, **437/437 tests** (59 files); mobile re-verified green (lint/typecheck/26 tests).
+
+### 9. Frontend Odoo admin/typecheck repair (2026-09-13)
+- Frontend lint was red (2 parse errors) + typecheck red (11 errors), all in new uncommitted Odoo admin/API files — the "694 green" claim predated these files landing in the tree.
+- `admin/odoo/crm/leads/page.tsx`: stray template-literal backtick, `</p>`/`</span>` mismatches, `</h1>` closing an `<h2>`, orphan `</td></tr></tbody></table>`; also referenced `lead.hexa_last_deliverable_at` (not in `LeadDetail`) — now uses `expected_closing_date`. Same orphan-table-tag corruption repaired in `admin/odoo/sales/orders/[id]/page.tsx`.
+- Next 16 API routes (`app/api/odoo/**/route.ts`, 9 files): `headers()` is now async — all call sites `await headers()`; `accounting/route.ts` `URLSearchParams` null-union fixed via filtered `Record<string,string>`; unused `params` prefixed in `projects/route.ts`.
+- `admin/odoo/projects/[id]/page.tsx` imported `@heroicons/react` (not installed) — replaced with the `←` glyph used elsewhere; no new dependency.
+- Anomaly: first typecheck run flagged `app/api/odoo/crm/route.ts`, but the file is absent on disk (only `crm/leads/` exists) — likely OneDrive sync phantom; current tree typechecks without it.
+- Verification: frontend lint 0/0 (+ tokens + preloads), typecheck 0, **704/704 tests** (97 files); backend re-verified **437/437** (59 files).
+
+### 10. Frontend production build repaired (2026-09-13)
+- `next build` failed with 5 Turbopack errors: the 5 Odoo admin list pages (`admin/odoo/*/page.tsx`) exported `metadata` from `'use client'` components (disallowed). Removed the redundant per-page metadata — `app/admin/layout.tsx` already sets `robots: noindex` for the whole subtree, so no SEO/coverage change.
+- Build-time route validation then rejected all 5 API `[id]` routes: Next 16 types `params` as `Promise<{ id }>` — all `api/odoo/**/[id]/route.ts` signatures updated to `Promise` params with `await`; unused second arg dropped from `api/odoo/projects` list GET.
+- Verification: `next build` clean — compiled in ~2.6min, TS clean, 80/80 static pages, full route table (all `/admin/odoo/*` + `/api/odoo/*` present). Frontend lint 0/0 (+ tokens + preloads), typecheck 0, tests 704/704 (97 files) re-confirmed after edits.
+
+### 11. Sixth metadata offender + OneDrive sync instability (2026-09-13)
+- Post-build audit found `admin/odoo/sales/orders/page.tsx` with the same `'use client'` + `metadata` pattern — it materialized via OneDrive sync AFTER the green build (mtime 22:34 vs build 22:1x), which is why the route was missing from the table yet the build passed. Same fix applied.
+- Tree is flickering underfoot: `crm/route.ts` flagged then absent, `sales/sales-page.tsx` matched then absent, `sales/orders/page.tsx` appearing post-build, plus a stale `.next/types/validator.ts` referencing a deleted `crm/leads/page` (fixed via `.next` cache clear — gitignored build output, safe).
+- Verification after: frontend lint 0/0 (+ tokens + preloads), typecheck 0, `next build` clean with `/admin/odoo/sales/orders` present (80/80 pages).
+- Warning for commit round: re-verify `git status` immediately before staging — the tree may shift between now and commit time.
+
+### 12. Secret-leak hazard hardened — `*.env` gitignore (2026-09-13)
+- `openai-compatible-agents.env` (6.2 KB, 73 env lines — live credentials) was **not** matched by the existing `.env*` rules and would have been staged by any `git add -A` / broad commit. Verified `git check-ignore` → NOT ignored pre-fix.
+- Fix: added `*.env` + `!.env.example` keep to `.gitignore:28` (covers `*.env` in any dir, `.env.example` stays tracked — verified `git check-ignore` on both). Untracked count 43→42; file now ignored.
+- Also verified: `nul` is 0 bytes (Windows device spill), `kanban-hexavision.html` 8.4 KB, `.worktrees/` ×5, `skills/` scripts — all remain untracked by intent; no secret content. Clean build still required: re-verify `git status --short` immediately before any commit and stage only the scoped set.
+- Gates re-proved post-fix: frontend lint 0/0 (+ tokens + preloads), typecheck 0, backend 437/437 (59 files). Frontend test suite run terminated by shell during this turn — re-run gates before declaring done if this is the commit turn (full sequence: lint/typecheck/test ×3 + `next build`).
+
+### 13. Scratch-file ignore + full gate re-proof (2026-09-15)
+- Added `.gitignore:233-235` — `nul` (0 B Windows spill), `kanban-*.html` (8.4 KB local board), `.worktrees/` (5 git-worktree dirs) — all now `git check-ignore` true. Untracked 42→39.
+- Sweeps clean: `apps/frontend/src/app/**/*metadata` only in server/layout pages (0 `''use client''`+metadata), `apps/frontend/src/app/api/**/route.ts` 0 un-awaited `headers()`.
+- Full gates re-run to file (longer durations on this host):
+  - Frontend lint 0/0 (+ tokens `✓` + font preloads `✓ ALL FONT PRELOADS MATCH`), typecheck 0
+  - Backend lint 0/0, typecheck 0
+  - Frontend tests **704/704 (97 files)** in 187s — `C:\Users\amrmo\AppData\Local\Temp\opencode\fe-test4.log`
+  - Backend tests **437/437 (59 files)** in 134s — `C:\Users\amrmo\AppData\Local\Temp\opencode\be-test4.log`
+  - Previous `next build` 80/80 pages still valid (`fe-build2.log`); re-build on commit turn recommended (2.6 min)
+- Commit hazard now reduced: `*.env` + `nul`/kanban/`.worktrees` all ignored. Still stage scoped set only and re-check `git status --short` immediately before staging — OneDrive sync remains active.
+
+### 14. Fresh `next build` with scratch ignores (2026-09-15)
+- `npm run build --workspace=apps/frontend` → `✓ Compiled successfully in 81s`, `80/80` pages in 23s (`fe-build3.log`). All `/admin/odoo/*` + `/api/odoo/*` routes present (incl. `/admin/odoo/sales/orders`). Confirms `*.env` + `nul`/kanban/`.worktrees` ignores do not affect build output.

@@ -19,7 +19,9 @@ import { WebhooksModule } from '../webhooks/webhooks.module';
     ProjectsModule,
     VectorModule,
     AIModule,
-    RealtimeModule,
+    // ADR-017: forwardRef required — RealtimeModule imports AgentsModule
+    // back; a direct import evaluates to `undefined` and breaks app boot.
+    forwardRef(() => RealtimeModule),
     forwardRef(() => WebhooksModule),
   ],
   controllers: [AgentsController],

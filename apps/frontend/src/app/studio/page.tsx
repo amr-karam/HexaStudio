@@ -1,66 +1,64 @@
-import type { Metadata } from 'next';
-import { HomeHero } from "@/features/portfolio/components/HomeHero";
-import { HomeChapterRail } from "@/features/portfolio/components/HomeChapterRail";
-import { HomePageDynamic } from "@/features/portfolio/components/HomePageDynamic";
-import { fetchProjects } from "@/features/portfolio/lib/fetchProjects";
+'use client'
 
-/** ISR: 1h background refresh + on-demand via /api/revalidate (Sprint 15 P9). */
-export const revalidate = 3600;
-export const dynamic = 'force-dynamic';
-
-export const metadata: Metadata = {
-  title: 'Studio',
-  description:
-    'Experience the HexaStudio creative process — immersive 3D architectural visualization, cinematic walkthroughs, and spatial intelligence.',
-  openGraph: {
-    title: 'HexaStudio Studio — The Creative Process',
-    description:
-      'Immersive 3D architectural visualization, cinematic walkthroughs, and spatial intelligence.',
-    url: 'https://hexastudio.net/studio',
-    type: 'website',
-    images: [
-      {
-        url: 'https://hexastudio.net/logo.svg',
-        width: 1200,
-        height: 630,
-        alt: 'HexaStudio Studio — The Creative Process',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'HexaStudio Studio — The Creative Process',
-    description:
-      'Immersive 3D architectural visualization, cinematic walkthroughs, and spatial intelligence.',
-    images: ['https://hexastudio.net/logo.svg'],
-  },
-};
+import { useState, useCallback } from 'react'
+import ArchvizViewer from '@/components/ArchvizViewer'
+import SeasonPresetControls from '@/components/SeasonPresetControls'
+import StyleTransferPanel from '@/components/StyleTransferPanel'
+import CostEstimatorPanel from '@/components/CostEstimatorPanel'
+import AssetBrowser from '@/components/AssetBrowser'
+import type { ScenePreset } from '@/lib/presets/SeasonPresetLibrary'
+import { getRamadanPreset } from '@/lib/presets/SeasonPresetLibrary'
 
 /**
- * Studio / Experience — the full 3D chaptered scroll film (Prompt 017).
+ * Studio / Experience — full 3D architectural visualization with
+ * Season Preset controls (S022.2), AI Style Transfer (S022.3),
+ * and Cost Estimator (S022.4).
  *
- *   CH. I   — VISION  → HomeHero (FractureRingHero 3D canvas)
- *   CH. II  — CRAFT   → MarqueeBar + FeaturedWork
- *   CH. III — METHOD  → ProcessSection + AchievementsSection
- *   CH. IV  — PROOF   → ProjectGrid + TestimonialsSection
- *   CH. V   — CONTACT → CTASection + NewsletterSection
- *
- * This page hosts the 3D architectural visualization experience that was
- * previously on the root homepage. Ambient WebGL background is active here.
+ * NOTE: `metadata` is exported via studio/metadata.ts (Server Component)
+ * to avoid the Next.js error:
+ * "You are attempting to export 'metadata' from a component marked with
+ * 'use client', which is disallowed."
  */
-export default async function StudioPage() {
-  const projectsData = await fetchProjects();
+export default function StudioPage() {
+  const [activePreset, setActivePreset] = useState<ScenePreset>(getRamadanPreset())
+
+  const handlePresetChange = useCallback((preset: ScenePreset) => {
+    setActivePreset(preset)
+  }, [])
+
+  const handleTextureGenerated = useCallback((materialId: string, imageUrl: string) => {
+    console.log(`[Studio] Texture generated for ${materialId}: ${imageUrl}`)
+    // In a full implementation, this would trigger a texture reload on the ArchvizModel
+  }, [])
 
   return (
-    <div className="bg-sl-void">
-      <HomeChapterRail />
-      <HomeHero />
-      <main className="px-4 sm:px-8 md:px-16">
-        <HomePageDynamic
-        featuredProject={projectsData.projects?.[0]}
-        projects={projectsData.projects ?? []}
-      />
+    <div className="fixed inset-0 bg-sl-void text-sl-alabaster overflow-hidden">
+      <div className="absolute top-4 right-4 z-50 flex flex-col gap-3 max-w-xs w-full">
+        {/* Season preset selector */}
+        <SeasonPresetControls
+          onPresetChange={handlePresetChange}
+          activePresetId={activePreset.id}
+        />
+
+        {/* AI Style Transfer panel */}
+        <StyleTransferPanel
+          onTextureGenerated={handleTextureGenerated}
+        />
+
+        {/* Cost Estimator panel */}
+        <CostEstimatorPanel />
+
+        {/* 3D Asset Browser (Sprint S022.5) */}
+        <AssetBrowser
+          onModelSelected={(url: string, id: string) =>
+            console.log(`[Studio] Model selected: ${id} → ${url}`)
+          }
+        />
+      </div>
+
+      <main className="absolute inset-0 pt-14">
+        <ArchvizViewer preset={activePreset} />
       </main>
     </div>
-  );
+  )
 }

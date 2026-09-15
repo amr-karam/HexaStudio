@@ -6,7 +6,7 @@
  */
 
 import { Color, MeshStandardMaterial } from 'three'
-import rawData from '../data/materials/egyptian-materials.json'
+import rawData from '../../data/materials/egyptian-materials.json'
 
 // Type definitions — strict, compile-time safe
 export interface MaterialTextureHints {

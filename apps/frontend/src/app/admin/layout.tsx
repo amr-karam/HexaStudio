@@ -1,14 +1,11 @@
-import type { Metadata } from 'next';
+import { AdminShell } from '@/components/admin/AdminShell';
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Studio Admin',
-  description: 'Internal management dashboard for HexaStudio operations.',
-  robots: {
-    index: false,
-    follow: false,
-  },
+  title: 'Hexa Command Centre — Admin',
+  robots: { index: false, follow: false },
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return <AdminShell>{children}</AdminShell>;
 }

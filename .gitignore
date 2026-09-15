@@ -23,6 +23,10 @@ storybook-static/
 .env.gitlab
 .env.gitlab.*
 *.pem
+# Any dot-env file outside the allowlist — covers openai-compatible-agents.env etc.
+# Keep !.env.example below so the example stays tracked
+*.env
+!.env.example
 
 # Logs
 logs/
@@ -224,3 +228,8 @@ hexastudio-backend.tar
 .lh-perf.json
 .tmp-lh-perf.json
 *.report.html
+
+# Windows device spill + local scratch (never commit)
+nul
+kanban-*.html
+.worktrees/

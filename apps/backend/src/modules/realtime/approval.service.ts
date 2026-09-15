@@ -8,7 +8,7 @@
  * @module realtime/approvals
  */
 
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, Inject, forwardRef } from '@nestjs/common';
 import { ApprovalRepository } from './approval.repository';
 import type { AuditEntry, PhaseApproval, ProjectAnnotation } from './approval.types';
 import { AgentMemoryService } from '../agents/agent-memory.service';
@@ -36,6 +36,8 @@ export class ApprovalService {
 
   constructor(
     private readonly repository: ApprovalRepository,
+    // ADR-017: AgentMemoryService lives in AgentsModule (circular) — lazy token.
+    @Inject(forwardRef(() => AgentMemoryService))
     private readonly agentMemory: AgentMemoryService,
     private readonly structuredOutput: StructuredOutputService,
   ) {}

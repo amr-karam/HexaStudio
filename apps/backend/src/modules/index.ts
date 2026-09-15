@@ -33,4 +33,8 @@ export * from './employees/employees.module';
 export * from './timesheets/timesheets.module';
 export * from './knowledge/knowledge.module';
 export * from './documents/documents.module';
+export * from './minio-upload/minio-upload.module';
 export * from './workflow/workflow.module';
+export * from './style-transfer/style-transfer.module';
+export * from './cost-estimator/cost-estimator.module';
+export * from './assets/assets.module';

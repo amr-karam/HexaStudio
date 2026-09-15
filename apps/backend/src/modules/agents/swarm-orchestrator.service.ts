@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit, Inject, forwardRef } from '@nestjs/common';
 import { EventBus } from '../realtime/event-bus.service';
 import { AgentsService } from './agents.service';
 import { SlackService } from '../webhooks/slack.service';
@@ -15,8 +15,12 @@ export class SwarmOrchestratorService implements OnModuleInit {
   private readonly logger = new Logger(SwarmOrchestratorService.name);
 
   constructor(
+    // ADR-017: EventBus lives in RealtimeModule (circular) — lazy token.
+    @Inject(forwardRef(() => EventBus))
     private readonly eventBus: EventBus,
     private readonly agentsService: AgentsService,
+    // ADR-017: SlackService lives in WebhooksModule (circular) — lazy token.
+    @Inject(forwardRef(() => SlackService))
     private readonly slackService: SlackService,
     private readonly modelFusion: ModelFusionService,
   ) {}
