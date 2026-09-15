@@ -30,11 +30,16 @@ export async function GET(request: Request) {
   }
 }
 
-export async function GET_BY_ID(request: Request, { params }: { params: { id: string } }) {
+export async function GET_BY_ID(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> | { id: string } },
+) {
   try {
+    const resolved = await Promise.resolve(params);
+    const id = (resolved as { id: string }).id;
     const authToken = request.headers.get('authorization');
 
-    const response = await fetch(`${BACKEND_URL}/api/odoo/projects/${params.id}`, {
+    const response = await fetch(`${BACKEND_URL}/api/odoo/projects/${id}`, {
       headers: {
         'Content-Type': 'application/json',
         ...(authToken && { Authorization: authToken }),
