@@ -27,7 +27,7 @@ describe("InvoiceDetailPage", () => {
       expect(screen.getAllByText("INV/2024/001").length).toBeGreaterThanOrEqual(1);
       expect(screen.getAllByText("Acme Corp").length).toBeGreaterThanOrEqual(1);
       expect(screen.getByText("15,000 EGP")).toBeInTheDocument();
-      expect(screen.getAllByText("posted").length).toBeGreaterThanOrEqual(1).toBeInTheDocument();
+      expect(screen.getAllByText("posted").length).toBeGreaterThanOrEqual(1);
       expect(screen.getByText("January 15, 2024")).toBeInTheDocument();
     });
   });
@@ -50,9 +50,9 @@ describe("InvoiceDetailPage", () => {
 
     await waitFor(() => {
       expect(screen.getAllByText("INV/2024/002").length).toBeGreaterThanOrEqual(1);
-      expect(screen.getByText("—")).toBeInTheDocument();
+      expect(screen.getAllByText("—").length).toBeGreaterThanOrEqual(1);
       expect(screen.getByText("5,000 USD")).toBeInTheDocument();
-      expect(screen.getAllByText("draft").length).toBeGreaterThanOrEqual(1).toBeInTheDocument();
+      expect(screen.getAllByText("draft").length).toBeGreaterThanOrEqual(1);
     });
   });
 
