@@ -38,8 +38,8 @@ export default function ProjectDetailPage() {
         if (!res.ok) throw new Error('Failed to fetch project');
         return res.json();
       })
-      .then(setProject)
-      .catch(setError)
+      .then(data => setProject(data.project ?? data.result ?? data))
+      .catch(err => setError(err instanceof Error ? err.message : String(err)))
       .finally(() => setLoading(false));
   }, [params.id]);
 

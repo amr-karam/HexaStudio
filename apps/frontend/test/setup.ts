@@ -1,4 +1,12 @@
 import '@testing-library/jest-dom/vitest';
+import { vi } from 'vitest';
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn(), back: vi.fn(), prefetch: vi.fn() }),
+  useParams: () => ({ id: '1' }),
+  useSearchParams: () => new URLSearchParams(),
+  usePathname: () => '/',
+}));
 
 // Next.js compiles styled-jsx (`<style jsx global>`) at build time via SWC,
 // but Vitest renders it as a plain `<style>` element. React then warns about

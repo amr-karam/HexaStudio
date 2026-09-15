@@ -26,8 +26,8 @@ export default function InvoiceDetailPage() {
         if (!res.ok) throw new Error('Failed to fetch invoice');
         return res.json();
       })
-      .then(setInvoice)
-      .catch(setError)
+      .then(data => setInvoice(data.invoice ?? data.result ?? data))
+      .catch(err => setError(err instanceof Error ? err.message : String(err)))
       .finally(() => setLoading(false));
   }, [params.id]);
 
@@ -56,7 +56,7 @@ export default function InvoiceDetailPage() {
           </div>
           <div className="p-3 bg-sl-glass-bg border border-sl-glass-border rounded">
             <p className="text-xs text-sl-silver uppercase tracking-widest mb-1">Amount</p>
-            <p className="text-accent text-2xl font-bold">{invoice.amount} {invoice.currency}</p>
+            <p className="text-accent text-2xl font-bold">{invoice.amount.toLocaleString()} {invoice.currency}</p>
           </div>
           <div className="p-3 bg-sl-glass-bg border border-sl-glass-border rounded">
             <p className="text-xs text-sl-silver uppercase tracking-widest mb-1">Status</p>
@@ -65,7 +65,7 @@ export default function InvoiceDetailPage() {
           <div className="p-3 bg-sl-glass-bg border border-sl-glass-border rounded">
             <p className="text-xs text-sl-silver uppercase tracking-widest mb-1">Date</p>
             <p className="font-medium">
-              {new Date(invoice.date).toLocaleDateString()}
+              {new Date(invoice.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
           </div>
         </div>

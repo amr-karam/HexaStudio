@@ -28,8 +28,8 @@ export default function LeadDetailPage() {
         if (!res.ok) throw new Error('Failed to fetch lead');
         return res.json();
       })
-      .then(setLead)
-      .catch(setError)
+      .then(data => setLead(data.lead ?? data.result ?? data))
+      .catch(err => setError(err instanceof Error ? err.message : String(err)))
       .finally(() => setLoading(false));
   }, [params.id]);
 

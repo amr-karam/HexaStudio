@@ -26,8 +26,8 @@ export default function SalesOrderDetailPage() {
         if (!res.ok) throw new Error('Failed to fetch sales order');
         return res.json();
       })
-      .then(setOrder)
-      .catch(setError)
+      .then(data => setOrder(data.order ?? data.result ?? data))
+      .catch(err => setError(err instanceof Error ? err.message : String(err)))
       .finally(() => setLoading(false));
   }, [params.id]);
 
@@ -56,7 +56,7 @@ export default function SalesOrderDetailPage() {
           </div>
           <div className="p-3 bg-sl-glass-bg border border-sl-glass-border rounded">
             <p className="text-xs text-sl-silver uppercase tracking-widest mb-1">Amount</p>
-            <p className="text-accent text-2xl font-bold">{order.amount} {order.currency}</p>
+            <p className="text-accent text-2xl font-bold">{order.amount.toLocaleString()} {order.currency}</p>
           </div>
           <div className="p-3 bg-sl-glass-bg border border-sl-glass-border rounded">
             <p className="text-xs text-sl-silver uppercase tracking-widest mb-1">State</p>
@@ -65,7 +65,7 @@ export default function SalesOrderDetailPage() {
           <div className="p-3 bg-sl-glass-bg border border-sl-glass-border rounded">
             <p className="text-xs text-sl-silver uppercase tracking-widest mb-1">Date</p>
             <p className="font-medium">
-              {order.date ? new Date(order.date).toLocaleDateString() : '—'}
+              {order.date ? new Date(order.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '—'}
             </p>
           </div>
         </div>

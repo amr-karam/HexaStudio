@@ -27,8 +27,8 @@ export default function TeamMemberDetailPage() {
         if (!res.ok) throw new Error('Failed to fetch team member');
         return res.json();
       })
-      .then(setMember)
-      .catch(setError)
+      .then(data => setMember(data.member ?? data.result ?? data))
+      .catch(err => setError(err instanceof Error ? err.message : String(err)))
       .finally(() => setLoading(false));
   }, [params.id]);
 
