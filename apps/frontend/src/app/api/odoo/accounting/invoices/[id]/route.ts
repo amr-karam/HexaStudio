@@ -1,13 +1,11 @@
 import { NextResponse } from 'next/server';
-import { headers } from 'next/headers';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    const headersList = await headers();
-    const authToken = headersList.get('authorization');
+    const authToken = request.headers.get('authorization');
 
     const response = await fetch(`${BACKEND_URL}/api/odoo/accounting/invoices/${id}`, {
       headers: {

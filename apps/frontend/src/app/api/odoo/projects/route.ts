@@ -1,19 +1,17 @@
 import { NextResponse } from 'next/server';
-import { headers } from 'next/headers';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const limit = searchParams.get('limit') || '50';
-    const offset = searchParams.get('offset') || '0';
-    const searchParamsBackend = new URLSearchParams({ limit, offset });
+    const queryString = searchParams.toString();
+    const backendUrl = queryString
+      ? `${BACKEND_URL}/api/odoo/projects?${queryString}`
+      : `${BACKEND_URL}/api/odoo/projects`;
+    const authToken = request.headers.get('authorization');
 
-    const headersList = await headers();
-    const authToken = headersList.get('authorization');
-
-    const response = await fetch(`${BACKEND_URL}/api/odoo/projects?${searchParamsBackend}`, {
+    const response = await fetch(backendUrl, {
       headers: {
         'Content-Type': 'application/json',
         ...(authToken && { Authorization: authToken }),
@@ -34,8 +32,7 @@ export async function GET(request: Request) {
 
 export async function GET_BY_ID(request: Request, { params }: { params: { id: string } }) {
   try {
-    const headersList = await headers();
-    const authToken = headersList.get('authorization');
+    const authToken = request.headers.get('authorization');
 
     const response = await fetch(`${BACKEND_URL}/api/odoo/projects/${params.id}`, {
       headers: {

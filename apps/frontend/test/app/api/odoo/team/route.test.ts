@@ -24,7 +24,7 @@ describe('GET /api/odoo/team', () => {
   });
 
   it('fetches team members with pagination', async () => {
-    fetchMock.mockResortedValueOnce(
+    fetchMock.mockResolvedValueOnce(
       new Response(JSON.stringify({ members: [], total: 0 }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
@@ -61,7 +61,7 @@ describe('GET /api/odoo/team/[id]', () => {
 
   it('fetches a single team member by id', async () => {
     const memberId = 'member-101';
-    fetchMock.mockResortedValueOnce(
+    fetchMock.mockResolvedValueOnce(
       new Response(JSON.stringify({ id: memberId, name: 'John Doe', role: 'Architect', department: 'Design' }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
@@ -80,7 +80,7 @@ describe('GET /api/odoo/team/[id]', () => {
   });
 
   it('returns 404 when team member not found', async () => {
-    fetchMock.mockResortedValueOnce(new Response(JSON.stringify({ error: 'Not found' }), {
+    fetchMock.mockResolvedValueOnce(new Response(JSON.stringify({ error: 'Not found' }), {
       status: 404,
       headers: { 'Content-Type': 'application/json' },
     }));
@@ -94,4 +94,14 @@ describe('GET /api/odoo/team/[id]', () => {
   });
 
   it('returns 500 when the backend is unreachable', async () => {
-    fetchMo
+    fetchMock.mockRejectedValueOnce(new Error('down'));
+
+    const response = await GET(
+      new NextRequest('http://localhost/api/odoo/team/123'),
+      { params: Promise.resolve({ id: '123' }) }
+    );
+
+    expect(response.status).toBe(500);
+    expect(await response.json()).toMatchObject({ error: 'Internal server error' });
+  });
+});
