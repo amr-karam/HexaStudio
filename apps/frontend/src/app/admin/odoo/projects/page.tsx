@@ -22,13 +22,13 @@ export default function ProjectsPage() {
         if (!res.ok) throw new Error('Failed to fetch projects');
         return res.json();
       })
-      .then(setProjects)
-      .catch(setError)
+      .then(data => {
+        const list = Array.isArray(data) ? data : (data.projects ?? data.result ?? []);
+        setProjects(Array.isArray(list) ? list : []);
+      })
+      .catch(err => setError(err instanceof Error ? err.message : String(err)))
       .finally(() => setLoading(false));
   }, []);
-
-  if (loading) return <p className="text-sl-silver">Loading projects...</p>;
-  if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (
     <main className="flex-1 flex items-center justify-center p-6">
@@ -40,8 +40,13 @@ export default function ProjectsPage() {
         </div>
         <h1 className="font-['Bodoni_Moda'] text-3xl font-bold text-accent tracking-tight mb-4">Odoo Projects</h1>
         <p className="text-xs text-sl-silver mb-6 uppercase tracking-widest">Project board with stages, tasks & real-time uploads</p>
-        
-        <div className="overflow-x-auto">
+
+        {loading ? (
+          <p className="text-sl-silver">Loading projects...</p>
+        ) : error ? (
+          <p className="text-red-500">Error: {error}</p>
+        ) : (
+          <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="text-left text-sl-silver text-xs border-b border-sl-glass-border/50">
@@ -72,15 +77,18 @@ export default function ProjectsPage() {
                     {project.hexa_public_strapi_id || '—'}
                   </td>
                   <td className="text-center">
-                    {project.hexa_team_member_ids.length > 0
-                      ? project.hexa_team_member_ids.length
-                      : '<span className="text-sl-silver">—</span>'}
+                    {project.hexa_team_member_ids.length > 0 ? (
+                      project.hexa_team_member_ids.length
+                    ) : (
+                      <span className="text-sl-silver">—</span>
+                    )}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+        )}
       </div>
     </main>
   );

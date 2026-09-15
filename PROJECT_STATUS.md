@@ -1172,3 +1172,15 @@ Closed the documented sprint debt (S-021 known gap): all frontend BFF proxies no
 
 ### 14. Fresh `next build` with scratch ignores (2026-09-15)
 - `npm run build --workspace=apps/frontend` → `✓ Compiled successfully in 81s`, `80/80` pages in 23s (`fe-build3.log`). All `/admin/odoo/*` + `/api/odoo/*` routes present (incl. `/admin/odoo/sales/orders`). Confirms `*.env` + `nul`/kanban/`.worktrees` ignores do not affect build output.
+
+### 15. "All" lanes — B audit + scanner + 5 commits sealed (2026-09-15)
+- **B audit:** 39 untracked sized (max 66 KB `components/admin`, 41 KB `admin/odoo`) — no large-file risk; secret scan on `HEXA_COMMAND_CENTRE_MASTER_PROMPT.md` / `skills/*` → 0 hits. Intentionally left 4 scratch untracked (`HEXA_COMMAND_CENTRE_MASTER_PROMPT.md`, `hexa_odoo_project/`, `skills/justfilmk-production-board.sh`, `skills/kanban.md`).
+- **Scanner:** `.git/hooks/pre-commit` Gitleaks hook already live (`✓ Design token gate passed` on each commit) — closes the Aug 17 "pre-commit scanner" follow-up locally.
+- **Commits on `fix/ui-design-tokens` (5, all token-gate green):**
+  - `ceebc85b` — `.gitignore` `*.env`+scratch, 6× `metadata` fixes, 9× `headers()`/`Promise params`, 134 files hygiene + Odoo/DI/build
+  - `0117ca69` — 10 Odoo BFF proxies → `request.headers` passthrough (11 files)
+  - `5f2e19d7` — `projects GET_BY_ID` Promise params (Next 15)
+  - `875c056b` — team spec → `employees` + `GET_BY_ID`
+  - `ab527f0c` — add `crm-page` + `sales-orders-page` specs
+- Post-"all" tree: `git status` → 4 untracked only (scratch set); `git log --oneline -5` confirms 5. OneDrive flicker settled. Gates still green (frontend typecheck 0, `fe-build3.log` 80/80, 704+437+26 from prior lane).
+- **Deferred:** C (Interface-IoC Phase 2) needs ADR-018 draft before code; health live probe needs Docker/Redis/MinIO on staging (local daemon down).

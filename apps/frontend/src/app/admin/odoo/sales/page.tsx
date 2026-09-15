@@ -23,13 +23,13 @@ export default function SalesPage() {
         if (!res.ok) throw new Error('Failed to fetch sales orders');
         return res.json();
       })
-      .then(setOrders)
-      .catch(setError)
+      .then(data => {
+        const list = Array.isArray(data) ? data : (data.orders ?? data.result ?? []);
+        setOrders(Array.isArray(list) ? list : []);
+      })
+      .catch(err => setError(err instanceof Error ? err.message : String(err)))
       .finally(() => setLoading(false));
   }, []);
-
-  if (loading) return <p className="text-sl-silver">Loading sales orders...</p>;
-  if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (
     <main className="flex-1 flex items-center justify-center p-6">
@@ -43,7 +43,11 @@ export default function SalesPage() {
         <h1 className="font-['Bodoni_Moda'] text-3xl font-bold text-accent tracking-tight mb-4">Sales Orders</h1>
         <p className="text-xs text-sl-silver mb-6 uppercase tracking-widest">Quotes → orders — linked to projects</p>
 
-        {orders.length === 0 ? (
+        {loading ? (
+          <p className="text-sl-silver">Loading sales orders...</p>
+        ) : error ? (
+          <p className="text-red-500">Error: {error}</p>
+        ) : orders.length === 0 ? (
           <p className="text-sl-silver text-center py-12">No sales orders found</p>
         ) : (
           <div className="overflow-x-auto">

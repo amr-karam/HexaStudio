@@ -22,13 +22,13 @@ export default function CrmPage() {
         if (!res.ok) throw new Error('Failed to fetch CRM leads');
         return res.json();
       })
-      .then(setLeads)
-      .catch(setError)
+      .then(data => {
+        const list = Array.isArray(data) ? data : (data.leads ?? data.result ?? []);
+        setLeads(Array.isArray(list) ? list : []);
+      })
+      .catch(err => setError(err instanceof Error ? err.message : String(err)))
       .finally(() => setLoading(false));
   }, []);
-
-  if (loading) return <p className="text-sl-silver">Loading CRM leads...</p>;
-  if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (
     <main className="flex-1 flex items-center justify-center p-6">
@@ -44,7 +44,11 @@ export default function CrmPage() {
         <h1 className="font-['Bodoni_Moda'] text-3xl font-bold text-accent tracking-tight mb-4">CRM Leads</h1>
         <p className="text-xs text-sl-silver mb-6 uppercase tracking-widest">Lead pipeline — qualification, source, probability</p>
 
-        {leads.length === 0 ? (
+        {loading ? (
+          <p className="text-sl-silver">Loading CRM leads...</p>
+        ) : error ? (
+          <p className="text-red-500">Error: {error}</p>
+        ) : leads.length === 0 ? (
           <p className="text-sl-silver text-center py-12">No leads found</p>
         ) : (
           <div className="overflow-x-auto">

@@ -22,13 +22,13 @@ export default function TeamPage() {
         if (!res.ok) throw new Error('Failed to fetch team members');
         return res.json();
       })
-      .then(setEmployees)
-      .catch(setError)
+      .then(data => {
+        const list = Array.isArray(data) ? data : (data.members ?? data.employees ?? data.result ?? []);
+        setEmployees(Array.isArray(list) ? list : []);
+      })
+      .catch(err => setError(err instanceof Error ? err.message : String(err)))
       .finally(() => setLoading(false));
   }, []);
-
-  if (loading) return <p className="text-sl-silver">Loading team members...</p>;
-  if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (
     <main className="flex-1 flex items-center justify-center p-6">
@@ -44,7 +44,11 @@ export default function TeamPage() {
         <h1 className="font-['Bodoni_Moda'] text-3xl font-bold text-accent tracking-tight mb-4">Team Members</h1>
         <p className="text-xs text-sl-silver mb-6 uppercase tracking-widest">Employee directory with roles & departments</p>
 
-        {employees.length === 0 ? (
+        {loading ? (
+          <p className="text-sl-silver">Loading team members...</p>
+        ) : error ? (
+          <p className="text-red-500">Error: {error}</p>
+        ) : employees.length === 0 ? (
           <p className="text-sl-silver text-center py-12">No team members found</p>
         ) : (
           <div className="overflow-x-auto">

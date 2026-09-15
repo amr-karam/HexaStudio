@@ -32,10 +32,12 @@ describe("CrmPage", () => {
 
     render(<CrmPage />);
 
-    expect(screen.getByText("Acme Corp")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText("Acme Corp")).toBeInTheDocument();
+    });
     expect(screen.getByText("contact@acme.com")).toBeInTheDocument();
     expect(screen.getByText("Beta Industries")).toBeInTheDocument();
-    
+
     await waitFor(() => {
       expect(screen.getByText("85%")).toBeInTheDocument();
       expect(screen.getByText("40%")).toBeInTheDocument();
