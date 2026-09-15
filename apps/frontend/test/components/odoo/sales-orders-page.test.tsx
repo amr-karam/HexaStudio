@@ -32,12 +32,11 @@ describe("SalesOrdersPage", () => {
 
     render(<SalesOrdersPage />);
 
-    expect(screen.getByText("SO/2024/001")).toBeInTheDocument();
-    expect(screen.getByText("Acme Corp")).toBeInTheDocument();
-    expect(screen.getByText("SO/2024/002")).toBeInTheDocument();
-    expect(screen.getByText("8,500")).toBeInTheDocument();
-    
     await waitFor(() => {
+      expect(screen.getByText("SO/2024/001")).toBeInTheDocument();
+      expect(screen.getByText("Acme Corp")).toBeInTheDocument();
+      expect(screen.getByText("SO/2024/002")).toBeInTheDocument();
+      expect(screen.getByText("8,500")).toBeInTheDocument();
       expect(screen.getByText("—")).toBeInTheDocument();
     });
   });
