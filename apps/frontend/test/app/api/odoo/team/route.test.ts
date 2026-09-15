@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { NextRequest } from 'next/server';
 import { GET } from '@/app/api/odoo/team/route';
+import { GET as GET_BY_ID } from '@/app/api/odoo/team/[id]/route';
 
 const fetchMock = vi.fn();
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
@@ -35,7 +36,7 @@ describe('GET /api/odoo/team', () => {
 
     expect(response.status).toBe(200);
     const [url] = fetchMock.mock.calls[0] as [string, RequestInit];
-    expect(url).toBe(`${BACKEND}/api/odoo/team?limit=10&offset=0`);
+    expect(url).toBe(`${BACKEND}/api/odoo/employees?limit=10&offset=0`);
     expect(await response.json()).toEqual({ members: [], total: 0 });
   });
 
@@ -68,7 +69,7 @@ describe('GET /api/odoo/team/[id]', () => {
       }),
     );
 
-    const response = await GET(
+    const response = await GET_BY_ID(
       new NextRequest(`http://localhost/api/odoo/team/${memberId}`),
       { params: Promise.resolve({ id: memberId }) }
     );
@@ -85,7 +86,7 @@ describe('GET /api/odoo/team/[id]', () => {
       headers: { 'Content-Type': 'application/json' },
     }));
 
-    const response = await GET(
+    const response = await GET_BY_ID(
       new NextRequest('http://localhost/api/odoo/team/nonexistent'),
       { params: Promise.resolve({ id: 'nonexistent' }) }
     );
@@ -96,7 +97,7 @@ describe('GET /api/odoo/team/[id]', () => {
   it('returns 500 when the backend is unreachable', async () => {
     fetchMock.mockRejectedValueOnce(new Error('down'));
 
-    const response = await GET(
+    const response = await GET_BY_ID(
       new NextRequest('http://localhost/api/odoo/team/123'),
       { params: Promise.resolve({ id: '123' }) }
     );
