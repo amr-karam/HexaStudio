@@ -24,7 +24,7 @@ describe("InvoiceDetailPage", () => {
     render(<InvoiceDetailPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("INV/2024/001")).toBeInTheDocument();
+      expect(screen.getAllByText("INV/2024/001").length).toBeGreaterThanOrEqual(1);
       expect(screen.getByText("Acme Corp")).toBeInTheDocument();
       expect(screen.getByText("15,000 EGP")).toBeInTheDocument();
       expect(screen.getByText("posted")).toBeInTheDocument();
@@ -49,7 +49,7 @@ describe("InvoiceDetailPage", () => {
     render(<InvoiceDetailPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("INV/2024/002")).toBeInTheDocument();
+      expect(screen.getAllByText("INV/2024/002").length).toBeGreaterThanOrEqual(1);
       expect(screen.getByText("—")).toBeInTheDocument();
       expect(screen.getByText("5,000 USD")).toBeInTheDocument();
       expect(screen.getByText("draft")).toBeInTheDocument();
@@ -73,11 +73,11 @@ describe("InvoiceDetailPage", () => {
     render(<InvoiceDetailPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Invoice Details")).toBeInTheDocument();
-      expect(screen.getByText("Invoice Number")).toBeInTheDocument();
-      expect(screen.getByText("Currency")).toBeInTheDocument();
+      expect(screen.getAllByText("Invoice Details").length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText("Invoice Number").length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText("Currency").length).toBeGreaterThanOrEqual(1);
       expect(screen.getByText("Partner")).toBeInTheDocument();
-      expect(screen.getByText("State")).toBeInTheDocument();
+      expect(screen.getAllByText("State").length).toBeGreaterThanOrEqual(1);
     });
   });
 

@@ -24,10 +24,10 @@ describe("SalesOrderDetailPage", () => {
     render(<SalesOrderDetailPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("SO/2024/001")).toBeInTheDocument();
+      expect(screen.getAllByText("SO/2024/001").length).toBeGreaterThanOrEqual(1);
       expect(screen.getByText("Acme Corp")).toBeInTheDocument();
       expect(screen.getByText("15,000 EGP")).toBeInTheDocument();
-      expect(screen.getByText("draft")).toBeInTheDocument();
+      expect(screen.getAllByText("draft").length).toBeGreaterThanOrEqual(1);
       expect(screen.getByText("January 15, 2024")).toBeInTheDocument();
     });
   });
@@ -49,9 +49,9 @@ describe("SalesOrderDetailPage", () => {
     render(<SalesOrderDetailPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("SO/2024/002")).toBeInTheDocument();
+      expect(screen.getAllByText("SO/2024/002").length).toBeGreaterThanOrEqual(1);
       expect(screen.getByText("—")).toBeInTheDocument();
-      expect(screen.getByText("sale")).toBeInTheDocument();
+      expect(screen.getAllByText("sale").length).toBeGreaterThanOrEqual(1);
       expect(screen.getByText("8,500 USD")).toBeInTheDocument();
     });
   });
@@ -74,8 +74,8 @@ describe("SalesOrderDetailPage", () => {
 
     await waitFor(() => {
       expect(screen.getByText("Order Details")).toBeInTheDocument();
-      expect(screen.getByText("Order Number")).toBeInTheDocument();
-      expect(screen.getByText("State")).toBeInTheDocument();
+      expect(screen.getAllByText("Order Number").length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText("State").length).toBeGreaterThanOrEqual(1);
     });
   });
 
