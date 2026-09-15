@@ -50,7 +50,7 @@ describe("TeamMemberDetailPage", () => {
     await waitFor(() => {
       expect(screen.getByText("Jane Smith")).toBeInTheDocument();
       expect(screen.getByText("Project Manager")).toBeInTheDocument();
-      expect(screen.getByText("Operations")).toBeInTheDocument());
+      expect(screen.getByText("Operations")).toBeInTheDocument();
       // Email should show em dash
       const dashes = screen.getAllByText("—");
       expect(dashes.length).toBeGreaterThanOrEqual(1);
