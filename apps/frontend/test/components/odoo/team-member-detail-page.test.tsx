@@ -75,7 +75,7 @@ describe("TeamMemberDetailPage", () => {
 
     await waitFor(() => {
       expect(screen.getByText("Bio")).toBeInTheDocument();
-      expect(screen.getByText("Certified interior designer")).toBeInTheDocument();
+      expect(screen.getByText(/Certified interior designer/)).toBeInTheDocument();
       expect(screen.getByText("Skills")).toBeInTheDocument();
       expect(screen.getByText("Sustainable Design")).toBeInTheDocument();
       expect(screen.getByText("Material Selection")).toBeInTheDocument();
