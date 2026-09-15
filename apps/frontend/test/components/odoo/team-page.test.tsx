@@ -32,13 +32,12 @@ describe("TeamPage", () => {
 
     render(<TeamPage />);
 
-    expect(screen.getByText("John Doe")).toBeInTheDocument();
-    expect(screen.getByText("john@hexastudio.net")).toBeInTheDocument();
-    expect(screen.getByText("Jane Smith")).toBeInTheDocument();
-    expect(screen.getByText("Architect")).toBeInTheDocument();
-    expect(screen.getByText("Project Manager")).toBeInTheDocument();
-    
     await waitFor(() => {
+      expect(screen.getByText("John Doe")).toBeInTheDocument();
+      expect(screen.getByText("john@hexastudio.net")).toBeInTheDocument();
+      expect(screen.getByText("Jane Smith")).toBeInTheDocument();
+      expect(screen.getByText("Architect")).toBeInTheDocument();
+      expect(screen.getByText("Project Manager")).toBeInTheDocument();
       expect(screen.getByText("Design")).toBeInTheDocument();
       expect(screen.getByText("Operations")).toBeInTheDocument();
     });

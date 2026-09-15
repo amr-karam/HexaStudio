@@ -46,10 +46,9 @@ describe("ProjectsPage", () => {
 
     render(<ProjectsPage />);
 
-    expect(screen.getByText("Villa Dusk")).toBeInTheDocument();
-    expect(screen.getByText("Commercial Tower")).toBeInTheDocument();
-    
     await waitFor(() => {
+      expect(screen.getByText("Villa Dusk")).toBeInTheDocument();
+      expect(screen.getByText("Commercial Tower")).toBeInTheDocument();
       expect(screen.getByText("5")).toBeInTheDocument();
     });
   });
