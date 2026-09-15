@@ -73,8 +73,8 @@ export default function ProjectDetailPage() {
           <div className="p-4 bg-sl-glass-bg border border-sl-glass-border rounded-xl">
             <p className="text-xs text-sl-silver uppercase tracking-widest">Last Deliverable</p>
             <p className="text-sm text-foreground">
-              {project.hexa_last_deliverable_at ? 
-                new Date(project.hexa_last_deliverable_at).toLocaleDateString() : 
+              {project.hexa_last_deliverable_at ?
+                new Date(project.hexa_last_deliverable_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) :
                 'No deliverables yet'}
             </p>
           </div>
@@ -84,6 +84,12 @@ export default function ProjectDetailPage() {
               {project.hexa_team_member_ids.length} member{project.hexa_team_member_ids.length !== 1 ? 's' : ''}
             </p>
           </div>
+          {project.hexa_public_strapi_id && (
+            <div className="p-4 bg-sl-glass-bg border border-sl-glass-border rounded-xl">
+              <p className="text-xs text-sl-silver uppercase tracking-widest">Strapi ID</p>
+              <p className="text-sm text-foreground">{project.hexa_public_strapi_id}</p>
+            </div>
+          )}
         </div>
 
         {project.hexa_notes && (
