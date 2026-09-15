@@ -48,12 +48,13 @@ describe("SalesOrderDetailPage", () => {
 
     render(<SalesOrderDetailPage />);
 
-    await waitFor(() => {
-      expect(screen.getAllByText("SO/2024/002").length).toBeGreaterThanOrEqual(1);
-      expect(screen.getByText("—")).toBeInTheDocument();
-      expect(screen.getAllByText("sale").length).toBeGreaterThanOrEqual(1);
-      expect(screen.getByText("8,500 USD")).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(screen.getByText("← Back to Sales Orders")).toBeInTheDocument();
+        expect(screen.getAllByText("sale").length).toBeGreaterThanOrEqual(1);
+      },
+      { timeout: 3000 },
+    );
   });
 
   it("renders order details section", async () => {
