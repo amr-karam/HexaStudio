@@ -49,12 +49,11 @@ interface AnimateAppProps {
  */
 export function AnimateApp({
   children,
-  animation = 'fade',
   preset = 'entrance',
   duration,
   reducedMotion: reducedMotionProp,
 }: AnimateAppProps) {
-  const { animationsEnabled, staticMode } = useMotionPolicy()
+  const { staticMode } = useMotionPolicy()
   const reducedMotion = reducedMotionProp ?? useReducedMotion()
 
   // If reduced motion is enabled, render children without animation

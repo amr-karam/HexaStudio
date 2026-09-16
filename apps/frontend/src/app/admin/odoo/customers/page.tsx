@@ -14,7 +14,7 @@ interface Customer {
 
 export default function CustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
@@ -43,6 +43,12 @@ export default function CustomersPage() {
 
   return (
     <main className="flex-1 flex flex-col p-6">
+      {error && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-red-600">Failed to load customers</p>
+          <p className="text-sm text-red-500">{error}</p>
+        </div>
+      )}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold text-accent">Customers</h1>
@@ -74,57 +80,51 @@ export default function CustomersPage() {
         </svg>
       </div>
 
-{error && (
-        <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
-          <p className="text-destructive">Failed to load customers</p>
-          <p className="text-sm text-destructive">{error}</p>
+      {filteredCustomers.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-sl-silver mb-4">No customers found</p>
+          <p className="text-sm text-sl-silver/70 mb-6">There are no customers in the system yet.</p>
+          <button
+            onClick={() => router.push('/admin/odoo/customers/create')}
+            className="px-6 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors"
+          >
+            Add First Customer
+          </button>
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="text-left text-sl-silver text-xs border-b border-sl-glass-border/50">
+                <th className="font-medium w-48">Customer</th>
+                <th className="text-center w-32">Email</th>
+                <th className="text-center w-32">Phone</th>
+                <th className="text-center w-40">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredCustomers.map(customer => (
+                <tr key={customer.id} className="border-b border-sl-glass-border/10 hover:bg-sl-void/5 transition-colors">
+                  <td className="font-medium">
+                    <a href={`/admin/odoo/customers/${customer.id}`} className="text-accent hover:underline">
+                      {customer.name}
+                    </a>
+                  </td>
+                  <td className="text-sl-silver text-sm text-center">
+                    {customer.email || '—'}
+                  </td>
+                  <td className="text-sl-silver text-sm text-center">
+                    {customer.phone || '—'}
+                  </td>
+                  <td className="text-center text-sl-silver capitalize">
+                    {customer.is_active ? 'Active' : 'Inactive'}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
-      {filteredCustomers.length === 0 ? (
-         <div className="text-center py-12">
-           <p className="text-sl-silver mb-4">No customers found</p>
-           <p className="text-sm text-sl-silver/70 mb-6">There are no customers in the system yet.</p>
-           <button
-             onClick={() => router.push('/admin/odoo/customers/create')}
-             className="px-6 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors"
-           >
-             Add First Customer
-           </button>
-         </div>
-       ) : (
-         <div className="overflow-x-auto">
-           <table className="w-full">
-             <thead>
-               <tr className="text-left text-sl-silver text-xs border-b border-sl-glass-border/50">
-                 <th className="font-medium w-48">Customer</th>
-                 <th className="text-center w-32">Email</th>
-                 <th className="text-center w-32">Phone</th>
-                 <th className="text-center w-40">Status</th>
-               </tr>
-             </thead>
-             <tbody>
-               {filteredCustomers.map(customer => (
-                 <tr key={customer.id} className="border-b border-sl-glass-border/10 hover:bg-sl-void/5 transition-colors">
-                   <td className="font-medium">
-                     <a href={`/admin/odoo/customers/${customer.id}`} className="text-accent hover:underline">
-                       {customer.name}
-                     </a>
-                   </td>
-                   <td className="text-sl-silver text-sm text-center">
-                     {customer.email || '—'}
-                   </td>
-                   <td className="text-sl-silver text-sm text-center">
-                     {customer.phone || '—'}
-                   </td>
-                   <td className="text-center text-sl-silver capitalize">
-                     {customer.is_active ? 'Active' : 'Inactive'}
-                   </td>
-                 </tr>
-               ))}
-             </tbody>
-           </table>
-         </div>
-       )}
     </main>
   );
 }
