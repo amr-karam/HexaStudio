@@ -75,12 +75,12 @@ export default function CustomersPage() {
       </div>
 
 {error && (
-         <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
-           <p className="text-destructive">Failed to load customers</p>
-           <p className="text-sm text-destructive">{error}</p>
-         </div>
-       )}
-       {filteredCustomers.length === 0 ? (
+        <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+          <p className="text-destructive">Failed to load customers</p>
+          <p className="text-sm text-destructive">{error}</p>
+        </div>
+      )}
+      {filteredCustomers.length === 0 ? (
          <div className="text-center py-12">
            <p className="text-sl-silver mb-4">No customers found</p>
            <p className="text-sm text-sl-silver/70 mb-6">There are no customers in the system yet.</p>
