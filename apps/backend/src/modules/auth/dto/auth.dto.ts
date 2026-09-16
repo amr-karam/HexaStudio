@@ -38,15 +38,17 @@ export class LoginDtoClass {
 }
 
 // --- RefreshToken ---
+// Body field is optional: web clients authenticate via the httpOnly
+// `refresh_token` cookie instead; native/mobile clients send the body field.
 export const RefreshTokenSchema = z.object({
-  refreshToken: z.string(),
+  refreshToken: z.string().optional(),
 });
 
 export type RefreshTokenDto = z.infer<typeof RefreshTokenSchema>;
 
 export class RefreshTokenDtoClass {
-  @ApiProperty()
-  refreshToken!: string;
+  @ApiProperty({ required: false })
+  refreshToken?: string;
 }
 
 // --- ForgotPassword ---
