@@ -12,6 +12,8 @@ import { VectorModule } from '../vector/vector.module';
 import { AIModule } from '../ai/ai.module';
 import { RealtimeModule } from '../realtime/realtime.module';
 import { WebhooksModule } from '../webhooks/webhooks.module';
+import { AGENTS_PORT } from '../../ports/agents.port';
+import { AGENT_MEMORY_PORT } from '../../ports/agent-memory.port';
 
 @Module({
   imports: [
@@ -32,7 +34,10 @@ import { WebhooksModule } from '../webhooks/webhooks.module';
     ToolRegistryService,
     GatekeeperService,
     SwarmOrchestratorService,
+    // ADR-018: same-module port bindings — no new imports, no cycle risk.
+    { provide: AGENTS_PORT, useExisting: AgentsService },
+    { provide: AGENT_MEMORY_PORT, useExisting: AgentMemoryService },
   ],
-  exports: [AgentsService, AgentMemoryService, HermesAgentService, SwarmOrchestratorService, ToolRegistryService],
+  exports: [AgentsService, AgentMemoryService, HermesAgentService, SwarmOrchestratorService, ToolRegistryService, AGENTS_PORT, AGENT_MEMORY_PORT],
 })
 export class AgentsModule {}

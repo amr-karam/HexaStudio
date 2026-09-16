@@ -1,8 +1,19 @@
 # ADR-018: Agents ↔ Realtime ↔ Webhooks — Interface-IoC Refactor (Phase 2)
 
 **Date:** 2026-09-15
-**Status:** Proposed
+**Status:** Accepted (per-module binding; central hub rejected — see note)
 **Deciders:** Chief Architect, Backend Guild
+
+> **Implementation note (2026-09-16):** Phase 1 port interfaces (`src/ports/*.port.ts`)
+> landed. A central `PortsModule` with `useExisting` bindings was attempted and
+> **reverted**: a hub that imports `AgentsModule`/`RealtimeModule`/`WebhooksModule`
+> re-creates the cycle at module level and breaks `app-boot.spec.ts`
+> (`Cannot read properties of undefined (reading 'metatype')`, 436/437).
+> The adopted design binds each token **in its owning module**
+> (`AgentsModule` provides `AGENTS_PORT` + `AGENT_MEMORY_PORT` via same-module
+> `useExisting` — no new imports, no cycle risk) and consumers inject the token
+> (`GitWebhookService` → `AGENTS_PORT`, `ApprovalService` → `AGENT_MEMORY_PORT`).
+> Module-level `forwardRef` imports (ADR-017 seal) are unchanged.
 
 ### 1. CONTEXT
 ADR-017 sealed the 3-way circular dependency (`AgentsModule ↔ RealtimeModule ↔ WebhooksModule`) with `forwardRef()` at 6 edges (decorator-only, 5 files). The app boots and Swagger is reachable, but `forwardRef` hides the coupling and makes unit testing harder (mocks must replicate the circular graph). The gate is green (437/437 backend, 80/80 build) but the design still violates the Dependency Inversion Principle — concrete modules depend on concrete modules, not abstractions. OneDrive sync also showed how fragile the current wiring is (6 edits to keep in sync).
