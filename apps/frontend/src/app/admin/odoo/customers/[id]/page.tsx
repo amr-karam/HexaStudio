@@ -64,9 +64,9 @@ export default function CustomerDetailPage({ params }: { params?: { id: string }
   const formatCountry = (code: string | null): string | null => {
     if (!code) return null;
     try {
-      return new Intl.DisplayNames(['en'], { type: 'region' }).of(code as unknown as string);
+      return new Intl.DisplayNames(['en'], { type: 'region' }).of(code as unknown as string) ?? null;
     } catch {
-      return code;
+      return null;
     }
   };
 

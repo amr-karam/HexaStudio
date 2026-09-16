@@ -46,7 +46,6 @@ import {
   CostEstimatorModule,
   AssetsModule,
 } from "./modules/index";
-import { PortsModule } from "./ports/ports.module";
 import { RequestIdMiddleware } from "./common/middleware/request-id.middleware";
 import { WorkflowWiringService } from "./modules/workflow/workflow-wiring.service";
 
@@ -99,7 +98,6 @@ import { WorkflowWiringService } from "./modules/workflow/workflow-wiring.servic
     StyleTransferModule,
     CostEstimatorModule,
     AssetsModule,
-    PortsModule,
   ],
   controllers: [AppController],
   providers: [
