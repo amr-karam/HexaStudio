@@ -10,10 +10,10 @@ import { type ComponentType, createElement, type FC, memo } from 'react'
 
 // Placeholder components for v0 integration
 // @v0 package is optional — these are fallbacks when not installed
-const V0Button = memo((props: Record<string, unknown>) => createElement('button', props as any))
-const V0Card = memo((props: Record<string, unknown>) => createElement('div', props as any))
-const V0Input = memo((props: Record<string, unknown>) => createElement('input', props as any))
-const V0Modal = memo((props: Record<string, unknown>) => createElement('div', props as any))
+const V0Button = memo((props: Record<string, unknown>) => createElement('button', props))
+const V0Card = memo((props: Record<string, unknown>) => createElement('div', props))
+const V0Input = memo((props: Record<string, unknown>) => createElement('input', props))
+const V0Modal = memo((props: Record<string, unknown>) => createElement('div', props))
 
 // HEXA Design Token Bridge
 // Maps v0 tokens to HEXA STUDIO design tokens (sl-void, sl-alabaster, sl-gold)
@@ -44,7 +44,7 @@ export const V0_TOKEN_BRIDGE = {
 // v0 components default to standard easing; wrap with HEXA motion system
 export function withHEXAMotion<P extends Record<string, unknown>>(
   Component: ComponentType<P>,
-  motionConfig: { entrance: number[]; duration: number } = {
+  _motionConfig: { entrance: number[]; duration: number } = {
     entrance: [0.16, 1, 0.3, 1],
     duration: 0.4,
   }
