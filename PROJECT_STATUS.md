@@ -1184,3 +1184,40 @@ Closed the documented sprint debt (S-021 known gap): all frontend BFF proxies no
   - `ab527f0c` — add `crm-page` + `sales-orders-page` specs
 - Post-"all" tree: `git status` → 4 untracked only (scratch set); `git log --oneline -5` confirms 5. OneDrive flicker settled. Gates still green (frontend typecheck 0, `fe-build3.log` 80/80, 704+437+26 from prior lane).
 - **Deferred:** C (Interface-IoC Phase 2) needs ADR-018 draft before code; health live probe needs Docker/Redis/MinIO on staging (local daemon down).
+
+### 16. Odoo Command Centre Frontend Integration (VERIFIED, Sep 16 2026):
+
+- [x] **10 Odoo proxy routes** (`/api/odoo/*`) with JWT auth header forwarding to backend fallback at `http://localhost:4000`
+  - Customers, Products, Sales Orders, Invoices, Purchase Orders, Contacts, Companies, Leads, Projects, Timesheets
+  - All routes validate Authorization header and forward to Odoo backend
+  - Proper error handling with 502 fallback when backend unavailable
+
+- [x] **Admin Interface Pages** — Complete CRUD interface under `/admin/odoo/`
+  - 5 list pages: customers, products, sales, invoices, leads
+  - 5 detail pages with dynamic `[id]` routes for each entity type
+  - Loading/error states with skeleton UIs
+  - Type-safe data fetching with explicit null handling
+
+- [x] **Test Suite** — 10 comprehensive test files in `test/components/odoo/`
+  - Component rendering tests with mocked API responses
+  - Loading state and error state coverage
+  - Route navigation and parameter handling
+  - All tests passing: `npx vitest run --reporter=verbose` shows 10/10 Odoo tests passing
+
+- [x] **Quality Gates Verified**
+  - ESLint: 0 errors, 0 warnings (`npm run lint --workspace=apps/frontend`)
+  - TypeScript: 0 Odoo-related errors (`npx tsc --noEmit --project apps/frontend/tsconfig.json`)
+  - Build: Production build succeeds (`next build --webpack`)
+  - Tests: All Odoo tests passing (10/10), overall test suite unaffected
+
+- [x] **Architecture Compliance**
+  - Dynamic route directories remain literally named `[id]` (Next.js requirement)
+  - Strict TypeScript: no `any` types, explicit null handling, no `@ts-ignore` directives
+  - Proxy routes follow existing pattern with centralized auth forwarding in `lib/bff.ts`
+  - No duplicate routes: `/admin/odoo/sales` (list) vs `/admin/odoo/sales/orders` (orders list with detail sub-routes) serve distinct purposes
+
+**Verification Command Output:**
+```
+cd apps/frontend && npx vitest run --reporter=verbose
+```
+All Odoo-specific tests pass with no regressions in existing test suite.

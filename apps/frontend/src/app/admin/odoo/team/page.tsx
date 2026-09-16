@@ -47,7 +47,7 @@ export default function TeamPage() {
         {loading ? (
           <p className="text-sl-silver">Loading team members...</p>
         ) : error ? (
-          <p className="text-red-500">Error: {error}</p>
+          <p className="text-destructive">Error: {error}</p>
         ) : employees.length === 0 ? (
           <p className="text-sl-silver text-center py-12">No team members found</p>
         ) : (

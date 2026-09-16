@@ -47,7 +47,7 @@ export default function CrmPage() {
         {loading ? (
           <p className="text-sl-silver">Loading CRM leads...</p>
         ) : error ? (
-          <p className="text-red-500">Error: {error}</p>
+          <p className="text-destructive">Error: {error}</p>
         ) : leads.length === 0 ? (
           <p className="text-sl-silver text-center py-12">No leads found</p>
         ) : (

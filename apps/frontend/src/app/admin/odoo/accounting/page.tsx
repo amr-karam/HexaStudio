@@ -48,7 +48,7 @@ export default function AccountingPage() {
         {loading ? (
           <p className="text-sl-silver">Loading invoices...</p>
         ) : error ? (
-          <p className="text-red-500">Error: {error}</p>
+          <p className="text-destructive">Error: {error}</p>
         ) : invoices.length === 0 ? (
           <p className="text-sl-silver text-center py-12">No invoices found</p>
         ) : (

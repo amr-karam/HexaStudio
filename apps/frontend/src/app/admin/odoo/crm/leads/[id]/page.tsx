@@ -34,7 +34,7 @@ export default function LeadDetailPage() {
   }, [params.id]);
 
   if (loading) return <p className="text-sl-silver">Loading lead...</p>;
-  if (error) return <p className="text-red-500">Error: {error}</p>;
+  if (error) return <p className="text-destructive">Error: {error}</p>;
   if (!lead) return null;
 
   return (

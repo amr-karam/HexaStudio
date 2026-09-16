@@ -32,7 +32,7 @@ export default function SalesOrderDetailPage() {
   }, [params.id]);
 
   if (loading) return <p className="text-sl-silver">Loading sales order...</p>;
-  if (error) return <p className="text-red-500">Error: {error}</p>;
+  if (error) return <p className="text-destructive">Error: {error}</p>;
   if (!order) return null;
 
   return (

@@ -44,7 +44,7 @@ export default function ProjectsPage() {
         {loading ? (
           <p className="text-sl-silver">Loading projects...</p>
         ) : error ? (
-          <p className="text-red-500">Error: {error}</p>
+          <p className="text-destructive">Error: {error}</p>
         ) : (
           <div className="overflow-x-auto">
           <table className="w-full">
