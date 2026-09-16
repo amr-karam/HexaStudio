@@ -44,9 +44,9 @@ export default function CustomersPage() {
   return (
     <main className="flex-1 flex flex-col p-6">
       {error && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-red-600">Failed to load customers</p>
-          <p className="text-sm text-red-500">{error}</p>
+        <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg" role="alert" aria-live="polite">
+          <p className="text-destructive">Failed to load customers</p>
+          <p className="text-sm text-destructive mt-2">{error}</p>
         </div>
       )}
       <div className="flex items-center justify-between mb-6">
