@@ -9,7 +9,7 @@
     "lint": "eslint src test --max-warnings=0 && node ../../scripts/check-design-tokens.mjs --allow-inline-style-hex && node ../../scripts/check-font-preloads.mjs",
     "check:fonts": "node ../../scripts/check-font-preloads.mjs",
     "typecheck": "tsc --noEmit",
-    "test": "vite-node --config vitest.config.ts --run",
+    "test": "cross-env VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest run",
     "test:watch": "vitest",
     "test:cov": "vitest run --coverage",
     "test:e2e": "playwright test --config ../../e2e/playwright.config.ts",
