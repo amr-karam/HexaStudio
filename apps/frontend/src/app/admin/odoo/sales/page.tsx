@@ -46,7 +46,7 @@ export default function SalesPage() {
         {loading ? (
           <p className="text-sl-silver">Loading sales orders...</p>
         ) : error ? (
-          <p className="text-red-500">Error: {error}</p>
+          <p className="text-destructive">Error: {error}</p>
         ) : orders.length === 0 ? (
           <p className="text-sl-silver text-center py-12">No sales orders found</p>
         ) : (
@@ -74,7 +74,7 @@ export default function SalesPage() {
                       {order.customer || '—'}
                     </td>
                     <td className="text-right text-accent font-medium">
-                      {order.amount}
+                      {order.amount.toLocaleString()}
                     </td>
                     <td className="text-center text-sl-silver capitalize">
                       {order.currency}

@@ -76,7 +76,7 @@ export default function AccountingPage() {
                       {invoice.partner || '—'}
                     </td>
                     <td className="text-right text-accent font-medium">
-                      {invoice.amount}
+                      {invoice.amount.toLocaleString()}
                     </td>
                     <td className="text-center text-sl-silver capitalize">
                       {invoice.currency}

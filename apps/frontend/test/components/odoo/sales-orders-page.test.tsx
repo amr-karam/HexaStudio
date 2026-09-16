@@ -37,7 +37,7 @@ describe("SalesOrdersPage", () => {
       expect(screen.getByText("Acme Corp")).toBeInTheDocument();
       expect(screen.getByText("SO/2024/002")).toBeInTheDocument();
       expect(screen.getByText("8,500")).toBeInTheDocument();
-      expect(screen.getByText("—")).toBeInTheDocument();
+      expect(screen.getAllByText("—").length).toBeGreaterThanOrEqual(1);
     });
   });
 

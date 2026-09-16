@@ -36,7 +36,7 @@ describe("AccountingPage", () => {
       expect(screen.getByText("INV/2024/001")).toBeInTheDocument();
       expect(screen.getByText("Acme Corp")).toBeInTheDocument();
       expect(screen.getByText("5,000")).toBeInTheDocument();
-      expect(screen.getByText("—")).toBeInTheDocument();
+      expect(screen.getAllByText("—").length).toBeGreaterThanOrEqual(1);
     });
   });
 
