@@ -16,9 +16,11 @@ import {
   Post,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from "@nestjs/common";
-import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from "@nestjs/swagger";
 import { StyleTransferService } from "./style-transfer.service";
+import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import {
   StyleTransferGenerateDto,
   ControlNetGenerateDto,
@@ -27,6 +29,8 @@ import {
 } from "./dto";
 
 @ApiTags("style-transfer")
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller({ path: "style-transfer", version: "1" })
 export class StyleTransferController {
   constructor(private readonly service: StyleTransferService) {}
