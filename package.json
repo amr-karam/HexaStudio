@@ -71,7 +71,10 @@
     "hermes-parser": "^0.37.0",
     "jest-axe": "^11.0.0",
     "react-test-renderer": "^19.2.8",
-    "turbo": "^2.10.4"
+    "turbo": "^2.10.4",
+    "@v0": "^1.0.0",
+    "@animate/app": "^1.0.0",
+    "@animate/react": "^1.0.0"
   },
   "overrides": {
     "framer-motion": "^11.18.2",
