@@ -1049,3 +1049,47 @@ Closed the documented sprint debt (S-021 known gap): all frontend BFF proxies no
 
 ### 5. Incident Note
 - A transient lint warning (dead `useScrollLock` import in `Navbar.tsx`) was OneDrive sync lag, not a real defect — file verified byte-identical to HEAD after recovery; no code change required.
+
+---
+
+## 2026-09-17 — Odoo Command Centre Frontend Integration — COMPLETE
+
+**Status:** Implemented & verified (all quality gates green)
+
+### 1. Overview
+All 7 Odoo admin modules now have complete frontend implementations with API proxy routes, admin pages (list/detail/create), and comprehensive test suites. Total: **29 test files / 127 tests** — all passing.
+
+### 2. Modules Implemented
+
+| Module | List Page | Detail Page | Create Page | API Proxy Tests | Component Tests |
+|--------|-----------|-------------|-------------|-----------------|-----------------|
+| **Customers** | ✅ `/admin/odoo/customers` | ✅ `/admin/odoo/customers/[id]` | ✅ `/admin/odoo/customers/create` | 6 tests | 27 tests |
+| **Products** | ✅ `/admin/odoo/products` | ✅ `/admin/odoo/products/[id]` | ✅ `/admin/odoo/products/create` | 7 tests | 14 tests |
+| **Sales Orders** | ✅ `/admin/odoo/sales/orders` | ✅ `/admin/odoo/sales/orders/[id]` | — | 6 tests | 7 tests |
+| **Accounting/Invoices** | ✅ `/admin/odoo/accounting` | ✅ `/admin/odoo/accounting/invoices/[id]` | — | 7 tests | 8 tests |
+| **CRM Leads** | ✅ `/admin/odoo/crm` | ✅ `/admin/odoo/crm/leads/[id]` | — | 6 tests | 7 tests |
+| **Projects** | ✅ `/admin/odoo/projects` | ✅ `/admin/odoo/projects/[id]` | — | 10 tests | 6 tests |
+| **Team** | ✅ `/admin/odoo/team` | ✅ `/admin/odoo/team/members/[id]` | — | 9 tests | 7 tests |
+
+### 3. Test Suite Summary
+- **API Route Tests:** 14 files / 51 tests — all passing
+- **Component Tests:** 15 files / 76 tests — all passing
+- **Total:** 29 files / 127 tests — **100% pass rate**
+
+### 4. Quality Gates Verified
+| Gate | Result |
+|------|--------|
+| Frontend ESLint | ✅ 0 errors, 0 warnings |
+| Frontend Typecheck | ✅ 0 errors |
+| Backend ESLint | ✅ 0 errors, 0 warnings |
+| Backend Typecheck | ✅ 0 errors |
+| Backend Tests | ✅ 59 files / 437 tests |
+| Design Tokens | ✅ ALL PASSED |
+| Mobile Lint/Typecheck | ✅ 0 errors, 0 warnings |
+
+### 5. Architecture Notes
+- All proxy routes forward `Authorization` header to `http://localhost:4000` backend
+- Dynamic route directories use literal `[id]` naming (Next.js requirement)
+- Windows PowerShell bracket glob issue resolved via `Move-Item -LiteralPath`
+- `create/page.tsx` validation: `name.trim()` check before email/phone regex
+- No `any` types, no `@ts-ignore` directives
