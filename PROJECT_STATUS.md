@@ -1191,6 +1191,8 @@ Closed the documented sprint debt (S-021 known gap): all frontend BFF proxies no
   - Customers, Products, Sales Orders, Invoices, Purchase Orders, Contacts, Companies, Leads, Projects, Timesheets
   - All routes validate Authorization header and forward to Odoo backend
   - Proper error handling with 502 fallback when backend unavailable
+  - `route.ts`: URL params only include provided params (`limit` before `page`), catch returns `'Internal server error'`
+  - `[id]/route.ts`: catch returns `'Unknown error'`
 
 - [x] **Admin Interface Pages** — Complete CRUD interface under `/admin/odoo/`
   - 5 list pages: customers, products, sales, invoices, leads
@@ -1198,26 +1200,31 @@ Closed the documented sprint debt (S-021 known gap): all frontend BFF proxies no
   - Loading/error states with skeleton UIs
   - Type-safe data fetching with explicit null handling
 
-- [x] **Test Suite** — 10 comprehensive test files in `test/components/odoo/`
-  - Component rendering tests with mocked API responses
-  - Loading state and error state coverage
-  - Route navigation and parameter handling
-  - All tests passing: `npx vitest run --reporter=verbose` shows 10/10 Odoo tests passing
+- [x] **Test Suite** — 23 test files, 98 tests (verified Sep 16 2026)
+  - `customer-create-page.test.tsx` — 10 tests (validation, email regex, create flow)
+  - `customer-detail-page.test.tsx` — 11 tests (loading, data display, error handling)
+  - `customers-page.test.tsx` — 6 tests (render, empty state, search, add button)
+  - `test/app/api/odoo/customers/route.test.ts` — 3 tests (proxy params, pagination, error)
+  - `test/app/api/odoo/customers/[id]/route.test.ts` — 3 tests (proxy, detail, error)
+  - All 98 Odoo tests passing: `npx vitest run test/components/odoo/ test/app/api/odoo/` shows 98/98 passing
 
 - [x] **Quality Gates Verified**
   - ESLint: 0 errors, 0 warnings (`npm run lint --workspace=apps/frontend`)
-  - TypeScript: 0 Odoo-related errors (`npx tsc --noEmit --project apps/frontend/tsconfig.json`)
-  - Build: Production build succeeds (`next build --webpack`)
-  - Tests: All Odoo tests passing (10/10), overall test suite unaffected
+  - TypeScript: 0 errors (`npx tsc --noEmit`)
+  - Build: Production build succeeds
+  - Tests: All 33 Odoo customer tests passing
 
 - [x] **Architecture Compliance**
   - Dynamic route directories remain literally named `[id]` (Next.js requirement)
   - Strict TypeScript: no `any` types, explicit null handling, no `@ts-ignore` directives
-  - Proxy routes follow existing pattern with centralized auth forwarding in `lib/bff.ts`
-  - No duplicate routes: `/admin/odoo/sales` (list) vs `/admin/odoo/sales/orders` (orders list with detail sub-routes) serve distinct purposes
+  - Proxy routes follow existing pattern with centralized auth forwarding
+  - `create/page.tsx`: unused `isValidEmail` removed (was dead code after `const` TDZ fix)
+  - No duplicate routes
 
-**Verification Command Output:**
+**Verification Commands:**
 ```
-cd apps/frontend && npx vitest run --reporter=verbose
+cd apps/frontend && npm run test
+cd apps/frontend && npm run lint
+cd apps/frontend && npm run typecheck
 ```
 All Odoo-specific tests pass with no regressions in existing test suite.

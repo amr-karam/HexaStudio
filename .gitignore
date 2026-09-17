@@ -233,3 +233,6 @@ hexastudio-backend.tar
 nul
 kanban-*.html
 .worktrees/
+
+# WebDev security configuration
+.security-config
