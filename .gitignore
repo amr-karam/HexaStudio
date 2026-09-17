@@ -244,6 +244,9 @@ kanban-*.html
 .hermes-tmp*
 test-debug.tsx
 
+# GitHub Actions workflow (project uses GitLab CI)
+.github/workflows/
+
 # Auto-generated scaffolding scripts (not production)
 scripts/anima-workflow.sh
 scripts/coordinate-agents.sh
@@ -252,3 +255,6 @@ scripts/setup-git-config.sh
 scripts/setup-mcp-integration.sh
 scripts/sprint-development.sh
 scripts/webdev-quick-start.sh
+scripts/check-motion-tokens.mjs
+scripts/setup-security-config.sh
+scripts/verify-webdev-setup.sh
