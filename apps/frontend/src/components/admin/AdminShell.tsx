@@ -24,9 +24,9 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     fetchDesignSettings().then(setDesignSettings).catch(() => {
       // Fallback to default settings if Strapi is unreachable
-      setDesignSettings({
-        colors: { gold: '#D4AF37', void: '#0A0A0B', obsidian: '#121214', alabaster: '#F5F4F2', muted: '#A8A8A8', goldSubtle: 'rgba(212,175,55,0.15)' },
-        typography: { headingFont: 'Bodoni Moda', bodyFont: 'Inter', monoFont: 'JetBrains Mono', headingTracking: '-0.02em', bodySize: '1rem' },
+        setDesignSettings({
+          colors: { gold: '#D4AF37', void: '#050505', obsidian: '#0F0F10', alabaster: '#F5F4F2', muted: '#A0A0A0', goldSubtle: 'rgba(212,175,55,0.15)' },
+          typography: { headingFont: 'Bodoni Moda', bodyFont: 'Inter', monoFont: 'JetBrains Mono', headingTracking: '-0.02em', bodySize: '1rem' },
         siteIdentity: { logo: '', wordmark: 'HexaStudio', tagline: 'Living Spaces. Visualized.' },
         header: { variant: 'transparent', menu: [] },
         hero: { variant: 'void-garden', monolithCount: 24, showChapterRail: true },

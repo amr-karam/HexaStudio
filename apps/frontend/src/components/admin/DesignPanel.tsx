@@ -66,13 +66,13 @@ export function DesignPanel({ settings, onChange, onPublish, onDiscard }: Design
                     </div>
                     <p className="text-[10px] text-sl-silver mt-0.5 font-['JetBrains_Mono']">{hint}</p>
                   </div>
-                  <button
-                    onClick={() => update({ colors: { ...settings.colors, [key]: '#D4AF37' } })}
-                    className="text-[10px] text-accent hover:underline font-['JetBrains_Mono'] uppercase tracking-wider"
-                    title="Reset to default"
-                  >
-                    Reset
-                  </button>
+                    <button
+                      onClick={() => update({ colors: { ...settings.colors, [key]: settings.colors.gold } })}
+                      className="text-[10px] text-accent hover:underline font-['JetBrains_Mono'] uppercase tracking-wider"
+                      title="Reset to default"
+                    >
+                      Reset
+                    </button>
                 </div>
               ))}
             </div>
@@ -252,7 +252,7 @@ export function DesignPanel({ settings, onChange, onPublish, onDiscard }: Design
                     className={cn(
                       'flex-1 py-2 rounded-md text-xs font-["JetBrains_Mono"] uppercase tracking-wider transition-colors',
                       settings.hero.variant === 'void-garden'
-                        ? 'bg-accent text-[#0A0A0B]'
+                        ? 'bg-accent text-sl-void'
                         : 'bg-sl-stone border border-sl-glass-border text-sl-mist hover:text-sl-alabaster'
                     )}
                   >
@@ -263,7 +263,7 @@ export function DesignPanel({ settings, onChange, onPublish, onDiscard }: Design
                     className={cn(
                       'flex-1 py-2 rounded-md text-xs font-["JetBrains_Mono"] uppercase tracking-wider transition-colors',
                       settings.hero.variant === 'fracture-ring'
-                        ? 'bg-accent text-[#0A0A0B]'
+                        ? 'bg-accent text-sl-void'
                         : 'bg-sl-stone border border-sl-glass-border text-sl-mist hover:text-sl-alabaster'
                     )}
                   >
@@ -434,12 +434,12 @@ html {
         >
           Discard
         </button>
-        <button
-          onClick={onPublish}
-          className="flex-1 py-2 rounded-md text-xs font-['JetBrains_Mono'] uppercase tracking-wider bg-accent text-[#0A0A0B] hover:bg-[#E5C256] transition-colors font-medium"
-        >
-          Publish
-        </button>
+             <button
+               onClick={onPublish}
+               className="flex-1 py-2 rounded-md text-xs font-['JetBrains_Mono'] uppercase tracking-wider bg-accent text-sl-void hover:bg-[#E5C256] transition-colors font-medium"
+             >
+               Publish
+             </button>
       </div>
     </aside>
   );

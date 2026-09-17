@@ -91,7 +91,7 @@ export function HomeHero() {
     const draw = (time: number) => {
       const t = (time - startTime) / 1000;
       ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = '#0A0A0B';
+      ctx.fillStyle = '#050505';
       ctx.fillRect(0, 0, width, height);
 
       const cx = width / 2 + (mouse.x - 0.5) * 60;

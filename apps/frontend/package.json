@@ -46,6 +46,10 @@
     "next": "^16.2.11",
     "next-intl": "^4.0.0",
     "picomatch": "^4.0.5",
+    "postcss-custom-properties": "^15.0.1",
+    "postcss-import": "^17.0.0",
+    "postcss-logical": "^9.0.0",
+    "postcss-nesting": "^14.0.1",
     "react": "^19.0.0",
     "react-aria": "^3.51.0",
     "react-dom": "^19.2.7",
@@ -59,10 +63,7 @@
     "typescript-eslint": "^8.62.1",
     "web-vitals": "^5.3.0",
     "webpack": "^5.108.4",
-    "zustand": "^5.0.2",
-    "@v0": "^1.0.0",
-    "@animate/app": "^1.0.0",
-    "@animate/react": "^1.0.0"
+    "zustand": "^5.0.2"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^16.3.1",
