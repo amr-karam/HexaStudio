@@ -1,6 +1,6 @@
 'use client';
 
-import { useWebGLContext } from '@/providers/webgl-context-provider';
+import { useWebGLContext } from '@/engine/webgl/WebGLContextProvider';
 
 /**
  * Hook to get the shared WebGL context for R3F Canvases.
