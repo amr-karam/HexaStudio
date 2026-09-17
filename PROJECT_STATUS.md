@@ -27,7 +27,7 @@
 ||---|---|---|---|
 || **Backend Tests** | 403 total (47 files) | `47 / 47 files, 404/404 tests` | ✅ PASS |
 ||| **Frontend Tests** | 665 total (90 files) | `665 / 665` | ✅ PASS |
-|| **Mobile Tests** | 26 passing | `26 / 26` (lint+typecheck PASS; test suite blocked by pre-existing hermes-parser env corruption) | ⚠️ ENV |
+|| **Mobile Tests** | 26 passing | `26 / 26` (lint+typecheck PASS; 8 test suites via `jest`) | ✅ PASS |
 || **Frontend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 || **Backend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 || **Mobile Typecheck** | 0 errors | `0 errors` | ✅ PASS |
@@ -37,7 +37,7 @@
 - **Active Workspace Quality Gates**:
   - `apps/frontend`: 90 suites / 665 tests passed (100%), 50 routes compiled, 0 errors, 0 warnings
   - `apps/backend`: 47 files / 404 tests passed (100%), 0 errors, 0 warnings
-  - `apps/mobile`: lint 0/0, typecheck 0, test suite blocked by hermes-parser env corruption (pre-existing)
+  - `apps/mobile`: 8 suites / 26 tests passed (100%), lint 0/0, typecheck 0 errors
 
 - **Production Server (`19.16.1.100`)**:
   - 28/28 containers **Up (healthy)**
