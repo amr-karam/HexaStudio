@@ -41,3 +41,11 @@ export {
 
 // Idle utility
 export { onIdle } from './idle';
+
+// v0 component bridge
+export {
+  V0Components,
+  withHEXAMotion,
+  V0_TOKEN_BRIDGE,
+  isV0Available,
+} from './v0';
