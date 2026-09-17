@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { NextRequest } from 'next/server';
 import { GET } from '@/app/api/odoo/products/[id]/route';
 
 const fetchMock = vi.fn();
@@ -17,12 +16,12 @@ describe('GET /api/odoo/products/:id', () => {
 
   it('fetches a single product by ID', async () => {
     const mockProduct = {
-      id: 456,
-      name: 'Laptop Pro',
-      default_code: 'PRD-001',
-      list_price: 1299.99,
-      type: 'product',
-      is_active: true,
+      id: 42,
+      name: 'Villa Dusk Floor Plan',
+      list_price: 15000,
+      categ_id: [1, 'Interior Design'],
+      type: 'service',
+      active: true,
     };
 
     fetchMock.mockResolvedValueOnce(
@@ -32,16 +31,33 @@ describe('GET /api/odoo/products/:id', () => {
       }),
     );
 
-    const request = new NextRequest('http://localhost/api/odoo/products/456');
-    const response = await GET(request, { params: Promise.resolve({ id: '456' }) });
+    const request = new Request('http://localhost/api/odoo/products/42');
+    const response = await GET(request, { params: Promise.resolve({ id: '42' }) });
 
     expect(response.status).toBe(200);
     const [url] = fetchMock.mock.calls[0] as [string, RequestInit];
-    expect(url).toBe(`${BACKEND}/api/v1/odoo/products/456`);
+    expect(url).toBe(`${BACKEND}/api/v1/odoo/products/42`);
     expect(await response.json()).toEqual(mockProduct);
   });
 
-  it('returns 404 when product not found', async () => {
+  it('forwards Authorization header', async () => {
+    fetchMock.mockResolvedValueOnce(
+      new Response(JSON.stringify({ id: 1, name: 'Test' }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+
+    const request = new Request('http://localhost/api/odoo/products/1', {
+      headers: { Authorization: 'Bearer test-token' },
+    });
+    await GET(request, { params: Promise.resolve({ id: '1' }) });
+
+    const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(init.headers).toMatchObject({ Authorization: 'Bearer test-token' });
+  });
+
+  it('returns 404 when backend returns 404', async () => {
     fetchMock.mockResolvedValueOnce(
       new Response(JSON.stringify({ error: 'Not found' }), {
         status: 404,
@@ -49,7 +65,7 @@ describe('GET /api/odoo/products/:id', () => {
       }),
     );
 
-    const request = new NextRequest('http://localhost/api/odoo/products/999');
+    const request = new Request('http://localhost/api/odoo/products/999');
     const response = await GET(request, { params: Promise.resolve({ id: '999' }) });
 
     expect(response.status).toBe(404);
@@ -57,10 +73,10 @@ describe('GET /api/odoo/products/:id', () => {
   });
 
   it('returns 500 when the backend is unreachable', async () => {
-    fetchMock.mockRejectedValueOnce(new Error('Database connection failed'));
+    fetchMock.mockRejectedValueOnce(new Error('Connection refused'));
 
-    const request = new NextRequest('http://localhost/api/odoo/products/123');
-    const response = await GET(request, { params: Promise.resolve({ id: '123' }) });
+    const request = new Request('http://localhost/api/odoo/products/1');
+    const response = await GET(request, { params: Promise.resolve({ id: '1' }) });
 
     expect(response.status).toBe(500);
     expect(await response.json()).toMatchObject({ error: 'Unknown error' });
