@@ -4,7 +4,13 @@ import { usePathname } from 'next/navigation';
 import { ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 import { Navbar } from '@/components/ui/nav/Navbar';
-import { Footer } from '@/components/ui/Footer';
+/** Defer Footer — it imports framer-motion and registers ~12 whileInView
+ *  IntersectionObservers during hydration. Since it's always below the fold,
+ *  deferring it removes non-critical work from the hydration commit. */
+const Footer = dynamic(
+  () => import('@/components/ui/Footer').then((m) => ({ default: m.Footer })),
+  { ssr: false },
+);
 import { PageTransition } from '@/components/PageTransition';
 import { SmoothScrollWrapper } from '@/components/SmoothScrollWrapper';
 

@@ -286,7 +286,20 @@ export function WebGLContextProvider({
     return false;
   }, [initializeContext, maxRecoveryAttempts, recoveryDelayMs, notifyStateChange]);
 
-  /* ---- Event Handlers ---- */
+  /* ---- Defer heavy WebGL init to requestIdleCallback ---- */
+  useEffect(() => {
+    // Defer context creation + capability detection (12 gl.getParameter()
+    // calls) to idle time so it doesn't block the initial hydration commit.
+    const id = typeof requestIdleCallback !== 'undefined'
+      ? requestIdleCallback(() => { void initializeContext(); })
+      : setTimeout(() => { void initializeContext(); }, 0) as unknown as number;
+    return () => {
+      if (typeof cancelIdleCallback !== 'undefined') cancelIdleCallback(id);
+      else clearTimeout(id);
+    };
+  }, [initializeContext]);
+
+  /* ---- Event Handlers (attached after context is ready) ---- */
   useEffect(() => {
     const handleContextLost = (event: Event) => {
       event.preventDefault();
@@ -313,12 +326,7 @@ export function WebGLContextProvider({
       glRef.current.viewport(0, 0, canvasRef.current.width, canvasRef.current.height);
     };
 
-    // Start initialization
-    void initializeContext();
-
-    // Canvas is created synchronously inside initializeContext (no await before
-    // the assignment), so we can attach listeners directly instead of polling
-    // with setInterval every 50ms.
+    // Attach listeners once canvas is available (after deferred init).
     if (canvasRef.current) {
       canvasRef.current.addEventListener("webglcontextlost", handleContextLost);
       canvasRef.current.addEventListener("webglcontextrestored", handleContextRestored);
@@ -338,7 +346,7 @@ export function WebGLContextProvider({
         if (loseCtx) loseCtx.loseContext();
       }
     };
-  }, [initializeContext, autoRecover, attemptRecovery, notifyStateChange]);
+  }, [autoRecover, attemptRecovery, notifyStateChange]);
 
   /* ---- Metrics Loop ---- */
   useEffect(() => {
