@@ -1201,24 +1201,28 @@ Closed the documented sprint debt (S-021 known gap): all frontend BFF proxies no
   - Loading/error states with skeleton UIs
   - Type-safe data fetching with explicit null handling
 
-- [x] **Test Suite** — 50+ tests verified (verified Sep 16 2026)
+- [x] **Test Suite** — 53+ tests verified (verified Sep 17 2026)
   - Customer module: 33 tests across 5 test files (all passing)
     - `customer-create-page.test.tsx` — 10 tests
     - `customer-detail-page.test.tsx` — 11 tests
     - `customers-page.test.tsx` — 6 tests
     - `test/app/api/odoo/customers/route.test.ts` — 3 tests
     - `test/app/api/odoo/customers/[id]/route.test.ts` — 3 tests
-  - Products module: 17 tests across 4 test files (all passing)
+  - Products module: 20 tests across 4 test files (all passing)
     - `products-page.test.tsx` — 6 tests
     - `product-create-page.test.tsx` — 8 tests
     - `test/app/api/odoo/products/route.test.ts` — 3 tests
     - `test/app/api/odoo/products/[id]/route.test.ts` — 3 tests
 
 - [x] **Quality Gates Verified**
-  - ESLint: 0 errors, 0 warnings (`npm run lint --workspace=apps/frontend`)
-  - TypeScript: 0 errors (`npx tsc --noEmit`)
+  - Frontend ESLint: 0 errors, 0 warnings (`npx eslint src test --max-warnings=0`)
+  - Frontend TypeScript: 0 errors (`npx tsc --noEmit`)
+  - Backend ESLint: 0 errors, 0 warnings (`npx eslint src --max-warnings=0`)
+  - Backend TypeScript: 0 errors (`npx tsc --noEmit`)
+  - Backend Tests: 437/437 passing (`npx vitest run`)
+  - Design Tokens: ALL PASSED (`node scripts/check-design-tokens.mjs --allow-inline-style-hex`)
   - Build: Production build succeeds
-  - Tests: All Odoo customer and product tests passing
+  - Mobile: 8 pre-existing Jest/vitest compatibility failures (unrelated — Jest globals not available in vitest)
 
 - [x] **Architecture Compliance**
   - Dynamic route directories remain literally named `[id]` (Next.js requirement)
@@ -1226,11 +1230,14 @@ Closed the documented sprint debt (S-021 known gap): all frontend BFF proxies no
   - Proxy routes follow existing pattern with centralized auth forwarding
   - `create/page.tsx`: unused `isValidEmail` removed (was dead code after `const` TDZ fix)
   - No duplicate routes
+  - Windows PowerShell `[id]` bracket glob issue resolved via `Move-Item -LiteralPath`
 
 **Verification Commands:**
 ```
 cd apps/frontend && npx vitest run test/components/odoo/ test/app/api/odoo/
-cd apps/frontend && npm run lint
-cd apps/frontend && npm run typecheck
+cd apps/frontend && npx eslint src test --max-warnings=0
+cd apps/frontend && npx tsc --noEmit
+cd apps/backend && npx eslint src --max-warnings=0 && npx tsc --noEmit && npx vitest run
+node scripts/check-design-tokens.mjs --allow-inline-style-hex
 ```
 All Odoo-specific tests pass with no regressions in existing test suite.
