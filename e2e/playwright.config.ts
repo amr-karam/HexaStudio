@@ -8,7 +8,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : 1,
   reporter: [["html", { outputFolder: "playwright-report" }]],
   use: {
-    baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:3000",
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:1000",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
     // Force reduced motion so Framer Motion animations are instant in E2E.
@@ -35,7 +35,7 @@ export default defineConfig({
     command: process.env.CI
       ? "npm run start -w apps/frontend"
       : "npm run dev -w apps/frontend",
-    url: "http://localhost:3000",
+    url: "http://localhost:1000",
     reuseExistingServer: !process.env.CI,
     timeout: 30000,
     cwd: "..",

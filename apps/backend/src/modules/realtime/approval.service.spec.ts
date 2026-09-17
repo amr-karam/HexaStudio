@@ -10,7 +10,7 @@ import { NotFoundException } from '@nestjs/common';
 import { vi } from 'vitest';
 import { ApprovalService } from './approval.service';
 import { ApprovalRepository } from './approval.repository';
-import { AgentMemoryService } from '../agents/agent-memory.service';
+import { AGENT_MEMORY_PORT } from '../../ports/agent-memory.port';
 import { StructuredOutputService } from '../ai/structured-output.service';
 import type { PhaseApproval } from './approval.types';
 
@@ -51,7 +51,7 @@ describe('ApprovalService', () => {
           },
         },
         {
-          provide: AgentMemoryService,
+          provide: AGENT_MEMORY_PORT,
           useValue: {
             getHistory: vi.fn().mockResolvedValue([]),
             append: vi.fn().mockResolvedValue(undefined),

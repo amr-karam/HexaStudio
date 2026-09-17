@@ -1,11 +1,15 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject, forwardRef } from '@nestjs/common';
 import { AgentsService } from '../agents/agents.service';
 
 @Injectable()
 export class GitWebhookService {
   private readonly logger = new Logger(GitWebhookService.name);
 
-  constructor(private readonly agentsService: AgentsService) {}
+  // ADR-017: AgentsService lives in AgentsModule (circular) — lazy token.
+  constructor(
+    @Inject(forwardRef(() => AgentsService))
+    private readonly agentsService: AgentsService,
+  ) {}
 
   async reviewPullRequest(payload: {
     prTitle: string;

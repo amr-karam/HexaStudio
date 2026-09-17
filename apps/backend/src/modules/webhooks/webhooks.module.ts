@@ -11,7 +11,9 @@ import { RealtimeModule } from '../realtime/realtime.module';
 import { AgentsModule } from '../agents/agents.module';
 
 @Module({
-  imports: [HttpModule, RealtimeModule, forwardRef(() => AgentsModule)],
+  // ADR-017: RealtimeModule is circular (via AgentsModule) — a direct import
+  // evaluates to `undefined` depending on load order and breaks app boot.
+  imports: [HttpModule, forwardRef(() => RealtimeModule), forwardRef(() => AgentsModule)],
   controllers: [WebhookConfigController, GitWebhookController],
   providers: [SlackService, WebhookListener, WebhookDispatcher, WebhookConfigService, GitWebhookService],
   exports: [SlackService, WebhookConfigService, GitWebhookService],

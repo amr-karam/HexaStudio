@@ -1,0 +1,61 @@
+{
+  "models": [
+    {
+      "id": "egyptian-temple-column-doric",
+      "name": "Egyptian Temple Column (Doric)",
+      "category": "architecture",
+      "url": "/assets/models/egyptian-temple-column-doric.glb",
+      "thumbnail": "/assets/models/egyptian-temple-column-doric-thumb.jpg",
+      "size": "8.2MB",
+      "license": "CC-BY-4.0",
+      "compatibleWith": ["@react-three/fiber", "@react-three/drei", "three.js r170+"]
+    },
+    {
+      "id": "islamic-mashrabiya-screen",
+      "name": "Islamic Mashrabiya Screen",
+      "category": "architecture",
+      "url": "/assets/models/islamic-mashrabiya-screen.glb",
+      "thumbnail": "/assets/models/islamic-mashrabiya-screen-thumb.jpg",
+      "size": "3.4MB",
+      "license": "MIT",
+      "compatibleWith": ["@react-three/fiber", "@react-three/drei", "three.js r170+"]
+    },
+    {
+      "id": "ramadan-lantern-brass",
+      "name": "Ramadan Brass Lantern",
+      "category": "decoration",
+      "url": "/assets/models/ramadan-lantern-brass.glb",
+      "thumbnail": "/assets/models/ramadan-lantern-brass-thumb.jpg",
+      "size": "1.8MB",
+      "license": "CC-BY-4.0",
+      "compatibleWith": ["@react-three/fiber", "@react-three/drei", "three.js r170+"]
+    },
+    {
+      "id": "nile-basin-stone",
+      "name": "Nile Basin Stone Vessel",
+      "category": "furniture",
+      "url": "/assets/models/nile-basin-stone.glb",
+      "thumbnail": "/assets/models/nile-basin-stone-thumb.jpg",
+      "size": "5.1MB",
+      "license": "CC-BY-4.0",
+      "compatibleWith": ["@react-three/fiber", "@react-three/drei", "three.js r170+"]
+    },
+    {
+      "id": "egyptian-hieroglyphic-wall",
+      "name": "Egyptian Hieroglyphic Wall Panel",
+      "category": "architecture",
+      "url": "/assets/models/egyptian-hieroglyphic-wall.glb",
+      "thumbnail": "/assets/models/egyptian-hieroglyphic-wall-thumb.jpg",
+      "size": "12.5MB",
+      "license": "Public Domain",
+      "compatibleWith": ["@react-three/fiber", "@react-three/drei", "three.js r170+"]
+    }
+  ],
+  "metadata": {
+    "totalModels": 5,
+    "categories": ["architecture", "furniture", "decoration"],
+    "selfHosted": true,
+    "source": "Egyptian architectural heritage + open-source 3D assets",
+    "compatibility": "@react-three/fiber + @react-three/drei + three.js r170+"
+  }
+}

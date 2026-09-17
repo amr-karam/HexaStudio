@@ -1,4 +1,4 @@
-declare module '*.json' {
-  const value: unknown;
+declare module "*.json" {
+  const value: Record<string, unknown>;
   export default value;
 }

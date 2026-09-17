@@ -9,3 +9,7 @@ export { ChapterProgress } from './ChapterProgress';
 export type { Chapter } from './ChapterProgress';
 export { ReadingProgress } from './ReadingProgress';
 export { DeferScript, withDefer, useDeferredExecution } from '../defer-script';
+
+// Animation wrappers
+export { AnimateApp, AnimatedPresence, HEXA_ANIMATION_TOKENS } from './AnimateApp';
+export type { AnimateAppProps } from './AnimateApp';

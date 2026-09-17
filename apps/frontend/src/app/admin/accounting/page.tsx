@@ -63,7 +63,7 @@ const stateBadge = (state: string) => {
   const styles: Record<string, string> = {
     draft: 'bg-sl-obsidian text-sl-mist/60',
     posted: 'bg-emerald-900/30 text-emerald-400',
-    cancel: 'bg-red-900/30 text-red-400',
+    cancel: 'bg-destructive/10 text-destructive',
   };
   return styles[state] || 'bg-sl-obsidian text-sl-mist/60';
 };
@@ -182,7 +182,7 @@ export default function AdminAccountingPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" data-responsive="stack tablet-2">
                   {[
                     { label: 'Revenue', value: fmt(dashboard.total_revenue), color: 'text-emerald-400' },
-                    { label: 'Expenses', value: fmt(dashboard.total_expenses), color: 'text-red-400' },
+                    { label: 'Expenses', value: fmt(dashboard.total_expenses), color: 'text-destructive' },
                     { label: 'Receivable', value: fmt(dashboard.outstanding_receivable), color: 'text-blue-400' },
                     { label: 'Payable', value: fmt(dashboard.outstanding_payable), color: 'text-amber-400' },
                   ].map((card) => (

@@ -4,9 +4,8 @@ import { useState, useEffect, useCallback, useRef, createContext, useContext } f
 import { User } from '@/types';
 import { API_BASE_URL } from '@/config/constants';
 import {
-  setRefreshToken,
+  setLoggedIn,
   setAccessToken,
-  getRefreshToken,
   onAuthLogout,
   authFetch,
 } from '@/lib/api-client';
@@ -30,7 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Register logout handler — when refresh token is revoked/expired, force UI logout
   useEffect(() => {
     onAuthLogout(() => {
-      setRefreshToken(null);
+      setLoggedIn(false);
       setAccessToken(null);
       setUser(null);
     });
@@ -57,8 +56,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    // Check if user is logged in by calling /me (cookie is sent automatically)
-    fetchUser();
+    // Defer the /me probe to requestIdleCallback so it doesn't block the
+    // initial hydration commit. Anonymous users get { data: null } (200) so
+    // the round-trip is wasted work during first paint.
+    const id = typeof requestIdleCallback !== 'undefined'
+      ? requestIdleCallback(() => { void fetchUser(); })
+      : setTimeout(() => { void fetchUser(); }, 0) as unknown as number;
+    return () => {
+      if (typeof cancelIdleCallback !== 'undefined') cancelIdleCallback(id);
+      else clearTimeout(id);
+    };
   }, [fetchUser]);
 
   const login = async (identifier: string, password: string) => {
@@ -80,10 +87,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // A new session starts — release any stale logout in-flight guard.
     logoutInFlightRef.current = false;
 
-    // Store tokens in memory for automatic renewal
-    if (data.refreshToken) {
-      setRefreshToken(data.refreshToken);
-    }
+    // Mark session active; access token stays in memory, refresh token is in
+    // the httpOnly cookie set by the backend.
+    setLoggedIn(true);
     if (data.accessToken) {
       setAccessToken(data.accessToken);
     }
@@ -108,10 +114,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // A new session starts — release any stale logout in-flight guard.
     logoutInFlightRef.current = false;
 
-    // Store tokens in memory for automatic renewal
-    if (data.refreshToken) {
-      setRefreshToken(data.refreshToken);
-    }
+    // Mark session active; access token stays in memory, refresh token is in
+    // the httpOnly cookie set by the backend.
+    setLoggedIn(true);
     if (data.accessToken) {
       setAccessToken(data.accessToken);
     }
@@ -123,13 +128,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (logoutInFlightRef.current) return;
     logoutInFlightRef.current = true;
 
-    // Capture the refresh token BEFORE clearing state, so the server-side
-    // session can still be revoked by the API call below.
-    const refreshToken = getRefreshToken();
-
     // Clear auth state synchronously — the local session ends immediately,
-    // regardless of the network result.
-    setRefreshToken(null);
+    // regardless of the network result. Refresh token is in the httpOnly
+    // cookie; the backend reads it from the request cookies.
+    setLoggedIn(false);
     setAccessToken(null);
     setUser(null);
 
@@ -139,7 +141,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refreshToken }),
+      body: '{}',
     })
       .catch(() => {
         // Best-effort revocation — local session is already cleared above.

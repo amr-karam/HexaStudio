@@ -225,8 +225,36 @@ hexastudio-backend.tar
 .tmp-lh-perf.json
 *.report.html
 
+# Local-only env files carrying real credentials — never commit
+*.env
+
+# Windows filesystem / OneDrive sync scratch artifacts
 nul
 
-# Secret files
-openai-compatible-agents.env
-apps/backend/.env.framer
+# Scratch kanban exports (one-off dumps)
+kanban-*.html
+
+# Git worktrees (managed outside the repo tree)
+.worktrees/
+
+# WebDev security configuration (local only)
+.security-config
+
+# Temporary scratch files
+.hermes-tmp*
+test-debug.tsx
+
+# GitHub Actions workflow (project uses GitLab CI)
+.github/workflows/
+
+# Auto-generated scaffolding scripts (not production)
+scripts/anima-workflow.sh
+scripts/coordinate-agents.sh
+scripts/init-sprint.sh
+scripts/setup-git-config.sh
+scripts/setup-mcp-integration.sh
+scripts/sprint-development.sh
+scripts/webdev-quick-start.sh
+scripts/check-motion-tokens.mjs
+scripts/setup-security-config.sh
+scripts/verify-webdev-setup.sh

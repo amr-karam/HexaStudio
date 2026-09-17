@@ -110,11 +110,16 @@ function renderView() {
   );
 }
 
+// Two chained queries (projects → documents) must resolve before the grid
+// paints. Under a fully-loaded suite run this can exceed the default 1s
+// findBy timeout, so allow up to 10s here (assertions unchanged).
+const FIND_OPTS = { timeout: 10_000 };
+
 describe('DocumentCenterView', () => {
   it('renders live documents from the API once the project resolves', async () => {
     renderView();
 
-    expect(await screen.findByText('Exterior_Render_Final.png')).toBeInTheDocument();
+    expect(await screen.findByText('Exterior_Render_Final.png', {}, FIND_OPTS)).toBeInTheDocument();
     expect(screen.getByText('Master_Services_Agreement.pdf')).toBeInTheDocument();
     expect(screen.getByText('BIM_Model_Package.zip')).toBeInTheDocument();
     expect(loadDocs).toHaveBeenCalledWith(7);
@@ -122,7 +127,7 @@ describe('DocumentCenterView', () => {
 
   it('filters by folder tab and shows the count in the holdings marker', async () => {
     renderView();
-    await screen.findByText('Exterior_Render_Final.png');
+    await screen.findByText('Exterior_Render_Final.png', {}, FIND_OPTS);
 
     fireEvent.click(screen.getByRole('tab', { name: 'Filter by design folder' }));
 
@@ -135,7 +140,7 @@ describe('DocumentCenterView', () => {
 
   it('filters by search across names and tags, then resets from the empty state', async () => {
     renderView();
-    await screen.findByText('Exterior_Render_Final.png');
+    await screen.findByText('Exterior_Render_Final.png', {}, FIND_OPTS);
 
     fireEvent.change(screen.getByPlaceholderText('Search documents or tags...'), { target: { value: 'zebra-no-match' } });
 
@@ -149,7 +154,7 @@ describe('DocumentCenterView', () => {
 
   it('switches to the Knowledge Base surface and back', async () => {
     renderView();
-    await screen.findByText('Exterior_Render_Final.png');
+    await screen.findByText('Exterior_Render_Final.png', {}, FIND_OPTS);
 
     fireEvent.click(screen.getByRole('button', { name: 'Knowledge Base' }));
 
@@ -163,7 +168,7 @@ describe('DocumentCenterView', () => {
 
   it('rejects an oversized file upload with an honest error toast', async () => {
     renderView();
-    await screen.findByText('Exterior_Render_Final.png');
+    await screen.findByText('Exterior_Render_Final.png', {}, FIND_OPTS);
 
     const oversized = new File([new ArrayBuffer(51 * 1024 * 1024)], 'huge.png', { type: 'image/png' });
     const dropzone = screen.getByRole('button', { name: /Secured Transfer/i }) ?? screen.getByText('Deposit a document into the vault').closest('div[role="button"]')!;

@@ -10,8 +10,20 @@
 #   PROD_SERVER_IP   — production server IP (19.16.1.100)
 
 stages:
+  - secret-scan
   - test
   - deploy
+
+secret-scan:
+  stage: secret-scan
+  image: zricethezav/gitleaks:latest
+  script:
+    - gitleaks detect --source . --verbose --no-git --redact || (echo "Gitleaks found potential secrets — check logs" && exit 1)
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "fix/ui-design-tokens"
+    - if: $CI_COMMIT_BRANCH =~ /^fix\//
 
 test-backend:
   stage: test

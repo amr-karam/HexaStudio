@@ -19,6 +19,7 @@ date: "2026-09-05"
 |---|---|---|---|---|
 | PROD-001 | Perf Eng | Optimize LCP: code-split homepage client components, defer canvas hero bundle after first paint | 3h | ✅ Done |
 || PROD-002 | Perf Eng | Reduce main-thread work: lazy-load NewHomeHero, NewHomeSections, HomeChapterRail via dynamic() | 2h | ✅ Done |
+| PROD-012 | Perf Eng | Fix TBT hydration burst: defer Canvas hero, CinematicPreloader, WebGLContextProvider, Footer, AuthProvider.fetchUser | 3h | ✅ Done |
 | PROD-003 | DevOps | Cloudflare tunnel: restore 9 remaining subdomains (dashboard ingress) | 4h | ✅ Done — restarted cloudflared container to reload config.yml with all 18 subdomain routes |
 || PROD-004 | DevOps | Bundle budget gate enforcement (`< 200KB per route JS>`) | 1h | ✅ Done — fixed check-bundle-budgets.mjs for Turbopack App Router manifests |
 | PROD-005 | QA | Mobile test suite: fix `hermes-parser` env corruption | 2h | ⛔ Blocked |

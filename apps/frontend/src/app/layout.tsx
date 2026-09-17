@@ -2,7 +2,12 @@ import type { Metadata, Viewport } from "next";
 import { AppProviders } from "@/providers/app-providers";
 import { LayoutShell } from "@/components/LayoutShell";
 import { StructuredData } from "@/components/StructuredData";
-import { LazyCinematicPreloader } from "@/components/ui/overlays/LazyCinematicPreloader";
+import dynamic from 'next/dynamic';
+
+const CinematicPreloader = dynamic(
+  () => import("@/components/ui/overlays/CinematicPreloader").then(m => ({ default: m.CinematicPreloader })),
+  { ssr: false },
+);
 import { WebVitals } from "@/components/WebVitals";
 import { LivePreview } from "@/components/LivePreview";
 import { AnalyticsInit } from "@/lib/analytics";
@@ -185,9 +190,7 @@ export default function RootLayout({
           `}</style>
         </noscript>
         <AppProviders>
-          <Suspense fallback={null}>
-            <LazyCinematicPreloader />
-          </Suspense>
+          <CinematicPreloader />
           {process.env.NODE_ENV === 'development' && <AnimationDebugLoader />}
           <StructuredData />
           <a

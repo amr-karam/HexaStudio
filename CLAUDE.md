@@ -179,7 +179,7 @@ E2E config (`e2e/playwright.config.ts`): baseURL `http://localhost:3000`, `reduc
 
 ### CI/CD
 
-Primary pipeline: GitLab CI (`.gitlab-ci.yml`). The `.github/workflows/` folder is empty — GitHub Actions is not in use. Stages: quality → build → image → validate → mobile → publish → deploy. CMS typecheck runs standalone (`cd apps/cms && npm ci && npm run typecheck`) because `apps/cms` has its own `package-lock.json` and is excluded from root workspaces.
+Primary pipeline: GitLab CI (`.gitlab-ci.yml`). Stages: quality → build → image → validate → mobile → publish → deploy. GitHub Actions has a single workflow (`.github/workflows/pages-deploy.yml`) that builds the frontend static export (`GITHUB_PAGES=true`) and deploys to GitHub Pages on push to `main`. CMS typecheck runs standalone (`cd apps/cms && npm ci && npm run typecheck`) because `apps/cms` has its own `package-lock.json` and is excluded from root workspaces.
 
 ### Infrastructure
 

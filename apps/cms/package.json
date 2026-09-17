@@ -11,7 +11,6 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@_sh/strapi-plugin-ckeditor": "^7.1.1",
     "@strapi-community/plugin-seo": "^2.1.1",
     "@strapi/plugin-users-permissions": "^5.6.0",
     "@strapi/provider-email-nodemailer": "^5.50.2",
@@ -32,7 +31,8 @@
     "strapi-plugin-preview-button": "^3.0.2",
     "strapi-plugin-publisher": "^2.0.9",
     "strapi-plugin-redis": "^1.1.0",
-    "styled-components": "^6.1.13"
+    "styled-components": "^6.1.13",
+    "@strapi/plugin-ckeditor": "^7.1.1"
   },
   "devDependencies": {
     "typescript": "^5.9.3"

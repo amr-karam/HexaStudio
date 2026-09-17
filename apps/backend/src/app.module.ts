@@ -41,6 +41,10 @@ import {
   WorkflowModule,
   StorageModule,
   RedisModule,
+  MinioUploadModule,
+  StyleTransferModule,
+  CostEstimatorModule,
+  AssetsModule,
 } from "./modules/index";
 import { RequestIdMiddleware } from "./common/middleware/request-id.middleware";
 import { WorkflowWiringService } from "./modules/workflow/workflow-wiring.service";
@@ -90,6 +94,10 @@ import { WorkflowWiringService } from "./modules/workflow/workflow-wiring.servic
     MobileModule,
     GeoipModule,
     WorkflowModule,
+    MinioUploadModule,
+    StyleTransferModule,
+    CostEstimatorModule,
+    AssetsModule,
   ],
   controllers: [AppController],
   providers: [

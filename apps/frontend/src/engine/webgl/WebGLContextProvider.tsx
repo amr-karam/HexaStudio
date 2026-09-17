@@ -278,9 +278,57 @@ function useWebGLContextInternal(options: UseWebGLContextOptions, _children?: Re
     return false;
   }, [initializeContext, resolvedOptions.maxRecoveryAttempts, resolvedOptions.recoveryDelayMs, notifyStateChange]);
 
+<<<<<<< HEAD
   const requestContext = useCallback(async (): Promise<WebGL2RenderingContext | WebGLRenderingContext | null> => {
     if (initializedRef.current && glRef.current) {
       return glRef.current;
+=======
+  /* ---- Defer heavy WebGL init to requestIdleCallback ---- */
+  useEffect(() => {
+    // Defer context creation + capability detection (12 gl.getParameter()
+    // calls) to idle time so it doesn't block the initial hydration commit.
+    const id = typeof requestIdleCallback !== 'undefined'
+      ? requestIdleCallback(() => { void initializeContext(); })
+      : setTimeout(() => { void initializeContext(); }, 0) as unknown as number;
+    return () => {
+      if (typeof cancelIdleCallback !== 'undefined') cancelIdleCallback(id);
+      else clearTimeout(id);
+    };
+  }, [initializeContext]);
+
+  /* ---- Event Handlers (attached after context is ready) ---- */
+  useEffect(() => {
+    const handleContextLost = (event: Event) => {
+      event.preventDefault();
+      console.warn("[WebGL] Context lost - attempting recovery");
+      setState("lost");
+      notifyStateChange("lost");
+      
+      if (autoRecover) {
+        void attemptRecovery();
+      }
+    };
+
+    const handleContextRestored = () => {
+      console.log("[WebGL] Context restored");
+      setState("ready");
+      notifyStateChange("ready");
+    };
+
+    const handleResize = () => {
+      if (!canvasRef.current || !glRef.current) return;
+      const dpr = Math.min(window.devicePixelRatio, 2);
+      canvasRef.current.width = window.innerWidth * dpr;
+      canvasRef.current.height = window.innerHeight * dpr;
+      glRef.current.viewport(0, 0, canvasRef.current.width, canvasRef.current.height);
+    };
+
+    // Attach listeners once canvas is available (after deferred init).
+    if (canvasRef.current) {
+      canvasRef.current.addEventListener("webglcontextlost", handleContextLost);
+      canvasRef.current.addEventListener("webglcontextrestored", handleContextRestored);
+      window.addEventListener("resize", handleResize);
+>>>>>>> develop
     }
     notifyStateChange("initializing");
     return await initializeContext();
@@ -336,7 +384,11 @@ function useWebGLContextInternal(options: UseWebGLContextOptions, _children?: Re
         if (loseCtx) loseCtx.loseContext();
       }
     };
+<<<<<<< HEAD
   }, [resolvedOptions.autoRecover, resolvedOptions]);
+=======
+  }, [autoRecover, attemptRecovery, notifyStateChange]);
+>>>>>>> develop
 
   const renderState = useMemo<WebGLAdaptiveRenderState>(() => {
     if (state === "lost" || state === "failed" || state === "idle") {

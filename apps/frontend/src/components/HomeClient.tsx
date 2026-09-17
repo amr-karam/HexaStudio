@@ -1,33 +1,19 @@
 'use client';
 
-import dynamic from "next/dynamic";
+import dynamic from 'next/dynamic';
 import { NewHomeHeroSkeleton } from "@/app/_loading/NewHomeHeroSkeleton";
+import { NewHomeSections } from "@/features/portfolio/components/NewHomeSections";
+import { NewHomeChapterRail } from "@/features/portfolio/components/NewHomeChapterRail";
 
-// Code-split the heavy client-side components (canvas hero with the golden-ratio
-// monolith spiral, Framer Motion scroll animations, and the below-the-fold
-// section blocks). They are rendered lazily via next/dynamic with a skeleton
-// fallback. Since this file is a Client Component, next/dynamic works correctly
-// with ssr:false behavior under Turbopack's App Router.
-const HomeHero = dynamic(
-  () =>
-    import("@/features/portfolio/components/HomeHero").then(
-      (m) => m.HomeHero,
-    ),
-  { ssr: false, loading: NewHomeHeroSkeleton },
-);
-const HomeSections = dynamic(
-  () =>
-    import("@/features/portfolio/components/HomeSections").then(
-      (m) => m.HomeSections,
-    ),
-  { ssr: false },
-);
-const HomeChapterRail = dynamic(
-  () =>
-    import("@/features/portfolio/components/HomeChapterRail").then(
-      (m) => m.HomeChapterRail,
-    ),
-  { ssr: false },
+/**
+ * Defer the hero Canvas — it imports three + @react-three/fiber + framer-motion
+ * and creates a WebGL context with 24 animated monoliths. Loading it with
+ * ssr:false moves all of that work off the initial hydration commit, letting
+ * the page paint the skeleton first and hydrate the canvas on idle.
+ */
+const DeferredHero = dynamic(
+  () => import("@/features/portfolio/components/NewHomeHero").then(m => ({ default: m.NewHomeHero })),
+  { ssr: false, loading: () => <NewHomeHeroSkeleton /> },
 );
 
 /**
@@ -38,14 +24,14 @@ const HomeChapterRail = dynamic(
 export function HomeClient() {
   return (
     <>
-      {/* CH. I — VISION (canvas hero with golden-ratio monolith spiral) */}
-      <HomeHero />
+      {/* CH. I — VISION (canvas hero — deferred to reduce hydration TBT) */}
+      <DeferredHero />
 
       {/* Below-the-fold sections (code-split) */}
-      <HomeSections />
+      <NewHomeSections />
 
       {/* Chapter navigation rail (code-split) */}
-      <HomeChapterRail />
+      <NewHomeChapterRail />
     </>
   );
 }

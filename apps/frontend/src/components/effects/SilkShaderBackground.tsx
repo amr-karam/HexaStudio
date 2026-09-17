@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect, useCallback } from 'react';
 import { cn } from '@/lib/utils';
-import { useWebGLContext } from '@/providers/webgl-context-provider';
+import { useWebGLContext } from '@/engine/webgl/WebGLContextProvider';
 
 /**
  * SilkShaderBackground — a lightweight WebGL silk/iridescence shader.
@@ -148,9 +148,8 @@ export const SilkShaderBackground: React.FC<SilkShaderBackgroundProps> = ({
   const programRef = useRef<WebGLProgram | null>(null);
   const bufferRef = useRef<WebGLBuffer | null>(null);
   const glRef = useRef<WebGLRenderingContext | null>(null);
-  const cleanupSharedRef = useRef<(() => void) | null>(null);
 
-  const { gl: sharedGl, canvas: sharedCanvas, state, registerR3FContext } = sharedContext ? useWebGLContext() : { gl: null, canvas: null, state: 'initializing' as const, registerR3FContext: (() => () => {}) } as unknown as import('@/engine/webgl/WebGLContextProvider').WebGLContextValue;
+  const { gl: sharedGl, canvas: sharedCanvas, state } = sharedContext ? useWebGLContext() : { gl: null, canvas: null, state: 'initializing' as const };
 
   const prefersReducedMotion = typeof window !== 'undefined'
     && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -235,11 +234,6 @@ export const SilkShaderBackground: React.FC<SilkShaderBackgroundProps> = ({
       animFrameRef.current = requestAnimationFrame(loop);
     };
 
-    // Register with shared context if using it
-    if (useShared && sharedGl) {
-      cleanupSharedRef.current = registerR3FContext(sharedGl);
-    }
-
     loop();
 
     const canvas = useShared ? sharedCanvas! : canvasRef.current;
@@ -270,9 +264,6 @@ export const SilkShaderBackground: React.FC<SilkShaderBackgroundProps> = ({
         canvas.removeEventListener('webglcontextlost', handleContextLost);
         canvas.removeEventListener('webglcontextrestored', handleContextRestored);
       }
-      // Cleanup shared context registration
-      cleanupSharedRef.current?.();
-      cleanupSharedRef.current = null;
       // Cleanup WebGL resources (only if not using shared context)
       if (!useShared && glRef.current) {
         if (bufferRef.current) {
@@ -286,7 +277,7 @@ export const SilkShaderBackground: React.FC<SilkShaderBackgroundProps> = ({
         glRef.current = null;
       }
     };
-  }, [prefersReducedMotion, render, useShared, sharedCanvas, sharedGl, registerR3FContext]);
+  }, [prefersReducedMotion, render, useShared, sharedCanvas, sharedGl]);
 
   // Static fallback for reduced motion
   if (prefersReducedMotion) {

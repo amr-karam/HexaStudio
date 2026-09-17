@@ -1,100 +1,128 @@
-'use client';
+'use client'
 
-import { Suspense } from 'react'
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Environment, ContactShadows, Html, Loader } from '@react-three/drei';
-import * as THREE from 'three';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { GOLD } from '@/lib/color-tokens';
-import Image from 'next/image';
-import { ArchvizModel } from './ArchvizModel';
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls, Environment, ContactShadows, Html, useProgress } from '@react-three/drei'
+import { Suspense, type ReactNode } from 'react'
+import * as THREE from 'three'
+import type { ScenePreset } from '@/lib/presets/SeasonPresetLibrary'
 
 interface ArchvizViewerProps {
-  modelPath: string;
-  poster?: string;
-  className?: string;
-  camera?: [number, number, number];
-}
-
-function ModelFallback() {
-  return (
-    <Html center>
-      <div className="flex flex-col items-center gap-3 text-center">
-        <div className="h-10 w-10 animate-spin rounded-full border-2 border-gold border-t-transparent" />
-        <span className="text-xs text-sl-mist/50">Loading 3D Scene</span>
-      </div>
-    </Html>
-  );
+  preset?: ScenePreset
+  children?: ReactNode
 }
 
 /**
- * ArchvizViewer — Production-grade 3D architectural visualization viewer.
- * Gated by useReducedMotion for accessibility; uses glTF for model loading.
- * Built on existing VoidGarden/ArchitecturalVisualization3D patterns.
+ * Loader component shown while the 3D canvas initializes.
+ * Styled with HEXA Studio design tokens.
  */
-export function ArchvizViewer({
-  modelPath,
-  poster,
-  className = '',
-  camera = [0, 0, 5],
-}: ArchvizViewerProps) {
-  const reduced = useReducedMotion();
-  const handleError = (err: Error) => {
-    console.error('[ArchvizViewer] Model load error:', err);
-  };
-
-  if (reduced) {
-    return (
-      <div
-        className={`relative flex items-center justify-center bg-sl-void ${className}`}
-        style={{ aspectRatio: '16/9' }}
-      >
-        {poster ? (
-          <Image src={poster} alt="Architectural visualization" className="h-full w-full object-cover" fill sizes="100vw" />
-        ) : (
-          <div className="text-sl-mist/40">Motion-reduced fallback</div>
-        )}
+function ArchvizLoader() {
+  const { progress } = useProgress()
+  return (
+    <Html center>
+      <div className="flex flex-col items-center gap-2 text-sl-alabaster">
+        <div className="w-8 h-8 border-2 border-sl-gold border-t-transparent rounded-full animate-spin" />
+        <span className="text-xs text-sl-muted">
+          Loading… {Math.round(progress)}%
+        </span>
       </div>
-    );
-  }
+    </Html>
+  )
+}
+
+/**
+ * ArchvizViewer — production-grade real-time 3D architectural viewer.
+ *
+ * Features:
+ * - OrbitControls for interactive navigation
+ * - Environment lighting (HDR) via drei
+ * - ContactShadows for ground contact realism
+ * - Configurable via ScenePreset (seasonal lighting/fog/material overrides)
+ * - Reduced-motion accessibility gate
+ */
+export default function ArchvizViewer({ preset, children }: ArchvizViewerProps) {
+  const prefersReduced = typeof window !== 'undefined'
+    ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    : false
+
+  // Cap DPR on desktop PCs: 2x causes GPU stalls on integrated graphics.
+  // 1.5x is visually identical for archviz but ~40% fewer pixels to shade.
+  const dpr: [number, number] = prefersReduced ? [1, 1] : [1, 1.5]
 
   return (
-    <Suspense fallback={null}>
-      <Canvas
-        camera={{ position: camera, fov: 50 }}
-        gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping }}
-        className={className}
-      >
-        <color attach="background" args={['#0a0a0b']} />
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[3, 5, 3]} intensity={0.9} />
-        <ModelFallback />
-        <ArchvizModel modelPath={modelPath} onError={handleError} />
-        <Environment preset="city" />
-        <ContactShadows
-          position={[0, -1, 0]}
-          opacity={0.4}
-          scale={[10, 10]}
-          blur={2}
-          far={5}
-        />
-        <OrbitControls
-          enableZoom={true}
-          enablePan={false}
-          autoRotate
-          autoRotateSpeed={0.5}
-        />
-      </Canvas>
-      <Loader
-        dataStyles={{
-          top: 0,
-          bottom: 0,
-          left: 0,
-          right: 0,
-          backgroundColor: 'rgba(10, 10, 11, 0.8)',
-          color: GOLD,
-        }}
-      />
-    </Suspense>
-  );
+    <Canvas
+      camera={{ position: [0, 1.7, 5], fov: preset?.camera.fov ?? 65 }}
+      gl={{
+        antialias: true,
+        alpha: true,
+        stencil: false,
+        depth: true,
+        powerPreference: 'high-performance',
+        failIfMajorPerformanceCaveat: false,
+      }}
+      dpr={dpr}
+      frameloop={prefersReduced ? 'demand' : 'always'}
+      shadows={!prefersReduced}
+      onCreated={({ gl }) => {
+        // sRGB output + ACES tone mapping = correct colors on PC monitors.
+        // Without this, materials look washed out / overly dark on Windows.
+        gl.outputColorSpace = THREE.SRGBColorSpace
+        gl.toneMapping = THREE.ACESFilmicToneMapping
+        gl.toneMappingExposure = 1.0
+      }}
+    >
+      <Suspense fallback={<ArchvizLoader />}>
+        {/* Environment — HDR lighting preset from seasonal config */}
+        {preset && (
+          <Environment preset={preset.environment.preset as "apartment" | "city" | "dawn" | "forest" | "lobby" | "night" | "park" | "studio" | "sunset" | "warehouse"} />
+        )}
+
+        {/* Ambient light — colored per preset */}
+        {preset && (
+          <ambientLight
+            color={preset.lighting.ambientColor}
+            intensity={preset.lighting.ambientIntensity}
+          />
+        )}
+
+        {/* Directional light — sun direction from preset */}
+        {preset && (
+          <directionalLight
+            color={preset.lighting.directionalColor}
+            intensity={preset.lighting.directionalIntensity}
+            position={preset.lighting.directionalPosition}
+            castShadow={!prefersReduced}
+            shadow-mapSize-width={1024}
+            shadow-mapSize-height={1024}
+          />
+        )}
+
+        {/* Hemisphere light — sky tint */}
+        {preset && (
+          <hemisphereLight
+            color={preset.lighting.hemisphereColor}
+            intensity={preset.lighting.hemisphereIntensity}
+            groundColor={preset.lighting.ambientColor}
+          />
+        )}
+
+        {/* Contact shadows for ground contact realism — skipped on reduced-motion PCs */}
+        {!prefersReduced && (
+          <ContactShadows
+            position={[0, -0.001, 0]}
+            opacity={0.5}
+            scale={10}
+            blur={2}
+            far={5}
+            frames={Infinity}
+          />
+        )}
+
+        {/* Reduced-motion gate: skip OrbitControls if user prefers reduced motion */}
+        {!prefersReduced && <OrbitControls enablePan={false} />}
+
+        {/* Child content — typically ArchvizModel */}
+        {children}
+      </Suspense>
+    </Canvas>
+  )
 }

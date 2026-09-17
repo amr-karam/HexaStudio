@@ -5,8 +5,8 @@
  * Created: 2026-09-10
  */
 
-import { Color, Vector3 } from 'three';
-import type { Material } from 'three';
+import { Color, MeshStandardMaterial, Vector3 } from 'three'
+import rawData from '../../data/presets/season-presets.json'
 
 // Type definitions — strict, compile-time safe
 export interface PresetLighting {
@@ -66,30 +66,29 @@ export interface SeasonPresetsData {
   metadata: PresetMetadata
 }
 
-// Raw JSON import (typed at runtime via assertion)
-import presetsDataRaw from '../data/presets/season-presets.json';
-const presetsData: SeasonPresetsData = presetsDataRaw as unknown as SeasonPresetsData;
+// Raw JSON data — cast through unknown for proper type assertion
+const presetsData: SeasonPresetsData = rawData as unknown as SeasonPresetsData
 
 /**
  * Get all available season presets
  * @returns ScenePreset[] — all 4 presets (Ramadan, Winter, Summer, Autumn)
  */
 export function getAllPresets(): ScenePreset[] {
-  return presetsData.presets;
+  return presetsData.presets
 }
 
 /**
  * Get a preset by its ID
- * @param id — e.g. "ramadan-2026", "winter-2026", "summer-noon", "autumn-harvest"
+ * @param id — e.g. "ramadan-2026", "winter-2026"
  * @returns ScenePreset | null
  */
 export function getPreset(id: string): ScenePreset | null {
-  const found = presetsData.presets.find((p) => p.id === id);
+  const found = presetsData.presets.find((p) => p.id === id)
   if (!found) {
-    console.warn(`[SeasonPresetLibrary] Preset not found: ${id}`);
-    return null;
+    console.warn(`[SeasonPresetLibrary] Preset not found: ${id}`)
+    return null
   }
-  return found;
+  return found
 }
 
 /**
@@ -97,114 +96,65 @@ export function getPreset(id: string): ScenePreset | null {
  * @returns ScenePreset — the culturally-authentic Ramadan scene
  */
 export function getRamadanPreset(): ScenePreset {
-  const preset = getPreset('ramadan-2026');
-  if (!preset) throw new Error('FATAL: ramadan-2026 preset missing from season-presets.json');
-  return preset;
-}
-
-/**
- * Convert a hex color string to a Three.js Color object
- * @param hex — e.g. "#ffd27f"
- * @returns Color
- */
-export function hexToColor(hex: string): Color {
-  return new Color(hex)
-}
-
-/**
- * Convert a position tuple to a Three.js Vector3
- * @param pos — [x, y, z]
- * @returns Vector3
- */
-export function posToVector3(pos: [number, number, number]): Vector3 {
-  return new Vector3(pos[0], pos[1], pos[2])
+  const preset = getPreset('ramadan-2026')
+  if (!preset) {
+    throw new Error('[SeasonPresetLibrary] Ramadan preset not found')
+  }
+  return preset
 }
 
 /**
  * Apply material overrides to Three.js material properties
- * @param material — the Three.js material to modify
- * @param materialId — e.g. "mashrabiya-wood", "limestone-nile"
+ * @param material — Three.js MeshStandardMaterial to modify
+ * @param materialId — e.g. "mashrabiya-wood"
  * @param preset — the scene preset containing overrides
  */
 export function applyMaterialOverrides(
-  material: any,
+  material: MeshStandardMaterial,
   materialId: string,
   preset: ScenePreset
 ): void {
-  const overrides = preset.materialOverrides[materialId];
-  if (!overrides) return;
+  const overrides = preset.materialOverrides[materialId]
+  if (!overrides) return
 
-  if (overrides.roughness !== undefined) {
-    material.roughness = overrides.roughness;
-  }
-  if (overrides.metalness !== undefined) {
-    material.metalness = overrides.metalness;
-  }
-  if (overrides.color !== undefined) {
-    material.color = hexToColor(overrides.color);
-  }
+  if (overrides.roughness !== undefined) material.roughness = overrides.roughness
+  if (overrides.metalness !== undefined) material.metalness = overrides.metalness
+  if (overrides.color !== undefined) material.color = hexToColor(overrides.color)
 }
 
 /**
- * Get decorative element names for a preset
- * @param preset — ScenePreset
- * @returns string[] — e.g. ["lantern", "mosque-lamp", "arabic-carpet"]
+ * Convert hex color string to THREE.Color
+ * @param hex — hex color string (e.g. "#ff0000")
+ * @returns THREE.Color
  */
-export function getDecorativeElements(preset: ScenePreset): string[] {
-  return preset.decorativeElements
+function hexToColor(hex: string): Color {
+  return new Color(hex)
+}
+
+/**
+ * Convert array to THREE.Vector3
+ * @param arr — [x, y, z] array
+ * @returns THREE.Vector3
+ */
+function posToVector3(arr: [number, number, number]): Vector3 {
+  return new Vector3(arr[0], arr[1], arr[2])
 }
 
 /**
  * Get camera configuration for a preset
- * @param preset — ScenePreset
- * @returns { fov, position }
  */
-export function getCameraConfig(preset: ScenePreset): {
-  fov: number
-  position: Vector3
-} {
-  return {
-    fov: preset.camera.fov,
-    position: posToVector3(preset.camera.position)
-  }
+export function getCameraConfig(preset: ScenePreset): { fov: number; position: Vector3 } {
+  return { fov: preset.camera.fov, position: posToVector3(preset.camera.position) }
 }
 
 /**
  * Get lighting configuration for a preset, typed for Three.js
- * @param preset — ScenePreset
  */
 export function getLightingConfig(preset: ScenePreset) {
   const { lighting } = preset
   return {
-    ambient: {
-      intensity: lighting.ambientIntensity,
-      color: hexToColor(lighting.ambientColor)
-    },
-    directional: {
-      intensity: lighting.directionalIntensity,
-      color: hexToColor(lighting.directionalColor),
-      position: posToVector3(lighting.directionalPosition)
-    },
-    hemisphere: {
-      intensity: lighting.hemisphereIntensity,
-      color: hexToColor(lighting.hemisphereColor)
-    }
+    ambient: { intensity: lighting.ambientIntensity, color: hexToColor(lighting.ambientColor) },
+    directional: { intensity: lighting.directionalIntensity, color: hexToColor(lighting.directionalColor), position: posToVector3(lighting.directionalPosition) },
+    hemisphere: { intensity: lighting.hemisphereIntensity, color: hexToColor(lighting.hemisphereColor) },
   }
 }
-
-/**
- * Get fog configuration for a preset
- * @param preset — ScenePreset
- */
-export function getFogConfig(preset: ScenePreset) {
-  const { fog } = preset
-  return {
-    enabled: fog.enabled,
-    color: fog.color ? hexToColor(fog.color) : null,
-    near: fog.near ?? 5,
-    far: fog.far ?? 50
-  }
-}
-
-export { presetsData as rawPresets };
-export default getRamadanPreset;

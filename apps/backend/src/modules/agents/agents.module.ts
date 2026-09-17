@@ -12,6 +12,8 @@ import { VectorModule } from '../vector/vector.module';
 import { AIModule } from '../ai/ai.module';
 import { RealtimeModule } from '../realtime/realtime.module';
 import { WebhooksModule } from '../webhooks/webhooks.module';
+import { AGENTS_PORT } from '../../ports/agents.port';
+import { AGENT_MEMORY_PORT } from '../../ports/agent-memory.port';
 
 @Module({
   imports: [
@@ -19,7 +21,7 @@ import { WebhooksModule } from '../webhooks/webhooks.module';
     ProjectsModule,
     VectorModule,
     AIModule,
-    RealtimeModule,
+    forwardRef(() => RealtimeModule),
     forwardRef(() => WebhooksModule),
   ],
   controllers: [AgentsController],
@@ -30,7 +32,17 @@ import { WebhooksModule } from '../webhooks/webhooks.module';
     ToolRegistryService,
     GatekeeperService,
     SwarmOrchestratorService,
+    { provide: AGENTS_PORT, useExisting: AgentsService },
+    { provide: AGENT_MEMORY_PORT, useExisting: AgentMemoryService },
   ],
-  exports: [AgentsService, AgentMemoryService, HermesAgentService, SwarmOrchestratorService, ToolRegistryService],
+  exports: [
+    AgentsService,
+    AgentMemoryService,
+    HermesAgentService,
+    SwarmOrchestratorService,
+    ToolRegistryService,
+    AGENTS_PORT,
+    AGENT_MEMORY_PORT,
+  ],
 })
 export class AgentsModule {}

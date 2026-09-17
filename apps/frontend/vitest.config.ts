@@ -21,7 +21,11 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      'next/constants': path.resolve(__dirname, './node_modules/next/constants.js'),
+      '@/app': path.resolve(__dirname, './src/app'),
+      '@/app/admin': path.resolve(__dirname, './src/app/admin'),
+      '@/app/api': path.resolve(__dirname, './src/app/api'),
+      '@/app/components': path.resolve(__dirname, './src/components'),
+      '@/test': path.resolve(__dirname, './test'),
     },
   },
   test: {

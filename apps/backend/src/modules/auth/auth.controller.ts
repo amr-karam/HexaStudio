@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, UseGuards, Request, Res, Headers, VERSION_NEUTRAL, UsePipes } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Request, Res, Headers, UnauthorizedException, VERSION_NEUTRAL, UsePipes } from '@nestjs/common';
 import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
 import { ApiTags, ApiOperation, ApiBody, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -31,6 +31,16 @@ const COOKIE_OPTIONS = {
   maxAge: 15 * 60 * 1000,
 };
 
+// Refresh token lives in an httpOnly cookie (30d, mirrors server-side TTL in
+// AuthService). The JSON body still carries it for native/mobile clients that
+// cannot use cookies; web clients must prefer the cookie and never store the
+// body value in JS-accessible state.
+const REFRESH_COOKIE_NAME = 'refresh_token';
+const REFRESH_COOKIE_OPTIONS = {
+  ...COOKIE_OPTIONS,
+  maxAge: 30 * 24 * 60 * 60 * 1000,
+};
+
 @ApiTags('Auth')
 @Controller({ path: 'auth', version: ['1', VERSION_NEUTRAL] })
 export class AuthController {
@@ -51,6 +61,7 @@ export class AuthController {
   ) {
     const result = await this.authService.register(body.email, body.username, body.password);
     res.cookie('auth_token', result.accessToken, COOKIE_OPTIONS);
+    res.cookie(REFRESH_COOKIE_NAME, result.refreshToken, REFRESH_COOKIE_OPTIONS);
     const csrfToken = generateCsrfToken();
     res.cookie(CSRF_COOKIE_NAME, csrfToken, { ...COOKIE_OPTIONS, httpOnly: false });
     return { user: result.user, accessToken: result.accessToken, refreshToken: result.refreshToken };
@@ -69,6 +80,7 @@ export class AuthController {
     try {
       const result = await this.authService.login(body.identifier, body.password);
       res.cookie('auth_token', result.accessToken, COOKIE_OPTIONS);
+      res.cookie(REFRESH_COOKIE_NAME, result.refreshToken, REFRESH_COOKIE_OPTIONS);
       const csrfToken = generateCsrfToken();
       res.cookie(CSRF_COOKIE_NAME, csrfToken, { ...COOKIE_OPTIONS, httpOnly: false });
       
@@ -121,10 +133,18 @@ export class AuthController {
   @UsePipes(new ZodValidationPipe(RefreshTokenSchema))
   async refreshToken(
     @Body() body: RefreshTokenDto,
+    @Request() req: { cookies?: Record<string, string | undefined> },
     @Res({ passthrough: true }) res: Response,
   ) {
-    const result = await this.authService.refreshTokens(body.refreshToken);
+    // Cookie-first (web), body fallback (native/mobile). The Zod schema leaves
+    // the body field optional so cookie-only callers pass validation.
+    const presented = req.cookies?.[REFRESH_COOKIE_NAME] ?? body.refreshToken;
+    if (!presented) {
+      throw new UnauthorizedException('Missing refresh token');
+    }
+    const result = await this.authService.refreshTokens(presented);
     res.cookie('auth_token', result.accessToken, COOKIE_OPTIONS);
+    res.cookie(REFRESH_COOKIE_NAME, result.refreshToken, REFRESH_COOKIE_OPTIONS);
     return { user: result.user, accessToken: result.accessToken, refreshToken: result.refreshToken };
   }
 
@@ -136,11 +156,14 @@ export class AuthController {
   async logout(
     @Res({ passthrough: true }) res: Response,
     @Headers('authorization') authHeader: string,
-    @Body() body: { refreshToken: string },
+    @Request() req: { cookies?: Record<string, string | undefined> },
+    @Body() body?: { refreshToken?: string },
   ) {
     const accessToken = authHeader?.replace('Bearer ', '') ?? '';
-    await this.authService.logout(accessToken, body.refreshToken);
+    const presented = req.cookies?.[REFRESH_COOKIE_NAME] ?? body?.refreshToken;
+    await this.authService.logout(accessToken, presented);
     res.clearCookie('auth_token', { path: '/' });
+    res.clearCookie(REFRESH_COOKIE_NAME, { path: '/' });
     res.clearCookie(CSRF_COOKIE_NAME, { path: '/' });
     return { success: true };
   }
@@ -189,6 +212,7 @@ export class AuthController {
       body.newPassword,
     );
     res.cookie('auth_token', result.accessToken, COOKIE_OPTIONS);
+    res.cookie(REFRESH_COOKIE_NAME, result.refreshToken, REFRESH_COOKIE_OPTIONS);
     return {
       user: result.user,
       accessToken: result.accessToken,
