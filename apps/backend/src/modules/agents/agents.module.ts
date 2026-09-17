@@ -21,7 +21,7 @@ import { AGENT_MEMORY_PORT } from '../../ports/agent-memory.port';
     ProjectsModule,
     VectorModule,
     AIModule,
-    RealtimeModule,
+    forwardRef(() => RealtimeModule),
     forwardRef(() => WebhooksModule),
   ],
   controllers: [AgentsController],
@@ -32,7 +32,17 @@ import { AGENT_MEMORY_PORT } from '../../ports/agent-memory.port';
     ToolRegistryService,
     GatekeeperService,
     SwarmOrchestratorService,
+    { provide: AGENTS_PORT, useExisting: AgentsService },
+    { provide: AGENT_MEMORY_PORT, useExisting: AgentMemoryService },
   ],
-  exports: [AgentsService, AgentMemoryService, HermesAgentService, SwarmOrchestratorService, ToolRegistryService],
+  exports: [
+    AgentsService,
+    AgentMemoryService,
+    HermesAgentService,
+    SwarmOrchestratorService,
+    ToolRegistryService,
+    AGENTS_PORT,
+    AGENT_MEMORY_PORT,
+  ],
 })
 export class AgentsModule {}
