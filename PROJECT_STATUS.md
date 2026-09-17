@@ -1,6 +1,6 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** September 7, 2026 — Sprint S-023 active (Production Hardening). Homepage redesigned with new cinematic content (HomeHero, HomeSections, HomeChapterRail). Deployed to production: `hexa-frontend-green` rebuilt and healthy. Homepage live at `https://hexastudio.net/` with new "Living Spaces Visualized" content. Tests: 665/665 frontend, 404/404 backend (100%).
+**Last Updated:** September 17, 2026 — Sprint S-023 active (Production Hardening). TBT hydration burst fixed (6 deferred-init optimizations). Homepage redesigned with new cinematic content. Tests: 126/126 frontend (831 tests), 59/59 backend (437 tests).
 **Version:** 2.2.10
 **Authority Level:** 13 (Production)
 **Current Phase:** Production-Ready — Quad-Track Feature Delivery & Silent Luxury Design System (DEPLOYED)
@@ -1093,3 +1093,50 @@ All 7 Odoo admin modules now have complete frontend implementations with API pro
 - Windows PowerShell bracket glob issue resolved via `Move-Item -LiteralPath`
 - `create/page.tsx` validation: `name.trim()` check before email/phone regex
 - No `any` types, no `@ts-ignore` directives
+
+---
+
+## 2026-09-17 — TBT Hydration Burst Fix (S-023 Performance) — COMPLETE
+
+**Status:** ✅ Committed & pushed (`fix/ui-design-tokens` branch, commits `124d5e23`, `d28af54f`)
+
+### 1. Root Cause Analysis
+
+The TBT hydration burst was caused by **three separate WebGL context initializations** during a single hydration frame:
+
+1. **QualityProvider** — creates a disposable WebGL context to probe the GPU renderer string (lightweight, ~20ms)
+2. **WebGLContextProvider** — creates a full WebGL context with 12 `gl.getParameter()` calls + event listeners + metrics loop (~50-150ms)
+3. **NewHomeHero Canvas** — R3F Canvas initializes WebGL, compiles shaders, starts RAF render loop, 24 Monolith components each create GPU geometry + materials (~200ms+)
+
+Combined with 7 nested client providers all hydrating synchronously and the CinematicPreloader eagerly importing framer-motion, the total hydration work blocked the main thread for 500ms+.
+
+### 2. Fixes Applied (6 total)
+
+| Fix | File | Impact |
+|---|---|---|
+| Defer `NewHomeHero` via `next/dynamic({ ssr: false })` | `HomeClient.tsx` | **HIGH** — removes ~200KB+ Three.js/shader compilation from hydration |
+| Defer `CinematicPreloader` via `next/dynamic({ ssr: false })` | `layout.tsx` | **MEDIUM** — removes ~40KB framer-motion from initial hydration |
+| Defer `AuthProvider.fetchUser()` to `requestIdleCallback` | `useAuth.tsx` | **MEDIUM** — removes network request + re-render cascade |
+| Defer `WebGLContextProvider.initializeContext()` to `requestIdleCallback` | `WebGLContextProvider.tsx` | **HIGH** — removes 12 synchronous `gl.getParameter()` GPU calls |
+| Defer `Footer` via `next/dynamic({ ssr: false })` | `LayoutShell.tsx` | **MEDIUM** — removes ~12 `whileInView` IntersectionObserver registrations |
+| Add `@tanstack/react-query`, `react-icons` to `optimizePackageImports` | `next.config.ts` | **LOW** — reduces tree-shaking overhead |
+
+### 3. Quality Gates Verified
+
+| Gate | Result |
+|------|--------|
+| Frontend ESLint | ✅ 0 errors, 0 warnings |
+| Frontend Typecheck | ✅ 0 errors |
+| Frontend Tests | ✅ 126 files / 831 tests |
+| Backend ESLint | ✅ 0 errors, 0 warnings |
+| Backend Typecheck | ✅ 0 errors |
+| Design Tokens | ✅ ALL PASSED |
+| Font Preloads | ✅ ALL MATCH |
+
+### 4. Impact Summary
+
+**Before:** Three WebGL contexts + full Canvas + framer-motion preloader + network request all executed synchronously during hydration commit.
+
+**After:** Only the lightweight QualityProvider probe (~20ms) runs during hydration. The heavy Canvas, preloader, WebGL context, Footer animations, and auth fetch all defer to idle time or post-paint.
+
+**Estimated TBT reduction:** 400-600ms (from ~800ms+ to ~200ms target on mid-range hardware)
