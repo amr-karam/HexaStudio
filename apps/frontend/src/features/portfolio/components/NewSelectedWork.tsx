@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ScrollFadeIn } from '@/components/ScrollFadeIn';
+import { motion } from 'framer-motion';
 
 const PROJECTS = [
   {
@@ -54,7 +54,7 @@ export function NewSelectedWork() {
     >
       <div className="mx-auto max-w-[1600px]">
         {/* Section header */}
-        <ScrollFadeIn className="mb-16 flex flex-col gap-6 md:mb-24 md:flex-row md:items-end md:justify-between">
+        <div className="mb-16 flex flex-col gap-6 md:mb-24 md:flex-row md:items-end md:justify-between">
           <div>
             <div className="font-mono text-[10px] uppercase tracking-[0.5em] text-sl-gold-subtle/70">
               <span className="mr-3 inline-block h-px w-8 align-middle bg-sl-gold-subtle/50" />
@@ -73,21 +73,21 @@ export function NewSelectedWork() {
             <span>Full archive</span>
             <span className="inline-block h-px w-8 bg-sl-mist/30 transition-all duration-500 group-hover:w-12 group-hover:bg-sl-gold-subtle" />
           </Link>
-        </ScrollFadeIn>
+        </div>
 
         {/* 2x2 grid */}
         <div className="grid grid-cols-1 gap-px bg-sl-gold-subtle/10 sm:grid-cols-2">
           {PROJECTS.map((p, i) => (
-            <ScrollFadeIn
+            <motion.div
               key={p.n}
-              delay={i * 0.1}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 0.8, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+              onMouseEnter={() => setHover(i)}
+              onMouseLeave={() => setHover(null)}
               className="group relative aspect-[4/3] overflow-hidden bg-sl-obsidian"
             >
-              <div
-                onMouseEnter={() => setHover(i)}
-                onMouseLeave={() => setHover(null)}
-                className="relative h-full w-full"
-              >
               <Image
                 src={p.img}
                 alt={p.title}
@@ -130,8 +130,7 @@ export function NewSelectedWork() {
                   hover === i ? 'w-full' : 'w-0'
                 }`}
               />
-              </div>
-            </ScrollFadeIn>
+            </motion.div>
           ))}
         </div>
       </div>

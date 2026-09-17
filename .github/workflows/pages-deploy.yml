@@ -23,10 +23,8 @@ jobs:
       - run: npm ci
         working-directory: apps/frontend
       - name: Build
-        run: npx next build
+        run: npm run build
         working-directory: apps/frontend
-        env:
-          GITHUB_PAGES: "true"
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

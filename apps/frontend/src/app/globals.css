@@ -1,115 +1,92 @@
 @import "tailwindcss";
-/* @import "tw-animate-css"; — unresolved package, commented out for dev build */
+@import "tw-animate-css";
 
 @theme inline {
-  /* HEXA STUDIO Design Tokens — from DESIGN_SYSTEM.md */
-  /* 60% VOID BLACK */
+  --color-bg: var(--background);
+  --color-fg: var(--foreground);
+
+  /* semantic palette */
+  --color-sl-bg-subtle: #fafaf9;
+  --color-sl-bg-elevated: #f5f5f4;
+
   --color-void: #050505;
-  --color-void-deep: #020203;
+  --color-gold-subtle: #D4AF37;
+  --color-gold-muted: #b8960f;
+  --color-gold-ink: #C5A028;
 
-  /* 30% OBSIDIAN & SLATE */
-  --color-obsidian: #0F0F10;
-  --color-obsidian-raised: #161618;
-  --color-slate: #1A1A1A;
+  --color-sl-alabaster: #FAFAF8;
+  --color-sl-onyx: #1a1a1a;
+  --color-sl-gold-subtle: #D4AF37;
+  --color-sl-gold-muted: #c9a227;
+  --color-sl-gold-ink: #b8860b;
 
-  /* 10% HEXA SIGNATURE GOLD & PURE WHITE */
-  --color-gold: #D4AF37;
-  --color-gold-bright: #E5C76B;
-  --color-gold-deep: #A8862E;
-  --color-text-primary: #FFFFFF;
-  --color-text-secondary: #A0A0A0;
-  --color-text-muted: #6A6A6E;
+  --color-white: #ffffff;
+  --color-black: #000000;
 
-  /* Semantic aliases (legacy compatibility) */
-  --color-background: var(--color-void);
-  --color-foreground: var(--color-text-primary);
-  --color-surface: var(--color-slate);
-  --color-accent: var(--color-gold);
-  --color-accent-light: var(--color-gold-bright);
-  --color-accent-dark: var(--color-gold-deep);
-
-  /* Typography */
-  --font-serif: 'Playfair Display', Georgia, serif;
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-
-  /* Motion tokens */
-  --hexa-ease-entrance: cubic-bezier(0.16, 1, 0.3, 1);
-  --hexa-ease-interaction: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --hexa-ease-transition: cubic-bezier(0.25, 0.1, 0.25, 1);
-  --hexa-ease-sharp: cubic-bezier(0.4, 0, 0.6, 1);
-  --hexa-ease-cinematic: cubic-bezier(0.76, 0, 0.24, 1);
-
-  --hexa-duration-micro: 0.2s;
-  --hexa-duration-component: 0.4s;
-  --hexa-duration-scene: 0.8s;
-  --hexa-duration-transition: 0.7s;
-  --hexa-duration-page: 0.75s;
-  --hexa-duration-camera: 1.4s;
-
-  /* Tracking tokens */
-  --tracking-tight: -0.04em;
-  --tracking-label: 0.25em;
-  --tracking-wide: 0.4em;
-  --tracking-wider: 0.5em;
-
-  /* Brand colors */
   --color-brand-primary: #60a5fa;
   --color-brand-secondary: #a855f7;
-
-  /* Legacy Silent Luxury aliases for compatibility */
-  --color-sl-void: var(--color-void);
-  --color-sl-void-deep: var(--color-void-deep);
-  --color-sl-obsidian: var(--color-obsidian);
-  --color-sl-obsidian-raised: var(--color-obsidian-raised);
-  --color-sl-slate: var(--color-slate);
-  --color-sl-gold-subtle: var(--color-gold);
-  --color-sl-gold-hover: var(--color-gold-bright);
-  --color-sl-gold-rgb: 212, 175, 55;
-  --color-sl-alabaster: var(--color-text-primary);
-  --color-sl-silver: var(--color-text-secondary);
-  --color-sl-mist: var(--color-text-muted);
-  --color-sl-gold-muted: var(--color-gold-deep);
-  --color-sl-gold-ink: var(--color-gold-deep);
-  --sl-ease-entrance: var(--hexa-ease-entrance);
-  --sl-ease-interaction: var(--hexa-ease-interaction);
-  --sl-ease-transition: var(--hexa-ease-transition);
-  --sl-duration-micro: var(--hexa-duration-micro);
-  --sl-duration-ui: var(--hexa-duration-component);
-  --sl-duration-scene: var(--hexa-duration-scene);
-  --sl-duration-page: var(--hexa-duration-page);
-  --sl-duration-parallax: var(--hexa-duration-camera);
+  --tracking-label: 0.25em;
 }
 
-/* Removed invalid @utility directives causing PostCSS error */
+@utility content-{inline-start} { content: content-inline-start; }
+@utility content-{inline-end} { content: content-inline-end; }
+
 :root {
-  --background: var(--color-void);
-  --foreground: var(--color-text-primary);
-  --card: var(--color-obsidian);
-  --card-foreground: var(--color-text-primary);
-  --popover: var(--color-obsidian);
-  --popover-foreground: var(--color-text-primary);
-  --primary: var(--color-text-primary);
-  --primary-foreground: var(--color-void);
-  --secondary: var(--color-obsidian-raised);
-  --secondary-foreground: var(--color-text-primary);
-  --muted: var(--color-slate);
-  --muted-foreground: var(--color-text-muted);
-  --accent: var(--color-gold);
-  --accent-foreground: var(--color-void);
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+  --primary: #1a1a1a;
+  --primary-foreground: #ffffff;
+  --secondary: #f5f5f4;
+  --secondary-foreground: #1a1a1a;
+  --muted: #f5f5f4;
+  --muted-foreground: #71717a;
+  --accent: #f5f5f4;
+  --accent-foreground: #1a1a1a;
   --destructive: #ef4444;
-  --destructive-foreground: var(--color-text-primary);
-  --border: var(--color-slate);
-  --input: var(--color-slate);
-  --ring: var(--color-gold);
+  --destructive-foreground: #ffffff;
+  --border: #f5f5f4;
+  --input: #f5f5f4;
+  --ring: #1a1a1a;
   --radius: 0.5rem;
   --chart-1: #00acc1;
   --chart-2: #ffab00;
   --chart-3: #00897b;
   --chart-4: #d81b60;
   --chart-5: #6d4c41;
-  --sidebar: var(--color-obsidian);
-  --sidebar-ring: var(--color-gold);
+  --sidebar: #f5f5f4;
+  --sidebar-ring: #f5f5f4;
+}
+
+.dark {
+  --background: #050505;
+  --foreground: #fafaf9;
+  --card: #050505;
+  --card-foreground: #fafaf9;
+  --popover: #050505;
+  --popover-foreground: #fafaf9;
+  --primary: #fafaf9;
+  --primary-foreground: #1a1a1a;
+  --secondary: #262626;
+  --secondary-foreground: #fafaf9;
+  --muted: #262626;
+  --muted-foreground: #a1a1aa;
+  --accent: #262626;
+  --accent-foreground: #fafaf9;
+  --border: #262626;
+  --input: #262626;
+  --ring: #fafaf9;
+  --radius: 0.5rem;
+  --chart-1: #00acc1;
+  --chart-2: #ffab00;
+  --chart-3: #00897b;
+  --chart-4: #d81b60;
+  --chart-5: #6d4c41;
+  --sidebar: #262626;
+  --sidebar-ring: #1a1a1a;
 }
 
 @theme {
@@ -133,14 +110,13 @@
   --color-sidebar: var(--sidebar);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
-  --font-serif: var(--font-serif);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-geist-mono);
 
   --color-brand-primary: #60a5fa;
   --color-brand-secondary: #a855f7;
   --color-brand-tertiary: #a855f7;
-  --color-divider: var(--color-slate);
+  --color-divider: #f5f5f4;
 
   --radius-sm: calc(var(--radius) - 2px);
   --radius-md: calc(var(--radius) + 0.25rem);
@@ -156,11 +132,11 @@
   body {
     background: var(--background);
     color: var(--foreground);
-    font-family: var(--font-sans);
+    font-family: "Inter", sans-serif;
     letter-spacing: 0.01em;
   }
   * { @apply border-border; }
-  :focus-visible { @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background; }
+  :focus-visible { @apply outline-none ring-2 ring-ring ring-offset-2; }
 }
 
 @layer utilities {
@@ -170,17 +146,4 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  
-  /* Tracking utilities for design system */
-  .tracking-tight { letter-spacing: var(--tracking-tight); }
-  .tracking-label { letter-spacing: var(--tracking-label); }
-  .tracking-wide { letter-spacing: var(--tracking-wide); }
-  .tracking-wider { letter-spacing: var(--tracking-wider); }
-  
-  /* Motion utilities */
-  .ease-entrance { transition-timing-function: var(--hexa-ease-entrance); }
-  .ease-interaction { transition-timing-function: var(--hexa-ease-interaction); }
-  .ease-transition { transition-timing-function: var(--hexa-ease-transition); }
-  .ease-sharp { transition-timing-function: var(--hexa-ease-sharp); }
-  .ease-cinematic { transition-timing-function: var(--hexa-ease-cinematic); }
 }

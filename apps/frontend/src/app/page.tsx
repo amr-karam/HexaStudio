@@ -37,7 +37,7 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   return (
-    <div className="bg-void text-text-primary">
+    <div className="bg-sl-void text-sl-alabaster">
       {/* The heavy interactive layers (canvas hero, sections, rail) are
           code-split into a Client Component. Suspense renders the skeleton
           fallback during SSR/streaming, so the browser gets paintable HTML

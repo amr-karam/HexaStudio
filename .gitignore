@@ -23,10 +23,6 @@ storybook-static/
 .env.gitlab
 .env.gitlab.*
 *.pem
-# Any dot-env file outside the allowlist — covers openai-compatible-agents.env etc.
-# Keep !.env.example below so the example stays tracked
-*.env
-!.env.example
 
 # Logs
 logs/
@@ -228,24 +224,3 @@ hexastudio-backend.tar
 .lh-perf.json
 .tmp-lh-perf.json
 *.report.html
-
-# Windows device spill + local scratch (never commit)
-nul
-kanban-*.html
-.worktrees/
-
-# WebDev security configuration
-.security-config
-
-# Temporary scratch files
-.hermes-tmp*
-test-debug.tsx
-
-# Auto-generated scaffolding scripts (not production)
-scripts/anima-workflow.sh
-scripts/coordinate-agents.sh
-scripts/init-sprint.sh
-scripts/setup-git-config.sh
-scripts/setup-mcp-integration.sh
-scripts/sprint-development.sh
-scripts/webdev-quick-start.sh
