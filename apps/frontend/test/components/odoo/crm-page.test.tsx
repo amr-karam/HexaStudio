@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, act } from "@testing-library/react";
 import CrmPage from "@/app/admin/odoo/crm/page";
 
 describe("CrmPage", () => {
@@ -7,13 +7,15 @@ describe("CrmPage", () => {
     vi.restoreAllMocks();
   });
 
-  it("renders the CRM leads header", () => {
+  it("renders the CRM leads header", async () => {
     vi.spyOn(globalThis, "fetch").mockResolvedValueOnce({
       ok: true,
       json: async () => ({ leads: [] }),
     } as Response);
 
-    render(<CrmPage />);
+    await act(async () => {
+      render(<CrmPage />);
+    });
 
     expect(screen.getByText("CRM Leads")).toBeInTheDocument();
     expect(screen.getByText(/Lead pipeline — qualification, source, probability/i)).toBeInTheDocument();

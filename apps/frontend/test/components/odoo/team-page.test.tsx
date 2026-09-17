@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, act } from "@testing-library/react";
 import TeamPage from "@/app/admin/odoo/team/page";
 
 describe("TeamPage", () => {
@@ -7,13 +7,15 @@ describe("TeamPage", () => {
     vi.restoreAllMocks();
   });
 
-  it("renders the team members header", () => {
+  it("renders the team members header", async () => {
     vi.spyOn(globalThis, "fetch").mockResolvedValueOnce({
       ok: true,
       json: async () => ({ members: [] }),
     } as Response);
 
-    render(<TeamPage />);
+    await act(async () => {
+      render(<TeamPage />);
+    });
 
     expect(screen.getByText("Team Members")).toBeInTheDocument();
     expect(screen.getByText(/Employee directory with roles & departments/i)).toBeInTheDocument();

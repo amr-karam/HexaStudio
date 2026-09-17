@@ -236,3 +236,7 @@ kanban-*.html
 
 # WebDev security configuration
 .security-config
+
+# Temporary scratch files
+.hermes-tmp*
+test-debug.tsx

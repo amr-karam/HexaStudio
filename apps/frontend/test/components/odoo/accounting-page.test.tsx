@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, act } from "@testing-library/react";
 import AccountingPage from "@/app/admin/odoo/accounting/page";
 
 describe("AccountingPage", () => {
@@ -7,13 +7,15 @@ describe("AccountingPage", () => {
     vi.restoreAllMocks();
   });
 
-  it("renders the invoices header", () => {
+  it("renders the invoices header", async () => {
     vi.spyOn(globalThis, "fetch").mockResolvedValueOnce({
       ok: true,
       json: async () => ({ invoices: [] }),
     } as Response);
 
-    render(<AccountingPage />);
+    await act(async () => {
+      render(<AccountingPage />);
+    });
 
     expect(screen.getByText("Accounting Invoices")).toBeInTheDocument();
     expect(screen.getByText(/Invoice status — Paid, Pending, Overdue/i)).toBeInTheDocument();
