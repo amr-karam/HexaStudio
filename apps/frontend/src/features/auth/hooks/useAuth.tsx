@@ -56,8 +56,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    // Check if user is logged in by calling /me (cookie is sent automatically)
-    fetchUser();
+    // Defer the /me probe to requestIdleCallback so it doesn't block the
+    // initial hydration commit. Anonymous users get { data: null } (200) so
+    // the round-trip is wasted work during first paint.
+    const id = typeof requestIdleCallback !== 'undefined'
+      ? requestIdleCallback(() => { void fetchUser(); })
+      : setTimeout(() => { void fetchUser(); }, 0) as unknown as number;
+    return () => {
+      if (typeof cancelIdleCallback !== 'undefined') cancelIdleCallback(id);
+      else clearTimeout(id);
+    };
   }, [fetchUser]);
 
   const login = async (identifier: string, password: string) => {

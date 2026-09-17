@@ -94,6 +94,8 @@ const nextConfig: NextConfig = {
       "tailwind-merge",
       "sonner",
       "@reduxjs/toolkit",
+      "@tanstack/react-query",
+      "react-icons",
     ],
     // Inline page CSS directly into the HTML — removes the render-blocking
     // stylesheet request from the critical path (FCP). HTML is served

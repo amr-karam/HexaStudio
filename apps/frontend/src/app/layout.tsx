@@ -2,7 +2,12 @@ import type { Metadata, Viewport } from "next";
 import { AppProviders } from "@/providers/app-providers";
 import { LayoutShell } from "@/components/LayoutShell";
 import { StructuredData } from "@/components/StructuredData";
-import { CinematicPreloader } from "@/components/ui/overlays/CinematicPreloader";
+import dynamic from 'next/dynamic';
+
+const CinematicPreloader = dynamic(
+  () => import("@/components/ui/overlays/CinematicPreloader").then(m => ({ default: m.CinematicPreloader })),
+  { ssr: false },
+);
 import { WebVitals } from "@/components/WebVitals";
 import { LivePreview } from "@/components/LivePreview";
 import { AnalyticsInit } from "@/lib/analytics";
