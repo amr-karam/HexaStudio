@@ -1241,3 +1241,6 @@ cd apps/backend && npx eslint src --max-warnings=0 && npx tsc --noEmit && npx vi
 node scripts/check-design-tokens.mjs --allow-inline-style-hex
 ```
 All Odoo-specific tests pass with no regressions in existing test suite.
+- **Odoo test suite:** 29 files / 127 tests (Sep 17 2026)
+- Components: customers, products, projects, accounting, sales-orders, crm, team
+- API routes: customers, products, projects, team (BFF proxies)
