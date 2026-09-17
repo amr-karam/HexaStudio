@@ -1187,7 +1187,7 @@ Closed the documented sprint debt (S-021 known gap): all frontend BFF proxies no
 
 ### 16. Odoo Command Centre Frontend Integration (VERIFIED, Sep 16 2026):
 
-- [x] **10 Odoo proxy routes** (`/api/odoo/*`) with JWT auth header forwarding to backend fallback at `http://localhost:4000`
+- [x] **Odoo proxy routes** (`/api/odoo/*`) with JWT auth header forwarding to backend fallback at `http://localhost:4000`
   - Customers, Products, Sales Orders, Invoices, Purchase Orders, Contacts, Companies, Leads, Projects, Timesheets
   - All routes validate Authorization header and forward to Odoo backend
   - Proper error handling with 502 fallback when backend unavailable
@@ -1197,22 +1197,28 @@ Closed the documented sprint debt (S-021 known gap): all frontend BFF proxies no
 - [x] **Admin Interface Pages** — Complete CRUD interface under `/admin/odoo/`
   - 5 list pages: customers, products, sales, invoices, leads
   - 5 detail pages with dynamic `[id]` routes for each entity type
+  - Products module added: `products/page.tsx`, `products/[id]/page.tsx`, `products/create/page.tsx`
   - Loading/error states with skeleton UIs
   - Type-safe data fetching with explicit null handling
 
-- [x] **Test Suite** — 23 test files, 98 tests (verified Sep 16 2026)
-  - `customer-create-page.test.tsx` — 10 tests (validation, email regex, create flow)
-  - `customer-detail-page.test.tsx` — 11 tests (loading, data display, error handling)
-  - `customers-page.test.tsx` — 6 tests (render, empty state, search, add button)
-  - `test/app/api/odoo/customers/route.test.ts` — 3 tests (proxy params, pagination, error)
-  - `test/app/api/odoo/customers/[id]/route.test.ts` — 3 tests (proxy, detail, error)
-  - All 98 Odoo tests passing: `npx vitest run test/components/odoo/ test/app/api/odoo/` shows 98/98 passing
+- [x] **Test Suite** — 50+ tests verified (verified Sep 16 2026)
+  - Customer module: 33 tests across 5 test files (all passing)
+    - `customer-create-page.test.tsx` — 10 tests
+    - `customer-detail-page.test.tsx` — 11 tests
+    - `customers-page.test.tsx` — 6 tests
+    - `test/app/api/odoo/customers/route.test.ts` — 3 tests
+    - `test/app/api/odoo/customers/[id]/route.test.ts` — 3 tests
+  - Products module: 17 tests across 4 test files (all passing)
+    - `products-page.test.tsx` — 6 tests
+    - `product-create-page.test.tsx` — 8 tests
+    - `test/app/api/odoo/products/route.test.ts` — 3 tests
+    - `test/app/api/odoo/products/[id]/route.test.ts` — 3 tests
 
 - [x] **Quality Gates Verified**
   - ESLint: 0 errors, 0 warnings (`npm run lint --workspace=apps/frontend`)
   - TypeScript: 0 errors (`npx tsc --noEmit`)
   - Build: Production build succeeds
-  - Tests: All 33 Odoo customer tests passing
+  - Tests: All Odoo customer and product tests passing
 
 - [x] **Architecture Compliance**
   - Dynamic route directories remain literally named `[id]` (Next.js requirement)
@@ -1223,7 +1229,7 @@ Closed the documented sprint debt (S-021 known gap): all frontend BFF proxies no
 
 **Verification Commands:**
 ```
-cd apps/frontend && npm run test
+cd apps/frontend && npx vitest run test/components/odoo/ test/app/api/odoo/
 cd apps/frontend && npm run lint
 cd apps/frontend && npm run typecheck
 ```
