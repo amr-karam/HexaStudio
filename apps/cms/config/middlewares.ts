@@ -7,7 +7,7 @@ export default [
       contentSecurityPolicy: {
         useDefaults: true,
         directives: {
-          "frame-ancestors": ["'self'", "http://localhost:3000", "http://localhost:3001", "https://hexastudio.net"],
+          "frame-ancestors": ["'self'", "http://localhost:1000", "http://localhost:3001", "https://hexastudio.net"],
         },
       },
     },
@@ -15,7 +15,7 @@ export default [
   {
     name: "strapi::cors",
     config: {
-      origin: ["https://hexastudio.net", "http://localhost:3000", "http://localhost:3001"],
+      origin: ["https://hexastudio.net", "http://localhost:1000", "http://localhost:3001"],
     },
   },
   "strapi::poweredBy",

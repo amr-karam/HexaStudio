@@ -2,9 +2,10 @@ import { API_BASE_URL } from '@/config/constants';
 import { captureException } from '@sentry/nextjs';
 
 // ─── Module-level state ───────────────────────────────────────────────────────
-// Refresh token held in memory only — never persisted to localStorage/cookies.
+// Access token in memory; refresh token lives exclusively in an httpOnly cookie
+// (set by the backend) and is never stored in JS-accessible state.
 let _accessToken: string | null = null;
-let _refreshToken: string | null = null;
+let _isLoggedIn = false;
 let _refreshPromise: Promise<boolean> | null = null;
 let _onAuthLogout: (() => void) | null = null;
 
@@ -16,15 +17,15 @@ export function getAccessToken(): string | null {
   return _accessToken;
 }
 
-export function setRefreshToken(token: string | null): void {
-  _refreshToken = token;
+export function setLoggedIn(loggedIn: boolean): void {
+  _isLoggedIn = loggedIn;
 }
 
 /**
- * Get the current refresh token (e.g. for mobile token storage).
+ * Whether a user session is active (used to decide whether to attempt refresh).
  */
-export function getRefreshToken(): string | null {
-  return _refreshToken;
+export function isLoggedIn(): boolean {
+  return _isLoggedIn;
 }
 
 /**
@@ -79,8 +80,9 @@ export async function authenticatedFetch(
     throw new Error('Network request failed');
   }
 
-  // If 401 and we have a refresh token, try to refresh once
-  if (response.status === 401 && _refreshToken) {
+  // On 401, attempt a single cookie-based refresh (the httpOnly refresh_token
+  // cookie is sent automatically with credentials: 'include').
+  if (response.status === 401) {
     const refreshed = await attemptTokenRefresh();
     if (refreshed) {
       try {
@@ -135,28 +137,24 @@ async function attemptTokenRefresh(): Promise<boolean> {
 }
 
 async function doRefresh(): Promise<boolean> {
-  if (!_refreshToken) return false;
-
   try {
+    // Cookie-first: the httpOnly refresh_token cookie is sent automatically.
+    // Empty body passes the optional Zod schema; backend reads the cookie.
     const response = await fetch(`${API_BASE_URL}/api/auth/refresh-token`, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refreshToken: _refreshToken }),
+      body: '{}',
     });
 
     if (!response.ok) {
-      // Refresh token is invalid — log out
       handleAuthFailure();
       return false;
     }
 
     const data = await response.json();
 
-    // Store the new tokens
-    if (data.refreshToken) {
-      _refreshToken = data.refreshToken;
-    }
+    // Refresh token is in the httpOnly cookie — never store in JS.
     if (data.accessToken) {
       _accessToken = data.accessToken;
     }
@@ -170,6 +168,6 @@ async function doRefresh(): Promise<boolean> {
 }
 
 function handleAuthFailure(): void {
-  _refreshToken = null;
+  _isLoggedIn = false;
   _onAuthLogout?.();
 }

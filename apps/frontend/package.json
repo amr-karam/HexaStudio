@@ -3,9 +3,9 @@
   "version": "1.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3000",
+    "dev": "next dev --port 1000",
     "build": "next build",
-    "start": "next start --port 3000",
+    "start": "next start --port 1000",
     "lint": "eslint src test --max-warnings=0 && node ../../scripts/check-design-tokens.mjs --allow-inline-style-hex && node ../../scripts/check-font-preloads.mjs",
     "check:fonts": "node ../../scripts/check-font-preloads.mjs",
     "typecheck": "tsc --noEmit",

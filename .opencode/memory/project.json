@@ -62,7 +62,7 @@
       "8443": "Traefik dashboard (internal)"
     },
     "services": {
-      "frontend": "frontend:3000",
+      "frontend": "frontend:1000",
       "backend": "backend:4000",
       "cms": "cms:1337",
       "odoo": "odoo:8069",
@@ -82,8 +82,8 @@
     }
   },
   "domains": {
-    "hexastudio.net": "Main website → frontend:3000",
-    "www.hexastudio.net": "WWW → frontend:3000 (same content, no redirect)",
+    "hexastudio.net": "Main website → frontend:1000",
+    "www.hexastudio.net": "WWW → frontend:1000 (same content, no redirect)",
     "api.hexastudio.net": "Backend API → backend:4000",
     "cms.hexastudio.net": "Strapi CMS → cms:1337",
     "odoo.hexastudio.net": "Odoo ERP → odoo:8069",
@@ -149,7 +149,7 @@
     },
     "healthchecks": {
       "backend": "curl -f http://127.0.0.1:4000/api/health",
-      "frontend": "curl -f http://127.0.0.1:3000",
+      "frontend": "curl -f http://127.0.0.1:1000",
       "cms": "curl -f http://127.0.0.1:1337/_health",
       "postgres": "pg_isready -U hexastudio -d hexastudio",
       "redis": "redis-cli -a <password> ping"
@@ -173,7 +173,7 @@
       "ODOO_PASSWORD": "Required",
       "ODOO_MASTER_PASSWORD": "Required",
       "ODOO_WEBHOOK_SECRET": "32+ chars",
-      "CORS_ORIGINS": "http://localhost:3000,https://hexastudio.net,https://www.hexastudio.net"
+      "CORS_ORIGINS": "http://localhost:1000,https://hexastudio.net,https://www.hexastudio.net"
     },
     "cms": {
       "STRAPI_APP_KEYS": "Required (comma-separated)",
@@ -199,7 +199,7 @@
     "deploy_stage": ["deploy-production", "deploy-staging"],
     "deploy_production": {
       "script": "SSH to 19.16.1.100, docker compose pull, up -d, health checks",
-      "health_checks": ["backend (port 4000)", "frontend (port 3000)", "cms (port 1337)"],
+      "health_checks": ["backend (port 4000)", "frontend (port 1000)", "cms (port 1337)"],
       "manual_approval": false
     },
     "publish_stage": {
@@ -212,7 +212,7 @@
     "deploy_frontend": "Build frontend: npm run build --workspace=apps/frontend, then copy build output to server container",
     "restart_all": "docker restart hexastudio-traefik-1 hexastudio-cloudflared-1 hexa-backend-blue",
     "check_backend": "curl -sf http://localhost:4000/api/health",
-    "check_frontend": "curl -sf http://localhost:3000 (from inside web network)",
+    "check_frontend": "curl -sf http://localhost:1000 (from inside web network)",
     "view_tunnel_logs": "docker logs hexastudio-cloudflared-1 | grep 'Registered tunnel connection'",
     "regenerate_lockfile": "npm install --legacy-peer-deps on Linux, then commit package-lock.json",
     "create_tunnel_token": "POST https://api.cloudflare.com/client/v4/accounts/{account_id}/tunnels/{tunnel_id}/tokens with X-Auth-Email + X-Auth-Key",

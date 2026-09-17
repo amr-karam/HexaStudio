@@ -10,9 +10,9 @@ import { API_BASE_URL } from '@/config/constants';
 // Module-level state lives in @/lib/api-client — mock the whole module so
 // tokens are deterministic and no real network is hit.
 const apiClientMocks = vi.hoisted(() => ({
-  setRefreshToken: vi.fn(),
+  setLoggedIn: vi.fn(),
   setAccessToken: vi.fn(),
-  getRefreshToken: vi.fn(),
+  isLoggedIn: vi.fn(),
   onAuthLogout: vi.fn(),
   authFetch: vi.fn(),
 }));
@@ -51,7 +51,7 @@ describe('useAuth logout', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     logoutFn = undefined;
-    apiClientMocks.getRefreshToken.mockReturnValue('refresh-token-123');
+    apiClientMocks.isLoggedIn.mockReturnValue(true);
     apiClientMocks.authFetch.mockResolvedValue(null);
     fetchMock.mockResolvedValue(new Response(null, { status: 200 }));
     vi.stubGlobal('fetch', fetchMock);
@@ -73,16 +73,16 @@ describe('useAuth logout', () => {
 
     // Local session is cleared immediately — even before the API settles.
     await waitFor(() => expect(screen.getByTestId('auth-user')).toHaveTextContent('anonymous'));
-    expect(apiClientMocks.setRefreshToken).toHaveBeenCalledWith(null);
+    expect(apiClientMocks.setLoggedIn).toHaveBeenCalledWith(false);
     expect(apiClientMocks.setAccessToken).toHaveBeenCalledWith(null);
 
-    // The token was captured before clearing and sent with the API call.
+    // The cookie-based logout sends an empty body; the backend reads the cookie.
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     expect(url).toBe(`${API_BASE_URL}/api/auth/logout`);
     expect(init.method).toBe('POST');
     expect(init.credentials).toBe('include');
-    expect(JSON.parse(String(init.body))).toEqual({ refreshToken: 'refresh-token-123' });
+    expect(JSON.parse(String(init.body))).toEqual({});
   });
 
   it('does not double-clear auth state on a single logout', async () => {
@@ -91,8 +91,8 @@ describe('useAuth logout', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Logout' }));
     await waitFor(() => expect(screen.getByTestId('auth-user')).toHaveTextContent('anonymous'));
 
-    expect(apiClientMocks.setRefreshToken).toHaveBeenCalledTimes(1);
-    expect(apiClientMocks.setRefreshToken).toHaveBeenCalledWith(null);
+    expect(apiClientMocks.setLoggedIn).toHaveBeenCalledTimes(1);
+    expect(apiClientMocks.setLoggedIn).toHaveBeenCalledWith(false);
     expect(apiClientMocks.setAccessToken).toHaveBeenCalledTimes(1);
     expect(apiClientMocks.setAccessToken).toHaveBeenCalledWith(null);
   });
@@ -110,7 +110,7 @@ describe('useAuth logout', () => {
 
     await waitFor(() => expect(screen.getByTestId('auth-user')).toHaveTextContent('anonymous'));
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(apiClientMocks.setRefreshToken).toHaveBeenCalledTimes(1);
+    expect(apiClientMocks.setLoggedIn).toHaveBeenCalledTimes(1);
     expect(apiClientMocks.setAccessToken).toHaveBeenCalledTimes(1);
   });
 
@@ -124,7 +124,7 @@ describe('useAuth logout', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Logout' }));
 
     await waitFor(() => expect(screen.getByTestId('auth-user')).toHaveTextContent('anonymous'));
-    expect(apiClientMocks.setRefreshToken).toHaveBeenCalledWith(null);
+    expect(apiClientMocks.setLoggedIn).toHaveBeenCalledWith(false);
     expect(apiClientMocks.setAccessToken).toHaveBeenCalledWith(null);
   });
 });

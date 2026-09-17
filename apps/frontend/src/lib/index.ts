@@ -2,12 +2,12 @@
  * Library utilities export
  */
 
-// Auth-aware API client (refresh token rotation)
+// Auth-aware API client (cookie-based refresh)
 export {
   authFetch,
   authenticatedFetch,
-  setRefreshToken,
-  getRefreshToken,
+  setLoggedIn,
+  isLoggedIn,
   onAuthLogout,
 } from './api-client';
 

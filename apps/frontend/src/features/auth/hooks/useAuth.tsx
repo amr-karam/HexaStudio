@@ -4,9 +4,8 @@ import { useState, useEffect, useCallback, useRef, createContext, useContext } f
 import { User } from '@/types';
 import { API_BASE_URL } from '@/config/constants';
 import {
-  setRefreshToken,
+  setLoggedIn,
   setAccessToken,
-  getRefreshToken,
   onAuthLogout,
   authFetch,
 } from '@/lib/api-client';
@@ -30,7 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Register logout handler — when refresh token is revoked/expired, force UI logout
   useEffect(() => {
     onAuthLogout(() => {
-      setRefreshToken(null);
+      setLoggedIn(false);
       setAccessToken(null);
       setUser(null);
     });
@@ -80,10 +79,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // A new session starts — release any stale logout in-flight guard.
     logoutInFlightRef.current = false;
 
-    // Store tokens in memory for automatic renewal
-    if (data.refreshToken) {
-      setRefreshToken(data.refreshToken);
-    }
+    // Mark session active; access token stays in memory, refresh token is in
+    // the httpOnly cookie set by the backend.
+    setLoggedIn(true);
     if (data.accessToken) {
       setAccessToken(data.accessToken);
     }
@@ -108,10 +106,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // A new session starts — release any stale logout in-flight guard.
     logoutInFlightRef.current = false;
 
-    // Store tokens in memory for automatic renewal
-    if (data.refreshToken) {
-      setRefreshToken(data.refreshToken);
-    }
+    // Mark session active; access token stays in memory, refresh token is in
+    // the httpOnly cookie set by the backend.
+    setLoggedIn(true);
     if (data.accessToken) {
       setAccessToken(data.accessToken);
     }
@@ -123,13 +120,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (logoutInFlightRef.current) return;
     logoutInFlightRef.current = true;
 
-    // Capture the refresh token BEFORE clearing state, so the server-side
-    // session can still be revoked by the API call below.
-    const refreshToken = getRefreshToken();
-
     // Clear auth state synchronously — the local session ends immediately,
-    // regardless of the network result.
-    setRefreshToken(null);
+    // regardless of the network result. Refresh token is in the httpOnly
+    // cookie; the backend reads it from the request cookies.
+    setLoggedIn(false);
     setAccessToken(null);
     setUser(null);
 
@@ -139,7 +133,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refreshToken }),
+      body: '{}',
     })
       .catch(() => {
         // Best-effort revocation — local session is already cleared above.
