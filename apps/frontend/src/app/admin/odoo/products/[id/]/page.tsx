@@ -120,7 +120,7 @@ export default function ProductDetailPage() {
           <div className="space-y-4">
             <div>
               <p className="text-xs text-sl-silver mb-1">Status</p>
-              <p className={`font-medium capitalize ${product.is_active ? 'text-green-400' : 'text-red-400'}`}>
+              <p className={`font-medium capitalize ${product.is_active ? 'text-emerald-400' : 'text-destructive'}`}>
                 {product.is_active ? 'Active' : 'Inactive'}
               </p>
             </div>

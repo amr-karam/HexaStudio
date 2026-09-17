@@ -48,7 +48,7 @@ const STATUS_STYLES: Record<HealthResult['status'], { bg: string; text: string; 
   checking:  { bg: 'bg-amber-500/10',  text: 'text-amber-400',   dot: 'bg-amber-400 animate-pulse', label: 'Checking…' },
   healthy:   { bg: 'bg-emerald-500/10', text: 'text-emerald-400', dot: 'bg-emerald-400',             label: 'Healthy'   },
   degraded:  { bg: 'bg-yellow-500/10',  text: 'text-yellow-400',  dot: 'bg-yellow-400 animate-pulse',label: 'Degraded'  },
-  down:      { bg: 'bg-red-500/10',     text: 'text-red-400',     dot: 'bg-red-500 animate-pulse',   label: 'Down'      },
+  down:      { bg: 'bg-destructive/10',     text: 'text-destructive',     dot: 'bg-destructive animate-pulse',   label: 'Down'      },
   unknown:   { bg: 'bg-white/5',        text: 'text-sl-alabaster/40',    dot: 'bg-white/20',                label: 'Unknown'   },
 };
 
@@ -113,11 +113,11 @@ export default function HealthDashboardPage() {
         </div>
 
         {/* Summary Bar */}
-        <div className={`rounded-2xl p-4 flex items-center justify-between border ${allHealthy ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-red-500/30 bg-red-500/5'}`}>
+        <div className={`rounded-2xl p-4 flex items-center justify-between border ${allHealthy ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-destructive/30 bg-destructive/5'}`}>
           <div className="flex items-center space-x-3">
             <span className={`text-2xl ${allHealthy ? '' : 'animate-pulse'}`}>{allHealthy ? '✅' : '⚠️'}</span>
             <div>
-              <p className={`text-sm font-bold ${allHealthy ? 'text-emerald-400' : 'text-red-400'}`}>
+              <p className={`text-sm font-bold ${allHealthy ? 'text-emerald-400' : 'text-destructive'}`}>
                 {allHealthy ? 'All Systems Operational' : `${total - healthy} Service${total - healthy !== 1 ? 's' : ''} Require Attention`}
               </p>
               <p className="text-xs text-sl-alabaster/50">{healthy} / {total} services healthy</p>
@@ -159,12 +159,12 @@ export default function HealthDashboardPage() {
                       </div>
                       <div className="text-right">
                         {result.httpStatus && (
-                          <p className={`text-xs font-mono ${result.status === 'healthy' ? 'text-emerald-400' : 'text-red-400'}`}>
+                          <p className={`text-xs font-mono ${result.status === 'healthy' ? 'text-emerald-400' : 'text-destructive'}`}>
                             HTTP {result.httpStatus}
                           </p>
                         )}
                         {result.error && (
-                          <p className="text-[10px] text-red-400/70 max-w-[140px] truncate" title={result.error}>
+                          <p className="text-[10px] text-destructive/70 max-w-[140px] truncate" title={result.error}>
                             {result.error}
                           </p>
                         )}

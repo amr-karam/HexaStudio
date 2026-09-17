@@ -92,7 +92,7 @@ export default function AdminRequestsPage() {
                     </td>
                       <td className="p-6">
                         <span className={`text-[10px] uppercase tracking-widest px-2 py-1 rounded-full font-mono ${
-                          req.priority === 'high' ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 
+                          req.priority === 'high' ? 'bg-destructive/10 text-destructive border border-destructive/20' : 
                           req.priority === 'medium' ? 'bg-sl-gold-subtle/10 text-sl-gold-hover border border-sl-gold-subtle/20' : 
                           'bg-sl-obsidian text-sl-mist/60 border border-neutral-700'
                         }`}>
