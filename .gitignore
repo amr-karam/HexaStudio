@@ -240,3 +240,12 @@ kanban-*.html
 # Temporary scratch files
 .hermes-tmp*
 test-debug.tsx
+
+# Auto-generated scaffolding scripts (not production)
+scripts/anima-workflow.sh
+scripts/coordinate-agents.sh
+scripts/init-sprint.sh
+scripts/setup-git-config.sh
+scripts/setup-mcp-integration.sh
+scripts/sprint-development.sh
+scripts/webdev-quick-start.sh
