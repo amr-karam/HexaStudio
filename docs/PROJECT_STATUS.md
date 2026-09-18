@@ -2,7 +2,7 @@
 
 > **Active Sprint:** S-022 Phase 4/RC (S-023 PROD tasks active)  
 > **Branch:** `fix/ui-design-tokens`  
-> **Updated:** 2026-09-08
+> **Updated:** 2026-09-18
 
 ## Sprint Progression
 
@@ -24,7 +24,8 @@
 | Backend | 40% | NestJS 11 API layer, JWT auth, Socket.IO |
 | CMS | 30% | Strapi 5 headless CMS, blog content migration to Framer |
 | Auth | 20% | JWT + session management scaffolded |
-| Testing | 20% | 660 frontend tests, 404 backend tests passing |
+| Testing | 25% | 660+ frontend tests, 443 backend tests passing (60 files) |
+| Research Tools | ✅ | Test coverage for webapp research integration (webSearch, scrapePage, synthesizeReport, exportLuxuryPdf, applyLiveMaterial) |
 | Deployment | 30% | Docker containers (blue/green), Traefik ingress |
 | CI/CD | 20% | GitLab CI pipelines scaffolded |
 | SEO | 0% | Next sprint S-022 focus |
