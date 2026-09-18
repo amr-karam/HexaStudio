@@ -327,7 +327,7 @@ export function ContactFormSection({
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="1.5"
-                      className="text-red-500"
+                      className="text-destructive"
                     >
                       <motion.circle
                         initial={{ pathLength: 0 }}
@@ -449,7 +449,7 @@ export function ContactFormSection({
                               }}
                               id={`contact-${field}-error`}
                               role="alert"
-                              className="text-xs uppercase tracking-widest text-red-500 font-mono"
+                              className="text-xs uppercase tracking-widest text-destructive font-mono"
                             >
                               {errors[field]}
                             </motion.span>

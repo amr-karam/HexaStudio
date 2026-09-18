@@ -30,8 +30,10 @@ class ChatDto {
   sessionId?: string;
 
   @IsOptional()
-  @IsIn(['general', 'ceo', 'sales', 'pm', 'code-review'])
+  @IsIn(['general', 'ceo', 'sales', 'pm', 'code-review', 'researcher', 'director'])
   persona?: AgentPersona;
+
+
 }
 
 class DeepResearchDto {
@@ -48,8 +50,10 @@ class ClearMemoryDto {
   sessionId!: string;
 
   @IsOptional()
-  @IsIn(['general', 'ceo', 'sales', 'pm', 'code-review'])
+  @IsIn(['general', 'ceo', 'sales', 'pm', 'code-review', 'researcher', 'director'])
   persona?: AgentPersona;
+
+
 }
 
 @ApiTags('Agents')

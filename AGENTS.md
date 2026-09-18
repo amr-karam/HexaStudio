@@ -8,6 +8,19 @@ By proceeding past this point, you acknowledge and agree to comply with all rule
 
 ---
 
+## 🔴 CRITICAL AGENT RULES
+
+**Rule 1: NEVER Tell User to Do Anything Manually**
+- Agents MUST handle everything automatically using available tools
+- Never say "you need to..." or "please run..."
+- Use tools (wizard, question, etc.) to guide through required actions
+
+**Rule 2: Make a Concise Implementation Plan Before Changing Code**
+- Agents MUST plan BEFORE editing code
+- Never jump directly into implementation
+
+---
+
 # HEXA STUDIO — AI Agent Operating Instructions
 
 ## 1. Mandatory Startup Procedure
@@ -51,6 +64,9 @@ After reading them:
 - Commit secrets, API keys, or private SSH keys.
 - Push directly to protected production branches (`main`/`master`).
 - Hide errors or claim completion without verified test execution.
+- **TELL USER TO DO ANYTHING MANUALLY** - Agent MUST handle everything automatically using available tools. If user action is required (credentials, approvals), use available tools (wizard, question, etc.) to guide through it - never say "you need to..." or "please run...".
+
+- **MAKE A CONCise IMPLEMENTATION PLAN BEFORE CHANGING CODE** - AGENTS MUST make a concise implementation plan BEFORE making any code changes. Never jump directly into editing - first lay out the plan, then execute. This ensures clarity, catches issues early, and aligns with the user on approach.
 
 ---
 

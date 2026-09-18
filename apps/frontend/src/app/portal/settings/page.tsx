@@ -352,8 +352,8 @@ export default function SettingsPage() {
           )}
           {syncStatus === 'error' && (
             <>
-              <div className="w-3 h-3 rounded-full bg-red-500/60" />
-              <span className="text-[10px] uppercase tracking-widest text-red-400/80 font-mono">
+              <div className="w-3 h-3 rounded-full bg-destructive/60" />
+              <span className="text-[10px] uppercase tracking-widest text-destructive/80 font-mono">
                 {t('portal.settings.saveFailed')}
               </span>
             </>

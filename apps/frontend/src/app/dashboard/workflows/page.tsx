@@ -47,7 +47,7 @@ function StatusBadge({ status }: { status: WorkflowExecutionStatus }) {
     status === 'completed'
       ? 'bg-green-500/20 text-green-400'
       : status === 'failed'
-        ? 'bg-red-500/20 text-red-400'
+        ? 'bg-destructive/20 text-destructive'
         : status === 'running'
           ? 'bg-sl-gold-subtle/20 text-sl-gold-hover'
           : 'bg-white/10 text-sl-alabaster/50';
@@ -258,7 +258,7 @@ export default function WorkflowsPage() {
               <div className="flex gap-3 text-xs">
                 <button onClick={() => runMutation.mutate(wf.id)} disabled={runMutation.isPending} className="rounded-lg bg-sl-gold-subtle px-3 py-1.5 font-medium text-black transition-colors hover:bg-sl-gold-subtle-dark disabled:opacity-50">Run now</button>
                 <button onClick={() => { setEditing(wf); setModalOpen(true); }} className="text-sl-alabaster/40 transition-colors hover:text-sl-alabaster/70">Edit</button>
-                <button onClick={() => { if (confirm(`Delete workflow "${wf.name}"?`)) deleteMutation.mutate(wf.id); }} className="text-red-400/60 transition-colors hover:text-red-400">Delete</button>
+                <button onClick={() => { if (confirm(`Delete workflow "${wf.name}"?`)) deleteMutation.mutate(wf.id); }} className="text-destructive/60 transition-colors hover:text-destructive">Delete</button>
               </div>
             </div>
           ))}
@@ -280,7 +280,7 @@ export default function WorkflowsPage() {
                   <td className="py-2 font-mono text-sl-alabaster/50">{ex.workflowId.slice(0, 8)}</td>
                   <td className="py-2"><StatusBadge status={ex.status} /></td>
                   <td className="py-2 text-sl-alabaster/40">{new Date(ex.startedAt).toLocaleString()}</td>
-                  <td className="py-2 text-red-400/70">{ex.error ?? '—'}</td>
+                  <td className="py-2 text-destructive/70">{ex.error ?? '—'}</td>
                 </tr>
               ))}
             </tbody>

@@ -3,6 +3,19 @@ name: tdd
 description: Test-driven development. Use when the user wants to build features or fix bugs test-first, mentions "red-green-refactor", or wants integration tests.
 ---
 
+<supermemory-recall>
+Before responding, silently decide whether recalling saved memory (past sessions, decisions, conventions, the user's preferences) would materially improve your answer to THIS message. Reason first — don't search reflexively, and don't narrate the decision.
+
+Recall — by calling the `supermemory` tool with `mode: "search"` — when the message:
+- refers to earlier work or decisions ("the auth flow", "like we did", "continue", "the bug from before")
+- touches an area where saved conventions, patterns, or preferences likely exist
+- is ambiguous in a way past context would resolve
+
+Skip recall when the message is self-contained, trivial, a greeting/meta, fully answerable from the current conversation, or you already recalled the relevant context this session and the topic hasn't shifted.
+
+Cadence is per-message: it's fine to recall on several turns in a row, and fine to never recall in a session. When you do recall, run it before answering and fold the results into your response.
+</supermemory-recall>
+
 # Test-Driven Development
 
 TDD is the red → green loop. This skill is the reference that makes that loop produce tests worth keeping: what a good test is, where tests go, the anti-patterns, and the rules of the loop. Every section applies on every cycle — consult them before and during the loop, not after.

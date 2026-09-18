@@ -6,6 +6,7 @@ import { useXRHitTest } from '@react-three/xr';
 import { useGLTF } from '@react-three/drei';
 import { useXRStore } from '../store/xr-store';
 import { useXRInteraction } from '../hooks/useXRInteraction';
+import { applyMaterialOverrides } from '../utils/apply-material-overrides';
 import { ARPlacementReticle } from './ARPlacementReticle';
 import { CollaboratorAvatar } from './CollaboratorAvatar';
 import { Vector3, Quaternion, Matrix4, Group, Box3 } from 'three';
@@ -54,6 +55,14 @@ export function XRSceneContent({
   const setPlacementPhase = useXRStore((s) => s.setPlacementPhase);
 
   const clonedScene = useMemo(() => scene.clone(true), [scene]);
+
+  // ─── Live Atelier: apply AI material overrides to the Three.js scene ───
+  const materialOverrides = useXRStore((s) => s.materialOverrides);
+
+  useEffect(() => {
+    if (!clonedScene) return;
+    applyMaterialOverrides(clonedScene, Object.values(materialOverrides));
+  }, [clonedScene, materialOverrides]);
 
   const isPlacing = mode === 'ar' && placementPhase === 'placing';
   const isPlaced = placementPhase === 'placed' || placementPhase === 'adjusting';

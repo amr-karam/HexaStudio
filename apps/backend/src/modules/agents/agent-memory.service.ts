@@ -58,6 +58,19 @@ export class AgentMemoryService implements AgentMemory {
     }
   }
 
+  /** 
+   * Recall all durable facts for a session.
+   * Used to inject project-specific constants into the system prompt before history hydration.
+   */
+  async getAllFacts(persona: string, sessionId: string): Promise<Record<string, unknown>> {
+    try {
+      return await this.redis.hgetall(this.factsKey(persona, sessionId));
+    } catch (err) {
+      this.logger.warn(`getAllFacts failed for ${persona}/${sessionId}: ${err}`);
+      return {};
+    }
+  }
+
   /** Append a single message to the conversation transcript. */
   async append(persona: string, sessionId: string, message: MemoryMessage): Promise<void> {
     const key = this.memoryKey(persona, sessionId);

@@ -73,7 +73,7 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
               onClick={() => webrtc.toggleMic()}
               className={`rounded-xl px-4 py-2.5 text-xs font-mono tracking-wider transition-colors duration-300 ${
                 webrtc.isMicMuted
-                  ? 'bg-red-500/15 text-red-400 border border-red-500/30'
+                  ? 'bg-red-500/15 text-destructive border border-red-500/30'
                   : 'bg-obsidian-raised border border-sl-silver/20/40 text-sl-alabaster hover:border-sl-gold-subtle/40'
               }`}
             >

@@ -100,7 +100,7 @@ function DiagnosticRow({
     unknown ? 'text-yellow-400' :
     ok ? 'text-green-400' :
     warn ? 'text-amber-400' :
-    'text-red-400';
+    'text-destructive';
 
   return (
     <div className="flex justify-between gap-4">

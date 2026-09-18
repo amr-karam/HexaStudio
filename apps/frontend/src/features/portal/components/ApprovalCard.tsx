@@ -94,13 +94,13 @@ const STATUS_CONFIG: Record<
   rejected: {
     label: 'Rejected',
     icon: 'x',
-    pill: 'border-red-500/30 bg-red-500/10 text-red-500',
+    pill: 'border-red-500/30 bg-red-500/10 text-destructive',
     glow: '',
   },
   revision_requested: {
     label: 'Revision Requested',
     icon: 'alert-circle',
-    pill: 'border-red-500/30 bg-red-500/10 text-red-500',
+    pill: 'border-red-500/30 bg-red-500/10 text-destructive',
     glow: '',
   },
 };
@@ -109,7 +109,7 @@ const SENTIMENT_CONFIG: Record<NonNullable<ApprovalSentiment>, { icon: IconName;
   positive: { icon: 'smile', color: 'text-emerald-500', label: 'Client Receptive' },
   neutral: { icon: 'meh', color: 'text-sl-mist/70', label: 'Neutral Tone' },
   frustrated: { icon: 'frown', color: 'text-amber-400', label: 'Elevated Tension' },
-  urgent: { icon: 'alert-triangle', color: 'text-red-500', label: 'Urgent Attention' },
+  urgent: { icon: 'alert-triangle', color: 'text-destructive', label: 'Urgent Attention' },
 };
 
 /* -------------------------------------------------------------------------- */
@@ -222,7 +222,7 @@ function AuditTrailProps({ trail, reduced }: AuditTrailProps) {
       className="overflow-hidden"
     >
       <div className="mt-4 pt-4 border-t border-sl-silver/20/50">
-        <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-sl-mist/60 mb-3 flex items-center gap-2">
+        <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-sl-mist/60 mb-3 flex items-center gap-2">
           <span aria-hidden="true" className="h-px w-6 bg-sl-gold-subtle/40" />
           Audit Trail
         </p>
@@ -255,7 +255,7 @@ function AuditTrailProps({ trail, reduced }: AuditTrailProps) {
                 />
                 <div className="space-y-0.5">
                   <p className="font-sans text-sm text-sl-alabaster/90">{entry.action}</p>
-                  <p className="font-mono text-[9px] uppercase tracking-[0.1em] text-sl-mist/60">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-sl-mist/60">
                     {formatTime(entry.timestamp)} · {entry.actor}
                   </p>
                   {entry.comment && (
@@ -340,7 +340,7 @@ export function ApprovalCard({ approval, index, prefersReduced, onReview }: Appr
         <h3 className="font-serif text-base font-light leading-snug text-sl-alabaster/95 line-clamp-1">
           {approval.title}
         </h3>
-        <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.15em] text-sl-mist/60 truncate">
+        <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-sl-mist/60 truncate">
           {approval.projectName} · {approval.phaseName}
         </p>
       </div>
@@ -356,7 +356,7 @@ export function ApprovalCard({ approval, index, prefersReduced, onReview }: Appr
 
           {/* Date */}
           <span className="text-sl-mist/60">|</span>
-          <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-sl-mist/60">
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-sl-mist/60">
             {formatShortDate(approval.submittedAt)}
           </span>
 
@@ -380,7 +380,7 @@ export function ApprovalCard({ approval, index, prefersReduced, onReview }: Appr
               reduced={prefersReduced}
             />
             {approval.urgencyScore != null && approval.urgencyScore > 70 && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.1em] rounded-full bg-red-500/10 text-red-500 border border-red-500/30">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.2em] rounded-full bg-red-500/10 text-destructive border border-red-500/30">
                 <Icon name="alert-triangle" className="w-2.5 h-2.5" />
                 URGENT
               </span>

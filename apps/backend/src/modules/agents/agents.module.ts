@@ -7,11 +7,16 @@ import { HermesAgentService } from '../ai/hermes.service';
 import { ToolRegistryService } from './tool-registry.service';
 import { GatekeeperService } from './gatekeeper.service';
 import { SwarmOrchestratorService } from './swarm-orchestrator.service';
+import { CognitiveAuditService } from './cognitive-audit.service';
+import { OperationalTriggerService } from './operational-trigger.service';
+import { ResearchToolsService } from './research-tools.service';
+import { ResearchToolsController } from './research-tools.controller';
 import { ProjectsModule } from '../projects/projects.module';
 import { VectorModule } from '../vector/vector.module';
 import { AIModule } from '../ai/ai.module';
 import { RealtimeModule } from '../realtime/realtime.module';
 import { WebhooksModule } from '../webhooks/webhooks.module';
+import { PdfModule } from '../pdf/pdf.module';
 import { AGENTS_PORT } from '../../ports/agents.port';
 import { AGENT_MEMORY_PORT } from '../../ports/agent-memory.port';
 
@@ -23,8 +28,9 @@ import { AGENT_MEMORY_PORT } from '../../ports/agent-memory.port';
     AIModule,
     forwardRef(() => RealtimeModule),
     forwardRef(() => WebhooksModule),
+    PdfModule,
   ],
-  controllers: [AgentsController],
+  controllers: [AgentsController, ResearchToolsController],
   providers: [
     AgentsService,
     AgentMemoryService,
@@ -32,6 +38,9 @@ import { AGENT_MEMORY_PORT } from '../../ports/agent-memory.port';
     ToolRegistryService,
     GatekeeperService,
     SwarmOrchestratorService,
+    CognitiveAuditService,
+    OperationalTriggerService,
+    ResearchToolsService,
     { provide: AGENTS_PORT, useExisting: AgentsService },
     { provide: AGENT_MEMORY_PORT, useExisting: AgentMemoryService },
   ],
@@ -41,6 +50,9 @@ import { AGENT_MEMORY_PORT } from '../../ports/agent-memory.port';
     HermesAgentService,
     SwarmOrchestratorService,
     ToolRegistryService,
+    CognitiveAuditService,
+    OperationalTriggerService,
+    ResearchToolsService,
     AGENTS_PORT,
     AGENT_MEMORY_PORT,
   ],

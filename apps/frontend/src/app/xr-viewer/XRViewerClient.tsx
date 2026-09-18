@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { XRCanvas, XRView, XRUI, XRErrorFallback } from '@/features/xr';
 import { useCollaboration } from '@/features/xr/hooks/useCollaboration';
 import { useWebRTC } from '@/features/xr/hooks/useWebRTC';
+import { useSpatialCommands } from '@/features/xr/hooks/useSpatialCommands';
 import { useXRStore } from '@/features/xr/store/xr-store';
 import { CollabPresence } from '@/features/xr/components/CollabPresence';
 import { MediaControls } from '@/features/xr/components/MediaControls';
@@ -37,6 +38,12 @@ function XRViewerInner() {
   const { sendCursor, getSocket } = useCollaboration(projectId, userName, mode);
   const webrtc = useWebRTC(projectId, mode, getSocket);
 
+  // Live Atelier: apply real-time AI material mutations to the scene.
+  useSpatialCommands(getSocket, projectId);
+
+  // Surface live AI overrides in the HUD so the client sees the agent "painting".
+  const materialOverrideCount = useXRStore((s) => Object.keys(s.materialOverrides).length);
+
   useEffect(() => {
     if (modelUrl) {
       track('xr_viewer_load', { modelName: modelName || 'unnamed', modelUrl: modelUrl.slice(0, 100) });
@@ -51,6 +58,17 @@ function XRViewerInner() {
       <XRUI onExit={() => { track('xr_viewer_exit'); router.back(); }} modelName={modelName} />
       {projectId && <CollabPresence />}
       {projectId && <MediaControls webrtc={webrtc} />}
+      {materialOverrideCount > 0 && (
+        <div className="fixed top-4 right-4 z-50 flex items-center gap-2 rounded-full border border-[var(--color-gold-subtle)]/30 bg-black/60 px-3 py-1.5 backdrop-blur-md">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--color-gold-subtle)] opacity-60" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--color-gold-subtle)]" />
+          </span>
+          <span className="text-[10px] uppercase tracking-widest text-[var(--color-gold-subtle)]">
+            Live Design · {materialOverrideCount}
+          </span>
+        </div>
+      )}
     </div>
   );
 }

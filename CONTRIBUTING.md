@@ -1,5 +1,20 @@
 # Contributing to HEXA Studio
 
+## 🔴 CRITICAL AGENT RULES
+
+When working with AI agents (skills, tools, automated systems), the following rules are binding and enforced:
+
+**Rule 1: NEVER Tell User to Do Anything Manually**
+- Agents MUST handle everything automatically using available tools
+- Never say "you need to..." or "please run..."
+- Use tools (wizard, question, etc.) to guide through required actions
+
+**Rule 2: Make a Concise Implementation Plan Before Changing Code**
+- Agents MUST plan BEFORE editing code
+- Never jump directly into implementation
+
+These rules are enforced in `AGENTS.md` and all agent configurations.
+
 Thank you for your interest in contributing to HEXA Studio. This document provides guidelines and information for contributors.
 
 ## Getting Started

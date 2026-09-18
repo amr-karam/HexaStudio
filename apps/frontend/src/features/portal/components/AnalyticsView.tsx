@@ -336,7 +336,7 @@ function KpiCard({ kpi, index, reduced }: { kpi: KpiData; index: number; reduced
             className="text-sl-mist/60 transition-colors duration-500 group-hover:text-sl-gold-hover"
           />
         </div>
-        <div className={cn('flex items-center gap-1 font-mono text-[0.625rem] uppercase tracking-[0.15em]', trendColor)}>
+        <div className={cn('flex items-center gap-1 font-mono text-[0.625rem] uppercase tracking-[0.2em]', trendColor)}>
           <Icon name={trendIcon} size={11} />
           <span>{kpi.trend.value}%</span>
         </div>
@@ -1000,7 +1000,7 @@ export function AnalyticsView() {
                 aria-checked={isActive}
                 aria-label={`Show data for the last ${opt.label}`}
                 className={cn(
-                  'relative rounded-full px-4 py-1.5 font-mono text-xs tracking-[0.15em] transition-colors duration-500',
+                  'relative rounded-full px-4 py-1.5 font-mono text-xs tracking-[0.2em] transition-colors duration-500',
                   isActive ? 'text-sl-void' : 'text-sl-mist/60 hover:text-sl-gold-hover',
                 )}
               >

@@ -130,8 +130,8 @@ export function TelemetryDashboard() {
             >
               <span className="text-sm font-medium capitalize text-sl-alabaster">{name}</span>
               <div className="flex items-center gap-2">
-                <span className={`w-2 h-2 rounded-full ${status === 'online' ? 'bg-emerald-500' : 'bg-red-500'}`} />
-                <span className={`text-xs font-mono uppercase tracking-wider ${status === 'online' ? 'text-emerald-400' : 'text-red-400'}`}>
+                <span className={`w-2 h-2 rounded-full ${status === 'online' ? 'bg-emerald-400' : 'bg-red-500'}`} />
+                <span className={`text-xs font-mono uppercase tracking-wider ${status === 'online' ? 'text-emerald-400' : 'text-destructive'}`}>
                   {status}
                 </span>
               </div>

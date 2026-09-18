@@ -39,7 +39,7 @@ export type DesignSettings = {
 const DEFAULT_SETTINGS: DesignSettings = {
   colors: {
     gold: '#D4AF37',
-    void: '#050505',
+    void: '#0A0A0B',
     obsidian: '#0F0F10',
     alabaster: '#F5F4F2',
     muted: '#A0A0A0',

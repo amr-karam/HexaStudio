@@ -559,7 +559,7 @@ function StatusPill({ config }: { config: { label: string; pill: string; dot: st
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-2 rounded-full border px-2.5 py-1 font-mono text-[0.625rem] uppercase tracking-[0.15em]',
+        'inline-flex items-center gap-2 rounded-full border px-2.5 py-1 font-mono text-[0.625rem] uppercase tracking-[0.2em]',
         config.pill,
       )}
     >

@@ -115,7 +115,7 @@ const Input = React.forwardRef<InputElement, InputComponentProps>(
     /* ------------------------------------------------------------------ */
     const labelClasses = cn(
       'block text-xs font-mono font-medium uppercase tracking-[0.25em] transition-colors duration-300',
-      hasError ? 'text-red-400' : 'text-sl-mist/60 group-focus-within:text-sl-gold-hover',
+      hasError ? 'text-destructive' : 'text-sl-mist/60 group-focus-within:text-sl-gold-hover',
     );
 
     /* ------------------------------------------------------------------ */
@@ -160,7 +160,7 @@ const Input = React.forwardRef<InputElement, InputComponentProps>(
     const renderFeedback = () => {
       if (hasError && error) {
         return (
-          <span id={errorId} role="alert" className="text-xs uppercase tracking-tighter text-red-500 transition-opacity duration-200">
+          <span id={errorId} role="alert" className="text-xs uppercase tracking-tighter text-destructive transition-opacity duration-200">
             {error}
           </span>
         );

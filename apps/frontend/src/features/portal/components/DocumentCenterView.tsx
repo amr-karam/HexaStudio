@@ -892,7 +892,7 @@ export function DocumentCenterView() {
                         {doc.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="rounded border border-white/5 bg-white/[0.03] px-2 py-0.5 font-mono text-[0.5625rem] uppercase tracking-[0.15em] text-sl-mist/60"
+                            className="rounded border border-white/5 bg-white/[0.03] px-2 py-0.5 font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-sl-mist/60"
                           >
                             {tag}
                           </span>

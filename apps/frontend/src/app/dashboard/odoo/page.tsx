@@ -425,7 +425,7 @@ export default function OdooDashboardPage() {
                       <td className="py-2 text-sl-alabaster/50">{lead.partner_name ?? '—'}</td>
                       <td className="py-2 text-sl-alabaster/50">{idName(lead.stage_id)}</td>
                       <td className="py-2 text-sl-alabaster/40">{lead.create_date?.slice(0, 10) ?? '—'}</td>
-                      <td className="py-2"><button onClick={() => handleArchiveLead(lead.id)} className="text-xs text-red-400/70 hover:text-red-400">Archive</button></td>
+                      <td className="py-2"><button onClick={() => handleArchiveLead(lead.id)} className="text-xs text-destructive/70 hover:text-destructive">Archive</button></td>
                     </tr>
                   ))}
                 </tbody>
@@ -842,7 +842,7 @@ export default function OdooDashboardPage() {
                   </div>
                   <div className="flex shrink-0 gap-2">
                     <button onClick={() => { setEditingArticle(a); setKnowledgeModalOpen(true); }} className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-sl-alabaster/60 hover:bg-white/5">Edit</button>
-                    <button onClick={() => handleArchiveArticle(a.id)} className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-red-400/70 hover:bg-white/5">Archive</button>
+                    <button onClick={() => handleArchiveArticle(a.id)} className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-destructive/70 hover:bg-white/5">Archive</button>
                   </div>
                 </div>
               ))}
@@ -941,7 +941,7 @@ export default function OdooDashboardPage() {
                   {syncMetrics.data.map((m, i) => (
                     <tr key={`${m.operation}-${i}`} className="border-t border-white/5">
                       <td className="py-2 font-medium text-sl-alabaster">{m.operation}</td>
-                      <td className="py-2">{m.success ? <span className="text-green-400/80">OK</span> : <span className="text-red-400/80">Failed</span>}</td>
+                      <td className="py-2">{m.success ? <span className="text-emerald-400/80">OK</span> : <span className="text-red-400/80">Failed</span>}</td>
                       <td className="py-2 text-sl-alabaster/50">{Math.round(m.durationMs)}ms</td>
                       <td className="py-2 text-sl-alabaster/40">{new Date(m.timestamp).toLocaleTimeString()}</td>
                     </tr>

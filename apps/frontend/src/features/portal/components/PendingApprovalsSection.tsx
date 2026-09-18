@@ -37,7 +37,7 @@ function ApprovalCard({ approval }: { approval: PendingApproval }) {
   const statusColors = {
     pending: 'bg-amber-500/20 text-amber-500 border-amber-500/30',
     approved: 'bg-emerald-500/20 text-emerald-500 border-emerald-500/30',
-    rejected: 'bg-red-500/20 text-red-500 border-red-500/30',
+    rejected: 'bg-red-500/20 text-destructive border-red-500/30',
     revision_requested: 'bg-purple-500/20 text-purple-500 border-purple-500/30',
   };
 
@@ -52,7 +52,7 @@ function ApprovalCard({ approval }: { approval: PendingApproval }) {
     positive: 'text-emerald-500',
     neutral: 'text-sl-mist/60',
     frustrated: 'text-orange-500',
-    urgent: 'text-red-500',
+    urgent: 'text-destructive',
   };
 
   return (
@@ -67,13 +67,13 @@ function ApprovalCard({ approval }: { approval: PendingApproval }) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2">
             <span
-              className={`inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.15em] rounded-full border ${typeColors[approval.type]} bg-[currentColor]/10 border-[currentColor]/20`}
+              className={`inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.2em] rounded-full border ${typeColors[approval.type]} bg-[currentColor]/10 border-[currentColor]/20`}
             >
               <Icon name={typeIcons[approval.type]} className="w-3 h-3" />
               {approval.type.replace('_', ' ')}
             </span>
             <span
-              className={`inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.15em] rounded-full ${statusColors[approval.status]}`}
+              className={`inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.2em] rounded-full ${statusColors[approval.status]}`}
             >
               {approval.status.replace('_', ' ')}
             </span>
@@ -90,7 +90,7 @@ function ApprovalCard({ approval }: { approval: PendingApproval }) {
             {new Date(approval.submittedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
           </span>
           {approval.urgencyScore && approval.urgencyScore > 70 && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.1em] rounded-full bg-red-500/20 text-red-500 border border-red-500/30">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.2em] rounded-full bg-red-500/20 text-destructive border border-red-500/30">
               <Icon name="alert-triangle" className="w-2.5 h-2.5" />
               URGENT
             </span>
@@ -118,7 +118,7 @@ function ApprovalCard({ approval }: { approval: PendingApproval }) {
               name={sentimentIcons[approval.sentiment]}
               className={`w-4 h-4 ${sentimentColors[approval.sentiment]}`}
             />
-            <span className={`text-[10px] font-mono uppercase tracking-[0.1em] capitalize ${sentimentColors[approval.sentiment]}`}>
+            <span className={`text-[10px] font-mono uppercase tracking-[0.2em] capitalize ${sentimentColors[approval.sentiment]}`}>
               {approval.sentiment}
             </span>
             {approval.urgencyScore && (
@@ -132,7 +132,7 @@ function ApprovalCard({ approval }: { approval: PendingApproval }) {
 
       {approval.auditTrail && approval.auditTrail.length > 0 && (
         <div className="mt-4 pt-4 border-t border-sl-silver/20/50">
-          <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-sl-mist/60 mb-2">Audit Trail</p>
+          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-sl-mist/60 mb-2">Audit Trail</p>
           <div className="space-y-1.5">
             {approval.auditTrail.slice(-3).map((entry, i) => (
               <motion.div

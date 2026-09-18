@@ -1,6 +1,6 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** September 17, 2026 — Sprint S-023 active (Production Hardening). TBT hydration burst fixed (6 deferred-init optimizations). Homepage redesigned with new cinematic content. Tests: 126/126 frontend (831 tests), 59/59 backend (437 tests).
+**Last Updated:** September 18, 2026 — Sprint S-023 active (Production Hardening). Live Atelier complete (real-time AI→3D material co-design, end-to-end via `spatial:command`). Tests: 127/127 frontend (838 tests), 59/59 backend (437 tests).
 **Version:** 2.2.10
 **Authority Level:** 13 (Production)
 **Current Phase:** Production-Ready — Quad-Track Feature Delivery & Silent Luxury Design System (DEPLOYED)
@@ -1140,3 +1140,28 @@ Combined with 7 nested client providers all hydrating synchronously and the Cine
 **After:** Only the lightweight QualityProvider probe (~20ms) runs during hydration. The heavy Canvas, preloader, WebGL context, Footer animations, and auth fetch all defer to idle time or post-paint.
 
 **Estimated TBT reduction:** 400-600ms (from ~800ms+ to ~200ms target on mid-range hardware)
+
+---
+
+## 2026-09-18 — Live Atelier Complete (Real-Time AI→3D Material Co-Design) — COMPLETE
+
+**Status:** Implemented & verified (frontend gates green; backend symbols verified)
+
+### 1. Overview
+Completed the Live Atelier rendering bridge: AI/user material overrides now flow end-to-end from the backend `RealtimeGateway` (`spatial:command` → `SET_MATERIAL`) through the frontend XR store into the live Three.js scene — no page refresh. Added the first XR unit test suite.
+
+### 2. Work Completed
+- [x] **Unit test suite** `apps/frontend/test/features/xr/apply-material-overrides.test.ts` (8 tests): empty-override no-op, mesh-name match (case-insensitive), material-name match, shared-material-name fan-out, multi-mesh color application, non-matching skip, material rename, non-mesh object handling.
+- [x] **REAL BUG FIXED — shared Color instance cross-contamination:** `applyMaterialOverrides` assigned the module-level `_color` instance directly to materials (`mat.color = _color`); a second override mutated the shared instance, retroactively changing already-applied meshes (gold → oak color). Fixed with `mat.color.copy(_color)` (value copy into each material's own Color instance).
+- [x] **Three.js 0.171.0 semantics:** `needsUpdate` is setter-only (no getter — reading it returns `undefined`); the utility's write is correct (bumps `version` → shader rebuild); tests assert on `version` instead of reading `needsUpdate`.
+- [x] **Backend symbols verified:** `RealtimeGateway.dispatchSpatialCommand` (`realtime.gateway.ts:150`), `ProjectsService.getProjectBySlug` (`projects.service.ts:200`), `AgentsService.chat(message, persona, sessionId, user?)` (`agents.service.ts:102`) — all previously unverified call sites are valid.
+- [x] **Module registration verified:** `ResearchToolsService`, `OperationalTriggerService`, `CognitiveAuditService` already registered in `agents.module.ts` (providers + exports) — ToolRegistry auto-discovery active.
+
+### 3. Quality Gates Verified (Sep 18, 2026)
+| Gate | Result |
+|------|--------|
+| Frontend ESLint | ✅ 0 errors, 0 warnings |
+| Frontend Typecheck | ✅ 0 errors |
+| Frontend Tests | ✅ 127 files / **838 tests** (+8 new) |
+| Design Tokens | ✅ ALL PASSED |
+| Font Preloads | ✅ ALL MATCH |

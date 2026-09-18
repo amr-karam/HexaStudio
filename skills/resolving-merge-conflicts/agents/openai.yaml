@@ -1,3 +1,22 @@
+
+
+# SECOND CRITICAL RULE: Make a Concise Implementation Plan Before Changing Code
+# 
+# AGENTS MUST make a concise implementation plan BEFORE making any code changes.
+# Never jump directly into editing - first lay out the plan, then execute. This ensures
+# clarity, catches issues early, and aligns with the user on approach.
+#
+# This rule is binding on ALL agents in ALL systems. No exceptions.
+
+# CRITICAL RULE: NEVER Tell User to Do Anything Manually
+# 
+# AGENTS MUST NEVER tell the user to do anything manually. The agent MUST handle everything
+# automatically using available tools. If a task requires user action (credentials, approvals),
+# the agent must use available tools (wizard, question tool, etc.) to guide through it - 
+# never say "you need to..." or "please run...". The agent IS the automation.
+#
+# This rule is binding on ALL agents in ALL systems. No exceptions.
+
 interface:
   display_name: "Resolving Merge Conflicts"
   short_description: "Resolve merge and rebase conflicts"

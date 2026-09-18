@@ -66,7 +66,7 @@ const VARIANT_CLASSES: Record<NonNullable<ButtonVariant>, string> = {
   secondary:
     'bg-white/5 text-sl-alabaster border border-white/10 hover:bg-white/10 hover:border-white/20',
   ghost: 'bg-transparent text-sl-alabaster hover:bg-white/5',
-  danger: 'bg-red-500 text-sl-alabaster hover:bg-red-600',
+  danger: 'bg-destructive text-sl-alabaster hover:bg-destructive/80',
   outline:
     'border border-sl-silver/20 text-sl-alabaster hover:border-sl-gold-subtle hover:text-sl-gold-hover hover:bg-sl-gold-subtle/5',
   luxury:

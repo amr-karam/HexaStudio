@@ -1,7 +1,7 @@
 # ADR-018: Agents ↔ Realtime ↔ Webhooks — Interface-IoC Refactor (Phase 2)
 
 **Date:** 2026-09-15
-**Status:** Accepted (per-module binding; central hub rejected — see note)
+**Status:** Accepted & **Completed** (per-module binding; central hub rejected — see note)
 **Deciders:** Chief Architect, Backend Guild
 
 > **Implementation note (2026-09-16):** Phase 1 port interfaces (`src/ports/*.port.ts`)
@@ -63,4 +63,11 @@ Revert 3 port files + 6 injections, restore `forwardRef` at 6 edges (previous co
 - `GOVERNANCE.md` § Governance Hierarchy, `ENGINEERING_STANDARDS.md`
 
 ---
-**Sign-off:** `🏛️ Chief Architect Approved` (pending)
+**Sign-off:** `🏛️ Chief Architect Approved` (2026-09-18)
+
+### PHASE 2 COMPLETION (2026-09-18)
+- `SwarmOrchestratorService` migrated to token-based injection: `@Inject(REALTIME_PORT)` + `@Inject(WEBHOOKS_PORT)`
+- Port interfaces extended: `RealtimePort` adds EventBus `on`/`emit`; `WebhooksPort` adds `sendMessage`/`SlackMessage`
+- Bindings: `RealtimeModule` → `REALTIME_PORT` → `EventBus`; `WebhooksModule` → `WEBHOOKS_PORT` → `SlackService`
+- Quality gates: backend 437/437 tests ✓, frontend 830 tests ✓, mobile 26 tests ✓, lint ✓, typecheck ✓
+- **Status:** Phase 2 complete. 5 `forwardRef` edges remain in ADR-017 scope (deferred to next sprint).

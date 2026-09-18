@@ -15,4 +15,7 @@ export interface AgentMemoryPort {
   remember(persona: string, sessionId: string, key: string, value: unknown, ttl?: number): Promise<void>;
   recall(persona: string, sessionId: string, key: string): Promise<unknown>;
   forget(persona: string, sessionId: string, key: string): Promise<void>;
+  getAllFacts(persona: string, sessionId: string): Promise<Record<string, unknown>>;
 }
+
+export default AgentMemoryPort;

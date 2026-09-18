@@ -98,7 +98,7 @@ const MOCK_SESSIONS: SessionData[] = [
 
 const STRENGTH_LEVELS: StrengthLevel[] = [
   { label: '', textColor: '', barColor: '', width: '0%' },
-  { label: 'Weak', textColor: 'text-red-400', barColor: 'bg-red-400', width: '33%' },
+  { label: 'Weak', textColor: 'text-destructive', barColor: 'bg-destructive', width: '33%' },
   { label: 'Medium', textColor: 'text-amber-400', barColor: 'bg-amber-400', width: '66%' },
   { label: 'Strong', textColor: 'text-emerald-400', barColor: 'bg-emerald-400', width: '100%' },
 ] as const;
@@ -651,7 +651,7 @@ export default function ProfilePage() {
                     id="password-mismatch"
                     initial={{ opacity: 0, y: -4 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-[11px] font-mono text-red-400 mt-1"
+                    className="text-[11px] font-mono text-destructive mt-1"
                     role="alert"
                   >
                     Passwords do not match
@@ -760,7 +760,7 @@ export default function ProfilePage() {
                       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
                       session.isCurrent
                         ? 'text-sl-mist/60 border-sl-obsidian cursor-not-allowed'
-                        : 'text-red-400 border-red-500/20 hover:bg-red-500/10 hover:border-red-500/40 focus-visible:ring-red-400',
+                        : 'text-destructive border-destructive/20 hover:bg-red-500/10 hover:border-destructive/40 focus-visible:ring-destructive',
                     )}
                     aria-label={`Revoke session: ${session.device}`}
                   >

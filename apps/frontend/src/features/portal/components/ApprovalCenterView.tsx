@@ -99,8 +99,8 @@ const STATUS_ICONS: Record<PendingApproval['status'], IconName> = {
 const STATUS_PILLS: Record<PendingApproval['status'], string> = {
   pending: 'border-sl-gold-subtle/30 bg-sl-gold-subtle/10 text-sl-gold-hover',
   approved: 'border-sl-gold-subtle/30 bg-sl-gold-subtle/10 text-sl-gold-hover',
-  rejected: 'border-red-500/20 bg-red-500/10 text-red-500',
-  revision_requested: 'border-red-500/20 bg-red-500/10 text-red-500',
+  rejected: 'border-red-500/20 bg-red-500/10 text-destructive',
+  revision_requested: 'border-red-500/20 bg-red-500/10 text-destructive',
 };
 
 /* -------------------------------------------------------------------------- */
@@ -176,7 +176,7 @@ function AuditTrailTimeline({ trail }: AuditTrailTimelineProps) {
                 )}
               />
               <p className="font-sans text-sm text-sl-alabaster/90">{log.action}</p>
-              <p className="mt-0.5 font-mono text-[0.5625rem] uppercase tracking-[0.15em] text-sl-mist/60">
+              <p className="mt-0.5 font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-sl-mist/60">
                 {formatLedgerDate(log.timestamp)} · {log.actor}
               </p>
               {log.comment && (
@@ -302,7 +302,7 @@ export function ApprovalCenterView() {
       {persistError && (
         <p
           role="alert"
-          className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 font-mono text-[0.625rem] uppercase tracking-[0.2em] text-red-500"
+          className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 font-mono text-[0.625rem] uppercase tracking-[0.2em] text-destructive"
         >
           {persistError}
         </p>
@@ -372,10 +372,10 @@ export function ApprovalCenterView() {
 
                 {/* Submitter + date */}
                 <div className="mt-3 flex items-center justify-between gap-3 border-t border-white/5 pt-3">
-                  <span className="truncate font-mono text-[0.5625rem] uppercase tracking-[0.15em] text-sl-mist/60">
+                  <span className="truncate font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-sl-mist/60">
                     by {item.submittedBy}
                   </span>
-                  <span className="shrink-0 font-mono text-[0.5625rem] uppercase tracking-[0.15em] text-sl-mist/60">
+                  <span className="shrink-0 font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-sl-mist/60">
                     № {String(idx + 1).padStart(2, '0')} — {formatShortDate(item.submittedAt)}
                   </span>
                 </div>

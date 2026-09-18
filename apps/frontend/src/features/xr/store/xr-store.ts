@@ -3,6 +3,17 @@
 import { create } from 'zustand';
 import { XRSessionMode, XRSessionStatus, ARPlacementPhase, XRStoreState, Collaborator } from '../utils/xr-constants';
 
+export interface MaterialOverride {
+  element: string;
+  color?: string;
+  roughness?: number;
+  metalness?: number;
+  name?: string;
+  triggeredBy: 'ai-agent' | 'user';
+  agentPersona?: string;
+  timestamp: number;
+}
+
 interface XRActions {
   setMode: (mode: XRSessionMode | null) => void;
   setStatus: (status: XRSessionStatus) => void;
@@ -21,12 +32,14 @@ interface XRActions {
   setAudioEnabled: (enabled: boolean) => void;
   setMicMuted: (muted: boolean) => void;
   setSpeakingPeers: (peers: string[]) => void;
+  pushMaterialOverride: (override: Omit<MaterialOverride, 'timestamp'>) => void;
+  clearMaterialOverrides: () => void;
   reset: () => void;
 }
 
-type XRStore = XRStoreState & XRActions;
+type XRStore = XRStoreState & { materialOverrides: Record<string, MaterialOverride> } & XRActions;
 
-const initialState: XRStoreState = {
+const initialState: XRStoreState & { materialOverrides: Record<string, MaterialOverride> } = {
   mode: null,
   status: 'idle',
   isSupported: false,
@@ -43,6 +56,7 @@ const initialState: XRStoreState = {
   audioEnabled: false,
   micMuted: false,
   speakingPeers: [],
+  materialOverrides: {},
 };
 
 export const useXRStore = create<XRStore>((set) => ({
@@ -68,5 +82,13 @@ export const useXRStore = create<XRStore>((set) => ({
   setAudioEnabled: (audioEnabled) => set({ audioEnabled }),
   setMicMuted: (micMuted) => set({ micMuted }),
   setSpeakingPeers: (speakingPeers) => set({ speakingPeers }),
+  pushMaterialOverride: (override) => set((state) => ({
+    materialOverrides: {
+      ...state.materialOverrides,
+      [override.element]: { ...override, timestamp: Date.now() },
+    },
+  })),
+  clearMaterialOverrides: () => set({ materialOverrides: {} }),
   reset: () => set(initialState),
 }));
+

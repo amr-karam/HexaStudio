@@ -77,7 +77,7 @@ function WebhookCard({
         <button onClick={onEdit} className="text-sl-alabaster/40 transition-colors hover:text-sl-alabaster/70">
           Edit
         </button>
-        <button onClick={onDelete} className="text-red-400/60 transition-colors hover:text-red-400">
+        <button onClick={onDelete} className="text-destructive/60 transition-colors hover:text-destructive">
           Delete
         </button>
       </div>

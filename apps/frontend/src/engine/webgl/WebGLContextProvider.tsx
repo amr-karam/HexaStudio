@@ -278,11 +278,6 @@ function useWebGLContextInternal(options: UseWebGLContextOptions, _children?: Re
     return false;
   }, [initializeContext, resolvedOptions.maxRecoveryAttempts, resolvedOptions.recoveryDelayMs, notifyStateChange]);
 
-<<<<<<< HEAD
-  const requestContext = useCallback(async (): Promise<WebGL2RenderingContext | WebGLRenderingContext | null> => {
-    if (initializedRef.current && glRef.current) {
-      return glRef.current;
-=======
   /* ---- Defer heavy WebGL init to requestIdleCallback ---- */
   useEffect(() => {
     // Defer context creation + capability detection (12 gl.getParameter()
@@ -304,7 +299,7 @@ function useWebGLContextInternal(options: UseWebGLContextOptions, _children?: Re
       setState("lost");
       notifyStateChange("lost");
       
-      if (autoRecover) {
+      if (resolvedOptions.autoRecover) {
         void attemptRecovery();
       }
     };
@@ -328,7 +323,20 @@ function useWebGLContextInternal(options: UseWebGLContextOptions, _children?: Re
       canvasRef.current.addEventListener("webglcontextlost", handleContextLost);
       canvasRef.current.addEventListener("webglcontextrestored", handleContextRestored);
       window.addEventListener("resize", handleResize);
->>>>>>> develop
+    }
+
+    return () => {
+      if (canvasRef.current) {
+        canvasRef.current.removeEventListener("webglcontextlost", handleContextLost);
+        canvasRef.current.removeEventListener("webglcontextrestored", handleContextRestored);
+      }
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [resolvedOptions.autoRecover, attemptRecovery, notifyStateChange]);
+
+  const requestContext = useCallback(async (): Promise<WebGL2RenderingContext | WebGLRenderingContext | null> => {
+    if (initializedRef.current && glRef.current) {
+      return glRef.current;
     }
     notifyStateChange("initializing");
     return await initializeContext();
@@ -384,11 +392,7 @@ function useWebGLContextInternal(options: UseWebGLContextOptions, _children?: Re
         if (loseCtx) loseCtx.loseContext();
       }
     };
-<<<<<<< HEAD
   }, [resolvedOptions.autoRecover, resolvedOptions]);
-=======
-  }, [autoRecover, attemptRecovery, notifyStateChange]);
->>>>>>> develop
 
   const renderState = useMemo<WebGLAdaptiveRenderState>(() => {
     if (state === "lost" || state === "failed" || state === "idle") {

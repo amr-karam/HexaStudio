@@ -32,6 +32,7 @@ import { ProgressRing } from '@/components/ProgressRing';
 import { SectionHeader } from '@/components/SectionHeader';
 import { hapticLight } from '@/lib/haptics';
 import { fetchPortalDashboard, PortalDashboard } from '@/lib/api';
+import { motion } from '@/theme/motion';
 
 function formatAmount(v: number): string {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v);
@@ -149,9 +150,9 @@ export default function HomeScreen() {
           </Text>
         </View>
 
-        {/* ── Project Card ─────────────────────────────────────── */}
-        <Animated.View entering={FadeInDown.duration(600).delay(100)} style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.xl }}>
-          <GlassCard goldAccent onPress={handleCardPress}>
+         {/* ── Project Card ─────────────────────────────────────── */}
+         <Animated.View entering={FadeInDown.duration(motion.duration.base).delay(100)} style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.xl }}>
+           <GlassCard goldAccent onPress={handleCardPress}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <View style={{ flex: 1 }}>
                 <Text style={{ ...typography.monoLabel, color: colors.gold }}>Current Project</Text>
@@ -177,10 +178,10 @@ export default function HomeScreen() {
           </GlassCard>
         </Animated.View>
 
-        {/* ── Milestones ───────────────────────────────────────── */}
-        {timeline.length > 0 && (
-          <Animated.View entering={FadeInDown.duration(600).delay(200)} style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.xl }}>
-            <SectionHeader kicker="TIMELINE" title="Milestones" />
+         {/* ── Milestones ───────────────────────────────────────── */}
+         {timeline.length > 0 && (
+           <Animated.View entering={FadeInDown.duration(motion.duration.base).delay(200)} style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.xl }}>
+             <SectionHeader kicker="TIMELINE" title="Milestones" />
             <View style={{ paddingVertical: spacing.sm }}>
               {timeline.slice(0, 5).map((t, i) => (
                 <GlassCard key={i} style={{ padding: spacing.md, marginBottom: spacing.sm }}>
@@ -218,10 +219,10 @@ export default function HomeScreen() {
           </Animated.View>
         )}
 
-        {/* ── Invoices ─────────────────────────────────────────── */}
-        {invoices.length > 0 && (
-          <Animated.View entering={FadeInDown.duration(600).delay(300)} style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.xl }}>
-            <SectionHeader
+         {/* ── Invoices ─────────────────────────────────────────── */}
+         {invoices.length > 0 && (
+           <Animated.View entering={FadeInDown.duration(motion.duration.base).delay(300)} style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.xl }}>
+             <SectionHeader
               kicker="FINANCE"
               title="Invoices"
               subtitle={`${pendingInvoices.length} pending · ${formatAmount(totalDue)} due`}
@@ -251,9 +252,9 @@ export default function HomeScreen() {
           </Animated.View>
         )}
 
-        {/* ── Gold CTA ─────────────────────────────────────────── */}
-        <Animated.View entering={FadeInDown.duration(600).delay(400)} style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.xl, paddingBottom: spacing.xl5 }}>
-          <GoldButton
+         {/* ── Gold CTA ─────────────────────────────────────────── */}
+         <Animated.View entering={FadeInDown.duration(motion.duration.base).delay(400)} style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.xl, paddingBottom: spacing.xl5 }}>
+           <GoldButton
             label="View All Projects"
             size="lg"
             onPress={() => hapticLight()}
