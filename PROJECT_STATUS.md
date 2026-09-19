@@ -1,6 +1,6 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** September 18, 2026 — Sprint S-023 active (Production Hardening). Live Atelier complete (real-time AI→3D material co-design, end-to-end via `spatial:command`). Tests: 127/127 frontend (838 tests), 59/59 backend (437 tests).
+**Last Updated:** September 19, 2026 — Sprint S-023 active (Production Hardening). Live Atelier complete + Research Hub wired to the real backend (research→audit→PDF). Tests: 129/129 frontend (854 tests), 59/59 backend (437 tests).
 **Version:** 2.2.10
 **Authority Level:** 13 (Production)
 **Current Phase:** Production-Ready — Quad-Track Feature Delivery & Silent Luxury Design System (DEPLOYED)
@@ -1163,5 +1163,28 @@ Completed the Live Atelier rendering bridge: AI/user material overrides now flow
 | Frontend ESLint | ✅ 0 errors, 0 warnings |
 | Frontend Typecheck | ✅ 0 errors |
 | Frontend Tests | ✅ 127 files / **838 tests** (+8 new) |
+| Design Tokens | ✅ ALL PASSED |
+| Font Preloads | ✅ ALL MATCH |
+
+## 2026-09-19 — Research Hub Wired to Real Backend (Research→Audit→PDF) — COMPLETE
+
+**Status:** Implemented & verified (frontend gates green: 129 files / 854 tests)
+
+### 1. Overview
+Replaced ResearchHub's simulated workflow (hardcoded sample data + setTimeout theater) with the real backend pipeline: the `researcher` persona performs live research via the ResearchTools toolset, the `director` persona audits the synthesis against Absolute Zero standards, and PDF Forge produces an honest client-side branded print deliverable.
+
+### 2. Work Completed
+- [x] **Real pipeline** `apps/frontend/src/components/ai/ResearchHub.tsx`: `POST /api/v1/agents/researcher` (research prompt) → `POST /api/v1/agents/director` (audit prompt, synthesis sliced to 6000 chars to respect the 8000-char `ChatDto` limit); shared `sessionId` (`research-${Date.now()}`) for backend memory hydration across both calls.
+- [x] **Honest error handling:** non-ok upstream responses surface status codes in the Cognitive Stream — research failure aborts the pipeline; audit failure degrades to "Audit Unavailable" (no fake data, monochrome `XCircle` icons).
+- [x] **PDF Forge:** client-side print-ready branded HTML (Cormorant Garamond + Jost, gold `#d4af37` accents, print CSS) via hidden iframe → `window.print()`, cleaned up on `afterprint` + 60s fallback. Backend `PdfService` remains a mock — no fabricated binary shipped.
+- [x] **REAL BUG FIXED — escapeHtml identity mappings:** `escapeHtml` mapped `&`, `<`, `>`, and `"` to themselves (no escaping — raw HTML injection into the branded report). Fixed with proper entity mappings (amp, lt, gt, quot, apos); regression test asserts the branded markup escapes a hostile query.
+- [x] **Regression suite** `apps/frontend/test/features/ai/ResearchHub.test.tsx` (6 tests): empty-brief no-op, researcher→director routing with POST body + shared sessionId verification, researcher 503 abort, director 503 degrade, HTML-escape in branded report markup.
+
+### 3. Quality Gates Verified (Sep 19, 2026)
+| Gate | Result |
+|------|--------|
+| Frontend ESLint | ✅ 0 errors, 0 warnings |
+| Frontend Typecheck | ✅ 0 errors |
+| Frontend Tests | ✅ 129 files / **854 tests** (+6 new) |
 | Design Tokens | ✅ ALL PASSED |
 | Font Preloads | ✅ ALL MATCH |

@@ -46,7 +46,7 @@ const excerpt = (text: string): string => {
 };
 
 const escapeHtml = (text: string): string =>
-  text.replace(/[&<>"']/g, (ch) => ({ '&': '&', '<': '<', '>': '>', '"': '"', "'": '&#39;' }[ch] ?? ch));
+  text.replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch] ?? ch));
 
 const buildBrandedReportHtml = (result: ResearchResult): string => {
   const issued = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
