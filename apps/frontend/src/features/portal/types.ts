@@ -225,10 +225,74 @@ export interface CommandItem {
   icon: string;
 }
 
+export type PortalIconName =
+  | 'layout-dashboard'
+  | 'folder-kanban'
+  | 'file-text'
+  | 'receipt'
+  | 'message-square'
+  | 'help-circle'
+  | 'settings'
+  | 'search'
+  | 'command'
+  | 'bell'
+  | 'log-out'
+  | 'sun'
+  | 'moon'
+  | 'menu'
+  | 'x'
+  | 'arrow-up-right'
+  | 'arrow-down-right'
+  | 'minus'
+  | 'check'
+  | 'clock'
+  | 'calendar'
+  | 'send'
+  | 'download'
+  | 'upload'
+  | 'user'
+  | 'chevron-right'
+  | 'zap'
+  | 'dollar-sign'
+  | 'alert-circle'
+  | 'alert-triangle'
+  | 'file-check'
+  | 'phone'
+  | 'video'
+  | 'external-link'
+  | 'eye'
+  | 'trash'
+  | 'filter'
+  | 'more-horizontal'
+  | 'hash'
+  | 'sparkles'
+  | 'plus'
+  | 'plus-circle'
+  | 'shield-check'
+  | 'grid'
+  | 'check-circle'
+  | 'users'
+  | 'bar-chart'
+  | 'milestone'
+  | 'box'
+  | 'credit-card'
+  | 'kanban'
+  | 'camera'
+  | 'mic'
+  | 'loader'
+  | 'smile'
+  | 'meh'
+  | 'frown'
+  | 'pen-tool'
+  | 'layout-grid'
+  | 'package'
+  | 'git-branch'
+  | 'palette';
+
 export interface PortalNavItem {
   label: string;
   href: string;
-  icon: string;
+  icon: PortalIconName;
   badge?: number;
 }
 

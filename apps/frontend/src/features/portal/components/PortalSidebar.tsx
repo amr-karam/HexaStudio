@@ -1,9 +1,9 @@
 'use client';
 
-import { forwardRef, MouseEvent } from 'react';
+import { useState, MouseEvent, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { usePortalStore } from '@/features/portal/store';
-import { Icon } from '@/features/portal/components/PortalIcons';
+import { Icon, IconName } from '@/features/portal/components/PortalIcons';
 import { PortalNavSection, PortalNavItem } from '@/features/portal/types';
 
 const PORTAL_NAV_SECTIONS: PortalNavSection[] = [
@@ -36,7 +36,7 @@ const PORTAL_NAV_SECTIONS: PortalNavSection[] = [
 ];
 
 interface SidebarNavProps {
-  ref: React.RefObject<HTMLDivElement>;
+  ref: React.RefObject<HTMLDivElement | null>;
   expanded: boolean;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
@@ -106,7 +106,7 @@ function SidebarNav({
                 {selectedSection === item.href && (
                   <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-accent rounded-r-full" />
                 )}
-                <Icon name={item.icon as any} className="shrink-0" size={16} />
+                <Icon name={item.icon} className="shrink-0" size={16} />
                 {expanded && (
                   <span className="font-['JetBrains_Mono'] text-xs whitespace-nowrap transition-all duration-300">
                     {item.label}
@@ -134,13 +134,14 @@ interface PortalSidebarProps {
   className?: string;
 }
 
-function PortalSidebar({ className }: PortalSidebarProps) {
+function PortalSidebar(props: PortalSidebarProps) {
   const { isSidebarOpen, setSidebarOpen } = usePortalStore();
   const [selectedSection, setSelectedSection] = useState('/design-system');
+  const navRef = useRef<HTMLDivElement>(null);
 
   return (
     <SidebarNav
-      ref={null}
+      ref={navRef}
       expanded={isSidebarOpen}
       onMouseEnter={() => setSidebarOpen(true)}
       onMouseLeave={() => setSidebarOpen(false)}
@@ -152,13 +153,14 @@ function PortalSidebar({ className }: PortalSidebarProps) {
   );
 }
 
-const PortalMobileSidebar = ({ className }: PortalSidebarProps) => {
+const PortalMobileSidebar = () => {
   const { isSidebarOpen, setSidebarOpen } = usePortalStore();
+  const navRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className={cn('lg:hidden', className)}>
+    <div className="lg:hidden">
       <SidebarNav
-        ref={null}
+        ref={navRef}
         expanded={isSidebarOpen}
         onMouseEnter={() => setSidebarOpen(true)}
         onMouseLeave={() => setSidebarOpen(false)}
