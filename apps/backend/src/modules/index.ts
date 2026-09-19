@@ -38,3 +38,4 @@ export * from './workflow/workflow.module';
 export * from './style-transfer/style-transfer.module';
 export * from './cost-estimator/cost-estimator.module';
 export * from './assets/assets.module';
+export * from './data/data.module';

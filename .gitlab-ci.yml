@@ -35,6 +35,7 @@ test-backend:
   before_script:
     - cd apps/backend
     - npm ci
+  script:
     - npm run test
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
@@ -50,6 +51,7 @@ test-frontend:
   before_script:
     - cd apps/frontend
     - npm ci
+  script:
     - npm run lint
     - npm run typecheck
     - npm run test
@@ -67,6 +69,7 @@ test-hexahub-api:
   before_script:
     - cd hexa-hub/apps/api
     - npm ci
+  script:
     - npm run test
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
@@ -82,6 +85,7 @@ test-hexahub-web:
   before_script:
     - cd hexa-hub/apps/web
     - npm ci
+  script:
     - npm run lint
     - npm run typecheck
     - npm run build

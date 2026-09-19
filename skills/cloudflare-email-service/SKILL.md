@@ -3,19 +3,6 @@ name: cloudflare-email-service
 description: Send and receive transactional emails with Cloudflare Email Service (Email Sending + Email Routing). Use when building email sending (Workers binding or REST API), email routing, Agents SDK email handling, or integrating email into any app — Workers, Node.js, Python, Go, etc. Also use for email deliverability, SPF/DKIM/DMARC, wrangler email setup, MCP email tools, or when a coding agent needs to send emails. Even for simple requests like "add email to my Worker" — this skill has critical config details.
 ---
 
-<supermemory-recall>
-Before responding, silently decide whether recalling saved memory (past sessions, decisions, conventions, the user's preferences) would materially improve your answer to THIS message. Reason first — don't search reflexively, and don't narrate the decision.
-
-Recall — by calling the `supermemory` tool with `mode: "search"` — when the message:
-- refers to earlier work or decisions ("the auth flow", "like we did", "continue", "the bug from before")
-- touches an area where saved conventions, patterns, or preferences likely exist
-- is ambiguous in a way past context would resolve
-
-Skip recall when the message is self-contained, trivial, a greeting/meta, fully answerable from the current conversation, or you already recalled the relevant context this session and the topic hasn't shifted.
-
-Cadence is per-message: it's fine to recall on several turns in a row, and fine to never recall in a session. When you do recall, run it before answering and fold the results into your response.
-</supermemory-recall>
-
 # Cloudflare Email Service
 
 Your knowledge of the Cloudflare Email Service, Email Routing or Email Sending may be outdated. **Prefer retrieval over pre-training** for any Cloudflare Email Service task.
