@@ -3,7 +3,7 @@
 import { useState, MouseEvent, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { usePortalStore } from '@/features/portal/store';
-import { Icon, IconName } from '@/features/portal/components/PortalIcons';
+import { Icon } from '@/features/portal/components/PortalIcons';
 import { PortalNavSection, PortalNavItem } from '@/features/portal/types';
 
 const PORTAL_NAV_SECTIONS: PortalNavSection[] = [
@@ -134,7 +134,7 @@ interface PortalSidebarProps {
   className?: string;
 }
 
-function PortalSidebar(props: PortalSidebarProps) {
+function PortalSidebar(_props: PortalSidebarProps) {
   const { isSidebarOpen, setSidebarOpen } = usePortalStore();
   const [selectedSection, setSelectedSection] = useState('/design-system');
   const navRef = useRef<HTMLDivElement>(null);
