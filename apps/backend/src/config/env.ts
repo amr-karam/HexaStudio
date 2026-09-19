@@ -55,6 +55,14 @@ const envSchema = z.object({
   HERMES_BASE_URL: z.string().url('HERMES_BASE_URL must be a valid URL').optional(),
   AI_PROVIDER: z.enum(['openai', 'hermes']).default('hermes'),
 
+  // AI / MOA (Mixture of Agents — Nous Research ensemble runtime)
+  // MOA runs as a layer on the Hermes Agent runtime; uses the same OpenAI-compatible
+  // endpoint with a "power" preset that aggregates multiple underlying models.
+  MOA_API_KEY: z.string().min(1).optional(),
+  MOA_MODEL: z.string().default('power'),
+  MOA_BASE_URL: z.string().url('MOA_BASE_URL must be a valid URL').optional(),
+  AI_CHAT_PROVIDER: z.enum(['openai', 'freetheai', 'local', 'moa', 'hermes']).default('local'),
+
   // AI / Anthropic (Claude)
   ANTHROPIC_API_KEY: z.string().min(1).optional(),
   CLAUDE_API_KEY: z.string().min(1).optional(),
@@ -89,7 +97,6 @@ const envSchema = z.object({
   LM_STUDIO_FAST_MODEL: z.string().optional(),
   // Local embedding model (OpenAI-compatible /embeddings endpoint). Nomic v1.5 = 768 dims.
   LM_STUDIO_EMBEDDING_MODEL: z.string().default('text-embedding-nomic-embed-text-v1.5'),
-  AI_CHAT_PROVIDER: z.enum(['openai', 'freetheai', 'local']).default('local'),
 
   // Exchange Rate API
   EXCHANGE_RATE_API_KEY: z.string().optional(),

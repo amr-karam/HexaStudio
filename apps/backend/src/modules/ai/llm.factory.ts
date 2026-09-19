@@ -4,7 +4,7 @@ import type { Env } from '../../config/env';
 export interface ChatClient {
   client: OpenAI;
   model: string;
-  provider: 'openai' | 'freetheai' | 'local';
+  provider: 'openai' | 'freetheai' | 'local' | 'moa' | 'hermes';
   /** Small/fast model for simple queries — only set for 'local' (LM Studio routing). */
   fastModel?: string;
 }
@@ -67,6 +67,17 @@ export function createChatClient(env: Env): ChatClient | null {
       }),
       model: env.FREETHEAI_MODEL,
       provider: 'freetheai',
+    };
+  }
+
+  if (env.AI_CHAT_PROVIDER === 'moa') {
+    return {
+      client: new OpenAI({
+        apiKey: env.MOA_API_KEY,
+        baseURL: env.MOA_BASE_URL ?? env.HERMES_BASE_URL,
+      }),
+      model: env.MOA_MODEL,
+      provider: 'moa',
     };
   }
 
