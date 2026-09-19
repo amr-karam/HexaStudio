@@ -941,7 +941,7 @@ export default function OdooDashboardPage() {
                   {syncMetrics.data.map((m, i) => (
                     <tr key={`${m.operation}-${i}`} className="border-t border-white/5">
                       <td className="py-2 font-medium text-sl-alabaster">{m.operation}</td>
-                      <td className="py-2">{m.success ? <span className="text-emerald-400/80">OK</span> : <span className="text-red-400/80">Failed</span>}</td>
+                      <td className="py-2">{m.success ? <span className="text-success-ink/80">OK</span> : <span className="text-destructive-ink/80">Failed</span>}</td>
                       <td className="py-2 text-sl-alabaster/50">{Math.round(m.durationMs)}ms</td>
                       <td className="py-2 text-sl-alabaster/40">{new Date(m.timestamp).toLocaleTimeString()}</td>
                     </tr>

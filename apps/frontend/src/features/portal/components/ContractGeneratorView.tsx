@@ -114,14 +114,14 @@ export function ContractGeneratorView() {
               </div>
               <button
                 onClick={() => setSigned(true)}
-                className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-sl-void font-bold text-xs transition-colors"
+                className="w-full py-2.5 rounded-xl bg-success hover:bg-success-ink text-sl-void font-bold text-xs transition-colors"
               >
                 ✍️ Execute Digital Signature & Sync to Odoo ERP
               </button>
             </div>
           ) : (
-            <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-center text-xs space-y-1">
-              <p className="font-bold text-emerald-500">✓ Agreement Signed & Synchronized with Odoo ERP</p>
+            <div className="p-4 bg-success/10 border border-success/30 rounded-2xl text-center text-xs space-y-1">
+              <p className="font-bold text-success">✓ Agreement Signed & Synchronized with Odoo ERP</p>
               <p className="text-sl-mist/60 text-[11px]">Odoo Sales Order: {contractData.quotationRef} &bull; Status: Confirmed</p>
             </div>
           )}

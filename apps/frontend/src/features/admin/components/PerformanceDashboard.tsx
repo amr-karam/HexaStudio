@@ -14,31 +14,31 @@ export function PerformanceDashboard() {
           </p>
         </div>
         <div className="flex items-center gap-3 bg-sl-void/80 px-4 py-2 rounded-xl border border-sl-obsidian">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-          <span className="text-xs font-mono uppercase tracking-wider text-emerald-400">Error Budget: 99.95%</span>
+          <span className="w-2.5 h-2.5 rounded-full bg-success" />
+          <span className="text-xs font-mono uppercase tracking-wider text-success-ink">Error Budget: 99.95%</span>
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="p-6 bg-sl-void/40 border border-sl-obsidian/80 rounded-xl">
           <span className="text-[10px] font-mono text-sl-mist/60 uppercase tracking-widest block mb-1">Largest Contentful Paint</span>
-          <p className="text-3xl font-light font-mono text-emerald-400">1.2s</p>
+          <p className="text-3xl font-light font-mono text-success-ink">1.2s</p>
           <span className="text-[10px] text-sl-mist/60 mt-2 block font-mono">Target: &lt; 1.5s</span>
         </div>
         <div className="p-6 bg-sl-void/40 border border-sl-obsidian/80 rounded-xl">
           <span className="text-[10px] font-mono text-sl-mist/60 uppercase tracking-widest block mb-1">Total Blocking Time</span>
-          <p className="text-3xl font-light font-mono text-emerald-400">60ms</p>
+          <p className="text-3xl font-light font-mono text-success-ink">60ms</p>
           <span className="text-[10px] text-sl-mist/60 mt-2 block font-mono">Target: &lt; 100ms</span>
         </div>
         <div className="p-6 bg-sl-void/40 border border-sl-obsidian/80 rounded-xl">
           <span className="text-[10px] font-mono text-sl-mist/60 uppercase tracking-widest block mb-1">Cumulative Layout Shift</span>
-          <p className="text-3xl font-light font-mono text-emerald-400">0.0003</p>
+          <p className="text-3xl font-light font-mono text-success-ink">0.0003</p>
           <span className="text-[10px] text-sl-mist/60 mt-2 block font-mono">Target: &lt; 0.1</span>
         </div>
         <div className="p-6 bg-sl-void/40 border border-sl-obsidian/80 rounded-xl">
           <span className="text-[10px] font-mono text-sl-mist/60 uppercase tracking-widest block mb-1">Sentry Uncaught Rate</span>
           <p className="text-3xl font-light font-mono text-sl-alabaster">0.01%</p>
-          <span className="text-[10px] text-emerald-400 mt-2 block font-mono">Zero critical crashes</span>
+          <span className="text-[10px] text-success-ink mt-2 block font-mono">Zero critical crashes</span>
         </div>
       </div>
     </div>

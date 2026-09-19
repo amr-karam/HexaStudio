@@ -46,8 +46,8 @@ const TYPE_CONFIG: Record<
   contract: {
     label: 'Contract',
     icon: 'file-text',
-    border: 'border-l-emerald-500/60',
-    bg: 'bg-emerald-500/10',
+    border: 'border-l-success/60',
+    bg: 'bg-success/10',
   },
   quotation: {
     label: 'Quotation',
@@ -70,8 +70,8 @@ const TYPE_CONFIG: Record<
   scope_change: {
     label: 'Scope Change',
     icon: 'git-branch',
-    border: 'border-l-red-400/60',
-    bg: 'bg-red-500/10',
+    border: 'border-l-destructive-ink/60',
+    bg: 'bg-destructive/10',
   },
 };
 
@@ -88,25 +88,25 @@ const STATUS_CONFIG: Record<
   approved: {
     label: 'Approved',
     icon: 'check-circle',
-    pill: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-500',
+    pill: 'border-success/30 bg-success/10 text-success',
     glow: '',
   },
   rejected: {
     label: 'Rejected',
     icon: 'x',
-    pill: 'border-red-500/30 bg-red-500/10 text-destructive',
+    pill: 'border-destructive/30 bg-destructive/10 text-destructive',
     glow: '',
   },
   revision_requested: {
     label: 'Revision Requested',
     icon: 'alert-circle',
-    pill: 'border-red-500/30 bg-red-500/10 text-destructive',
+    pill: 'border-destructive/30 bg-destructive/10 text-destructive',
     glow: '',
   },
 };
 
 const SENTIMENT_CONFIG: Record<NonNullable<ApprovalSentiment>, { icon: IconName; color: string; label: string }> = {
-  positive: { icon: 'smile', color: 'text-emerald-500', label: 'Client Receptive' },
+  positive: { icon: 'smile', color: 'text-success', label: 'Client Receptive' },
   neutral: { icon: 'meh', color: 'text-sl-mist/70', label: 'Neutral Tone' },
   frustrated: { icon: 'frown', color: 'text-amber-400', label: 'Elevated Tension' },
   urgent: { icon: 'alert-triangle', color: 'text-destructive', label: 'Urgent Attention' },
@@ -380,7 +380,7 @@ export function ApprovalCard({ approval, index, prefersReduced, onReview }: Appr
               reduced={prefersReduced}
             />
             {approval.urgencyScore != null && approval.urgencyScore > 70 && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.2em] rounded-full bg-red-500/10 text-destructive border border-red-500/30">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.2em] rounded-full bg-destructive/10 text-destructive border border-destructive/30">
                 <Icon name="alert-triangle" className="w-2.5 h-2.5" />
                 URGENT
               </span>

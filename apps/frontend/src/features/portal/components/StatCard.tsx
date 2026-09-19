@@ -23,8 +23,8 @@ interface StatCardProps {
 }
 
 const TREND_CONFIG = {
-  up: { icon: 'arrow-up-right' as IconName, color: 'text-emerald-400', label: 'Increased' },
-  down: { icon: 'arrow-down-right' as IconName, color: 'text-red-400', label: 'Decreased' },
+  up: { icon: 'arrow-up-right' as IconName, color: 'text-success-ink', label: 'Increased' },
+  down: { icon: 'arrow-down-right' as IconName, color: 'text-destructive-ink', label: 'Decreased' },
   neutral: { icon: 'minus' as IconName, color: 'text-sl-mist/60', label: 'No change' },
 } as const;
 

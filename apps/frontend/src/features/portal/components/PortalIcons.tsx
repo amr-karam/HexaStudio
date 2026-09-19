@@ -73,7 +73,8 @@ type IconName =
   | 'pen-tool'
   | 'layout-grid'
   | 'package'
-  | 'git-branch';
+  | 'git-branch'
+  | 'palette';
 
 interface IconProps {
   name: IconName;

@@ -17,7 +17,7 @@ function ApprovalCard({ approval }: { approval: PendingApproval }) {
   const typeColors = {
     design: 'text-blue-500',
     wireframe: 'text-purple-500',
-    contract: 'text-emerald-500',
+    contract: 'text-success',
     quotation: 'text-amber-500',
     invoice: 'text-orange-500',
     deliverable: 'text-cyan-500',
@@ -36,8 +36,8 @@ function ApprovalCard({ approval }: { approval: PendingApproval }) {
 
   const statusColors = {
     pending: 'bg-amber-500/20 text-amber-500 border-amber-500/30',
-    approved: 'bg-emerald-500/20 text-emerald-500 border-emerald-500/30',
-    rejected: 'bg-red-500/20 text-destructive border-red-500/30',
+    approved: 'bg-success/20 text-success border-success/30',
+    rejected: 'bg-destructive/20 text-destructive border-destructive/30',
     revision_requested: 'bg-purple-500/20 text-purple-500 border-purple-500/30',
   };
 
@@ -49,7 +49,7 @@ function ApprovalCard({ approval }: { approval: PendingApproval }) {
   };
 
   const sentimentColors = {
-    positive: 'text-emerald-500',
+    positive: 'text-success',
     neutral: 'text-sl-mist/60',
     frustrated: 'text-orange-500',
     urgent: 'text-destructive',
@@ -90,7 +90,7 @@ function ApprovalCard({ approval }: { approval: PendingApproval }) {
             {new Date(approval.submittedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
           </span>
           {approval.urgencyScore && approval.urgencyScore > 70 && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.2em] rounded-full bg-red-500/20 text-destructive border border-red-500/30">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.2em] rounded-full bg-destructive/20 text-destructive border border-destructive/30">
               <Icon name="alert-triangle" className="w-2.5 h-2.5" />
               URGENT
             </span>
@@ -170,7 +170,7 @@ export function PendingApprovalsSection({ approvals, className, onViewAll }: Pen
           <span className="text-[10px] font-mono text-sl-mist/60">0 pending</span>
         </div>
         <div className="artisan-glass rounded-xl p-12 text-center border border-sl-silver/20">
-          <Icon name="check-circle" className="w-12 h-12 mx-auto text-emerald-500 mb-4" />
+          <Icon name="check-circle" className="w-12 h-12 mx-auto text-success mb-4" />
           <h3 className="font-serif text-lg font-light text-foreground mb-2">All Caught Up</h3>
           <p className="text-sl-mist/60">No pending approvals at this time.</p>
         </div>

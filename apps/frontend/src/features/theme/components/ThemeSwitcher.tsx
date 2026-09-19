@@ -13,7 +13,7 @@ export function ThemeSwitcher() {
   const themes: { id: LuxuryTheme; label: string; bg: string; border: string }[] = [
     { id: 'gold_obsidian', label: 'Gold & Obsidian', bg: 'bg-amber-500', border: 'border-amber-400' },
     { id: 'silver_slate', label: 'Silver & Slate', bg: 'bg-slate-300', border: 'border-slate-200' },
-    { id: 'emerald_charcoal', label: 'Emerald & Charcoal', bg: 'bg-emerald-400', border: 'border-emerald-300' },
+    { id: 'emerald_charcoal', label: 'Emerald & Charcoal', bg: 'bg-success-ink', border: 'border-success-bright' },
   ];
 
   return (

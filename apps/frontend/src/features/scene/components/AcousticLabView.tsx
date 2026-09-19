@@ -27,9 +27,9 @@ export function AcousticLabView() {
 
   const getAcousticRating = (val: number) => {
     if (val < 0.4) return { label: 'Dry / Recording Studio', color: 'text-blue-400' };
-    if (val <= 0.8) return { label: 'Optimal / Executive Lounge', color: 'text-emerald-400' };
+    if (val <= 0.8) return { label: 'Optimal / Executive Lounge', color: 'text-success-ink' };
     if (val <= 1.5) return { label: 'Warm / Concert Hall', color: 'text-amber-400' };
-    return { label: 'Echoey / Untreated Space', color: 'text-red-400' };
+    return { label: 'Echoey / Untreated Space', color: 'text-destructive-ink' };
   };
 
   const rating = getAcousticRating(rt60);

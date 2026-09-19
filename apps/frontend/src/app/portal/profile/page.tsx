@@ -100,7 +100,7 @@ const STRENGTH_LEVELS: StrengthLevel[] = [
   { label: '', textColor: '', barColor: '', width: '0%' },
   { label: 'Weak', textColor: 'text-destructive', barColor: 'bg-destructive', width: '33%' },
   { label: 'Medium', textColor: 'text-amber-400', barColor: 'bg-amber-400', width: '66%' },
-  { label: 'Strong', textColor: 'text-emerald-400', barColor: 'bg-emerald-400', width: '100%' },
+  { label: 'Strong', textColor: 'text-success-ink', barColor: 'bg-success-ink', width: '100%' },
 ] as const;
 
 const ROLE_BADGES: Record<string, { label: string; className: string }> = {
@@ -472,7 +472,7 @@ export default function ProfilePage() {
               <div className="flex items-center gap-2.5">
                 <p className="text-sm text-sl-alabaster">{displayUser.email}</p>
                 <span
-                  className="inline-flex items-center gap-1 text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                  className="inline-flex items-center gap-1 text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-success/10 text-success-ink border border-success/20"
                   aria-label="Verified email"
                 >
                   <Icon name="check" size={10} strokeWidth={2} />
@@ -637,7 +637,7 @@ export default function ProfilePage() {
                     'w-full bg-sl-void border rounded-sm px-3 py-2 text-sm text-sl-alabaster',
                     'focus:outline-none focus:ring-1 placeholder:text-sl-mist/60 transition-colors duration-200',
                     confirmPassword && !passwordsMatch
-                      ? 'border-red-500/50 focus:border-red-500/50 focus:ring-red-500/20'
+                      ? 'border-destructive/50 focus:border-destructive/50 focus:ring-destructive/20'
                       : 'border-sl-silver/20 focus:border-sl-gold-subtle/50 focus:ring-sl-gold-subtle/20',
                   )}
                   placeholder="••••••••"
@@ -760,7 +760,7 @@ export default function ProfilePage() {
                       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
                       session.isCurrent
                         ? 'text-sl-mist/60 border-sl-obsidian cursor-not-allowed'
-                        : 'text-destructive border-destructive/20 hover:bg-red-500/10 hover:border-destructive/40 focus-visible:ring-destructive',
+                        : 'text-destructive border-destructive/20 hover:bg-destructive/10 hover:border-destructive/40 focus-visible:ring-destructive',
                     )}
                     aria-label={`Revoke session: ${session.device}`}
                   >

@@ -1,5 +1,13 @@
 'use client';
 
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Design System — Evey Design',
+  description: 'HEXA STUDIO design system tokens: colors, glassmorphism, typography, and motion easings.',
+  robots: { index: false, follow: false },
+};
+
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
@@ -305,7 +313,7 @@ export default function DesignSystemPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-sl-void text-sl-alabaster">
+    <>
       {/* Hero Header */}
       <div className="relative overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 bg-gradient-to-b from-accent/[0.04] to-transparent" />
@@ -366,6 +374,6 @@ export default function DesignSystemPage() {
 
       {/* Palette Overlay */}
       <DesignPalette />
-    </main>
+    </>
   );
 }

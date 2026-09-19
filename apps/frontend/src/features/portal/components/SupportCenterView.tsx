@@ -97,8 +97,8 @@ const TICKETS: Ticket[] = [
 const PRIORITY_STYLES: Record<Ticket['priority'], { label: string; pill: string; dot: string }> = {
   urgent: {
     label: 'Urgent',
-    pill: 'border-red-500/30 bg-red-500/10 text-red-300',
-    dot: 'bg-red-400',
+    pill: 'border-destructive/30 bg-destructive/10 text-destructive-bright',
+    dot: 'bg-destructive-ink',
   },
   high: {
     label: 'High',
@@ -130,8 +130,8 @@ const LIFECYCLE_STYLES: Record<Ticket['status'], { label: string; pill: string; 
   },
   resolved: {
     label: 'Resolved',
-    pill: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300',
-    dot: 'bg-emerald-400',
+    pill: 'border-success/30 bg-success/10 text-success-bright',
+    dot: 'bg-success-ink',
   },
 };
 
@@ -142,7 +142,7 @@ const LIFECYCLE_STYLES: Record<Ticket['status'], { label: string; pill: string; 
 const SLA_CARDS = [
   {
     icon: 'clock' as const,
-    iconWrap: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300',
+    iconWrap: 'border-success/30 bg-success/10 text-success-bright',
     label: 'Average Response Time',
     value: '< 15 Minutes',
     note: 'Enterprise Tier 1',
@@ -226,12 +226,12 @@ export function SupportCenterView() {
             className={cn(
               'inline-flex items-center gap-2 rounded-full border px-3 py-1.5 font-mono text-[0.625rem] uppercase tracking-[0.25em]',
               dataSource === 'live'
-                ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
+                ? 'border-success/30 bg-success/10 text-success-bright'
                 : 'border-sl-gold-subtle/30 bg-sl-gold-subtle/10 text-sl-gold-hover',
             )}
           >
             <span
-              className={cn('h-1.5 w-1.5 rounded-full', dataSource === 'live' ? 'bg-emerald-400' : 'bg-sl-gold-subtle')}
+              className={cn('h-1.5 w-1.5 rounded-full', dataSource === 'live' ? 'bg-success-ink' : 'bg-sl-gold-subtle')}
               aria-hidden="true"
             />
             {dataSource === 'live' ? 'Live' : 'Demo Data'}

@@ -160,7 +160,7 @@ export default function ProductDetailPage({ params }: { params?: { id: string } 
           </div>
           <div className="p-4 bg-sl-glass-bg border border-sl-glass-border rounded-lg">
             <p className="text-xs text-sl-silver uppercase tracking-wider mb-1">Status</p>
-            <p className={`font-medium ${product.is_active ? 'text-emerald-400' : 'text-sl-silver'}`}>
+            <p className={`font-medium ${product.is_active ? 'text-success-ink' : 'text-sl-silver'}`}>
               {product.is_active ? 'Active' : 'Inactive'}
             </p>
           </div>

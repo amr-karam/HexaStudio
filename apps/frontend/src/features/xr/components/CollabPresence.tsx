@@ -10,7 +10,7 @@ export function CollabPresence() {
 
   return (
     <div className="pointer-events-none fixed bottom-4 end-4 z-50 flex items-center gap-2 rounded-full bg-black/50 px-3 py-1.5 backdrop-blur-sm">
-      <div className={`h-2 w-2 rounded-full ${connected ? 'bg-emerald-500' : 'bg-red-500'}`} />
+      <div className={`h-2 w-2 rounded-full ${connected ? 'bg-success' : 'bg-destructive'}`} />
       <span className="text-xs text-sl-alabaster/60">
         {connected ? `${total} in session` : 'Offline'}
       </span>

@@ -70,8 +70,8 @@ export function TelemetryDashboard() {
           whileHover={{ scale: 1.02 }}
           className="flex items-center gap-3 bg-sl-void/80 px-4 py-2 rounded-xl border border-sl-obsidian/80 shadow-inner"
         >
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-xs font-mono uppercase tracking-wider text-emerald-400">System Healthy</span>
+          <span className="w-2.5 h-2.5 rounded-full bg-success animate-pulse" />
+          <span className="text-xs font-mono uppercase tracking-wider text-success-ink">System Healthy</span>
         </motion.div>
       </div>
 
@@ -113,7 +113,7 @@ export function TelemetryDashboard() {
             <p className={`text-3xl font-light font-mono ${metric.highlight ? 'text-sl-gold-hover' : 'text-sl-alabaster'}`}>
               {metric.val}
             </p>
-            <span className="text-[10px] text-emerald-400 mt-2 block font-mono">{metric.sub}</span>
+            <span className="text-[10px] text-success-ink mt-2 block font-mono">{metric.sub}</span>
           </motion.div>
         ))}
       </div>
@@ -130,8 +130,8 @@ export function TelemetryDashboard() {
             >
               <span className="text-sm font-medium capitalize text-sl-alabaster">{name}</span>
               <div className="flex items-center gap-2">
-                <span className={`w-2 h-2 rounded-full ${status === 'online' ? 'bg-emerald-400' : 'bg-red-500'}`} />
-                <span className={`text-xs font-mono uppercase tracking-wider ${status === 'online' ? 'text-emerald-400' : 'text-destructive'}`}>
+                <span className={`w-2 h-2 rounded-full ${status === 'online' ? 'bg-success-ink' : 'bg-destructive'}`} />
+                <span className={`text-xs font-mono uppercase tracking-wider ${status === 'online' ? 'text-success-ink' : 'text-destructive'}`}>
                   {status}
                 </span>
               </div>

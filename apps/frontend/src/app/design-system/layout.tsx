@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { LayoutShell } from '@/components/LayoutShell';
 
 export const metadata: Metadata = {
   title: 'Design System — Evey Design',
@@ -7,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function DesignSystemLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return <LayoutShell>{children}</LayoutShell>;
 }

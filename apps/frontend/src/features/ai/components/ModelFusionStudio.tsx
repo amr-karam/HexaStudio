@@ -37,7 +37,7 @@ function isCandidateState(candidate: CandidateState | FusionResponseUI['candidat
 
 export function ModelFusionStudio() {
   const [query, setQuery] = useState('');
-  const [models, setModels] = useState('gemma-4-12b-it-qat, gpt-4o-mini');
+  const [models, setModels] = useState('gemma-4-12b-it-qat, gpt-4o-mini, power');
   const [mode, setMode] = useState<'best' | 'merge'>('best');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -282,7 +282,7 @@ export function ModelFusionStudio() {
               'Run Fusion'
             )}
           </button>
-          {error && <div className="p-4 bg-red-500/10 border border-red-500/20 text-destructive text-xs rounded-xl font-mono">{error}</div>}
+          {error && <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive text-xs rounded-xl font-mono">{error}</div>}
         </div>
 
         <div className="lg:col-span-8 space-y-4">

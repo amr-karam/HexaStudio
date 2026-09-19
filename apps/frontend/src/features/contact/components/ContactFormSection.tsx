@@ -141,7 +141,7 @@ export function ContactFormSection({
     cn(
       'w-full bg-transparent border-b border-sl-silver/20 focus:border-sl-gold-subtle transition-all duration-500 rounded-none px-0 py-4 text-base font-light placeholder:text-sl-mist/60 focus:outline-none',
       field === 'message' && 'resize-none leading-relaxed',
-      errors[field] && 'border-red-500/60 focus:border-red-500',
+      errors[field] && 'border-destructive/60 focus:border-destructive',
     );
 
   const inputClass = cn(
@@ -318,7 +318,7 @@ export function ContactFormSection({
                       damping: 12,
                       delay: staticMode ? 0 : 0.15,
                     }}
-                    className="w-16 h-16 mx-auto rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center mb-8"
+                    className="w-16 h-16 mx-auto rounded-full bg-destructive/10 border border-destructive/30 flex items-center justify-center mb-8"
                   >
                     <svg
                       width="32"

@@ -100,7 +100,7 @@ export function WebRtcReviewRoom() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-sl-silver/20 relative z-10">
         <div>
           <div className="flex items-center space-x-2.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)] animate-pulse" />
+            <span className="w-2.5 h-2.5 rounded-full bg-success-ink shadow-[0_0_8px_rgba(52,211,153,0.6)] animate-pulse" />
             <h3 className="text-sm font-semibold tracking-wide text-sl-alabaster">
               Live WebRTC &amp; Spatial 3D Review Room
             </h3>
@@ -145,8 +145,8 @@ export function WebRtcReviewRoom() {
             </button>
           </div>
 
-          <span className="bg-obsidian-raised border border-emerald-500/30 px-3 py-1.5 rounded-full text-emerald-400 text-xs font-mono flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+          <span className="bg-obsidian-raised border border-success/30 px-3 py-1.5 rounded-full text-success-ink text-xs font-mono flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-success-ink" />
             E2EE
           </span>
         </div>
@@ -366,11 +366,11 @@ export function WebRtcReviewRoom() {
             onClick={() => setIsAudioMuted(!isAudioMuted)}
             className={`px-4 py-2.5 rounded-xl text-xs font-mono transition-all duration-200 flex items-center gap-2 cursor-pointer ${
               isAudioMuted
-                ? 'bg-red-500/15 border border-red-500/40 text-red-400'
+                ? 'bg-destructive/15 border border-destructive/40 text-destructive-ink'
                 : 'bg-obsidian-raised border border-white/10 text-sl-alabaster hover:border-white/20'
             }`}
           >
-            <span className={`w-2 h-2 rounded-full ${isAudioMuted ? 'bg-red-400' : 'bg-emerald-400'}`} />
+            <span className={`w-2 h-2 rounded-full ${isAudioMuted ? 'bg-destructive-ink' : 'bg-success-ink'}`} />
             {isAudioMuted ? 'Unmute Mic' : 'Mute Mic'}
           </button>
 
@@ -379,11 +379,11 @@ export function WebRtcReviewRoom() {
             onClick={() => setIsVideoOff(!isVideoOff)}
             className={`px-4 py-2.5 rounded-xl text-xs font-mono transition-all duration-200 flex items-center gap-2 cursor-pointer ${
               isVideoOff
-                ? 'bg-red-500/15 border border-red-500/40 text-red-400'
+                ? 'bg-destructive/15 border border-destructive/40 text-destructive-ink'
                 : 'bg-obsidian-raised border border-white/10 text-sl-alabaster hover:border-white/20'
             }`}
           >
-            <span className={`w-2 h-2 rounded-full ${isVideoOff ? 'bg-red-400' : 'bg-emerald-400'}`} />
+            <span className={`w-2 h-2 rounded-full ${isVideoOff ? 'bg-destructive-ink' : 'bg-success-ink'}`} />
             {isVideoOff ? 'Start Camera' : 'Stop Camera'}
           </button>
 
@@ -405,8 +405,8 @@ export function WebRtcReviewRoom() {
           onClick={() => setIsCallActive(!isCallActive)}
           className={`px-5 py-2.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all duration-200 cursor-pointer ${
             isCallActive
-              ? 'bg-red-600/90 hover:bg-red-600 text-sl-alabaster shadow-lg'
-              : 'bg-emerald-600/90 hover:bg-emerald-600 text-sl-alabaster shadow-lg'
+              ? 'bg-destructive-deep/90 hover:bg-destructive-deep text-sl-alabaster shadow-lg'
+              : 'bg-success-600/90 hover:bg-success-600 text-sl-alabaster shadow-lg'
           }`}
         >
           {isCallActive ? 'Leave Session' : 'Rejoin Session'}

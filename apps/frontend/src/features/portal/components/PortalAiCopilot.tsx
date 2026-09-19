@@ -748,7 +748,7 @@ export function PortalAiCopilot({
                     className={cn(
                       'transition-colors relative',
                       isListening
-                        ? 'text-red-400 animate-pulse'
+                        ? 'text-destructive-ink animate-pulse'
                         : 'text-sl-mist/60 hover:text-sl-alabaster hover:bg-white/5',
                       isTyping && 'opacity-50 cursor-not-allowed',
                     )}
@@ -761,7 +761,7 @@ export function PortalAiCopilot({
                       <motion.span
                         initial={{ scale: 0.5, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-red-400"
+                        className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-destructive-ink"
                       />
                     )}
                   </Button>
@@ -774,9 +774,9 @@ export function PortalAiCopilot({
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.9 }}
-                      className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] text-red-400 font-mono bg-red-500/10 border border-red-500/10 px-2 py-1 rounded-none shrink-0"
+                      className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] text-destructive-ink font-mono bg-destructive/10 border border-destructive/10 px-2 py-1 rounded-none shrink-0"
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-destructive-ink animate-pulse" />
                       Listening...
                     </motion.div>
                   )}

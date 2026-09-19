@@ -234,7 +234,7 @@ export default function PortalDashboardPage() {
                   role="status"
                   aria-label="Project is live"
                 >
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-success" />
                 </span>
                 <span className="text-[11px] uppercase tracking-widest font-mono text-sl-mist/60">
                   Live Status
@@ -292,7 +292,7 @@ export default function PortalDashboardPage() {
                   <p className="text-2xl font-serif font-light text-sl-alabaster">
                     {dashboardData.overallProgressPercentage}%
                   </p>
-                  <span className="text-[10px] font-mono text-emerald-500">
+                  <span className="text-[10px] font-mono text-success">
                     On Schedule
                   </span>
                 </div>
@@ -351,10 +351,10 @@ export default function PortalDashboardPage() {
                 <p className="text-[10px] uppercase tracking-widest font-mono text-sl-mist/60">
                   Project Health
                 </p>
-                <p className="text-2xl font-serif font-light text-emerald-500 mt-1.5">
+                <p className="text-2xl font-serif font-light text-success mt-1.5">
                   {dashboardData.healthScore.score} <span className="text-sm text-sl-mist/60">/ 100</span>
                 </p>
-                <p className="text-[11px] text-emerald-500/80 mt-1">
+                <p className="text-[11px] text-success/80 mt-1">
                   {dashboardData.healthScore.status}
                 </p>
               </div>
@@ -504,7 +504,7 @@ export default function PortalDashboardPage() {
                       item.type === 'upload'
                         ? 'bg-sl-gold-subtle/20 border-sl-gold-subtle'
                         : item.type === 'approval'
-                          ? 'bg-emerald-500/20 border-emerald-500'
+                          ? 'bg-success/20 border-success'
                           : item.type === 'milestone'
                             ? 'bg-sl-gold-subtle/20 border-sl-gold-subtle'
                             : item.type === 'invoice'

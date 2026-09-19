@@ -132,8 +132,8 @@ const Input = React.forwardRef<InputElement, InputComponentProps>(
         'bg-white/[0.02] border border-white/[0.06]': variant === 'underline',
         'artisan-glass border border-transparent': variant === 'glass',
         // Error state
-        'border-red-500/50 group-focus-within:border-red-500/70': hasError && variant === 'underline',
-        'border-red-500/40 group-focus-within:artisan-glass-gold group-focus-within:border-red-500/50':
+        'border-destructive/50 group-focus-within:border-destructive/70': hasError && variant === 'underline',
+        'border-destructive/40 group-focus-within:artisan-glass-gold group-focus-within:border-destructive/50':
           hasError && variant === 'glass',
         // Disabled
         'disabled:opacity-50 disabled:cursor-not-allowed': disabled,

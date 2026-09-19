@@ -73,7 +73,7 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
               onClick={() => webrtc.toggleMic()}
               className={`rounded-xl px-4 py-2.5 text-xs font-mono tracking-wider transition-colors duration-300 ${
                 webrtc.isMicMuted
-                  ? 'bg-red-500/15 text-destructive border border-red-500/30'
+                  ? 'bg-destructive/15 text-destructive border border-destructive/30'
                   : 'bg-obsidian-raised border border-sl-silver/20/40 text-sl-alabaster hover:border-sl-gold-subtle/40'
               }`}
             >
@@ -94,7 +94,7 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
           {/* Main 3D Canvas Stage */}
           <div className="lg:col-span-8 h-[600px] relative rounded-2xl border border-sl-silver/20 bg-obsidian/90 overflow-hidden flex items-center justify-center artisan-glass">
             <div className="absolute top-4 left-4 z-10 flex items-center space-x-2 bg-obsidian-raised/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-sl-silver/20 text-xs font-mono">
-              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="h-2 w-2 rounded-full bg-success-ink animate-pulse" />
               <span className="text-text-secondary">Multiplayer Session Active</span>
             </div>
             <CoNavControls />
@@ -111,7 +111,7 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
             </XRCanvas>
 
             {signatureHash && (
-              <div className="absolute bottom-4 right-4 z-10 bg-emerald-950/90 border border-emerald-500/40 px-4 py-2.5 rounded-xl backdrop-blur-md text-xs text-emerald-300 font-mono shadow-2xl">
+              <div className="absolute bottom-4 right-4 z-10 bg-success-dark/90 border border-success/40 px-4 py-2.5 rounded-xl backdrop-blur-md text-xs text-success-bright font-mono shadow-2xl">
                 ✓ Signed &amp; Stamped: <span className="font-mono text-sl-alabaster">{signatureHash.slice(0, 16)}...</span>
               </div>
             )}
@@ -146,7 +146,7 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
                     </div>
                     <span className="font-medium text-sl-alabaster">{userName}</span>
                   </div>
-                  <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Host</span>
+                  <span className="text-[10px] font-mono text-success-ink bg-success/10 px-2 py-0.5 rounded border border-success/20">Host</span>
                 </div>
 
                 <div className="flex items-center justify-between p-3 rounded-xl bg-obsidian-raised/60 border border-sl-silver/20 text-xs text-text-secondary">
