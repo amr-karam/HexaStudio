@@ -1,13 +1,5 @@
 'use client';
 
-import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Design System — Evey Design',
-  description: 'HEXA STUDIO design system tokens: colors, glassmorphism, typography, and motion easings.',
-  robots: { index: false, follow: false },
-};
-
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';

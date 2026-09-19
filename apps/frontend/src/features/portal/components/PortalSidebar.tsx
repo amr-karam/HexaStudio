@@ -1,3 +1,11 @@
+'use client';
+
+import { forwardRef, MouseEvent } from 'react';
+import { cn } from '@/lib/utils';
+import { usePortalStore } from '@/features/portal/store';
+import { Icon } from '@/features/portal/components/PortalIcons';
+import { PortalNavSection, PortalNavItem } from '@/features/portal/types';
+
 const PORTAL_NAV_SECTIONS: PortalNavSection[] = [
   {
     marker: 'Overview',
@@ -26,3 +34,143 @@ const PORTAL_NAV_SECTIONS: PortalNavSection[] = [
     ],
   },
 ];
+
+interface SidebarNavProps {
+  ref: React.RefObject<HTMLDivElement>;
+  expanded: boolean;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+  onMouseDown: (e: MouseEvent) => void;
+  onMouseMove: (e: MouseEvent) => void;
+  selectedSection: string;
+  onSectionSelect: (section: string) => void;
+}
+
+function SidebarNav({
+  ref,
+  expanded,
+  onMouseEnter,
+  onMouseLeave,
+  onMouseDown,
+  onMouseMove,
+  selectedSection,
+  onSectionSelect,
+}: SidebarNavProps) {
+  return (
+    <nav
+      ref={ref}
+      className={cn(
+        'shrink-0 border-r transition-all duration-300 ease-out relative',
+        'border-sl-glass-border hover:border-sl-gold-subtle',
+        expanded ? 'w-[260px]' : 'w-[80px]'
+      )}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onMouseDown={onMouseDown}
+      onMouseMove={onMouseMove}
+    >
+      {/* Logo mark — always visible */}
+      <div className="flex items-center justify-center h-14 border-b border-sl-glass-border">
+        <div className="flex items-center gap-2 overflow-hidden">
+          <div className="w-6 h-6 rounded bg-accent flex items-center justify-center text-[10px] font-bold text-[#0A0A0B] shrink-0">
+            H
+          </div>
+          {expanded && (
+            <span className="font-['Bodoni_Moda'] text-sm text-accent whitespace-nowrap animate-in fade-in slide-in-from-left-2 duration-300">
+              Hexa Command Centre
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Section list */}
+      <div className="flex flex-col h-[calc(100vh-56px)] overflow-y-auto overflow-x-hidden">
+        {PORTAL_NAV_SECTIONS.map((section) => (
+          <div key={section.marker}>
+            <div className="px-4 py-2 text-[10px] font-['JetBrains_Mono'] uppercase tracking-[0.4em] text-sl-mist/40">
+              {section.marker}
+            </div>
+            {section.items.map((item) => (
+              <button
+                key={item.href}
+                onClick={() => onSectionSelect(item.href)}
+                className={cn(
+                  'w-full flex items-center gap-3 px-4 py-2.5 text-left transition-all duration-200 group relative',
+                  'hover:bg-sl-gold-subtle focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent',
+                  selectedSection === item.href
+                    ? 'bg-sl-gold-subtle text-accent'
+                    : 'text-sl-mist hover:text-sl-alabaster'
+                )}
+                type="button"
+              >
+                {selectedSection === item.href && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-accent rounded-r-full" />
+                )}
+                <Icon name={item.icon as any} className="shrink-0" size={16} />
+                {expanded && (
+                  <span className="font-['JetBrains_Mono'] text-xs whitespace-nowrap transition-all duration-300">
+                    {item.label}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        ))}
+      </div>
+
+      {/* Bottom hint */}
+      {!expanded && (
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
+          <span className="text-[10px] font-['JetBrains_Mono'] text-sl-silver opacity-50 tracking-widest uppercase">
+            Hover
+          </span>
+        </div>
+      )}
+    </nav>
+  );
+}
+
+interface PortalSidebarProps {
+  className?: string;
+}
+
+function PortalSidebar({ className }: PortalSidebarProps) {
+  const { isSidebarOpen, setSidebarOpen } = usePortalStore();
+  const [selectedSection, setSelectedSection] = useState('/design-system');
+
+  return (
+    <SidebarNav
+      ref={null}
+      expanded={isSidebarOpen}
+      onMouseEnter={() => setSidebarOpen(true)}
+      onMouseLeave={() => setSidebarOpen(false)}
+      onMouseDown={() => {}}
+      onMouseMove={() => {}}
+      selectedSection={selectedSection}
+      onSectionSelect={setSelectedSection}
+    />
+  );
+}
+
+const PortalMobileSidebar = ({ className }: PortalSidebarProps) => {
+  const { isSidebarOpen, setSidebarOpen } = usePortalStore();
+
+  return (
+    <div className={cn('lg:hidden', className)}>
+      <SidebarNav
+        ref={null}
+        expanded={isSidebarOpen}
+        onMouseEnter={() => setSidebarOpen(true)}
+        onMouseLeave={() => setSidebarOpen(false)}
+        onMouseDown={() => {}}
+        onMouseMove={() => {}}
+        selectedSection="/portal"
+        onSectionSelect={() => {}}
+      />
+    </div>
+  );
+};
+
+export { PortalSidebar, PortalMobileSidebar };
+export { PORTAL_NAV_SECTIONS };
+export type { PortalNavSection, PortalNavItem };

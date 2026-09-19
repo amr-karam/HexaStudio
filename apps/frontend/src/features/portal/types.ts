@@ -232,6 +232,11 @@ export interface PortalNavItem {
   badge?: number;
 }
 
+export interface PortalNavSection {
+  marker: string;
+  items: PortalNavItem[];
+}
+
 /* -------------------------------------------------------------------------- */
 /*  Workspace & Kanban v3.0                                                   */
 /* -------------------------------------------------------------------------- */

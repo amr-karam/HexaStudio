@@ -367,7 +367,7 @@ export class ModelRouterService {
         return a[1].costPer1KTokens - b[1].costPer1KTokens;
       });
 
-    return alternatives.length > 0 ? (alternatives[0] as string) : null;
+    return alternatives.length > 0 ? alternatives[0][0] : null;
   }
 
   /**
@@ -381,8 +381,9 @@ export class ModelRouterService {
       .filter(([model, caps]) => {
         return caps[capability] && this.inferProvider(model) === provider;
       })
-      .map(([model]) => model);
-    return models.length > 0 ? (models[0] as string) : null;
+      .sort((a, b) => a[1].costPer1KTokens - b[1].costPer1KTokens);
+
+    return models.length > 0 ? models[0][0] : null;
   }
 
   /**
