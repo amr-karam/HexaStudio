@@ -1188,3 +1188,26 @@ Replaced ResearchHub's simulated workflow (hardcoded sample data + setTimeout th
 | Frontend Tests | ✅ 129 files / **854 tests** (+6 new) |
 | Design Tokens | ✅ ALL PASSED |
 | Font Preloads | ✅ ALL MATCH |
+
+---
+
+## 2026-09-19 — Prod crash-loops diagnosed + keyless-boot hardening — COMPLETE
+
+**Status:** Diagnosed via SSH to `19.16.1.100`; fixes applied locally, backend gates green. Deploy pending (dirty tree on `feature/research-tools-test-coverage`).
+
+### 1. Prod findings (Sep 19, 2026)
+- `hexa-frontend-blue` Up healthy; `postgres`/`redis` healthy
+- `hexa-backend-blue` crash-loop: `UndefinedModuleException: AgentsModule imports[4] undefined` — ADR-017; prod image `2026-09-10` predates fix `2026-09-13`, stale image needs rebuild (no code change)
+- `hexa-cms-blue` crash-loop: `Component schema missing collectionName: editorial-hero/schema.json`
+
+### 2. Fixes
+- [x] `apps/cms/src/components/editorial-hero/schema.json`: added `"collectionName": "components_editorial_hero"` (JSON valid)
+- [x] `apps/backend/src/modules/ai/structured-output.service.ts`, `voice.service.ts`: null-guard OpenAI construction when `HERMES_API_KEY` absent (`env.ts:53` optional) — `isAvailable=false` instead of boot crash
+- [x] `apps/backend/src/modules/ai/hermes.service.ts`: keyless branch uses placeholder bearer (self-hosted server ignores auth) instead of throwing
+
+### 3. Quality Gates Verified (Sep 19, 2026)
+| Gate | Result |
+|------|--------|
+| Backend ESLint | ✅ 0 errors, 0 warnings |
+| Backend Typecheck | ✅ 0 errors |
+| Backend Tests | ✅ 60 files / **443 tests** (incl. `app-boot.spec.ts` full-graph DI, keyless) |
