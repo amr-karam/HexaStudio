@@ -25,7 +25,7 @@ export default [
   "strapi::favicon",
   "strapi::public",
   {
-    name: "admin-ip-guard",
+    name: "global::admin-ip-guard",
     config: {
       enabled: true,
     },
