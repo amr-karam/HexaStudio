@@ -36,8 +36,8 @@ export class HermesAgentService {
     if (apiKey) {
       this.client = new OpenAI({ apiKey, baseURL });
     } else {
-      // Self-hosted/local runtime — no auth needed.
-      this.client = new OpenAI({ baseURL });
+      // Self-hosted/local runtime — no auth needed (server ignores bearer).
+      this.client = new OpenAI({ apiKey: 'self-hosted', baseURL });
     }
   }
 
