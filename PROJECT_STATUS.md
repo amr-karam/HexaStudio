@@ -1219,3 +1219,34 @@ Replaced ResearchHub's simulated workflow (hardcoded sample data + setTimeout th
 | Backend ESLint | ✅ 0 errors, 0 warnings |
 | Backend Typecheck | ✅ 0 errors |
 | Backend Tests | ✅ 60 files / **443 tests** (incl. `app-boot.spec.ts` full-graph DI, keyless) |
+
+---
+
+## 2026-09-20 — MOA Provider + Portal Sidebar Redesign + Design Token Cleanup — COMPLETE
+
+**Status:** Implemented, verified, committed (`38bdc4a6`) & pushed to `origin/feature/research-tools-test-coverage`
+
+### 1. Overview
+Sprint S-023 hardening wave: lint-gate violations fixed in the redesigned `PortalSidebar`, type-safe nav icons, and PROJECT_STATUS documentation of the MOA (Mixture of Agents) provider integration.
+
+### 2. Work Completed
+- [x] **MOA provider integration** (commit `59d69e33`): Mixture of Agents provider wired into the model router (`llm.factory.ts`, `env.ts` — `MOA_API_KEY`/`MOA_BASE_URL`/`MOA_MODEL`/`AI_CHAT_PROVIDER`, `model-fusion.service.ts`, `model-router.service.ts`, `token-usage.service.ts` power pricing)
+- [x] **Evey Design plugin + design-system page** (commit `7767d4bb`): 5 design tools (`design_token_lookup`, `scaffold_component`, `design_audit`, `motion_variants`, `a11y_check`) + interactive `/design-system` page with Ctrl+Shift+D quick palette overlay
+- [x] **Design token cleanup** (commit `34cd363d`): raw Tailwind color classes replaced with semantic `sl-*` design tokens
+- [x] **Portal sidebar redesign** (commit `38bdc4a6`): `PortalSidebar.tsx` rewritten — collapsed 80px icon rail expanding to 260px, `usePortalStore` hover integration, section markers, gold accent active indicator, `palette` icon added to `PortalIcons`, new `PortalNavSection`/`PortalIconName` typed interfaces
+- [x] **Lint fixes:** removed unused `forwardRef` import, eliminated `item.icon as any` via typed `PortalIconName` nav icons (zero `any`), unused `className` arg prefixed
+- [x] **Design-system page:** removed invalid `Metadata` export from `'use client'` component (client components cannot export metadata)
+
+### 3. Quality Gates Verified (Sep 20, 2026)
+| Gate | Result |
+|------|--------|
+| Frontend ESLint | ✅ 0 errors, 0 warnings |
+| Frontend Typecheck | ✅ 0 errors |
+| Frontend Tests | ✅ 129 files / **854 tests** |
+| Design Tokens | ✅ ALL PASSED |
+| Font Preloads | ✅ ALL MATCH (7 woff2) |
+| Push | ✅ `8b07413e..38bdc4a6` → `origin/feature/research-tools-test-coverage` |
+
+### 4. Notes
+- GitHub Dependabot reports 102 vulnerabilities on the default branch (2 critical, 37 high) — separate remediation wave recommended.
+- Prod deploy of the Sep 19 crash-loop fixes still pending (see 2026-09-19 entry).
