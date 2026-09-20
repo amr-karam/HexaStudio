@@ -2,8 +2,8 @@
   "kind": "singleType",
   "collectionName": "design_settings",
   "info": {
-    "singularName": "design-setting",
-    "pluralName": "design-settings",
+    "singularName": "design-settings",
+    "pluralName": "design-settings-entries",
     "displayName": "Design Settings",
     "description": "Global site design tokens (colors, typography, identity, header, hero, footer). Any change triggers a Next.js ISR revalidation webhook."
   },
