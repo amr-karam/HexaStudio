@@ -1,0 +1,26 @@
+version: 0.1
+log:
+  level: info
+  formatter: text
+  fields:
+    service: registry
+storage:
+  filesystem:
+    rootdirectory: /var/lib/registry
+  cache:
+    blobdescriptor: inmemory
+  delete:
+    enabled: true
+http:
+  addr: 0.0.0.0:5000
+  secret: 0a036d6549ddee45ee0edab1086456236c21e9f828336d3bfb0aee9467bd447e
+  headers:
+    X-Content-Type-Options: [nosniff]
+health:
+  storagedriver:
+    enabled: true
+    interval: 10s
+    threshold: 3
+
+# Allow HTTP connections (critical for internal Docker clients)
+# This is configured via the Docker daemon, not the registry itself
