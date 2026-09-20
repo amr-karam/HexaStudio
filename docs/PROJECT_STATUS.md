@@ -1,8 +1,8 @@
 # HEXA STUDIO — Project Status
 
 > **Active Sprint:** S-022 Phase 4/RC (S-023 PROD tasks active)  
-> **Branch:** `fix/ui-design-tokens`  
-> **Updated:** 2026-09-18
+> **Branch:** `feature/research-tools-test-coverage`  
+> **Updated:** 2026-09-19
 
 ## Sprint Progression
 
@@ -19,12 +19,12 @@
 | Track | Status | Notes |
 |-------|--------|-------|
 | Foundation | 100% ✅ | Core infra, Docker, Traefik, Cloudflare tunnel |
-| Design System | 40% | Tokens (sl-void #0A0A0B, sl-gold #D4AF37), component library partial |
-| Frontend | 50% | Next.js 16 App Router, R3F/Three.js, GSAP story scroll committed |
+| Design System | 65% | evey-design plugin (design_audit, motion_variants, FaIcon/Icon, design_token_lookup), design-system page, full semantic token migration (emerald/red → success/destructive) |
+| Frontend | 65% | Next.js 16 App Router, R3F/Three.js, GSAP story scroll, portal redesign (sidebar, icons, design-system page) |
 | Backend | 40% | NestJS 11 API layer, JWT auth, Socket.IO |
 | CMS | 30% | Strapi 5 headless CMS, blog content migration to Framer |
 | Auth | 20% | JWT + session management scaffolded |
-| Testing | 25% | 660+ frontend tests, 443 backend tests passing (60 files) |
+| Testing | 35% | 854 frontend tests passing across 129 test files |
 | Research Tools | ✅ | Test coverage for webapp research integration (webSearch, scrapePage, synthesizeReport, exportLuxuryPdf, applyLiveMaterial) |
 | Deployment | 30% | Docker containers (blue/green), Traefik ingress |
 | CI/CD | 20% | GitLab CI pipelines scaffolded |
@@ -50,11 +50,11 @@
 
 ```
 Browser → Cloudflare (CDN/WAF) → Traefik → Next.js 16 (App Router)
-                                          → NestJS 11 (API: JWT, Socket.IO)
-                                          → Strapi 5 (Headless CMS)
-                                          → Odoo 17 (Backend, JSON-RPC via NestJS)
-                                          → MinIO (S3-compatible storage)
-                                          → PostgreSQL 16, Redis 7, Qdrant
+                                         → NestJS 11 (API: JWT, Socket.IO)
+                                         → Strapi 5 (Headless CMS)
+                                         → Odoo 17 (Backend, JSON-RPC via NestJS)
+                                         → MinIO (S3-compatible storage)
+                                         → PostgreSQL 16, Redis 7, Qdrant
 ```
 
 > Full details: [EXECUTION_PLAN_S023.md](../EXECUTION_PLAN_S023.md)
