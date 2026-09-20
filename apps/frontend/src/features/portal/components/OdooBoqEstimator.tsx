@@ -43,7 +43,7 @@ export function OdooBoqEstimator() {
         </div>
         <div className="text-right">
           <span className="text-xs text-sl-mist/60 block font-mono">Estimated Subtotal</span>
-          <span className="text-lg font-bold text-emerald-400 font-mono">${totalCost.toLocaleString('en-US')} USD</span>
+          <span className="text-lg font-bold text-success-ink font-mono">${totalCost.toLocaleString('en-US')} USD</span>
         </div>
       </div>
 

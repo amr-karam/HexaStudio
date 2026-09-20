@@ -43,7 +43,7 @@ export function OdooBillingEngine() {
           <h3 className="text-sm font-bold text-neutral-100">Multi-Currency Live Forex & Odoo Billing Engine</h3>
           <p className="text-xs text-sl-mist/60">Odoo Invoice INV-2026-0884 &bull; Milestone Payment</p>
         </div>
-        <span className="bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full text-emerald-400 text-xs font-mono">
+        <span className="bg-success/10 border border-success/30 px-3 py-1 rounded-full text-success-ink text-xs font-mono">
           ✓ Odoo Accounting Synced
         </span>
       </div>
@@ -83,7 +83,7 @@ export function OdooBillingEngine() {
       {paymentStatus === 'idle' && (
         <button
           onClick={handlePay}
-          className="w-full py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs transition-colors shadow-lg"
+          className="w-full py-3 rounded-2xl bg-success hover:bg-success-ink text-neutral-950 font-bold text-xs transition-colors shadow-lg"
         >
           💳 Pay {currentRate.symbol}{convertedAmount} via Stripe / Odoo Payment Gateway
         </button>
@@ -96,8 +96,8 @@ export function OdooBillingEngine() {
       )}
 
       {paymentStatus === 'paid' && (
-        <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-center space-y-1">
-          <p className="text-xs font-bold text-emerald-400">✓ Payment Successful & Synchronized to Odoo ERP</p>
+        <div className="p-4 bg-success/10 border border-success/30 rounded-2xl text-center space-y-1">
+          <p className="text-xs font-bold text-success-ink">✓ Payment Successful & Synchronized to Odoo ERP</p>
           <p className="text-xs text-sl-mist/60 font-mono">Transaction ID: TXN-ODOO-994821 &bull; Receipt Sent via Email</p>
         </div>
       )}

@@ -17,7 +17,7 @@ interface ActivityItemProps {
 }
 
 const ACTIVITY_CONFIG: Record<ActivityType, { icon: IconName; color: string; borderColor: string }> = {
-  approval: { icon: 'check', color: 'text-emerald-500', borderColor: 'border-l-emerald-500' },
+  approval: { icon: 'check', color: 'text-success', borderColor: 'border-l-success' },
   upload: { icon: 'upload', color: 'text-blue-500', borderColor: 'border-l-blue-500' },
   comment: { icon: 'message-square', color: 'text-purple-500', borderColor: 'border-l-purple-500' },
   milestone: { icon: 'zap', color: 'text-sl-gold-hover', borderColor: 'border-l-accent' },

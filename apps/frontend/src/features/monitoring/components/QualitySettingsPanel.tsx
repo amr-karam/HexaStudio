@@ -78,7 +78,7 @@ export function QualitySettingsPanel() {
         <p className={cn("mb-1", {
           "text-green-600": manualTier === "auto",
           "text-yellow-600": manualTier === "low" || manualTier === "high",
-          "text-red-600": webglState === "recovering",
+          "text-destructive-deep": webglState === "recovering",
         })}>
           {webglState === "recovering" ? "Recovering..." : manualTier}
         </p>
@@ -119,7 +119,7 @@ export function QualitySettingsPanel() {
             onClick={() => handleTierChange("high")}
             className={cn(
               "w-full",
-              { "bg-emerald/10 text-emerald": manualTier === "high" }
+              { "bg-success/10 text-success": manualTier === "high" }
             )}
           >
             Quality

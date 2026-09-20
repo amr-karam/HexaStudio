@@ -306,12 +306,12 @@ function UserMenu({
                   close();
                   onLogout();
                 }}
-                className="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 font-mono text-xs uppercase tracking-[0.2em] text-sl-mist/60 transition-colors duration-300 hover:bg-red-500/5 hover:text-red-400 focus-luxury"
+                className="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 font-mono text-xs uppercase tracking-[0.2em] text-sl-mist/60 transition-colors duration-300 hover:bg-destructive/5 hover:text-destructive-ink focus-luxury"
               >
                 <Icon
                   name="log-out"
                   size={14}
-                  className="text-sl-mist/60 transition-colors duration-300 group-hover:text-red-400"
+                  className="text-sl-mist/60 transition-colors duration-300 group-hover:text-destructive-ink"
                 />
                 Logout
               </button>
@@ -688,7 +688,7 @@ export function PortalNav() {
                     <button
                       type="button"
                       onClick={handleLogout}
-                      className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-sl-mist/60 transition-colors duration-300 hover:text-red-400 focus-luxury"
+                      className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-sl-mist/60 transition-colors duration-300 hover:text-destructive-ink focus-luxury"
                     >
                       <Icon name="log-out" size={14} />
                       Logout

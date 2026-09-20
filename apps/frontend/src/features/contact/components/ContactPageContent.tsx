@@ -109,7 +109,7 @@ export function ContactPageContent({ faqs }: ContactPageContentProps) {
                     placeholder="John Doe"
                     value={formState.name}
                     onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                    className={cn("bg-transparent border-b border-sl-silver/20 focus:border-sl-gold-subtle transition-all duration-500 rounded-none px-0", errors.name && "border-red-500")}
+                    className={cn("bg-transparent border-b border-sl-silver/20 focus:border-sl-gold-subtle transition-all duration-500 rounded-none px-0", errors.name && "border-destructive")}
                   />
                   {errors.name && <span className="text-[9px] text-destructive uppercase tracking-widest">{errors.name}</span>}
                 </div>
@@ -121,7 +121,7 @@ export function ContactPageContent({ faqs }: ContactPageContentProps) {
                     type="email"
                     value={formState.email}
                     onChange={(e) => setFormState({ ...formState, email: e.target.value })}
-                    className={cn("bg-transparent border-b border-sl-silver/20 focus:border-sl-gold-subtle transition-all duration-500 rounded-none px-0", errors.email && "border-red-500")}
+                    className={cn("bg-transparent border-b border-sl-silver/20 focus:border-sl-gold-subtle transition-all duration-500 rounded-none px-0", errors.email && "border-destructive")}
                   />
                   {errors.email && <span className="text-[9px] text-destructive uppercase tracking-widest">{errors.email}</span>}
                 </div>
@@ -214,7 +214,7 @@ export function ContactPageContent({ faqs }: ContactPageContentProps) {
             >
               <div className={cn(
                 "w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-8 transition-colors duration-700",
-                status === 'sent' ? "bg-sl-gold-subtle/20 text-sl-gold-hover" : "bg-red-500/20 text-destructive"
+                status === 'sent' ? "bg-sl-gold-subtle/20 text-sl-gold-hover" : "bg-destructive/20 text-destructive"
               )}>
                 {status === 'sent' ? (
                   <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">

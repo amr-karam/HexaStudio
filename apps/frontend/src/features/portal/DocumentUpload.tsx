@@ -273,7 +273,7 @@ export function DocumentUpload({ projectId, documents, onDocumentsChange }: Docu
                       type="button"
                       onClick={() => handleDelete(doc.id)}
                       disabled={deletingId === doc.id}
-                      className="p-2 text-sl-mist/60 hover:text-red-400 transition-colors disabled:opacity-50"
+                      className="p-2 text-sl-mist/60 hover:text-destructive-ink transition-colors disabled:opacity-50"
                       aria-label={
                         deletingId === doc.id
                           ? 'Deleting document...'
@@ -282,12 +282,12 @@ export function DocumentUpload({ projectId, documents, onDocumentsChange }: Docu
                     >
                       {deletingId === doc.id ? (
                         staticMode ? (
-                          <div className="w-4 h-4 rounded-full border-2 border-red-400/30 border-t-red-400" />
+                          <div className="w-4 h-4 rounded-full border-2 border-destructive-ink/30 border-t-destructive-ink" />
                         ) : (
                           <motion.div
                             animate={{ rotate: 360 }}
                             transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
-                            className="w-4 h-4 rounded-full border-2 border-red-400/30 border-t-red-400"
+                            className="w-4 h-4 rounded-full border-2 border-destructive-ink/30 border-t-destructive-ink"
                           />
                         )
                       ) : (

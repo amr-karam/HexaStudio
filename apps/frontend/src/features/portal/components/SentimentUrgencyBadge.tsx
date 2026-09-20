@@ -29,10 +29,10 @@ interface SentimentUrgencyBadgeProps {
 }
 
 const SENTIMENT_CONFIG: Record<NonNullable<ApprovalSentiment>, { color: string; label: string; icon: IconName }> = {
-  positive: { color: 'bg-emerald-400', label: 'Client Receptive', icon: 'smile' },
+  positive: { color: 'bg-success-ink', label: 'Client Receptive', icon: 'smile' },
   neutral: { color: 'bg-amber-400', label: 'Neutral Tone', icon: 'meh' },
   frustrated: { color: 'bg-orange-400', label: 'Elevated Tension', icon: 'frown' },
-  urgent: { color: 'bg-red-400', label: 'Urgent Attention', icon: 'alert-triangle' },
+  urgent: { color: 'bg-destructive-ink', label: 'Urgent Attention', icon: 'alert-triangle' },
 };
 
 export function SentimentUrgencyBadge({ sentiment, urgencyScore }: SentimentUrgencyBadgeProps) {

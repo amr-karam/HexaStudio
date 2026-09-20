@@ -78,6 +78,7 @@ const NAV_STRUCTURE: NavLinkItem[] = [
     },
   },
   { label: "Contact", href: "/contact" },
+  { label: "Design System", href: "/design-system" },
 ];
 
 /* ── NavDropdownPanel ─────────────────────────────────────────────────── */

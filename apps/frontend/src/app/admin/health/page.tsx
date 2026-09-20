@@ -46,7 +46,7 @@ const SERVICES: ServiceCheck[] = [
 
 const STATUS_STYLES: Record<HealthResult['status'], { bg: string; text: string; dot: string; label: string }> = {
   checking:  { bg: 'bg-amber-500/10',  text: 'text-amber-400',   dot: 'bg-amber-400 animate-pulse', label: 'Checking…' },
-  healthy:   { bg: 'bg-emerald-500/10', text: 'text-emerald-400', dot: 'bg-emerald-400',             label: 'Healthy'   },
+  healthy:   { bg: 'bg-success/10', text: 'text-success-ink', dot: 'bg-success-ink',             label: 'Healthy'   },
   degraded:  { bg: 'bg-yellow-500/10',  text: 'text-yellow-400',  dot: 'bg-yellow-400 animate-pulse',label: 'Degraded'  },
   down:      { bg: 'bg-destructive/10',     text: 'text-destructive',     dot: 'bg-destructive animate-pulse',   label: 'Down'      },
   unknown:   { bg: 'bg-white/5',        text: 'text-sl-alabaster/40',    dot: 'bg-white/20',                label: 'Unknown'   },
@@ -113,11 +113,11 @@ export default function HealthDashboardPage() {
         </div>
 
         {/* Summary Bar */}
-        <div className={`rounded-2xl p-4 flex items-center justify-between border ${allHealthy ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-destructive/30 bg-destructive/5'}`}>
+        <div className={`rounded-2xl p-4 flex items-center justify-between border ${allHealthy ? 'border-success/30 bg-success/5' : 'border-destructive/30 bg-destructive/5'}`}>
           <div className="flex items-center space-x-3">
             <span className={`text-2xl ${allHealthy ? '' : 'animate-pulse'}`}>{allHealthy ? '✅' : '⚠️'}</span>
             <div>
-              <p className={`text-sm font-bold ${allHealthy ? 'text-emerald-400' : 'text-destructive'}`}>
+              <p className={`text-sm font-bold ${allHealthy ? 'text-success-ink' : 'text-destructive'}`}>
                 {allHealthy ? 'All Systems Operational' : `${total - healthy} Service${total - healthy !== 1 ? 's' : ''} Require Attention`}
               </p>
               <p className="text-xs text-sl-alabaster/50">{healthy} / {total} services healthy</p>
@@ -159,7 +159,7 @@ export default function HealthDashboardPage() {
                       </div>
                       <div className="text-right">
                         {result.httpStatus && (
-                          <p className={`text-xs font-mono ${result.status === 'healthy' ? 'text-emerald-400' : 'text-destructive'}`}>
+                          <p className={`text-xs font-mono ${result.status === 'healthy' ? 'text-success-ink' : 'text-destructive'}`}>
                             HTTP {result.httpStatus}
                           </p>
                         )}

@@ -10,7 +10,7 @@ export function RealtimePresence({ users, isConnected }: RealtimePresenceProps) 
 
   return (
     <div className="flex items-center gap-2">
-      <div className={`h-2 w-2 rounded-full ${isConnected ? 'bg-emerald-500' : 'bg-red-500'}`} />
+      <div className={`h-2 w-2 rounded-full ${isConnected ? 'bg-success' : 'bg-destructive'}`} />
       <span className="text-xs text-sl-alabaster/40">
         {isConnected ? `${unique.length} online` : 'Disconnected'}
       </span>

@@ -73,7 +73,7 @@ export default function StudioAnalyticsPage() {
                     <span>Frame Rate: <span className="font-medium">58 FPS</span></span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                    <span className="w-2 h-2 rounded-full bg-success" />
                     <span>Draw Calls: <span className="font-medium">1.2K / frame</span></span>
                   </div>
                 </div>

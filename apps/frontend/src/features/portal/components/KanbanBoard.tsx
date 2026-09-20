@@ -31,11 +31,11 @@ const COLUMNS: { status: TaskStatus; label: string; icon: IconName; color: strin
   { status: 'todo', label: 'To Do', icon: 'box', color: 'text-sl-mist/60' },
   { status: 'in_progress', label: 'In Progress', icon: 'clock', color: 'text-blue-400' },
   { status: 'review', label: 'Review', icon: 'eye', color: 'text-amber-400' },
-  { status: 'done', label: 'Done', icon: 'check-circle', color: 'text-emerald-400' },
+  { status: 'done', label: 'Done', icon: 'check-circle', color: 'text-success-ink' },
 ];
 
 const PRIORITY_STYLES: Record<TaskPriority, { bg: string; text: string; label: string }> = {
-  urgent: { bg: 'bg-red-500/20', text: 'text-red-400', label: 'Urgent' },
+  urgent: { bg: 'bg-destructive/20', text: 'text-destructive-ink', label: 'Urgent' },
   high: { bg: 'bg-orange-500/20', text: 'text-orange-400', label: 'High' },
   medium: { bg: 'bg-amber-500/20', text: 'text-amber-400', label: 'Medium' },
   low: { bg: 'bg-neutral-700/50', text: 'text-sl-mist/60', label: 'Low' },
@@ -92,7 +92,7 @@ function TaskCard({ task, reduced }: { task: PortalTask; reduced: boolean }) {
         </span>
         {task.dueDate && (
           <span
-            className={cn('text-[10px] font-mono', isOverdue ? 'text-red-400 font-bold' : 'text-sl-mist/60')}
+            className={cn('text-[10px] font-mono', isOverdue ? 'text-destructive-ink font-bold' : 'text-sl-mist/60')}
           >
             {isOverdue
               ? 'Overdue'

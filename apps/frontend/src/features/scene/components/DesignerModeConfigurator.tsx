@@ -303,7 +303,7 @@ export function DesignerModeConfigurator() {
       >
         <span className="text-lg">🎨</span>
         <span className="text-xs font-semibold text-neutral-100 group-hover:text-amber-300">Designer Mode</span>
-        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+        <span className="w-2 h-2 rounded-full bg-success-ink animate-pulse" />
       </button>
 
       {/* Drawer */}
@@ -472,7 +472,7 @@ export function DesignerModeConfigurator() {
                       aria-pressed={isRecording}
                       className={`w-full py-2.5 rounded-xl border text-xs font-bold transition-colors disabled:opacity-50 ${
                         isRecording
-                          ? 'bg-red-500/15 border-red-500/50 text-red-300 hover:bg-red-500/25'
+                          ? 'bg-destructive/15 border-destructive/50 text-destructive-bright hover:bg-destructive/25'
                           : 'bg-sl-void border-neutral-700 text-neutral-100 hover:bg-sl-obsidian'
                       }`}
                     >
@@ -487,8 +487,8 @@ export function DesignerModeConfigurator() {
 
                     {isRecording && (
                       <div className="flex items-center justify-between px-1">
-                        <span role="status" className="flex items-center space-x-1.5 text-[11px] text-red-400 font-medium">
-                          <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" aria-hidden="true" />
+                        <span role="status" className="flex items-center space-x-1.5 text-[11px] text-destructive-ink font-medium">
+                          <span className="w-2 h-2 rounded-full bg-destructive animate-pulse" aria-hidden="true" />
                           <span>Recording…</span>
                         </span>
                         <button
@@ -503,7 +503,7 @@ export function DesignerModeConfigurator() {
                     )}
 
                     {audioCapture && !isRecording && (
-                      <p className="text-[11px] text-emerald-400 flex items-center space-x-1.5">
+                      <p className="text-[11px] text-success-ink flex items-center space-x-1.5">
                         <span aria-hidden="true">✓</span>
                         <span>Voice clip captured — ready to synthesize.</span>
                       </p>
@@ -519,7 +519,7 @@ export function DesignerModeConfigurator() {
                     </button>
 
                     {voiceError && (
-                      <p role="alert" className="text-[11px] text-red-400 leading-relaxed">
+                      <p role="alert" className="text-[11px] text-destructive-ink leading-relaxed">
                         {voiceError}
                       </p>
                     )}
@@ -552,7 +552,7 @@ export function DesignerModeConfigurator() {
               </button>
             </div>
 
-            {snapshotMsg && <p className="text-[10px] text-emerald-400 text-center mt-2 animate-pulse">{snapshotMsg}</p>}
+            {snapshotMsg && <p className="text-[10px] text-success-ink text-center mt-2 animate-pulse">{snapshotMsg}</p>}
           </motion.div>
         )}
       </AnimatePresence>

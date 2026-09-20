@@ -71,8 +71,8 @@ const STATUS_STYLES: Record<
 > = {
   paid: {
     label: 'Paid',
-    pill: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300',
-    dot: 'bg-emerald-400',
+    pill: 'border-success/30 bg-success/10 text-success-bright',
+    dot: 'bg-success-ink',
   },
   pending: {
     label: 'Pending',
@@ -81,8 +81,8 @@ const STATUS_STYLES: Record<
   },
   overdue: {
     label: 'Overdue',
-    pill: 'border-red-500/30 bg-red-500/10 text-red-300',
-    dot: 'bg-red-400',
+    pill: 'border-destructive/30 bg-destructive/10 text-destructive-bright',
+    dot: 'bg-destructive-ink',
   },
   draft: {
     label: 'Draft',
@@ -334,7 +334,7 @@ export function FinanceCenterView() {
         valueFn: (fmt: (n: number) => string) => fmt(totalPaid),
         valueClass: 'text-gradient-gold',
         note: `${completionPct}% Completed`,
-        noteClass: 'text-emerald-400/90',
+        noteClass: 'text-success-ink/90',
       },
       {
         label: 'Outstanding Balance',

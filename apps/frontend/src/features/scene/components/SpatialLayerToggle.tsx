@@ -99,7 +99,7 @@ export function SpatialLayerToggle() {
                       <p className="text-[10px] text-sl-mist/60 mt-0.5">{layer.desc}</p>
                     </div>
                   </div>
-                  <span className={`text-xs font-bold ${layer.visible ? 'text-emerald-400' : 'text-sl-mist/60'}`}>
+                  <span className={`text-xs font-bold ${layer.visible ? 'text-success-ink' : 'text-sl-mist/60'}`}>
                     {layer.visible ? '✓' : 'OFF'}
                   </span>
                 </button>

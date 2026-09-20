@@ -105,7 +105,7 @@ export function ContextLossTracker() {
   const recoveryBadge = (
     <span className={cn(
       "inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium",
-      state === "lost" ? "bg-red-100 text-red-800" : state === "recovering" ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800"
+      state === "lost" ? "bg-destructive-light text-destructive-700" : state === "recovering" ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800"
     )}>
       {state}
     </span>
@@ -114,7 +114,7 @@ export function ContextLossTracker() {
   // Render event item
   const renderEvent = (event: { timestamp: Date; state: string; recovered?: boolean }, index: number) => (
     <div key={index} className="flex items-center gap-2">
-      <span className={cn("w-2 h-2 rounded-full", event.recovered ? "bg-green-500" : "bg-red-500")}></span>
+      <span className={cn("w-2 h-2 rounded-full", event.recovered ? "bg-green-500" : "bg-destructive")}></span>
       <span className="text-sl-mist/60">
         {formatTimestamp(event.timestamp)} - {"recovered" in event ? (event.recovered ? "✓ recovered" : "× failed") : event.state}
       </span>

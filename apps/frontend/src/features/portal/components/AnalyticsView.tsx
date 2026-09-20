@@ -283,9 +283,9 @@ function SectionHeader({ title, subtitle, index }: { title: string; subtitle?: s
 
 function KpiCard({ kpi, index, reduced }: { kpi: KpiData; index: number; reduced: boolean }) {
   const trendColor = kpi.trend.direction === 'up'
-    ? 'text-emerald-500'
+    ? 'text-success'
     : kpi.trend.direction === 'down'
-      ? 'text-red-500'
+      ? 'text-destructive'
       : 'text-sl-mist/60';
 
   const trendIcon: IconName = kpi.trend.direction === 'up'
@@ -376,14 +376,14 @@ function KpiCard({ kpi, index, reduced }: { kpi: KpiData; index: number; reduced
 function PhaseProgressBar({ phase, reduced }: { phase: PhaseData; reduced: boolean }) {
   const barColor =
     phase.status === 'completed'
-      ? 'bg-emerald-500'
+      ? 'bg-success'
       : phase.status === 'in_progress'
         ? 'bg-sl-gold-subtle'
         : 'bg-sl-void';
 
   const textColor =
     phase.status === 'completed'
-      ? 'text-emerald-500'
+      ? 'text-success'
       : phase.status === 'in_progress'
         ? 'text-sl-gold-hover'
         : 'text-textMuted';
@@ -722,7 +722,7 @@ function ResponseTimeChart({ reduced }: { reduced: boolean }) {
         <div className="flex justify-between mt-2 px-1">
           <span className="text-[10px] text-textMuted font-mono">Slowest: 3.1h</span>
           <span className="text-[10px] text-sl-gold-hover font-mono font-medium">Avg: 2.3h</span>
-          <span className="text-[10px] text-emerald-500 font-mono">Fastest: 1.9h</span>
+          <span className="text-[10px] text-success font-mono">Fastest: 1.9h</span>
         </div>
       </div>
     </SectionCard>

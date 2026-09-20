@@ -26,7 +26,7 @@ interface QueryComplexity {
 
 interface ModelRecommendation {
   model: string;
-  provider: 'openai' | 'freetheai' | 'local' | 'hermes';
+  provider: 'openai' | 'freetheai' | 'local' | 'hermes' | 'moa';
   confidence: number;
   reasoning: string;
 }
@@ -92,6 +92,16 @@ const MODEL_CAPABILITIES: Record<string, ModelCapabilities> = {
   },
   // Hermes Agent
   'hermes-agent-1.0': {
+    maxTokens: 128000,
+    reasoningAbility: 'high',
+    speed: 'medium',
+    costPer1KTokens: 0,
+    supportsMultimodal: true,
+    supportsFunctionCalling: true,
+    supportsStructuredOutput: true,
+  },
+  // MOA — Mixture of Agents ensemble (Nous Research; runs on the Hermes Agent runtime)
+  'power': {
     maxTokens: 128000,
     reasoningAbility: 'high',
     speed: 'medium',
@@ -239,7 +249,7 @@ export class ModelRouterService {
     requiresFunctionCalling?: boolean;
     requiresStructuredOutput?: boolean;
     requiresReasoning?: boolean;
-    preferredProvider?: 'openai' | 'freetheai' | 'local' | 'hermes';
+    preferredProvider?: 'openai' | 'freetheai' | 'local' | 'hermes' | 'moa';
   } = {}): ModelRecommendation {
     const complexity = this.analyzeQuery(query, options);
 
@@ -305,11 +315,12 @@ export class ModelRouterService {
   /**
    * Infer provider from model name
    */
-  private inferProvider(model: string): 'openai' | 'freetheai' | 'local' | 'hermes' {
+  private inferProvider(model: string): 'openai' | 'freetheai' | 'local' | 'hermes' | 'moa' {
     if (model.startsWith('gpt-')) return 'openai';
     if (model.startsWith('bbl/')) return 'freetheai';
     if (model.startsWith('gemma-') || model.includes('gemma')) return 'local';
     if (model.startsWith('hermes')) return 'hermes';
+    if (model === 'power') return 'moa';
     return 'openai'; // default fallback
   }
 
@@ -318,7 +329,7 @@ export class ModelRouterService {
    */
   private findAlternativeModel(
     currentModel: string,
-    preferredProvider: 'openai' | 'freetheai' | 'local' | 'hermes',
+    preferredProvider: 'openai' | 'freetheai' | 'local' | 'hermes' | 'moa',
     complexity: QueryComplexity
   ): string | null {
     const currentCapabilities = MODEL_CAPABILITIES[currentModel];
@@ -364,7 +375,7 @@ export class ModelRouterService {
    */
   private findModelWithCapability(
     capability: keyof ModelCapabilities,
-    provider: 'openai' | 'freetheai' | 'local' | 'hermes'
+    provider: 'openai' | 'freetheai' | 'local' | 'hermes' | 'moa',
   ): string | null {
     const models = Object.entries(MODEL_CAPABILITIES)
       .filter(([model, caps]) => {
@@ -552,7 +563,7 @@ export class ModelRouterService {
   /**
    * Get API key for provider
    */
-  private getProviderApiKey(provider: 'openai' | 'freetheai' | 'local' | 'hermes'): string | null {
+  private getProviderApiKey(provider: 'openai' | 'freetheai' | 'local' | 'hermes' | 'moa'): string | null {
     switch (provider) {
       case 'openai':
         return this.configService.get('OPENAI_API_KEY') || null;
@@ -562,6 +573,8 @@ export class ModelRouterService {
         return this.configService.get('LM_STUDIO_BASE_URL') || null;
       case 'hermes':
         return this.configService.get('HERMES_API_KEY') || this.configService.get('HERMES_BASE_URL') || null;
+      case 'moa':
+        return this.configService.get('MOA_API_KEY') || this.configService.get('MOA_BASE_URL') || null;
       default:
         return null;
     }
@@ -575,7 +588,7 @@ export class ModelRouterService {
     routingRules: number;
     configuredProviders: string[];
   }> {
-    const providers = ['openai', 'freetheai', 'local', 'hermes'] as const;
+    const providers = ['openai', 'freetheai', 'local', 'hermes', 'moa'] as const;
     const configuredProviders = providers.filter(provider =>
       this.getProviderApiKey(provider) !== null
     );

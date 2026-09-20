@@ -206,7 +206,7 @@ const FALLBACK_DOCUMENTS: DocumentItem[] = [
 const FOLDERS = ['all', 'design', 'contracts', 'blueprints', 'reports'] as const;
 
 const STATUS_LABEL: Record<DocumentItem['status'], { label: string; className: string }> = {
-  approved: { label: 'Approved', className: 'text-emerald-500/80' },
+  approved: { label: 'Approved', className: 'text-success/80' },
   in_review: { label: 'In Review', className: 'text-sl-gold-hover/80' },
   draft: { label: 'Draft', className: 'text-sl-mist/60' },
 };

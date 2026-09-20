@@ -150,7 +150,7 @@ export function FramerPublishPanel({ defaultSiteId = '', className }: FramerPubl
       {status && (
         <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.2em] text-sl-mist/60">
           Source: <span className="text-sl-gold-hover">{status.source}</span> · Key present:{' '}
-          <span className={status.keyPresent ? 'text-emerald-500' : 'text-red-500'}>
+          <span className={status.keyPresent ? 'text-success' : 'text-destructive'}>
             {status.keyPresent ? 'yes' : 'no'}
           </span>
         </p>

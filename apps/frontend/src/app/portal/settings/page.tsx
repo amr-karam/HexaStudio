@@ -344,8 +344,8 @@ export default function SettingsPage() {
           )}
           {syncStatus === 'saved' && (
             <>
-              <div className="w-3 h-3 rounded-full bg-emerald-500/60" />
-              <span className="text-[10px] uppercase tracking-widest text-emerald-400/80 font-mono">
+              <div className="w-3 h-3 rounded-full bg-success/60" />
+              <span className="text-[10px] uppercase tracking-widest text-success-ink/80 font-mono">
                 {t('portal.settings.saved')}
               </span>
             </>

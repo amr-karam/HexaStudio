@@ -18,8 +18,8 @@ interface PhaseApprovalCardProps {
 const STATUS_STYLES: Record<string, string> = {
   pending: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
   submitted: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-  approved: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-  rejected: 'bg-red-500/10 text-red-400 border-red-500/20',
+  approved: 'bg-success/10 text-success-ink border-success/20',
+  rejected: 'bg-destructive/10 text-destructive-ink border-destructive/20',
   revision: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
 };
 
@@ -59,7 +59,7 @@ export function PhaseApprovalCard({ phase, onSubmit, onReview, isAdmin }: PhaseA
                 onReview?.(phase.id, 'approve', comment);
                 setShowReview(false);
               }}
-              className="rounded-md bg-emerald-600 px-3 py-1.5 text-xs font-medium text-sl-alabaster transition-colors hover:bg-emerald-500"
+              className="rounded-md bg-success-600 px-3 py-1.5 text-xs font-medium text-sl-alabaster transition-colors hover:bg-success"
             >
               {t('portal.approval.approve')}
             </button>
@@ -74,7 +74,7 @@ export function PhaseApprovalCard({ phase, onSubmit, onReview, isAdmin }: PhaseA
                 onReview?.(phase.id, 'reject', comment);
                 setShowReview(false);
               }}
-              className="rounded-md bg-red-600/80 px-3 py-1.5 text-xs font-medium text-sl-alabaster transition-colors hover:bg-red-600"
+              className="rounded-md bg-destructive-deep/80 px-3 py-1.5 text-xs font-medium text-sl-alabaster transition-colors hover:bg-destructive-deep"
             >
               {t('portal.approval.reject')}
             </button>

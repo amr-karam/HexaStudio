@@ -4,7 +4,7 @@ import { Redis } from 'ioredis';
 import { Env } from '../../config/env';
 
 interface TokenUsageRecord {
-  provider: 'openai' | 'freetheai' | 'hermes';
+  provider: 'openai' | 'freetheai' | 'local' | 'hermes' | 'moa';
   model: string;
   method: string;
   promptTokens: number;
@@ -30,6 +30,7 @@ const TOKEN_PRICING: Record<string, { input: number; output: number }> = {
   'gpt-4o': { input: 0.005, output: 0.015 },
   'bbl/gemini-3.5-flash': { input: 0.00005, output: 0.0002 }, // FreeTheAI pricing
   'hermes-agent-1.0': { input: 0, output: 0 }, // Self-hosted / local
+  'power': { input: 0, output: 0 }, // MOA ensemble on Hermes runtime
 };
 
 @Injectable()

@@ -93,7 +93,7 @@ export function CinematicCameraStudio() {
           <button
             onClick={() => setIsPlaying(!isPlaying)}
             className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${
-              isPlaying ? 'bg-amber-500 text-neutral-950' : 'bg-emerald-500 text-neutral-950 hover:bg-emerald-400'
+              isPlaying ? 'bg-amber-500 text-neutral-950' : 'bg-success text-neutral-950 hover:bg-success-ink'
             }`}
           >
             {isPlaying ? '⏸️ Pause Flythrough' : '▶️ Preview Flythrough'}

@@ -122,7 +122,7 @@ export function MultimodalAnalyzer() {
                 />
                 <button
                   onClick={() => { setImagePreview(null); setImageBase64(null); clearResults(); }}
-                  className="absolute top-2 right-2 bg-sl-void/80 backdrop-blur text-sl-alabaster px-3 py-1 text-xs uppercase rounded-lg border border-neutral-700 hover:bg-red-500/20 hover:text-red-400 transition-colors"
+                  className="absolute top-2 right-2 bg-sl-void/80 backdrop-blur text-sl-alabaster px-3 py-1 text-xs uppercase rounded-lg border border-neutral-700 hover:bg-destructive/20 hover:text-destructive-ink transition-colors"
                 >
                   Change Image
                 </button>
@@ -158,7 +158,7 @@ export function MultimodalAnalyzer() {
           </button>
 
           {error && (
-            <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded-xl">
+            <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive-ink text-xs rounded-xl">
               {error}
             </div>
           )}
@@ -349,10 +349,10 @@ export function MultimodalAnalyzer() {
 
                 {bimResult.potentialIssues.length > 0 && (
                   <div>
-                    <h4 className="text-xs font-mono text-red-400 uppercase tracking-widest mb-2">Potential Issues Detected</h4>
+                    <h4 className="text-xs font-mono text-destructive-ink uppercase tracking-widest mb-2">Potential Issues Detected</h4>
                     <ul className="space-y-1">
                       {bimResult.potentialIssues.map((issue, i) => (
-                        <li key={i} className="text-sm text-red-300/90">• {issue}</li>
+                        <li key={i} className="text-sm text-destructive-bright/90">• {issue}</li>
                       ))}
                     </ul>
                   </div>

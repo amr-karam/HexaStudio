@@ -24,10 +24,10 @@ interface MetricBarProps {
 }
 
 function getStatusConfig(value: number): { label: string; badge: string; bar: string } {
-  if (value >= 90) return { label: 'Excellent', badge: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30', bar: 'bg-emerald-500' };
+  if (value >= 90) return { label: 'Excellent', badge: 'bg-success/20 text-success-ink border-success/30', bar: 'bg-success' };
   if (value >= 70) return { label: 'Good', badge: 'bg-amber-500/20 text-amber-400 border-amber-500/30', bar: 'bg-amber-500' };
   if (value >= 50) return { label: 'Fair', badge: 'bg-amber-500/10 text-amber-400 border-amber-500/30', bar: 'bg-amber-400' };
-  return { label: 'Needs Attention', badge: 'bg-red-500/10 text-red-400 border-red-500/30', bar: 'bg-red-400' };
+  return { label: 'Needs Attention', badge: 'bg-destructive/10 text-destructive-ink border-destructive/30', bar: 'bg-destructive-ink' };
 }
 
 export function MetricBar({

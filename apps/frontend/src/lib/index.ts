@@ -48,4 +48,13 @@ export {
   withHEXAMotion,
   V0_TOKEN_BRIDGE,
   isV0Available,
-} from './v0';
+} from './v0'
+
+// evey-design plugin: 5 design tools
+export {
+  design_token_lookup,
+  scaffold_component,
+  design_audit,
+  motion_variants,
+  a11y_check,
+} from './evey-design';

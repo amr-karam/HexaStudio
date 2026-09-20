@@ -23,7 +23,7 @@ export function CoNavControls({ className }: CoNavControlsProps) {
         <div className="flex items-center justify-between mb-1 px-1">
           <span className="text-[10px] uppercase tracking-widest text-sl-alabaster/40 font-bold">Live Session</span>
           <div className="flex items-center gap-1.5">
-            <div className={`h-1.5 w-1.5 rounded-full ${collabConnected ? 'bg-emerald-500' : 'bg-red-500'} animate-pulse`} />
+            <div className={`h-1.5 w-1.5 rounded-full ${collabConnected ? 'bg-success' : 'bg-destructive'} animate-pulse`} />
             <span className="text-[10px] text-sl-alabaster/60 font-medium">
               {collabConnected ? 'Synced' : 'Offline'}
             </span>
@@ -49,7 +49,7 @@ export function CoNavControls({ className }: CoNavControlsProps) {
                     <span className="text-[9px] text-sl-alabaster/40 leading-tight">Exploring Space</span>
                   </div>
                 </div>
-                <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.5)]" />
+                <div className="h-1.5 w-1.5 rounded-full bg-success shadow-[0_0_5px_rgba(16,185,129,0.5)]" />
               </motion.div>
             ))}
           </AnimatePresence>
@@ -66,7 +66,7 @@ export function CoNavControls({ className }: CoNavControlsProps) {
        <div className="flex justify-center">
          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/5 text-[9px] text-sl-alabaster/30 font-medium uppercase tracking-tighter">
            <span className={`h-1 w-1 rounded-full ${
-             collabConnected ? 'bg-emerald-500' : 'bg-red-500'
+             collabConnected ? 'bg-success' : 'bg-destructive'
            }`} />
            Network: {collabConnected ? 'Synced' : 'Offline'}
          </div>

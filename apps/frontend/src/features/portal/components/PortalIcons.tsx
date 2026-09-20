@@ -73,7 +73,8 @@ type IconName =
   | 'pen-tool'
   | 'layout-grid'
   | 'package'
-  | 'git-branch';
+  | 'git-branch'
+  | 'palette'
 
 interface IconProps {
   name: IconName;
@@ -483,6 +484,15 @@ const ICON_PATHS: Record<IconName, React.ReactNode> = {
       <circle cx="18" cy="6" r="3" />
       <circle cx="6" cy="18" r="3" />
       <path d="M18 9a9 9 0 0 1-9 9" />
+    </>
+  ),
+  palette: (
+    <>
+      <circle cx="13.5" cy="6.5" r="1.5" />
+      <circle cx="17.5" cy="10.5" r="1.5" />
+      <circle cx="8.5" cy="7.5" r="1.5" />
+      <circle cx="6.5" cy="12.5" r="1.5" />
+      <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.38-1.01-.23-.26-.38-.61-.38-.99 0-.93.67-1.5 1.5-1.5H18c2.76 0 5-2.24 5-5 0-4.42-4.02-8-9-8z" />
     </>
   ),
 };
