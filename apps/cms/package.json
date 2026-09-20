@@ -32,7 +32,7 @@
     "strapi-plugin-publisher": "^2.0.9",
     "strapi-plugin-redis": "^1.1.0",
     "styled-components": "^6.1.13",
-    "@strapi/plugin-ckeditor": "^7.1.1"
+    "@_sh/strapi-plugin-ckeditor": "^7.1.1"
   },
   "devDependencies": {
     "typescript": "^5.9.3"
