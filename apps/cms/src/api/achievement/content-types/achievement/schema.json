@@ -1,5 +1,6 @@
 {
-  "collectionName": "achievements",
+  "kind": "collectionType",
+"collectionName": "achievements",
   "info": {
     "singularName": "achievement",
     "pluralName": "achievements",

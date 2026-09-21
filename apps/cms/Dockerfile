@@ -5,6 +5,7 @@ COPY apps/cms/package.json ./package.json
 COPY apps/cms/package-lock.json* ./
 RUN npm install --legacy-peer-deps --no-audit --no-fund
 COPY apps/cms/ ./
+RUN rm -rf dist build .cache
 ENV NODE_ENV=development
 ENV NODE_OPTIONS=--max-old-space-size=4096
 RUN npm run build

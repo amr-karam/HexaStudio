@@ -1,5 +1,6 @@
 {
-  "collectionName": "categories",
+  "kind": "collectionType",
+"collectionName": "categories",
   "info": {
     "singularName": "category",
     "pluralName": "categories",

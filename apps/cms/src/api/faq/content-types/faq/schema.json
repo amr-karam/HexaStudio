@@ -1,5 +1,6 @@
 {
-  "collectionName": "faqs",
+  "kind": "collectionType",
+"collectionName": "faqs",
   "info": {
     "singularName": "faq",
     "pluralName": "faqs",

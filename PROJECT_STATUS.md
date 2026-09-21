@@ -1250,3 +1250,56 @@ Sprint S-023 hardening wave: lint-gate violations fixed in the redesigned `Porta
 ### 4. Notes
 - GitHub Dependabot reports 102 vulnerabilities on the default branch (2 critical, 37 high) — separate remediation wave recommended.
 - Prod deploy of the Sep 19 crash-loop fixes still pending (see 2026-09-19 entry).
+
+---
+
+## 2026-09-21 — CMS Crash-Loop Root-Cause Fix (Strapi 5) — COMPLETE
+
+**Status:** ✅ Diagnosed & fixed via SSH to `19.16.1.100`; live-verified `hexa-cms-green` **healthy**, Strapi 5.50.2 started successfully, postgres 17 healthy.
+
+### 1. Symptoms (Sep 20–21, 2026)
+- `hexa-cms-green` (and `blue`) **unhealthy** — restart loop, `docker logs` repeating:
+  ```
+  TypeError: Cannot read properties of undefined (reading 'kind')
+    at Object.isSingleType (node_modules/@strapi/utils/dist/content-types.js:209:25)
+    at Object.createRoutes (node_modules/@strapi/core/dist/core-api/routes/index.js:28:34)
+    at get routes [as routes] (node_modules/@strapi/core/dist/factories.js:65:47)
+  ```
+- Also hit `Content Type Definition is invalid for api::design-settings.design-settings — lifecycles field has unspecified keys: afterPublish, afterUnpublish` when lifecycles invalid.
+- Postgres intermittently `FATAL: database files are incompatible with server ... 17 vs 16.15` (image drift `postgres:16-alpine` vs `postgres:17-alpine`).
+
+### 2. Root Causes (5 stacked)
+1. **Missing `kind` in 10/11 schemas** (`apps/cms/src/api/*/content-types/*/schema.json:1`) — all collection types lacked `"kind": "collectionType"` (Strapi 5 requires it; `design-settings` had `singleType`). `isSingleType({kind})` destructured `undefined` → throw. Fixed via script adding `kind` to 10 files (`achievement, article, category, faq, page, portfolio, project, service, team-member, testimonial`).
+2. **Invalid lifecycles** (`design-settings/content-types/design-settings/lifecycles.ts:80-85`) — `afterPublish`/`afterUnpublish` not in Strapi 5 `LIFECYCLES` allowlist (`validator.js:12`: only `before/afterCreate, before/afterFindOne, ... afterDeleteMany`). Removed those hooks, kept `afterCreate/afterUpdate/afterDelete` (ISR purge still covers publish via `afterUpdate`).
+3. **UID mismatch** (`design-settings`): API folder `design-settings` + `singularName: "design-settings"` ⇒ UID `api::design-settings.design-settings`, but `controllers/routes/services/design-setting.ts` still referenced singular `api::design-setting.design-setting` → `strapi.contentType(uid)` undefined → `kind` throw. Fixed by `mv design-setting.ts → design-settings.ts` + `sed s|design-setting|design-settings|g` in all 3. Debug patch on `factories.js:65` confirmed failing UID.
+4. **Stray file** `apps/cms/src/api/schema.json` (981B, duplicate of testimonial, created by `scp -r` glob on PowerShell) — removed.
+5. **Stale `dist`** (`/opt/app/dist/src/api/design-settings/controllers/design-setting.js` etc.) — `strapi build`/`npm run build` does not clean old compiled files; after renaming to `design-settings.ts`, `dist` contained both `design-setting.js` (old) and `design-settings.js` (new) → Strapi loaded stale singular UID at runtime. Fixed by `rm -rf dist` on host before rebuild and hardening `apps/cms/Dockerfile:8` with `RUN rm -rf dist build .cache` before `npm run build`.
+6. **Postgres image drift** — `docker-compose.prod.yml:63` `postgres:17-alpine` but running container was `postgres:16-alpine` (`cf78e76683b9`, 5w old) due to compose project stale image cache → volume initialized with 17 then mount with 16 → `FATAL`. Fixed by `docker pull postgres:17-alpine`, `docker rmi postgres:16-alpine`, `docker volume rm hexastudio_postgres_data` + `up -d --force-recreate --pull always postgres` → `postgres:17-alpine healthy`; redis also was `Created` not `Running` → `up -d redis` → `PONG`.
+
+### 3. Fixes Applied
+| File | Change |
+|------|--------|
+| `apps/cms/src/api/*/content-types/*/schema.json` (10 files) | Added `"kind": "collectionType"` as first key |
+| `apps/cms/src/api/design-settings/content-types/design-settings/schema.json` | Already had `"kind": "singleType"` — verified |
+| `apps/cms/src/api/design-settings/content-types/design-settings/lifecycles.ts` | Removed `afterPublish`/`afterUnpublish`, kept 3 hooks |
+| `apps/cms/src/api/design-settings/controllers/design-settings.ts` (new) | Renamed from `design-setting.ts`, UID `api::design-settings.design-settings` |
+| `apps/cms/src/api/design-settings/routes/design-settings.ts` (new) | Same |
+| `apps/cms/src/api/design-settings/services/design-settings.ts` (new) | Same |
+| `apps/cms/src/api/schema.json` | **Deleted** (stray) |
+| `apps/cms/Dockerfile:8` | Added `RUN rm -rf dist build .cache` before build |
+
+### 4. Verification (live, `19.16.1.100`)
+| Check | Result |
+|-------|--------|
+| `docker inspect hexa-cms-green --format '{{.State.Health.Status}}'` | ✅ `healthy` |
+| `docker logs hexa-cms-green` | ✅ `Strapi started successfully` (5.50.2, postgres, 3944ms), `GET /_health 204` |
+| `docker run --rm hexastudio-cms:latest grep -r design-setting /opt/app/dist --include='*.js' \| grep -v design-settings` | ✅ empty (no stale singular) |
+| `docker run --rm hexastudio-cms:latest find /opt/app/src -name schema.json` | ✅ 11 files, all with `kind` |
+| `docker inspect hexastudio-postgres-1 --format '{{.Config.Image}}'` | ✅ `postgres:17-alpine` healthy |
+| `docker exec hexastudio-redis-1 redis-cli -a ... ping` | ✅ `PONG`, no more `ioredis ETIMEDOUT` (redis was `Created` → now `Up healthy`) |
+| Local `npm run typecheck --workspace` (cms) | ✅ `0 errors` |
+
+### 5. Follow-ups
+- DB was recreated (`hexastudio_postgres_data` deleted multiple times during image-drift fixes) — Strapi is empty, needs `admin` creation at `https://cms.hexastudio.net/admin` and content backfill.
+- `apps/cms/.env` secrets and `docker-compose.prod.yml` postgres `17-alpine` are now consistent — do not downgrade.
+- Consider `strapi build --clean` or Dockerfile `rm -rf` as permanent guard (now applied).

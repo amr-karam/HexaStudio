@@ -1,5 +1,6 @@
 {
-  "collectionName": "projects",
+  "kind": "collectionType",
+"collectionName": "projects",
   "info": {
     "singularName": "project",
     "pluralName": "projects",

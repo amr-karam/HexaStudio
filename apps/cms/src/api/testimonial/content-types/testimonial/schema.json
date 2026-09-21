@@ -1,5 +1,6 @@
 {
-  "collectionName": "testimonials",
+  "kind": "collectionType",
+"collectionName": "testimonials",
   "info": {
     "singularName": "testimonial",
     "pluralName": "testimonials",
