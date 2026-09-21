@@ -57,6 +57,8 @@ export class AiChatService {
   readonly fastModel: string | undefined;
   /** Resolved provider identifier. */
   readonly provider: 'openai' | 'freetheai' | 'local' | 'moa' | 'hermes';
+  /** Base URL of the chat client (for status endpoint). */
+  readonly chatBaseUrl: string | null = null;
 
   constructor(
     configService: ConfigService<Env>,
@@ -88,6 +90,7 @@ export class AiChatService {
       this.fastModel = resolved.fastModel;
       this.provider = resolved.provider;
       this.chat = resolved;
+      this.chatBaseUrl = (resolved.client as unknown as { baseURL: string }).baseURL;
       this.logger.log(`Chat LLM → ${resolved.provider} (model: ${resolved.model})`);
     } else {
       this.client = null;

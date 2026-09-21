@@ -6,9 +6,7 @@ import request from 'supertest';
 import { HealthController } from '../src/modules/health/health.controller';
 import { OdooService } from '../src/modules/odoo/odoo.service';
 import { RedisService } from '../src/modules/storage/redis.service';
-import { TransformReasoningService } from '../src/modules/ai/transform-reasoning.service';
-import { AuthService } from '../src/modules/auth/auth.service';
-import { ProjectsService } from '../src/modules/projects/projects.service';
+import { AiChatService } from '../src/modules/ai/ai-chat.service';
 import { EventBus } from '../src/modules/realtime/event-bus.service';
 import { RedisModule } from '../src/modules/storage/redis.module';
 
@@ -28,6 +26,14 @@ const mockOdooService = {
   create: vi.fn().mockResolvedValue(1),
   write: vi.fn().mockResolvedValue(true),
   execute: vi.fn().mockResolvedValue({}),
+};
+
+const mockAiChatService = {
+  isAvailable: true,
+  provider: 'openai' as const,
+  model: 'gpt-4o-mini',
+  fastModel: undefined,
+  chatBaseUrl: 'https://api.openai.com/v1',
 };
 
 const mockEventBus = {
@@ -54,29 +60,10 @@ describe('HealthModule', () => {
       providers: [
         { provide: OdooService, useValue: mockOdooService },
         { provide: RedisService, useValue: mockRedisService },
+        { provide: AiChatService, useValue: mockAiChatService },
         { provide: EventBus, useValue: mockEventBus },
       ],
-    })
-      .useMocker((token) => {
-        if (token === TransformReasoningService) {
-          return { transformVoiceTo3D: vi.fn() };
-        }
-        if (token === AuthService) {
-          return {
-            validateToken: vi.fn().mockResolvedValue({
-              id: '1',
-              email: 'test@hexastudio.net',
-              username: 'test-user',
-              role: 'admin',
-            }),
-          };
-        }
-        if (token === ProjectsService) {
-          return { getProjectBySlug: vi.fn().mockResolvedValue({ slug: 'test-project' }) };
-        }
-        return undefined;
-      })
-      .compile();
+    }).compile();
 
     app = moduleFixture.createNestApplication();
     app.setGlobalPrefix('api');
@@ -94,5 +81,9 @@ describe('HealthModule', () => {
     expect(res.body.service).toBe('hexastudio-api');
     expect(res.body.timestamp).toBeDefined();
     expect(new Date(res.body.timestamp).toISOString()).toBe(res.body.timestamp);
+    expect(res.body.llm).toBeDefined();
+    expect(res.body.llm.available).toBe(true);
+    expect(res.body.llm.provider).toBe('openai');
+    expect(res.body.llm.model).toBe('gpt-4o-mini');
   });
 });
