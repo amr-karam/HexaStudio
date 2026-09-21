@@ -29,7 +29,7 @@
       "type": "text",
       "required": true
     },
-    "status": {
+    "lifecycleStatus": {
       "type": "enumeration",
       "enum": ["planning", "in-progress", "review", "completed", "on-hold"],
       "default": "planning",
