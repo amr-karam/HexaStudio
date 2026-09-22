@@ -25,7 +25,7 @@ secret-scan:
 
 pre-commit-check:
   stage: secret-scan
-  image: node:20-bullseye
+  image: node:22-bullseye
   cache:
     key: ${CI_COMMIT_REF_SLUG}-precommit
     paths:
@@ -40,7 +40,7 @@ pre-commit-check:
 
 test-backend:
   stage: test
-  image: node:20-bullseye
+  image: node:22-bullseye
   cache:
     key: ${CI_COMMIT_REF_SLUG}-backend
     paths:
@@ -58,7 +58,7 @@ test-backend:
 
 test-frontend:
   stage: test
-  image: node:20-bullseye
+  image: node:22-bullseye
   variables:
     SKIP_ENV_VALIDATION: "true"
     NEXT_OUTPUT_STANDALONE: "true"

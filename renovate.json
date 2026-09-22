@@ -1,0 +1,45 @@
+{
+  "$schema": "https://docs.renovate.io/renovate-schema.json",
+  "extends": ["config:recommended", ":dependencyDashboard", ":semanticCommits"],
+  "platform": "gitlab",
+  "endpoint": "https://19.16.1.100:8929/api/v4",
+  "token": "RENOVATE_TOKEN",
+  "schedule": ["every weekend"],
+  "timezone": "UTC",
+  "packageRules": [
+    {
+      "matchPackageNames": ["@nestjs/*"],
+      "groupName": "nestjs",
+      "automerge": false,
+      "schedule": ["after 10pm on monday"]
+    },
+    {
+      "matchPackageNames": ["minio"],
+      "groupName": "minio",
+      "automerge": true,
+      "schedule": ["after 10pm on monday"]
+    },
+    {
+      "matchPackageNames": ["*"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "platformAutomerge": true
+    },
+    {
+      "matchPackageNames": ["*"],
+      "matchUpdateTypes": ["minor"],
+      "automerge": false
+    },
+    {
+      "matchPackageNames": ["*"],
+      "matchUpdateTypes": ["major"],
+      "automerge": false
+    }
+  ],
+  "ignorePaths": [
+    "hexa-hub/**"
+  ],
+  "labels": ["dependencies", "renovate"],
+  "reviewers": ["@root"],
+  "assignees": ["@root"]
+}
