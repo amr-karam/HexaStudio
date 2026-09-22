@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 vi.mock('@/features/research-tools/api', () => ({
@@ -48,6 +48,7 @@ describe('ResearchDashboardPage - Research Tools Dashboard', () => {
   beforeEach(() => {
     vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => setTimeout(() => cb(0), 0) as unknown as number);
     webSearch.mockReset();
+    webSearch.mockResolvedValue([]);
   });
 
   afterEach(() => {
@@ -99,18 +100,26 @@ describe('ResearchDashboardPage - Research Tools Dashboard', () => {
   it('switches to Scrape Page tab on click', async () => {
     renderView();
     const scrapeTab = screen.getByRole('button', { name: /Scrape Page/i });
-    await fireEvent.click(scrapeTab);
+    await act(async () => {
+      fireEvent.click(scrapeTab);
+    });
     expect(screen.getByRole('button', { name: /Scrape Page/i }).classList.contains('bg-sl-gold-subtle')).toBe(true);
   });
 
   it('routes form submission to webSearch API', async () => {
     renderView();
     const webSearchTab = screen.getByRole('button', { name: /Web Search/i });
-    await fireEvent.click(webSearchTab);
+    await act(async () => {
+      fireEvent.click(webSearchTab);
+    });
     const queryInput = screen.getByPlaceholderText('e.g. biophilic urbanism 2026');
-    await fireEvent.change(queryInput, { target: { value: 'test query' } });
+    await act(async () => {
+      fireEvent.change(queryInput, { target: { value: 'test query' } });
+    });
     const searchButton = screen.getByRole('button', { name: 'Search' });
-    await fireEvent.click(searchButton);
+    await act(async () => {
+      fireEvent.click(searchButton);
+    });
     expect(webSearch).toHaveBeenCalledTimes(1);
     expect(webSearch).toHaveBeenCalledWith({ query: 'test query', limit: 5 });
   });

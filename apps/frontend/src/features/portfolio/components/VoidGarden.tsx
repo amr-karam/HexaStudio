@@ -3,7 +3,7 @@
 import React, { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Float } from '@react-three/drei';
-import * as THREE from 'three';
+import { Mesh, Group } from 'three';
 
 const GOLDEN_ANGLE = 137.508 * (Math.PI / 180);
 
@@ -15,7 +15,7 @@ interface MonolithProps {
 }
 
 function Monolith({ position, rotation, scale, delay }: MonolithProps) {
-  const meshRef = useRef<THREE.Mesh>(null);
+  const meshRef = useRef<Mesh>(null);
 
   useFrame((state) => {
     if (!meshRef.current) return;
@@ -44,7 +44,7 @@ function Monolith({ position, rotation, scale, delay }: MonolithProps) {
 }
 
 export function VoidGarden({ mouse }: { mouse: { x: number; y: number } }) {
-  const groupRef = useRef<THREE.Group>(null);
+  const groupRef = useRef<Group>(null);
 
   // Generate Monoliths based on Golden Angle
   const monoliths = useMemo(() => {

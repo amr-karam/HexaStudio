@@ -8,14 +8,22 @@
  */
 
 import React, { useState, use } from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useWebRTC } from '@/features/xr/hooks/useWebRTC';
 import { useCollaboration } from '@/features/xr/hooks/useCollaboration';
 import { ContractSignOffModal } from '@/features/portal/components/ContractSignOffModal';
 import { CoNavControls } from '@/features/portal/components/CoNavControls';
-import { XRCanvas } from '@/features/xr/components/XRCanvas';
 import { HermesLiveCritique } from '@/features/ai/components/HermesLiveCritique';
-import { SpatialCursors } from '@/features/xr/components/SpatialCursors';
+
+const DynamicXRCanvas = dynamic(
+  () => import('@/features/xr/components/XRCanvas').then((m) => m.XRCanvas),
+  { ssr: false, loading: () => <div className="flex items-center justify-center h-full text-xs text-sl-muted font-mono">Loading 3D…</div> },
+);
+const DynamicSpatialCursors = dynamic(
+  () => import('@/features/xr/components/SpatialCursors').then((m) => m.SpatialCursors),
+  { ssr: false, loading: () => null },
+);
 
 interface ReviewRoomPageProps {
   params: Promise<{ id: string }>;
@@ -99,8 +107,8 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
             </div>
             <CoNavControls />
 
-            <XRCanvas>
-              <SpatialCursors />
+            <DynamicXRCanvas>
+              <DynamicSpatialCursors />
               <div className="text-center space-y-3 pointer-events-none">
                 <div className="text-5xl">🏛️</div>
                 <h3 className="text-lg font-serif font-light text-sl-alabaster">3D Interactive Review Canvas</h3>
@@ -108,7 +116,7 @@ export default function ReviewRoomPage({ params }: ReviewRoomPageProps) {
                   Drag to orbit, scroll to zoom, click spatial annotations to leave design directives in real time.
                 </p>
               </div>
-            </XRCanvas>
+            </DynamicXRCanvas>
 
             {signatureHash && (
               <div className="absolute bottom-4 right-4 z-10 bg-success-dark/90 border border-success/40 px-4 py-2.5 rounded-xl backdrop-blur-md text-xs text-success-bright font-mono shadow-2xl">

@@ -4,12 +4,12 @@ import dynamic from 'next/dynamic';
 import { NewHomeHeroSkeleton } from "@/app/_loading/NewHomeHeroSkeleton";
 import { NewHomeSections } from "@/features/portfolio/components/NewHomeSections";
 import { NewHomeChapterRail } from "@/features/portfolio/components/NewHomeChapterRail";
+import { useDeviceCapabilities } from "@/hooks/useDeviceCapabilities";
 
 /**
- * Defer the hero Canvas — it imports three + @react-three/fiber + framer-motion
- * and creates a WebGL context with 24 animated monoliths. Loading it with
- * ssr:false moves all of that work off the initial hydration commit, letting
- * the page paint the skeleton first and hydrate the canvas on idle.
+ * DeferredHero — the hero canvas is lazy-loaded with adaptive quality
+ * based on device capabilities. On low-end devices, it falls back to
+ * a lightweight static version to preserve performance.
  */
 const DeferredHero = dynamic(
   () => import("@/features/portfolio/components/NewHomeHero").then(m => ({ default: m.NewHomeHero })),
@@ -22,8 +22,10 @@ const DeferredHero = dynamic(
  * stays minimal while the multi-MB hero canvas bundle loads after first paint.
  */
 export function HomeClient() {
+  const { isLowEnd } = useDeviceCapabilities();
+
   return (
-    <>
+    <div data-device-tier={isLowEnd ? 'low' : 'standard'}>
       {/* CH. I — VISION (canvas hero — deferred to reduce hydration TBT) */}
       <DeferredHero />
 
@@ -32,6 +34,6 @@ export function HomeClient() {
 
       {/* Chapter navigation rail (code-split) */}
       <NewHomeChapterRail />
-    </>
+    </div>
   );
 }

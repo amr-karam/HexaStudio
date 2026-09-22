@@ -170,8 +170,45 @@
     font-family: "Inter", sans-serif;
     letter-spacing: 0.01em;
   }
-  * { @apply border-border; }
-  :focus-visible { @apply outline-none ring-2 ring-ring ring-offset-2; }
+
+  .no-js [data-requires-js] {
+    display: none !important;
+  }
+
+  .no-js .no-js-fallback {
+    display: block !important;
+  }
+
+  .no-js-fallback {
+    display: none !important;
+  }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Enhanced focus visible for keyboard navigation */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2;
+    outline-offset: 2px;
+  }
+
+  /* Smooth scrolling for anchor links */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
 }
 
 @layer utilities {

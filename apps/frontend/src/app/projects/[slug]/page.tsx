@@ -28,31 +28,20 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
       url,
       siteName: 'HexaStudio',
       type: 'website',
-      images: project?.coverImage
-        ? [
-            {
-              url: `${project.coverImage}?w=1200&q=80`,
-              width: 1200,
-              height: 630,
-              alt: project?.title ?? 'HexaStudio project',
-            },
-          ]
-        : [
-            {
-              url: 'https://hexastudio.net/logo.svg',
-              width: 1200,
-              height: 630,
-              alt: 'HexaStudio',
-            },
-          ],
+      images: [
+        {
+          url: `https://hexastudio.net/og/projects/${encodeURIComponent(slug)}`,
+          width: 1200,
+          height: 630,
+          alt: project?.title ?? 'HexaStudio project',
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
       title: project?.title ?? 'Project',
       description: project?.description ?? 'Architectural visualization project by HexaStudio',
-      images: project?.coverImage
-        ? [`${project.coverImage}?w=1200&q=80`]
-        : ['https://hexastudio.net/logo.svg'],
+      images: [`https://hexastudio.net/og/projects/${encodeURIComponent(slug)}`],
     },
   };
 }

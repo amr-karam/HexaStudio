@@ -122,7 +122,8 @@ export interface Project {
   location?: string;
   year?: number;
   area?: string;
-  status?: string;
+  lifecycleStatus?: string;
+  status?: 'draft' | 'published' | 'archived' | 'pending';
   
   // Storytelling Engine (Modular Blocks)
   storyBlocks: StoryBlock[];

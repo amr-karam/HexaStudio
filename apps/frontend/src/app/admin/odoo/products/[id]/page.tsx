@@ -6,8 +6,8 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useState, useEffect, use } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface Product {
   id: number;
@@ -19,10 +19,10 @@ interface Product {
   is_active: boolean;
 }
 
-export default function ProductDetailPage({ params }: { params?: { id: string } }) {
-  const routeParams = useParams();
+export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
-  const id = params?.id || routeParams?.id;
+  const resolved = use(params);
+  const id = resolved.id;
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);

@@ -2,7 +2,7 @@
 
 import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
+import { Mesh, Points } from 'three';
 import { COLOR_TOKENS } from '@/lib/color-tokens';
 
 /**
@@ -21,7 +21,7 @@ export function GoldMonolith({
   scale?: number;
   speed?: number;
 }) {
-  const ref = useRef<THREE.Mesh>(null);
+  const ref = useRef<Mesh>(null);
 
   useFrame((state) => {
     if (!ref.current) return;
@@ -108,7 +108,7 @@ export function FloatingRing({
   color?: string;
   speed?: number;
 }) {
-  const ref = useRef<THREE.Mesh>(null);
+  const ref = useRef<Mesh>(null);
 
   useFrame((state) => {
     if (!ref.current) return;
@@ -175,7 +175,7 @@ export function ParticleField({
   size?: number;
   color?: string;
 }) {
-  const ref = useRef<THREE.Points>(null);
+  const ref = useRef<Points>(null);
 
   const positions = useMemo(() => {
     const arr = new Float32Array(count * 3);

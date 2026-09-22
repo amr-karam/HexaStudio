@@ -3,12 +3,12 @@
 import { Suspense, useRef, useState, useCallback } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Environment, MeshDistortMaterial } from '@react-three/drei';
-import * as THREE from 'three';
+import { Group } from 'three';
 import { OBSIDIAN_RAISED } from '@/lib/color-tokens';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 function Ring({ images, scrollVelocity, released }: { images: string[]; scrollVelocity: number; released: boolean }) {
-  const groupRef = useRef<THREE.Group>(null);
+  const groupRef = useRef<Group>(null);
   const reduced = useReducedMotion();
 
   useFrame((_, delta) => {

@@ -2,7 +2,7 @@
 
 import { useRef, useMemo } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import * as THREE from 'three';
+import { Vector3, PerspectiveCamera } from 'three';
 
 interface CinematicCameraProps {
   /** Target position the camera looks at */
@@ -36,15 +36,15 @@ export function CinematicCamera({
   parallaxIntensity = 0.3,
 }: CinematicCameraProps) {
   const { camera } = useThree();
-  const targetPos = useRef(new THREE.Vector3(...position));
-  const targetLookAt = useRef(new THREE.Vector3(...lookAt));
+  const targetPos = useRef(new Vector3(...position));
+  const targetLookAt = useRef(new Vector3(...lookAt));
   const mousePos = useRef({ x: 0, y: 0 });
-  const currentPos = useRef(new THREE.Vector3(...position));
-  const currentLookAt = useRef(new THREE.Vector3(...lookAt));
+  const currentPos = useRef(new Vector3(...position));
+  const currentLookAt = useRef(new Vector3(...lookAt));
 
   // Update FOV
   useMemo(() => {
-    const cam = camera as THREE.PerspectiveCamera;
+    const cam = camera as PerspectiveCamera;
     cam.fov = fov;
     cam.updateProjectionMatrix();
   }, [camera, fov]);

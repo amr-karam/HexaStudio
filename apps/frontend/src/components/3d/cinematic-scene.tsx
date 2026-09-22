@@ -7,7 +7,7 @@ import { PostProcessing } from './post-processing';
 import { CinematicCamera } from './cinematic-camera';
 import { useMotionPolicy } from '@/hooks/use-motion-policy';
 import { COLOR_TOKENS } from '@/lib/color-tokens';
-import * as THREE from 'three';
+import { DirectionalLight } from 'three';
 
 /**
  * CinematicScene — Production-grade 3D scene wrapper with:
@@ -59,7 +59,7 @@ function CinematicLighting({
   keyIntensity?: number;
   accentIntensity?: number;
 }) {
-  const keyRef = useRef<THREE.DirectionalLight>(null);
+  const keyRef = useRef<DirectionalLight>(null);
 
   return (
     <>

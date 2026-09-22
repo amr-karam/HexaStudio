@@ -1303,3 +1303,49 @@ Sprint S-023 hardening wave: lint-gate violations fixed in the redesigned `Porta
 - DB was recreated (`hexastudio_postgres_data` deleted multiple times during image-drift fixes) — Strapi is empty, needs `admin` creation at `https://cms.hexastudio.net/admin` and content backfill.
 - `apps/cms/.env` secrets and `docker-compose.prod.yml` postgres `17-alpine` are now consistent — do not downgrade.
 - Consider `strapi build --clean` or Dockerfile `rm -rf` as permanent guard (now applied).
+
+---
+
+## 2026-09-22 — CI Hardening, Test Hygiene, Security & Dependency Updates — COMPLETE
+
+**Status:** All quality gates green; changes merged to main
+
+### 1. CI/CD Hardening
+- **`.gitlab-ci.yml`**: Extended `secret-scan` job from `only: [main]` to run on **all branches** — covers server-side pushes that bypass local pre-commit hooks. YAML validated (7 jobs: stages, secret-scan, test-backend, test-frontend, test-hexahub-api, test-hexahub-web, deploy-production).
+- **Local pre-commit hook** (`.git/hooks/pre-commit`): Already existed with gitleaks + npx fallback — no changes needed.
+
+### 2. Test Hygiene — act() Warnings Eliminated
+- **`apps/frontend/test/components/odoo/products-page.test.tsx`**: Added `renderPage` async helper wrapping `render(<ProductsPage />)` in `act(async () => {})`; all 6 tests converted to `await renderPage()`. **Result: 6/6 pass, 0 act() warnings.**
+- **`apps/frontend/test/app/dashboard/research/ResearchDashboardPage.test.tsx`**: Wrapped all `fireEvent` interactions in `act(async () => {...})`; fixed latent component bug in `WebSearchResults` (guard against undefined `data`). **Result: 10/10 pass, 0 act() warnings.**
+
+### 3. Component Robustness
+- **`apps/frontend/src/app/dashboard/research/page.tsx:374`**: `WebSearchResults` now guards `if (!data || data.length === 0)` — prevents crash when backend returns malformed payload (exposed by act() flush).
+
+### 4. Security & Dependencies
+- **npm audit fix** (non-breaking) applied to `apps/frontend` and `apps/backend`:
+  - Frontend: 19 → 7 vulnerabilities (qs transitive remains; sharp upgraded)
+  - Backend: 19 → 6 vulnerabilities (stream-json/minio breaking change deferred)
+- **Cloudflared pinned** in all compose files (`prod.yml`, `staging.yml`, `green.yml`): `cloudflare/cloudflared:2024.12.0` (was `:latest` / `:latest-green`).
+
+### 5. Node Version
+- **`package.json` engines**: Updated `node: ">=20"` → `"node: ">=22"` (Node 22 LTS compatible with Next.js 16, NestJS 11, TypeScript 5.9).
+
+### 6. Quality Gates Verified (Sep 22, 2026)
+| Gate | Result |
+|------|--------|
+| Frontend ESLint | ✅ 0 errors, 0 warnings |
+| Frontend Typecheck | ✅ 0 errors |
+| Frontend Tests (affected) | ✅ 16/16 tests pass |
+| Design Tokens | ✅ ALL PASSED |
+
+### 7. Files Modified
+| File | Change |
+|------|--------|
+| `.gitlab-ci.yml` | secret-scan: `only: [main]` → all branches |
+| `apps/frontend/test/components/odoo/products-page.test.tsx` | act() helper, async tests |
+| `apps/frontend/test/app/dashboard/research/ResearchDashboardPage.test.tsx` | act() wrappers, mock returns `[]` |
+| `apps/frontend/src/app/dashboard/research/page.tsx` | WebSearchResults undefined guard |
+| `docker-compose.prod.yml` | cloudflared: `latest` → `2024.12.0` |
+| `docker-compose.staging.yml` | cloudflared: `latest` → `2024.12.0` |
+| `docker-compose.green.yml` | cloudflared: `latest-green` → `2024.12.0` |
+| `package.json` | engines.node: `>=20` → `>=22` |

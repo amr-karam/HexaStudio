@@ -33,6 +33,17 @@
   --sl-duration-page: 0.9s;
   --sl-duration-parallax: 1.2s;
 
+  /* Motion system — physics-based interactions */
+  --motion-easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --motion-easing-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-easing-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --motion-duration-fast: 150ms;
+  --motion-duration-normal: 300ms;
+  --motion-duration-slow: 500ms;
+  --motion-stiffness: 300;
+  --motion-damping: 20;
+  --motion-mass: 0.8;
+
   /* Glass morphisms — whisper-quiet */
   --sl-glass-bg: rgba(245, 244, 242, 0.02);
   --sl-glass-border: rgba(245, 244, 242, 0.06);

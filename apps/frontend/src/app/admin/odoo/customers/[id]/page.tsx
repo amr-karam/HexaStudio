@@ -6,8 +6,8 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useState, useEffect, use } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface Customer {
   id: number;
@@ -27,10 +27,10 @@ interface Customer {
   updated_at: string | null;
 }
 
-export default function CustomerDetailPage({ params }: { params?: { id: string } }) {
-  const routeParams = useParams();
+export default function CustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
-  const id = params?.id || routeParams?.id;
+  const resolved = use(params);
+  const id = resolved.id;
   
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [loading, setLoading] = useState(true);

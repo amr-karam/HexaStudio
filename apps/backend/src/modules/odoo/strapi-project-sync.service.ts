@@ -440,7 +440,7 @@ export class StrapiProjectSyncService implements OnModuleInit {
       title: project.name ?? data.title ?? '',
       description: project.name ?? '',
       client: Array.isArray(project.partner_id) ? project.partner_id[1] : data.client ?? null,
-      status: Array.isArray(project.stage_id) ? project.stage_id[1] : data.status ?? null,
+      lifecycleStatus: Array.isArray(project.stage_id) ? project.stage_id[1] : data.lifecycleStatus ?? null,
       syncedAt: new Date().toISOString(),
     };
     await this.cacheProjectData(slug, mergedCache);
@@ -905,11 +905,11 @@ export class StrapiProjectSyncService implements OnModuleInit {
       title: project.name,
       slug: project.x_slug ?? '',
     };
-    if (project.x_hexa_status) {
-      data.status = project.x_hexa_status;
+if (project.x_hexa_status) {
+      data.lifecycleStatus = project.x_hexa_status;
     } else if (project.stage_id) {
       const stageName = Array.isArray(project.stage_id) ? project.stage_id[1] : '';
-      if (stageName) data.status = stageName;
+      if (stageName) data.lifecycleStatus = stageName;
     }
     // Mark as published if status is not inquiry/archived
     if (project.x_hexa_status && !['inquiry', 'archived'].includes(project.x_hexa_status)) {
