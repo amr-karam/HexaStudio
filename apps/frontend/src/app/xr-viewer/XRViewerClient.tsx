@@ -9,7 +9,6 @@ import { useWebRTC } from '@/features/xr/hooks/useWebRTC';
 import { useSpatialCommands } from '@/features/xr/hooks/useSpatialCommands';
 import { useXRStore } from '@/features/xr/store/xr-store';
 import { useAnalytics } from '@/lib/analytics';
-import { captureException } from '@sentry/nextjs';
 import { useDeviceCapabilities } from '@/hooks/useDeviceCapabilities';
 
 const DynamicXRCanvas = dynamic(
@@ -33,7 +32,9 @@ class ErrorBoundary extends Component<{ children: ReactNode; onError?: (error: E
   state = { error: null as Error | null };
   static getDerivedStateFromError(error: Error) { return { error }; }
   componentDidCatch(error: Error) {
-    captureException(error);
+    import('@sentry/nextjs').then(({ captureException }) => {
+      captureException(error);
+    });
     this.props.onError?.(error);
   }
   render() {

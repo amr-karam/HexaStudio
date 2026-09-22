@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect } from "react";
-import { captureException } from '@sentry/nextjs';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { EASE } from '@/lib/motion';
@@ -15,7 +14,9 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    captureException(error);
+    import('@sentry/nextjs').then(({ captureException }) => {
+      captureException(error);
+    });
   }, [error]);
 
   return (

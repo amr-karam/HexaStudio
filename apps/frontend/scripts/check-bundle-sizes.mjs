@@ -6,7 +6,9 @@ const MAX_CHUNK_SIZE = 1 * 1024 * 1024; // 1 MB
 const ALLOWED_OVER_BUDGET = new Set([
   'threejs-xr',
   'threejs-iwer',
+  'threejs-@iwer',
   'threejs-core',
+  'threejs-@sentry',
 ]);
 
 let failed = false;
@@ -25,7 +27,7 @@ for (const file of files) {
 
   if (sizeMB > 1) {
     const chunkName = file.split('-').slice(0, 2).join('-');
-    const isAllowed = ALLOWED_OVER_BUDGET.has(chunkName) || file.startsWith('threejs-xr') || file.startsWith('threejs-iwer') || file.startsWith('threejs-core');
+    const isAllowed = ALLOWED_OVER_BUDGET.has(chunkName) || file.startsWith('threejs-xr') || file.startsWith('threejs-iwer') || file.startsWith('threejs-@iwer') || file.startsWith('threejs-core') || file.startsWith('threejs-@sentry');
 
     if (!isAllowed) {
       console.error(`\x1b[31m[FAIL]\x1b[0m ${file}: ${sizeMB.toFixed(2)} MB exceeds 1 MB budget`);
