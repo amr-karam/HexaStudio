@@ -12,6 +12,7 @@
 stages:
   - secret-scan
   - test
+  - e2e
   - deploy
   - scheduled
 
@@ -114,6 +115,16 @@ test-hexahub-web:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == "feat/editorial-hero-cms"
+
+e2e-critical-path:
+  stage: e2e
+  image: mcr.microsoft.com/playwright:v1.49.0-jammy
+  script:
+    - npm ci --legacy-peer-deps
+    - npx playwright test e2e/tests/critical-path.spec.ts
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 dependency-update:
   stage: scheduled
