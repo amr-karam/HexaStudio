@@ -19,10 +19,10 @@ interface Product {
   is_active: boolean;
 }
 
-export default function ProductDetailPage({ params }: { params?: { id: string } }) {
+export default function ProductDetailPage() {
   const routeParams = useParams();
   const router = useRouter();
-  const id = params?.id || routeParams?.id;
+  const id = routeParams?.id;
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
