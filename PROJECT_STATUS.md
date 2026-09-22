@@ -1,6 +1,6 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** September 19, 2026 — Sprint S-023 active (Production Hardening). Live Atelier complete + Research Hub wired to the real backend (research→audit→PDF). Tests: 129/129 frontend (854 tests), 59/59 backend (437 tests).
+**Last Updated:** September 22, 2026 — ISR reactivation via container restart (5/5 passing); cron monitoring every 6h; duplicate REVALIDATE_SECRET in .env removed; GitLab token confirmed. — Sprint S-023 active (Production Hardening). Live Atelier complete + Research Hub wired to the real backend (research→audit→PDF). Frontend bundle optimization: Sentry lazy-loaded in 7 error boundaries, bundle size gate updated for Three.js chunks, design token migration (gold/easing tokens added to globals.css, admin CSS tokenized). Tests: 129/129 frontend (851 tests), 59/59 backend (437 tests).
 **Version:** 2.2.10
 **Authority Level:** 13 (Production)
 **Current Phase:** Production-Ready — Quad-Track Feature Delivery & Silent Luxury Design System (DEPLOYED)
