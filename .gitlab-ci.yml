@@ -70,8 +70,8 @@ test-frontend:
       - apps/frontend/node_modules/.cache
       - apps/frontend/.next/cache
   script:
-    - test ! -f apps/frontend/next.config.js || (echo "FAIL: apps/frontend/next.config.js exists — it shadows next.config.ts in Next 16 (.js > .mjs > .ts priority). Delete it." && exit 1)
-    - test ! -f apps/frontend/next.config.mjs || (echo "FAIL: apps/frontend/next.config.mjs exists — Node 20 ESM cannot import .ts re-exports; Next 16 loads next.config.ts natively. Delete it." && exit 1)
+    - 'test ! -f apps/frontend/next.config.js || (echo "FAIL: apps/frontend/next.config.js exists" && exit 1)'
+    - 'test ! -f apps/frontend/next.config.mjs || (echo "FAIL: apps/frontend/next.config.mjs exists" && exit 1)'
     - npm ci --legacy-peer-deps
     - npm run lint --workspace=apps/frontend
     - npm run typecheck --workspace=apps/frontend
