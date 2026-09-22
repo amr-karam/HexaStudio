@@ -34,7 +34,7 @@ pre-commit-check:
   script:
     - npm ci --legacy-peer-deps
     - npx husky install
-    - .git/hooks/pre-commit
+    - npx gitleaks detect --source . --verbose --no-git --redact
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH
