@@ -77,7 +77,6 @@ const nextConfig: NextConfig = {
   trailingSlash: process.env.GITHUB_PAGES === "true" ? true : undefined,
   reactStrictMode: true,
   poweredByHeader: false,
-  turbopack: {},
   transpilePackages: ["@hexastudio/types", "@hexastudio/utils", "@hexastudio/ui"],
   // Remove console.log in production to reduce bundle size
   compiler: {
