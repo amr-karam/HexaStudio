@@ -70,6 +70,29 @@ After reading them:
 
 ---
 
+## Authentication Tokens
+
+| Token | Location | Status |
+|-------|----------|--------|
+| **GitLab PAT** | `$env:GITHUB_PAT` + server git config | New token `glpat-****` created 2026-09-22 (replaced expired `glpat-****`) |
+| **GitHub PAT** | `$env:GITHUB_PAT` in env | Active (`github_pat_****`) |
+| **HEXA_GITLAB_PAT** | `$env:HEXA_GITLAB_PAT` | Revoked/expired — use GitLab PAT above |
+| **CLOUDFLARE_API_TOKEN** | `$env:CLOUDFLARE_API_TOKEN` | Active |
+| **SSH Key** | `C:\Users\amrmo\.ssh\hexastudio_key` | Works for root SSH to `19.16.1.100` (port 22) and GitLab (port 2222) |
+| **SSH Key (public)** | `C:\Users\amrmo\.ssh\hexastudio_key.pub` | Registered on GitLab for port 2222 |
+
+**Remote URLs:**
+- GitLab: `http://oauth2:{token}@19.16.1.100:8929/root/hexa-platform.git` (HTTP, OAuth2 token in URL)
+- GitHub mirror: `https://{PAT}@github.com/amr-karam/HexaStudio.git` (HTTPS, PAT in URL)
+- No SSH-based Git auth configured for GitHub
+
+**Rules:**
+- Never commit tokens to git — they go in `.gitignore` and env vars
+- Rotate tokens annually; the GitLab API creates tokens with 1-year expiry
+- GitLab tokens can be created via: `docker exec hexa-gitlab gitlab-rails runner 'u=User.find_by(username:%q{root}); t=u.personal_access_tokens.create(name:%q{admin-cli},scopes:[%q{api},%q{read_repository},%q{write_repository}],expires_at:1.year.from_now); puts t.token'`
+
+---
+
 ## 3. Technology Stack & Infrastructure Rules
 
 | Layer | Technology | Infrastructure Rule |
