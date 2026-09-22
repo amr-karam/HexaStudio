@@ -19,22 +19,16 @@ secret-scan:
   stage: secret-scan
   image: zricethezav/gitleaks:latest
   script:
-    - gitleaks detect --source . --verbose --no-git --redact || (echo "Gitleaks found potential secrets — check logs" && exit 1)
+    - gitleaks detect --source . --verbose --no-git --redact
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH
 
 pre-commit-check:
   stage: secret-scan
-  image: node:22-bullseye
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}-precommit
-    paths:
-      - node_modules/.cache
+  image: zricethezav/gitleaks:latest
   script:
-    - npm ci --legacy-peer-deps
-    - npx husky install
-    - npx gitleaks detect --source . --verbose --no-git --redact
+    - gitleaks detect --source . --verbose --no-git --redact
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH
