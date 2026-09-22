@@ -13,6 +13,7 @@ stages:
   - secret-scan
   - test
   - deploy
+  - scheduled
 
 secret-scan:
   stage: secret-scan
@@ -118,6 +119,25 @@ test-hexahub-web:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == "feat/editorial-hero-cms"
+
+dependency-update:
+  stage: scheduled
+  image: node:22-bullseye
+  only:
+    - schedules
+  cache:
+    key: dependency-update
+    paths:
+      - node_modules/.cache
+      - apps/backend/node_modules/.cache
+      - apps/frontend/node_modules/.cache
+  script:
+    - npm ci --legacy-peer-deps
+    - npm audit fix --legacy-peer-deps || echo "Some audit fixes require manual intervention"
+    - git config user.email "ci@hexastudio.net"
+    - git config user.name "CI Bot"
+    - git add package.json package-lock.json apps/*/package.json apps/*/package-lock.json 2>/dev/null || true
+    - git diff --cached --quiet || (git commit -m "chore: automated dependency updates [ci skip]" && git push gitlab HEAD:${CI_COMMIT_REF_NAME} || echo "Push failed - may need MR")
 
 deploy-production:
   stage: deploy
