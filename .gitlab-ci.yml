@@ -130,11 +130,11 @@ dependency-update:
       - apps/frontend/node_modules/.cache
   script:
     - npm ci --legacy-peer-deps
-    - npm audit fix --legacy-peer-deps || echo "Some audit fixes require manual intervention"
+    - 'npm audit fix --legacy-peer-deps || echo "Some audit fixes require manual intervention"'
     - git config user.email "ci@hexastudio.net"
     - git config user.name "CI Bot"
-    - git add package.json package-lock.json apps/*/package.json apps/*/package-lock.json 2>/dev/null || true
-    - git diff --cached --quiet || (git commit -m "chore: automated dependency updates [ci skip]" && git push gitlab HEAD:${CI_COMMIT_REF_NAME} || echo "Push failed - may need MR")
+    - 'git add package.json package-lock.json apps/*/package.json apps/*/package-lock.json 2>/dev/null || true'
+    - 'git diff --cached --quiet || (git commit -m "chore: automated dependency updates [ci skip]" && git push gitlab HEAD:${CI_COMMIT_REF_NAME} || echo "Push failed - may need MR")'
 
 deploy-production:
   stage: deploy
