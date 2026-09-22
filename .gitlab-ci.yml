@@ -14,24 +14,6 @@ stages:
   - deploy
   - scheduled
 
-# secret-scan:
-#   stage: secret-scan
-#   image: zricethezav/gitleaks:latest
-#   script:
-#     - gitleaks detect --source . --verbose --no-git --redact
-#   rules:
-#     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-#     - if: $CI_COMMIT_BRANCH
-# 
-# pre-commit-check:
-#   stage: secret-scan
-#   image: zricethezav/gitleaks:latest
-#   script:
-#     - gitleaks detect --source . --verbose --no-git --redact
-#   rules:
-#     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-#     - if: $CI_COMMIT_BRANCH
-
 test-backend:
   stage: test
   image: node:22-bullseye
