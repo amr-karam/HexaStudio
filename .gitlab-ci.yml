@@ -14,16 +14,21 @@ stages:
   - deploy
   - scheduled
 
-test-backend:
-  stage: test
+.test-base:
   image: node:22-bullseye
   cache:
-    key: ${CI_COMMIT_REF_SLUG}-backend
+    key: ${CI_COMMIT_REF_SLUG}-node-cache
     paths:
       - node_modules/.cache
       - apps/backend/node_modules/.cache
-  script:
+      - apps/frontend/node_modules/.cache
+  before_script:
     - npm ci --legacy-peer-deps
+
+test-backend:
+  extends: .test-base
+  stage: test
+  script:
     - npm run lint --workspace=apps/backend
     - npm run typecheck --workspace=apps/backend
     - npm run test --workspace=apps/backend
@@ -33,21 +38,14 @@ test-backend:
     - if: $CI_COMMIT_BRANCH == "feat/editorial-hero-cms"
 
 test-frontend:
+  extends: .test-base
   stage: test
-  image: node:22-bullseye
   variables:
     SKIP_ENV_VALIDATION: "true"
     NEXT_OUTPUT_STANDALONE: "true"
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}-frontend
-    paths:
-      - node_modules/.cache
-      - apps/frontend/node_modules/.cache
-      - apps/frontend/.next/cache
   script:
     - 'test ! -f apps/frontend/next.config.js || (echo "FAIL: apps/frontend/next.config.js exists" && exit 1)'
     - 'test ! -f apps/frontend/next.config.mjs || (echo "FAIL: apps/frontend/next.config.mjs exists" && exit 1)'
-    - npm ci --legacy-peer-deps
     - npm run lint --workspace=apps/frontend
     - npm run typecheck --workspace=apps/frontend
     - npm run build --workspace=apps/frontend
@@ -58,13 +56,10 @@ test-frontend:
     - if: $CI_COMMIT_BRANCH == "feat/editorial-hero-cms"
 
 test-hexahub-api:
+  extends: .test-base
   stage: test
-  image: node:22-bullseye
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}-hexahub-api
-    paths:
-      - hexa-hub/apps/api/node_modules/.cache
   before_script:
+    - npm ci --legacy-peer-deps
     - cd hexa-hub/apps/api
     - npm ci
   script:
@@ -74,13 +69,10 @@ test-hexahub-api:
     - if: $CI_COMMIT_BRANCH == "feat/editorial-hero-cms"
 
 test-hexahub-web:
+  extends: .test-base
   stage: test
-  image: node:22-bullseye
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}-hexahub-web
-    paths:
-      - hexa-hub/apps/web/node_modules/.cache
   before_script:
+    - npm ci --legacy-peer-deps
     - cd hexa-hub/apps/web
     - npm ci
   script:
