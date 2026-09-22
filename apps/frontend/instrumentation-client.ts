@@ -1,9 +1,5 @@
-import * as Sentry from '@sentry/nextjs';
-
 const SENTRY_DSN = process.env.NEXT_PUBLIC_SENTRY_DSN;
 const SENTRY_RELEASE = process.env.SENTRY_RELEASE || process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || undefined;
-
-export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
 
 if (SENTRY_DSN && process.env.NODE_ENV === 'production') {
   const initSentry = async () => {
@@ -19,7 +15,7 @@ if (SENTRY_DSN && process.env.NODE_ENV === 'production') {
 
     const loadReplay = () => {
       import('@sentry/replay').then(({ replayIntegration }) => {
-        Sentry.addIntegration(
+        mod.addIntegration(
           replayIntegration({
             maskAllText: true,
             blockAllMedia: true,
