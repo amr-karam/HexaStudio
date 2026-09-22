@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { fetchArticle } from '@/features/blog/lib/fetchArticles';
+import { fetchArticle, fetchArticles } from '@/features/blog/lib/fetchArticles';
 import { ArticleDetailClient } from '@/features/blog/components/ArticleDetailClient';
 
 interface PageProps {
@@ -9,6 +9,11 @@ interface PageProps {
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const { articles } = await fetchArticles();
+  return articles.map((article) => ({ slug: article.slug }));
+}
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;

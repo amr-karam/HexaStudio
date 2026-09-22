@@ -13,6 +13,11 @@ export const revalidate = 3600; // ISR + on-demand via /api/revalidate (P9)
 export const dynamic = 'force-dynamic';
 export const dynamicParams = true; // lazy ISR for unknown slugs
 
+export async function generateStaticParams() {
+  const { projects } = await fetchProjects();
+  return projects.map((project) => ({ slug: project.slug }));
+}
+
 export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
   const { slug } = await params;
   const project = await fetchProject(slug);
