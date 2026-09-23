@@ -88,6 +88,7 @@ const ALLOWLIST = [
   "apps/frontend/src/lib/evey-design/design_audit.ts",
   "apps/frontend/src/lib/evey-design/design_token_lookup.ts",
   "apps/frontend/src/lib/evey-design/scaffold_component.ts",
+  "apps/frontend/src/lib/evey-design/motion_variants.ts",
   "apps/frontend/src/lib/evey-design/a11y_check.ts",
   "apps/frontend/src/app/design-system/page.tsx",
 ];

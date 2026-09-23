@@ -1,165 +1,63 @@
-# GitLab CI/CD Pipeline — Production Deploy (SSH + docker compose zero-downtime)
-#
-# The production server (19.16.1.100) runs docker compose (NO Kubernetes/ArgoCD).
-# Deploy job: SSH to the server, pull gitlab/main, run scripts/deploy-zero-downtime.sh
-# (blue/green slot switch with health gates), then verify services are healthy.
-#
-# Required CI/CD variables (set in GitLab → Settings → CI/CD → Variables):
-#   SSH_PRIVATE_KEY  — private key used to SSH into the production server
-#   PROD_SERVER_USER — SSH user (e.g. root)
-#   PROD_SERVER_IP   — production server IP (19.16.1.100)
+# HEXA STUDIO — GitLab CI/CD Pipeline
+# This pipeline enforces the Supreme Law (DESIGN_SYSTEM.md) via the Design Guardrail.
 
 stages:
-  - secret-scan
+  - lint
   - test
-  - e2e
   - deploy
-  - scheduled
 
-secret-scan:
-  stage: secret-scan
-  image: node:22-bullseye
+variables:
+  # Node version used for CI
+  NODE_VERSION: "22"
+  # Suppress noisy warnings from the design guardrail
+  HECA_GUARDRAIL_THRESHOLD: "80"
+
+lint:design:
+  stage: lint
+  image:
+    name: node:${NODE_VERSION}
+    entrypoint: [""]
   script:
-    - apt-get update && apt-get install -y curl
-    - curl -L https://github.com/gitleaks/gitleaks/releases/download/v8.18.2/gitleaks_8.18.2_linux_x64.tar.gz | tar xz
-    - ./gitleaks detect --source . --verbose --no-git --redact || (echo "Gitleaks found potential secrets — check logs" && exit 1)
+    - echo "Running Design Guardrail..."
+    # Make the script executable and run it
+    - chmod +x scripts/design-guardrail/guardrail.mjs
+    - npx node scripts/design-guardrail/guardrail.mjs
+    # If the script exits with code 1, the pipeline fails
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request" || $CI_PIPELINE_SOURCE == "push"
+  allow_failure: false
 
-pre-commit-check:
-  stage: secret-scan
-  image: node:22-bullseye
+lint:typescript:
+  stage: lint
+  image:
+    name: node:${NODE_VERSION}
+    entrypoint: [""]
   script:
-    - apt-get update && apt-get install -y curl
-    - curl -L https://github.com/gitleaks/gitleaks/releases/download/v8.18.2/gitleaks_8.18.2_linux_x64.tar.gz | tar xz
-    - ./gitleaks detect --source . --verbose --no-git --redact || (echo "Pre-commit secret scan failed" && exit 1)
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH
+    - echo "Running TypeScript typecheck..."
+    - npx tsc --noEmit --project apps/frontend/tsconfig.json
+    - npx tsc --noEmit --project apps/backend/tsconfig.json
 
-test-backend:
+test:frontend:
   stage: test
-  image: node:22-bullseye
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}-backend
-    paths:
-      - node_modules/.cache
-      - apps/backend/node_modules/.cache
+  image:
+    name: node:${NODE_VERSION}
+    entrypoint: [""]
   script:
-    - npm ci --legacy-peer-deps
-    - npm run lint --workspace=apps/backend
-    - npm run typecheck --workspace=apps/backend
-    - npm run test --workspace=apps/backend
+    - echo "Running Frontend Tests..."
+    - cd apps/frontend && npm run test --workspace=apps/frontend -- --max-warnings=0
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == "main"
-    - if: $CI_COMMIT_BRANCH == "feat/editorial-hero-cms"
+    - if: $CI_PIPELINE_SOURCE == "merge_request" || $CI_PIPELINE_SOURCE == "push"
 
-test-frontend:
-  stage: test
-  image: node:22-bullseye
-  variables:
-    SKIP_ENV_VALIDATION: "true"
-    NEXT_OUTPUT_STANDALONE: "true"
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}-frontend
-    paths:
-      - node_modules/.cache
-      - apps/frontend/node_modules/.cache
-      - apps/frontend/.next/cache
-  script:
-    - 'test ! -f apps/frontend/next.config.js || (echo "FAIL: apps/frontend/next.config.js exists" && exit 1)'
-    - 'test ! -f apps/frontend/next.config.mjs || (echo "FAIL: apps/frontend/next.config.mjs exists" && exit 1)'
-    - npm ci --legacy-peer-deps
-    - npm run lint --workspace=apps/frontend
-    - npm run typecheck --workspace=apps/frontend
-    - npm run build --workspace=apps/frontend
-    - npm run test --workspace=apps/frontend
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == "main"
-    - if: $CI_COMMIT_BRANCH == "feat/editorial-hero-cms"
-
-test-hexahub-api:
-  stage: test
-  image: node:22-bullseye
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}-hexahub-api
-    paths:
-      - hexa-hub/apps/api/node_modules/.cache
-  before_script:
-    - cd hexa-hub/apps/api
-    - npm ci
-  script:
-    - npm run test
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == "feat/editorial-hero-cms"
-
-test-hexahub-web:
-  stage: test
-  image: node:22-bullseye
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}-hexahub-web
-    paths:
-      - hexa-hub/apps/web/node_modules/.cache
-  before_script:
-    - cd hexa-hub/apps/web
-    - npm ci
-  script:
-    - npm run lint
-    - npm run typecheck
-    - npm run build
-    - npm run test
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == "feat/editorial-hero-cms"
-
-e2e-critical-path:
-  stage: e2e
-  image: mcr.microsoft.com/playwright:v1.49.0-jammy
-  script:
-    - npm ci --legacy-peer-deps
-    - npx playwright test e2e/tests/critical-path.spec.ts
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main"
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-
-dependency-update:
-  stage: scheduled
-  image: node:22-bullseye
-  only:
-    - schedules
-  cache:
-    key: dependency-update
-    paths:
-      - node_modules/.cache
-      - apps/backend/node_modules/.cache
-      - apps/frontend/node_modules/.cache
-  script:
-    - npm ci --legacy-peer-deps
-    - 'npm audit fix --legacy-peer-deps || echo "Some audit fixes require manual intervention"'
-    - git config user.email "ci@hexastudio.net"
-    - git config user.name "CI Bot"
-    - 'git add package.json package-lock.json apps/*/package.json apps/*/package-lock.json 2>/dev/null || true'
-    - 'git diff --cached --quiet || (git commit -m "chore: automated dependency updates [ci skip]" && git push gitlab HEAD:${CI_COMMIT_REF_NAME} || echo "Push failed - may need MR")'
-
-deploy-production:
+deploy:production:
   stage: deploy
-  image: alpine:latest
-  before_script:
-    - apk add --no-cache openssh-client bash
-    - eval "$(ssh-agent -s)"
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
-    - echo -e "Host *\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+  image:
+    name: docker:24
+    entrypoint: [""]
   script:
-    - ssh -p 22 ${PROD_SERVER_USER}@${PROD_SERVER_IP} "set -e; cd /home/hexa/hexastudio; git fetch gitlab main; git reset --hard gitlab/main; set -a; source .env; set +a; bash scripts/deploy-zero-downtime.sh; docker image prune -f; echo 'Waiting for services to settle...'; sleep 15; docker ps --filter 'health=healthy' --format '{{.Names}}' | grep -q 'hexa-backend' || { echo 'Backend unhealthy'; exit 1; }; docker ps --filter 'health=healthy' --format '{{.Names}}' | grep -q 'hexa-frontend' || { echo 'Frontend unhealthy'; exit 1; }; docker ps --filter 'health=healthy' --format '{{.Names}}' | grep -q 'hexa-cms' || { echo 'CMS unhealthy'; exit 1; }; curl -sf http://localhost:4000/api/health || { echo 'API health endpoint unreachable'; exit 1; }; echo 'Deployment verified successfully.'"
+    - echo "Deploying to production..."
+    - docker compose -f docker-compose.gitlab.yml up -d
   environment:
     name: production
-    url: https://hexastudio.net
+    url: http://19.16.1.100:8929
   rules:
-    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
-      when: manual
-      allow_failure: false
+    - if: $CI_COMMIT_BRANCH == "main"

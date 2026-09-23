@@ -680,9 +680,10 @@ services:
 networks:
   web:
     name: hexastudio_web
+    external: true
   internal:
     name: hexastudio_internal
-    internal: true
+    external: true
 
 volumes:
   postgres_data:

@@ -13,7 +13,7 @@
 
 services:
   gitlab-runner:
-    image: gitlab/gitlab-runner:alpine-v16.11.0
+    image: gitlab/gitlab-runner:latest
     container_name: hexa-gitlab-runner
     restart: unless-stopped
     privileged: true  # Required for Docker-in-Docker

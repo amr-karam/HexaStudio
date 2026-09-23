@@ -232,6 +232,7 @@
 - [x] **S-021 P5 — Autonomous Project Management deployment to production (`19.16.1.100` — completed Aug 31 2026):** AI-Driven Project Management features deployed with blue/green zero-downtime switch. Services: `AgentMemoryService`, `StructuredOutputService`, `AiNarratorService`, `ProjectReportService`, `PdfModule`. Commit `129516b` — feature finalization; commit `6e5a78c` — initial deployment. All quality gates passed: 403/403 backend tests, 0 lint errors, 0 typecheck errors.
 
 **S-021 P6 — Evey Design Plugin + Design System Page (COMPLETE, Sep 19 2026):**
+- [x] Agent Intelligence Upgrade (Sep 23, 2026): Semantic Memory (`AgentMemoryService.semanticRecall` + Qdrant) injected into `AgentsService.chat()`; Collaboration Sync (`collab:material-override` listener + backend `realtime.broadcastToRoom` emission) wired; XR Guided Tour (`XRGuidedTour.tsx`) integrated; WebGL profiling (`sentry.ts`) fixed safely. Typecheck: 0 errors in edited files.
 - [x] Added `evey-design` plugin with 5 design tools: `design_token_lookup`, `scaffold_component`, `design_audit`, `motion_variants`, `a11y_check` — accessible via `lib/evey-design/` and exported from `lib/index.ts`
 - [x] Added `/design-system` page (`apps/frontend/src/app/design-system/page.tsx`) with interactive tabs for Color Palette (60-30-10 system), Glassmorphism Tokens, Typography Scale, and Motion Easings — includes Ctrl+Shift+D quick palette overlay
 - [x] Added `destructive` and `success` design token families to `globals.css` (12 shades each)
