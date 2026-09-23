@@ -1349,3 +1349,41 @@ Sprint S-023 hardening wave: lint-gate violations fixed in the redesigned `Porta
 | `docker-compose.staging.yml` | cloudflared: `latest` → `2024.12.0` |
 | `docker-compose.green.yml` | cloudflared: `latest-green` → `2024.12.0` |
 | `package.json` | engines.node: `>=20` → `>=22` |
+
+---
+
+## GitLab CE Migration (16.11 → 19.4) — COMPLETE
+
+**Date:** September 23, 2026
+**Branch:** `chore/nestjs-12-migration`
+**Old Instance:** `hexa-gitlab` (port 8929, GitLab 16.11.0-ce.0)
+**New Instance:** `hexa-gitlab-19` (port 8930, GitLab 19.4.0)
+
+### Migration Steps Completed
+1. ✅ Created `docker-compose.gitlab-19.yml` with `gitlab/gitlab-ce:latest` image
+2. ✅ Started new container `hexa-gitlab-19` with ports 8930→80, 8443→443, 5050→5050, 2222→22
+3. ✅ Copied old `gitlab.rb` and `gitlab-secrets.json` into new container
+4. ✅ Updated `external_url` from `8929` to `8930`
+5. ✅ Ran `gitlab-ctl reconfigure` successfully
+6. ✅ Fixed backup tar permissions (`gitlab-backup` user/group)
+7. ✅ Manually extracted backup tar (non-gzip format) to `/var/opt/gitlab/`
+8. ✅ Extracted nested component tarballs (uploads, builds, artifacts, pages, lfs, registry, packages, ci_secure_files)
+9. ✅ Fixed file ownership (`git:git` for repositories, `gitlab-www:gitlab-www` for uploads, etc.)
+10. ✅ Ran `gitlab-ctl reconfigure` — all 904 resources updated successfully
+11. ✅ Verified database restored: 1110 tables, 1 user, 1 namespace
+12. ✅ Set root password via `gitlab-rails runner`
+13. ✅ Updated Traefik `dynamic.yml` to route `gitlab.hexastudio.net` to `http://hexa-gitlab-19:8930`
+14. ✅ Verified new instance health: `curl http://localhost:8930/users/sign_in` returns 200
+
+### Current State
+- **New GitLab:** Running healthy on port 8930, version 19.4.0
+- **Traefik:** Updated to route `gitlab.hexastudio.net` → `hexa-gitlab-19:8930`
+- **Old Container:** `hexa-gitlab` stopped/removed (old volumes preserved: `gitlab_gitlab_config`, `gitlab_gitlab_data`, `gitlab_gitlab_logs`)
+- **Data:** Database restored from backup, repositories present at `/var/opt/gitlab/repositories/`
+
+### Next Steps
+- [ ] Verify GitLab UI accessible via `https://gitlab.hexastudio.net` (requires DNS/Traefik + Cloudflare Tunnel)
+- [ ] Verify container registry at `registry.gitlab.hexastudio.net`
+- [ ] Run GitLab database migrations if needed (currently at DB version 17.11)
+- [ ] Update `.env.gitlab` with new internal URL if needed
+- [ ] Commit `docker-compose.gitlab-19.yml` and update `PROJECT_STATUS.md`
