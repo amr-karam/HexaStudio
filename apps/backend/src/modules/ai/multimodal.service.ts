@@ -218,6 +218,34 @@ Return as JSON with: similarityScore, sharedElements[], differences[], stylistic
   }
 
   /**
+   * Generate text from a prompt using the multimodal model (text-only).
+   */
+  async generateText(prompt: string, temperature = 0.4, maxTokens = 1500): Promise<string> {
+    if (!this.client) {
+      throw new Error('Multimodal model is unavailable');
+    }
+
+    const response = (await (
+      this.client.chat as unknown as {
+        completions: {
+          create: (args: Record<string, unknown>) => Promise<{
+            choices?: Array<{ message?: { content?: string } }>;
+          }>;
+        };
+      }
+    ).completions.create({
+      model: this.model,
+      messages: [{ role: 'user', content: prompt }],
+      temperature,
+      max_tokens: maxTokens,
+    })) as unknown as {
+      choices?: Array<{ message?: { content?: string } }>;
+    };
+
+    return response.choices?.[0]?.message?.content ?? '';
+  }
+
+  /**
    * Generate design suggestions based on reference image
    */
   async generateDesignSuggestions(

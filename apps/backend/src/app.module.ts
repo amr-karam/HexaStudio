@@ -46,6 +46,7 @@ import {
   CostEstimatorModule,
   AssetsModule,
   DataModule,
+  AuditModule,
   } from './modules/index';
 import { RequestIdMiddleware } from "./common/middleware/request-id.middleware";
 import { SecurityHeadersMiddleware } from "./common/middleware/security-headers.middleware";
@@ -88,6 +89,7 @@ import { WorkflowWiringService } from "./modules/workflow/workflow-wiring.servic
     VectorModule,
     RealtimeModule,
     AIModule,
+    AuditModule,
     MetricsModule,
     AgentsModule,
     AssistantsModule,
