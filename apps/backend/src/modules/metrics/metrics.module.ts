@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { PrometheusModule } from "@willsoto/nestjs-prometheus";
+import { DesignMetricsService } from './services/design-metrics.service';
 
 /**
  * HEXA Studio Backend Prometheus Telemetry Module
@@ -11,5 +12,7 @@ import { PrometheusModule } from "@willsoto/nestjs-prometheus";
       path: "/metrics",
     }),
   ],
+  providers: [DesignMetricsService],
+  exports: [DesignMetricsService],
 })
 export class MetricsModule {}
