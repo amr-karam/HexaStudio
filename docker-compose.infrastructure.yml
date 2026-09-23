@@ -1,0 +1,61 @@
+# HEXA STUDIO Infrastructure Base
+# This file defines the core networking and volume topology for the entire platform.
+# Deploy this FIRST: `docker compose -f docker-compose.infrastructure.yml up`
+
+networks:
+  # Public-facing network for Traefik, Frontend, and API Gateways
+  hexastudio_web:
+    name: hexastudio_web
+    driver: bridge
+    labels:
+      com.hexastudio.network: "public"
+
+  # Secure internal network for Databases, Cache, and Internal Services
+  hexastudio_internal:
+    name: hexastudio_internal
+    driver: bridge
+    internal: true
+    labels:
+      com.hexastudio.network: "private"
+
+  # Dedicated network for Prometheus, Grafana, and Exporters
+  hexastudio_monitoring:
+    name: hexastudio_monitoring
+    driver: bridge
+    labels:
+      com.hexastudio.network: "monitoring"
+
+volumes:
+  # Core Data Persistence
+  postgres_data:
+    name: hexastudio_postgres_data
+  redis_data:
+    name: hexastudio_redis_data
+  minio_data:
+    name: hexastudio_minio_data
+  meilisearch_data:
+    name: hexastudio_meilisearch_data
+  qdrant_data:
+    name: hexastudio_qdrant_data
+  
+  # App Specific Persistence
+  cms_uploads:
+    name: hexastudio_cms_uploads
+  odoo_data:
+    name: hexastudio_odoo_data
+  odoo_db_data:
+    name: hexastudio_odoo_db_data
+  
+  # Monitoring Persistence
+  prometheus_data:
+    name: hexastudio_prometheus_data
+  grafana_data:
+    name: hexastudio_grafana_data
+  loki_data:
+    name: hexastudio_loki_data
+  tempo_data:
+    name: hexastudio_tempo_data
+  
+  # Backup Persistence
+  backup_data:
+    name: hexastudio_backup_data
