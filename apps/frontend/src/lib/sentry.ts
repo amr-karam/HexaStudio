@@ -31,6 +31,30 @@ if (SENTRY_DSN) {
     },
   });
 
+  // WebGL / XR Performance Profiling: capture context loss and GPU errors
+  if (typeof window !== 'undefined') {
+    window.addEventListener('error', (e) => {
+      if (e.message?.includes('WebGL') || e.message?.includes('webgl') || e.message?.includes('context lost')) {
+        Sentry.captureException(e);
+      }
+    });
+    window.addEventListener('webglcontextlost', () => {
+      Sentry.captureMessage('WebGL context lost (XR session)', 'warning');
+    });
+    window.addEventListener('webglcontextrestored', () => {
+      Sentry.captureMessage('WebGL context restored (XR session)', 'info');
+    });
+
+    // Performance profiling: collaboration and agent loop events
+    Sentry.addEventProcessor((event) => {
+      if (event.tags && event.tags.event_type) {
+        // Profile collaboration and agent events
+        event.tags.profile_event = event.tags.event_type;
+      }
+      return event;
+    });
+  }
+
   // Split Sentry Replay: lazy load integration
   if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
     const loadReplay = () => {

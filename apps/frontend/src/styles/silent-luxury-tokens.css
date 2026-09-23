@@ -44,12 +44,77 @@
   --motion-damping: 20;
   --motion-mass: 0.8;
 
-  /* Glass morphisms — whisper-quiet */
+  /* Button Tokens - Bridge to Components */
+  --btn-primary-bg: var(--sl-gold-subtle);
+  --btn-primary-text: var(--sl-void);
+  --btn-primary-hover-bg: rgba(212, 175, 55, 0.2);
+  --btn-primary-shadow: rgba(212, 175, 55, 0.15);
+
+  --btn-secondary-bg: rgba(245, 244, 242, 0.05);
+  --btn-secondary-text: var(--sl-alabaster);
+  --btn-secondary-border: rgba(245, 244, 242, 0.1);
+  --btn-secondary-hover-bg: rgba(245, 244, 242, 0.1);
+
+  --btn-disabled-bg: rgba(168, 168, 168, 0.1);
+  --btn-disabled-text: var(--sl-silver);
+  --btn-disabled-border: rgba(168, 168, 168, 0.2);
   --sl-glass-bg: rgba(245, 244, 242, 0.02);
   --sl-glass-border: rgba(245, 244, 242, 0.06);
   --sl-glass-border-hover: rgba(212, 175, 55, 0.12);
   --sl-glass-blur: 32px;
   --sl-glass-shadow: 0 0 0 1px rgba(245, 244, 242, 0.03), 0 12px 40px rgba(0, 0, 0, 0.3);
+
+  /* GlassCard Tokens - Bridge to Components */
+  --card-default-bg: var(--sl-glass-bg);
+  --card-default-border: var(--sl-glass-border);
+  --card-default-blur: var(--sl-glass-blur);
+
+  --card-elevated-bg: var(--sl-glass-bg);
+  --card-elevated-border: var(--sl-glass-border);
+  --card-elevated-shadow: var(--sl-glass-shadow);
+
+  --card-subtle-bg: rgba(245, 244, 242, 0.01);
+  --card-subtle-border: rgba(245, 244, 242, 0.03);
+  --card-subtle-blur: 0px;
+
+  /* Input Tokens - Bridge to Components */
+  --input-bg-underline: rgba(245, 244, 242, 0.02);
+  --input-border-underline: rgba(245, 244, 242, 0.06);
+  --input-bg-glass: var(--sl-glass-bg);
+  --input-border-glass: transparent;
+  --input-text: var(--sl-alabaster);
+  --input-placeholder: rgba(212, 212, 212, 0.6);
+  --input-label: var(--sl-silver);
+  --input-label-focus: var(--sl-gold-hover);
+  --input-ring: var(--sl-gold-subtle);
+
+  /* Modal Tokens - Bridge to Components */
+  --modal-bg: var(--sl-obsidian);
+  --modal-border: rgba(168, 168, 168, 0.2);
+  --modal-overlay: rgba(0, 0, 0, 0.5);
+  --modal-ring: var(--sl-gold-subtle);
+
+  /* Navigation Tokens - Bridge to Components */
+  --nav-bg-scrolled: var(--sl-void);
+  --nav-bg-scrolled-opacity: 0.8;
+  --nav-border-scrolled: var(--sl-silver);
+  --nav-link-text: var(--sl-silver);
+  --nav-link-active: var(--sl-gold-hover);
+  --nav-link-hover: var(--sl-alabaster);
+  --nav-dropdown-bg: var(--sl-obsidian);
+  --nav-dropdown-border: var(--sl-gold-subtle);
+  --nav-dropdown-item-hover: var(--sl-gold-subtle);
+
+  /* Dashboard Tokens - Bridge to Components */
+  --dash-card-bg: rgba(245, 244, 242, 0.03);
+  --dash-card-border: rgba(245, 244, 242, 0.1);
+  --dash-card-hover-border: rgba(245, 244, 242, 0.2);
+  --dash-stat-label: rgba(245, 244, 242, 0.4);
+  --dash-stat-value: var(--sl-alabaster);
+  --dash-tab-bg-active: var(--sl-gold-subtle);
+  --dash-tab-text-active: var(--sl-void);
+  --dash-tab-text-inactive: rgba(245, 244, 242, 0.5);
+  --dash-tab-text-hover: rgba(245, 244, 242, 0.8);
 }
 
 /* -------------------------------------------------------------------------- */

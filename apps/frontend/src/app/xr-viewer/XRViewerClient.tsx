@@ -10,6 +10,7 @@ import { useSpatialCommands } from '@/features/xr/hooks/useSpatialCommands';
 import { useXRStore } from '@/features/xr/store/xr-store';
 import { useAnalytics } from '@/lib/analytics';
 import { useDeviceCapabilities } from '@/hooks/useDeviceCapabilities';
+import { preloadXRModel, preloadXRBundle } from '@/features/xr/utils/xr-assets';
 
 const DynamicXRCanvas = dynamic(
   () => import('@/features/xr/components/XRCanvas').then((m) => m.XRCanvas),
@@ -67,6 +68,10 @@ function XRViewerInner() {
     if (modelUrl) {
       track('xr_viewer_load', { modelName: modelName || 'unnamed', modelUrl: modelUrl.slice(0, 100) });
     }
+    // Warm up the bundle and the specific model as soon as the client mounts
+    // to accelerate the final render if not already preloaded via hover.
+    preloadXRBundle();
+    if (modelUrl) preloadXRModel(modelUrl);
   }, [modelUrl, modelName, track]);
 
   const showCollab = projectId && !isLowEnd;
@@ -74,7 +79,7 @@ function XRViewerInner() {
   return (
     <div className="fixed inset-0 bg-black">
       <DynamicXRCanvas>
-        <XRView modelUrl={modelUrl ?? undefined} modelName={modelName} sendCursor={isLowEnd ? undefined : sendCursor} />
+        <XRView modelUrl={modelUrl ?? undefined} sendCursor={isLowEnd ? undefined : sendCursor} />
       </DynamicXRCanvas>
       <DynamicXRUI onExit={() => { track('xr_viewer_exit'); router.back(); }} modelName={modelName} />
       {showCollab && <DynamicCollabPresence />}

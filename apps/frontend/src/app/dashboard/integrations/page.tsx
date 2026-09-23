@@ -49,7 +49,7 @@ function WebhookCard({
   const eventLabels = EVENT_OPTIONS.filter((o) => webhook.events.includes(o.value)).map((o) => o.label.split(' ')[0]);
 
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5 transition-colors hover:border-white/20">
+    <div className="rounded-xl border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] p-5 transition-colors hover:border-[var(--dash-card-hover-border)]">
       <div className="mb-3 flex items-start justify-between">
         <div>
           <h3 className="font-medium text-sl-alabaster">{webhook.name}</h3>
@@ -58,12 +58,13 @@ function WebhookCard({
         <div className="flex items-center gap-3">
           <button
             onClick={onToggle}
-            className={`relative h-5 w-9 rounded-full transition-colors ${webhook.active ? 'bg-sl-gold-subtle' : 'bg-white/20'}`}
+            className={`relative h-5 w-9 rounded-full transition-colors ${webhook.active ? 'bg-[var(--dash-tab-bg-active)]' : 'bg-white/20'}`}
           >
             <span className={`absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-black transition-transform ${webhook.active ? 'translate-x-4' : ''}`} />
           </button>
         </div>
       </div>
+
 
       <div className="mb-3 flex flex-wrap gap-1.5">
         {eventLabels.map((label) => (

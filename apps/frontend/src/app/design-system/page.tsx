@@ -92,10 +92,9 @@ function ColorSwatch({ name, hex, cssVar, tailwind }: { name: string; hex: strin
 /* -------------------------------------------------------------------------- */
 
 function DesignPalette() {
-  const { isCommandPaletteOpen, setCommandPaletteOpen } = usePortalStore();
   const prefersReduced = useReducedMotion();
 
-  useKeyboardShortcut('d', () => setCommandPaletteOpen(!isCommandPaletteOpen), { ctrlCmd: true, shift: true });
+  const { isCommandPaletteOpen, setCommandPaletteOpen } = usePortalStore();
 
   if (!isCommandPaletteOpen) return null;
 
@@ -293,9 +292,9 @@ function MotionSection() {
 
 export default function DesignSystemPage() {
   const [activeTab, setActiveTab] = useState<'colors' | 'glass' | 'typography' | 'motion'>('colors');
-  const { setCommandPaletteOpen } = usePortalStore();
+  const { toggleCommandPalette } = usePortalStore();
 
-  useKeyboardShortcut('d', () => setCommandPaletteOpen(true), { ctrlCmd: true, shift: true });
+  useKeyboardShortcut('d', () => toggleCommandPalette(), { ctrlCmd: true, shift: true });
 
   const tabs = [
     { id: 'colors' as const, label: 'Colors' },

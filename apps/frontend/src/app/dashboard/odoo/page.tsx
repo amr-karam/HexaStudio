@@ -11,10 +11,10 @@ type Tab = 'pipeline' | 'leads' | 'contacts' | 'projects' | 'documents' | 'sales
 
 function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
-      <p className="text-xs uppercase tracking-wide text-sl-alabaster/40">{label}</p>
-      <p className="mt-2 text-2xl font-semibold text-sl-alabaster">{value}</p>
-      {sub && <p className="mt-1 text-xs text-sl-alabaster/40">{sub}</p>}
+    <div className="rounded-xl border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] p-5">
+      <p className="text-xs uppercase tracking-wide text-[var(--dash-stat-label)]">{label}</p>
+      <p className="mt-2 text-2xl font-semibold text-[var(--dash-stat-value)]">{value}</p>
+      {sub && <p className="mt-1 text-xs text-[var(--dash-stat-label)]">{sub}</p>}
     </div>
   );
 }
@@ -386,9 +386,9 @@ export default function OdooDashboardPage() {
       </div>
 
       {/* Tabs */}
-      <div className="mb-6 flex gap-1 overflow-x-auto rounded-xl border border-white/10 bg-white/[0.02] p-1">
+      <div className="mb-6 flex gap-1 overflow-x-auto rounded-xl border-[var(--dash-card-border)] bg-white/[0.02] p-1">
         {TABS.map((t) => (
-          <button key={t.key} onClick={() => setTab(t.key)} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${tab === t.key ? 'bg-sl-gold-subtle text-black' : 'text-sl-alabaster/50 hover:text-sl-alabaster/80'}`}>
+          <button key={t.key} onClick={() => setTab(t.key)} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${tab === t.key ? 'bg-[var(--dash-tab-bg-active)] text-[var(--dash-tab-text-active)]' : 'text-[var(--dash-tab-text-inactive)] hover:text-[var(--dash-tab-text-hover)]'}`}>
             {t.label}
           </button>
         ))}
@@ -396,12 +396,13 @@ export default function OdooDashboardPage() {
 
       {/* Pipeline Tab */}
       {tab === 'pipeline' && (
-        <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+        <section className="rounded-2xl border-[var(--dash-card-border)] bg-white/[0.02] p-6">
           <h2 className="mb-4 text-lg font-medium text-sl-alabaster">CRM Pipeline</h2>
           {pipeline.isLoading && <p className="text-sm text-sl-alabaster/40">Loading...</p>}
           {pipeline.data && <PipelineView data={pipeline.data} />}
         </section>
       )}
+
 
       {/* Leads Tab */}
       {tab === 'leads' && (

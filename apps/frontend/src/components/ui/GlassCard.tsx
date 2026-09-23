@@ -22,9 +22,9 @@ interface GlassCardProps {
 }
 
 const VARIANT_CLASSES: Record<GlassCardVariant, string> = {
-  default: 'glass',
-  elevated: 'glass shadow-[0_8px_40px_-20px_rgba(212,175,55,0.0)]',
-  subtle: 'bg-white/[0.01] border border-white/[0.03]',
+  default: 'sl-glass',
+  elevated: 'sl-glass shadow-[var(--card-elevated-shadow)]',
+  subtle: 'bg-[var(--card-subtle-bg)] border-[var(--card-subtle-border)]',
 };
 
 /**
@@ -50,12 +50,12 @@ export const GlassCard = ({
   const reducedMotion = useReducedMotion();
   const MotionTag = motion[as];
 
-  const baseClass = cn(
-    'relative rounded-2xl transition-colors duration-300',
-    VARIANT_CLASSES[variant],
-    hover && 'glass-hover',
-    className,
-  );
+    const baseClass = cn(
+      'relative rounded-2xl transition-colors duration-300',
+      VARIANT_CLASSES[variant],
+      hover && 'hover:border-[var(--sl-glass-border-hover)]',
+      className,
+    );
 
   const shouldAnimateHover = hover && !reducedMotion && variant !== 'subtle';
 

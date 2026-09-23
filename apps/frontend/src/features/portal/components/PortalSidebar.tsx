@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, MouseEvent, useRef } from 'react';
+import { MouseEvent, useRef, useMemo } from 'react';
+import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { usePortalStore } from '@/features/portal/store';
 import { Icon } from '@/features/portal/components/PortalIcons';
@@ -136,8 +137,10 @@ interface PortalSidebarProps {
 
 function PortalSidebar(_props: PortalSidebarProps) {
   const { isSidebarOpen, setSidebarOpen } = usePortalStore();
-  const [selectedSection, setSelectedSection] = useState('/design-system');
+  const pathname = usePathname();
   const navRef = useRef<HTMLDivElement>(null);
+
+  const selectedSection = useMemo(() => pathname, [pathname]);
 
   return (
     <SidebarNav
@@ -148,7 +151,7 @@ function PortalSidebar(_props: PortalSidebarProps) {
       onMouseDown={() => {}}
       onMouseMove={() => {}}
       selectedSection={selectedSection}
-      onSectionSelect={setSelectedSection}
+      onSectionSelect={() => {}}
     />
   );
 }

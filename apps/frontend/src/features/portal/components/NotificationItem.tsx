@@ -18,9 +18,9 @@ interface NotificationItemProps {
 }
 
 const NOTIFICATION_CONFIG: Record<NotificationType, { icon: IconName; color: string }> = {
-  info: { icon: 'alert-circle', color: 'text-blue-400' },
+  info: { icon: 'alert-circle', color: 'text-sl-gold-hover' },
   success: { icon: 'check', color: 'text-success-ink' },
-  warning: { icon: 'alert-circle', color: 'text-amber-400' },
+  warning: { icon: 'alert-circle', color: 'text-sl-gold-bright' },
   error: { icon: 'x', color: 'text-destructive-ink' },
   approval: { icon: 'file-check', color: 'text-sl-gold-hover' },
 };
