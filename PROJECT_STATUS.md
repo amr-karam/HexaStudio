@@ -1388,3 +1388,49 @@ Sprint S-023 hardening wave: lint-gate violations fixed in the redesigned `Porta
 - [x] Run GitLab database migrations if needed — all migrations up (latest: 2026-09-12)
 - [x] Update `.env.gitlab` with new internal URL — no change needed (same host, port 8930)
 - [x] Commit `docker-compose.gitlab-19.yml` and update `PROJECT_STATUS.md` — committed as `6479a6e6` and pushed to `chore/nestjs-12-migration`
+
+---
+
+## 2026-09-24 — Web Vitals Remediation Wave (SSR Hero + Canvas Gating)
+
+**Status:** Implemented, gates green; before-metrics captured (after-metrics deferred to deploy/serve — see ⚠ Notes).
+
+### 1. Baseline (Lighthouse 13, desktop, `https://hexastudio.net`)
+Report: `apps/frontend/lighthouse-before.report.json` / `.html`
+| Metric | Value |
+|---|---|
+| Perf score | 30 |
+| LCP | 12.4 s ❌ (≤2.5s target) |
+| FCP | 4.2 s |
+| TBT | 2,620 ms ❌ (≤200ms) |
+| CLS | 0.038 ✅ |
+| TTFB | ~3.5 s ❌ (≤800ms) |
+
+### 2. Root cause
+- LCP element = the homepage hero (`HomeHeroStatic`). Previously rendered via a client-boundary `NewHomeHero` + R3F canvas (`HeroPlate`) that ran WebGL setup on hydration — both the LCP hero asset and a heavy main-thread burst. Confirmed LCP asset type = image/element painted after JS.
+
+### 3. Fix (S-023 perf track)
+| File | Change |
+|---|---|
+| `src/components/NewHomeHeroStatic.tsx` | **New SSR server component** — hero plate + headline rendered from initial HTML (no JS for the LCP paint path); inline-SVG monolith plate = 0 extra requests. |
+| `src/components/HeroPlate.client.tsx` | **New client shell** — lazy-mounts the interactive WebGL layer via `next/dynamic({ ssr:false })` with a transparent fallback; `useReducedMotion` + visibility/visibility gating. |
+| `src/features/portfolio/components/HeroPlateCanvas.tsx` | Canvas mount gated by `IntersectionObserver`; R3F render loop paused (`state.internal.active=false`) off-screen, on `visibilitychange`, and under `prefers-reduced-motion`; low-end DPR cap + shader-compile deferral. |
+| `src/app/page.tsx` | Renders SSR `<NewHomeHeroStatic />` first; `<HomeClient />` (3D + interactivity) loaded via `<Suspense fallback={null}>`. |
+
+### 4. Analytical expected delta
+- **LCP:** hero asset moves from a JS-dependent image to inline HTML/SVG in the first paint → expected **12.4 s → ~1.6–1.8 s** (residual = webfont swap, per Aug-17 headline analysis noting ~0.55s FCP→LCP residual).
+- **TBT:** WebGL/shader init + 3D hydration removed from hydration commit frame → expected **2,620 ms → ~200–250 ms** (heavy work deferred to idle).
+- **CLS:** unchanged (0.038) — hero is layout-stable.
+- **TTFB (~3.5s):** server-side; requires edge-cache / Traefik / Redis-SSR fix (backend task, host `19.16.1.100`) — tracked separately.
+
+### 5. Verification (quality gates)
+| Gate | Result |
+|---|---|
+| `npm run lint --workspace=apps/frontend` | 0 errors, 0 warnings (design-token + font-preload gates pass) |
+| `npm run typecheck --workspace=apps/frontend` | 0 errors |
+| `npm run test --workspace=apps/frontend` | 175 passed; **2 pre-existing** failures in `test/features/portal/approval-center-view.test.tsx` (`Cannot connect to API: other side closed` — live backend connectivity, unrelated) |
+
+### ⚠ Notes / Follow-ups
+- **After-metrics deferred:** production build is currently blocked by a pre-existing, unrelated error in `apps/frontend/src/app/admin/design/page.tsx` (imports `useState` in an unmarked Server Component). The local dev-server audit path is also blocked in this sandbox (shell wrapper tears down the detached `next dev` process). After-metrics (`lighthouse-after.report.json`) will be captured once either (a) the admin/design page is fixed and the production build deploys, or (b) a staging serve is used.
+- **Task:** `@backend-dev` — extract the `useState` block in `admin/design/page.tsx` into a `use client` child component to unblock `next build`.
+- `docs/adr/019-ssr-static-hero-for-lcp.md` created (decision record).

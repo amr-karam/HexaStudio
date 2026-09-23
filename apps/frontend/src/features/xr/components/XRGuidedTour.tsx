@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useXRStore } from '../store/xr-store';
+import { useState, useEffect } from 'react';
 
 export function XRGuidedTour() {
   const { status } = useXRStore();
@@ -24,7 +24,9 @@ export function XRGuidedTour() {
     { title: 'Explore', desc: 'Move around to view from different angles.' },
   ];
 
+  const collaborators = useXRStore((s) => s.collaborators);
   const current = steps[step];
+  const hasCollaborators = Object.keys(collaborators).length > 0;
 
   return (
     <div className="pointer-events-auto fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm">
@@ -45,6 +47,11 @@ export function XRGuidedTour() {
         >
           {step < steps.length - 1 ? 'Next' : 'Start Exploring'}
         </button>
+        {hasCollaborators && (
+          <div className="mt-4 text-xs text-sl-gold-subtle">
+            💡 Collaboration active — peers will see your material choices in real-time.
+          </div>
+        )}
       </div>
     </div>
   );
