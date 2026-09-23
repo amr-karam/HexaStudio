@@ -1381,9 +1381,9 @@ Sprint S-023 hardening wave: lint-gate violations fixed in the redesigned `Porta
 - **Old Container:** `hexa-gitlab` stopped/removed (old volumes preserved: `gitlab_gitlab_config`, `gitlab_gitlab_data`, `gitlab_gitlab_logs`)
 - **Data:** Database restored from backup, repositories present at `/var/opt/gitlab/repositories/`
 
-### Next Steps
-- [ ] Verify GitLab UI accessible via `https://gitlab.hexastudio.net` (requires DNS/Traefik + Cloudflare Tunnel)
-- [ ] Verify container registry at `registry.gitlab.hexastudio.net`
-- [ ] Run GitLab database migrations if needed (currently at DB version 17.11)
-- [ ] Update `.env.gitlab` with new internal URL if needed
-- [ ] Commit `docker-compose.gitlab-19.yml` and update `PROJECT_STATUS.md`
+### Next Steps — ALL COMPLETE ✅
+- [x] Verify GitLab UI accessible via `https://gitlab.hexastudio.net` — returns 200 via Traefik + Cloudflare Tunnel
+- [x] Verify container registry at `registry.gitlab.hexastudio.net` — returns 401 (auth required, expected behavior)
+- [x] Run GitLab database migrations if needed — all migrations up (latest: 2026-09-12)
+- [x] Update `.env.gitlab` with new internal URL — no change needed (same host, port 8930)
+- [x] Commit `docker-compose.gitlab-19.yml` and update `PROJECT_STATUS.md` — committed as `6479a6e6` and pushed to `chore/nestjs-12-migration`
