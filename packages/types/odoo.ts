@@ -54,6 +54,24 @@ export interface OdooProject {
   stage_id?: OdooIdName;
 }
 
+export interface OdooProjectInvoiceSummary {
+  count: number;
+  totalAmount: number;
+  unpaidAmount: number;
+}
+
+export interface OdooProjectPaymentSummary {
+  count: number;
+  totalAmount: number;
+  pendingAmount: number;
+}
+
+export interface OdooProjectWithBillingMetadata extends OdooProject {
+  invoices: OdooInvoice[];
+  payments: OdooPayment[];
+  billingSummary?: OdooProjectInvoiceSummary & OdooProjectPaymentSummary;
+}
+
 export interface OdooMilestone {
   id: number;
   name: string;

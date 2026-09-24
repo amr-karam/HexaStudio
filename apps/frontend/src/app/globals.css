@@ -35,6 +35,17 @@
 @utility content-inset-start { content: inset-inline-start; }
 @utility content-inset-end { content: inset-inline-end; }
 
+/*
+ * Below-fold viewport guard (PERFORMANCE.md §2 / ADR-019).
+ * Skips style/layout/paint/decode for below-fold sections until scrolled
+ * within the discard region, keeping the hero SVG as the LCP element and
+ * pushing 3D/portfolio asset work off the initial main-thread window.
+ * contain-intrinsic-size reserves the gallery height to avoid CLS on reveal.
+ */
+@utility cv-section {
+  content-visibility: auto;
+  contain-intrinsic-size: 960px;
+}
 :root {
   --background: #ffffff;
   --foreground: #1a1a1a;

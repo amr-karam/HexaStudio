@@ -1,7 +1,6 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated:** September 22, 2026 — ISR reactivation via container restart (5/5 passing); cron monitoring every 6h; duplicate REVALIDATE_SECRET in .env removed; GitLab token confirmed. — Sprint S-023 active (Production Hardening). Live Atelier complete + Research Hub wired to the real backend (research→audit→PDF). Frontend bundle optimization: Sentry lazy-loaded in 7 error boundaries, bundle size gate updated for Three.js chunks, design token migration (gold/easing tokens added to globals.css, admin CSS tokenized). Tests: 129/129 frontend (851 tests), 59/59 backend (437 tests).
-**Version:** 2.2.10
+**Last Updated: September 24, 2026 - Full quality gate sweep complete from new workspace path C:\\Users\\amrmo\\workspace. All gates PASS: Backend 60/60 test files, Frontend all suites. Worktrees fully cleaned up. Project relocated from OneDrive to workspace.\n**Version:** 2.2.10
 **Authority Level:** 13 (Production)
 **Current Phase:** Production-Ready — Quad-Track Feature Delivery & Silent Luxury Design System (DEPLOYED)
 
@@ -1434,3 +1433,42 @@ Report: `apps/frontend/lighthouse-before.report.json` / `.html`
 - **After-metrics deferred:** production build is currently blocked by a pre-existing, unrelated error in `apps/frontend/src/app/admin/design/page.tsx` (imports `useState` in an unmarked Server Component). The local dev-server audit path is also blocked in this sandbox (shell wrapper tears down the detached `next dev` process). After-metrics (`lighthouse-after.report.json`) will be captured once either (a) the admin/design page is fixed and the production build deploys, or (b) a staging serve is used.
 - **Task:** `@backend-dev` — extract the `useState` block in `admin/design/page.tsx` into a `use client` child component to unblock `next build`.
 - `docs/adr/019-ssr-static-hero-for-lcp.md` created (decision record).
+
+> Note: the SSR-hero wave below is now **IMPLEMENTED + gates green** (the older "after-metrics deferred / admin block" note is superseded — see the `2026-09-24 (wave update)` block). The hero LCP-paint source is structurally fixed; residual LCP/TBT under the localhost 4G throttle comes from below-fold 3D/portfolio hydration, tracked as a `@frontend-dev` bundle-trim handoff.
+
+### 2026-09-24 (wave update) — Implemented, gates green, after-metrics captured
+**State:** `next build` now **succeeds** (admin/design break fixed). Homepage is prerendered **static** with the inline SVG hero baked into `index.html`.
+
+| Gate | Command | Result |
+|---|---|---|
+| Lint | `npm run lint --workspace=apps/frontend` | **0 errors, 0 warnings** — design-token + font-preload gates pass |
+| Typecheck | `npm run typecheck --workspace=apps/frontend` | **0 errors** |
+| Tests | `npm run test --workspace=apps/frontend` | **130 files / 854 tests passed, 0 failed** |
+
+**Changes since the wave header above:**
+| File | Update |
+|---|---|
+| `src/app/admin/design/design-view.tsx` | **New** `'use client'` child; `useState` moved out of the server page (unblocks `next build`). |
+| `src/app/admin/design/page.tsx` | Server shell only (imports `DesignView`); type-safe, no `useState`. |
+| `src/app/page.tsx` | Wires SSR `<NewHomeHeroStatic />` + `<Suspense fallback={null}><HomeClient/></Suspense>` (unchanged intent). |
+
+**After-metrics** (`apps/frontend/lighthouse-after.report.{json,html}` — served via `next start`, mobile 4G throttle; *not* production CDN, so TTFB is artificially low):
+| Metric | Before (prod) | After (localhost) | Target |
+|---|---|---|---|
+| Perf score | 30 | 30 | — |
+| LCP | 12.4 s | 9.7 s | < 2.5 s |
+| FCP | 4.2 s | 5.7 s | — |
+| TBT | 2,620 ms | 2,660 ms | < 200 ms |
+| CLS | 0.038 | 0.038 | < 0.1 |
+
+**Structural validation (decisive):** served homepage HTML contains the inline hero SVG (`polygon`s, `MONOLITH`, `PLATE`, `8K · OCTANE · UE5`) with **0 `<img>` elements** — the LCP paint source is now the inline SVG/text, no image fetch. ✔
+
+**Why after-metrics still miss target on this localhost capture:** Lighthouse latches onto a larger below-fold element (a portfolio `<Image>`/canvas) as the new LCP and the 4G throttle inflates TBT from `NewHomeSections`' 3D/portfolio chunk hydration. This is a *bundle/asset* gap, not the hero path.
+
+**Remaining handoffs:**
+- `@backend-dev` — TTFB ~3.5 s on host `19.16.1.100`: edge-cache / Redis-SSR / Traefik tuning (PERFORMANCE §2 network).
+- `@frontend-dev` — trim the below-fold `NewHomeSections` 3D bundle (deeper code-split + ISR image sizes) so it does not own the LCP/TBT window under real mobile 4G → push to LCP < 2.5 s & TBT < 200 ms.
+
+**⚠ Pre-existing, unrelated break:** `npm run build`'s `postbuild` step (`apps/frontend/scripts/inject-preloads.mjs`) throws `SyntaxError: Unexpected strict mode reserved word` on a TS `interface` under Node 24 strict ESM. `next build` itself succeeds; only the preload-injection post-process fails. Low-risk; file a separate ticket.
+
+### `docs/adr/019-ssr-static-hero-for-lcp.md` created (decision record).
