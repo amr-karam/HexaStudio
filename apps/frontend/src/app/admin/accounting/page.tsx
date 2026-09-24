@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { API_BASE_URL } from '@/config/constants';
+import { AppProviders } from '@/providers/app-providers';
 
 const API_TIMEOUT_MS = 6000;
 
@@ -88,7 +89,7 @@ const typeLabel = (type: string) => {
   return labels[type] || type;
 };
 
-export default function AdminAccountingPage() {
+function AdminAccountingPageInner() {
   const [activeTab, setActiveTab] = useState<Tab>('overview');
 
   const { data: dashboard, isLoading: dashLoading } = useQuery<DashboardData>({
@@ -314,5 +315,13 @@ export default function AdminAccountingPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function AdminAccountingPage() {
+  return (
+    <AppProviders>
+      <AdminAccountingPageInner />
+    </AppProviders>
   );
 }
