@@ -2,7 +2,6 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const CHUNKS_DIR = path.join(process.cwd(), '.next', 'static', 'chunks');
-const MAX_CHUNK_SIZE = 1 * 1024 * 1024; // 1 MB
 const ALLOWED_OVER_BUDGET = new Set([
   'threejs-xr',
   'threejs-iwer',

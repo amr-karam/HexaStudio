@@ -5,8 +5,8 @@ import { withSentryConfig } from "@sentry/nextjs";
 const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
   openAnalyzer: false,
-  analyzerMode: "static",
-} as any);
+  analyzerMode: "static" as const,
+});
 
 /**
  * Content-Security-Policy (Sprint 15 P7).

@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { AppLayoutWidgets } from "@/providers/app-layout-widgets";
-import { AppProviders } from "@/providers/app-providers";
-import { LayoutShell } from "@/components/LayoutShell";
+import { LayoutChrome } from "@/components/LayoutChrome";
 import { StructuredData } from "@/components/StructuredData";
 import "./globals.css";
 
@@ -192,9 +191,8 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <AppProviders>
-          <LayoutShell>{children}</LayoutShell>
-        </AppProviders>
+        <LayoutChrome />
+        {children}
         <AppLayoutWidgets />
       </body>
     </html>

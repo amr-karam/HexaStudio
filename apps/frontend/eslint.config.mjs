@@ -26,9 +26,6 @@ export default tseslint.config(
   {
     rules: {
       "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
-      // "no-useless-catch" is too strict — synchronous throws from browser
-      // extensions (e.g. Chrome Money Helper intercepting window.fetch) bypass
-      // async/await and require a catch to propagate correctly to callers.
       "no-useless-catch": "off",
     },
   },
@@ -37,6 +34,19 @@ export default tseslint.config(
     rules: {
       "@typescript-eslint/no-unused-vars": "off",
       "@next/next/no-img-element": "off",
+    },
+  },
+  {
+    files: ["scripts/**/*.mjs", "next.config.ts"],
+    languageOptions: {
+      globals: {
+        process: "readonly",
+        console: "readonly",
+      },
+    },
+    rules: {
+      "no-console": "off",
+      "@typescript-eslint/no-explicit-any": "off",
     },
   },
 );
