@@ -71,11 +71,11 @@ export default function AssetBrowser({ onModelSelected }: AssetBrowserProps) {
         <div className="flex flex-wrap gap-1">
           <button
             onClick={() => setSelectedCategory("all")}
-            className={`px-2 py-1 text-xs rounded ${
+            className={`px-3 py-2 text-xs rounded min-h-[44px] min-w-[44px] flex items-center justify-center ${
               selectedCategory === "all"
                 ? "bg-sl-gold text-sl-void"
                 : "bg-sl-void text-sl-muted hover:text-sl-alabaster"
-            }`}
+            } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background`}
           >
             All
           </button>
@@ -83,11 +83,11 @@ export default function AssetBrowser({ onModelSelected }: AssetBrowserProps) {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-2 py-1 text-xs rounded capitalize ${
+              className={`px-3 py-2 text-xs rounded capitalize min-h-[44px] min-w-[44px] flex items-center justify-center ${
                 selectedCategory === cat
                   ? "bg-sl-gold text-sl-void"
                   : "bg-sl-void text-sl-muted hover:text-sl-alabaster"
-              }`}
+              } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background`}
             >
               {cat}
             </button>
@@ -107,7 +107,7 @@ export default function AssetBrowser({ onModelSelected }: AssetBrowserProps) {
                 <button
                   key={model.id}
                   onClick={() => onModelSelected(model.url, model.id)}
-                  className="w-full flex items-center gap-2 p-2 rounded hover:bg-sl-surface transition-colors text-left"
+                  className="w-full flex items-center gap-2 p-3 rounded hover:bg-sl-surface transition-colors text-left min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   <Image
                     src={model.thumbnail || "/placeholder.svg"}

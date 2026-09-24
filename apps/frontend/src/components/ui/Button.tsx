@@ -50,10 +50,10 @@ export interface ButtonProps
 /* -------------------------------------------------------------------------- */
 
 const SIZE_CLASSES: Record<NonNullable<ButtonSize>, string> = {
-  sm: 'h-8 px-3 text-xs',
+  sm: 'h-11 px-4 text-xs min-h-[44px] min-w-[44px]',
   md: 'h-11 px-6 text-sm',
   lg: 'h-14 px-8 text-base',
-  icon: 'h-9 w-9 p-0',
+  icon: 'h-11 w-11 p-0 min-h-[44px] min-w-[44px]',
 };
 
 /* -------------------------------------------------------------------------- */

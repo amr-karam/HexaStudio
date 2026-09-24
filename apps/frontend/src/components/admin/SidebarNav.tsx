@@ -132,8 +132,8 @@ const SidebarNav = forwardRef<HTMLDivElement, SidebarNavProps>(
                 key={section.id}
                 onClick={() => onSectionSelect(section.id)}
                 className={cn(
-                  'w-full flex items-center gap-3 px-4 py-2.5 text-left transition-all duration-200 group relative',
-                  'hover:bg-sl-gold-subtle focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent',
+                  'w-full flex items-center gap-3 px-4 py-3 text-left transition-all duration-200 group relative min-h-[44px]',
+                  'hover:bg-sl-gold-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background',
                   selectedSection === section.id
                     ? 'bg-sl-gold-subtle text-accent'
                     : 'text-sl-mist hover:text-sl-alabaster'

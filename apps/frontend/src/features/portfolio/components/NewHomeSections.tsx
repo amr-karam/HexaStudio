@@ -1,7 +1,10 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { VisionChapter } from './VisionChapter';
+import { CraftChapter } from './CraftChapter';
 import { NewStudioNote } from './NewStudioNote';
+import { InvitationChapter } from './InvitationChapter';
 
 // Lazy-load the heavy SelectedWork gallery to keep initial bundle lean
 const NewSelectedWork = dynamic(
@@ -10,16 +13,23 @@ const NewSelectedWork = dynamic(
 );
 
 /**
- * NewHomeSections — the redesigned below-the-fold stack.
+ * NewHomeSections — the storytelling below-the-fold stack.
  *
- *  1. NewSelectedWork   (editorial 2x2 grid, no chips, no carousel)
- *  2. NewStudioNote     (one quiet editorial block, sets the studio's voice)
+ * Narrative arc:
+ *  1. VisionChapter      — Philosophy (light, material, atmosphere)
+ *  2. CraftChapter       — Process (5-step pipeline with measured data)
+ *  3. NewSelectedWork    — Portfolio (editorial 2x2 grid)
+ *  4. NewStudioNote      — Studio voice (quote + stats)
+ *  5. InvitationChapter  — Cinematic CTA
  */
 export function NewHomeSections() {
   return (
     <>
+      <VisionChapter />
+      <CraftChapter />
       <NewSelectedWork />
       <NewStudioNote />
+      <InvitationChapter />
     </>
   );
 }
