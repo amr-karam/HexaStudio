@@ -27,6 +27,7 @@ const mockOdooApiService = {
   updatePartner: vi.fn(),
   getProjects: vi.fn(),
   getProjectDetail: vi.fn(),
+  getProjectWithBillingMetadata: vi.fn(),
   updateProject: vi.fn(),
   getProjectMilestones: vi.fn(),
   createMilestone: vi.fn(),
@@ -40,6 +41,7 @@ const mockOdooApiService = {
   getMailNotifications: vi.fn(),
   getAccountJournals: vi.fn(),
   getBankStatements: vi.fn(),
+  getAccountPayments: vi.fn(),
   getHealth: vi.fn(),
 };
 
@@ -670,6 +672,60 @@ describe('OdooApiController', () => {
       expect(res.status).toBe(200);
       expect(res.body).toEqual(invoices);
       expect(mockOdooApiService.getInvoices).toHaveBeenCalledWith(50, 0);
+    });
+
+    // GET /odoo/billing/invoices
+    it('GET /odoo/billing/invoices returns invoice list (billing alias)', async () => {
+      const invoices = [{ id: 1, name: 'INV/2026/001', amount_total: 3000 }];
+      mockOdooApiService.getInvoices.mockResolvedValueOnce(invoices);
+
+      const res = await request(app.getHttpServer()).get('/odoo/billing/invoices');
+
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual(invoices);
+      expect(mockOdooApiService.getInvoices).toHaveBeenCalledWith(50, 0);
+    });
+
+    // GET /odoo/billing/payments
+    it('GET /odoo/billing/payments returns payments list', async () => {
+      const payments = [{ id: 1, name: 'PAY/2026/001', amount_total: 1500 }];
+      mockOdooApiService.getAccountPayments.mockResolvedValueOnce(payments);
+
+      const res = await request(app.getHttpServer()).get('/odoo/billing/payments');
+
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual(payments);
+      expect(mockOdooApiService.getAccountPayments).toHaveBeenCalledWith(undefined, undefined, 50, 0);
+    });
+
+    it('GET /odoo/billing/payments accepts date filters', async () => {
+      const payments = [{ id: 1, name: 'PAY/2026/001', amount_total: 1500 }];
+      mockOdooApiService.getAccountPayments.mockResolvedValueOnce(payments);
+
+      const res = await request(app.getHttpServer()).get('/odoo/billing/payments?dateFrom=2026-01-01&dateTo=2026-12-31');
+
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual(payments);
+      expect(mockOdooApiService.getAccountPayments).toHaveBeenCalledWith('2026-01-01', '2026-12-31', 50, 0);
+    });
+
+    // GET /odoo/projects/:id/billing
+    it('GET /odoo/projects/:id/billing returns project with billing metadata', async () => {
+      const projectWithBilling = {
+        id: 1,
+        name: 'Project Alpha',
+        partner_id: [10, 'Client A'],
+        invoices: [],
+        payments: [],
+        billingSummary: { count: 0, totalAmount: 0, unpaidAmount: 0 },
+      };
+      mockOdooApiService.getProjectWithBillingMetadata.mockResolvedValueOnce(projectWithBilling);
+
+      const res = await request(app.getHttpServer()).get('/odoo/projects/1/billing');
+
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual(projectWithBilling);
+      expect(mockOdooApiService.getProjectWithBillingMetadata).toHaveBeenCalledWith(1);
     });
 
     // GET /odoo/accounting/invoices/:id/lines

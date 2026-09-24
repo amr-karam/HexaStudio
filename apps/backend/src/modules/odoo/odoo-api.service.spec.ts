@@ -289,4 +289,98 @@ describe('OdooApiService', () => {
       expect(result).toEqual({ odoo: 'error', circuit: 'CLOSED' });
     });
   });
+
+  describe('getAccountPayments', () => {
+    it('should return payments with default pagination', async () => {
+      const payments = [{ id: 1, name: 'PAY/001', amount: 1000 }];
+      mockOdooService.execute.mockResolvedValueOnce(payments);
+
+      const result = await service.getAccountPayments();
+      expect(result).toEqual(payments);
+      expect(mockOdooService.execute).toHaveBeenCalledWith(
+        'account.payment',
+        'search_read',
+        [
+          [],
+          ['name', 'date', 'state', 'payment_type', 'partner_id', 'amount', 'currency_id', 'journal_id', 'payment_method_line_id', 'ref', 'move_id'],
+          0,
+          50,
+          'date desc',
+        ],
+      );
+    });
+
+    it('should apply date filters when provided', async () => {
+      const payments = [{ id: 1, name: 'PAY/001', amount: 1000 }];
+      mockOdooService.execute.mockResolvedValueOnce(payments);
+
+      const result = await service.getAccountPayments('2026-01-01', '2026-12-31', 100, 0);
+      expect(result).toEqual(payments);
+      expect(mockOdooService.execute).toHaveBeenCalledWith(
+        'account.payment',
+        'search_read',
+        [
+          [['date', '>=', '2026-01-01'], ['date', '<=', '2026-12-31']],
+          ['name', 'date', 'state', 'payment_type', 'partner_id', 'amount', 'currency_id', 'journal_id', 'payment_method_line_id', 'ref', 'move_id'],
+          0,
+          100,
+          'date desc',
+        ],
+      );
+    });
+
+    it('should return empty array when no payments', async () => {
+      mockOdooService.execute.mockResolvedValueOnce([]);
+      const result = await service.getAccountPayments(undefined, undefined, 50, 0);
+      expect(result).toEqual([]);
+    });
+  });
+
+  describe('getProjectWithBillingMetadata', () => {
+    it('should return project with invoices and billing summary', async () => {
+      const project = { id: 1, name: 'Project Alpha', partner_id: [10, 'Client A'] };
+      const invoices = [
+        { id: 1, name: 'INV/001', amount_total: 1000, amount_residual: 500 },
+        { id: 2, name: 'INV/002', amount_total: 2000, amount_residual: 0 },
+      ];
+      const payments = [
+        { id: 1, name: 'PAY/001', amount_total: 1000 },
+      ];
+
+      mockOdooService.execute
+        .mockResolvedValueOnce([project])
+        .mockResolvedValueOnce(invoices)
+        .mockResolvedValueOnce(payments);
+
+      const result = await service.getProjectWithBillingMetadata(1);
+      expect(result).toEqual({
+        ...project,
+        invoices,
+        payments,
+        billingSummary: {
+          count: 2,
+          totalAmount: 3000,
+          unpaidAmount: 500,
+        },
+      });
+    });
+
+    it('should throw when project not found', async () => {
+      mockOdooService.execute.mockResolvedValueOnce([]);
+      await expect(service.getProjectWithBillingMetadata(999)).rejects.toThrow('Project #999 not found');
+    });
+
+    it('should handle project without partner', async () => {
+      const project = { id: 1, name: 'Project Alpha' };
+      mockOdooService.execute
+        .mockResolvedValueOnce([project])
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([]);
+
+      const result = await service.getProjectWithBillingMetadata(1);
+      expect(result.invoices).toEqual([]);
+      expect(result.payments).toEqual([]);
+      expect(result.billingSummary?.count).toBe(0);
+    });
+  });
 });

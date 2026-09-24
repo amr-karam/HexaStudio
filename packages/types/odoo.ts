@@ -58,12 +58,13 @@ export interface OdooProjectInvoiceSummary {
   count: number;
   totalAmount: number;
   unpaidAmount: number;
+  pendingAmount?: number;
 }
 
 export interface OdooProjectPaymentSummary {
   count: number;
   totalAmount: number;
-  pendingAmount: number;
+  pendingAmount?: number;
 }
 
 export interface OdooProjectWithBillingMetadata extends OdooProject {

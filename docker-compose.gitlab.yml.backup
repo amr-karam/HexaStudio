@@ -24,7 +24,7 @@ services:
         # ============================================
         # External URLs & Network Configuration
         # ============================================
-        external_url 'http://19.16.1.100:8930'
+        external_url 'http://19.16.1.100:8929'
         registry_external_url 'http://19.16.1.100:5050'
         
         # Internal registry configuration (HTTP for internal network)
@@ -182,7 +182,7 @@ services:
           }
         }
     ports:
-      - "8930:80"      # HTTP (Puma) - Internal (PROMOTED instance)
+      - "8929:80"      # HTTP (Puma) - Internal (PRIMARY instance)
       - "8443:443"     # HTTPS - External (if configured)
       - "5050:5050"    # Container Registry - Internal HTTP
       - "2222:22"      # SSH

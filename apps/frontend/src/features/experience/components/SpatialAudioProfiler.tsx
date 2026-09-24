@@ -1,19 +1,13 @@
 'use client';
 
 import { Suspense, useRef, useCallback, useState, useEffect } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, type RootState } from '@react-three/fiber';
 import { Environment, PerspectiveCamera, Html } from '@react-three/drei';
 import { COLOR_TOKENS, GOLD } from '@/lib/color-tokens';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { useQualityTier } from '@/providers/quality-provider';
 import { useContextLossRecovery } from '@/hooks/useContextLossRecovery';
 import * as THREE from 'three';
-
-type CanvasState = {
-  gl: THREE.WebGLRenderer;
-  camera: THREE.Camera;
-  scene: THREE.Scene;
-};
 
 interface AudioSource {
   id: string;
@@ -40,9 +34,10 @@ interface SoundSphereProps {
   name: string;
   volume: number;
   maxDistance: number;
+  showDecibels?: boolean;
 }
 
-function SoundSphere({ position, name, volume, maxDistance, showDecibels }: SoundSphereProps & { showDecibels?: boolean }) {
+function SoundSphere({ position, name, volume, maxDistance: _maxDistance, showDecibels }: SoundSphereProps) {
   const meshRef = useRef<THREE.Mesh>(null);
   const { reducedMotion } = useMotionPolicy();
 
@@ -57,7 +52,7 @@ function SoundSphere({ position, name, volume, maxDistance, showDecibels }: Soun
   });
 
   return (
-    <group position={position}>
+    <group position={position as unknown as [number, number, number]}>
       <mesh ref={meshRef}>
         <sphereGeometry args={[0.15, 16, 16]} />
         <meshBasicMaterial color={`hsl(${hue}, ${saturation * 100}%, 50%)`} transparent opacity={0.8} />
@@ -78,7 +73,7 @@ function SoundSphere({ position, name, volume, maxDistance, showDecibels }: Soun
 
 function ListenerSphere({ position }: { position: [number, number, number] }) {
   return (
-    <group position={position}>
+    <group position={position as unknown as THREE.Vector3}>
       <mesh>
         <sphereGeometry args={[0.1, 8, 8]} />
         <meshBasicMaterial color={GOLD} />
@@ -90,11 +85,6 @@ function ListenerSphere({ position }: { position: [number, number, number] }) {
   );
 }
 
-interface AudioVisualizerProps {
-  levels: Record<string, number>;
-  sources: AudioSource[];
-}
-
 const VISUALIZER_STYLE = {
   background: 'rgba(15, 15, 16, 0.8)',
   border: 'rgba(76, 76, 82, 0.5)',
@@ -103,7 +93,7 @@ const VISUALIZER_STYLE = {
   divider: '#374151',
 };
 
-function AudioVisualizer({ levels, sources }: AudioVisualizerProps) {
+function AudioVisualizer({ levels, sources }: { levels: Record<string, number>; sources: AudioSource[] }) {
   return (
     <div
       style={{
@@ -111,7 +101,7 @@ function AudioVisualizer({ levels, sources }: AudioVisualizerProps) {
         bottom: '1rem',
         left: '1rem',
         background: VISUALIZER_STYLE.background,
-        border: `1px solid ${VISUALIZER_STYLE.divider}`,
+        border: `1px solid ${VISUALIZER_STYLE.border}`,
         borderRadius: '0.5rem',
         padding: '0.75rem',
         fontSize: '0.75rem',
@@ -141,14 +131,22 @@ function AudioVisualizer({ levels, sources }: AudioVisualizerProps) {
   );
 }
 
+const STATIC_VISUALIZER_STYLE = {
+  container: { padding: '1rem', display: 'flex', flexDirection: 'column' as const, gap: '0.5rem' },
+  label: { fontWeight: 500, marginBottom: '0.5rem', color: '#f5f5f4' },
+  item: { padding: '0.5rem', background: COLOR_TOKENS.OBSIDIAN, borderRadius: '0.25rem', border: '1px solid rgba(76, 76, 82, 0.5)' },
+  name: { fontWeight: 500, color: '#f5f5f4' },
+  info: { fontSize: '0.75rem', color: '#a0a0a0' },
+};
+
 function StaticAudioVisualizer({ sources }: { sources: AudioSource[] }) {
   return (
-    <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-      <h3 style={{ fontSize: '0.875rem', fontWeight: 'bold', color: '#f5f5f4', marginBottom: '0.5rem' }}>Spatial Audio Sources</h3>
+    <div style={STATIC_VISUALIZER_STYLE.container}>
+      <div style={STATIC_VISUALIZER_STYLE.label}>Spatial Audio Sources</div>
       {sources.map((source) => (
-        <div key={source.id} style={{ padding: '0.5rem', background: COLOR_TOKENS.OBSIDIAN, borderRadius: '0.25rem', border: '1px solid rgba(76, 76, 82, 0.5)' }}>
-          <div style={{ fontWeight: 500, color: '#f5f5f4' }}>{source.name}</div>
-          <div style={{ fontSize: '0.75rem', color: '#a0a0a0' }}>
+        <div key={source.id} style={STATIC_VISUALIZER_STYLE.item}>
+          <div style={STATIC_VISUALIZER_STYLE.name}>{source.name}</div>
+          <div style={STATIC_VISUALIZER_STYLE.info}>
             Position: ({source.position.join(', ')})
           </div>
         </div>
@@ -165,11 +163,12 @@ export function SpatialAudioProfiler({
   className,
   onAudioLevelChange,
 }: SpatialAudioProfilerProps) {
-  const { shouldReduceMotion } = useMotionPolicy();
+  const { animationsEnabled } = useMotionPolicy();
   const { tier } = useQualityTier();
   const containerRef = useRef<HTMLDivElement>(null);
   const [contextLost, setContextLost] = useState(false);
-  const [levels, setLevels] = useState<Record<string, number>>({});
+  const _levels = {} as Record<string, number>;
+  const levels = _levels;
 
   const { registerContext } = useContextLossRecovery({
     remountOnRestore: true,
@@ -183,11 +182,11 @@ export function SpatialAudioProfiler({
     }
   }, [levels, onAudioLevelChange]);
 
-  const handleCreated = useCallback((self: CanvasState) => {
-    registerContext(self.gl);
+  const handleCreated = useCallback((state: RootState) => {
+    registerContext(state);
   }, [registerContext]);
 
-  if (!showSphere || shouldReduceMotion) {
+  if (!showSphere || !animationsEnabled) {
     return (
       <div ref={containerRef} className={`relative ${className ?? 'h-full w-full'}`}>
         <StaticAudioVisualizer sources={audioSources} />

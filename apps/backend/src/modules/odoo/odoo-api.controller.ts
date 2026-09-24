@@ -122,6 +122,13 @@ export class OdooApiController {
     return this.odooApi.getProjectDetail(parseInt(id, 10));
   }
 
+  @Get('projects/:id/billing')
+  @ApiOperation({ summary: 'Get project detail with billing metadata' })
+  @ApiParam({ name: 'id', type: Number })
+  async getProjectWithBilling(@Param('id') id: string) {
+    return this.odooApi.getProjectWithBillingMetadata(parseInt(id, 10));
+  }
+
   @Patch('projects/:id')
   @ApiOperation({ summary: 'Update a project' })
   @ApiParam({ name: 'id', type: Number })
@@ -169,6 +176,34 @@ export class OdooApiController {
   @ApiQuery({ name: 'offset', required: false, type: Number })
   async getInvoices(@Query('limit') limit?: string, @Query('offset') offset?: string) {
     return this.odooApi.getInvoices(limit ? parseInt(limit, 10) : 50, offset ? parseInt(offset, 10) : 0);
+  }
+
+  @Get('billing/invoices')
+  @ApiOperation({ summary: 'List Odoo invoices (billing alias)' })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
+  async getBillingInvoices(@Query('limit') limit?: string, @Query('offset') offset?: string) {
+    return this.odooApi.getInvoices(limit ? parseInt(limit, 10) : 50, offset ? parseInt(offset, 10) : 0);
+  }
+
+  @Get('billing/payments')
+  @ApiOperation({ summary: 'List Odoo payments (billing alias)' })
+  @ApiQuery({ name: 'dateFrom', required: false, type: String, description: 'Start date (YYYY-MM-DD)' })
+  @ApiQuery({ name: 'dateTo', required: false, type: String, description: 'End date (YYYY-MM-DD)' })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
+  async getBillingPayments(
+    @Query('dateFrom') dateFrom?: string,
+    @Query('dateTo') dateTo?: string,
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+  ) {
+    return this.odooApi.getAccountPayments(
+      dateFrom,
+      dateTo,
+      limit ? parseInt(limit, 10) : 50,
+      offset ? parseInt(offset, 10) : 0,
+    );
   }
 
   // --- Health ---

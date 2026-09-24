@@ -1,13 +1,12 @@
 'use client';
 
 import { Suspense, useRef, useCallback, useState } from 'react';
-import { Canvas, useFrame, type RootState } from '@react-three/fiber';
+import { Canvas, useFrame, type RootState, useThree } from '@react-three/fiber';
 import { Environment, PerspectiveCamera, ContactShadows, Html } from '@react-three/drei';
 import { COLOR_TOKENS, GOLD } from '@/lib/color-tokens';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { useQualityTier } from '@/providers/quality-provider';
 import { useContextLossRecovery } from '@/hooks/useContextLossRecovery';
-import { LIGHTING_PRESETS } from '@/features/scene/config/lighting-presets';
 import * as THREE from 'three';
 
 type EnvironmentPreset = 'sunset' | 'dawn' | 'night' | 'studio' | 'warehouse' | 'city' | 'apartment' | 'forest' | 'lobby' | 'park';
@@ -20,32 +19,17 @@ interface CinematicStorytellerProps {
   className?: string;
 }
 
-const ENVIRONMENT_PRESET_MAP: Record<EnvironmentPreset, keyof typeof LIGHTING_PRESETS> = {
-  sunset: 'daylight',
-  dawn: 'golden_hour',
-  night: 'cyberpunk',
-  studio: 'daylight',
-  warehouse: 'gallery',
-  city: 'daylight',
-  apartment: 'daylight',
-  forest: 'golden_hour',
-  lobby: 'gallery',
-  park: 'sunset',
-};
-
 function CinematicLighting({ environment = 'studio' }: { environment?: EnvironmentPreset }) {
   const { tier } = useQualityTier();
-  const lightingPreset = ENVIRONMENT_PRESET_MAP[environment ?? 'studio'];
-  const lighting = LIGHTING_PRESETS[lightingPreset];
 
   return (
     <>
       <Environment preset={environment} environmentIntensity={0.5} />
-      <ambientLight intensity={lighting.ambientIntensity} color={lighting.ambientColor} />
+      <ambientLight intensity={0.4} color="#eaf1ff" />
       <directionalLight
-        position={lighting.directionalPosition}
-        intensity={lighting.directionalIntensity}
-        color={lighting.directionalColor}
+        position={[8, 12, 4]}
+        intensity={1.5}
+        color="#ffffff"
         castShadow
         shadow-mapSize-width={tier.shadowMapSize}
         shadow-mapSize-height={tier.shadowMapSize}
@@ -97,16 +81,13 @@ function StoryContent({ title, subtitle }: { title?: string; subtitle?: string }
 function StaticFallback({ title, subtitle, background }: { title?: string; subtitle?: string; background?: string }) {
   return (
     <div
-      className="flex h-full w-full items-center justify-center"
-      style={{ backgroundColor: background || COLOR_TOKENS.VOID }}
+      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '0.5rem', padding: '1rem', backgroundColor: background ?? COLOR_TOKENS.VOID }}
     >
-      <div className="text-center">
-        <div className="mx-auto mb-4 h-1 w-16" style={{ backgroundColor: GOLD }} />
-        <h3 className="text-sm uppercase tracking-[0.3em] text-slate-400/40">
-          {title || '3D Experience'}
-        </h3>
-        {subtitle && <p className="text-xs mt-2 text-slate-500">{subtitle}</p>}
-      </div>
+      <div style={{ width: '2rem', height: '0.25rem', backgroundColor: GOLD }} />
+      <h3 style={{ fontSize: '0.875rem', fontWeight: 500, letterSpacing: '0.2em', color: '#6b7280' }}>
+        {title || '3D Experience'}
+      </h3>
+      {subtitle && <p style={{ fontSize: '0.75rem', color: '#9ca3af' }}>{subtitle}</p>}
     </div>
   );
 }
@@ -147,10 +128,9 @@ export function CinematicStoryteller({
         <div
           role="status"
           aria-live="polite"
-          className="absolute inset-0 flex items-center justify-center"
-          style={{ backgroundColor: background }}
+          style={{ position: 'absolute' as const, inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: background ?? COLOR_TOKENS.VOID }}
         >
-          <p className="text-slate-400 text-xs">3D experience paused</p>
+          <p style={{ color: '#a0a0a0', fontSize: '0.875rem' }}>3D experience paused</p>
         </div>
       )}
       <Canvas
@@ -162,7 +142,7 @@ export function CinematicStoryteller({
           alpha: false,
           powerPreference: 'high-performance',
         }}
-        style={{ background }}
+        style={{ background: background }}
       >
         <Suspense fallback={null}>
           <PerspectiveCamera makeDefault position={[0, 0, 8]} fov={45} />
@@ -183,5 +163,3 @@ export function CinematicStoryteller({
 }
 
 CinematicStoryteller.displayName = 'CinematicStoryteller';
-
-export { CinematicStoryteller };

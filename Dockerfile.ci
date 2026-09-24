@@ -1,0 +1,19 @@
+FROM node:22-bullseye
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    bash \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Gitleaks binary
+RUN curl -L https://github.com/gitleaks/gitleaks/releases/download/v8.18.2/gitleaks_8.18.2_linux_x64.tar.gz | tar xz -C /usr/local/bin
+
+# Set workspace
+WORKDIR /build
+
+# Pre-install common global tools
+RUN npm install -g typescript ts-node
+
+CMD ["bash"]

@@ -1,15 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { AppProviders } from "@/providers/app-providers";
-import { LayoutShell } from "@/components/LayoutShell";
+import { AppLayoutWidgets } from "@/providers/app-layout-widgets";
+import { LayoutChrome } from "@/components/LayoutChrome";
 import { StructuredData } from "@/components/StructuredData";
-import { CinematicPreloaderMount } from "@/components/ui/overlays/CinematicPreloaderMount";
-import { WebVitals } from "@/components/WebVitals";
-import { LivePreview } from "@/components/LivePreview";
-import { ScrollToTop } from "@/components/ScrollToTop";
-import { AnalyticsInit } from "@/lib/analytics";
-import { Suspense } from "react";
 import "./globals.css";
-import { AnimationDebugLoader } from "@/components/dev/AnimationDebugLoader";
 
 export const viewport: Viewport = {
   themeColor: [
@@ -191,26 +184,16 @@ export default function RootLayout({
             .no-js-fallback { display: block !important; }
           `}</style>
         </noscript>
-        <AppProviders>
-          <CinematicPreloaderMount />
-          {process.env.NODE_ENV === 'development' && <AnimationDebugLoader />}
-          <StructuredData />
-          <a
-            href="#main-content"
-            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:start-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[var(--foreground)] focus:text-[var(--background)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
-          >
-            Skip to content
-          </a>
-          <main id="main-content" tabIndex={-1}>
-            <LayoutShell>{children}</LayoutShell>
-          </main>
-          <Suspense fallback={null}>
-            <AnalyticsInit />
-          </Suspense>
-          <WebVitals />
-          <LivePreview />
-          <ScrollToTop />
-        </AppProviders>
+        <StructuredData />
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:start-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[var(--foreground)] focus:text-[var(--background)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+        >
+          Skip to content
+        </a>
+        <LayoutChrome />
+        {children}
+        <AppLayoutWidgets />
       </body>
     </html>
   );

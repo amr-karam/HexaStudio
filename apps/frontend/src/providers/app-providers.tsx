@@ -1,48 +1,34 @@
 "use client";
 
 import { MotionConfig } from "framer-motion";
-import { Toaster } from "sonner";
 import { Providers } from "@/providers/query-provider";
 import { AuthProvider } from "@/features/auth";
 import { LocaleProvider } from "@/i18n/LocaleProvider";
 import { CurrencyProvider } from "@/features/currency";
 import { MotionPolicyProvider } from "@/providers/motion-policy-provider";
 import { QualityProvider } from "@/providers/quality-provider";
-import { LazyWebGLContextProvider } from "@/providers/lazy-webgl-context-provider";
-import { usePerformanceMonitor } from "@/hooks/usePerformanceMonitor";
 import type { ReactNode } from "react";
 
+/**
+ * Context-only provider tree for pages that need query/auth/locale/etc.
+ * Intentionally excludes `LazyWebGLContextProvider` (scoped to the few
+ * client-side 3D canvases that actually consume it) and app-wide widgets
+ * (handled by `AppLayoutWidgets`), so this boundary stays deterministic and
+ * can wrap {children} without forcing a BAILOUT.
+ */
 export function AppProviders({ children }: { children: ReactNode }) {
-  // Enable performance monitoring for WebGL scenes
-  usePerformanceMonitor({ enabled: true });
-
   return (
     <LocaleProvider>
       <QualityProvider>
-        <LazyWebGLContextProvider
-          autoRecover={true}
-          maxRecoveryAttempts={3}
-          recoveryDelayMs={1000}
-          enableMetrics={true}
-        >
-          <MotionConfig reducedMotion="user">
-            <Providers>
-              <AuthProvider>
-                <CurrencyProvider>
-                  <MotionPolicyProvider>
-                    {children}
-                  </MotionPolicyProvider>
-                </CurrencyProvider>
-                <Toaster
-                  position="bottom-right"
-                  richColors
-                  closeButton
-                  theme="dark"
-                />
-              </AuthProvider>
-            </Providers>
-          </MotionConfig>
-        </LazyWebGLContextProvider>
+        <MotionConfig reducedMotion="user">
+          <Providers>
+            <AuthProvider>
+              <CurrencyProvider>
+                <MotionPolicyProvider>{children}</MotionPolicyProvider>
+              </CurrencyProvider>
+            </AuthProvider>
+          </Providers>
+        </MotionConfig>
       </QualityProvider>
     </LocaleProvider>
   );

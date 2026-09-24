@@ -5,8 +5,8 @@ import { withSentryConfig } from "@sentry/nextjs";
 const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
   openAnalyzer: false,
-  analyzerMode: "static",
-} as any);
+  analyzerMode: "static" as const,
+});
 
 /**
  * Content-Security-Policy (Sprint 15 P7).
@@ -77,7 +77,6 @@ const nextConfig: NextConfig = {
   trailingSlash: process.env.GITHUB_PAGES === "true" ? true : undefined,
   reactStrictMode: true,
   poweredByHeader: false,
-  turbopack: {},
   transpilePackages: ["@hexastudio/types", "@hexastudio/utils", "@hexastudio/ui"],
   // Remove console.log in production to reduce bundle size
   compiler: {
@@ -101,15 +100,19 @@ const nextConfig: NextConfig = {
       "@radix-ui/react-slot",
     ],
     scrollRestoration: true,
-    // Optimized CSS handling kept; `inlineCss` removed — inlining the full
-    // Tailwind sheet (~180 KB) into every prerendered HTML blocked first paint
-    // (FCP 3.5s). External `<link>` CSS parses without blocking first paint.
-    optimizeCss: true,
+    // S-019: CSS is served as an external stylesheet — NOT inlined via
+    // `inlineCss`/`optimizeCss` (those inlined the full ~180 KB Tailwind sheet into
+    // both the <head> <style> and the RSC flight string, bloating initial HTML to
+    // ~560 KB). External CSS is still render-blocking (it blocks FCP via the
+    // CSSOM), so a `postbuild` step (scripts/inject-preloads.mjs) inlines only the
+    // critical above-the-fold CSS (~4-5 KB) and loads the remainder with
+    // `media="print" onload=...` so it never blocks first paint — keeping FCP low
+    // without reintroducing the inline bloat or FOUC/CLS regressions.
   },
   // S-019 performance budgets
   // - JS per-route/entrypoint budget enforced via webpack performance hints
-  // - TBT < 100ms  (monitored via Sentry + Core Web Vitals)
-  // - LCP < 1.5s   (monitored via Sentry + Core Web Vitals)
+  // - FCP < 1.6s, LCP < 2.5s, TBT < 200ms (Lighthouse; monitored via Sentry + CWV)
+  // - Critical CSS inlined post-build so the 182 KB Tailwind sheet stays non-blocking
   webpack: (config, { isServer, dev }) => {
     if (!isServer && !dev) {
       config.performance = {

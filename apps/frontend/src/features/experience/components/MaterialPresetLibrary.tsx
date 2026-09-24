@@ -1,8 +1,8 @@
 'use client';
 
 import { Suspense, useRef, useCallback, useState } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Environment, PerspectiveCamera, MeshDistortableMaterial } from '@react-three/drei';
+import { Canvas, useFrame, type RootState } from '@react-three/fiber';
+import { Environment, PerspectiveCamera, MeshDistortMaterial } from '@react-three/drei';
 import { COLOR_TOKENS, GOLD } from '@/lib/color-tokens';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { useQualityTier } from '@/providers/quality-provider';
@@ -38,12 +38,6 @@ interface MaterialPresetLibraryProps {
 
 const PRESET_ORDER: MaterialPresetName[] = ['obsidian_marble', 'warm_oak', 'brushed_titanium', 'raw_concrete'];
 
-type CanvasState = {
-  gl: THREE.WebGLRenderer;
-  camera: THREE.Camera;
-  scene: THREE.Scene;
-};
-
 function PresetSphere({ preset, scale = 1, rotating = true }: { preset: MaterialPresetName; scale?: number; rotating?: boolean }) {
   const { tier } = useQualityTier();
   const material = MATERIAL_PRESETS[preset];
@@ -60,24 +54,23 @@ function PresetSphere({ preset, scale = 1, rotating = true }: { preset: Material
   const metalness = material.metalness * (tier.level === 'high' ? 1 : tier.level === 'medium' ? 0.7 : 0.3);
   const envMapIntensity = material.envMapIntensity * (tier.level === 'high' ? 1 : tier.level === 'medium' ? 0.8 : 0.5);
   const clearcoat = material.clearcoat * (tier.level === 'high' ? 1 : tier.level === 'medium' ? 0.7 : 0.3);
-  const distortion = material.clearcoat > 0 ? 0.02 : 0;
 
   return (
     <mesh ref={meshRef}>
       <sphereGeometry args={[0.5 * scale, tier.level === 'high' ? 64 : tier.level === 'medium' ? 32 : 16, 32]} />
-      <MeshDistortableMaterial
+      <MeshDistortMaterial
         roughness={roughness}
         metalness={metalness}
         envMapIntensity={envMapIntensity}
         clearcoat={clearcoat}
         color={material.color}
-        distortions={distortion}
+        distort={0.02}
       />
     </mesh>
   );
 }
 
-function MaterialsGrid({ onSelect, activePreset }: { onSelect?: (preset: MaterialPresetName) => void; activePreset?: MaterialPresetName }) {
+function MaterialsGrid() {
   return (
     <group position={[-3, 0, 0]}>
       {PRESET_ORDER.map((preset) => (
@@ -87,25 +80,39 @@ function MaterialsGrid({ onSelect, activePreset }: { onSelect?: (preset: Materia
   );
 }
 
+const STATIC_PRESET_STYLES = {
+  container: { display: 'flex', flexDirection: 'column' as const, gap: '0.5rem', padding: '1rem' },
+  label: { fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.25rem', color: '#f5f5f4' },
+  button: (active: boolean) => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    padding: '0.5rem',
+    borderRadius: '0.25rem',
+    border: '1px solid',
+    borderColor: active ? GOLD : '#374151',
+    backgroundColor: active ? 'rgba(212, 175, 55, 0.1)' : 'transparent',
+    cursor: 'pointer' as const,
+    transition: 'all 0.1s',
+  }),
+  colorSwatch: { width: '1rem', height: '1rem', borderRadius: '0.25rem' },
+  presetName: { fontSize: '0.75rem', fontWeight: 400, color: '#f5f5f4' },
+  activeBadge: { fontSize: '0.625rem', color: GOLD },
+};
+
 function StaticMaterialPresets({ activePreset, onSelect }: { activePreset?: MaterialPresetName; onSelect?: (preset: MaterialPresetName) => void }) {
   return (
-    <div className="flex flex-col gap-2 p-4">
-      <h3 className="text-sm font-bold text-slate-200 mb-2">Material Presets</h3>
+    <div style={STATIC_PRESET_STYLES.container}>
+      <div style={STATIC_PRESET_STYLES.label}>Material Presets</div>
       {PRESET_ORDER.map((preset) => (
         <button
           key={preset}
           onClick={() => onSelect?.(preset)}
-          className={`w-full p-2 rounded-lg border text-left transition-all ${
-            activePreset === preset
-              ? 'border-gold-ink bg-gold-subtle/20'
-              : 'border-slate-700 hover:border-slate-600'
-          }`}
+          style={STATIC_PRESET_STYLES.button(activePreset === preset)}
         >
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: PRESET_PREVIEW_COLORS[preset] }} />
-            <span className="text-xs font-medium text-slate-200">{PRESET_LABELS[preset]}</span>
-          </div>
-          {activePreset === preset && <span className="ml-auto text-xs text-gold-ink">Active</span>}
+          <div style={{ ...STATIC_PRESET_STYLES.colorSwatch, backgroundColor: PRESET_PREVIEW_COLORS[preset] }} />
+          <span style={STATIC_PRESET_STYLES.presetName}>{PRESET_LABELS[preset]}</span>
+          {activePreset === preset && <span style={STATIC_PRESET_STYLES.activeBadge}>Active</span>}
         </button>
       ))}
     </div>
@@ -114,14 +121,13 @@ function StaticMaterialPresets({ activePreset, onSelect }: { activePreset?: Mate
 
 export function MaterialPresetLibrary({
   activePreset = 'obsidian_marble',
-  onPresetChange,
-  showLibrary = true,
+  onPresetChange: _onPresetChange,
+  showLibrary: _showLibrary,
   onSelect,
   className,
   position = [0, 0, 5],
-  scale = 1,
 }: MaterialPresetLibraryProps) {
-  const { shouldReduceMotion } = useMotionPolicy();
+  const { animationsEnabled } = useMotionPolicy();
   const { tier } = useQualityTier();
   const containerRef = useRef<HTMLDivElement>(null);
   const [contextLost, setContextLost] = useState(false);
@@ -132,11 +138,11 @@ export function MaterialPresetLibrary({
     onRestore: () => setContextLost(false),
   });
 
-  const handleCreated = useCallback((self: CanvasState) => {
-    registerContext(self.gl);
+  const handleCreated = useCallback((state: RootState) => {
+    registerContext(state);
   }, [registerContext]);
 
-  if (shouldReduceMotion) {
+  if (!animationsEnabled) {
     return (
       <div ref={containerRef} className={`relative ${className ?? 'h-full w-full'}`}>
         <StaticMaterialPresets activePreset={activePreset} onSelect={onSelect} />
@@ -171,7 +177,7 @@ export function MaterialPresetLibrary({
           <ambientLight intensity={0.3} />
           <directionalLight position={[5, 10, 5]} intensity={1} />
           <Environment preset="studio" environmentIntensity={0.4} />
-          <MaterialsGrid onSelect={onSelect} activePreset={activePreset} />
+          <MaterialsGrid />
         </Suspense>
       </Canvas>
     </div>

@@ -98,9 +98,10 @@ export class DesignAuditService {
 
       ### CRITICAL CHECKLIST
       1. 60-30-10 Rule: Is the balance between Void (#050505), Obsidian (#0F0F10), and Gold (#D4AF37) maintained?
-      2. Token Purge: Are there raw beziers, generic Tailwind colors (e.g., bg-blue-500), or hardcoded hexes not in the system?
-      3. Editorial Typography: Do Mono labels use the canonical wide tracking (0.3em - 0.5em)? Are serif headings tight?
-      4. Motion: Are raw easings used instead of --hexa-ease-* tokens?
+      2. WCAG Contrast Ratio: Do text vs background contrast ratios meet WCAG AA (4.5:1) or AAA (7:1) standards? Flag any failing ratios with suggested fixes.
+      3. Token Purge: Are there raw beziers, generic Tailwind colors (e.g., bg-blue-500), or hardcoded hexes not in the system?
+      4. Editorial Typography: Do Mono labels use the canonical wide tracking (0.3em - 0.5em)? Are serif headings tight?
+      5. Motion: Are raw easings used instead of --hexa-ease-* tokens?
 
       ### OUTPUT FORMAT
       Return a JSON object with:

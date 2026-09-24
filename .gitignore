@@ -258,3 +258,12 @@ scripts/webdev-quick-start.sh
 scripts/check-motion-tokens.mjs
 scripts/setup-security-config.sh
 scripts/verify-webdev-setup.sh
+
+# Generated artifacts
+create-mr.json
+hexa-session-video/
+
+# Environment
+.env
+.env.local
+.env.*.local
