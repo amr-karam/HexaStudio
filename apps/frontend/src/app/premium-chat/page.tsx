@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import PremiumChatClient from './PremiumChatClient';
+import { AppProviders } from '@/providers/app-providers';
 
 export const metadata: Metadata = {
   title: 'Premium Chat',
@@ -30,5 +31,9 @@ export const metadata: Metadata = {
 };
 
 export default function PremiumChatPage() {
-  return <PremiumChatClient />;
+  return (
+    <AppProviders>
+      <PremiumChatClient />
+    </AppProviders>
+  );
 }

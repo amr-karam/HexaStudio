@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { odooApi, odooSyncApi } from '@/features/odoo/api';
 import { useAuth } from '@/features/auth';
+import { AppProviders } from '@/providers/app-providers';
 import type { OdooLead, OdooPipelineSummary, OdooKnowledgeArticle, SyncConflict } from '@hexastudio/types';
 import { toast } from 'sonner';
 
@@ -236,7 +237,7 @@ function EmailSendModal({ open, onClose }: { open: boolean; onClose: () => void 
 }
 
 // --- Main Page ---
-export default function OdooDashboardPage() {
+function OdooDashboardPageInner() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const [tab, setTab] = useState<Tab>('pipeline');
@@ -1006,5 +1007,13 @@ export default function OdooDashboardPage() {
         </section>
       )}
     </div>
+  );
+}
+
+export default function OdooDashboardPage() {
+  return (
+    <AppProviders>
+      <OdooDashboardPageInner />
+    </AppProviders>
   );
 }
