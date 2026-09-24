@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import NewHomeHeroStatic from "@/components/NewHomeHeroStatic";
 import { HomeClient } from "@/components/HomeClient";
+import { AppProviders } from "@/providers/app-providers";
 
 export const metadata: Metadata = {
   title: "HEXA STUDIO — Living Spaces Visualized",
@@ -46,7 +47,9 @@ export default async function HomePage() {
       {/* Below-fold interactive layers are code-split into a Client Component
           and streamed in after first paint. */}
       <Suspense fallback={null}>
-        <HomeClient />
+        <AppProviders>
+          <HomeClient />
+        </AppProviders>
       </Suspense>
     </div>
   );

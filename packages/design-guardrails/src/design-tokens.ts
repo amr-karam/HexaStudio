@@ -38,6 +38,18 @@ export const DESIGN_SYSTEM = {
   // Governance
   luxuryScoreThreshold: 80, // CI/CD Gate threshold
   luxuryScorePerfect: 100,
+
+  // WCAG Accessibility Guidelines
+  // contrastRatioNormal: Minimum 4.5:1 for normal text (WCAG AA)
+  // contrastRatioLarge: Minimum 3:1 for large text (WCAG AA)
+  // contrastRatioAAANormal: Minimum 7:0:1 for normal text (WCAG AAA)
+  // contrastRatioAAALarge: Minimum 4.5:1 for large text (WCAG AAA)
+  contrastGuidelines: {
+    normalText: '4.5:1 minimum (WCAG AA)',
+    largeText: '3:1 minimum (WCAG AA)',
+   aaaNormal: '7:1 minimum (WCAG AAA)',
+    aaaLarge: '4.5:1 minimum (WCAG AAA)',
+  },
 } as const;
 
 export type DesignSystem = typeof DESIGN_SYSTEM;
