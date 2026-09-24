@@ -78,10 +78,10 @@ function StoryContent({ title, subtitle }: { title?: string; subtitle?: string }
   );
 }
 
-function StaticFallback({ title, subtitle, background: _background }: { title?: string; subtitle?: string; background?: string }) {
+function StaticFallback({ title, subtitle, background }: { title?: string; subtitle?: string; background?: string }) {
   return (
     <div
-      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '0.5rem', padding: '1rem' }}
+      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '0.5rem', padding: '1rem', backgroundColor: background ?? COLOR_TOKENS.VOID }}
     >
       <div style={{ width: '2rem', height: '0.25rem', backgroundColor: GOLD }} />
       <h3 style={{ fontSize: '0.875rem', fontWeight: 500, letterSpacing: '0.2em', color: '#6b7280' }}>

@@ -70,7 +70,7 @@ function PresetSphere({ preset, scale = 1, rotating = true }: { preset: Material
   );
 }
 
-function MaterialsGrid({ onSelect, activePreset }: { onSelect?: (preset: MaterialPresetName) => void; activePreset?: MaterialPresetName }) {
+function MaterialsGrid({ onSelect: _onSelect, activePreset }: { onSelect?: (preset: MaterialPresetName) => void; activePreset?: MaterialPresetName }) {
   return (
     <group position={[-3, 0, 0]}>
       {PRESET_ORDER.map((preset) => (
@@ -121,12 +121,12 @@ function StaticMaterialPresets({ activePreset, onSelect }: { activePreset?: Mate
 
 export function MaterialPresetLibrary({
   activePreset = 'obsidian_marble',
-  onPresetChange,
-  showLibrary = true,
-  onSelect,
+  onPresetChange: _onPresetChange,
+  showLibrary: _showLibrary,
+  onSelect: _onSelect,
   className,
   position = [0, 0, 5],
-  scale = 1,
+  scale: _scale = 1,
 }: MaterialPresetLibraryProps) {
   const { animationsEnabled } = useMotionPolicy();
   const { tier } = useQualityTier();
