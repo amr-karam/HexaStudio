@@ -109,16 +109,6 @@ export default function RootLayout({
           href="https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2"
           crossOrigin="anonymous"
         />
-        {/* Inter latin-ext subset — the hero uses glyphs outside latin (↓, °,
-            em-dashes); without this preload the browser discovers the second
-            subset late (LHCI 2026-09-24: 47 KB fetched on demand). */}
-        <link
-          rel="preload"
-          as="font"
-          type="font/woff2"
-          href="https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2"
-          crossOrigin="anonymous"
-        />
         <link
           rel="preload"
           as="font"
