@@ -92,6 +92,13 @@ export function NewSelectedWork() {
                 src={p.img}
                 alt={p.title}
                 fill
+                // S-019: the first gallery image is streamed in with the below-fold
+                // HomeClient subtree (Suspense) and becomes the page LCP. Promoting it
+                // to `priority` so next/image emits a fetchpriority=high hint + an
+                // early <link rel=preload>; keeps the image's critical request in the
+                // initial fetch pool alongside the deferred JS rather than waiting for
+                // hydration.
+                priority={i === 0}
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className={`object-cover transition-all duration-1000 ${
                   hover === i ? 'grayscale-0 scale-105' : 'grayscale'
