@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 
 export function XRGuidedTour() {
   const { status } = useXRStore();
+  const collaborators = useXRStore((s) => s.collaborators);
   const [step, setStep] = useState(0);
   const [visible, setVisible] = useState(false);
 
@@ -24,7 +25,6 @@ export function XRGuidedTour() {
     { title: 'Explore', desc: 'Move around to view from different angles.' },
   ];
 
-  const collaborators = useXRStore((s) => s.collaborators);
   const current = steps[step];
   const hasCollaborators = Object.keys(collaborators).length > 0;
 
