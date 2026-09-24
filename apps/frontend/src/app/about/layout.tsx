@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AppProviders } from "@/providers/app-providers";
 export const metadata: Metadata = {
   title: "About",
   description:
@@ -31,5 +32,9 @@ export default function AboutLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <AppProviders>
+      {children}
+    </AppProviders>
+  );
 }

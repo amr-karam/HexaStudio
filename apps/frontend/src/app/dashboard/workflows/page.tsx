@@ -11,6 +11,7 @@ import type {
   CreateWorkflowDto,
 } from '@hexastudio/types';
 import { toast } from 'sonner';
+import { AppProviders } from '@/providers/app-providers';
 
 const EVENT_OPTIONS: { value: WorkflowEventName; label: string }[] = [
   { value: 'lead.created', label: 'Lead created' },
@@ -163,7 +164,7 @@ function WorkflowFormModal({ open, onClose, initial }: { open: boolean; onClose:
 }
 
 // --- Main Page ---
-export default function WorkflowsPage() {
+function WorkflowsPageInner() {
   const queryClient = useQueryClient();
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<WorkflowDefinition | null>(null);
@@ -291,5 +292,13 @@ export default function WorkflowsPage() {
 
       {modalOpen && <WorkflowFormModal open onClose={() => setModalOpen(false)} initial={editing} />}
     </div>
+  );
+}
+
+export default function WorkflowsPage() {
+  return (
+    <AppProviders>
+      <WorkflowsPageInner />
+    </AppProviders>
   );
 }

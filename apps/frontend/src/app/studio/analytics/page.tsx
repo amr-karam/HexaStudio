@@ -5,8 +5,10 @@ import { TelemetryDashboard } from "@/features/admin/components/TelemetryDashboa
 import { ContextLossTracker } from "@/features/monitoring/components/ContextLossTracker";
 import { Card } from "@/components/ui/cards/Card";
 import { useState } from "react";
+import { AppProviders } from "@/providers/app-providers";
+import { WebGLContextProvider } from "@/engine/webgl/WebGLContextProvider";
 
-export default function StudioAnalyticsPage() {
+function StudioAnalyticsPageInner() {
   const [activeTab, setActiveTab] = useState<"overview" | "quality" | "telemetry">("overview");
 
   const badge = (variant: "secondary" | "destructive" | "outline", label: string) => {
@@ -134,7 +136,7 @@ export default function StudioAnalyticsPage() {
               <button className="w-full flex items-center justify-between px-4 py-2 border rounded hover:bg-sl-obsidian">
                 <span>Export Telemetry Data</span>
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V9a2 0 00-2-2H5a2 0 00-2 2v10a2 0 002 2z" />
                 </svg>
               </button>
               <button className="w-full flex items-center justify-between px-4 py-2 border rounded hover:bg-sl-obsidian">
@@ -164,5 +166,15 @@ export default function StudioAnalyticsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function StudioAnalyticsPage() {
+  return (
+    <AppProviders>
+      <WebGLContextProvider>
+        <StudioAnalyticsPageInner />
+      </WebGLContextProvider>
+    </AppProviders>
   );
 }

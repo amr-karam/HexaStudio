@@ -7,8 +7,9 @@ import { TextReveal } from '@/components/ui/TextReveal';
 import { toast } from 'sonner';
 import { API_BASE_URL } from '@/config/constants';
 import { ProjectRequest } from '@/services/portal.service';
+import { AppProviders } from '@/providers/app-providers';
 
-export default function AdminRequestsPage() {
+function AdminRequestsPageInner() {
   const queryClient = useQueryClient();
 
   const { data: requestsResponse, isLoading } = useQuery<{ data: ProjectRequest[] }>({
@@ -139,5 +140,13 @@ export default function AdminRequestsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AdminRequestsPage() {
+  return (
+    <AppProviders>
+      <AdminRequestsPageInner />
+    </AppProviders>
   );
 }

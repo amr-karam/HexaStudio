@@ -3,6 +3,7 @@ import { PortalThemeProvider } from '@/features/portal/components/PortalThemePro
 import { PortalSidebar, PortalMobileSidebar } from '@/features/portal/components/PortalSidebar';
 import { PortalTopBar } from '@/features/portal/components/PortalTopBar';
 import { CommandPalette } from '@/features/portal/components/CommandPalette';
+import { AppProviders } from '@/providers/app-providers';
 
 export const metadata: Metadata = {
   title: 'Client Portal | HEXA Studio',
@@ -40,7 +41,8 @@ export default function PortalLayout({
 }) {
   return (
     <PortalThemeProvider>
-      <div className="min-h-screen bg-sl-void text-sl-alabaster flex relative overflow-hidden">
+      <AppProviders>
+        <div className="min-h-screen bg-sl-void text-sl-alabaster flex relative overflow-hidden">
         {/* Dynamic Ambient Light - Follows the "Silent Luxury" theme */}
         <div className="fixed inset-0 pointer-events-none">
           <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-sl-gold-subtle/10 blur-[120px] animate-pulse" />
@@ -70,7 +72,8 @@ export default function PortalLayout({
         {/* Command Palette Overlay */}
         <CommandPalette />
       </div>
-    </PortalThemeProvider>
-  );
+    </AppProviders>
+  </PortalThemeProvider>
+);
 }
 
