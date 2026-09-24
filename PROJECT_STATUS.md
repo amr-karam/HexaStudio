@@ -1,6 +1,6 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated: September 24, 2026 - Quality gate sweep complete. chore/nestjs-12-migration merged into main and develop. All gates PASS. Worktrees cleaned up. Project relocated from OneDrive to workspace.\n**Version:** 2.2.10
+**Last Updated: September 24, 2026 — All 9 quality gates PASS. chore/nestjs-12-migration merged into main (f865a648) and develop (0ed3bdfb). Frontend lint/eslint fixed. Project relocated from OneDrive to workspace.\n**Version:** 2.2.10
 **Authority Level:** 13 (Production)
 **Current Phase:** Production-Ready — Quad-Track Feature Delivery & Silent Luxury Design System (DEPLOYED)
 
@@ -24,18 +24,20 @@
 
 | Gate | Target | Status | Result |
 ||---|---|---|---|
-|| **Backend Tests** | 403 total (47 files) | `47 / 47 files, 404/404 tests` | ✅ PASS |
-||| **Frontend Tests** | 665 total (90 files) | `665 / 665` | ✅ PASS |
+|| **Backend Tests** | 453 total (60 files) | `60 / 60 files, 453/453 tests` | ✅ PASS |
+||| **Frontend Tests** | 854 total (130 files) | `130 / 130 files, 854/854 tests` | ✅ PASS |
 || **Mobile Tests** | 26 passing | `26 / 26` (lint+typecheck PASS; 8 test suites via `jest`) | ✅ PASS |
 || **Frontend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 || **Backend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 || **Mobile Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 || **ESLint (all)** | 0 errors, 0 warnings | `0 errors, 0 warnings` (frontend, backend, mobile full `src` + `test`) | ✅ PASS |
+|| **Design Tokens** | All pass | `✓ ALL DESIGN TOKEN CHECKS PASSED` | ✅ PASS |
+|| **Font Preloads** | All match | `✓ ALL FONT PRELOADS MATCH SERVED LATIN URLS` | ✅ PASS |
 
-- **Current Phase**: Phase 4 / Release Candidate & Live Operations (v2.2.5)
+- **Current Phase**: Phase 4 / Release Candidate & Live Operations (v2.2.10)
 - **Active Workspace Quality Gates**:
-  - `apps/frontend`: 90 suites / 665 tests passed (100%), 50 routes compiled, 0 errors, 0 warnings
-  - `apps/backend`: 47 files / 404 tests passed (100%), 0 errors, 0 warnings
+  - `apps/frontend`: 130 suites / 854 tests passed (100%), design tokens PASS, font preloads PASS, lint 0/0, typecheck 0 errors
+  - `apps/backend`: 60 files / 453 tests passed (100%), 0 errors, 0 warnings
   - `apps/mobile`: 8 suites / 26 tests passed (100%), lint 0/0, typecheck 0 errors
 
 - **Production Server (`19.16.1.100`)**:
@@ -45,6 +47,18 @@
   - Exchange Rate Sync: **Active (166 currencies synced)**
   - Local AI Inference: **Gemma 4 & Gemini 3.1 Live active**
 | **Governance** | 61/61 Sections | `100% Active — v1.1.0` | ✅ PASS |
+
+---
+
+## Merge History
+
+| Merge | Source → Target | Commit | Status |
+|---|---|---|---|
+| `chore/nestjs-12-migration` | → `main` | `f865a648` (main HEAD) | ✅ Merged |
+| `chore/nestjs-12-migration` | → `develop` | `0ed3bdfb` (develop HEAD) | ✅ Merged |
+| Frontend lint fix | → `main` | `06ecf68d` | ✅ Committed |
+| Frontend lint fix | → `develop` | `40dc685c` | ✅ Committed |
+| `framer-motion` override fix | → `develop` | `9e918a75` | ✅ Committed |
 
 ---
 
@@ -1597,12 +1611,14 @@ curl http://localhost:8929/users/sign_in
 
 ### 5. Next Actions
 
-- [ ] Open MR: `chore/nestjs-12-migration` → `main` on GitLab
-- [ ] Code review + approval
-- [ ] Merge + CI pipeline (quality → build → image → validate → mobile → deploy)
+- [x] Open MR: `chore/nestjs-12-migration` → `main` on GitLab
+- [x] Code review + approval
+- [x] Merge + CI pipeline (quality → build → image → validate → mobile → deploy)
+- [x] Frontend lint/eslint fix applied and committed
+- [x] `framer-motion` override conflict resolved in root `package.json`
 - [ ] Blue/green deploy to production
 - [ ] Post-deploy verification: all 6 health endpoints green
 
 ---
 
-**Last Updated:** September 24, 2026 — All gates green, production-ready
+**Last Updated:** September 24, 2026 — All 9 quality gates PASS, chore/nestjs-12-migration merged to main (f865a648) and develop (0ed3bdfb)
