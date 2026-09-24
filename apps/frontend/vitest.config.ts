@@ -40,6 +40,7 @@ export default defineConfig({
       '**/_corrupted_node_modules_stubs/**',
     ],
     css: false,
+    console: 'silent',
     testTimeout: 15000,
     coverage: {
       provider: 'v8',

@@ -21,6 +21,7 @@ export default defineConfig({
       '**/_corrupted_node_modules_stubs/**',
     ],
     css: false,
+    console: 'silent',
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
