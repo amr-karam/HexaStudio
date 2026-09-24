@@ -12,7 +12,7 @@ const PROJECTS = [
     place: 'Aspen, US',
     year: '2025',
     type: 'Residential',
-    img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1400&q=80',
+    img: '/work-01.jpg',
   },
   {
     n: '02',
@@ -20,7 +20,7 @@ const PROJECTS = [
     place: 'Dubai, UAE',
     year: '2025',
     type: 'Cultural',
-    img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1400&q=80',
+    img: '/work-02.jpg',
   },
   {
     n: '03',
@@ -28,7 +28,7 @@ const PROJECTS = [
     place: 'Singapore',
     year: '2024',
     type: 'Tower',
-    img: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1400&q=80',
+    img: '/work-03.jpg',
   },
   {
     n: '04',
@@ -36,7 +36,7 @@ const PROJECTS = [
     place: 'Hokkaido, JP',
     year: '2024',
     type: 'Hospitality',
-    img: 'https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=1400&q=80',
+    img: '/work-04.jpg',
   },
 ];
 
