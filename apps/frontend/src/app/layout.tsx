@@ -155,14 +155,15 @@ export default function RootLayout({
           href="https://fonts.gstatic.com/s/jost/v20/92zatBhPNqw73oTd4g.woff2"
           crossOrigin="anonymous"
         />
-        {/* Hero LCP image (first NewSelectedWork gallery plate) — preload so it starts
+        {/* Hero LCP image (first NewSelectedWork gallery plate: Obsidian Villa) — preload so it starts
             downloading during HTML parse, not after hydration. next/image with
             priority emits a preload, but this explicit one fires earlier. */}
         <link
           rel="preload"
           as="image"
-          href="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1400&q=80"
-          crossOrigin="anonymous"
+          href="/work-01.jpg"
+          type="image/jpeg"
+          fetchPriority="high"
         />
         {/* Non-blocking font CSS — preloaded as stylesheet and promoted to
             rel="stylesheet" on load so it never blocks rendering. Font woff2
