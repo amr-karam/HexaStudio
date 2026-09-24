@@ -2,8 +2,8 @@
 
 import { Suspense, useRef, useCallback, useState, useEffect } from 'react';
 import { Canvas, useFrame, type RootState } from '@react-three/fiber';
-import { Environment, PerspectiveCamera, Html } from '@react-three/drei';
-import { COLOR_TOKENS, GOLD, GOLD_DEEP } from '@/lib/color-tokens';
+import { Environment, PerspectiveCamera } from '@react-three/drei';
+import { COLOR_TOKENS, GOLD } from '@/lib/color-tokens';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { useQualityTier } from '@/providers/quality-provider';
 import { useContextLossRecovery } from '@/hooks/useContextLossRecovery';
@@ -13,7 +13,6 @@ const WARNING_COLOR = '#f97316';
 const ERROR_COLOR = '#ef4444';
 const SUCCESS_COLOR = '#22c55e';
 const INFO_COLOR = '#3b82f6';
-const BORDER_COLOR = '#4b5563';
 
 interface ARProjectionOverlayProps {
   position?: [number, number, number];
