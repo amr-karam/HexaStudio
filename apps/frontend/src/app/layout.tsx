@@ -191,7 +191,10 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        {children}
+        <AppProviders>
+          <LayoutShell>{children}</LayoutShell>
+        </AppProviders>
+        <AppLayoutWidgets />
       </body>
     </html>
   );
