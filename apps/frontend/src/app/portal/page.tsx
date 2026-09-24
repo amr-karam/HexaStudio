@@ -44,6 +44,7 @@ const PortalAiCopilot = createDynamicComponent<PortalAiCopilotProps>(
 );
 import { portalApi } from '@/features/portal/api';
 import { useAuth } from '@/features/auth';
+import { AppProviders } from '@/providers/app-providers';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import {
   fadeLift,
