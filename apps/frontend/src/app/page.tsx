@@ -4,6 +4,7 @@ import NewHomeHeroStatic from "@/components/NewHomeHeroStatic";
 import { HomeClient } from "@/components/HomeClient";
 import { AppProviders } from "@/providers/app-providers";
 
+export const dynamic = "force-static";
 
 export const metadata: Metadata = {
   title: "HEXA STUDIO — Living Spaces Visualized",
