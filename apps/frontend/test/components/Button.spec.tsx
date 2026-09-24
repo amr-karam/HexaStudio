@@ -87,7 +87,7 @@ describe('Button', () => {
   describe('sizes', () => {
     it('applies sm size classes', () => {
       const { container } = render(<Button size="sm">S</Button>);
-      expect(container.querySelector('button')?.className).toContain('h-8');
+      expect(container.querySelector('button')?.className).toContain('h-11');
     });
 
     it('applies md (default) size classes', () => {
@@ -103,8 +103,8 @@ describe('Button', () => {
     it('applies icon size classes (square, no padding)', () => {
       const { container } = render(<Button size="icon">X</Button>);
       const cls = container.querySelector('button')?.className ?? '';
-      expect(cls).toContain('h-9');
-      expect(cls).toContain('w-9');
+      expect(cls).toContain('h-11');
+      expect(cls).toContain('w-11');
       expect(cls).toContain('p-0');
     });
   });
@@ -119,7 +119,7 @@ describe('Button', () => {
         <Button size={{ base: 'sm', md: 'md', lg: 'lg' }}>Responsive</Button>
       );
       const cls = container.querySelector('button')?.className ?? '';
-      expect(cls).toContain('h-8'); // base sm
+      expect(cls).toContain('h-11'); // base sm
     });
 
     it('includes responsive breakpoint classes', () => {
@@ -139,7 +139,7 @@ describe('Button', () => {
       );
       const cls = container.querySelector('button')?.className ?? '';
       // Base sm
-      expect(cls).toContain('h-8');
+      expect(cls).toContain('h-11');
     });
   });
 
