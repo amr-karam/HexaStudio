@@ -56,7 +56,7 @@ const STATS_STYLE = {
 };
 
 function StatsPanel({ stats }: { stats: PerformanceStats }) {
-  const warningColor = stats.warnings.length > 0 ? stats.warnings[0].level === 'high' ? COLOR_TOKENS.ERROR ?? ERROR_COLOR : stats.warnings[0].level === 'medium' ? COLOR_TOKENS.WARNING ?? WARNING_COLOR : GOLD : PERFORMANCE_COLORS.excellent;
+  const warningColor = stats.warnings.length > 0 ? stats.warnings[0].level === 'high' ? ERROR_COLOR : stats.warnings[0].level === 'medium' ? WARNING_COLOR : GOLD : PERFORMANCE_COLORS.excellent;
 
   return (
     <div style={STATS_STYLE.container}>
@@ -85,7 +85,7 @@ function StatsPanel({ stats }: { stats: PerformanceStats }) {
         <div style={{ marginTop: '0.5rem', padding: '0.5rem', background: COLOR_TOKENS.OBSIDIAN, borderRadius: '0.25rem' }}>
           <div style={{ fontSize: '0.75rem', fontWeight: 500, marginBottom: '0.25rem', color: '#f5f5f4' }}>Warnings</div>
           {stats.warnings.map((w, i) => (
-            <div key={i} style={{ fontSize: '0.65rem', color: w.level === 'high' ? (COLOR_TOKENS.ERROR ?? ERROR_COLOR) : w.level === 'medium' ? (COLOR_TOKENS.WARNING ?? WARNING_COLOR) : GOLD }}>
+            <div key={i} style={{ fontSize: '0.65rem', color: w.level === 'high' ? ERROR_COLOR : w.level === 'medium' ? WARNING_COLOR : GOLD }}>
               • {w.message}
             </div>
           ))}

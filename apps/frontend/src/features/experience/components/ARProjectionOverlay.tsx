@@ -77,7 +77,6 @@ function ARGrid({ size = 2, divisions = 5 }: { size?: number; divisions?: number
   return (
     <gridHelper
       args={[size, divisions]}
-      color={BORDER_COLOR}
     />
   );
 }

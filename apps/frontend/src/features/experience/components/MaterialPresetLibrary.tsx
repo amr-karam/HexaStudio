@@ -110,7 +110,7 @@ function StaticMaterialPresets({ activePreset, onSelect }: { activePreset?: Mate
           onClick={() => onSelect?.(preset)}
           style={STATIC_PRESET_STYLES.button(activePreset === preset)}
         >
-          <div style={STATIC_PRESET_STYLES.colorSwatch} style={{ backgroundColor: PRESET_PREVIEW_COLORS[preset] }} />
+          <div style={{ ...STATIC_PRESET_STYLES.colorSwatch, backgroundColor: PRESET_PREVIEW_COLORS[preset] }} />
           <span style={STATIC_PRESET_STYLES.presetName}>{PRESET_LABELS[preset]}</span>
           {activePreset === preset && <span style={STATIC_PRESET_STYLES.activeBadge}>Active</span>}
         </button>

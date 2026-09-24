@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense, useRef, useCallback, useState } from 'react';
-import { Canvas, useFrame, type RootState } from '@react-three/fiber';
+import { Canvas, useFrame, type RootState, useThree } from '@react-three/fiber';
 import { Environment, PerspectiveCamera, ContactShadows, Html } from '@react-three/drei';
 import { COLOR_TOKENS, GOLD } from '@/lib/color-tokens';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
@@ -9,7 +9,7 @@ import { useQualityTier } from '@/providers/quality-provider';
 import { useContextLossRecovery } from '@/hooks/useContextLossRecovery';
 import * as THREE from 'three';
 
-type EnvironmentPreset = 'sunset' | 'dawn' | 'night' | 'studios' | 'warehouse' | 'city' | 'apartment' | 'forest' | 'lobby' | 'park';
+type EnvironmentPreset = 'sunset' | 'dawn' | 'night' | 'studio' | 'warehouse' | 'city' | 'apartment' | 'forest' | 'lobby' | 'park';
 
 interface CinematicStorytellerProps {
   title?: string;
@@ -96,7 +96,7 @@ export function CinematicStoryteller({
   title,
   subtitle,
   background = COLOR_TOKENS.VOID,
-  environment = 'studio',
+  environment = 'studios',
   className,
 }: CinematicStorytellerProps) {
   const { animationsEnabled } = useMotionPolicy();
