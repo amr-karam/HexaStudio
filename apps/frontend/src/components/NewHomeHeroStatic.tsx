@@ -78,10 +78,6 @@ export default function NewHomeHeroStatic() {
             </Link>
           </div>
         </div>
-
-            {/* Static plate — right side, 5 cols. This inline SVG is the LCP fallback;
-                the interactive canvas overlays this slot once it hydrates. */}
-            <div
       </div>
 
       {/* Bottom hairline + scroll cue */}
