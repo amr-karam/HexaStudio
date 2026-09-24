@@ -155,7 +155,7 @@ const METRIC_LABELS: Record<(typeof METRIC_KEYS)[number], string> = {
 /*  Main Page Component                                                       */
 /* -------------------------------------------------------------------------- */
 
-export default function PortalDashboardPage() {
+function PortalDashboardPageInner() {
   const router = useRouter();
   const { user } = useAuth();
   const prefersReduced = useReducedMotion();
@@ -698,4 +698,11 @@ export default function PortalDashboardPage() {
   );
 }
 
+export default function PortalDashboardPage() {
+  return (
+    <AppProviders>
+      <PortalDashboardPageInner />
+    </AppProviders>
+  );
+}
 
