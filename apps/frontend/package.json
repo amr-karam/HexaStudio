@@ -11,7 +11,7 @@
     "check:fonts": "node ../../scripts/check-font-preloads.mjs",
     "check:bundle": "node scripts/check-bundle-sizes.mjs",
     "typecheck": "tsc --noEmit",
-    "test": "set VITE_CONFIG_NATIVE_IGNORE_WARNING=true && vitest run",
+    "test": "vitest run",
     "test:watch": "vitest",
     "test:cov": "vitest run --coverage",
     "test:e2e": "playwright test --config ../../e2e/playwright.config.ts",
