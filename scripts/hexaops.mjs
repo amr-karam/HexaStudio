@@ -92,7 +92,7 @@ async function cmdGate() {
     if (!r.ok) {
       // Show the first meaningful error line for debugging
       const lines = (r.output + r.error).split('\n').filter((l) => l.trim());
-      const errLine = lines.find((l) => /error|failed|✗|✘/i.test(l));
+      const errLine = lines.find((l) => /✗|✘|error/i.test(l));
       if (errLine) console.log(`${COLORS.dim('  ↳')} ${COLORS.red(errLine.trim())}`);
     }
   }

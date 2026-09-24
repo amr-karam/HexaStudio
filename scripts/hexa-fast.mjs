@@ -107,7 +107,7 @@ function printGateResult(label, res) {
   console.log(`${pad(label, 14)} ${pad(status, 8)} ${COLORS.dim(`(${res.ms}ms)`)}`);
   if (!res.ok) {
     const lines = (res.output + (res.error ?? '')).split('\n').filter((l) => l.trim());
-    const errLine = lines.find((l) => /error|failed|✗|✘|violation/i.test(l));
+    const errLine = lines.find((l) => /✗|✘|error|violation/i.test(l));
     if (errLine) console.log(`${COLORS.dim('  ↳')} ${COLORS.red(errLine.trim())}`);
   }
 }
