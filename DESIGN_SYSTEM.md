@@ -31,5 +31,6 @@ HEXA STUDIO adheres to a strict 60-30-10 color balance to ensure visual luxury a
 ## Governance
 
 - **Luxury Score Threshold**: 80 (CI/CD Gate)
+- **WCAG Accessibility**: Contrast ratio guidelines for normal and large text (AA/AAA)
 - **Enforcement**: `check-design-tokens.mjs` pre-commit hook.
 - **Generation**: `LuxuryForge` AI for auto-refactoring.

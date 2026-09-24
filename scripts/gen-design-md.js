@@ -78,6 +78,7 @@ function generateMarkdown(tokens) {
   lines.push('## Governance');
   lines.push('');
   lines.push(`- **Luxury Score Threshold**: ${tokens.luxuryScoreThreshold} (CI/CD Gate)`);
+  lines.push('- **WCAG Accessibility**: Contrast ratio guidelines for normal and large text (AA/AAA)');
   lines.push('- **Enforcement**: `check-design-tokens.mjs` pre-commit hook.');
   lines.push('- **Generation**: `LuxuryForge` AI for auto-refactoring.');
 
