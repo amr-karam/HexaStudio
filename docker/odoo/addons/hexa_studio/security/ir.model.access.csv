@@ -1,9 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_hexa_webhook_config_all,hexa.webhook.config,model_hexa_webhook_config,,1,1,1,1
-access_hexa_webhook_all,hexa.webhook,model_hexa_webhook,,1,1,1,1
-access_hexa_webhook_log_all,hexa.webhook.log,model_hexa_webhook_log,,1,1,1,1
-access_project_project_user,project.project,model_project_project,base.group_user,1,1,1,1
-access_crm_lead_user,crm.lead,model_crm_lead,base.group_user,1,1,1,1
-access_account_move_user,account.move,model_account_move,base.group_user,1,1,1,1
-access_project_task_user,project.task,model_project_task,base.group_user,1,1,1,1
-access_res_partner_user,res.partner,model_res_partner,base.group_user,1,1,1,1

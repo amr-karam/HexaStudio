@@ -50,7 +50,7 @@ export function NewSelectedWork() {
   return (
     <section
       id="work"
-      className="relative bg-sl-void px-6 py-24 sm:px-10 md:px-16 md:py-32 lg:py-40"
+      className="relative cv-section bg-sl-void px-6 py-24 sm:px-10 md:px-16 md:py-32 lg:py-40"
     >
       <div className="mx-auto max-w-[1600px]">
         {/* Section header */}

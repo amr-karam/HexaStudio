@@ -34,6 +34,7 @@ import {
   OdooAccountJournal,
   OdooBankStatement,
   OdooPayment,
+  OdooProjectWithBillingMetadata,
   OdooBankAccount,
   OdooSendEmailData,
 } from '@hexastudio/types';
@@ -208,6 +209,50 @@ export class OdooApiService {
     );
     if (!results.length) throw new Error(`Project #${id} not found`);
     return results[0] as unknown as OdooProject;
+  }
+
+  async getProjectWithBillingMetadata(id: number): Promise<OdooProjectWithBillingMetadata> {
+    const projectResults = await this.odooService.execute<Record<string, unknown>[]>(
+      'project.project',
+      'search_read',
+      [[['id', '=', id]], ['name', 'partner_id', 'x_slug', 'x_hexa_type', 'x_hexa_status', 'x_hexa_budget_amount', 'x_hexa_client_portal_active', 'x_hexa_milestone_ids', 'date_start', 'date', 'stage_id']],
+    );
+    if (!projectResults.length) throw new Error(`Project #${id} not found`);
+
+    const project = projectResults[0] as unknown as OdooProject;
+    const partnerId = project.partner_id?.id;
+
+    const [invoiceResults, paymentResults] = await Promise.all([
+      this.odooService.execute<Record<string, unknown>[]>(
+        'account.move',
+        'search_read',
+        partnerId
+          ? [[['partner_id', '=', partnerId]], ['name', 'invoice_date', 'partner_id', 'amount_total', 'amount_residual', 'payment_state', 'state', 'date'], 0, 100, 'invoice_date desc']
+          : [],
+      ),
+      this.odooService.execute<Record<string, unknown>[]>(
+        'account.move',
+        'search_read',
+        [[['move_type', 'in', ['out_invoice', 'out_refund']], ['partner_id', '=', partnerId]], ['name', 'payment_date', 'partner_id', 'amount_total', 'payment_state', 'state', 'date'], 0, 100, 'date desc'],
+      ),
+    ]);
+
+    const invoices = (invoiceResults || []) as OdooInvoice[];
+    const payments = (paymentResults || []) as OdooPayment[];
+    const totalInvoices = invoices.length;
+    const totalAmount = invoices.reduce((sum, inv) => sum + (inv.amount_total || 0), 0);
+    const unpaidAmount = invoices.reduce((sum, inv) => sum + (inv.amount_residual || 0), 0);
+
+    return {
+      ...project,
+      invoices,
+      payments,
+      billingSummary: {
+        count: totalInvoices,
+        totalAmount,
+        unpaidAmount,
+      },
+    };
   }
 
   async updateProject(id: number, data: Record<string, unknown>): Promise<boolean> {
