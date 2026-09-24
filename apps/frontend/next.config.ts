@@ -100,9 +100,10 @@ const nextConfig: NextConfig = {
       "@radix-ui/react-dropdown-menu",
       "@radix-ui/react-slot",
     ],
-    inlineCss: true,
     scrollRestoration: true,
-    // Enable optimized CSS handling
+    // Optimized CSS handling kept; `inlineCss` removed — inlining the full
+    // Tailwind sheet (~180 KB) into every prerendered HTML blocked first paint
+    // (FCP 3.5s). External `<link>` CSS parses without blocking first paint.
     optimizeCss: true,
   },
   // S-019 performance budgets
