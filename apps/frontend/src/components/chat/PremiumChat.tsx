@@ -115,13 +115,13 @@ const PremiumChat: React.FC<PremiumChatProps> = ({
             className="w-8 h-8 rounded-full mr-2"
           />
         )}
-        <div
-          className={`max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl rounded-lg p-3 ${
-            isCurrentUser
-              ? 'bg-blue-500 text-sl-alabaster rounded-br-none'
-              : 'bg-gray-200 text-gray-800 rounded-bl-none'
-          }`}
-        >
+            <div
+              className={`max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl rounded-lg p-3 ${
+                isCurrentUser
+                  ? 'bg-sl-gold text-sl-void rounded-br-none'
+                  : 'bg-sl-obsidian-raised text-sl-alabaster rounded-bl-none'
+              }`}
+            >
           {message.attachments && message.attachments.length > 0 && (
             <div className="mb-2">
               {message.attachments.map(attachment => (
@@ -163,7 +163,7 @@ const PremiumChat: React.FC<PremiumChatProps> = ({
           <div className={`flex items-center justify-end mt-1 text-xs`}>
             <span className="mr-2">{new Date(message.timestamp).toLocaleTimeString()}</span>
             {message.status === 'read' && (
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-sl-gold" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 18.686l-7.828-7.828a4 4 0 010-5.656z" clipRule="evenodd" />
                 <path fillRule="evenodd" d="M10 6.343L8.828 5.172a4 4 0 115.656 5.656L10 18.686l-1.172-1.171a4 4 0 010-5.656z" clipRule="evenodd" />
               </svg>
@@ -189,7 +189,7 @@ const PremiumChat: React.FC<PremiumChatProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-white rounded-lg shadow">
+       <div className="flex flex-col h-full bg-sl-void rounded-lg shadow-2xl border border-sl-obsidian">
       <div className="flex-1 p-4 overflow-y-auto">
         {messages.map(renderMessage)}
         {isTyping && (
@@ -202,11 +202,11 @@ const PremiumChat: React.FC<PremiumChatProps> = ({
               unoptimized
               className="w-8 h-8 rounded-full mr-2"
             />
-            <div className="flex space-x-1">
-              <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"></div>
-              <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-              <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '0.4s' }}></div>
-            </div>
+               <div className="flex space-x-1">
+                 <div className="w-2 h-2 rounded-full bg-sl-gold animate-bounce"></div>
+                 <div className="w-2 h-2 rounded-full bg-sl-gold animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                 <div className="w-2 h-2 rounded-full bg-sl-gold animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+               </div>
           </div>
         )}
         <div ref={messagesEndRef} />
@@ -227,7 +227,7 @@ const PremiumChat: React.FC<PremiumChatProps> = ({
                     className="w-20 h-20 object-cover rounded"
                   />
                 ) : (
-                  <div className="flex items-center p-2 w-20 h-20 bg-gray-100 rounded">
+                  <div className="flex items-center p-2 w-20 h-20 bg-sl-obsidian-raised rounded">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-8 w-8 mr-2"
@@ -275,7 +275,7 @@ const PremiumChat: React.FC<PremiumChatProps> = ({
           />
 
           <div className="flex-1">
-            <div className="flex rounded-lg overflow-hidden border border-gray-300 focus-within:border-blue-500">
+             <div className="flex rounded-lg overflow-hidden border border-sl-obsidian focus-within:border-sl-gold">
               <textarea
                 value={inputValue}
                 onChange={(e) => {
@@ -287,11 +287,11 @@ const PremiumChat: React.FC<PremiumChatProps> = ({
                 className="flex-1 p-2 resize-none min-h-[44px] max-h-32 outline-none"
                 rows={1}
               />
-              <button
-                onClick={handleSendMessage}
-                disabled={!inputValue.trim() && attachments.length === 0}
-                className={`p-2 ${inputValue.trim() || attachments.length > 0 ? 'bg-blue-500 text-sl-alabaster' : 'bg-gray-200 text-gray-500'}`}
-              >
+               <button
+                 onClick={handleSendMessage}
+                 disabled={!inputValue.trim() && attachments.length === 0}
+                 className={`p-2 ${inputValue.trim() || attachments.length > 0 ? 'bg-sl-gold text-sl-void' : 'bg-sl-obsidian text-sl-mist'}`}
+               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
                   <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5.355-1.152a1 1 0 011.17.077l2.6 1.152a1 1 0 001.406-1.17l-2.35-4.848a1 1 0 00-.391-.78l-4.16-1.851a1 1 0 01-.334-.67l1.43-2.967a1 1 0 00-.653-1.093l-5.48-1.115A1 1 0 003.28 7.935l1.97 4.2a1 1 0 001.257.934l5.357-1.152a1 1 0 011.17.077l2.6 1.152z" />
                 </svg>

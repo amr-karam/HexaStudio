@@ -3,19 +3,20 @@
 import { Suspense } from 'react';
 import { Environment, ContactShadows } from '@react-three/drei';
 import { XRSceneContent } from './XRSceneContent';
-import { XRLoadingScreen } from './XRLoadingScreen';
 import { GOLD } from '@/lib/color-tokens';
 
-export function XRView({ modelUrl, modelName, sendCursor }: { modelUrl?: string; modelName?: string; sendCursor?: (position: { x: number; y: number; z: number }, rotation?: { x: number; y: number; z: number; w: number }) => void }) {
+export function XRView({ modelUrl, sendCursor }: { modelUrl?: string; sendCursor?: (position: { x: number; y: number; z: number }, rotation?: { x: number; y: number; z: number; w: number }) => void }) {
   return (
-    <Suspense fallback={<XRLoadingScreen modelName={modelName} />}>
+    <>
       {modelUrl ? (
         <XRSceneContent modelUrl={modelUrl} sendCursor={sendCursor} />
       ) : (
-        <mesh>
-          <boxGeometry args={[0.5, 0.5, 0.5]} />
-          <meshStandardMaterial color={GOLD} />
-        </mesh>
+        <Suspense fallback={null}>
+          <mesh>
+            <boxGeometry args={[0.5, 0.5, 0.5]} />
+            <meshStandardMaterial color={GOLD} />
+          </mesh>
+        </Suspense>
       )}
       <ambientLight intensity={0.5} />
       <directionalLight position={[5, 10, 5]} intensity={1} />
@@ -27,6 +28,6 @@ export function XRView({ modelUrl, modelName, sendCursor }: { modelUrl?: string;
         blur={2.5}
       />
       <Environment preset="city" />
-    </Suspense>
+    </>
   );
 }

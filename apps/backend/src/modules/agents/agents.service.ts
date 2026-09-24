@@ -1,10 +1,12 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject } from '@nestjs/common';
 import type { User } from '@hexastudio/types';
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import { ChatCompletionMessageParam, ChatCompletionTool } from 'openai/resources/chat/completions';
 import { ToolRegistryService } from './tool-registry.service';
 import { AgentMemoryService } from './agent-memory.service';
+import { REALTIME_PORT } from '../../ports/realtime.port';
+import type { RealtimePort } from '../../ports/realtime.port';
 import { Env } from '../../config/env';
 
 interface ChatMessage {
@@ -26,6 +28,7 @@ export class AgentsService {
     private readonly toolRegistry: ToolRegistryService,
     private readonly memory: AgentMemoryService,
     private configService: ConfigService<Env>,
+    @Inject(REALTIME_PORT) private readonly realtime: RealtimePort,
   ) {
     // Prefer local LM Studio (free & unlimited, tool-call capable).
     // Falls back to OpenAI when AI_CHAT_PROVIDER != 'local' or a key is set.
@@ -124,6 +127,20 @@ ${baseInstructions}`;
     const history = await this.memory.getHistory(persona, activeSession);
     const facts = await this.memory.getAllFacts(persona, activeSession);
     
+    // --- SEMANTIC MEMORY HYDRATION ---
+    // Perform a vector search to recall relevant facts from all previous sessions.
+    const semanticMemories = await this.memory.semanticRecall(persona, activeSession, message);
+    if (semanticMemories.length > 0) {
+      const semanticString = semanticMemories
+        .map((m, i) => `[Recalled Memory ${i + 1}]: ${JSON.stringify(m)}`)
+        .join('\n');
+      messages.push({ 
+        role: 'system', 
+        content: `LONG-TERM SEMANTIC CONTEXT:\n${semanticString}\n\nUse these recalled memories to maintain continuity across sessions.` 
+      });
+    }
+    // ---------------------------------
+
     // Inject durable facts as a high-priority system context block.
     if (Object.keys(facts).length > 0) {
       const factString = Object.entries(facts)
@@ -235,6 +252,24 @@ ${baseInstructions}`;
           role: 'tool',
           content: toolResult,
         });
+
+        // Broadcast material/design changes to collaboration peers
+        try {
+          if (call.function.name.toLowerCase().includes('material')) {
+            this.realtime.broadcastToRoom(`project:${sessionId}`, 'collab:material-override', {
+              element: params.element || 'unknown',
+              color: params.color,
+              roughness: params.roughness,
+              metalness: params.metalness,
+              name: params.name,
+              triggeredBy: params.triggeredBy || 'user',
+              agentPersona: persona,
+            });
+          }
+        } catch (e) {
+          // Non-fatal: collaboration emission fails silently
+          this.logger.debug(`Collaboration emit skipped: ${e}`);
+        }
       }
     }
 

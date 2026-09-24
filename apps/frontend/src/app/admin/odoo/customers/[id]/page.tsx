@@ -28,9 +28,9 @@ interface Customer {
 }
 
 export default function CustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const resolvedParams = use(params);
   const router = useRouter();
-  const id = resolvedParams.id;
+  const resolved = use(params);
+  const id = resolved.id;
   
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [loading, setLoading] = useState(true);

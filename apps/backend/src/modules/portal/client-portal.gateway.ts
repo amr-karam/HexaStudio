@@ -14,7 +14,6 @@ import { AuthService } from '../auth/auth.service';
 import { ProjectsService } from '../projects/projects.service';
 import { RedisService } from '../storage/redis.service';
 import { SyncStateDto } from './dto/sync-state.dto';
-import { getEnv } from '../../config/env';
 import type { User } from '@hexastudio/types';
 
 export interface CursorPosition {
@@ -24,16 +23,12 @@ export interface CursorPosition {
   userRole?: string;
 }
 
-// Same comma-split, trimmed list logic as main.ts. Wildcard ('*') is NOT used here
-// because credentials:true combined with a wildcard origin is invalid and insecure.
-const corsOrigins = (getEnv().CORS_ORIGINS ?? 'http://localhost:3000')
-  .split(',')
-  .map((origin: string) => origin.trim());
-
 @WebSocketGateway({
   namespace: '/portal-ws',
   cors: {
-    origin: corsOrigins,
+    origin: process.env.CORS_ORIGINS
+      ? process.env.CORS_ORIGINS.split(',').map((origin: string) => origin.trim())
+      : ['http://localhost:3000'],
     credentials: true,
   },
 })

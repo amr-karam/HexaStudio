@@ -8,6 +8,8 @@ import { ToolRegistryService } from '../../src/modules/agents/tool-registry.serv
 import { GatekeeperService } from '../../src/modules/agents/gatekeeper.service';
 import { TOOL_DEFINITION_METADATA } from '../../src/modules/agents/decorators/constants';
 import { ToolDefinitionOptions } from '../../src/modules/agents/decorators/tool-definition.decorator';
+import { REALTIME_PORT } from '../../src/ports/realtime.port';
+import type { RealtimePort } from '../../src/ports/realtime.port';
 
 describe('AgentsService', () => {
   let service: AgentsService;
@@ -52,25 +54,32 @@ describe('AgentsService', () => {
     forget: vi.fn().mockResolvedValue(undefined),
   };
 
+  const mockRealtimePort: RealtimePort = {
+    broadcastEvent: vi.fn(),
+    broadcastToRoom: vi.fn(),
+    joinRoom: vi.fn(),
+    leaveRoom: vi.fn(),
+    on: vi.fn().mockReturnValue(() => {}),
+    emit: vi.fn().mockResolvedValue(undefined),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AgentsService,
         { provide: ToolRegistryService, useValue: mockToolRegistry },
         { provide: AgentMemoryService, useValue: mockMemory },
-        {
-          provide: ConfigService,
-          useValue: {
-            get: vi.fn((key: string) => {
-              const config: Record<string, any> = {
-                OPENAI_API_KEY: undefined,
-                OPENAI_MODEL: 'gpt-4o-mini',
-                OPENAI_EMBEDDING_MODEL: 'text-embedding-3-small',
-              };
-              return config[key];
-            }),
-          },
-        },
+        { provide: ConfigService, useValue: {
+          get: vi.fn((key: string) => {
+            const config: Record<string, any> = {
+              OPENAI_API_KEY: undefined,
+              OPENAI_MODEL: 'gpt-4o-mini',
+              OPENAI_EMBEDDING_MODEL: 'text-embedding-3-small',
+            };
+            return config[key];
+          }),
+        }},
+        { provide: REALTIME_PORT, useValue: mockRealtimePort },
       ],
     }).compile();
 

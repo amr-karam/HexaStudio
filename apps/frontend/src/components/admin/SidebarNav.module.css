@@ -11,7 +11,7 @@
   display: flex;
   flex-direction: column;
   user-select: none;
-  transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: width 0.3s var(--hexa-ease-entrance);
 }
 
 /* ─── Brand ─── */
@@ -35,8 +35,9 @@
 .brandText {
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
-  letter-spacing: 0.2em;
-  color: rgba(245, 244, 22, 0.6);
+  letter-spacing: 0.4em;
+  color: var(--color-gold-bright);
+  opacity: 0.6;
   white-space: nowrap;
   overflow: hidden;
   flex: 1;
@@ -59,25 +60,28 @@
   gap: 12px;
   padding: 10px 12px;
   border-radius: 6px;
-  color: rgba(245, 244, 22, 0.5);
+  color: var(--color-gold);
+  opacity: 0.5;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all 0.2s var(--hexa-ease-interaction);
   position: relative;
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
 }
 
 .navItem:hover {
-  color: rgba(245, 244, 22, 0.8);
+  color: var(--color-gold-bright);
+  opacity: 0.8;
   background: rgba(212, 175, 55, 0.05);
 }
 
 .navItemActive {
-  color: rgba(245, 244, 22, 0.9);
+  color: var(--color-gold-bright);
+  opacity: 0.9;
   background: rgba(212, 175, 55, 0.05);
 }
 
@@ -89,7 +93,7 @@
   transform: translateY(-50%);
   width: 2px;
   height: 60%;
-  background: #D4AF37;
+  background: var(--color-gold);
   border-radius: 1px;
 }
 
@@ -149,7 +153,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #D4AF37;
+  color: var(--color-gold);
 }
 
 .userInfo {
@@ -162,7 +166,8 @@
 .userName {
   font-size: 11px;
   font-weight: 500;
-  color: rgba(245, 244, 22, 0.8);
+  color: var(--color-gold-bright);
+  opacity: 0.8;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -170,9 +175,10 @@
 
 .userRole {
   font-size: 9px;
-  color: rgba(245, 244, 22, 0.4);
+  color: var(--color-gold);
+  opacity: 0.4;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.3em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

@@ -233,7 +233,7 @@ export default function WorkflowsPage() {
       {workflows.data && workflows.data.length > 0 && (
         <div className="space-y-3">
           {workflows.data.map((wf) => (
-            <div key={wf.id} className="rounded-xl border border-white/10 bg-white/[0.03] p-5 transition-colors hover:border-white/20">
+            <div key={wf.id} className="rounded-xl border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] p-5 transition-colors hover:border-[var(--dash-card-hover-border)]">
               <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <h3 className="font-medium text-sl-alabaster">{wf.name}</h3>
@@ -241,12 +241,13 @@ export default function WorkflowsPage() {
                 </div>
                 <button
                   onClick={() => toggleMutation.mutate(wf)}
-                  className={`relative h-5 w-9 rounded-full transition-colors ${wf.enabled ? 'bg-sl-gold-subtle' : 'bg-white/20'}`}
+                  className={`relative h-5 w-9 rounded-full transition-colors ${wf.enabled ? 'bg-[var(--dash-tab-bg-active)]' : 'bg-white/20'}`}
                   aria-label={wf.enabled ? 'Disable workflow' : 'Enable workflow'}
                 >
                   <span className={`absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-black transition-transform ${wf.enabled ? 'translate-x-4' : ''}`} />
                 </button>
               </div>
+
 
               <div className="mb-3 flex flex-wrap gap-1.5">
                 <span className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-sl-alabaster/50">{triggerLabel(wf.trigger)}</span>

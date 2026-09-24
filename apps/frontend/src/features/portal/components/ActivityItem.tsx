@@ -18,11 +18,11 @@ interface ActivityItemProps {
 
 const ACTIVITY_CONFIG: Record<ActivityType, { icon: IconName; color: string; borderColor: string }> = {
   approval: { icon: 'check', color: 'text-success', borderColor: 'border-l-success' },
-  upload: { icon: 'upload', color: 'text-blue-500', borderColor: 'border-l-blue-500' },
-  comment: { icon: 'message-square', color: 'text-purple-500', borderColor: 'border-l-purple-500' },
+  upload: { icon: 'upload', color: 'text-sl-gold', borderColor: 'border-l-sl-gold' },
+  comment: { icon: 'message-square', color: 'text-sl-obsidian-raised', borderColor: 'border-l-sl-obsidian-raised' },
   milestone: { icon: 'zap', color: 'text-sl-gold-hover', borderColor: 'border-l-accent' },
-  invoice: { icon: 'receipt', color: 'text-amber-400', borderColor: 'border-l-amber-400' },
-  message: { icon: 'send', color: 'text-cyan-400', borderColor: 'border-l-cyan-400' },
+  invoice: { icon: 'receipt', color: 'text-sl-gold-bright', borderColor: 'border-l-sl-gold-bright' },
+  message: { icon: 'send', color: 'text-sl-mist', borderColor: 'border-l-sl-mist' },
   update: { icon: 'file-text', color: 'text-sl-mist/60', borderColor: 'border-l-neutral-500' },
 };
 
@@ -72,7 +72,7 @@ export function ActivityItem({ item, className }: ActivityItemProps) {
 
         <div className="flex items-center gap-2 mt-2">
           {item.projectName && (
-            <span className="text-[10px] font-mono uppercase tracking-wider text-sl-mist/60 bg-white/[0.03] px-2 py-0.5 rounded">
+            <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-sl-mist/60 bg-white/[0.03] px-2 py-0.5 rounded">
               {item.projectName}
             </span>
           )}

@@ -1,0 +1,47 @@
+{
+  "kind": "collectionType",
+  "collectionName": "material_registries",
+  "info": {
+    "singularName": "material-registry",
+    "pluralName": "material-registries",
+    "displayName": "Material Registry",
+    "description": "Persistent registry of XR design material overrides linked to collaboration events"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "element": {
+      "type": "string",
+      "required": true
+    },
+    "color": {
+      "type": "string"
+    },
+    "roughness": {
+      "type": "float"
+    },
+    "metalness": {
+      "type": "float"
+    },
+    "name": {
+      "type": "string"
+    },
+    "triggeredBy": {
+      "type": "enumeration",
+      "enum": ["ai-agent", "user"],
+      "default": "user",
+      "required": true
+    },
+    "agentPersona": {
+      "type": "string"
+    },
+    "sessionId": {
+      "type": "string",
+      "required": true
+    },
+    "projectId": {
+      "type": "string"
+    }
+  }
+}

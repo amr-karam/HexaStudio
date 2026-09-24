@@ -25,6 +25,7 @@ interface NavItem {
 
 const sections: NavItem[] = [
   { id: 'design', label: 'Design & Content', icon: 'palette' },
+  { id: 'luxury-forge', label: 'Luxury Forge', icon: 'user-check' },
   { id: 'content', label: 'Content', icon: 'file-text' },
   { id: 'divider-project', divider: true },
   { id: 'projects', label: 'Odoo — Projects', icon: 'folder' },

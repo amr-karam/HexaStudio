@@ -115,7 +115,7 @@ const Input = React.forwardRef<InputElement, InputComponentProps>(
     /* ------------------------------------------------------------------ */
     const labelClasses = cn(
       'block text-xs font-mono font-medium uppercase tracking-[0.25em] transition-colors duration-300',
-      hasError ? 'text-destructive' : 'text-sl-mist/60 group-focus-within:text-sl-gold-hover',
+      hasError ? 'text-destructive' : 'text-[var(--input-label)] group-focus-within:text-[var(--input-label-focus)]',
     );
 
     /* ------------------------------------------------------------------ */
@@ -126,14 +126,14 @@ const Input = React.forwardRef<InputElement, InputComponentProps>(
       sizeConfig.height,
       sizeConfig.paddingX,
       // Focus ring
-      'group-focus-within:ring-1 group-focus-within:ring-sl-gold-subtle/60',
+      'group-focus-within:ring-1 group-focus-within:ring-[var(--input-ring)]',
       // Variant styles
       {
-        'bg-white/[0.02] border border-white/[0.06]': variant === 'underline',
-        'artisan-glass border border-transparent': variant === 'glass',
+        'bg-[var(--input-bg-underline)] border-[var(--input-border-underline)]': variant === 'underline',
+        'artisan-glass border-transparent': variant === 'glass',
         // Error state
         'border-destructive/50 group-focus-within:border-destructive/70': hasError && variant === 'underline',
-        'border-destructive/40 group-focus-within:artisan-glass-gold group-focus-within:border-destructive/50':
+        'border-destructive/40 group-focus-within:border-destructive/50':
           hasError && variant === 'glass',
         // Disabled
         'disabled:opacity-50 disabled:cursor-not-allowed': disabled,
@@ -144,9 +144,9 @@ const Input = React.forwardRef<InputElement, InputComponentProps>(
     /*  Input element classes                                             |
     /* ------------------------------------------------------------------ */
     const inputClasses = cn(
-      'flex w-full rounded-none bg-transparent text-sl-alabaster transition-all duration-300',
+      'flex w-full rounded-none bg-transparent text-[var(--input-text)] transition-all duration-300',
       sizeConfig.fontSize,
-      'placeholder:text-sl-mist/60 font-light',
+      'placeholder:text-[var(--input-placeholder)] font-light',
       'focus:outline-none',
       // Icon padding compensation
       icons?.left && 'pl-4',

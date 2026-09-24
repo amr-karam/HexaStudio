@@ -5,6 +5,7 @@ import { StructuredData } from "@/components/StructuredData";
 import { CinematicPreloaderMount } from "@/components/ui/overlays/CinematicPreloaderMount";
 import { WebVitals } from "@/components/WebVitals";
 import { LivePreview } from "@/components/LivePreview";
+import { ScrollToTop } from "@/components/ScrollToTop";
 import { AnalyticsInit } from "@/lib/analytics";
 import { Suspense } from "react";
 import "./globals.css";
@@ -81,8 +82,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" dir="ltr" suppressHydrationWarning>
-      <head>
+      <html lang="en" dir="ltr" className="no-js" suppressHydrationWarning>
+        <head>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: "document.documentElement.classList.remove('no-js');",
+            }}
+          />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
@@ -182,6 +188,7 @@ export default function RootLayout({
         <noscript>
           <style>{`
             .js-only { display: none !important; }
+            .no-js-fallback { display: block !important; }
           `}</style>
         </noscript>
         <AppProviders>
@@ -194,12 +201,15 @@ export default function RootLayout({
           >
             Skip to content
           </a>
-          <LayoutShell>{children}</LayoutShell>
+          <main id="main-content" tabIndex={-1}>
+            <LayoutShell>{children}</LayoutShell>
+          </main>
           <Suspense fallback={null}>
             <AnalyticsInit />
           </Suspense>
           <WebVitals />
           <LivePreview />
+          <ScrollToTop />
         </AppProviders>
       </body>
     </html>

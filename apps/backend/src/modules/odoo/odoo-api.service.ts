@@ -220,7 +220,7 @@ export class OdooApiService {
     if (!projectResults.length) throw new Error(`Project #${id} not found`);
 
     const project = projectResults[0] as unknown as OdooProject;
-    const partnerId = project.partner_id?.id;
+    const partnerId = Array.isArray(project.partner_id) ? project.partner_id[0] : undefined;
 
     const [invoiceResults, paymentResults] = await Promise.all([
       this.odooService.execute<Record<string, unknown>[]>(
@@ -231,14 +231,16 @@ export class OdooApiService {
           : [],
       ),
       this.odooService.execute<Record<string, unknown>[]>(
-        'account.move',
+        'account.payment',
         'search_read',
-        [[['move_type', 'in', ['out_invoice', 'out_refund']], ['partner_id', '=', partnerId]], ['name', 'payment_date', 'partner_id', 'amount_total', 'payment_state', 'state', 'date'], 0, 100, 'date desc'],
+        partnerId
+          ? [[['partner_id', '=', partnerId]], ['name', 'date', 'state', 'payment_type', 'partner_id', 'amount', 'currency_id', 'journal_id'], 0, 100, 'date desc']
+          : [],
       ),
     ]);
 
-    const invoices = (invoiceResults || []) as OdooInvoice[];
-    const payments = (paymentResults || []) as OdooPayment[];
+    const invoices = (invoiceResults || []) as unknown as OdooInvoice[];
+    const payments = (paymentResults || []) as unknown as OdooPayment[];
     const totalInvoices = invoices.length;
     const totalAmount = invoices.reduce((sum, inv) => sum + (inv.amount_total || 0), 0);
     const unpaidAmount = invoices.reduce((sum, inv) => sum + (inv.amount_residual || 0), 0);

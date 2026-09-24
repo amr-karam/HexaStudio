@@ -380,7 +380,7 @@ describe('OdooApiService', () => {
       const result = await service.getProjectWithBillingMetadata(1);
       expect(result.invoices).toEqual([]);
       expect(result.payments).toEqual([]);
-      expect(result.billingSummary.count).toBe(0);
+      expect(result.billingSummary?.count).toBe(0);
     });
   });
 });

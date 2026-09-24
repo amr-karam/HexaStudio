@@ -1,0 +1,27 @@
+{
+  "name": "@hexastudio/design-guardrails",
+  "version": "1.0.0",
+  "description": "HEXA STUDIO Design Governance Primitives: AI Auditing, Luxury Generation, and Memory-Driven Design Tokens.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "workspaces": ["src"],
+  "scripts": {
+    "build": "nest build",
+    "start": "nest start",
+    "test": "nest test",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\""
+  },
+  "dependencies": {
+    "@nestjs/common": "^12.0.0",
+    "@nestjs/core": "^12.0.0",
+    "prom-client": "^15.1.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^12.0.0",
+    "@nestjs/schematics": "^12.0.0",
+    "@nestjs/testing": "^12.0.0",
+    "@types/node": "^22.20.0",
+    "typescript": "^5.7.0"
+  }
+}

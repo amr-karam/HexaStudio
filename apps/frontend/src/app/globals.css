@@ -9,9 +9,14 @@
   --color-sl-bg-elevated: #f5f5f4;
 
   --color-void: #050505;
+  --color-gold: #D4AF37;
+  --color-gold-bright: #E5C76B;
   --color-gold-subtle: #D4AF37;
   --color-gold-muted: #b8960f;
   --color-gold-ink: #C5A028;
+
+  --hexa-ease-entrance: 0.16 1 0.3 1;
+  --hexa-ease-interaction: 0.34 1.56 0.64 1;
 
   --color-sl-alabaster: #FAFAF8;
   --color-sl-onyx: #1a1a1a;
@@ -30,6 +35,17 @@
 @utility content-inset-start { content: inset-inline-start; }
 @utility content-inset-end { content: inset-inline-end; }
 
+/*
+ * Below-fold viewport guard (PERFORMANCE.md §2 / ADR-019).
+ * Skips style/layout/paint/decode for below-fold sections until scrolled
+ * within the discard region, keeping the hero SVG as the LCP element and
+ * pushing 3D/portfolio asset work off the initial main-thread window.
+ * contain-intrinsic-size reserves the gallery height to avoid CLS on reveal.
+ */
+@utility cv-section {
+  content-visibility: auto;
+  contain-intrinsic-size: 960px;
+}
 :root {
   --background: #ffffff;
   --foreground: #1a1a1a;
@@ -170,8 +186,45 @@
     font-family: "Inter", sans-serif;
     letter-spacing: 0.01em;
   }
-  * { @apply border-border; }
-  :focus-visible { @apply outline-none ring-2 ring-ring ring-offset-2; }
+
+  .no-js [data-requires-js] {
+    display: none !important;
+  }
+
+  .no-js .no-js-fallback {
+    display: block !important;
+  }
+
+  .no-js-fallback {
+    display: none !important;
+  }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Enhanced focus visible for keyboard navigation */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2;
+    outline-offset: 2px;
+  }
+
+  /* Smooth scrolling for anchor links */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
 }
 
 @layer utilities {

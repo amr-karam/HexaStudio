@@ -1,11 +1,11 @@
-import * as THREE from 'three';
+import { Vector3, Euler, MathUtils } from 'three';
 import type { CameraStoryboard } from '@hexastudio/types';
 
 export interface CameraStoryboardState {
-  position: THREE.Vector3;
-  target: THREE.Vector3;
+  position: Vector3;
+  target: Vector3;
   fov: number;
-  rotation: THREE.Euler;
+  rotation: Euler;
 }
 
 /**
@@ -18,10 +18,10 @@ export function interpolateCameraStoryboard(
 ): CameraStoryboardState {
   if (!storyboard || storyboard.length === 0) {
     return {
-      position: new THREE.Vector3(0, 5, 10),
-      target: new THREE.Vector3(0, 0, 0),
+      position: new Vector3(0, 5, 10),
+      target: new Vector3(0, 0, 0),
       fov: 50,
-      rotation: new THREE.Euler(),
+      rotation: new Euler(),
     };
   }
 
@@ -32,20 +32,20 @@ export function interpolateCameraStoryboard(
   if (progress <= sorted[0].progress) {
     const first = sorted[0];
     return {
-      position: new THREE.Vector3(...first.position),
-      target: new THREE.Vector3(...first.target),
+      position: new Vector3(...first.position),
+      target: new Vector3(...first.target),
       fov: first.fov,
-      rotation: new THREE.Euler(...(first.rotation || [0, 0, 0])),
+      rotation: new Euler(...(first.rotation || [0, 0, 0])),
     };
   }
 
   if (progress >= sorted[sorted.length - 1].progress) {
     const last = sorted[sorted.length - 1];
     return {
-      position: new THREE.Vector3(...last.position),
-      target: new THREE.Vector3(...last.target),
+      position: new Vector3(...last.position),
+      target: new Vector3(...last.target),
       fov: last.fov,
-      rotation: new THREE.Euler(...(last.rotation || [0, 0, 0])),
+      rotation: new Euler(...(last.rotation || [0, 0, 0])),
     };
   }
 
@@ -67,21 +67,21 @@ export function interpolateCameraStoryboard(
 
   // 5. Interpolate
   return {
-    position: new THREE.Vector3().lerpVectors(
-      new THREE.Vector3(...startKey.position),
-      new THREE.Vector3(...endKey.position),
+    position: new Vector3().lerpVectors(
+      new Vector3(...startKey.position),
+      new Vector3(...endKey.position),
       t
     ),
-    target: new THREE.Vector3().lerpVectors(
-      new THREE.Vector3(...startKey.target),
-      new THREE.Vector3(...endKey.target),
+    target: new Vector3().lerpVectors(
+      new Vector3(...startKey.target),
+      new Vector3(...endKey.target),
       t
     ),
-    fov: THREE.MathUtils.lerp(startKey.fov, endKey.fov, t),
-    rotation: new THREE.Euler().set(
-      THREE.MathUtils.lerp(startKey.rotation?.[0] || 0, endKey.rotation?.[0] || 0, t),
-      THREE.MathUtils.lerp(startKey.rotation?.[1] || 0, endKey.rotation?.[1] || 0, t),
-      THREE.MathUtils.lerp(startKey.rotation?.[2] || 0, endKey.rotation?.[2] || 0, t)
+    fov: MathUtils.lerp(startKey.fov, endKey.fov, t),
+    rotation: new Euler().set(
+      MathUtils.lerp(startKey.rotation?.[0] || 0, endKey.rotation?.[0] || 0, t),
+      MathUtils.lerp(startKey.rotation?.[1] || 0, endKey.rotation?.[1] || 0, t),
+      MathUtils.lerp(startKey.rotation?.[2] || 0, endKey.rotation?.[2] || 0, t)
     ),
   };
 }

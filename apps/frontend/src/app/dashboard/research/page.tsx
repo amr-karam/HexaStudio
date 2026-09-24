@@ -371,7 +371,7 @@ function ResultCard({ title, children }: { title: string; children: React.ReactN
 }
 
 function WebSearchResults({ data }: { data: WebSearchResult[] }) {
-  if (data.length === 0) return <p className="text-sm text-sl-alabaster/40">No results returned.</p>;
+  if (!data || data.length === 0) return <p className="text-sm text-sl-alabaster/40">No results returned.</p>;
   return (
     <div className="space-y-3">
       {data.map((r, i) => (

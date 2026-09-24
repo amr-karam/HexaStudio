@@ -29,15 +29,15 @@ interface KanbanBoardProps {
 
 const COLUMNS: { status: TaskStatus; label: string; icon: IconName; color: string }[] = [
   { status: 'todo', label: 'To Do', icon: 'box', color: 'text-sl-mist/60' },
-  { status: 'in_progress', label: 'In Progress', icon: 'clock', color: 'text-blue-400' },
-  { status: 'review', label: 'Review', icon: 'eye', color: 'text-amber-400' },
+  { status: 'in_progress', label: 'In Progress', icon: 'clock', color: 'text-sl-gold-hover' },
+  { status: 'review', label: 'Review', icon: 'eye', color: 'text-sl-gold-bright' },
   { status: 'done', label: 'Done', icon: 'check-circle', color: 'text-success-ink' },
 ];
 
 const PRIORITY_STYLES: Record<TaskPriority, { bg: string; text: string; label: string }> = {
   urgent: { bg: 'bg-destructive/20', text: 'text-destructive-ink', label: 'Urgent' },
-  high: { bg: 'bg-orange-500/20', text: 'text-orange-400', label: 'High' },
-  medium: { bg: 'bg-amber-500/20', text: 'text-amber-400', label: 'Medium' },
+  high: { bg: 'bg-sl-gold-deep/20', text: 'text-sl-gold-deep', label: 'High' },
+  medium: { bg: 'bg-sl-gold-subtle/20', text: 'text-sl-gold-hover', label: 'Medium' },
   low: { bg: 'bg-neutral-700/50', text: 'text-sl-mist/60', label: 'Low' },
 };
 
@@ -79,7 +79,7 @@ function TaskCard({ task, reduced }: { task: PortalTask; reduced: boolean }) {
     <motion.div
       variants={fadeLift}
       whileHover={reduced ? undefined : { y: -4, transition: makeTransition('interaction', 'micro') }}
-      className="bg-neutral-950 border border-sl-obsidian rounded-xl p-4 space-y-2 hover:border-amber-500/40 transition-colors group"
+      className="bg-neutral-950 border border-sl-obsidian rounded-xl p-4 space-y-2 hover:border-sl-gold/40 transition-colors group"
     >
       <div className="flex items-center justify-between">
         <span
@@ -104,9 +104,9 @@ function TaskCard({ task, reduced }: { task: PortalTask; reduced: boolean }) {
         )}
       </div>
 
-      <h4 className="text-sm font-semibold text-neutral-200 leading-snug group-hover:text-amber-400 transition-colors">
-        {task.title}
-      </h4>
+       <h4 className="text-sm font-semibold text-neutral-200 leading-snug group-hover:text-sl-gold transition-colors">
+         {task.title}
+       </h4>
 
       {task.description && (
         <p className="text-[11px] text-sl-mist/60 line-clamp-2 leading-relaxed">
@@ -116,7 +116,7 @@ function TaskCard({ task, reduced }: { task: PortalTask; reduced: boolean }) {
 
       {task.assigneeName && (
         <div className="flex items-center space-x-2 pt-1">
-          <div className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-[8px] font-bold">
+           <div className="w-5 h-5 rounded-full bg-sl-gold/20 text-sl-gold flex items-center justify-center text-[8px] font-bold">
             {task.assigneeName
               .split(' ')
               .map((n) => n[0])
@@ -212,7 +212,7 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
     >
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-bold text-neutral-100">Project Tasks</h3>
-        <span className="text-[10px] text-sl-mist/60 font-mono">{tasks.length} total</span>
+         <span className="text-[10px] text-sl-mist/60 font-mono tracking-[0.3em]">{tasks.length} total</span>
       </div>
       <div className="flex space-x-4 overflow-x-auto pb-2">
         {COLUMNS.map((col) => {

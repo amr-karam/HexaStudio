@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect } from 'react';
-import { captureException } from '@sentry/nextjs';
 
 export default function PortalReviewIdError({
   error,
@@ -11,7 +10,9 @@ export default function PortalReviewIdError({
   reset: () => void;
 }) {
   useEffect(() => {
-    captureException(error);
+    import('@sentry/nextjs').then(({ captureException }) => {
+      captureException(error);
+    });
   }, [error]);
 
   return (

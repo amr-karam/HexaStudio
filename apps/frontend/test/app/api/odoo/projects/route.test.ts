@@ -70,3 +70,4 @@ describe('GET /api/odoo/projects', () => {
     expect(await response.json()).toMatchObject({ error: 'Internal server error' });
   });
 });
+

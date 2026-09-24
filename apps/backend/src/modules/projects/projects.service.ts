@@ -58,7 +58,7 @@ function mapMedia(relation: StrapiRelation | undefined, baseUrl?: string): strin
 }
 
 interface OdooEnrichment {
-  status?: string;
+  lifecycleStatus?: string;
   milestones?: { total: number; completed: number };
   liveStatus?: ProjectLiveStatus;
 }
@@ -150,7 +150,7 @@ export class ProjectsService {
       }
       for (const project of projects) {
         const status = stageMap.get(project.slug);
-        if (status) project.status = status;
+        if (status) project.lifecycleStatus = status;
       }
 
       // Batch milestone progress in a single query (total + completed per project).
@@ -218,7 +218,7 @@ export class ProjectsService {
 
     const { enrichment, error } = await this.getOdooEnrichment(slug);
     if (enrichment) {
-      if (enrichment.status) project.status = enrichment.status;
+      if (enrichment.lifecycleStatus) project.lifecycleStatus = enrichment.lifecycleStatus;
       if (enrichment.milestones) project.milestones = enrichment.milestones;
       if (enrichment.liveStatus) project.liveStatus = enrichment.liveStatus;
     }
@@ -308,7 +308,7 @@ export class ProjectsService {
         : new Date().toISOString();
 
     return {
-      status: stageName || undefined,
+      lifecycleStatus: stageName || undefined,
       milestones: { total, completed },
       liveStatus: {
         stage: stageName || String(record.x_hexa_status ?? 'unknown'),
@@ -375,6 +375,7 @@ export class ProjectsService {
       year: attrs.year as number | undefined,
       area: attrs.area as string | undefined,
       services: attrs.services as string[] | undefined,
+      lifecycleStatus: attrs.lifecycleStatus as string | undefined,
       isPublished: (attrs.isPublished as boolean) ?? true,
       editorial: {
         challenge: attrs.challenge as string | undefined,

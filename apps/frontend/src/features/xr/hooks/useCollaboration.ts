@@ -19,12 +19,23 @@ interface CollabPeerJoined {
   mode: 'ar' | 'vr';
 }
 
+interface CollabMaterialOverride {
+  element: string;
+  color?: string;
+  roughness?: number;
+  metalness?: number;
+  name?: string;
+  triggeredBy: 'ai-agent' | 'user';
+  agentPersona?: string;
+}
+
 export function useCollaboration(projectId: string | null, user: string, mode: 'ar' | 'vr' | null) {
   const socketRef = useRef<Socket | null>(null);
   const token = getAccessToken();
   const upsertCollaborator = useXRStore((s) => s.upsertCollaborator);
   const removeCollaborator = useXRStore((s) => s.removeCollaborator);
   const setCollabConnected = useXRStore((s) => s.setCollabConnected);
+  const pushMaterialOverride = useXRStore((s) => s.pushMaterialOverride);
 
   useEffect(() => {
     if (!projectId || !mode || !token) return;
@@ -66,6 +77,10 @@ export function useCollaboration(projectId: string | null, user: string, mode: '
       });
     });
 
+    socket.on('collab:material-override', (override: CollabMaterialOverride) => {
+      pushMaterialOverride(override);
+    });
+
     socket.on('collab:peer-left', ({ id }: { id: string }) => {
       removeCollaborator(id);
     });
@@ -89,7 +104,15 @@ export function useCollaboration(projectId: string | null, user: string, mode: '
     [projectId],
   );
 
+  const sendMaterialOverride = useCallback(
+    (override: CollabMaterialOverride) => {
+      if (!projectId || !socketRef.current?.connected) return;
+      socketRef.current.emit('collab:material-override', { projectId, ...override });
+    },
+    [projectId],
+  );
+
   const getSocket = useCallback(() => socketRef.current, []);
 
-  return { sendCursor, getSocket };
+  return { sendCursor, sendMaterialOverride, getSocket };
 }

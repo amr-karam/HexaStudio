@@ -6,6 +6,8 @@ import { useXRStoreInit } from '../hooks/useXRStore';
 import { checkXRSupport } from '../utils/xr-guard';
 import { xrStore } from './XRCanvas';
 import { useAnalytics } from '@/lib/analytics';
+import { XRGuidedTour } from './XRGuidedTour';
+import { CollaborationPeers } from './CollaborationPeers';
 
 interface XRUIProps {
   onExit: () => void;
@@ -187,6 +189,7 @@ export function XRUI({ onExit, modelName }: XRUIProps) {
           </div>
         )}
 
+        <XRGuidedTour />
         {isSessionActive && placementPhase === 'idle' && (
           <div className="pointer-events-auto absolute bottom-8 left-1/2 -translate-x-1/2">
             <button
@@ -198,6 +201,7 @@ export function XRUI({ onExit, modelName }: XRUIProps) {
           </div>
         )}
       </>
+      <CollaborationPeers />
     </div>
   );
 }

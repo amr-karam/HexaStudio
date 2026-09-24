@@ -5,8 +5,10 @@ import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useFinePointer } from '@/hooks/useFinePointer';
+import { useDeviceCapabilities } from '@/hooks/useDeviceCapabilities';
 import { Button } from '@/components/ui/Button';
 import { Magnetic } from '@/components/ui/Magnetic';
+import { CanvasErrorBoundary } from '@/components/CanvasErrorBoundary';
 
 /**
  * NewHomeHero — single-canvas "Architectural Plate" hero.
@@ -22,7 +24,16 @@ export function NewHomeHero() {
   const canvasOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0.4]);
   const finePointer = useFinePointer();
   const reducedMotion = useReducedMotion();
+  const { isLowEnd } = useDeviceCapabilities();
   const [mouse, setMouse] = useState({ x: 0.5, y: 0.5 });
+  const [hasError, setHasError] = useState(false);
+  const [quality, setQuality] = useState(1);
+
+  useEffect(() => {
+    const handleError = () => setHasError(true);
+    window.addEventListener('error', handleError, true);
+    return () => window.removeEventListener('error', handleError, true);
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -30,7 +41,13 @@ export function NewHomeHero() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Adaptive quality: reduce on low-end devices
+    const adaptiveQuality = isLowEnd ? 0.5 : 1.0;
+    setQuality(adaptiveQuality);
+
     let dpr = window.devicePixelRatio || 1;
+    // Limit DPR on low-end devices to reduce fill rate
+    const effectiveDpr = isLowEnd ? Math.min(dpr, 1.5) : dpr;
     let width = 0;
     let height = 0;
     let raf = 0;
@@ -41,9 +58,9 @@ export function NewHomeHero() {
       const rect = canvas.getBoundingClientRect();
       width = rect.width;
       height = rect.height;
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      canvas.width = width * effectiveDpr;
+      canvas.height = height * effectiveDpr;
+      ctx.setTransform(effectiveDpr, 0, 0, effectiveDpr, 0, 0);
     };
     resize();
     const ro = new ResizeObserver(resize);
@@ -75,92 +92,95 @@ export function NewHomeHero() {
     boxes.push({ x: 0.3, y: -0.1, z: -0.2, w: 0.5, h: 0.15, d: 0.3 });
 
     const draw = (time: number) => {
-      const t = (time - startTime) / 1000;
-      ctx.clearRect(0, 0, width, height);
+      try {
+        const t = (time - startTime) / 1000;
+        ctx.clearRect(0, 0, width, height);
 
-      const cx = width / 2 + (mouse.x - 0.5) * 40;
-      const cy = height / 2 + (mouse.y - 0.5) * 30;
-      const scale = Math.min(width, height) * 0.32;
-      const baseRot = reducedMotion ? 0.15 : t * 0.12;
+        const cx = width / 2 + (mouse.x - 0.5) * 40;
+        const cy = height / 2 + (mouse.y - 0.5) * 30;
+        const scale = Math.min(width, height) * 0.32 * adaptiveQuality;
+        const baseRot = reducedMotion ? 0.15 : t * 0.12;
 
-      // Sort boxes by depth
-      const projected = boxes.map((b) => {
-        const corners: Array<{ x: number; y: number; z: number }> = [
-          { x: b.x - b.w / 2, y: b.y + b.h / 2, z: b.z - b.d / 2 },
-          { x: b.x + b.w / 2, y: b.y + b.h / 2, z: b.z - b.d / 2 },
-          { x: b.x + b.w / 2, y: b.y + b.h / 2, z: b.z + b.d / 2 },
-          { x: b.x - b.w / 2, y: b.y + b.h / 2, z: b.z + b.d / 2 },
-          { x: b.x - b.w / 2, y: b.y - b.h / 2, z: b.z - b.d / 2 },
-          { x: b.x + b.w / 2, y: b.y - b.h / 2, z: b.z - b.d / 2 },
-          { x: b.x + b.w / 2, y: b.y - b.h / 2, z: b.z + b.d / 2 },
-          { x: b.x - b.w / 2, y: b.y - b.h / 2, z: b.z + b.d / 2 },
-        ].map((p) => project(p.x, p.y, p.z, baseRot));
-        return { box: b, corners, avgZ: corners.reduce((s, c) => s + c.z, 0) / 8 };
-      }).sort((a, b) => b.avgZ - a.avgZ);
+        // Sort boxes by depth
+        const projected = boxes.map((b) => {
+          const corners: Array<{ x: number; y: number; z: number }> = [
+            { x: b.x - b.w / 2, y: b.y + b.h / 2, z: b.z - b.d / 2 },
+            { x: b.x + b.w / 2, y: b.y + b.h / 2, z: b.z - b.d / 2 },
+            { x: b.x + b.w / 2, y: b.y + b.h / 2, z: b.z + b.d / 2 },
+            { x: b.x - b.w / 2, y: b.y + b.h / 2, z: b.z + b.d / 2 },
+            { x: b.x - b.w / 2, y: b.y - b.h / 2, z: b.z - b.d / 2 },
+            { x: b.x + b.w / 2, y: b.y - b.h / 2, z: b.z - b.d / 2 },
+            { x: b.x + b.w / 2, y: b.y - b.h / 2, z: b.z + b.d / 2 },
+            { x: b.x - b.w / 2, y: b.y - b.h / 2, z: b.z + b.d / 2 },
+          ].map((p) => project(p.x, p.y, p.z, baseRot));
+          return { box: b, corners, avgZ: corners.reduce((s, c) => s + c.z, 0) / 8 };
+        }).sort((a, b) => b.avgZ - a.avgZ);
 
-      for (const { corners } of projected) {
-        const p = corners.map((c) => ({
-          x: cx + c.x * scale,
-          y: cy - c.y * scale,
-        }));
-        const [t0, t1, t2, t3, t4, t5, t6, t7] = p as [
-          { x: number; y: number },
-          { x: number; y: number },
-          { x: number; y: number },
-          { x: number; y: number },
-          { x: number; y: number },
-          { x: number; y: number },
-          { x: number; y: number },
-          { x: number; y: number },
-        ];
+        for (const { corners } of projected) {
+          const p = corners.map((c) => ({
+            x: cx + c.x * scale,
+            y: cy - c.y * scale,
+          }));
+          const [t0, t1, t2, t3, t4, t5, t6, t7] = p as [
+            { x: number; y: number },
+            { x: number; y: number },
+            { x: number; y: number },
+            { x: number; y: number },
+            { x: number; y: number },
+            { x: number; y: number },
+            { x: number; y: number },
+            { x: number; y: number },
+          ];
 
-        // Right face (front)
-        ctx.beginPath();
-        ctx.moveTo(t1.x, t1.y);
-        ctx.lineTo(t2.x, t2.y);
-        ctx.lineTo(t6.x, t6.y);
-        ctx.lineTo(t5.x, t5.y);
-        ctx.closePath();
-        ctx.fillStyle = 'rgba(212, 175, 55, 0.18)';
-        ctx.fill();
-
-        // Top face
-        ctx.beginPath();
-        ctx.moveTo(t0.x, t0.y);
-        ctx.lineTo(t1.x, t1.y);
-        ctx.lineTo(t2.x, t2.y);
-        ctx.lineTo(t3.x, t3.y);
-        ctx.closePath();
-        ctx.fillStyle = 'rgba(212, 175, 55, 0.08)';
-        ctx.fill();
-
-        // Left face
-        ctx.beginPath();
-        ctx.moveTo(t0.x, t0.y);
-        ctx.lineTo(t3.x, t3.y);
-        ctx.lineTo(t7.x, t7.y);
-        ctx.lineTo(t4.x, t4.y);
-        ctx.closePath();
-        ctx.fillStyle = 'rgba(212, 175, 55, 0.04)';
-        ctx.fill();
-
-        // Edges (gold lines)
-        ctx.strokeStyle = 'rgba(212, 175, 55, 0.55)';
-        ctx.lineWidth = 1;
-        // visible edges only: 0-1, 1-2, 2-3, 3-0, 1-5, 2-6, 4-5, 5-6, 6-7, 7-4
-        const edges: Array<[number, number]> = [
-          [0, 1], [1, 2], [2, 3], [3, 0],
-          [1, 5], [2, 6], [4, 5], [5, 6], [6, 7], [7, 4], [0, 4], [3, 7],
-        ];
-        for (const [a, b] of edges) {
+          // Right face (front)
           ctx.beginPath();
-          ctx.moveTo(p[a].x, p[a].y);
-          ctx.lineTo(p[b].x, p[b].y);
-          ctx.stroke();
-        }
-      }
+          ctx.moveTo(t1.x, t1.y);
+          ctx.lineTo(t2.x, t2.y);
+          ctx.lineTo(t6.x, t6.y);
+          ctx.lineTo(t5.x, t5.y);
+          ctx.closePath();
+          ctx.fillStyle = 'rgba(212, 175, 55, 0.18)';
+          ctx.fill();
 
-      raf = requestAnimationFrame(draw);
+          // Top face
+          ctx.beginPath();
+          ctx.moveTo(t0.x, t0.y);
+          ctx.lineTo(t1.x, t1.y);
+          ctx.lineTo(t2.x, t2.y);
+          ctx.lineTo(t3.x, t3.y);
+          ctx.closePath();
+          ctx.fillStyle = 'rgba(212, 175, 55, 0.08)';
+          ctx.fill();
+
+          // Left face
+          ctx.beginPath();
+          ctx.moveTo(t0.x, t0.y);
+          ctx.lineTo(t3.x, t3.y);
+          ctx.lineTo(t7.x, t7.y);
+          ctx.lineTo(t4.x, t4.y);
+          ctx.closePath();
+          ctx.fillStyle = 'rgba(212, 175, 55, 0.04)';
+          ctx.fill();
+
+          // Edges (gold lines)
+          ctx.strokeStyle = 'rgba(212, 175, 55, 0.55)';
+          ctx.lineWidth = 1;
+          const edges: Array<[number, number]> = [
+            [0, 1], [1, 2], [2, 3], [3, 0],
+            [1, 5], [2, 6], [4, 5], [5, 6], [6, 7], [7, 4], [0, 4], [3, 7],
+          ];
+          for (const [a, b] of edges) {
+            ctx.beginPath();
+            ctx.moveTo(p[a].x, p[a].y);
+            ctx.lineTo(p[b].x, p[b].y);
+            ctx.stroke();
+          }
+        }
+
+        raf = requestAnimationFrame(draw);
+      } catch {
+        // Canvas render failure — stop loop gracefully
+      }
     };
     raf = requestAnimationFrame(draw);
 
@@ -168,7 +188,7 @@ export function NewHomeHero() {
       cancelAnimationFrame(raf);
       ro.disconnect();
     };
-  }, [mouse.x, mouse.y, reducedMotion]);
+  }, [mouse.x, mouse.y, reducedMotion, quality, isLowEnd]);
 
   const handleMouseMove = finePointer
     ? (e: React.MouseEvent) => {
@@ -179,6 +199,24 @@ export function NewHomeHero() {
         });
       }
     : undefined;
+
+  // Enhanced micro-interactions with physics-based hover
+  const buttonVariants = {
+    idle: { scale: 1 },
+    hover: { scale: 1.02, transition: { type: "spring", stiffness: 300, damping: 20 } },
+    tap: { scale: 0.98, transition: { type: "spring", stiffness: 400, damping: 25 } }
+  };
+
+  if (hasError) {
+    return (
+      <section className="relative flex min-h-screen w-full items-center justify-center bg-sl-void">
+        <div className="text-center">
+          <p className="font-serif text-2xl text-sl-alabaster/80">Vision</p>
+          <p className="mt-4 text-sm text-sl-mist/60">Immersive experience loading…</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
@@ -249,11 +287,18 @@ export function NewHomeHero() {
             transition={{ duration: 1.0, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
             className="mt-12 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6"
           >
-            <Magnetic>
+            <Magnetic strength={0.15}>
               <Link href="/projects" data-cursor="explore">
-                <Button variant="primary" size="lg" className="min-h-[52px] min-w-[200px]">
-                  View the Work
-                </Button>
+                <motion.div
+                  variants={buttonVariants}
+                  initial="idle"
+                  whileHover="hover"
+                  whileTap="tap"
+                >
+                  <Button variant="primary" size="lg" className="min-h-[52px] min-w-[200px]">
+                    View the Work
+                  </Button>
+                </motion.div>
               </Link>
             </Magnetic>
             <Link
@@ -261,16 +306,30 @@ export function NewHomeHero() {
               data-cursor="explore"
               className="group inline-flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-sl-mist/70 transition-colors duration-500 hover:text-sl-gold-hover"
             >
-              <span className="inline-block h-px w-8 bg-sl-mist/30 transition-all duration-500 group-hover:w-12 group-hover:bg-sl-gold-subtle" />
+              <motion.span
+                className="inline-block h-px w-8 bg-sl-mist/30 transition-all duration-500 group-hover:w-12 group-hover:bg-sl-gold-subtle"
+                whileHover={{ width: 48 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              />
               Start a project
             </Link>
           </motion.div>
         </div>
 
-        {/* Canvas plate — right side, 5 cols */}
-        <motion.div
-          style={{ y: canvasY, opacity: canvasOpacity }}
-          className="relative md:col-span-5"
+      {/* Canvas plate — right side, 5 cols */}
+      <motion.div
+        style={{ y: canvasY, opacity: canvasOpacity }}
+        className="relative md:col-span-5"
+      >
+        <CanvasErrorBoundary
+          fallback={
+            <div className="relative aspect-square w-full max-w-[480px] mx-auto flex items-center justify-center">
+              <div className="text-center">
+                <p className="font-serif text-xl text-sl-alabaster/60">Monolith</p>
+                <p className="mt-2 text-xs text-sl-mist/40">3D visualization loading…</p>
+              </div>
+            </div>
+          }
         >
           <div className="relative aspect-square w-full max-w-[480px] mx-auto">
             {/* Frame */}
@@ -303,6 +362,7 @@ export function NewHomeHero() {
               8K · OCTANE · UE5
             </div>
           </div>
+        </CanvasErrorBoundary>
         </motion.div>
       </div>
 

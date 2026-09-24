@@ -1,6 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { RedisService } from '../storage/redis.service';
-import { VectorMemoryService } from '../memory/vector/vector-memory.service';
+import { VectorService } from '../vector/vector.service';
+import { EmbeddingService } from '../ai/embedding.service';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface MemoryMessage {
   role: 'system' | 'user' | 'assistant' | 'tool';
@@ -13,15 +15,18 @@ export interface AgentMemory {
   clear(persona: string, sessionId: string): Promise<void>;
   remember(persona: string, sessionId: string, key: string, value: unknown, ttl?: number): Promise<void>;
   recall(persona: string, sessionId: string, key: string): Promise<unknown>;
-  recallSemantic(persona: string, sessionId: string, query: string, limit?: number): Promise<any[]>;
   forget(persona: string, sessionId: string, key: string): Promise<void>;
 }
 
 /**
- * Hybrid memory system for HEXA agent personas.
- * 
- * Uses Redis for short-term conversation transcripts and durable facts,
- * and Qdrant (via VectorMemoryService) for long-term semantic recall.
+ * Redis-backed conversation memory for HEXA agent personas.
+ *
+ * Each (persona, sessionId) pair owns a Redis list (`agent:memory:{persona}:{sessionId}`)
+ * storing the recent conversation transcript, plus a hash (`agent:facts:{persona}:{sessionId}`)
+ * storing durable facts/context learned during the conversation (e.g. project ids, user prefs).
+ *
+ * Lists are capped on read (most recent `limit` messages in chronological order) and
+ * expire via TTL so stale sessions are reclaimed automatically.
  */
 @Injectable()
 export class AgentMemoryService implements AgentMemory {
@@ -30,10 +35,12 @@ export class AgentMemoryService implements AgentMemory {
   private static readonly MEMORY_TTL_SECONDS = 24 * 60 * 60; // 24h
   private static readonly DEFAULT_HISTORY_LIMIT = 40;
   private static readonly FACT_TTL_SECONDS = 7 * 24 * 60 * 60; // 7d
+  private static readonly VECTOR_COLLECTION = 'agent_memories';
 
   constructor(
     private readonly redis: RedisService,
-    private readonly vectorMemory: VectorMemoryService,
+    private readonly vectorService: VectorService,
+    private readonly embeddingService: EmbeddingService,
   ) {}
 
   private memoryKey(persona: string, sessionId: string): string {
@@ -48,6 +55,7 @@ export class AgentMemoryService implements AgentMemory {
   async getHistory(persona: string, sessionId: string, limit = AgentMemoryService.DEFAULT_HISTORY_LIMIT): Promise<MemoryMessage[]> {
     try {
       const key = this.memoryKey(persona, sessionId);
+      // lpush stores newest-first; reverse for chronological order.
       const raw = await this.redis.lrange<MemoryMessage>(key, 0, limit - 1);
       const messages = raw.filter((m) => m && typeof m === 'object');
       messages.reverse();
@@ -58,44 +66,96 @@ export class AgentMemoryService implements AgentMemory {
     }
   }
 
-  /** Recall a stored fact/context value for the session via exact key. */
-  async recall(persona: string, sessionId: string, key: string): Promise<unknown> {
-    return this.redis.hget(this.factsKey(persona, sessionId), key);
-  }
-
-  /** Semantic recall using vector embeddings to find relevant historical facts. */
-  async recallSemantic(persona: string, sessionId: string, query: string, limit = 5): Promise<any[]> {
-    return this.vectorMemory.recallSemantic(persona, sessionId, query, limit);
-  }
-
-  /** Store a durable fact in both Redis (exact) and Qdrant (semantic) stores. */
-  async remember(persona: string, sessionId: string, key: string, value: unknown, ttl = AgentMemoryService.FACT_TTL_SECONDS): Promise<void> {
-    await this.redis.hset(this.factsKey(persona, sessionId), key, value);
-    await this.redis.expire(this.factsKey(persona, sessionId), ttl);
-    
-    // Mirror to vector store for semantic retrieval
-    await this.vectorMemory.storeFact(persona, sessionId, key, value);
+  /** 
+   * Recall all durable facts for a session.
+   * Used to inject project-specific constants into the system prompt before history hydration.
+   */
+  async getAllFacts(persona: string, sessionId: string): Promise<Record<string, unknown>> {
+    try {
+      return await this.redis.hgetall(this.factsKey(persona, sessionId));
+    } catch (err) {
+      this.logger.warn(`getAllFacts failed for ${persona}/${sessionId}: ${err}`);
+      return {};
+    }
   }
 
   /** Append a single message to the conversation transcript. */
   async append(persona: string, sessionId: string, message: MemoryMessage): Promise<void> {
     const key = this.memoryKey(persona, sessionId);
     await this.redis.lpush(key, message);
+    // Refresh TTL so active sessions never expire mid-conversation.
     await this.redis.expire(key, AgentMemoryService.MEMORY_TTL_SECONDS);
   }
 
+  /** Append a batch of messages (used to persist an entire assistant turn + tool results). */
   async appendMany(persona: string, sessionId: string, messages: MemoryMessage[]): Promise<void> {
     for (const message of messages) {
       await this.append(persona, sessionId, message);
     }
   }
 
+  /** Wipe the conversation transcript for a session. */
   async clear(persona: string, sessionId: string): Promise<void> {
     await this.redis.del(this.memoryKey(persona, sessionId));
     await this.redis.del(this.factsKey(persona, sessionId));
     this.logger.log(`Cleared agent memory for ${persona}/${sessionId}`);
   }
 
+  /** Store a durable fact/context value for the session. */
+  async remember(persona: string, sessionId: string, key: string, value: unknown, ttl = AgentMemoryService.FACT_TTL_SECONDS): Promise<void> {
+    // 1. Short-term store (Redis)
+    await this.redis.hset(this.factsKey(persona, sessionId), key, value);
+    await this.redis.expire(this.factsKey(persona, sessionId), ttl);
+
+    // 2. Long-term semantic store (Qdrant)
+    try {
+      const factString = `${key}: ${JSON.stringify(value)}`;
+      const vector = await this.embeddingService.generateEmbedding(factString);
+      
+      await this.vectorService.upsert(AgentMemoryService.VECTOR_COLLECTION, [{
+        id: uuidv4(),
+        vector,
+        payload: {
+          persona,
+          sessionId,
+          key,
+          value,
+          timestamp: Date.now(),
+        }
+      }]);
+    } catch (err) {
+      this.logger.warn(`Semantic memory upsert failed: ${err}`);
+    }
+  }
+
+  /** Recall a stored fact/context value for the session. */
+  async recall(persona: string, sessionId: string, key: string): Promise<unknown> {
+    return this.redis.hget(this.factsKey(persona, sessionId), key);
+  }
+
+  /** 
+   * Semantic Recall: find relevant facts across all sessions using vector search.
+   * This allows the agent to remember user preferences and project details indefinitely.
+   */
+  async semanticRecall(persona: string, sessionId: string, query: string, limit = 5): Promise<Record<string, unknown>[]> {
+    try {
+      const result = await this.vectorService.search(AgentMemoryService.VECTOR_COLLECTION, {
+        query,
+        limit,
+      });
+
+      // Filter by persona and sessionId if specific session isolation is needed, 
+      // or allow cross-session recall for the same user.
+      return result.results
+        .filter(r => r.payload?.persona === persona)
+        .map(r => r.payload as Record<string, unknown>);
+    } catch (err) {
+      this.logger.warn(`Semantic recall failed for ${persona}/${sessionId}: ${err}`);
+      return [];
+    }
+  }
+
+  /** Remove a stored fact/context value from the session. */
   async forget(persona: string, sessionId: string, key: string): Promise<void> {
     await this.redis.hdel(this.factsKey(persona, sessionId), key);
   }
