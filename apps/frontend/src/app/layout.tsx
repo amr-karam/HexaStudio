@@ -88,6 +88,9 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
         <link rel="preconnect" href="https://api.hexastudio.net" />
         <link rel="dns-prefetch" href="//api.hexastudio.net" />
+        {/* Hero LCP image origin (Unsplash) — preconnect to eliminate RTT for first gallery image */}
+        <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="//images.unsplash.com" />
         {/* Analytics / monitoring origins (scripts are injected on idle) */}
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="//www.googletagmanager.com" />
@@ -160,6 +163,15 @@ export default function RootLayout({
           as="font"
           type="font/woff2"
           href="https://fonts.gstatic.com/s/jost/v20/92zatBhPNqw73oTd4g.woff2"
+          crossOrigin="anonymous"
+        />
+        {/* Hero LCP image (first NewSelectedWork gallery plate) — preload so it starts
+            downloading during HTML parse, not after hydration. next/image with
+            priority emits a preload, but this explicit one fires earlier. */}
+        <link
+          rel="preload"
+          as="image"
+          href="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1400&q=80"
           crossOrigin="anonymous"
         />
         {/* Non-blocking font CSS — preloaded as stylesheet and promoted to

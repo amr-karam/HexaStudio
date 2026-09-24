@@ -4,13 +4,14 @@ import { ChapterProgress, type Chapter } from '@/components/animation/ChapterPro
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
 
-// Anchors must match real section ids: hero `ch-vision`, work `work`,
-// studio note `studio-note`. Phantom ids break the IntersectionObserver
+// Anchors must match real section ids. Phantom ids break the IntersectionObserver
 // active-state tracking in ChapterProgress.
 const HOME_CHAPTERS: Chapter[] = [
-  { id: 'ch-vision', label: 'Vision' },
+  { id: 'vision', label: 'Vision' },
+  { id: 'craft', label: 'Craft' },
   { id: 'work', label: 'Work' },
   { id: 'studio-note', label: 'Studio' },
+  { id: 'invitation', label: 'Begin' },
 ];
 
 /**

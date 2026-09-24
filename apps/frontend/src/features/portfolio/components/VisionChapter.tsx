@@ -103,7 +103,7 @@ export function VisionChapter({ className }: VisionChapterProps) {
               title: 'Atmosphere',
               body: 'Air has weight. Dust catches light. Volumetric fog, lens bloom, chromatic aberration — we render the air, not just the architecture.',
             },
-          ].map((pillar, i) => (
+          ].map((pillar) => (
             <motion.article
               key={pillar.title}
               variants={fadeLift}
