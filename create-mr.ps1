@@ -1,5 +1,5 @@
 $headers = @{
-    'PRIVATE-TOKEN' = 'glpat-M6ZPbpQ5NjyXg-U4ixICym86MQp1OjEH.01.0w0n52kzg'
+    'PRIVATE-TOKEN' = $env:GL_PAT
     'Content-Type' = 'application/json'
 }
 
@@ -43,8 +43,7 @@ Both migrations are production-verified and all quality gates pass.
 - Container: `hexa-gitlab-19` — healthy, 34h uptime, version 19.4.0
 - Traefik: `dynamic.yml` updated → `gitlab.hexastudio.net` → `hexa-gitlab-19:8930`
 - Old container stopped; volumes preserved (`gitlab_gitlab_config`, `gitlab_gitlab_data`, `gitlab_gitlab_logs`)
-- New PAT created: `glpat-M6ZPbpQ5NjyXg-U4ixICym86MQp1OjEH.01.0w0n52kzg`
-- Git remote `gitlab` updated with new PAT
+- New PAT configured via `GL_PAT` environment variable
 
 ## Performance Baselines (Lighthouse)
 
