@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { AppLayoutWidgets } from "@/providers/app-layout-widgets";
+import { AppProviders } from "@/providers/app-providers";
 import { LayoutShell } from "@/components/LayoutShell";
 import { StructuredData } from "@/components/StructuredData";
 import "./globals.css";
