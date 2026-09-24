@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { HeroPlate } from '@/components/HeroPlate.client';
 
 /**
  * NewHomeHeroStatic — Server-rendered hero (LCP-critical).
@@ -80,47 +79,9 @@ export default function NewHomeHeroStatic() {
           </div>
         </div>
 
-        {/* Static plate — right side, 5 cols. This inline SVG is the LCP fallback;
-            the interactive canvas overlays this slot once it hydrates. */}
-        <div
-          className="relative md:col-span-5"
-          aria-hidden="true"
-        >
-          <div className="relative mx-auto aspect-square w-full max-w-[480px]">
-            {/* Frame */}
-            <div className="pointer-events-none absolute inset-0 border border-sl-gold-subtle/15" />
-            <div className="pointer-events-none absolute inset-3 border border-sl-gold-subtle/8" />
-
-            {/* Corner crops */}
-            {(['tl', 'tr', 'bl', 'br'] as const).map((corner) => {
-              const map: Record<typeof corner, string> = {
-                tl: 'top-0 left-0 border-t border-l',
-                tr: 'top-0 right-0 border-t border-r',
-                bl: 'bottom-0 left-0 border-b border-l',
-                br: 'bottom-0 right-0 border-b border-r',
-              };
-              return (
-                <span
-                  key={corner}
-                  className={`pointer-events-none absolute h-4 w-4 border-sl-gold-subtle/60 ${map[corner]}`}
-                />
-              );
-            })}
-
-            <MonolithPlate />
-
-            {/* Progressive-enhancement canvas plate — mounted lazily and
-                visibility-gated so it never delays first paint / LCP. */}
-            <HeroPlate />
-
-            <div className="pointer-events-none absolute -bottom-8 left-0 font-mono text-[9px] uppercase tracking-[0.4em] text-sl-mist/40">
-              PLATE · 01 / 04 — MONOLITH
-            </div>
-            <div className="pointer-events-none absolute -top-7 right-0 font-mono text-[9px] uppercase tracking-[0.4em] text-sl-mist/40">
-              8K · OCTANE · UE5
-            </div>
-          </div>
-        </div>
+            {/* Static plate — right side, 5 cols. This inline SVG is the LCP fallback;
+                the interactive canvas overlays this slot once it hydrates. */}
+            <div
       </div>
 
       {/* Bottom hairline + scroll cue */}
