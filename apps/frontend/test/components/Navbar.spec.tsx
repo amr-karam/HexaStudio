@@ -4,7 +4,7 @@ import { Navbar } from '@/components/ui/nav/Navbar';
 import React from 'react';
 
 // Mock NavbarMobileMenu component
-const MockNavbarMobileMenu = function NavbarMobileMenu({ isOpen, onClose, navItems }: { isOpen: boolean; onClose: () => void; navItems: { label: string; href: string }[] }) {
+function MockNavbarMobileMenu({ isOpen, onClose, navItems }: { isOpen: boolean; onClose: () => void; navItems: { label: string; href: string }[] }) {
   if (!isOpen) return null;
   return (
     <div
@@ -21,7 +21,7 @@ const MockNavbarMobileMenu = function NavbarMobileMenu({ isOpen, onClose, navIte
       ))}
     </div>
   );
-};
+}
 
 vi.mock('next/navigation', () => ({
   usePathname: () => '/projects',
