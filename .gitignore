@@ -267,3 +267,4 @@ hexa-session-video/
 .env
 .env.local
 .env.*.local
+create-user.json
