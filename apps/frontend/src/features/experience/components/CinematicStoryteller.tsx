@@ -78,7 +78,7 @@ function StoryContent({ title, subtitle }: { title?: string; subtitle?: string }
   );
 }
 
-function StaticFallback({ title, subtitle, background }: { title?: string; subtitle?: string; background?: string }) {
+function StaticFallback({ title, subtitle, background: _background }: { title?: string; subtitle?: string; background?: string }) {
   return (
     <div
       style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '0.5rem', padding: '1rem' }}
@@ -96,7 +96,7 @@ export function CinematicStoryteller({
   title,
   subtitle,
   background = COLOR_TOKENS.VOID,
-  environment = 'studios',
+  environment = 'studio',
   className,
 }: CinematicStorytellerProps) {
   const { animationsEnabled } = useMotionPolicy();
