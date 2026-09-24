@@ -143,6 +143,7 @@ build-output.txt
 
 # Lighthouse CI temp data
 .lighthouse-tmp/
+.lighthouseci/
 HEXA-Vision-Playbook/**/lighthouse-*.json
 
 # Large 3D source assets (not web-ready)
