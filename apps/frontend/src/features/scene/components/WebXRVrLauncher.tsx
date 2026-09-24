@@ -65,7 +65,7 @@ export function WebXRVrLauncher() {
         </div>
         <div className="flex justify-between font-mono">
           <span className="text-sl-mist/60">Target Framerate:</span>
-          <span className="text-emerald-400 font-bold">{currentSpec.refresh} Stereoscopic</span>
+          <span className="text-success-ink font-bold">{currentSpec.refresh} Stereoscopic</span>
         </div>
       </div>
 
@@ -74,7 +74,7 @@ export function WebXRVrLauncher() {
         onClick={() => setInVrSession(!inVrSession)}
         className={`w-full py-3 rounded-2xl font-bold text-xs transition-all shadow-lg ${
           inVrSession
-            ? 'bg-red-500 hover:bg-red-400 text-sl-alabaster'
+            ? 'bg-destructive hover:bg-destructive-ink text-sl-alabaster'
             : 'bg-blue-500 hover:bg-blue-400 text-neutral-950'
         }`}
       >

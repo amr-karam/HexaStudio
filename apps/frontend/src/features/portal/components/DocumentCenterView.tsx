@@ -206,7 +206,7 @@ const FALLBACK_DOCUMENTS: DocumentItem[] = [
 const FOLDERS = ['all', 'design', 'contracts', 'blueprints', 'reports'] as const;
 
 const STATUS_LABEL: Record<DocumentItem['status'], { label: string; className: string }> = {
-  approved: { label: 'Approved', className: 'text-emerald-500/80' },
+  approved: { label: 'Approved', className: 'text-success/80' },
   in_review: { label: 'In Review', className: 'text-sl-gold-hover/80' },
   draft: { label: 'Draft', className: 'text-sl-mist/60' },
 };
@@ -892,7 +892,7 @@ export function DocumentCenterView() {
                         {doc.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="rounded border border-white/5 bg-white/[0.03] px-2 py-0.5 font-mono text-[0.5625rem] uppercase tracking-[0.15em] text-sl-mist/60"
+                            className="rounded border border-white/5 bg-white/[0.03] px-2 py-0.5 font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-sl-mist/60"
                           >
                             {tag}
                           </span>

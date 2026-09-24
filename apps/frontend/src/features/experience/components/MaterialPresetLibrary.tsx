@@ -1,14 +1,13 @@
 'use client';
 
-import { Suspense, useRef, useMemo, useCallback, useState } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Environment, PerspectiveCamera, MeshDistortableMaterial, Sphere } from '@react-three/drei';
-import type { QualityTier } from '@/providers/quality-provider';
-import { COLOR_TOKENS, GOLD, OBSIDIAN } from '@/lib/color-tokens';
+import { Suspense, useRef, useCallback, useState } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { Environment, PerspectiveCamera, MeshDistortableMaterial } from '@react-three/drei';
+import { COLOR_TOKENS, GOLD } from '@/lib/color-tokens';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { useQualityTier } from '@/providers/quality-provider';
 import { useContextLossRecovery } from '@/hooks/useContextLossRecovery';
-import { LIGHTING_PRESETS, MATERIAL_PRESETS } from '@/features/scene/config/material-presets';
+import { MATERIAL_PRESETS } from '@/features/scene/config/material-presets';
 import * as THREE from 'three';
 
 export type MaterialPresetName = keyof typeof MATERIAL_PRESETS;
@@ -27,13 +26,6 @@ const PRESET_LABELS: Record<MaterialPresetName, string> = {
   raw_concrete: 'Raw Architectural Concrete',
 };
 
-const PRESET_DESCRIPTIONS: Record<MaterialPresetName, string> = {
-  obsidian_marble: 'Highly polished black marble with mirror-like reflection',
-  warm_oak: 'Natural oak timber with warm amber tones and soft texture',
-  brushed_titanium: 'Polished metal with subtle brushed finish and cool sheen',
-  raw_concrete: 'Textured architectural concrete with matte surface',
-};
-
 interface MaterialPresetLibraryProps {
   activePreset?: MaterialPresetName;
   onPresetChange?: (preset: MaterialPresetName) => void;
@@ -46,18 +38,17 @@ interface MaterialPresetLibraryProps {
 
 const PRESET_ORDER: MaterialPresetName[] = ['obsidian_marble', 'warm_oak', 'brushed_titanium', 'raw_concrete'];
 
+type CanvasState = {
+  gl: THREE.WebGLRenderer;
+  camera: THREE.Camera;
+  scene: THREE.Scene;
+};
+
 function PresetSphere({ preset, scale = 1, rotating = true }: { preset: MaterialPresetName; scale?: number; rotating?: boolean }) {
   const { tier } = useQualityTier();
   const material = MATERIAL_PRESETS[preset];
   const meshRef = useRef<THREE.Mesh>(null);
   const { reducedMotion } = useMotionPolicy();
-
-  const materialProps = useMemo(() => ({
-    roughness: material.roughness,
-    metalness: material.metalness,
-    envMapIntensity: material.envMapIntensity * (tier.level === 'high' ? 1 : tier.level === 'medium' ? 0.8 : 0.5),
-    clearcoat: material.clearcoat * (tier.level === 'high' ? 1 : tier.level === 'medium' ? 0.7 : 0.3),
-  }), [material, tier.level]);
 
   useFrame(() => {
     if (meshRef.current && rotating && !reducedMotion) {
@@ -65,33 +56,32 @@ function PresetSphere({ preset, scale = 1, rotating = true }: { preset: Material
     }
   });
 
+  const roughness = material.roughness * (tier.level === 'high' ? 1 : tier.level === 'medium' ? 0.8 : 0.5);
+  const metalness = material.metalness * (tier.level === 'high' ? 1 : tier.level === 'medium' ? 0.7 : 0.3);
+  const envMapIntensity = material.envMapIntensity * (tier.level === 'high' ? 1 : tier.level === 'medium' ? 0.8 : 0.5);
+  const clearcoat = material.clearcoat * (tier.level === 'high' ? 1 : tier.level === 'medium' ? 0.7 : 0.3);
+  const distortion = material.clearcoat > 0 ? 0.02 : 0;
+
   return (
     <mesh ref={meshRef}>
       <sphereGeometry args={[0.5 * scale, tier.level === 'high' ? 64 : tier.level === 'medium' ? 32 : 16, 32]} />
       <MeshDistortableMaterial
-        roughness={materialProps.roughness}
-        metalness={materialProps.metalness}
-        envMapIntensity={materialProps.envMapIntensity}
-        clearcoat={materialProps.clearcoat}
+        roughness={roughness}
+        metalness={metalness}
+        envMapIntensity={envMapIntensity}
+        clearcoat={clearcoat}
         color={material.color}
-        distortions={material.clearcoat > 0 ? 0.02 : 0}
+        distortions={distortion}
       />
     </mesh>
   );
 }
 
 function MaterialsGrid({ onSelect, activePreset }: { onSelect?: (preset: MaterialPresetName) => void; activePreset?: MaterialPresetName }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
   return (
     <group position={[-3, 0, 0]}>
-      {PRESET_ORDER.map((preset, index) => (
-        <PresetSphere
-          key={preset}
-          preset={preset}
-          scale={1.2}
-          rotating
-        />
+      {PRESET_ORDER.map((preset) => (
+        <PresetSphere key={preset} preset={preset} scale={1.2} rotating />
       ))}
     </group>
   );
@@ -112,10 +102,7 @@ function StaticMaterialPresets({ activePreset, onSelect }: { activePreset?: Mate
           }`}
         >
           <div className="flex items-center gap-2">
-            <div
-              className="w-4 h-4 rounded-full"
-              style={{ backgroundColor: PRESET_PREVIEW_COLORS[preset] }}
-            />
+            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: PRESET_PREVIEW_COLORS[preset] }} />
             <span className="text-xs font-medium text-slate-200">{PRESET_LABELS[preset]}</span>
           </div>
           {activePreset === preset && <span className="ml-auto text-xs text-gold-ink">Active</span>}
@@ -134,7 +121,7 @@ export function MaterialPresetLibrary({
   position = [0, 0, 5],
   scale = 1,
 }: MaterialPresetLibraryProps) {
-  const { shouldReduceMotion, reducedMotion } = useMotionPolicy();
+  const { shouldReduceMotion } = useMotionPolicy();
   const { tier } = useQualityTier();
   const containerRef = useRef<HTMLDivElement>(null);
   const [contextLost, setContextLost] = useState(false);
@@ -145,8 +132,8 @@ export function MaterialPresetLibrary({
     onRestore: () => setContextLost(false),
   });
 
-  const handleCreated = useCallback((state: any) => {
-    registerContext(state);
+  const handleCreated = useCallback((self: CanvasState) => {
+    registerContext(self.gl);
   }, [registerContext]);
 
   if (shouldReduceMotion) {
@@ -192,5 +179,3 @@ export function MaterialPresetLibrary({
 }
 
 MaterialPresetLibrary.displayName = 'MaterialPresetLibrary';
-
-export { MaterialPresetLibrary };

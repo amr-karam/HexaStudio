@@ -22,6 +22,14 @@ export const TIMING = {
   reduced: 200, // Reduced-motion: opacity-only 0.2s
 } as const;
 
+export const motion = {
+  duration: {
+    micro: TIMING.micro,
+    component: TIMING.component,
+    base: TIMING.page,
+  },
+} as const;
+
 /**
  * Easing curves — translated from MOTION_SYSTEM.md §Easing.
  * Used with react-native-reanimated `withTiming(duration, { easing })`.

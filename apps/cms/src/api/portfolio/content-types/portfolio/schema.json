@@ -1,5 +1,6 @@
 {
-  "collectionName": "portfolios",
+  "kind": "collectionType",
+"collectionName": "portfolios",
   "info": {
     "singularName": "portfolio",
     "pluralName": "portfolios",

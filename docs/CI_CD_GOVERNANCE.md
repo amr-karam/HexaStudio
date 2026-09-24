@@ -1,6 +1,7 @@
 # HEXA Studio — CI/CD GOVERNANCE
 
-> Version: 1.0 | Last Updated: 2026-07-26 | Authority: DevOps Lead
+> Version: 2.0 | Last Updated: 2026-09-10 | Authority: GitLab CE (self-hosted)
+> Migrated from legacy GitHub Actions documentation to the current GitLab CE system.
 
 ## Table of Contents
 

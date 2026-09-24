@@ -49,7 +49,7 @@ services:
   # Cloudflare Tunnel (no public IP required)
   # ---------------------------------------------------------------------------
   cloudflared-green:
-    image: cloudflare/cloudflared:latest-green
+    image: cloudflare/cloudflared:2024.12.0
     <<: *default-restart
     logging: *default-logging
     command: tunnel run

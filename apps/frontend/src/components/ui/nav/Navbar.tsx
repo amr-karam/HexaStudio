@@ -78,6 +78,7 @@ const NAV_STRUCTURE: NavLinkItem[] = [
     },
   },
   { label: "Contact", href: "/contact" },
+  { label: "Design System", href: "/design-system" },
 ];
 
 /* ── NavDropdownPanel ─────────────────────────────────────────────────── */
@@ -106,15 +107,15 @@ const NavDropdownPanel = ({
       onMouseLeave={onClose}
     >
       {/* Gold hairline border */}
-      <div className="relative bg-sl-obsidian/95 backdrop-blur-2xl border border-sl-gold-subtle/20 shadow-2xl shadow-black/50 rounded-2xl overflow-hidden">
-        <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-sl-gold-subtle/40 to-transparent" />
+      <div className="relative bg-[var(--nav-dropdown-bg)]/95 backdrop-blur-2xl border-[var(--nav-dropdown-border)]/20 shadow-2xl shadow-black/50 rounded-2xl overflow-hidden">
+        <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-[var(--nav-dropdown-border)]/40 to-transparent" />
         <div className="p-3 space-y-0.5">
           {dropdown.items.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               onClick={onClose}
-              className="group flex flex-col gap-0.5 rounded-xl px-4 py-3 hover:bg-sl-gold-subtle/5 transition-colors duration-300"
+              className="group flex flex-col gap-0.5 rounded-xl px-4 py-3 hover:bg-[var(--nav-dropdown-item-hover)]/5 transition-colors duration-300"
             >
               <span className="text-xs font-medium uppercase tracking-[0.2em] text-sl-alabaster group-hover:text-sl-gold-hover transition-colors duration-300">
                 {item.label}
@@ -128,7 +129,7 @@ const NavDropdownPanel = ({
           ))}
         </div>
         {/* Bottom glow */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-sl-gold-subtle/20 to-transparent" />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-[var(--nav-dropdown-border)]/20 to-transparent" />
       </div>
     </div>
   );
@@ -157,7 +158,7 @@ const NavItemWithDropdown = ({
           aria-haspopup="true"
           className={cn(
             "group relative flex items-center gap-1.5 py-2 text-xs uppercase tracking-[0.3em] transition-colors duration-500 cursor-pointer",
-            active ? "text-sl-gold-hover" : "text-sl-mist/60 hover:text-sl-alabaster"
+            active ? "text-[var(--nav-link-active)]" : "text-[var(--nav-link-text)] hover:text-[var(--nav-link-hover)]"
           )}
         >
           {item.label}
@@ -185,8 +186,8 @@ const NavItemWithDropdown = ({
             className={cn(
               "absolute -bottom-1 inset-x-0 h-[1px] transition-colors duration-500",
               active || isOpen
-                ? "bg-sl-gold-subtle"
-                : "bg-transparent group-hover:bg-sl-gold-subtle/40"
+                ? "bg-[var(--nav-dropdown-border)]"
+                : "bg-transparent group-hover:bg-[var(--nav-dropdown-border)]/40"
             )}
           />
         </button>
@@ -216,7 +217,7 @@ const NavLink = ({
       aria-current={active ? "page" : undefined}
       className={cn(
         "group relative flex items-center gap-1.5 py-2 text-xs uppercase tracking-[0.3em] transition-colors duration-500",
-        active ? "text-sl-gold-hover" : "text-sl-mist/60 hover:text-sl-alabaster"
+        active ? "text-[var(--nav-link-active)]" : "text-[var(--nav-link-text)] hover:text-[var(--nav-link-hover)]"
       )}
     >
       {item.label}
@@ -225,8 +226,8 @@ const NavLink = ({
         className={cn(
           "absolute -bottom-1 inset-x-0 h-[1px] transition-colors duration-500",
           active
-            ? "bg-sl-gold-subtle"
-            : "bg-transparent group-hover:bg-sl-gold-subtle/40"
+            ? "bg-[var(--nav-dropdown-border)]"
+            : "bg-transparent group-hover:bg-[var(--nav-dropdown-border)]/40"
         )}
       />
     </Link>

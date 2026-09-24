@@ -62,11 +62,11 @@ const SIZE_CLASSES: Record<NonNullable<ButtonSize>, string> = {
 
 const VARIANT_CLASSES: Record<NonNullable<ButtonVariant>, string> = {
   primary:
-    'bg-sl-gold-subtle text-background hover:bg-sl-gold-subtle/90 shadow-lg shadow-sl-gold-subtle/20 hover:shadow-[0_0_20px_rgba(212,175,55,0.15)]',
+    'bg-[var(--btn-primary-bg)] text-background hover:bg-[var(--btn-primary-hover-bg)] shadow-lg shadow-[var(--btn-primary-shadow)]',
   secondary:
-    'bg-white/5 text-sl-alabaster border border-white/10 hover:bg-white/10 hover:border-white/20',
+    'bg-[var(--btn-secondary-bg)] text-sl-alabaster border [var(--btn-secondary-border)] hover:bg-[var(--btn-secondary-hover-bg)] hover:border-white/20',
   ghost: 'bg-transparent text-sl-alabaster hover:bg-white/5',
-  danger: 'bg-red-500 text-sl-alabaster hover:bg-red-600',
+  danger: 'bg-destructive text-sl-alabaster hover:bg-destructive/80',
   outline:
     'border border-sl-silver/20 text-sl-alabaster hover:border-sl-gold-subtle hover:text-sl-gold-hover hover:bg-sl-gold-subtle/5',
   luxury:

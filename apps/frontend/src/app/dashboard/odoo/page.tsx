@@ -11,10 +11,10 @@ type Tab = 'pipeline' | 'leads' | 'contacts' | 'projects' | 'documents' | 'sales
 
 function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
-      <p className="text-xs uppercase tracking-wide text-sl-alabaster/40">{label}</p>
-      <p className="mt-2 text-2xl font-semibold text-sl-alabaster">{value}</p>
-      {sub && <p className="mt-1 text-xs text-sl-alabaster/40">{sub}</p>}
+    <div className="rounded-xl border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] p-5">
+      <p className="text-xs uppercase tracking-wide text-[var(--dash-stat-label)]">{label}</p>
+      <p className="mt-2 text-2xl font-semibold text-[var(--dash-stat-value)]">{value}</p>
+      {sub && <p className="mt-1 text-xs text-[var(--dash-stat-label)]">{sub}</p>}
     </div>
   );
 }
@@ -386,9 +386,9 @@ export default function OdooDashboardPage() {
       </div>
 
       {/* Tabs */}
-      <div className="mb-6 flex gap-1 overflow-x-auto rounded-xl border border-white/10 bg-white/[0.02] p-1">
+      <div className="mb-6 flex gap-1 overflow-x-auto rounded-xl border-[var(--dash-card-border)] bg-white/[0.02] p-1">
         {TABS.map((t) => (
-          <button key={t.key} onClick={() => setTab(t.key)} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${tab === t.key ? 'bg-sl-gold-subtle text-black' : 'text-sl-alabaster/50 hover:text-sl-alabaster/80'}`}>
+          <button key={t.key} onClick={() => setTab(t.key)} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${tab === t.key ? 'bg-[var(--dash-tab-bg-active)] text-[var(--dash-tab-text-active)]' : 'text-[var(--dash-tab-text-inactive)] hover:text-[var(--dash-tab-text-hover)]'}`}>
             {t.label}
           </button>
         ))}
@@ -396,12 +396,13 @@ export default function OdooDashboardPage() {
 
       {/* Pipeline Tab */}
       {tab === 'pipeline' && (
-        <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+        <section className="rounded-2xl border-[var(--dash-card-border)] bg-white/[0.02] p-6">
           <h2 className="mb-4 text-lg font-medium text-sl-alabaster">CRM Pipeline</h2>
           {pipeline.isLoading && <p className="text-sm text-sl-alabaster/40">Loading...</p>}
           {pipeline.data && <PipelineView data={pipeline.data} />}
         </section>
       )}
+
 
       {/* Leads Tab */}
       {tab === 'leads' && (
@@ -425,7 +426,7 @@ export default function OdooDashboardPage() {
                       <td className="py-2 text-sl-alabaster/50">{lead.partner_name ?? '—'}</td>
                       <td className="py-2 text-sl-alabaster/50">{idName(lead.stage_id)}</td>
                       <td className="py-2 text-sl-alabaster/40">{lead.create_date?.slice(0, 10) ?? '—'}</td>
-                      <td className="py-2"><button onClick={() => handleArchiveLead(lead.id)} className="text-xs text-red-400/70 hover:text-red-400">Archive</button></td>
+                      <td className="py-2"><button onClick={() => handleArchiveLead(lead.id)} className="text-xs text-destructive/70 hover:text-destructive">Archive</button></td>
                     </tr>
                   ))}
                 </tbody>
@@ -842,7 +843,7 @@ export default function OdooDashboardPage() {
                   </div>
                   <div className="flex shrink-0 gap-2">
                     <button onClick={() => { setEditingArticle(a); setKnowledgeModalOpen(true); }} className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-sl-alabaster/60 hover:bg-white/5">Edit</button>
-                    <button onClick={() => handleArchiveArticle(a.id)} className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-red-400/70 hover:bg-white/5">Archive</button>
+                    <button onClick={() => handleArchiveArticle(a.id)} className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-destructive/70 hover:bg-white/5">Archive</button>
                   </div>
                 </div>
               ))}
@@ -941,7 +942,7 @@ export default function OdooDashboardPage() {
                   {syncMetrics.data.map((m, i) => (
                     <tr key={`${m.operation}-${i}`} className="border-t border-white/5">
                       <td className="py-2 font-medium text-sl-alabaster">{m.operation}</td>
-                      <td className="py-2">{m.success ? <span className="text-green-400/80">OK</span> : <span className="text-red-400/80">Failed</span>}</td>
+                      <td className="py-2">{m.success ? <span className="text-success-ink/80">OK</span> : <span className="text-destructive-ink/80">Failed</span>}</td>
                       <td className="py-2 text-sl-alabaster/50">{Math.round(m.durationMs)}ms</td>
                       <td className="py-2 text-sl-alabaster/40">{new Date(m.timestamp).toLocaleTimeString()}</td>
                     </tr>

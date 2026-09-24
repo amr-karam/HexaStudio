@@ -1,66 +1,65 @@
-import type { Metadata } from 'next';
-import { HomeHero } from "@/features/portfolio/components/HomeHero";
-import { HomeChapterRail } from "@/features/portfolio/components/HomeChapterRail";
-import { HomePageDynamic } from "@/features/portfolio/components/HomePageDynamic";
-import { fetchProjects } from "@/features/portfolio/lib/fetchProjects";
+'use client';
 
-/** ISR: 1h background refresh + on-demand via /api/revalidate (Sprint 15 P9). */
-export const revalidate = 3600;
-export const dynamic = 'force-dynamic';
+import { ArchvizViewer } from '@/components/ArchvizViewer';
+import { Button } from '@/components/ui/Button';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { motion } from 'framer-motion';
 
-export const metadata: Metadata = {
-  title: 'Studio',
-  description:
-    'Experience the HexaStudio creative process — immersive 3D architectural visualization, cinematic walkthroughs, and spatial intelligence.',
-  openGraph: {
-    title: 'HexaStudio Studio — The Creative Process',
-    description:
-      'Immersive 3D architectural visualization, cinematic walkthroughs, and spatial intelligence.',
-    url: 'https://hexastudio.net/studio',
-    type: 'website',
-    images: [
-      {
-        url: 'https://hexastudio.net/logo.svg',
-        width: 1200,
-        height: 630,
-        alt: 'HexaStudio Studio — The Creative Process',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'HexaStudio Studio — The Creative Process',
-    description:
-      'Immersive 3D architectural visualization, cinematic walkthroughs, and spatial intelligence.',
-    images: ['https://hexastudio.net/logo.svg'],
-  },
-};
-
-/**
- * Studio / Experience — the full 3D chaptered scroll film (Prompt 017).
- *
- *   CH. I   — VISION  → HomeHero (FractureRingHero 3D canvas)
- *   CH. II  — CRAFT   → MarqueeBar + FeaturedWork
- *   CH. III — METHOD  → ProcessSection + AchievementsSection
- *   CH. IV  — PROOF   → ProjectGrid + TestimonialsSection
- *   CH. V   — CONTACT → CTASection + NewsletterSection
- *
- * This page hosts the 3D architectural visualization experience that was
- * previously on the root homepage. Ambient WebGL background is active here.
- */
-export default async function StudioPage() {
-  const projectsData = await fetchProjects();
+export default function StudioPage() {
+  const reduced = useReducedMotion();
 
   return (
-    <div className="bg-sl-void">
-      <HomeChapterRail />
-      <HomeHero />
-      <main className="px-4 sm:px-8 md:px-16">
-        <HomePageDynamic
-        featuredProject={projectsData.projects?.[0]}
-        projects={projectsData.projects ?? []}
-      />
-      </main>
-    </div>
+    <motion.section
+      initial={reduced ? undefined : { opacity: 0 }}
+      animate={reduced ? undefined : { opacity: 1 }}
+      transition={reduced ? undefined : { duration: 0.6 }}
+      className="relative min-h-screen w-full bg-sl-void text-sl-alabaster"
+    >
+      <div className="mx-auto max-w-[1600px] px-6 py-24 sm:px-10 md:py-32">
+        <header className="mb-16">
+          <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-sl-silver">
+            STUDIO WORKSPACE
+          </span>
+          <h1 className="mt-4 font-serif text-[clamp(2rem,6vw,4rem)] font-light leading-[0.9] tracking-tight text-sl-alabaster">
+            Architectural
+            <br />
+            <span className="text-sl-gold-hover">Visualization</span>
+          </h1>
+          <p className="mt-6 max-w-md text-sm font-light leading-relaxed text-sl-mist/60 sm:text-base">
+            Interactive 3D review environment powered by glTF streaming
+            and real-time ray tracing.
+          </p>
+        </header>
+
+        {reduced ? (
+          <div className="aspect-video w-full max-w-4xl rounded-xl border border-sl-gold-subtle/10 bg-sl-obsidian flex items-center justify-center">
+            <span className="text-sl-mist/40">Reduced motion: static view</span>
+          </div>
+        ) : (
+          <motion.div
+            initial={reduced ? undefined : { opacity: 0, y: 24 }}
+            animate={reduced ? undefined : { opacity: 1, y: 0 }}
+            transition={reduced ? undefined : { duration: 0.8, delay: 0.2 }}
+            className="relative aspect-video w-full max-w-4xl"
+          >
+            <ArchvizViewer
+              modelPath="/models/sample-building.glb"
+              poster="/images/studio-poster.jpg"
+              className="rounded-xl"
+              camera={[0, 1.5, 5]}
+            />
+          </motion.div>
+        )}
+
+        <div className="mt-12 flex gap-4">
+          <Button variant="primary" size="md">
+            Request Review
+          </Button>
+          <Button variant="outline" size="md">
+            Export Scene
+          </Button>
+        </div>
+      </div>
+    </motion.section>
   );
 }

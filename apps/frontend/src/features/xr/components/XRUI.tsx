@@ -6,6 +6,8 @@ import { useXRStoreInit } from '../hooks/useXRStore';
 import { checkXRSupport } from '../utils/xr-guard';
 import { xrStore } from './XRCanvas';
 import { useAnalytics } from '@/lib/analytics';
+import { XRGuidedTour } from './XRGuidedTour';
+import { CollaborationPeers } from './CollaborationPeers';
 
 interface XRUIProps {
   onExit: () => void;
@@ -187,17 +189,19 @@ export function XRUI({ onExit, modelName }: XRUIProps) {
           </div>
         )}
 
+        <XRGuidedTour />
         {isSessionActive && placementPhase === 'idle' && (
           <div className="pointer-events-auto absolute bottom-8 left-1/2 -translate-x-1/2">
             <button
               onClick={handleEndSession}
-              className="rounded-lg bg-red-500/80 px-6 py-3 text-sm font-medium text-sl-alabaster shadow-lg backdrop-blur-md transition-all hover:bg-red-500 active:scale-95"
+              className="rounded-lg bg-destructive/80 px-6 py-3 text-sm font-medium text-sl-alabaster shadow-lg backdrop-blur-md transition-all hover:bg-destructive active:scale-95"
             >
               End AR Session
             </button>
           </div>
         )}
       </>
+      <CollaborationPeers />
     </div>
   );
 }

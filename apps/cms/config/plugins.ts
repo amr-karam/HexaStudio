@@ -7,6 +7,7 @@ export default ({ env }) => ({
     },
   },
   meilisearch: {
+    enabled: !!env("MEILISEARCH_HOST", "") && env("MEILISEARCH_MASTER_KEY", "") !== "placeholder_meili_key" && env("MEILISEARCH_MASTER_KEY", "") !== "",
     config: {
       host: env("MEILISEARCH_HOST", "http://localhost:7700"),
       apiKey: env("MEILISEARCH_MASTER_KEY", ""),

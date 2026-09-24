@@ -4,7 +4,7 @@ import { initTracing } from "./tracing";
 initTracing();
 
 import { NestFactory } from "@nestjs/core";
-import { Logger, ValidationPipe, VersioningType, VERSION_NEUTRAL } from "@nestjs/common";
+import { Logger, VersioningType, VERSION_NEUTRAL } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import helmet from "helmet";
 import * as Sentry from "@sentry/node";
@@ -38,13 +38,6 @@ async function bootstrap() {
     type: VersioningType.URI,
     defaultVersion: ['1', VERSION_NEUTRAL],
   });
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-    }),
-  );
   app.useGlobalFilters(new GlobalExceptionFilter());
 
   const corsOrigins = (env.CORS_ORIGINS ?? "http://localhost:3000,https://hexastudio.net,https://www.hexastudio.net")

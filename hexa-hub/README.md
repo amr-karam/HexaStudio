@@ -29,3 +29,9 @@ This bridge enables seamless communication between ChatGPT Desktop and OpenCode 
 - Docker Compose
 - GitLab CE >= 14.15
 - OpenCode 1.18+
+
+## HEXA ONE OS (Hermes + OpenCode merge)
+
+One perfect entry: **Hermes decides, OpenCode does, ONE-OS remembers.**
+See `src/one-os/`, `tests/one-os/`, ADR-017 (`docs/adr/017-hexa-one-os-hermes-opencode-merge.md`)
+and the operator guide (`docs/agents/one-os-merge.md`).

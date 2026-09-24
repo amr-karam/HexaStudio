@@ -1,0 +1,23 @@
+title = "HEXA STUDIO — Gitleaks Secret Detection Configuration"
+
+[allowlist]
+
+# Patterns
+# NOTE: .gitignore already prevents committing .env files. These rules complement that defense.
+# Global allowlist for the entire repo — paths known to legitimately contain pattern-like content
+# but no actual secrets (e.g. example files, test fixtures, generated docs).
+
+# ---
+# Configuration notes
+# - Coverage: Standard gitleaks default rules already catch GitLab PATs, AWS keys, Slack tokens,
+#   private keys, Stripe keys, GitHub tokens, and dozens of other secret formats.
+# - Detection scope: pre-commit hook runs on staged content only (see .git/hooks/pre-commit).
+# - False-positive handling: Add path or regex to allowlist above when an existing file triggers
+#   a valid false positive. Existing false-positive-prone files (e.g. env templates, test fixtures)
+#   are NOT blanket-allowed here — they should still be reviewed, since the goal of this tool is to
+#   catch actual secrets, not to clear the way for accidentally committing them.
+
+# Allowlist example paths (uncomment only when a genuine false positive is confirmed):
+# [[allowlist.paths]]
+#   path = ".env.example"
+#   description = "Placeholder env template — contains no real credentials"

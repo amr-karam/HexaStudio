@@ -76,7 +76,7 @@ describe('Button', () => {
     it('defaults to primary variant', () => {
       const { container } = render(<Button>Default</Button>);
       const btn = container.querySelector('button');
-      expect(btn?.className).toContain('bg-sl-gold-subtle');
+      expect(btn?.className).toContain('bg-[var(--btn-primary-bg)]');
     });
   });
 

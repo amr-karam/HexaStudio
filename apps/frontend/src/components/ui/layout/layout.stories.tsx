@@ -260,7 +260,7 @@ export const RowCenter: StoryObj<typeof Flex> = {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#0A0A0B',
+              color: 'var(--color-void)',
               fontWeight: 700,
               fontSize: 18,
             }}

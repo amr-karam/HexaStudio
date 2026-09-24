@@ -282,15 +282,11 @@ services:
 
 networks:
   hexa_web:
-    driver: bridge
-    name: hexa_web
+    external: true
   hexa_data:
-    driver: bridge
-    name: hexa_data
-    internal: true
+    external: true
   hexa_monitoring:
-    driver: bridge
-    name: hexa_monitoring
+    external: true
 
 volumes:
   postgres_data:

@@ -1,8 +1,10 @@
-import { Injectable, Logger, OnModuleInit, Inject, forwardRef } from '@nestjs/common';
-import { EventBus } from '../realtime/event-bus.service';
+import { Injectable, Logger, OnModuleInit, Inject } from '@nestjs/common';
 import { AgentsService } from './agents.service';
-import { SlackService } from '../webhooks/slack.service';
 import { ModelFusionService } from '../ai/model-fusion.service';
+import { REALTIME_PORT } from '../../ports/realtime.port';
+import { WEBHOOKS_PORT } from '../../ports/webhooks.port';
+import type { RealtimePort } from '../../ports/realtime.port';
+import type { WebhooksPort } from '../../ports/webhooks.port';
 
 interface ApprovalPayload {
   projectId: string;
@@ -15,13 +17,11 @@ export class SwarmOrchestratorService implements OnModuleInit {
   private readonly logger = new Logger(SwarmOrchestratorService.name);
 
   constructor(
-    // ADR-017: EventBus lives in RealtimeModule (circular) — lazy token.
-    @Inject(forwardRef(() => EventBus))
-    private readonly eventBus: EventBus,
+    @Inject(REALTIME_PORT)
+    private readonly eventBus: RealtimePort,
     private readonly agentsService: AgentsService,
-    // ADR-017: SlackService lives in WebhooksModule (circular) — lazy token.
-    @Inject(forwardRef(() => SlackService))
-    private readonly slackService: SlackService,
+    @Inject(WEBHOOKS_PORT)
+    private readonly slackService: WebhooksPort,
     private readonly modelFusion: ModelFusionService,
   ) {}
 

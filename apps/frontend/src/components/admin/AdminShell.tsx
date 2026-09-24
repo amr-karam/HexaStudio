@@ -6,8 +6,10 @@ import { DesignPanel } from '@/components/admin/DesignPanel';
 import { SidebarNav } from '@/components/admin/SidebarNav';
 import { LivePreviewIframe } from '@/components/admin/LivePreviewIframe';
 import { PropertiesPanel } from '@/components/admin/PropertiesPanel';
+import { LuxuryForge } from '@/components/admin/design-forge/LuxuryForge';
 import type { DesignSettings } from '@/lib/design-tokens';
 import { fetchDesignSettings, publishDesignSettings } from '@/lib/design-tokens';
+import { toast } from 'sonner';
 
 const SLIDE_OVER_THRESHOLD = 80;
 
@@ -104,6 +106,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               {selectedSection === 'accounting' && 'Odoo — Accounting'}
               {selectedSection === 'team' && 'Odoo — Team'}
               {selectedSection === 'upload' && 'Upload Centre'}
+              {selectedSection === 'luxury-forge' && 'Luxury Forge'}
             </span>
           </div>
           <div className="flex items-center gap-4">
@@ -159,6 +162,11 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             onPublish={handlePublish}
             onDiscard={handleDiscard}
           />
+        )}
+
+        {/* Luxury Forge panel */}
+        {selectedSection === 'luxury-forge' && (
+          <LuxuryForge onComponentGenerated={() => toast.success('Component generated — luxury-approved and ready for use.')} />
         )}
 
         {/* Children (placeholder pages for other sections) */}

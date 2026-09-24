@@ -16,11 +16,11 @@ interface PhaseApprovalCardProps {
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  pending: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
-  submitted: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-  approved: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-  rejected: 'bg-red-500/10 text-red-400 border-red-500/20',
-  revision: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
+  pending: 'bg-sl-gold-subtle/10 text-sl-gold-hover border-sl-gold-subtle/20',
+  submitted: 'bg-sl-obsidian-raised/20 text-sl-gold border-sl-gold-subtle/20',
+  approved: 'bg-success/10 text-success-ink border-success/20',
+  rejected: 'bg-destructive/10 text-destructive-ink border-destructive/20',
+  revision: 'bg-sl-gold-deep/10 text-sl-gold-deep border-sl-gold-deep/20',
 };
 
 export function PhaseApprovalCard({ phase, onSubmit, onReview, isAdmin }: PhaseApprovalCardProps) {
@@ -59,7 +59,7 @@ export function PhaseApprovalCard({ phase, onSubmit, onReview, isAdmin }: PhaseA
                 onReview?.(phase.id, 'approve', comment);
                 setShowReview(false);
               }}
-              className="rounded-md bg-emerald-600 px-3 py-1.5 text-xs font-medium text-sl-alabaster transition-colors hover:bg-emerald-500"
+              className="rounded-md bg-success-600 px-3 py-1.5 text-xs font-medium text-sl-alabaster transition-colors hover:bg-success"
             >
               {t('portal.approval.approve')}
             </button>
@@ -74,7 +74,7 @@ export function PhaseApprovalCard({ phase, onSubmit, onReview, isAdmin }: PhaseA
                 onReview?.(phase.id, 'reject', comment);
                 setShowReview(false);
               }}
-              className="rounded-md bg-red-600/80 px-3 py-1.5 text-xs font-medium text-sl-alabaster transition-colors hover:bg-red-600"
+              className="rounded-md bg-destructive-deep/80 px-3 py-1.5 text-xs font-medium text-sl-alabaster transition-colors hover:bg-destructive-deep"
             >
               {t('portal.approval.reject')}
             </button>
@@ -90,16 +90,16 @@ export function PhaseApprovalCard({ phase, onSubmit, onReview, isAdmin }: PhaseA
               className="mt-2 w-full rounded-md border border-white/10 bg-black/50 p-2 text-xs text-sl-alabaster placeholder-white/30"
               rows={2}
             />
-            <button
-              onClick={() => {
-                onReview?.(phase.id, 'revision', comment);
-                setShowReview(false);
-                setComment('');
-              }}
-              className="mt-1 rounded-md bg-orange-600 px-3 py-1.5 text-xs font-medium text-sl-alabaster transition-colors hover:bg-orange-500"
-            >
-              {t('portal.approval.sendRevision')}
-            </button>
+                <button
+                  onClick={() => {
+                    onReview?.(phase.id, 'revision', comment);
+                    setShowReview(false);
+                    setComment('');
+                  }}
+                  className="mt-1 rounded-md bg-sl-gold-deep px-3 py-1.5 text-xs font-medium text-sl-alabaster transition-colors hover:bg-sl-gold-hover"
+                >
+                  {t('portal.approval.sendRevision')}
+                </button>
           </div>
         )}
       </div>

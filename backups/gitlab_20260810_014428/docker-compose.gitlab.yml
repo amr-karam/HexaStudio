@@ -1,0 +1,66 @@
+# GitLab CE — Community Edition
+# Self-hosted GitLab for HEXA Studio migration from GitHub
+# Deploy via: docker compose -f docker-compose.gitlab.yml up -d
+#
+# Requirements: 4 vCPU, 8GB RAM, 50GB+ SSD
+# Initial setup: ~3-5 minutes for first boot
+# Access: http://gitlab.hexastudio.local or http://19.16.1.100
+
+services:
+  gitlab:
+    image: gitlab/gitlab-ce:latest
+    container_name: hexa-gitlab
+    restart: unless-stopped
+    hostname: 'gitlab.hexastudio.local'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://19.16.1.100'
+        registry_external_url 'http://19.16.1.100:5050'
+        gitlab_rails['gitlab_shell_ssh_port'] = 2222
+        registry['enable'] = true
+        registry['port'] = 5000
+        registry['registry_http_addr'] = '127.0.0.1:5000'
+        prometheus_monitoring['enable'] = false
+        sidekiq['max_concurrency'] = 5
+        postgresql['shared_buffers'] = '256MB'
+        postgresql['max_connections'] = 200
+        gitlab_rails['backup_keep_time'] = 604800
+        gitlab_rails['smtp_enable'] = false
+        letsencrypt['enable'] = false
+    ports:
+      - "8929:80"    # HTTP (Puma)
+      - "5050:5050"    # Container Registry
+      - "2222:22"      # SSH
+    volumes:
+      - gitlab_config:/etc/gitlab
+      - gitlab_logs:/var/log/gitlab
+      - gitlab_data:/var/opt/gitlab
+    networks:
+      - gitlab-net
+      - hexastudio-web
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/-/health"]
+      interval: 60s
+      timeout: 30s
+      retries: 10
+      start_period: 300s
+    shm_size: '256m'
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+          cpus: '4'
+
+volumes:
+  gitlab_config:
+  gitlab_logs:
+  gitlab_data:
+
+networks:
+  gitlab-net:
+    name: hexa-gitlab-net
+    driver: bridge
+  # Join the shared web network so Traefik can route gitlab.hexastudio.net
+  hexastudio-web:
+    name: hexastudio_web
+    external: true

@@ -24,7 +24,7 @@ export function FeaAnalysisView() {
           <h3 className="text-sm font-bold text-neutral-100">Structural FEA Stress Heatmap & Seismic Simulator</h3>
           <p className="text-xs text-sl-mist/60">Finite Element Analysis & Deflection Tolerances</p>
         </div>
-        <span className="bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full text-emerald-400 text-xs font-mono">
+        <span className="bg-success/10 border border-success/30 px-3 py-1 rounded-full text-success-ink text-xs font-mono">
           ✓ Structural Safety Factor: {safetyFactor}x
         </span>
       </div>
@@ -70,7 +70,7 @@ export function FeaAnalysisView() {
           <span>150 MPa (Yield Threshold)</span>
           <span>300+ MPa (Critical)</span>
         </div>
-        <div className="h-4 w-full rounded-xl bg-gradient-to-r from-blue-500 via-emerald-400 via-amber-400 to-red-500 shadow-inner" />
+        <div className="h-4 w-full rounded-xl bg-gradient-to-r from-blue-500 via-success-ink via-amber-400 to-destructive shadow-inner" />
       </div>
 
       {/* FEA Metrics Grid */}
@@ -85,7 +85,7 @@ export function FeaAnalysisView() {
         </div>
         <div className="bg-sl-void border border-sl-obsidian rounded-2xl p-3">
           <p className="text-[10px] text-sl-mist/60 uppercase font-mono">Deflection Code Limit</p>
-          <p className="text-base font-bold text-emerald-400 font-mono mt-0.5">L / 360 (Pass)</p>
+          <p className="text-base font-bold text-success-ink font-mono mt-0.5">L / 360 (Pass)</p>
         </div>
       </div>
     </div>

@@ -92,7 +92,7 @@ function renderView(): ReturnType<typeof render> {
  * Wait for the signing desk detail panel (AnimatePresence mode="wait" delays
  * its entrance after the empty state exits) and click the approve button.
  */
-async function approveFirstDeliverable(user: ReturnType<typeof userEvent.setup>): Promise<void> {
+async function approveFirstDeliverable(user: Awaited<ReturnType<typeof userEvent.setup>>): Promise<void> {
   const approveButton = await screen.findByRole('button', { name: 'Approve this deliverable' });
   await user.click(approveButton);
 }

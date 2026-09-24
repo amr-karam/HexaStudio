@@ -1,5 +1,6 @@
 {
-  "collectionName": "services",
+  "kind": "collectionType",
+"collectionName": "services",
   "info": {
     "singularName": "service",
     "pluralName": "services",

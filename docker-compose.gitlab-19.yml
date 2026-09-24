@@ -1,0 +1,71 @@
+services:
+  gitlab:
+    image: gitlab/gitlab-ce:latest
+    container_name: hexa-gitlab-19
+    restart: unless-stopped
+    hostname: 'gitlab.hexastudio.net'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://19.16.1.100:8930'
+        registry_external_url 'http://19.16.1.100:5050'
+        registry['enable'] = true
+        registry['port'] = 5000
+        registry['registry_http_addr'] = '0.0.0.0:5000'
+        gitlab_rails['gitlab_shell_ssh_port'] = 2222
+        gitlab_rails['time_zone'] = 'UTC'
+        letsencrypt['enable'] = false
+        gitlab_rails['rack_attack_enabled'] = true
+        gitlab_rails['housekeeping_enabled'] = true
+        prometheus_monitoring['enable'] = true
+        prometheus_monitoring['scrape_interval'] = 15
+        prometheus_monitoring['scrape_timeout'] = 5
+    ports:
+      - "8930:80"
+      - "8443:443"
+      - "5050:5050"
+      - "2222:22"
+      - "9092:9091"
+      - "3002:3001"
+    volumes:
+      - gitlab19_config:/etc/gitlab
+      - gitlab19_logs:/var/log/gitlab
+      - gitlab19_data:/var/opt/gitlab
+    networks:
+      - gitlab-net
+      - hexastudio-web
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/users/sign_in"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 300s
+    shm_size: '512m'
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 65535
+        hard: 65535
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+          cpus: '4'
+        reservations:
+          memory: 4G
+          cpus: '2'
+
+volumes:
+  gitlab19_config:
+    driver: local
+  gitlab19_logs:
+    driver: local
+  gitlab19_data:
+    driver: local
+
+networks:
+  gitlab-net:
+    name: hexa-gitlab-net
+    driver: bridge
+  hexastudio-web:
+    name: hexastudio_web
+    external: true

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Logger,
   Post,
   Res,
@@ -197,5 +198,19 @@ export class AiChatController {
     } finally {
       finish();
     }
+  }
+
+  @Get('status')
+  @Version(['1', VERSION_NEUTRAL])
+  @ApiOperation({ summary: 'LLM provider status' })
+  @ApiResponse({ status: 200, description: 'LLM availability and provider info' })
+  status() {
+    return {
+      available: this.aiChat.isAvailable,
+      provider: this.aiChat.provider,
+      model: this.aiChat.model,
+      fastModel: this.aiChat.fastModel,
+      chatUrl: this.aiChat.chatBaseUrl,
+    };
   }
 }

@@ -29,7 +29,7 @@ function getInitials(name: string): string {
 const AVATAR_COLORS = [
   'bg-amber-500/20 text-amber-400',
   'bg-blue-500/20 text-blue-400',
-  'bg-emerald-500/20 text-emerald-400',
+  'bg-success/20 text-success-ink',
   'bg-purple-500/20 text-purple-400',
   'bg-rose-500/20 text-rose-400',
   'bg-cyan-500/20 text-cyan-400',

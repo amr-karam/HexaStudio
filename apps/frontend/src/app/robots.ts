@@ -1,12 +1,15 @@
-import type { MetadataRoute } from 'next';
+import type { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
+  const base = "https://hexastudio.net";
+
   return {
     rules: {
-      userAgent: '*',
-      allow: '/',
-      disallow: ['/portal/', '/admin/', '/dashboard/'],
+      userAgent: "*",
+      allow: "/",
+      disallow: ["/admin/", "/dashboard/", "/api/", "/_next/", "/static/"],
     },
-    sitemap: 'https://hexastudio.net/sitemap.xml',
+    sitemap: `${base}/sitemap.xml`,
+    host: base,
   };
 }

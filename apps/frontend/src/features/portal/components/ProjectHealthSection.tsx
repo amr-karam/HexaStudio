@@ -28,10 +28,10 @@ export function ProjectHealthSection({ healthScore }: ProjectHealthSectionProps)
   const breakdown = healthScore?.metricBreakdown;
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-emerald-500';
+    if (score >= 80) return 'text-success';
     if (score >= 60) return 'text-amber-500';
     if (score >= 40) return 'text-orange-500';
-    return 'text-red-500';
+    return 'text-destructive';
   }
 
   const getSentimentIcon = (sentiment: string) => {
@@ -46,10 +46,10 @@ export function ProjectHealthSection({ healthScore }: ProjectHealthSectionProps)
 
   const getSentimentColor = (sentiment: string) => {
     switch (sentiment) {
-      case 'positive': return 'text-emerald-500';
+      case 'positive': return 'text-success';
       case 'neutral': return 'text-sl-mist/60';
       case 'frustrated': return 'text-orange-500';
-      case 'urgent': return 'text-red-500';
+      case 'urgent': return 'text-destructive';
       default: return 'text-sl-mist/60';
     }
   }

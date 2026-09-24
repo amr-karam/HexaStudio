@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 
 @theme inline {
   --color-bg: var(--background);
@@ -10,9 +9,14 @@
   --color-sl-bg-elevated: #f5f5f4;
 
   --color-void: #050505;
+  --color-gold: #D4AF37;
+  --color-gold-bright: #E5C76B;
   --color-gold-subtle: #D4AF37;
   --color-gold-muted: #b8960f;
   --color-gold-ink: #C5A028;
+
+  --hexa-ease-entrance: 0.16 1 0.3 1;
+  --hexa-ease-interaction: 0.34 1.56 0.64 1;
 
   --color-sl-alabaster: #FAFAF8;
   --color-sl-onyx: #1a1a1a;
@@ -28,9 +32,20 @@
   --tracking-label: 0.25em;
 }
 
-@utility content-{inline-start} { content: content-inline-start; }
-@utility content-{inline-end} { content: content-inline-end; }
+@utility content-inset-start { content: inset-inline-start; }
+@utility content-inset-end { content: inset-inline-end; }
 
+/*
+ * Below-fold viewport guard (PERFORMANCE.md §2 / ADR-019).
+ * Skips style/layout/paint/decode for below-fold sections until scrolled
+ * within the discard region, keeping the hero SVG as the LCP element and
+ * pushing 3D/portfolio asset work off the initial main-thread window.
+ * contain-intrinsic-size reserves the gallery height to avoid CLS on reveal.
+ */
+@utility cv-section {
+  content-visibility: auto;
+  contain-intrinsic-size: 960px;
+}
 :root {
   --background: #ffffff;
   --foreground: #1a1a1a;
@@ -48,6 +63,23 @@
   --accent-foreground: #1a1a1a;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
+  --destructive-ink: #f87171;
+  --destructive-bright: #fca5a5;
+  --destructive-faint: #7f1d1d;
+  --destructive-soft: #7f1d1d;
+  --destructive-light: #fecaca;
+  --destructive-deep: #991b1b;
+  --destructive-600: #dc2626;
+  --destructive-700: #b91c1c;
+  --success: #10b981;
+  --success-foreground: #ffffff;
+  --success-ink: #34d399;
+  --success-bright: #6ee7b7;
+  --success-faint: #064e3b;
+  --success-soft: #064e3b;
+  --success-dark: #052e1d;
+  --success-800: #047857;
+  --success-600: #059669;
   --border: #f5f5f4;
   --input: #f5f5f4;
   --ring: #1a1a1a;
@@ -76,6 +108,25 @@
   --muted-foreground: #a1a1aa;
   --accent: #262626;
   --accent-foreground: #fafaf9;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --destructive-ink: #fca5a5;
+  --destructive-bright: #f87171;
+  --destructive-faint: #5f0505;
+  --destructive-soft: #5f0505;
+  --destructive-light: #7f1d1d;
+  --destructive-deep: #dc2626;
+  --destructive-600: #ef4444;
+  --destructive-700: #c62828;
+  --success: #34d399;
+  --success-foreground: #052e1d;
+  --success-ink: #6ee7b7;
+  --success-bright: #a7f3d0;
+  --success-faint: #064e3b;
+  --success-soft: #10b981;
+  --success-dark: #047857;
+  --success-800: #065f46;
+  --success-600: #10b981;
   --border: #262626;
   --input: #262626;
   --ring: #fafaf9;
@@ -135,8 +186,45 @@
     font-family: "Inter", sans-serif;
     letter-spacing: 0.01em;
   }
-  * { @apply border-border; }
-  :focus-visible { @apply outline-none ring-2 ring-ring ring-offset-2; }
+
+  .no-js [data-requires-js] {
+    display: none !important;
+  }
+
+  .no-js .no-js-fallback {
+    display: block !important;
+  }
+
+  .no-js-fallback {
+    display: none !important;
+  }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Enhanced focus visible for keyboard navigation */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2;
+    outline-offset: 2px;
+  }
+
+  /* Smooth scrolling for anchor links */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
 }
 
 @layer utilities {

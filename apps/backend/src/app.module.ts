@@ -45,8 +45,11 @@ import {
   StyleTransferModule,
   CostEstimatorModule,
   AssetsModule,
-} from "./modules/index";
+  DataModule,
+  AuditModule,
+  } from './modules/index';
 import { RequestIdMiddleware } from "./common/middleware/request-id.middleware";
+import { SecurityHeadersMiddleware } from "./common/middleware/security-headers.middleware";
 import { WorkflowWiringService } from "./modules/workflow/workflow-wiring.service";
 
 @Module({
@@ -86,6 +89,7 @@ import { WorkflowWiringService } from "./modules/workflow/workflow-wiring.servic
     VectorModule,
     RealtimeModule,
     AIModule,
+    AuditModule,
     MetricsModule,
     AgentsModule,
     AssistantsModule,
@@ -98,6 +102,7 @@ import { WorkflowWiringService } from "./modules/workflow/workflow-wiring.servic
     StyleTransferModule,
     CostEstimatorModule,
     AssetsModule,
+    DataModule,
   ],
   controllers: [AppController],
   providers: [
@@ -109,5 +114,6 @@ import { WorkflowWiringService } from "./modules/workflow/workflow-wiring.servic
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(RequestIdMiddleware).forRoutes('*');
+    consumer.apply(SecurityHeadersMiddleware).forRoutes('*');
   }
 }

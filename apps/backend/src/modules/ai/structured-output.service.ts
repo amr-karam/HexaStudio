@@ -86,11 +86,12 @@ export class StructuredOutputService {
     this.model = this.configService.get('HERMES_MODEL') ?? 'hermes-agent-1.0';
 
     // Hermes Agent exposes an OpenAI-compatible /v1 endpoint.
-    // HERMES_API_KEY may be empty for self-hosted / LAN runtimes.
-    this.client = new OpenAI({
-      apiKey: apiKey ?? '',
-      baseURL: baseUrl,
-    });
+    // HERMES_API_KEY may be empty for self-hosted / LAN runtimes —
+    // leave client null so isAvailable=false instead of crashing boot.
+    this.client =
+      apiKey && apiKey.length > 0
+        ? new OpenAI({ apiKey, baseURL: baseUrl })
+        : null;
   }
 
   get isAvailable(): boolean {

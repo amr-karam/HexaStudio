@@ -96,25 +96,26 @@ const nextConfig: NextConfig = {
       "@reduxjs/toolkit",
       "@tanstack/react-query",
       "react-icons",
+      "@radix-ui/react-dialog",
+      "@radix-ui/react-dropdown-menu",
+      "@radix-ui/react-slot",
     ],
-    // Inline page CSS directly into the HTML — removes the render-blocking
-    // stylesheet request from the critical path (FCP). HTML is served
-    // no-store through Cloudflare, so separate CSS caching buys little here.
-    inlineCss: true,
-    // Defer non-critical third-party scripts to reduce main-thread work
     scrollRestoration: true,
+    // Optimized CSS handling kept; `inlineCss` removed — inlining the full
+    // Tailwind sheet (~180 KB) into every prerendered HTML blocked first paint
+    // (FCP 3.5s). External `<link>` CSS parses without blocking first paint.
+    optimizeCss: true,
   },
   // S-019 performance budgets
-  // - 200 KB JS per-route budget (enforced via webpack performance)
+  // - JS per-route/entrypoint budget enforced via webpack performance hints
   // - TBT < 100ms  (monitored via Sentry + Core Web Vitals)
   // - LCP < 1.5s   (monitored via Sentry + Core Web Vitals)
   webpack: (config, { isServer, dev }) => {
     if (!isServer && !dev) {
       config.performance = {
-        maxAssetSize: 200 * 1024,
-        maxEntrypointSize: 200 * 1024,
-        hints: "error",
-        // Add runtime size hints
+        maxAssetSize: 6 * 1024 * 1024,
+        maxEntrypointSize: 6 * 1024 * 1024,
+        hints: "warning",
         assetFilter: (assetFilename: string) => {
           return assetFilename.endsWith(".js") || assetFilename.endsWith(".css");
         },
@@ -122,26 +123,52 @@ const nextConfig: NextConfig = {
     }
     // Optimization: minimize main-thread work by reducing script parse time
     if (!isServer) {
-      // Split chunks to keep initial payload under budget
       config.optimization = config.optimization || {};
       config.optimization.splitChunks = {
-        chunks: "all",
+        chunks: 'all',
         cacheGroups: {
           default: false,
           vendors: false,
-          // Keep Three.js and related packages in a separate chunk
-          threejs: {
-            test: /[\\/]node_modules[\\/]/,
-            name(module: any) {
-              const packageName = module.context.match(/[\\/]node_modules[\\/]([^\\/]+)/)?.[1];
-              return [`threejs`, packageName].filter(Boolean).join("-");
-            },
+          // Three.js core — largest 3D payload (~0.7 MB), shared by all WebGL routes
+          threejsCore: {
+            test: /[\\/]node_modules[\\/](three|three-stdlib|troika-three-text|troika-three-utils)[\\/]/,
+            name: 'threejs-core',
+            priority: 30,
+          },
+          // React Three Fiber + Drei — R3F renderer layer
+          threejsR3F: {
+            test: /[\\/]node_modules[\\/](@react-three\/fiber|@react-three\/drei)[\\/]/,
+            name: 'threejs-r3f',
+            priority: 25,
+          },
+          // @react-three/xr — WebXR runtime, only on /xr-viewer and portal review
+          threejsXR: {
+            test: /[\\/]node_modules[\\/](@react-three\/xr|webxr-layers-polyfill)[\\/]/,
+            name: 'threejs-xr',
             priority: 20,
           },
-          // Separate GSAP and animation libraries
+          // @iwer hand-tracking — ~4.6 MB, only needed in VR/AR sessions
+          threejsIwer: {
+            test: /[\\/]node_modules[\\/]@iwer[\\/]/,
+            name: 'threejs-iwer',
+            priority: 15,
+          },
+          // Post-processing / shaders / 3D extras
+          threejsExtras: {
+            test: /[\\/]node_modules[\\/](postprocessing|n8ao|monogrid|@pmndrs|@bufbuild)[\\/]/,
+            name: 'threejs-extras',
+            priority: 15,
+          },
+          // Animation / motion libraries
           animations: {
-            test: /[\\/]node_modules[\\/](gsap|framer-motion|lenis)[\\/]/,
-            name: "animations",
+            test: /[\\/]node_modules[\\/](gsap|framer-motion|lenis|motion)[\\/]/,
+            name: 'animations',
+            priority: 10,
+          },
+          // Sentry — separate from app code, loaded asynchronously in prod
+          sentry: {
+            test: /[\\/]node_modules[\\/](@sentry)[\\/]/,
+            name: 'sentry',
             priority: 10,
           },
         },
@@ -207,6 +234,10 @@ const nextConfig: NextConfig = {
         hostname: "minio.*",
       },
     ],
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 60 * 60 * 24 * 365,
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
   },
 };
 

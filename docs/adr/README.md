@@ -6,6 +6,7 @@ This directory contains Architecture Decision Records for HEXA Vision.
 
 | ADR | Decision | Status |
 |-----|----------|--------|
+| [ADR-019](019-ssr-static-hero-for-lcp.md) | Server-Rendered Static Hero Poster for LCP + Visibility-Gated Canvas | Accepted |
 | [ADR-001](001-nextjs-app-router.md) | Next.js App Router as Frontend Framework | Accepted |
 | [ADR-002](002-react-three-fiber.md) | React Three Fiber for 3D Visualization | Accepted |
 | [ADR-003](003-docker-compose.md) | Docker Compose for Development and Deployment | Accepted |
@@ -21,6 +22,7 @@ This directory contains Architecture Decision Records for HEXA Vision.
 | [ADR-013](013-retire-packages-ui.md) | Retire `@hexastudio/ui` Package and Unify Design System | Accepted |
 | [ADR-015](015-method-level-rbac-hexa-hub-controllers.md) | Method-Level RBAC for HEXA Hub Controllers | Proposed |
 | [ADR-016](016-hexa-hub-lint-toolchain-alignment.md) | Align hexa-hub ESLint Toolchain to Flat Config (drop `eslint-plugin-react`) | Accepted |
+| [ADR-017](017-hexa-one-os-hermes-opencode-merge.md) | HEXA ONE OS — Perfect Merge of Hermes and OpenCode | Accepted |
 
 ## Creating New ADRs
 

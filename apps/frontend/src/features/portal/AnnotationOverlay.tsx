@@ -90,7 +90,7 @@ export function AnnotationOverlay({
                 onClick={() => setSelected(selected === ann.id ? null : ann.id)}
                 className={`flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-xs font-bold transition-all ${
                   ann.resolved
-                    ? 'bg-emerald-500/80 text-sl-alabaster'
+                    ? 'bg-success/80 text-sl-alabaster'
                     : 'bg-sl-gold-subtle text-black'
                 }`}
               >
@@ -105,7 +105,7 @@ export function AnnotationOverlay({
                     {!ann.resolved && (
                       <button
                         onClick={() => onResolveAnnotation(ann.id)}
-                        className="text-[10px] text-emerald-400 hover:text-emerald-300"
+                        className="text-[10px] text-success-ink hover:text-success-bright"
                       >
                         {t('portal.annotations.resolve')}
                       </button>

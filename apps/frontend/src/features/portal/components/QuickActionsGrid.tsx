@@ -141,7 +141,7 @@ export function QuickActionsGrid({ actions = DEFAULT_ACTIONS, className: _classN
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
                           transition={{ delay: 0.3, type: 'spring', stiffness: 300 }}
-                          className="ml-2 px-1.5 py-0.5 text-[9px] font-mono uppercase tracking-[0.1em] rounded bg-amber-500/20 text-amber-500 border border-amber-500/30"
+                          className="ml-2 px-1.5 py-0.5 text-[9px] font-mono uppercase tracking-[0.2em] rounded bg-amber-500/20 text-amber-500 border border-amber-500/30"
                         >
                           {action.badge}
                         </motion.span>

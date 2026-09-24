@@ -3,38 +3,61 @@
 import { Suspense, useRef, useCallback, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Environment, PerspectiveCamera, ContactShadows, Html } from '@react-three/drei';
-import type { QualityTier } from '@/providers/quality-provider';
 import { COLOR_TOKENS, GOLD } from '@/lib/color-tokens';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { useQualityTier } from '@/providers/quality-provider';
 import { useContextLossRecovery } from '@/hooks/useContextLossRecovery';
 import { LIGHTING_PRESETS } from '@/features/scene/config/lighting-presets';
+import type { QualityTier } from '@/providers/quality-provider';
 import * as THREE from 'three';
+
+type CanvasState = {
+  gl: THREE.WebGLRenderer;
+  camera: THREE.Camera;
+  scene: THREE.Scene;
+};
+
+type EnvironmentPreset = 'sunset' | 'dawn' | 'night' | 'studio' | 'warehouse' | 'city' | 'apartment' | 'forest' | 'lobby' | 'park';
 
 interface CinematicStorytellerProps {
   title?: string;
   subtitle?: string;
   background?: string;
-  environment?: 'sunset' | 'dawn' | 'night' | 'studio' | 'warehouse';
-  showControls?: boolean;
+  environment?: EnvironmentPreset;
   className?: string;
 }
 
-function CinematicLighting({ environment = 'studio' }: { environment?: string }) {
+const ENVIRONMENT_PRESET_MAP: Record<EnvironmentPreset, keyof typeof LIGHTING_PRESETS> = {
+  sunset: 'daylight',
+  dawn: 'golden_hour',
+  night: 'cyberpunk',
+  studio: 'daylight',
+  warehouse: 'gallery',
+  city: 'daylight',
+  apartment: 'daylight',
+  forest: 'golden_hour',
+  lobby: 'gallery',
+  park: 'sunset',
+};
+
+function CinematicLighting({ environment = 'studio' }: { environment?: EnvironmentPreset }) {
   const { tier } = useQualityTier();
-  const lighting = LIGHTING_PRESETS.daylight;
+  const lightingPreset = ENVIRONMENT_PRESET_MAP[environment ?? 'studio'] as keyof typeof LIGHTING_PRESETS;
+  const lighting = LIGHTING_PRESETS[lightingPreset];
+
+  const envPreset = environment ?? 'studio';
 
   return (
     <>
-      <Environment preset={environment as any} environmentIntensity={0.5} />
+      <Environment preset={envPreset} environmentIntensity={0.5} />
       <ambientLight intensity={lighting.ambientIntensity} color={lighting.ambientColor} />
       <directionalLight
         position={lighting.directionalPosition}
         intensity={lighting.directionalIntensity}
         color={lighting.directionalColor}
         castShadow
-        shadow-mapSize-width={tier.shadows ? 1024 : 256}
-        shadow-mapSize-height={tier.shadows ? 1024 : 256}
+        shadow-mapSize-width={tier.shadowMapSize}
+        shadow-mapSize-height={tier.shadowMapSize}
       />
     </>
   );
@@ -102,7 +125,6 @@ export function CinematicStoryteller({
   subtitle,
   background = COLOR_TOKENS.VOID,
   environment = 'studio',
-  showControls = false,
   className,
 }: CinematicStorytellerProps) {
   const { shouldReduceMotion } = useMotionPolicy();
@@ -116,8 +138,8 @@ export function CinematicStoryteller({
     onRestore: () => setContextLost(false),
   });
 
-  const handleCreated = useCallback((state: any) => {
-    registerContext(state);
+  const handleCreated = useCallback((self: CanvasState) => {
+    registerContext(self.gl);
   }, [registerContext]);
 
   if (shouldReduceMotion) {

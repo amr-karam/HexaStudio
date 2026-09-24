@@ -219,7 +219,7 @@ export function BriefGenerator() {
           </button>
 
           {error && (
-            <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded-xl font-mono">
+            <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive text-xs rounded-xl font-mono">
               {error}
             </div>
           )}

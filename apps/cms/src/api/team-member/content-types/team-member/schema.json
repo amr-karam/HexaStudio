@@ -1,5 +1,6 @@
 {
-  "collectionName": "team_members",
+  "kind": "collectionType",
+"collectionName": "team_members",
   "info": {
     "singularName": "team-member",
     "pluralName": "team-members",

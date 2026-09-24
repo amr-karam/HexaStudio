@@ -1,9 +1,8 @@
 'use client';
 
 import { Suspense, useRef, useMemo, useCallback, useState, useEffect } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { Environment, PerspectiveCamera, Html } from '@react-three/drei';
-import type { QualityTier } from '@/providers/quality-provider';
 import { COLOR_TOKENS, GOLD } from '@/lib/color-tokens';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { useQualityTier } from '@/providers/quality-provider';
@@ -28,8 +27,6 @@ interface PerformanceStats {
   textures: number;
 }
 
-const SAMPLE_COUNT = 60;
-
 const PERFORMANCE_CONFIG = {
   low: { fpsTarget: 30, drawCallTarget: 500 },
   medium: { fpsTarget: 45, drawCallTarget: 1000 },
@@ -37,6 +34,14 @@ const PERFORMANCE_CONFIG = {
 } as const;
 
 const FPS_HISTORY_LENGTH = 60;
+
+type CanvasState = {
+  gl: THREE.WebGLRenderer;
+  camera: THREE.Camera;
+  scene: THREE.Scene;
+  clock: THREE.Clock;
+  stats?: { renderBounds?: { count: number } };
+};
 
 function StatsOverlay({ stats, onStatsChange }: { stats: PerformanceStats; onStatsChange: (stats: PerformanceStats) => void }) {
   const fpsHistoryRef = useRef<number[]>([]);
@@ -55,35 +60,44 @@ function StatsOverlay({ stats, onStatsChange }: { stats: PerformanceStats; onSta
     onStatsChange(stats);
   }, [stats, onStatsChange]);
 
+  const barColor = stats.drawCalls < 500 ? '#22c55e' : stats.drawCalls < 1000 ? '#eab308' : '#ef4444';
+
   return (
     <Html position={[-4, 3.5, 0]} className="pointer-events-none">
-      <div className="text-xs text-slate-200 bg-obsidian/80 border border-slate-700 rounded-lg p-3">
-        <div className="font-bold text-gold-ink mb-2">WebGL Performance</div>
-        <div className="space-y-1">
-          <div className="flex justify-between">
-            <span className="text-slate-400">FPS:</span>
-            <span className={avgFps >= 55 ? 'text-green-400' : avgFps >= 45 ? 'text-yellow-400' : 'text-red-400'}>
-              {avgFps.toFixed(1)}
-            </span>
+      <div
+        style={{
+          fontSize: '0.75rem',
+          color: '#e4e4e8',
+          background: 'rgba(15, 15, 16, 0.8)',
+          border: '1px solid rgba(76, 76, 82, 0.5)',
+          borderRadius: '0.5rem',
+          padding: '0.75rem',
+        }}
+      >
+        <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>WebGL Performance</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ color: '#a0a0a0' }}>FPS:</span>
+            <span style={{ color: barColor }}>{avgFps.toFixed(1)}</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-slate-400">Frame:</span>
-            <span className="text-slate-300">{(1000 / stats.fps).toFixed(1)}ms</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ color: '#a0a0a0' }}>Frame:</span>
+            <span style={{ color: '#c0c0c0' }}>{(1000 / stats.fps).toFixed(1)}ms</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-slate-400">Draw Calls:</span>
-            <span className="text-slate-300">{stats.drawCalls}</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ color: '#a0a0a0' }}>Draw Calls:</span>
+            <span style={{ color: '#c0c0c0' }}>{stats.drawCalls}</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-slate-400">Triangles:</span>
-            <span className="text-slate-300">{(stats.triangles / 1000).toFixed(1)}k</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ color: '#a0a0a0' }}>Triangles:</span>
+            <span style={{ color: '#c0c0c0' }}>{(stats.triangles / 1000).toFixed(1)}k</span>
           </div>
-          <div className="w-full h-1.5 bg-slate-700 rounded overflow-hidden">
+          <div style={{ width: '100%', height: '0.375rem', background: '#374151', borderRadius: '0.25rem', overflow: 'hidden' }}>
             <div
-              className="h-full transition-all duration-100"
               style={{
+                height: '100%',
                 width: `${Math.min(100, (stats.drawCalls / PERFORMANCE_CONFIG.high.drawCallTarget) * 100)}%`,
-                backgroundColor: stats.drawCalls < 500 ? '#22c55e' : stats.drawCalls < 1000 ? '#eab308' : '#ef4444',
+                backgroundColor: barColor,
               }}
             />
           </div>
@@ -93,21 +107,25 @@ function StatsOverlay({ stats, onStatsChange }: { stats: PerformanceStats; onSta
   );
 }
 
-interface PerformanceWarningProps {
-  level: 'low' | 'medium' | 'high';
-  message: string;
-}
-
-function PerformanceWarning({ level, message }: PerformanceWarningProps) {
+function PerformanceWarning({ level, message }: { level: 'low' | 'medium' | 'high'; message: string }) {
   const colors = {
-    low: 'text-red-400',
-    medium: 'text-yellow-400',
-    high: 'text-green-400',
+    low: '#ef4444',
+    medium: '#eab308',
+    high: '#22c55e',
   };
 
   return (
     <Html position={[0, 3.5, 0]} center className="pointer-events-none">
-      <div className={`text-xs px-3 py-1.5 rounded bg-obsidian/80 border ${colors[level]} border-current`}>
+      <div
+        style={{
+          fontSize: '0.75rem',
+          padding: '0.5rem 1rem',
+          borderRadius: '0.25rem',
+          background: 'rgba(15, 15, 16, 0.8)',
+          border: `1px solid ${colors[level]}`,
+          color: colors[level],
+        }}
+      >
         {message}
       </div>
     </Html>
@@ -137,24 +155,36 @@ function StatsSphere({ radius = 2 }: { radius?: number }) {
 
 function StaticPerformanceWidget({ stats }: { stats: PerformanceStats }) {
   return (
-    <div className="absolute bottom-4 right-4 bg-obsidian/80 border border-slate-700 rounded-lg p-3 text-xs text-slate-200">
-      <div className="font-bold text-gold-ink mb-2">WebGL Stats</div>
-      <div className="grid grid-cols-2 gap-2">
+    <div
+      style={{
+        position: 'absolute' as const,
+        bottom: '1rem',
+        right: '1rem',
+        background: 'rgba(15, 15, 16, 0.8)',
+        border: '1px solid rgba(76, 76, 82, 0.5)',
+        borderRadius: '0.5rem',
+        padding: '0.75rem',
+        fontSize: '0.75rem',
+        color: '#e4e4e8',
+      }}
+    >
+      <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>WebGL Stats</div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.25rem 1rem' }}>
         <div>
-          <span className="text-slate-400">FPS</span>
-          <div className="font-mono">{stats.fps.toFixed(1)}</div>
+          <span style={{ color: '#a0a0a0' }}>FPS</span>
+          <div style={{ fontFamily: 'monospace' }}>{stats.fps.toFixed(1)}</div>
         </div>
         <div>
-          <span className="text-slate-400">Draws</span>
-          <div className="font-mono">{stats.drawCalls}</div>
+          <span style={{ color: '#a0a0a0' }}>Draws</span>
+          <div style={{ fontFamily: 'monospace' }}>{stats.drawCalls}</div>
         </div>
         <div>
-          <span className="text-slate-400">Tris</span>
-          <div className="font-mono">{(stats.triangles / 1000).toFixed(1)}k</div>
+          <span style={{ color: '#a0a0a0' }}>Tris</span>
+          <div style={{ fontFamily: 'monospace' }}>{(stats.triangles / 1000).toFixed(1)}k</div>
         </div>
         <div>
-          <span className="text-slate-400">Mem</span>
-          <div className="font-mono">{(stats.memory / 1024 / 1024).toFixed(1)}MB</div>
+          <span style={{ color: '#a0a0a0' }}>Mem</span>
+          <div style={{ fontFamily: 'monospace' }}>{(stats.memory / 1024 / 1024).toFixed(1)}MB</div>
         </div>
       </div>
     </div>
@@ -189,11 +219,11 @@ export function WebGLPerformanceMonitor({
     onRestore: () => setContextLost(false),
   });
 
-  const handleCreated = useCallback((state: any) => {
-    registerContext(state);
-  }, [registerContext]);
+  const statsSphereRef = useRef<THREE.Mesh>(null);
 
-  const statsSphereRef = useRef<any>(null);
+  const handleCreated = useCallback((self: CanvasState) => {
+    registerContext(self.gl);
+  }, [registerContext]);
 
   useFrame((state) => {
     const fps = 1000 / state.clock.getDelta();
@@ -201,17 +231,16 @@ export function WebGLPerformanceMonitor({
     setFpsHistory(history);
 
     const avgFps = history.reduce((a, b) => a + b, 0) / history.length;
-    const gl = state.gl;
 
     setStats((prev) => {
-      const newStats = {
+      const newStats: PerformanceStats = {
         ...prev,
         fps: avgFps,
         frameTime: 1000 / avgFps,
-        drawCalls: state.stats.renderBounds?.count ?? prev.drawCalls,
-        triangles: state.stats?.renderBounds?.count * 100 ?? prev.triangles,
-        memory: (gl as any).__memory?.UsedWebGLHandle ?? prev.memory,
-        textures: (gl as any).__textures?.length ?? prev.textures,
+        drawCalls: state.stats?.renderBounds?.count ?? prev.drawCalls,
+        triangles: (state.stats?.renderBounds?.count ?? prev.triangles) * 100,
+        memory: (state.gl as any).__memory?.UsedWebGLHandle ?? prev.memory,
+        textures: (state.gl as any).__textures?.length ?? prev.textures,
       };
 
       if (onStatsChange) {
@@ -250,9 +279,9 @@ export function WebGLPerformanceMonitor({
         <div
           role="status"
           aria-live="polite"
-          className="absolute inset-0 flex items-center justify-center bg-obsidian"
+          style={{ position: 'absolute' as const, inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: COLOR_TOKENS.OBSIDIAN }}
         >
-          <p className="text-slate-400 text-xs">Performance monitor paused</p>
+          <p style={{ color: '#a0a0a0', fontSize: '0.875rem' }}>Performance monitor paused</p>
         </div>
       )}
       <Canvas
@@ -270,17 +299,15 @@ export function WebGLPerformanceMonitor({
           <PerspectiveCamera makeDefault position={[0, 0, 10]} fov={50} />
           <ambientLight intensity={0.3} />
           <Environment preset="studio" environmentIntensity={0.2} />
-          <StatsSphere ref={statsSphereRef} radius={1.5} />
+          {statsSphereRef.current && (
+            <primitive object={statsSphereRef.current} />
+          )}
         </Suspense>
       </Canvas>
       {showStats && <StatsOverlay stats={stats} onStatsChange={setStats} />}
-      {warningMessage && (
-        <PerformanceWarning level={warningLevel} message={warningMessage} />
-      )}
+      {warningMessage && <PerformanceWarning level={warningLevel} message={warningMessage} />}
     </div>
   );
 }
 
 WebGLPerformanceMonitor.displayName = 'WebGLPerformanceMonitor';
-
-export { WebGLPerformanceMonitor };

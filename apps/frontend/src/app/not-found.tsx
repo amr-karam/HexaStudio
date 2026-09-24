@@ -4,14 +4,13 @@ import { EASE } from '@/lib/motion';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
-import { TextReveal } from '@/components/ui/TextReveal';
 
 export default function NotFound() {
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center px-4 sm:px-8 overflow-hidden bg-sl-void">
       {/* Background texture */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(ellipse_at_center,white,transparent)] opacity-10 pointer-events-none" />
-      
+
       {/* Ambient glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-sl-gold-subtle/5 blur-[200px] rounded-full pointer-events-none" />
 
@@ -25,25 +24,29 @@ export default function NotFound() {
           Error 404
         </motion.span>
 
-        <div className="text-7xl md:text-[12rem] font-serif font-light tracking-tighter text-sl-alabaster/10 leading-none select-none">
-          <TextReveal delay={0.1}>404</TextReveal>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.2, delay: 0.1, ease: EASE.entrance }}
+          className="text-7xl md:text-[12rem] font-serif font-light tracking-tighter text-sl-alabaster/[0.07] leading-none select-none"
+        >
+          <span className="italic text-sl-gold-hover/20">404</span>
+        </motion.div>
 
-        <div className="-mt-16">
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: EASE.entrance }}
-            className="text-3xl md:text-5xl font-serif font-light tracking-tight text-sl-alabaster"
-          >
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3, ease: EASE.entrance }}
+        >
+          <h1 className="text-3xl md:text-5xl font-serif font-light tracking-tight text-sl-alabaster">
             Space <span className="italic text-sl-gold-hover">Not Found</span>
-          </motion.h1>
-        </div>
+          </h1>
+        </motion.div>
 
         <motion.p
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3, ease: EASE.entrance }}
+          transition={{ duration: 0.8, delay: 0.4, ease: EASE.entrance }}
           className="text-sl-mist/60 text-sm max-w-md leading-relaxed font-light"
         >
           The page you&apos;re looking for doesn&apos;t exist or has been moved to a different location.
@@ -52,7 +55,7 @@ export default function NotFound() {
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4, ease: EASE.entrance }}
+          transition={{ duration: 0.8, delay: 0.5, ease: EASE.entrance }}
           className="flex flex-col sm:flex-row gap-4 mt-4"
         >
           <Link href="/">
@@ -69,7 +72,9 @@ export default function NotFound() {
         </motion.div>
       </div>
 
-      {/* Bottom accent lines */}
+      {/* Decorative corner accents */}
+      <div className="absolute top-0 start-0 w-24 h-24 border-t border-l border-sl-gold-subtle/10" />
+      <div className="absolute bottom-0 end-0 w-24 h-24 border-b border-r border-sl-gold-subtle/10" />
       <div className="absolute bottom-0 start-0 w-px h-32 bg-gradient-to-t from-sl-gold-subtle to-transparent opacity-20" />
       <div className="absolute bottom-0 end-0 w-px h-32 bg-gradient-to-t from-sl-gold-subtle to-transparent opacity-20" />
     </main>

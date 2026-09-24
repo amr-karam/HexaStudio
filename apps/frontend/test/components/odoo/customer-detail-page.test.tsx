@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
+import { Suspense } from 'react';
 import CustomerDetailPage from '@/app/admin/odoo/customers/[id]/page';
 
 const mockPush = vi.fn();
@@ -14,7 +15,7 @@ vi.mock('next/navigation', () => ({
     get: vi.fn(),
     getAll: vi.fn(),
   }),
-  useParams: () => ({ id: '123' }),
+  useParams: () => Promise.resolve({ id: '123' }),
 }));
 
 describe('CustomerDetailPage', () => {
@@ -41,13 +42,19 @@ describe('CustomerDetailPage', () => {
     vi.clearAllMocks();
   });
 
+  async function renderSuspended(ui: React.ReactElement) {
+    await act(async () => {
+      render(<Suspense fallback={null}>{ui}</Suspense>);
+    });
+  }
+
   it('renders customer name', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({
       ok: true,
       json: async () => ({ customer: mockCustomer }),
     } as Response);
 
-    render(<CustomerDetailPage params={{ id: '123' }} />);
+    await renderSuspended(<CustomerDetailPage params={Promise.resolve({ id: '123' })} />);
     expect(await screen.findByText('John Doe')).toBeInTheDocument();
   });
 
@@ -57,7 +64,7 @@ describe('CustomerDetailPage', () => {
       json: async () => ({ customer: mockCustomer }),
     } as Response);
 
-    render(<CustomerDetailPage params={{ id: '123' }} />);
+    await renderSuspended(<CustomerDetailPage params={Promise.resolve({ id: '123' })} />);
     expect(await screen.findByText('john@example.com')).toBeInTheDocument();
   });
 
@@ -67,7 +74,7 @@ describe('CustomerDetailPage', () => {
       json: async () => ({ customer: mockCustomer }),
     } as Response);
 
-    render(<CustomerDetailPage params={{ id: '123' }} />);
+    await renderSuspended(<CustomerDetailPage params={Promise.resolve({ id: '123' })} />);
     expect(await screen.findByText('+1 (555) 123-4567')).toBeInTheDocument();
   });
 
@@ -77,7 +84,7 @@ describe('CustomerDetailPage', () => {
       json: async () => ({ customer: mockCustomer }),
     } as Response);
 
-    render(<CustomerDetailPage params={{ id: '123' }} />);
+    await renderSuspended(<CustomerDetailPage params={Promise.resolve({ id: '123' })} />);
     expect(await screen.findByText('Acme Corp')).toBeInTheDocument();
   });
 
@@ -87,7 +94,7 @@ describe('CustomerDetailPage', () => {
       json: async () => ({ customer: mockCustomer }),
     } as Response);
 
-    render(<CustomerDetailPage params={{ id: '123' }} />);
+    await renderSuspended(<CustomerDetailPage params={Promise.resolve({ id: '123' })} />);
     expect(await screen.findByText('123 Main St')).toBeInTheDocument();
     expect(screen.getByText('San Francisco')).toBeInTheDocument();
     expect(screen.getByText('CA')).toBeInTheDocument();
@@ -101,7 +108,7 @@ describe('CustomerDetailPage', () => {
       json: async () => ({ customer: mockCustomer }),
     } as Response);
 
-    render(<CustomerDetailPage params={{ id: '123' }} />);
+    await renderSuspended(<CustomerDetailPage params={Promise.resolve({ id: '123' })} />);
     const websiteLink = await screen.findByRole('link', {
       name: 'https://acme.com',
     });
@@ -114,7 +121,7 @@ describe('CustomerDetailPage', () => {
       json: async () => ({ customer: mockCustomer }),
     } as Response);
 
-    render(<CustomerDetailPage params={{ id: '123' }} />);
+    await renderSuspended(<CustomerDetailPage params={Promise.resolve({ id: '123' })} />);
     expect(await screen.findByText('Active')).toBeInTheDocument();
   });
 
@@ -124,7 +131,7 @@ describe('CustomerDetailPage', () => {
       json: async () => ({ customer: mockCustomer }),
     } as Response);
 
-    render(<CustomerDetailPage params={{ id: '123' }} />);
+    await renderSuspended(<CustomerDetailPage params={Promise.resolve({ id: '123' })} />);
     expect(await screen.findByText(/Created/)).toBeInTheDocument();
     expect(await screen.findByText(/Last Updated/)).toBeInTheDocument();
   });
@@ -134,7 +141,7 @@ describe('CustomerDetailPage', () => {
       return new Promise(() => { /* pending forever */ });
     });
 
-    render(<CustomerDetailPage params={{ id: '123' }} />);
+    await renderSuspended(<CustomerDetailPage params={Promise.resolve({ id: '123' })} />);
     expect(await screen.findByRole('status')).toBeInTheDocument();
   });
 
@@ -145,7 +152,7 @@ describe('CustomerDetailPage', () => {
       json: async () => ({ error: 'Not found' }),
     } as Response);
 
-    render(<CustomerDetailPage params={{ id: '123' }} />);
+    await renderSuspended(<CustomerDetailPage params={Promise.resolve({ id: '123' })} />);
     expect(await screen.findByText('Customer not found')).toBeInTheDocument();
     expect(screen.getByText(/Go Back/)).toBeInTheDocument();
   });
@@ -156,7 +163,7 @@ describe('CustomerDetailPage', () => {
       json: async () => ({ customer: mockCustomer }),
     } as Response);
 
-    render(<CustomerDetailPage params={{ id: '123' }} />);
+    await renderSuspended(<CustomerDetailPage params={Promise.resolve({ id: '123' })} />);
     expect(await screen.findByText('Edit Customer')).toBeInTheDocument();
   });
 });

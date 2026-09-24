@@ -166,7 +166,7 @@ http:
 
     gitlab:
       loadBalancer:
-        servers: [{ url: "http://hexa-gitlab:80" }]
+        servers: [{ url: "http://hexa-gitlab-19:80" }]
 
   middlewares:
     # Traefik dashboard / Alertmanager basic auth — credentials from env.

@@ -1,0 +1,44 @@
+# HEXA Hermes appearance for Codex Desktop (~/.codex/config.toml).
+# Merge these keys/tables into your existing config.toml (keep everything else).
+# Every value maps to a canonical DESIGN_SYSTEM.md / DESIGN_TOKENS.md token —
+# no ad-hoc hex. Restart the Codex Desktop app after saving.
+# Revert: restore your config.toml backup (see README.md).
+
+appearanceTheme = "dark"
+appearanceDarkCodeThemeId = "vercel"
+appearanceLightCodeThemeId = "notion"
+appearanceDiffMarkerStyle = "color"
+
+[desktop.appearanceDarkChromeTheme]
+accent = "#D4AF37" # gold — HEXA signature CTA / focus / active accent
+accentSource = "custom"
+contrast = 50
+ink = "#F5F4F2" # sl-alabaster — primary text on void
+opaqueWindows = true
+surface = "#050505" # void — primary canvas background
+
+[desktop.appearanceDarkChromeTheme.fonts]
+code = '"JetBrains Mono", "Geist Mono", ui-monospace, "SFMono-Regular"'
+ui = '"Inter", "Geist", system-ui, sans-serif'
+
+[desktop.appearanceDarkChromeTheme.semanticColors]
+diffAdded = "#00AD3A"
+diffRemoved = "#F13342"
+skill = "#D4AF37" # gold — was default purple, now on-brand
+
+[desktop.appearanceLightChromeTheme]
+accent = "#A8862E" # goldDeep — legible gold on light surfaces
+accentSource = "custom"
+contrast = 45
+ink = "#1A1A1A" # onyx — primary text on alabaster
+opaqueWindows = true
+surface = "#F5F4F2" # sl-alabaster — light canvas
+
+[desktop.appearanceLightChromeTheme.fonts]
+code = '"JetBrains Mono", "Geist Mono", ui-monospace, "SFMono-Regular"'
+ui = '"Inter", "Geist", system-ui, sans-serif'
+
+[desktop.appearanceLightChromeTheme.semanticColors]
+diffAdded = "#008000"
+diffRemoved = "#a31515"
+skill = "#A8862E" # goldDeep — on-brand, legible on light

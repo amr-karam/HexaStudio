@@ -1,0 +1,80 @@
+<div class="kanban-board">
+  <div class="board-header">
+    <h2>☰ Hermes Kanban — Sprint S-023</h2>
+    <div class="board-controls">
+      <button onclick="saveBoard()" title="💾 Save">💾</button>
+      <button onclick="resetBoard()" title="↺ Reset">↺</button>
+    </div>
+  </div>
+  <div class="board-columns">
+    <div class="column" data-col="backlog">
+      <div class="column-header">🚀 Backlog<span class="count">0</span></div>
+      <div class="card-list"></div>
+      <div class="add-card" onclick="addCard('backlog')">+ card</div>
+    </div>
+    <div class="column" data-col="inprogress">
+      <div class="column-header">⚡ In Progress<span class="count">0</span></div>
+      <div class="card-list"></div>
+      <div class="add-card" onclick="addCard('inprogress')">+ card</div>
+    </div>
+    <div class="column" data-col="review">
+      <div class="column-header">🔍 Review<span class="count">0</span></div>
+      <div class="card-list"></div>
+      <div class="add-card" onclick="addCard('review')">+ card</div>
+    </div>
+    <div class="column" data-col="done">
+      <div class="column-header">✅ Done<span class="count">0</span></div>
+      <div class="card-list"></div>
+      <div class="add-card" onclick="addCard('done')">+ card</div>
+    </div>
+    <div class="column" data-col="blocked">
+      <div class="column-header">🚫 Blocked<span class="count">0</span></div>
+      <div class="card-list"></div>
+      <div class="add-card" onclick="addCard('blocked')">+ card</div>
+    </div>
+  </div>
+</div>
+<script>
+const tasks = [
+  {id:"K-001",title:"Fix globals.css @utility declarations",priority:"p0",sprint:"S-023",status:"done"},
+  {id:"K-002",title:"Deploy /ai-canvas route to production",priority:"p0",sprint:"S-023",status:"inprogress"},
+  {id:"K-003",title:"Typecheck + lint frontend (0 errors)",priority:"p0",sprint:"S-023",status:"done"},
+  {id:"K-004",title:"Security scan: no high/critical vulns",priority:"p0",sprint:"S-023",status:"blocked"},
+  {id:"K-005",title:"Design token compliance on all new components",priority:"p0",sprint:"S-023",status:"backlog"},
+  {id:"K-006",title:"Component tests (≥80% coverage)",priority:"p0",sprint:"S-023",status:"blocked"},
+  {id:"K-007",title:"Git push: no CRLF / secret leaks",priority:"p0",sprint:"S-023",status:"inprogress"},
+  {id:"K-008",title:"Docker production deploy with zero-downtime",priority:"p1",sprint:"S-023",status:"blocked"},
+  {id:"K-009",title:"Traefik https → frontend :3000",priority:"p1",sprint:"S-023",status:"done"},
+  {id:"K-010",title:"Full integration test suite",priority:"p1",sprint:"S-023",status:"blocked"},
+  {id:"K-011",title:"Archive deprecated Sprint 019",priority:"p2",sprint:"S-023",status:"backlog"},
+  {id:"K-012",title:"Validate honeypot end-to-end flow",priority:"p2",sprint:"S-023",status:"backlog"},
+];
+function render(){
+  document.querySelectorAll('.column').forEach(c=>{
+    const status=c.dataset.col;
+    const list=c.querySelector('.card-list');
+    list.innerHTML='';
+    tasks.filter(t=>t.status===status).forEach(t=>list.appendChild(createCard(t)));
+    c.querySelector('.count').textContent=String(tasks.filter(t=>t.status===status).length);
+  });
+}
+function createCard(task){
+  const div=document.createElement('div');
+  div.className='card priority-'+task.priority;
+  div.draggable=true;
+  div.dataset.id=task.id;
+  div.innerHTML='<div class="card-header"><span class="card-id">'+task.id+'</span><span class="card-priority">'+task.priority.toUpperCase()+'</span></div><div class="card-title">'+task.title+'</div><div class="card-sprint">'+task.sprint+'</div>';
+  div.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',task.id);});
+  return div;
+}
+function addCard(status){const t=prompt('Card title:');if(!t)return;tasks.push({id:'K-'+(tasks.length+1),title:t,priority:'p2',sprint:'S-023',status});render();}
+function saveBoard(){localStorage.setItem('kanban-tasks',JSON.stringify(tasks));}
+function resetBoard(){localStorage.removeItem('kanban-tasks');location.reload();}
+document.querySelectorAll('.column').forEach(c=>{
+  c.addEventListener('dragover',e=>{e.preventDefault();c.classList.add('drag-over');});
+  c.addEventListener('dragleave',()=>c.classList.remove('drag-over'));
+  c.addEventListener('drop',e=>{e.preventDefault();c.classList.remove('drag-over');
+    const t=tasks.find(x=>x.id===e.dataTransfer.getData('text/plain'));
+    if(t){t.status=c.dataset.col;render();}});
+});
+render();</script>

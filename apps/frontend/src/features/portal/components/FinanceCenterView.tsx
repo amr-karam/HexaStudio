@@ -71,8 +71,8 @@ const STATUS_STYLES: Record<
 > = {
   paid: {
     label: 'Paid',
-    pill: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300',
-    dot: 'bg-emerald-400',
+    pill: 'border-success/30 bg-success/10 text-success-bright',
+    dot: 'bg-success-ink',
   },
   pending: {
     label: 'Pending',
@@ -81,8 +81,8 @@ const STATUS_STYLES: Record<
   },
   overdue: {
     label: 'Overdue',
-    pill: 'border-red-500/30 bg-red-500/10 text-red-300',
-    dot: 'bg-red-400',
+    pill: 'border-destructive/30 bg-destructive/10 text-destructive-bright',
+    dot: 'bg-destructive-ink',
   },
   draft: {
     label: 'Draft',
@@ -208,7 +208,7 @@ function StatusPill({ status }: { status: InvoiceItem['status'] }) {
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-2 rounded-full border px-2.5 py-1 text-[10px] font-mono uppercase tracking-[0.15em]',
+        'inline-flex items-center gap-2 rounded-full border px-2.5 py-1 text-[10px] font-mono uppercase tracking-[0.2em]',
         config.pill,
       )}
     >
@@ -334,7 +334,7 @@ export function FinanceCenterView() {
         valueFn: (fmt: (n: number) => string) => fmt(totalPaid),
         valueClass: 'text-gradient-gold',
         note: `${completionPct}% Completed`,
-        noteClass: 'text-emerald-400/90',
+        noteClass: 'text-success-ink/90',
       },
       {
         label: 'Outstanding Balance',
@@ -400,7 +400,7 @@ export function FinanceCenterView() {
                 aria-pressed={isActive}
                 aria-label={`Display amounts in ${curr}`}
                 className={cn(
-                  'relative rounded-full px-4 py-1.5 font-mono text-xs tracking-[0.15em] transition-colors duration-500',
+                  'relative rounded-full px-4 py-1.5 font-mono text-xs tracking-[0.2em] transition-colors duration-500',
                   isActive ? 'text-neutral-950' : 'text-sl-mist/60 hover:text-sl-gold-hover'
                 )}
               >
@@ -587,7 +587,7 @@ export function FinanceCenterView() {
                         <button
                           type="button"
                           onClick={() => handleToggleExpand(inv.id)}
-                          className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-sl-void border border-sl-obsidian font-mono text-[0.625rem] uppercase tracking-[0.1em] text-sl-mist/60 hover:text-neutral-200 hover:border-neutral-700 transition-colors"
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-sl-void border border-sl-obsidian font-mono text-[0.625rem] uppercase tracking-[0.2em] text-sl-mist/60 hover:text-neutral-200 hover:border-neutral-700 transition-colors"
                           aria-label={`Toggle itemized breakdown for invoice ${inv.number}`}
                         >
                           <span>{expandedInvoiceId === inv.id ? 'Hide' : 'Lines'}</span>
@@ -596,7 +596,7 @@ export function FinanceCenterView() {
                           <button
                             type="button"
                             onClick={() => setSelectedPayInvoice(inv)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-sl-gold-subtle/15 border border-sl-gold-subtle/30 font-mono text-[0.625rem] uppercase tracking-[0.15em] text-sl-gold-hover hover:bg-sl-gold-subtle hover:text-background transition-all duration-300"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-sl-gold-subtle/15 border border-sl-gold-subtle/30 font-mono text-[0.625rem] uppercase tracking-[0.2em] text-sl-gold-hover hover:bg-sl-gold-subtle hover:text-background transition-all duration-300"
                           >
                             <span>Pay</span>
                           </button>

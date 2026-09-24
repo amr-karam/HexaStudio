@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HEXA Vision — Hermes Kanban Board</title>
+  <style>
+    :root {
+      --bg: #0b0b0c;
+      --panel: #111113;
+      --panel-2: #16161a;
+      --text: #f2f2f3;
+      --muted: #9a9aa0;
+      --border: #26262c;
+      --accent: #d4af37;
+      --accent-2: #f5d27a;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      margin: 0;
+      padding: 0;
+    }
+    .header {
+      padding: 24px 24px 8px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(11,11,12,0.85);
+      backdrop-filter: blur(8px);
+      z-index: 10;
+    }
+    .header h1 {
+      margin: 0 0 4px;
+      font-size: 22px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+    .header p { margin: 0; color: var(--muted); }
+    .board {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(280px, 360px);
+      gap: 14px;
+      padding: 18px;
+      align-items: start;
+    }
+    .column {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      min-height: 120px;
+    }
+    .column-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .column-title {
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .badge {
+      background: var(--panel-2);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+    }
+    .card {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+    .card-title {
+      font-size: 14px;
+      margin: 0 0 6px;
+      color: var(--text);
+    }
+    .meta {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: #1f1f24;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .done .card { opacity: 0.85; }
+    .accent-text { color: var(--accent); }
+    .summary {
+      padding: 8px 24px 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>HEXA Vision — Hermes Kanban</h1>
+    <p>Sprint S-021 · S-022 · Hermes OS Integration</p>
+  </div>
+
+  <div class="board">
+    <div class="column">
+      <div class="column-header">
+        <span class="column-title">Backlog</span>
+        <span class="badge">0</span>
+      </div>
+    </div>
+
+    <div class="column">
+      <div class="column-header">
+        <span class="column-title">Ready → Development</span>
+        <span class="badge">0</span>
+      </div>
+    </div>
+
+    <div class="column">
+      <div class="column-header">
+        <span class="column-title">In Progress</span>
+        <span class="badge">0</span>
+      </div>
+    </div>
+
+    <div class="column">
+      <div class="column-header">
+        <span class="column-title">Review / QA</span>
+        <span class="badge">0</span>
+      </div>
+    </div>
+
+    <div class="column done">
+      <div class="column-header">
+        <span class="column-title">Done</span>
+        <span class="badge">12</span>
+      </div>
+
+      <div class="card">
+        <p class="card-title">HomeHero: R3F VoidGarden hero</p>
+        <div class="meta"><span class="tag">S-021</span><span class="tag">Frontend</span></div>
+      </div>
+
+      <div class="card">
+        <p class="card-title">HomeSections: narrative chapters</p>
+        <div class="meta"><span class="tag">S-021</span><span class="tag">Frontend</span></div>
+      </div>
+
+      <div class="card">
+        <p class="card-title">HomeChapterRail: navigation rail</p>
+        <div class="meta"><span class="tag">S-021</span><span class="tag">Frontend</span></div>
+      </div>
+
+      <div class="card">
+        <p class="card-title">globals.css: tw-animate-css fix</p>
+        <div class="meta"><span class="tag">S-021</span><span class="tag">Fix</span></div>
+      </div>
+
+      <div class="card">
+        <p class="card-title">robots.txt: dynamic generator</p>
+        <div class="meta"><span class="tag">S-022</span><span class="tag">SEO</span></div>
+      </div>
+
+      <div class="card">
+        <p class="card-title">sitemap.xml: dynamic generator</p>
+        <div class="meta"><span class="tag">S-022</span><span class="tag">SEO</span></div>
+      </div>
+
+      <div class="card">
+        <p class="card-title">JSON-LD: 4 schemas</p>
+        <div class="meta"><span class="tag">S-022</span><span class="tag">SEO</span></div>
+      </div>
+
+      <div class="card">
+        <p class="card-title">Core Web Vitals baseline doc</p>
+        <div class="meta"><span class="tag">S-022</span><span class="tag">SEO</span></div>
+      </div>
+
+      <div class="card">
+        <p class="card-title">Identity alignment: Hermes Agent, One, Codex merged</p>
+        <div class="meta"><span class="tag">Hermes OS</span><span class="tag">Integration</span></div>
+      </div>
+
+      <div class="card">
+        <p class="card-title">Procedural hardening via arch gate</p>
+        <div class="meta"><span class="tag">Hermes OS</span><span class="tag">Integration</span></div>
+      </div>
+
+      <div class="card">
+        <p class="card-title">BSP transactional layer integration</p>
+        <div class="meta"><span class="tag">Hermes OS</span><span class="tag">Integration</span></div>
+      </div>
+
+      <div class="card">
+        <p class="card-title">Companion UX ambient overlay</p>
+        <div class="meta"><span class="tag">Hermes OS</span><span class="tag">Integration</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="summary">
+    Total tracked: 12 · Next suggested: production deploy verification, analytics wiring, Lighthouse CI.
+  </div>
+</body>
+</html>

@@ -42,7 +42,7 @@ export default function PhotographerPage() {
             <TextCharReveal text="Selected" as="span" className="block" delay={0.05} />
             <TextCharReveal text="Frames" as="span" className="block mt-2" delay={0.2} />
           </h1>
-          <p className="mt-6 max-w-2xl text-base md:text-lg text-neutral-600 leading-relaxed">
+          <p className="mt-6 max-w-2xl text-base md:text-lg text-neutral-400 leading-relaxed">
             A restrained body of work built from observation, texture, and natural light.
           </p>
         </div>
@@ -67,7 +67,7 @@ export default function PhotographerPage() {
           <div>
             <h2 className="text-3xl md:text-5xl font-light tracking-tight">About</h2>
           </div>
-          <div className="space-y-6 text-base md:text-lg text-neutral-600 leading-relaxed">
+          <div className="space-y-6 text-base md:text-lg text-neutral-400 leading-relaxed">
             <p>
               I work with light, stillness, and everyday subjects. The goal is not perfection, but honesty.
             </p>
@@ -82,7 +82,7 @@ export default function PhotographerPage() {
         <div className="mx-auto max-w-7xl px-6 py-20 md:py-28 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
           <div>
             <h2 className="text-3xl md:text-5xl font-light tracking-tight">Inquiry</h2>
-            <p className="mt-4 text-base text-neutral-600">
+            <p className="mt-4 text-base text-neutral-400">
               Tell me about the project and I will reply within 24 hours.
             </p>
           </div>
@@ -103,7 +103,7 @@ export default function PhotographerPage() {
       </section>
 
       <footer className="border-t border-neutral-200">
-        <div className="mx-auto max-w-7xl px-6 py-10 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-neutral-500">
+        <div className="mx-auto max-w-7xl px-6 py-10 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-neutral-400">
           <span>© {new Date().getFullYear()} Mono Photography</span>
           <Link href="/" className="hover:text-neutral-900 transition-colors">Back to HexaStudio</Link>
         </div>

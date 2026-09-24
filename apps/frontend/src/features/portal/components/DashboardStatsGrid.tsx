@@ -38,8 +38,8 @@ function StatCard({ stat, index, prefersReduced }: { stat: StatItem; index: numb
   };
 
   const trendColors = {
-    up: 'text-emerald-500',
-    down: 'text-red-500',
+    up: 'text-success',
+    down: 'text-destructive',
     neutral: 'text-sl-mist/60',
   };
 

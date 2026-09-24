@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hexa_webhook_config" model="hexa.webhook.config">
+        <field name="name">HEXA BFF</field>
+        <field name="url">http://backend:4000/api/odoo/webhook</field>
+        <field name="secret">__ODOO_WEBHOOK_SECRET__</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

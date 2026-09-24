@@ -1,10 +1,12 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject } from '@nestjs/common';
 import type { User } from '@hexastudio/types';
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import { ChatCompletionMessageParam, ChatCompletionTool } from 'openai/resources/chat/completions';
 import { ToolRegistryService } from './tool-registry.service';
 import { AgentMemoryService } from './agent-memory.service';
+import { REALTIME_PORT } from '../../ports/realtime.port';
+import type { RealtimePort } from '../../ports/realtime.port';
 import { Env } from '../../config/env';
 
 interface ChatMessage {
@@ -14,7 +16,7 @@ interface ChatMessage {
   tool_call_id?: string;
 }
 
-export type AgentPersona = 'general' | 'ceo' | 'sales' | 'pm' | 'code-review';
+export type AgentPersona = 'general' | 'ceo' | 'sales' | 'pm' | 'code-review' | 'researcher' | 'director';
 
 @Injectable()
 export class AgentsService {
@@ -26,6 +28,7 @@ export class AgentsService {
     private readonly toolRegistry: ToolRegistryService,
     private readonly memory: AgentMemoryService,
     private configService: ConfigService<Env>,
+    @Inject(REALTIME_PORT) private readonly realtime: RealtimePort,
   ) {
     // Prefer local LM Studio (free & unlimited, tool-call capable).
     // Falls back to OpenAI when AI_CHAT_PROVIDER != 'local' or a key is set.
@@ -75,6 +78,23 @@ ${baseInstructions}`;
         return `You are HEXA-Reviewer, the technical quality and architecture assistant for HexaStudio.
 Focus on code cleanlines, TypeScript strictness, security standards, OWASP guidelines, and performance optimization.
 ${baseInstructions}`;
+      case 'researcher':
+        return `You are HEXA-Researcher, the architectural intelligence specialist for HexaStudio.
+Your goal is to produce high-trust, cited research reports on materials, trends, and competitors.
+PROTOCOL:
+1. Search broadly for the topic.
+2. Scrape 2-3 high-authority sources for depth.
+3. Synthesize findings into a structured report.
+4. Always cite your sources.
+${baseInstructions}`;
+      case 'director':
+        return `You are HEXA-Director, the creative lead and design arbiter for HexaStudio.
+Your focus is the "Absolute Zero" luxury standard. You review research, approve material applications, and ensure the visual narrative is uncompromising.
+PROTOCOL:
+1. Analyze research findings for "Design Taste."
+2. Approve or reject material changes based on the DESIGN_SYSTEM.md.
+3. Ensure the final deliverable feels "Silent Luxury."
+${baseInstructions}`;
       default:
         return `You are HEXA, the AI assistant for HexaStudio — a high-end architectural visualization studio.
 You help users explore projects, learn about design craft, and understand architectural concepts.
@@ -103,8 +123,35 @@ ${baseInstructions}`;
 
     const messages: ChatMessage[] = [{ role: 'system', content: systemPrompt }];
 
-    // Hydrate prior conversation context from Redis (most recent N messages).
+    // Hydrate prior conversation context from Redis.
     const history = await this.memory.getHistory(persona, activeSession);
+    const facts = await this.memory.getAllFacts(persona, activeSession);
+    
+    // --- SEMANTIC MEMORY HYDRATION ---
+    // Perform a vector search to recall relevant facts from all previous sessions.
+    const semanticMemories = await this.memory.semanticRecall(persona, activeSession, message);
+    if (semanticMemories.length > 0) {
+      const semanticString = semanticMemories
+        .map((m, i) => `[Recalled Memory ${i + 1}]: ${JSON.stringify(m)}`)
+        .join('\n');
+      messages.push({ 
+        role: 'system', 
+        content: `LONG-TERM SEMANTIC CONTEXT:\n${semanticString}\n\nUse these recalled memories to maintain continuity across sessions.` 
+      });
+    }
+    // ---------------------------------
+
+    // Inject durable facts as a high-priority system context block.
+    if (Object.keys(facts).length > 0) {
+      const factString = Object.entries(facts)
+        .map(([k, v]) => `${k}: ${v}`)
+        .join('\n');
+      messages.push({ 
+        role: 'system', 
+        content: `KNOWN CONTEXT FOR THIS SESSION:\n${factString}\n\nUse these facts as the primary source of truth.` 
+      });
+    }
+
     for (const entry of history) {
       messages.push({ role: entry.role, content: entry.content });
     }
@@ -171,17 +218,30 @@ ${baseInstructions}`;
         // Autonomous tool execution: run each tool in isolation so a single
         // failure (missing auth, HITL gate, provider error) surfaces as a tool
         // result instead of aborting the entire multi-step run.
-        let toolResult: string;
-        try {
-          const result = await this.toolRegistry.execute(call.function.name, params, user);
-          toolResult = String(result);
-        } catch (err) {
-          const messageText = err instanceof Error ? err.message : String(err);
-          this.logger.warn(
-            `Tool '${call.function.name}' failed during autonomous run: ${messageText}`,
-          );
-          toolResult = `Tool execution failed: ${messageText}`;
-        }
+         let toolResult = '';
+         let retryCount = 0;
+         const maxRetries = 2;
+
+         while (retryCount <= maxRetries) {
+           try {
+             const result = await this.toolRegistry.execute(call.function.name, params, user);
+             toolResult = String(result);
+             break;
+           } catch (err) {
+             const messageText = err instanceof Error ? err.message : String(err);
+             retryCount++;
+             
+             if (retryCount > maxRetries) {
+               this.logger.error(`Tool '${call.function.name}' failed after ${maxRetries + 1} attempts: ${messageText}`);
+               toolResult = `Tool execution failed after retries: ${messageText}`;
+               break;
+             }
+
+             this.logger.warn(`Tool '${call.function.name}' failed (attempt ${retryCount}): ${messageText}. Retrying...`);
+             // Small jitter delay to avoid hammering rate-limited providers
+             await new Promise(resolve => setTimeout(resolve, 100 * retryCount));
+           }
+         }
 
         messages.push({
           role: 'tool',
@@ -192,6 +252,24 @@ ${baseInstructions}`;
           role: 'tool',
           content: toolResult,
         });
+
+        // Broadcast material/design changes to collaboration peers
+        try {
+          if (call.function.name.toLowerCase().includes('material')) {
+            this.realtime.broadcastToRoom(`project:${sessionId}`, 'collab:material-override', {
+              element: params.element || 'unknown',
+              color: params.color,
+              roughness: params.roughness,
+              metalness: params.metalness,
+              name: params.name,
+              triggeredBy: params.triggeredBy || 'user',
+              agentPersona: persona,
+            });
+          }
+        } catch (e) {
+          // Non-fatal: collaboration emission fails silently
+          this.logger.debug(`Collaboration emit skipped: ${e}`);
+        }
       }
     }
 

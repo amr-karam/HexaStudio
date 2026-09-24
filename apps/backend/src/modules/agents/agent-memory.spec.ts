@@ -2,6 +2,8 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AgentMemoryService } from './agent-memory.service';
 import { RedisService } from '../storage/redis.service';
+import { VectorService } from '../vector/vector.service';
+import { EmbeddingService } from '../ai/embedding.service';
 
 const mockRedis = {
   lpush: vi.fn(),
@@ -13,6 +15,16 @@ const mockRedis = {
   hdel: vi.fn(),
 };
 
+const mockVectorService = {
+  upsert: vi.fn(),
+  search: vi.fn(),
+  delete: vi.fn(),
+};
+
+const mockEmbeddingService = {
+  generateEmbedding: vi.fn(),
+};
+
 describe('AgentMemoryService', () => {
   let service: AgentMemoryService;
 
@@ -22,6 +34,8 @@ describe('AgentMemoryService', () => {
       providers: [
         AgentMemoryService,
         { provide: RedisService, useValue: mockRedis },
+        { provide: VectorService, useValue: mockVectorService },
+        { provide: EmbeddingService, useValue: mockEmbeddingService },
       ],
     }).compile();
 

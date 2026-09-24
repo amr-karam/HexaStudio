@@ -1,27 +1,12 @@
 /**
  * design-settings lifecycles
  * HEXA Studio — Hexa Command Centre
- *
- * Design tokens are global: any create / update / publish / unpublish /
- * delete of the Design Settings single type purges the Next.js ISR cache
- * (whole-site layout + `design` tag) so the new tokens go live immediately
- * instead of waiting for the 60s `fetchDesignSettings` refresh cycle.
- *
- * Contract (mirrors backend `strapi-project-sync.service.ts#revalidateFrontend`):
- *   POST {CLIENT_URL}/api/revalidate
- *   headers: { "x-revalidate-secret": REVALIDATE_SECRET }
- *   body:    { paths: ["/"], type: "layout", tags: ["design"] }
- *
- * Revalidation is best-effort and never fails the CMS write: failures only
- * emit a warning, and the ISR cache self-heals on the next refresh cycle.
  */
-
 const REVALIDATE_TIMEOUT_MS = 10_000;
 const REVALIDATED_TAG = "design";
 
 interface DesignRevalidateBody {
   paths: string[];
-  type: "page" | "layout";
   tags: string[];
 }
 
@@ -38,7 +23,6 @@ async function triggerDesignRevalidation(reason: string): Promise<void> {
 
   const body: DesignRevalidateBody = {
     paths: ["/"],
-    type: "layout",
     tags: [REVALIDATED_TAG],
   };
 
@@ -49,7 +33,7 @@ async function triggerDesignRevalidation(reason: string): Promise<void> {
         "Content-Type": "application/json",
         "x-revalidate-secret": secret,
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify({ ...body, type: "layout" }),
       signal: AbortSignal.timeout(REVALIDATE_TIMEOUT_MS),
     });
 
@@ -76,12 +60,6 @@ export default {
   },
   async afterUpdate() {
     await triggerDesignRevalidation("update");
-  },
-  async afterPublish() {
-    await triggerDesignRevalidation("publish");
-  },
-  async afterUnpublish() {
-    await triggerDesignRevalidation("unpublish");
   },
   async afterDelete() {
     await triggerDesignRevalidation("delete");

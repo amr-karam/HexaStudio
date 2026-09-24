@@ -1,0 +1,3 @@
+$c = Get-Content "C:\Users\amrmo\OneDrive\Desktop\hexastudio.net\apps\frontend\src\engine\webgl\WebGLContextProvider.tsx"
+$c = $c -replace 'if \(loseCtx\) loseCtx.loseContext();\n}', 'if (loseCtx) loseCtx.loseContext();' + "`n" + '      }' + "`n" + '    };' + "`n" + '  }, [autoRecover, attemptRecovery, notifyStateChange]);'
+Set-Content "C:\Users\amrmo\OneDrive\Desktop\hexastudio.net\apps\frontend\src\engine\webgl\WebGLContextProvider.tsx" $c

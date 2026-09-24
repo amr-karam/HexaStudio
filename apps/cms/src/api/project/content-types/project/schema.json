@@ -1,5 +1,6 @@
 {
-  "collectionName": "projects",
+  "kind": "collectionType",
+"collectionName": "projects",
   "info": {
     "singularName": "project",
     "pluralName": "projects",
@@ -28,7 +29,7 @@
       "type": "text",
       "required": true
     },
-    "status": {
+    "lifecycleStatus": {
       "type": "enumeration",
       "enum": ["planning", "in-progress", "review", "completed", "on-hold"],
       "default": "planning",

@@ -467,7 +467,7 @@ export function CurrencySelector() {
             {/* Error state */}
             {error && (
               <div className="px-4 py-6 text-center">
-                <span className="text-xs text-red-400/80 font-mono">{error}</span>
+                <span className="text-xs text-destructive-ink/80 font-mono">{error}</span>
                 <button
                   type="button"
                   onClick={() => {

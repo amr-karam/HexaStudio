@@ -71,27 +71,27 @@ const TYPE_ICON_MAP: Record<NotificationType, IconName> = {
 /** Maps notification type → Tailwind color class for the connector dot. */
 const TYPE_DOT_COLOR: Record<NotificationType, string> = {
   approval: 'border-sl-gold-subtle bg-sl-gold-subtle/20',
-  success: 'border-emerald-400 bg-emerald-500/20',
+  success: 'border-success-ink bg-success/20',
   warning: 'border-amber-400 bg-amber-500/20',
-  error: 'border-red-400 bg-red-500/20',
+  error: 'border-destructive bg-destructive/20',
   info: 'border-blue-400 bg-blue-500/20',
 };
 
 /** Maps notification type → Tailwind color class for the icon. */
 const TYPE_ICON_COLOR: Record<NotificationType, string> = {
   approval: 'text-sl-gold-hover',
-  success: 'text-emerald-400',
+  success: 'text-success-ink',
   warning: 'text-amber-400',
-  error: 'text-red-400',
+  error: 'text-destructive',
   info: 'text-blue-400',
 };
 
 /** Maps notification type → background glow for the detail panel. */
 const TYPE_GLOW_CLASS: Record<NotificationType, string> = {
   approval: 'bg-sl-gold-subtle/[0.04]',
-  success: 'bg-emerald-500/[0.04]',
+  success: 'bg-success/[0.04]',
   warning: 'bg-amber-500/[0.04]',
-  error: 'bg-red-500/[0.04]',
+  error: 'bg-destructive/[0.04]',
   info: 'bg-blue-500/[0.04]',
 };
 

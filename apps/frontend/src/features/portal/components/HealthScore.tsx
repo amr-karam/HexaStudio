@@ -30,7 +30,7 @@ function getScoreColor(score: number): { text: string; glow: string } {
 function getSentimentVisuals(sentiment?: string): { label: string; color: string; aura: string; animate: boolean } {
   switch (sentiment) {
     case 'positive':
-      return { label: 'Positive ✨', color: 'text-emerald-400', aura: 'rgba(52, 211, 153, 0.15)', animate: false };
+      return { label: 'Positive ✨', color: 'text-success-ink', aura: 'rgba(52, 211, 153, 0.15)', animate: false };
     case 'frustrated':
       return { label: 'Attention Required ⚠️', color: 'text-amber-400', aura: 'rgba(251, 191, 36, 0.15)', animate: false };
     case 'urgent':

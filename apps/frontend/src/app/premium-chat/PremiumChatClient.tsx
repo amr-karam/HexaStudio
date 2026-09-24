@@ -174,7 +174,7 @@ export default function PremiumChatClient() {
             type="button"
             onClick={() => setMessages([createWelcomeMessage()])}
             aria-label="Start a new conversation"
-            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-sl-gold-subtle px-5 py-3 text-xs font-mono uppercase tracking-[0.1em] text-background transition-all duration-300 hover:bg-sl-gold-subtle-light active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle"
+            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-sl-gold-subtle px-5 py-3 text-xs font-mono uppercase tracking-[0.2em] text-background transition-all duration-300 hover:bg-sl-gold-subtle-light active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle"
           >
             Start a new conversation
           </button>

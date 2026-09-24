@@ -79,16 +79,16 @@ describe('GlassCard', () => {
   it('applies the subtle variant (no glass blur class)', () => {
     const { container } = render(<GlassCard variant="subtle">Test</GlassCard>);
     const card = container.firstChild as HTMLElement;
-    expect(card.className).toContain('bg-white');
+    expect(card.className).toContain('bg-[var(--card-subtle-bg)]');
     // The subtle variant should not have the standalone 'glass' class (only 'glass-hover' may appear)
     const classes = card.className.split(/\s+/);
     expect(classes).not.toContain('glass');
   });
 
-  it('applies glass-hover when hover is enabled (default)', () => {
+  it('applies hover border when hover is enabled (default)', () => {
     const { container } = render(<GlassCard>Test</GlassCard>);
     const card = container.firstChild as HTMLElement;
-    expect(card.className).toContain('glass-hover');
+    expect(card.className).toContain('hover:border-[var(--sl-glass-border-hover)]');
   });
 
   it('does not apply glass-hover when hover={false}', () => {

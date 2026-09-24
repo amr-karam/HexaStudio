@@ -96,7 +96,7 @@ export default function AssetBrowser({ onModelSelected }: AssetBrowserProps) {
 
         {/* Asset list */}
         {loading && <p className="text-xs text-sl-muted">Loading assets…</p>}
-        {error && <p className="text-xs text-red-400">Error: {error}</p>}
+        {error && <p className="text-xs text-destructive">Error: {error}</p>}
 
         {!loading && !error && (
           <div className="space-y-1 max-h-48 overflow-y-auto">

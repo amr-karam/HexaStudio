@@ -318,5 +318,3 @@ export function ARProjectionOverlay({
 }
 
 ARProjectionOverlay.displayName = 'ARProjectionOverlay';
-
-export { ARProjectionOverlay };

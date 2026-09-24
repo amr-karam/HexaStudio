@@ -182,7 +182,7 @@ services:
           }
         }
     ports:
-      - "8929:80"      # HTTP (Puma) - Internal
+      - "8929:80"      # HTTP (Puma) - Internal (PRIMARY instance)
       - "8443:443"     # HTTPS - External (if configured)
       - "5050:5050"    # Container Registry - Internal HTTP
       - "2222:22"      # SSH

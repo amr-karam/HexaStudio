@@ -195,7 +195,7 @@ export default function StyleTransferPanel({ onTextureGenerated }: StyleTransfer
       )}
 
       {/* Error */}
-      {error && <p className="text-xs text-red-400">{error}</p>}
+      {error && <p className="text-xs text-destructive">{error}</p>}
 
       {/* Generate button */}
       <button

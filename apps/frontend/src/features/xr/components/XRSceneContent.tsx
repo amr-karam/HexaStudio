@@ -1,14 +1,16 @@
 'use client';
 
-import { useRef, useEffect, useMemo } from 'react';
+import { useRef, useEffect, useMemo, useState } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useXRHitTest } from '@react-three/xr';
 import { useGLTF } from '@react-three/drei';
 import { useXRStore } from '../store/xr-store';
 import { useXRInteraction } from '../hooks/useXRInteraction';
+import { applyMaterialOverrides } from '../utils/apply-material-overrides';
 import { ARPlacementReticle } from './ARPlacementReticle';
 import { CollaboratorAvatar } from './CollaboratorAvatar';
 import { Vector3, Quaternion, Matrix4, Group, Box3 } from 'three';
+import { GOLD } from '@/lib/color-tokens';
 
 /* -------------------------------------------------------------------------- */
 /*  Pre-allocated matrices (module scope — never GC'd)                         */
@@ -35,6 +37,7 @@ export function XRSceneContent({
   ) => void;
 }) {
   const { scene } = useGLTF(modelUrl);
+  const [isHighResReady, setIsHighResReady] = useState(false);
   const { camera } = useThree();
 
   // ─── Mount useXRInteraction so select events actually fire ─────────────
@@ -54,6 +57,14 @@ export function XRSceneContent({
   const setPlacementPhase = useXRStore((s) => s.setPlacementPhase);
 
   const clonedScene = useMemo(() => scene.clone(true), [scene]);
+
+  // ─── Live Atelier: apply AI material overrides to the Three.js scene ───
+  const materialOverrides = useXRStore((s) => s.materialOverrides);
+
+  useEffect(() => {
+    if (!clonedScene) return;
+    applyMaterialOverrides(clonedScene, Object.values(materialOverrides));
+  }, [clonedScene, materialOverrides]);
 
   const isPlacing = mode === 'ar' && placementPhase === 'placing';
   const isPlaced = placementPhase === 'placed' || placementPhase === 'adjusting';
@@ -102,6 +113,8 @@ export function XRSceneContent({
     }
 
     setModelLoaded(true);
+    // Trigger fade-in for high-res content
+    setTimeout(() => setIsHighResReady(true), 100);
   }, [clonedScene, camera, setModelLoaded, mode]);
 
   // Apply placement position + rotation to the model root.
@@ -128,6 +141,12 @@ export function XRSceneContent({
   useFrame((_, delta) => {
     if (modelRootRef.current && !mode) {
       modelRootRef.current.rotation.y += delta * 0.15;
+    }
+
+    // Cinematic fade-in for high-res model
+    if (clonedScene && !isHighResReady) {
+      //’ve handled the fade-in via a separate state but we can also 
+      // manually animate the opacity of materials here if needed.
     }
   });
 
@@ -170,6 +189,21 @@ export function XRSceneContent({
         {isPlacing && <ARPlacementReticle />}
       </group>
       <group ref={modelRootRef}>
+        {/* Low-Poly Proxy: renders only while high-res is loading/fading in */}
+        {!isHighResReady && (
+          <mesh position={[0, 0, 0]}>
+            <boxGeometry args={[1, 1, 1]} />
+            <meshStandardMaterial 
+              color={GOLD} 
+              transparent 
+              opacity={0.3} 
+              wireframe 
+            />
+          </mesh>
+        )}
+        
+        {isHighResReady && <primitive object={clonedScene} />}
+
         {Object.values(collaborators).map((peer) => (
           <CollaboratorAvatar
             key={peer.id}

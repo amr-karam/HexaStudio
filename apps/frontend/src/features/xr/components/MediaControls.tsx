@@ -10,9 +10,9 @@ import type { UseWebRTCResult } from '../hooks/useWebRTC';
 
 function QualityIcon({ quality }: { quality: UseWebRTCResult['connectionQuality'] }) {
   const colorMap: Record<string, string> = {
-    good: 'bg-emerald-500 shadow-emerald-500/50',
+    good: 'bg-success shadow-success-500/50',
     fair: 'bg-amber-500 shadow-amber-500/50',
-    poor: 'bg-red-500 shadow-red-500/50',
+    poor: 'bg-destructive shadow-destructive-500/50',
   };
   const dotCount = quality === 'good' ? 3 : quality === 'fair' ? 2 : 1;
 
@@ -52,9 +52,9 @@ function SpeakingIndicator({ peers }: { peers: string[] }) {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-              className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500/30 ring-1 ring-emerald-400"
+              className="flex h-4 w-4 items-center justify-center rounded-full bg-success/30 ring-1 ring-success-ink"
             >
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+              <span className="h-1.5 w-1.5 rounded-full bg-success-ink" />
             </motion.div>
           ))}
         </AnimatePresence>
@@ -96,7 +96,7 @@ export function MediaControls({
           disabled={!webrtc.isAudioEnabled}
           className={`group relative flex h-8 w-8 items-center justify-center rounded-full transition-all duration-200 active:scale-90 ${
             webrtc.isMicMuted
-              ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
+              ? 'bg-destructive/20 text-destructive-ink hover:bg-destructive/30'
               : 'bg-white/10 text-sl-alabaster/80 hover:bg-white/20'
           } disabled:cursor-not-allowed disabled:opacity-40`}
           title={webrtc.isMicMuted ? 'Unmute microphone' : 'Mute microphone'}
@@ -124,7 +124,7 @@ export function MediaControls({
 
           {/* Mute ring indicator */}
           {webrtc.isMicMuted && (
-            <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-red-400 ring-1 ring-black/50" />
+            <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-destructive-ink ring-1 ring-black/50" />
           )}
         </button>
 

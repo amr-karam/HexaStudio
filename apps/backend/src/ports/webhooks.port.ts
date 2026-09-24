@@ -1,6 +1,14 @@
-export const WEBHOOKS_PORT = Symbol('WEBHOOKS_PORT');
+export interface SlackMessage {
+  text?: string;
+  blocks?: unknown[];
+}
 
 export interface WebhooksPort {
-  // Define methods needed by other modules
-  handleGitWebhook(payload: Record<string, unknown>): Promise<unknown>;
+  registerWebhook(url: string, events: string[]): Promise<{ id: string }>;
+  unregisterWebhook(id: string): Promise<boolean>;
+  triggerWebhook(id: string, payload: Record<string, unknown>): Promise<boolean>;
+  // SlackService method
+  sendMessage(message: SlackMessage): Promise<boolean>;
 }
+
+export const WEBHOOKS_PORT = Symbol('WEBHOOKS_PORT');

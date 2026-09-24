@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { NewHomeHeroSkeleton } from "./_loading/NewHomeHeroSkeleton";
+import NewHomeHeroStatic from "@/components/NewHomeHeroStatic";
 import { HomeClient } from "@/components/HomeClient";
 
 export const metadata: Metadata = {
@@ -38,11 +38,14 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   return (
     <div className="bg-sl-void text-sl-alabaster">
-      {/* The heavy interactive layers (canvas hero, sections, rail) are
-          code-split into a Client Component. Suspense renders the skeleton
-          fallback during SSR/streaming, so the browser gets paintable HTML
-          first while the multi-MB hero canvas bundle loads in the background. */}
-      <Suspense fallback={<NewHomeHeroSkeleton />}>
+      {/* SSR hero: the headline, type stack, and the gold "Architectural Plate"
+          render immediately in the HTML (LCP-critical), with zero JS. The
+          real-time canvas mounts later as a non-blocking enhancement. */}
+      <NewHomeHeroStatic />
+
+      {/* Below-fold interactive layers are code-split into a Client Component
+          and streamed in after first paint. */}
+      <Suspense fallback={null}>
         <HomeClient />
       </Suspense>
     </div>

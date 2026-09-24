@@ -7,6 +7,18 @@ import winston from 'winston';
 import express, { Request, Response, NextFunction } from 'express';
 import * as http from 'http';
 
+function unrefTimer(timer: ReturnType<typeof setInterval>): void {
+  const candidate: unknown = timer as unknown;
+  if (
+    typeof candidate === 'object' &&
+    candidate !== null &&
+    'unref' in candidate &&
+    typeof (candidate as { unref: unknown }).unref === 'function'
+  ) {
+    (candidate as { unref: () => void }).unref();
+  }
+}
+
 interface ToolCallResult {
   tool: string;
   args: Record<string, unknown>;
@@ -148,8 +160,8 @@ export class McpBridge extends EventEmitter {
   private maxConcurrentSessions: number;
   private snapshotInterval: number;
   private sessionDir: string;
-  private cleanupTimer?: NodeJS.Timeout;
-  private snapshotTimer?: NodeJS.Timeout;
+  private cleanupTimer?: ReturnType<typeof setInterval>;
+  private snapshotTimer?: ReturnType<typeof setInterval>;
 
   constructor(config: McpBridgeConfig = {}) {
     super();
@@ -829,17 +841,19 @@ Please analyze this issue and implement the necessary changes.
 
   private startTimers(): void {
     if (this.persistence === 'file' && !this.snapshotTimer) {
-      this.snapshotTimer = setInterval(() => {
+      const snapshotTimer = setInterval(() => {
         void this.persistAllSessions();
       }, this.snapshotInterval);
-      this.snapshotTimer.unref();
+      unrefTimer(snapshotTimer);
+      this.snapshotTimer = snapshotTimer;
       this.logger.debug('Started snapshot timer', { interval: this.snapshotInterval });
     }
     if (this.cleanupInterval > 0 && !this.cleanupTimer) {
-      this.cleanupTimer = setInterval(() => {
+      const cleanupTimer = setInterval(() => {
         void this.cleanupExpiredSessions();
       }, this.cleanupInterval);
-      this.cleanupTimer.unref();
+      unrefTimer(cleanupTimer);
+      this.cleanupTimer = cleanupTimer;
       this.logger.debug('Started cleanup timer', { interval: this.cleanupInterval });
     }
     this.logger.info('Started background timers');

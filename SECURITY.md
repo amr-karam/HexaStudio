@@ -26,3 +26,21 @@
 ## 3. AUDIT & LOGGING
 
 - Security-relevant events (failed logins, approval changes, administrative updates) MUST emit structured audit logs to Loki / Grafana.
+
+---
+
+## 4. ACCEPTED VULNERABILITIES (Risk Register)
+
+### Frontend (apps/frontend) — Dev-Only Dependencies
+| CVE/GHSA | Package | Severity | Status | Rationale |
+|----------|---------|----------|--------|-----------|
+| GHSA-5p2g-fcmc-qvqq | `image-size` (via storybook) | High | **Accepted** | Dev-only; Storybook 10.6.0 upgraded; not in production bundle |
+| GHSA-* (metro) | `metro-transform-worker` | High | **Accepted** | React Native transitive dep; mobile workspace only; not in web build |
+| GHSA-* (storybook) | `@storybook/nextjs` | High | **Accepted** | Dev-only; upgraded to 10.6.0; no production exposure |
+
+### Backend (apps/backend) — Deferred
+| CVE/GHSA | Package | Severity | Status | Rationale |
+|----------|---------|----------|--------|-----------|
+| GHSA-528h-pc64-c93x | `stream-json` (via minio) | Moderate | **Deferred** | Fixed by NestJS 12 migration (minio@7.1.3); blocked by test infra availability |
+
+> **Review Cadence**: Monthly (first Monday). Update `npm audit` output in this section.

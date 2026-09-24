@@ -32,14 +32,14 @@ export function OdooSyncStatusWidget() {
   return (
     <div className="flex items-center space-x-3 bg-sl-void/80 border border-sl-obsidian rounded-2xl px-4 py-2 text-xs text-neutral-200 backdrop-blur-xl">
       <div className="flex items-center space-x-2">
-        <span className={`w-2 h-2 rounded-full ${isSyncing ? 'bg-amber-400 animate-ping' : 'bg-emerald-400'}`} />
+        <span className={`w-2 h-2 rounded-full ${isSyncing ? 'bg-amber-400 animate-ping' : 'bg-success-ink'}`} />
         <span className="font-semibold text-neutral-100">Odoo 16 ERP</span>
       </div>
 
       <span className="text-sl-mist/60">|</span>
 
       <div className="flex items-center space-x-1 text-[11px] text-sl-mist/60">
-        <span className="text-emerald-400 font-mono font-bold">{activeModulesCount}/16</span>
+        <span className="text-success-ink font-mono font-bold">{activeModulesCount}/16</span>
         <span>Modules Active</span>
       </div>
 

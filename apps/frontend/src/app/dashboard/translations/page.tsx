@@ -23,7 +23,7 @@ function StatusBar({ locale, total, translated }: { locale: string; total: numbe
           <span className="text-lg font-medium text-sl-alabaster">{LOCALE_LABELS[locale] || locale}</span>
           <span className="ml-2 text-sm text-sl-alabaster/40">{locale}</span>
         </div>
-        <span className={`text-sm font-medium ${pct === 100 ? 'text-green-400' : pct >= 50 ? 'text-yellow-400' : 'text-red-400'}`}>
+        <span className={`text-sm font-medium ${pct === 100 ? 'text-green-400' : pct >= 50 ? 'text-yellow-400' : 'text-destructive'}`}>
           {translated}/{total} ({pct}%)
         </span>
       </div>

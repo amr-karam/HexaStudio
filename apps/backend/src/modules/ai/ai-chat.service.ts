@@ -56,7 +56,9 @@ export class AiChatService {
   /** Small/fast model used by the router for simple queries (local provider only). */
   readonly fastModel: string | undefined;
   /** Resolved provider identifier. */
-  readonly provider: 'openai' | 'freetheai' | 'local';
+  readonly provider: 'openai' | 'freetheai' | 'local' | 'moa' | 'hermes';
+  /** Base URL of the chat client (for status endpoint). */
+  readonly chatBaseUrl: string | null = null;
 
   constructor(
     configService: ConfigService<Env>,
@@ -72,6 +74,12 @@ export class AiChatService {
       LM_STUDIO_BASE_URL: configService.get('LM_STUDIO_BASE_URL')!,
       LM_STUDIO_MODEL: configService.get('LM_STUDIO_MODEL')!,
       LM_STUDIO_FAST_MODEL: configService.get('LM_STUDIO_FAST_MODEL'),
+      HERMES_API_KEY: configService.get('HERMES_API_KEY'),
+      HERMES_BASE_URL: configService.get('HERMES_BASE_URL'),
+      HERMES_MODEL: configService.get('HERMES_MODEL')!,
+      MOA_API_KEY: configService.get('MOA_API_KEY'),
+      MOA_BASE_URL: configService.get('MOA_BASE_URL'),
+      MOA_MODEL: configService.get('MOA_MODEL')!,
     } as Env;
 
     const resolved = createChatClient(env);
@@ -82,6 +90,7 @@ export class AiChatService {
       this.fastModel = resolved.fastModel;
       this.provider = resolved.provider;
       this.chat = resolved;
+      this.chatBaseUrl = (resolved.client as unknown as { baseURL: string }).baseURL;
       this.logger.log(`Chat LLM → ${resolved.provider} (model: ${resolved.model})`);
     } else {
       this.client = null;

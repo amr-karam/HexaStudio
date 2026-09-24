@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { colors, typography, glass } from '@/theme/tokens';
 
 export function ARViewerScreen() {
   const [placed, setPlaced] = useState(false);
@@ -38,7 +39,7 @@ export function ARViewerScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#050505',
+    backgroundColor: colors.void,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
@@ -46,38 +47,46 @@ const styles = StyleSheet.create({
   viewport: {
     width: '100%',
     height: '80%',
-    backgroundColor: '#111',
+    backgroundColor: colors.obsidian,
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: '#333',
+    borderColor: colors.slate,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
   },
   title: {
-    color: '#FFFFFF',
-    fontSize: 22,
-    fontWeight: '300',
+    color: colors.textPrimary,
+    fontSize: typography.h2.fontSize,
+    fontWeight: typography.h2.fontWeight,
     marginBottom: 8,
-    fontFamily: 'System',
+    letterSpacing: typography.h2.letterSpacing,
   },
   subtitle: {
-    color: '#A1A1AA',
-    fontSize: 14,
+    color: colors.textSecondary,
+    fontSize: typography.bodyS.fontSize,
     textAlign: 'center',
     marginBottom: 32,
+    letterSpacing: typography.bodyS.letterSpacing,
   },
   actionButton: {
-    backgroundColor: '#D4AF37',
+    backgroundColor: colors.gold,
     paddingHorizontal: 28,
     paddingVertical: 14,
     borderRadius: 12,
+    shadowColor: colors.gold,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 4,
   },
   buttonText: {
-    color: '#050505',
+    color: colors.void,
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: typography.monoLabel.fontSize,
     textTransform: 'uppercase',
+    letterSpacing: typography.monoLabel.letterSpacing,
+    textAlign: 'center',
   },
   controls: {
     flexDirection: 'row',
@@ -85,9 +94,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   subButton: {
-    backgroundColor: '#27272A',
+    backgroundColor: glass.gold.backgroundColor,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: glass.gold.borderColor,
   },
 });

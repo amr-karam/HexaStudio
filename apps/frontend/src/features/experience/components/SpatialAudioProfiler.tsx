@@ -1,14 +1,19 @@
 'use client';
 
-import { Suspense, useRef, useMemo, useCallback, useState, useEffect } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Suspense, useRef, useCallback, useState, useEffect } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { Environment, PerspectiveCamera, Html } from '@react-three/drei';
-import type { QualityTier } from '@/providers/quality-provider';
 import { COLOR_TOKENS, GOLD } from '@/lib/color-tokens';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { useQualityTier } from '@/providers/quality-provider';
 import { useContextLossRecovery } from '@/hooks/useContextLossRecovery';
 import * as THREE from 'three';
+
+type CanvasState = {
+  gl: THREE.WebGLRenderer;
+  camera: THREE.Camera;
+  scene: THREE.Scene;
+};
 
 interface AudioSource {
   id: string;
@@ -37,7 +42,7 @@ interface SoundSphereProps {
   maxDistance: number;
 }
 
-function SoundSphere({ position, name, volume, maxDistance }: SoundSphereProps) {
+function SoundSphere({ position, name, volume, maxDistance, showDecibels }: SoundSphereProps & { showDecibels?: boolean }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const { reducedMotion } = useMotionPolicy();
 
@@ -90,27 +95,43 @@ interface AudioVisualizerProps {
   sources: AudioSource[];
 }
 
-function AudioVisualizer({ levels, sources }: AudioVisualizerProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+const VISUALIZER_STYLE = {
+  background: 'rgba(15, 15, 16, 0.8)',
+  border: 'rgba(76, 76, 82, 0.5)',
+  text: '#e4e4e8',
+  textSecondary: '#a0a0a0',
+  divider: '#374151',
+};
 
+function AudioVisualizer({ levels, sources }: AudioVisualizerProps) {
   return (
     <div
-      ref={containerRef}
-      className="absolute bottom-4 left-4 bg-obsidian/80 border border-slate-700 rounded-lg p-3 text-xs text-slate-200"
+      style={{
+        position: 'absolute' as const,
+        bottom: '1rem',
+        left: '1rem',
+        background: VISUALIZER_STYLE.background,
+        border: `1px solid ${VISUALIZER_STYLE.divider}`,
+        borderRadius: '0.5rem',
+        padding: '0.75rem',
+        fontSize: '0.75rem',
+        color: VISUALIZER_STYLE.text,
+      }}
     >
-      <div className="font-bold mb-2">Audio Levels</div>
+      <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>Audio Levels</div>
       {sources.map((source) => (
-        <div key={source.id} className="mb-1">
-          <div className="flex justify-between items-center mb-0.5">
-            <span className="text-slate-400">{source.name}</span>
+        <div key={source.id} style={{ marginBottom: '0.25rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ color: VISUALIZER_STYLE.textSecondary }}>{source.name}</span>
             <span>{levels[source.id]?.toFixed(0) ?? '-inf'}dB</span>
           </div>
-          <div className="h-1 bg-slate-700 rounded overflow-hidden">
+          <div style={{ height: '0.25rem', background: VISUALIZER_STYLE.divider, borderRadius: '0.25rem', overflow: 'hidden' }}>
             <div
-              className="h-full transition-all duration-100"
               style={{
-                width: `${Math.max(0, Math.min(100, (levels[source.id] ?? -60 + 60) / 60 * 100))}%`,
+                height: '100%',
+                width: `${Math.max(0, Math.min(100, ((levels[source.id] ?? -60) + 60) / 60 * 100))}%`,
                 backgroundColor: levels[source.id] ? GOLD : COLOR_TOKENS.SURFACE,
+                transition: 'width 0.1s',
               }}
             />
           </div>
@@ -122,12 +143,12 @@ function AudioVisualizer({ levels, sources }: AudioVisualizerProps) {
 
 function StaticAudioVisualizer({ sources }: { sources: AudioSource[] }) {
   return (
-    <div className="flex flex-col gap-2 p-4">
-      <h3 className="text-sm font-bold text-slate-200 mb-2">Spatial Audio Sources</h3>
+    <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+      <h3 style={{ fontSize: '0.875rem', fontWeight: 'bold', color: '#f5f5f4', marginBottom: '0.5rem' }}>Spatial Audio Sources</h3>
       {sources.map((source) => (
-        <div key={source.id} className="p-2 bg-obsidian/50 rounded border border-slate-700">
-          <div className="font-medium text-slate-100">{source.name}</div>
-          <div className="text-xs text-slate-400">
+        <div key={source.id} style={{ padding: '0.5rem', background: COLOR_TOKENS.OBSIDIAN, borderRadius: '0.25rem', border: '1px solid rgba(76, 76, 82, 0.5)' }}>
+          <div style={{ fontWeight: 500, color: '#f5f5f4' }}>{source.name}</div>
+          <div style={{ fontSize: '0.75rem', color: '#a0a0a0' }}>
             Position: ({source.position.join(', ')})
           </div>
         </div>
@@ -162,8 +183,8 @@ export function SpatialAudioProfiler({
     }
   }, [levels, onAudioLevelChange]);
 
-  const handleCreated = useCallback((state: any) => {
-    registerContext(state);
+  const handleCreated = useCallback((self: CanvasState) => {
+    registerContext(self.gl);
   }, [registerContext]);
 
   if (!showSphere || shouldReduceMotion) {
@@ -180,9 +201,9 @@ export function SpatialAudioProfiler({
         <div
           role="status"
           aria-live="polite"
-          className="absolute inset-0 flex items-center justify-center bg-obsidian"
+          style={{ position: 'absolute' as const, inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: COLOR_TOKENS.OBSIDIAN }}
         >
-          <p className="text-slate-400 text-xs">3D audio paused</p>
+          <p style={{ color: '#a0a0a0', fontSize: '0.875rem' }}>3D audio paused</p>
         </div>
       )}
       <Canvas
@@ -207,6 +228,7 @@ export function SpatialAudioProfiler({
               name={source.name}
               volume={source.volume ?? 0.5}
               maxDistance={source.maxDistance ?? 10}
+              showDecibels={showDecibels}
             />
           ))}
           <ListenerSphere position={listenerPosition} />
@@ -218,5 +240,3 @@ export function SpatialAudioProfiler({
 }
 
 SpatialAudioProfiler.displayName = 'SpatialAudioProfiler';
-
-export { SpatialAudioProfiler };
