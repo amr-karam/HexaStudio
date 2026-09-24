@@ -70,7 +70,7 @@ function PresetSphere({ preset, scale = 1, rotating = true }: { preset: Material
   );
 }
 
-function MaterialsGrid({ onSelect: _onSelect, activePreset }: { onSelect?: (preset: MaterialPresetName) => void; activePreset?: MaterialPresetName }) {
+function MaterialsGrid() {
   return (
     <group position={[-3, 0, 0]}>
       {PRESET_ORDER.map((preset) => (
@@ -123,10 +123,9 @@ export function MaterialPresetLibrary({
   activePreset = 'obsidian_marble',
   onPresetChange: _onPresetChange,
   showLibrary: _showLibrary,
-  onSelect: _onSelect,
+  onSelect,
   className,
   position = [0, 0, 5],
-  scale: _scale = 1,
 }: MaterialPresetLibraryProps) {
   const { animationsEnabled } = useMotionPolicy();
   const { tier } = useQualityTier();
@@ -157,9 +156,9 @@ export function MaterialPresetLibrary({
         <div
           role="status"
           aria-live="polite"
-          style={{ position: 'absolute' as const, inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: COLOR_TOKENS.OBSIDIAN }}
+          className="absolute inset-0 flex items-center justify-center bg-obsidian"
         >
-          <p style={{ color: '#a0a0a0', fontSize: '0.875rem' }}>3D materials paused</p>
+          <p className="text-slate-400 text-xs">3D materials paused</p>
         </div>
       )}
       <Canvas
@@ -178,7 +177,7 @@ export function MaterialPresetLibrary({
           <ambientLight intensity={0.3} />
           <directionalLight position={[5, 10, 5]} intensity={1} />
           <Environment preset="studio" environmentIntensity={0.4} />
-          <MaterialsGrid onSelect={onSelect} activePreset={activePreset} />
+          <MaterialsGrid />
         </Suspense>
       </Canvas>
     </div>

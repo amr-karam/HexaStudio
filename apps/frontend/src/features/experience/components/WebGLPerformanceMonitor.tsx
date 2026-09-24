@@ -1,13 +1,12 @@
 'use client';
 
-import { Suspense, useRef, useCallback, useState, useEffect } from 'react';
-import { Canvas, useFrame, type RootState } from '@react-three/fiber';
-import { Environment, PerspectiveCamera, Html } from '@react-three/drei';
+import { Suspense, useRef, useCallback, useState } from 'react';
+import { Canvas, type RootState } from '@react-three/fiber';
+import { Environment, PerspectiveCamera } from '@react-three/drei';
 import { COLOR_TOKENS, GOLD } from '@/lib/color-tokens';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { useQualityTier, type QualityLevel } from '@/providers/quality-provider';
 import { useContextLossRecovery } from '@/hooks/useContextLossRecovery';
-import * as THREE from 'three';
 
 const WARNING_THRESHOLD_FPS = 30;
 const HIGH_WARNING_FPS = 20;
@@ -193,7 +192,7 @@ export function WebGLPerformanceMonitor({
       }
     };
     
-    const animationId = gl.setAnimationLoop(() => {
+    gl.setAnimationLoop(() => {
       updateStats();
     });
     
