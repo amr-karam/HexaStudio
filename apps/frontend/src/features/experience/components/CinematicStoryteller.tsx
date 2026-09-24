@@ -1,21 +1,14 @@
 'use client';
 
 import { Suspense, useRef, useCallback, useState } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas, useFrame, type RootState } from '@react-three/fiber';
 import { Environment, PerspectiveCamera, ContactShadows, Html } from '@react-three/drei';
 import { COLOR_TOKENS, GOLD } from '@/lib/color-tokens';
 import { useMotionPolicy } from '@/hooks/useMotionPolicy';
 import { useQualityTier } from '@/providers/quality-provider';
 import { useContextLossRecovery } from '@/hooks/useContextLossRecovery';
 import { LIGHTING_PRESETS } from '@/features/scene/config/lighting-presets';
-import type { QualityTier } from '@/providers/quality-provider';
 import * as THREE from 'three';
-
-type CanvasState = {
-  gl: THREE.WebGLRenderer;
-  camera: THREE.Camera;
-  scene: THREE.Scene;
-};
 
 type EnvironmentPreset = 'sunset' | 'dawn' | 'night' | 'studio' | 'warehouse' | 'city' | 'apartment' | 'forest' | 'lobby' | 'park';
 
@@ -42,14 +35,12 @@ const ENVIRONMENT_PRESET_MAP: Record<EnvironmentPreset, keyof typeof LIGHTING_PR
 
 function CinematicLighting({ environment = 'studio' }: { environment?: EnvironmentPreset }) {
   const { tier } = useQualityTier();
-  const lightingPreset = ENVIRONMENT_PRESET_MAP[environment ?? 'studio'] as keyof typeof LIGHTING_PRESETS;
+  const lightingPreset = ENVIRONMENT_PRESET_MAP[environment ?? 'studio'];
   const lighting = LIGHTING_PRESETS[lightingPreset];
-
-  const envPreset = environment ?? 'studio';
 
   return (
     <>
-      <Environment preset={envPreset} environmentIntensity={0.5} />
+      <Environment preset={environment} environmentIntensity={0.5} />
       <ambientLight intensity={lighting.ambientIntensity} color={lighting.ambientColor} />
       <directionalLight
         position={lighting.directionalPosition}
@@ -127,7 +118,7 @@ export function CinematicStoryteller({
   environment = 'studio',
   className,
 }: CinematicStorytellerProps) {
-  const { shouldReduceMotion } = useMotionPolicy();
+  const { animationsEnabled } = useMotionPolicy();
   const { tier } = useQualityTier();
   const containerRef = useRef<HTMLDivElement>(null);
   const [contextLost, setContextLost] = useState(false);
@@ -138,11 +129,11 @@ export function CinematicStoryteller({
     onRestore: () => setContextLost(false),
   });
 
-  const handleCreated = useCallback((self: CanvasState) => {
-    registerContext(self.gl);
+  const handleCreated = useCallback((state: RootState) => {
+    registerContext(state);
   }, [registerContext]);
 
-  if (shouldReduceMotion) {
+  if (!animationsEnabled) {
     return (
       <div ref={containerRef} className={`relative ${className ?? 'h-full w-full'}`}>
         <StaticFallback title={title} subtitle={subtitle} background={background} />
@@ -192,3 +183,5 @@ export function CinematicStoryteller({
 }
 
 CinematicStoryteller.displayName = 'CinematicStoryteller';
+
+export { CinematicStoryteller };
