@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 const PROJECTS = [
   {
@@ -44,15 +45,12 @@ const PROJECTS = [
  * NewSelectedWork — single, editorial 2x2 grid of work.
  * No filter chips, no carousel chrome, no noise. Just plates.
  */
-export function NewSelectedWork() {
+export function NewSelectedWork({ className }: { className?: string }) {
   const [hover, setHover] = useState<number | null>(null);
 
   return (
-    <section
-      id="work"
-      className="relative cv-section bg-sl-void px-6 py-24 sm:px-10 md:px-16 md:py-32 lg:py-40"
-    >
-      <div className="mx-auto max-w-[1600px]">
+    <div className={cn('mx-auto max-w-[1600px]', className)}>
+      <div>
         {/* Section header */}
         <div className="mb-16 flex flex-col gap-6 md:mb-24 md:flex-row md:items-end md:justify-between">
           <div>
@@ -141,6 +139,6 @@ export function NewSelectedWork() {
           ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 }

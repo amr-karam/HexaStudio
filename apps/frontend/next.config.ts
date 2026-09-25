@@ -100,14 +100,15 @@ const nextConfig: NextConfig = {
       "@radix-ui/react-slot",
     ],
     scrollRestoration: true,
-    // S-019: CSS is served as an external stylesheet — NOT inlined via
-    // `inlineCss`/`optimizeCss` (those inlined the full ~180 KB Tailwind sheet into
-    // both the <head> <style> and the RSC flight string, bloating initial HTML to
-    // ~560 KB). External CSS is still render-blocking (it blocks FCP via the
-    // CSSOM), so a `postbuild` step (scripts/inject-preloads.mjs) inlines only the
-    // critical above-the-fold CSS (~4-5 KB) and loads the remainder with
-    // `media="print" onload=...` so it never blocks first paint — keeping FCP low
-    // without reintroducing the inline bloat or FOUC/CLS regressions.
+  },
+  turbopack: {
+    resolveAlias: {
+      three: "three",
+      "@react-three/fiber": "@react-three/fiber",
+      "@react-three/drei": "@react-three/drei",
+      "@react-three/xr": "@react-three/xr",
+      "@iwer": "@iwer",
+    },
   },
   // S-019 performance budgets
   // - JS per-route/entrypoint budget enforced via webpack performance hints

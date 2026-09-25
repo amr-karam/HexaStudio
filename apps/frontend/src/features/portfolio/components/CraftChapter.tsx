@@ -1,7 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
 import { EASE, DURATION, STAGGER, fadeLift, staggerContainer, textReveal } from '@/lib/motion';
+import { cn } from '@/lib/utils';
 
 interface CraftChapterProps {
   className?: string;
@@ -11,9 +13,14 @@ interface CraftChapterProps {
  * CraftChapter — Chapter 02: The Process
  *
  * Scroll-revealed chapter showing the studio's technical process.
- * Uses staggered text reveals and interactive step cards.
+ * Uses `useScrollReveal` hook for declarative scroll-triggered entrance.
  */
 export function CraftChapter({ className }: CraftChapterProps) {
+  const { ref, hasRevealed } = useScrollReveal({
+    rootMargin: '-100px',
+    once: true,
+  });
+
   const steps = [
     {
       number: '01',
@@ -48,19 +55,14 @@ export function CraftChapter({ className }: CraftChapterProps) {
   ];
 
   return (
-    <section
-      id="craft"
-      className={`relative bg-sl-obsidian px-6 py-32 sm:px-10 md:px-16 md:py-48 ${className || ''}`}
+    <div
+      ref={ref}
+      className={cn('mx-auto max-w-6xl', className)}
     >
-      {/* Top hairline */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sl-gold-subtle/30 to-transparent" />
-
-      <div className="mx-auto max-w-6xl">
-        {/* Chapter label */}
-        <motion.div
+      {/* Chapter label */}
+      <motion.div
           initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
+          animate={hasRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
           transition={{ duration: DURATION.component, ease: EASE.entrance }}
           className="font-mono text-[10px] uppercase tracking-[0.5em] text-sl-gold-subtle/70"
         >
@@ -73,8 +75,7 @@ export function CraftChapter({ className }: CraftChapterProps) {
         <motion.div
           variants={staggerContainer(STAGGER.component, 0.15)}
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
+          animate={hasRevealed ? 'visible' : 'hidden'}
           className="mt-12"
         >
           <motion.h2
@@ -98,8 +99,7 @@ export function CraftChapter({ className }: CraftChapterProps) {
         {/* Process timeline */}
         <motion.div
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
+          animate={hasRevealed ? 'visible' : 'hidden'}
           className="mt-20 relative"
         >
           {/* Vertical line */}
@@ -122,8 +122,7 @@ export function CraftChapter({ className }: CraftChapterProps) {
                 <div className="flex-1 min-w-0 group">
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
+                    animate={hasRevealed ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
                     transition={{ duration: DURATION.component, delay: i * 0.1, ease: EASE.entrance }}
                     className="pt-2"
                   >
@@ -148,9 +147,5 @@ export function CraftChapter({ className }: CraftChapterProps) {
           </div>
         </motion.div>
       </div>
-
-      {/* Bottom hairline */}
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-sl-gold-subtle/30 to-transparent" />
-    </section>
   );
 }

@@ -58,3 +58,20 @@ export {
   motion_variants,
   a11y_check,
 } from './evey-design';
+
+// ScrollStory orchestrator
+export {
+  useScrollStory,
+  ScrollStoryProvider,
+  useScrollStoryContext,
+  useChapterRail,
+  useChapterSync,
+  createChapterConfig,
+} from './scroll-story';
+export type {
+  ChapterConfig,
+  ScrollStoryState,
+  ScrollStoryActions,
+  ScrollStoryOptions,
+  ScrollStoryResult,
+} from './scroll-story';

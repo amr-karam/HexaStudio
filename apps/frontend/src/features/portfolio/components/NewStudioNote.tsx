@@ -2,20 +2,19 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 /**
  * NewStudioNote — single editorial text block instead of crowded section grids.
  * Sets the studio's voice; one paragraph, one quote, one CTA.
  */
-export function NewStudioNote() {
+interface NewStudioNoteProps {
+  className?: string;
+}
+
+export function NewStudioNote({ className }: NewStudioNoteProps) {
   return (
-    <section
-      id="studio-note"
-      className="relative bg-sl-obsidian px-6 py-32 sm:px-10 md:px-16 md:py-48"
-    >
-      {/* Top + bottom hairlines */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sl-gold-subtle/30 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-sl-gold-subtle/30 to-transparent" />
+    <div className={cn('mx-auto max-w-4xl', className)}>
 
       <div className="mx-auto max-w-4xl text-center">
         <motion.div
@@ -77,6 +76,6 @@ export function NewStudioNote() {
           </Link>
         </motion.div>
       </div>
-    </section>
+    </div>
   );
 }

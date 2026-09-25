@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import NewHomeHeroStatic from "@/components/NewHomeHeroStatic";
 import { HomeClient } from "@/components/HomeClient";
 import { AppProviders } from "@/providers/app-providers";
+import { HeroParallax } from "@/components/HeroParallax";
 
 export const dynamic = "force-static";
 
@@ -44,7 +45,9 @@ export default async function HomePage() {
       {/* SSR hero: the headline, type stack, and the gold "Architectural Plate"
           render immediately in the HTML (LCP-critical), with zero JS. The
           real-time canvas mounts later as a non-blocking enhancement. */}
-      <NewHomeHeroStatic />
+      <HeroParallax maxShift={60}>
+        <NewHomeHeroStatic />
+      </HeroParallax>
 
       {/* Below-fold interactive layers are code-split into a Client Component
           and streamed in after first paint. */}

@@ -1,7 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
 import { EASE, DURATION, STAGGER, fadeLift, staggerContainer } from '@/lib/motion';
+import { cn } from '@/lib/utils';
 
 interface VisionChapterProps {
   className?: string;
@@ -11,23 +13,23 @@ interface VisionChapterProps {
  * VisionChapter — Chapter 01: The Philosophy
  *
  * Scroll-revealed chapter explaining the studio's core vision.
- * Uses Framer Motion for entrance choreography.
+ * Uses `useScrollReveal` hook for declarative scroll-triggered entrance.
  */
 export function VisionChapter({ className }: VisionChapterProps) {
-  return (
-    <section
-      id="vision"
-      className={`relative bg-sl-void px-6 py-32 sm:px-10 md:px-16 md:py-48 ${className || ''}`}
-    >
-      {/* Top hairline */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sl-gold-subtle/30 to-transparent" />
+  const { ref, hasRevealed } = useScrollReveal({
+    rootMargin: '-100px',
+    once: true,
+  });
 
-      <div className="mx-auto max-w-5xl">
-        {/* Chapter label */}
-        <motion.div
+  return (
+    <div
+      ref={ref}
+      className={cn('mx-auto max-w-5xl', className)}
+    >
+      {/* Chapter label */}
+      <motion.div
           initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
+          animate={hasRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
           transition={{ duration: DURATION.component, ease: EASE.entrance }}
           className="font-mono text-[10px] uppercase tracking-[0.5em] text-sl-gold-subtle/70"
         >
@@ -40,8 +42,7 @@ export function VisionChapter({ className }: VisionChapterProps) {
         <motion.div
           variants={staggerContainer(STAGGER.component, 0.15)}
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
+          animate={hasRevealed ? 'visible' : 'hidden'}
           className="mt-12"
         >
           <motion.h2
@@ -67,8 +68,7 @@ export function VisionChapter({ className }: VisionChapterProps) {
         <motion.div
           variants={staggerContainer(STAGGER.component, 0.3)}
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
+          animate={hasRevealed ? 'visible' : 'hidden'}
           className="mt-20 grid gap-8 md:grid-cols-3"
         >
           {[
@@ -103,7 +103,7 @@ export function VisionChapter({ className }: VisionChapterProps) {
               title: 'Atmosphere',
               body: 'Air has weight. Dust catches light. Volumetric fog, lens bloom, chromatic aberration — we render the air, not just the architecture.',
             },
-          ].map((pillar) => (
+          ].map((pillar, _i) => (
             <motion.article
               key={pillar.title}
               variants={fadeLift}
@@ -118,9 +118,5 @@ export function VisionChapter({ className }: VisionChapterProps) {
           ))}
         </motion.div>
       </div>
-
-      {/* Bottom hairline */}
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-sl-gold-subtle/30 to-transparent" />
-    </section>
   );
 }

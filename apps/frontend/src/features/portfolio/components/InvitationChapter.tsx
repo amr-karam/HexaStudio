@@ -2,7 +2,9 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
 import { EASE, DURATION, STAGGER, fadeLift, staggerContainer, textReveal } from '@/lib/motion';
+import { cn } from '@/lib/utils';
 
 interface InvitationChapterProps {
   className?: string;
@@ -12,36 +14,24 @@ interface InvitationChapterProps {
  * InvitationChapter — Chapter 04: The Invitation
  *
  * Final chapter — a cinematic CTA that invites the visitor to begin.
- * Uses text reveal animations and atmospheric backdrop.
+ * Uses `useScrollReveal` hook for declarative scroll-triggered entrance.
  */
 export function InvitationChapter({ className }: InvitationChapterProps) {
+  const { ref, hasRevealed } = useScrollReveal({
+    rootMargin: '-100px',
+    once: true,
+  });
+
   return (
-    <section
-      id="invitation"
-      className={`relative bg-sl-void px-6 py-32 sm:px-10 md:px-16 md:py-48 ${className || ''}`}
+    <div
+      ref={ref}
+      className={cn('mx-auto max-w-4xl', className)}
     >
-      {/* Atmospheric backdrop */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage:
-            'radial-gradient(ellipse 80% 50% at 50% 20%, rgba(212,175,55,0.4) 0%, transparent 70%), ' +
-            'linear-gradient(rgba(212,175,55,0.2) 1px, transparent 1px), ' +
-            'linear-gradient(90deg, rgba(212,175,55,0.2) 1px, transparent 1px)',
-          backgroundSize: 'cover, 120px 120px, 120px 120px',
-        }}
-      />
-
-      {/* Top hairline */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sl-gold-subtle/30 to-transparent" />
-
       <div className="relative z-10 mx-auto max-w-4xl text-center">
         {/* Chapter label */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
+          animate={hasRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
           transition={{ duration: DURATION.component, ease: EASE.entrance }}
           className="font-mono text-[10px] uppercase tracking-[0.5em] text-sl-gold-subtle/70"
         >
@@ -54,8 +44,7 @@ export function InvitationChapter({ className }: InvitationChapterProps) {
         <motion.div
           variants={staggerContainer(STAGGER.page, 0.2)}
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
+          animate={hasRevealed ? 'visible' : 'hidden'}
           className="mt-12"
         >
           <motion.h2
@@ -79,8 +68,7 @@ export function InvitationChapter({ className }: InvitationChapterProps) {
         <motion.div
           variants={staggerContainer(STAGGER.component, 0.4)}
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
+          animate={hasRevealed ? 'visible' : 'hidden'}
           className="mt-16 flex flex-col items-center gap-6 sm:flex-row sm:justify-center sm:gap-8"
         >
           <motion.div variants={fadeLift}>
@@ -116,8 +104,7 @@ export function InvitationChapter({ className }: InvitationChapterProps) {
         {/* Studio signature */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
+          animate={hasRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: DURATION.component, delay: 0.6, ease: EASE.entrance }}
           className="mt-24 flex flex-col items-center gap-4 text-sl-mist/40"
         >
@@ -129,9 +116,6 @@ export function InvitationChapter({ className }: InvitationChapterProps) {
           <p className="text-[11px] font-light">Cairo · Dubai · Est. 2024</p>
         </motion.div>
       </div>
-
-      {/* Bottom hairline */}
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-sl-gold-subtle/30 to-transparent" />
-    </section>
+    </div>
   );
 }

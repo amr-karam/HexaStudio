@@ -8,6 +8,9 @@ export { useMotionPolicy } from './useMotionPolicy';
 export { useScrollVelocity } from './useScrollVelocity';
 export { useVoiceTransform } from './useVoiceTransform';
 export { useContextLossRecovery } from './useContextLossRecovery';
+export { useHEXAMotion } from './useHEXAMotion';
+export { useScrollReveal, useStaggeredReveal, useScrollRevealSync } from './useScrollReveal';
+export type { ScrollRevealConfig, ScrollRevealState } from './useScrollReveal';
 
 // ── Utility hooks ──────────────────────────────────────────
 export { usePrevious } from './usePrevious';
