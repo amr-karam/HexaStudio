@@ -1,271 +1,120 @@
-# Dependencies
-node_modules/
-_corrupted_node_modules_stubs/
-_corrupted*/
-.pnp
-.pnp.js
-
-# Build
+# Build outputs
 dist/
 build/
-.next/
 out/
-.strapi/
-.tmp/
-storybook-static/
+.next/
+.turbo/
+tsconfig.tsbuildinfo
+*.js.map
+*.d.ts
 
-# Environment (never commit secrets)
+# Dependencies
+node_modules/
+
+# Environment files
 .env
 .env.local
 .env.*.local
-!.env.example
-# Local-only env files carrying real credentials — never commit
 .env.gitlab
-.env.gitlab.*
-*.pem
+openai-compatible-agents.env
 
 # Logs
-logs/
 *.log
-npm-debug.log*
-
-# OS / IDE
-.DS_Store
-Thumbs.db
-.idea/
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-.cursor/
-.anima/
-.kilocode/
-.projectmanager/
-.vs/
-
-# Docker
-docker/data/
-
-# Strapi
-apps/cms/.cache/
-apps/cms/public/uploads/
-
-# Testing
-coverage/
-test-results/
-playwright-report/
-e2e/*-snapshots/
-
-# Internal docs (not for public repo)
-competitor-research-progress.md
-
-# Misc
-*.tsbuildinfo
-.turbo/
-server.log
+logs/
+build-output.txt
+build-output.log
+build-error.log
+frontend-build.log
+dsh-web-output.log
+debug-storybook.log
+paramiko.log
 *.err
 
-# Temporary scripts
-tmp_*.py
-temp_*.py
-temp_*.sh
-
-# Temporary working directory (diagnostic/cloudflare scripts may embed credentials)
-temp/
-
-# Operational one-off scripts (may embed credentials — NEVER commit)
-# Relocate any that must be kept to ops/archive/ (gitignored).
-gl_p*.py
-gl_poll*.py
-mint_pat*.sh
-poll_pipeline*.sh
-rails_probe*.sh
-verify_runner*.sh
-*_lf.sh
-
-# Files containing secrets — NEVER commit
-*.secret
-*.secrets
-
-# Stale build/export artifacts
---output
-project.zip
-standalone
-apps/frontend/app/
-
-# TypeScript build outputs (packages/* compiled JS/d.ts)
-packages/*/*.d.ts
-packages/*/*.js
-packages/*/*.js.map
-
-# Backend build output (not committed)
-apps/backend/dist/
-
-# LLM chat history
-.llm-chat-history/
-
-# AI tool configs (not project code)
+# IDE / Editors
+.idea/
+.vscode/
 .claude/
-.kilo/
-.memory/
-.qoder/
-.trae/
-paseo-hooks/
-.gitwandrc
-opencode.json
-.agents/
 .codex/
-.gemini/
 .junie/
-
-# Temporary output files
-.output.txt
-
-# Python (AI agent scripts)
-.venv/
-requirements.txt
-
-# Netlify build cache
-apps/frontend/.netlify/
-
-# Lighthouse report
-lh-report.json
-
-# Deploy scripts (keep local — contain server connection logic)
-deploy.py
-sshrun.py
-upload_script*.py
-ops/scripts/fix-jwt-prod.sh
-ops/scripts/run_remote_script.py
-ops/scripts/sync_auth_files.py
-ops/scripts/sync_jwt_strategy.py
-scripts/cdp-page-sweep.mjs
-build-output.txt
-
-# Lighthouse CI temp data
-.lighthouse-tmp/
-.lighthouseci/
-HEXA-Vision-Playbook/**/lighthouse-*.json
-
-# Large 3D source assets (not web-ready)
-*.max
-*.rar
-*.zip
-*.tar.gz
-*.7z
-*.fbx
-*.obj
-apps/frontend/public/models/.gitkeep
-
-.vercel
-.vercel-tmp/
-# Note: .env.example is explicitly allowed above (line 20). All other .env* patterns
-# are already covered by .env, .env.local, .env.*.local rules on lines 17-19.
-pnpm-workspace.yaml
-
-# Stray deployment scratch (web-root copies, typo dirs, deploy logs)
-var/
-hexa-hab/
-deploy_log.txt
-
-# Archived operational artifacts (dead scripts, logs, bundles, one-off fixes)
-# Root should hold only manifests — see ops/ for the archive inventory.
-ops/archive/
-docker.tar.gz
-
-# SSH private keys (never commit)
-*.key
-hexastudio_key
-
-# Personal/editor scratch (Obsidian vault, OneDrive path spills, daily notes)
-.obsidian/
-CUsers/
-Daily Notes/
-
-# Stakpak session files
-.stakpak/session*
+.kilocode/
+.trae/
 .stakpak/
+.projectmanager/
+.qoder/
 
-# Workflow tool artifacts
-.workflow/
+# Agent / AI tools
+.agents/
+.hermes/
+.hexastudio-backup/
 
-# Local npm auth config (never commit)
-*.npmrc
+# Test outputs
+coverage/
+test-output.txt
+apps/backend/test-output.txt
 
-# Git rewrite directories
-.git-rewrite/
-
-# Secret scrubbing scripts
-scrub_secret.py
-
-# Backup files
+# Generated / temporary files
+temp/
+tmp/
+.hermes-tmp.*
+.hexa-session-video/
+hexa-session-video/
+hexa-command-centre/dist/
+hexa-hub/apps/web/tsconfig.tsbuildinfo
 *.bak
+*.tmp
 
-# JWT token files and minting scripts (NEVER commit - contain production secrets)
-token.txt
-generate_token*.js
+# Secrets / keys
+jwt_private.pem
+jwt_public.pem
+.security-config
+.secret*
 
-# CMS admin scripts with hardcoded credentials
-apps/cms/get_admin_user.js
-apps/cms/scripts/debug_permissions.js
-apps/cms/inspect_db.js
+# Archives / deployments
+*.tar
+*.zip
+hexastudio-backend.tar
 
-# API test scripts that use live tokens
-test_api.sh
+# Lighthouse reports
+lighthouse-before.report.html
+lighthouse-after.report.html
 
-# Content API token minting script
+# CMS / Strapi
+apps/cms/.strapi/
+apps/cms/strapi-err.log
+apps/cms/temp/
+apps/cms/public/
+apps/cms/.env
+
+# Mobile
+apps/mobile/.turbo/
+
+# Package build artifacts
+packages/types/.turbo/
+packages/types/dist/
+packages/types/index.js
+packages/types/index.js.map
+packages/types/index.d.ts
+packages/types/odoo.js
+packages/types/odoo.js.map
+packages/types/odoo.d.ts
+packages/utils/.turbo/
+packages/utils/dist/
+
+# Scripts artifacts
+scripts/mcp/server.err
+scripts/mcp/server.log
+scripts/mcp/node_modules/
+
+# Misc
+create-mr.json
+create-user.json
+generate_token.js
+generate_token_prod.js
 generate_content_token.js
 fix_*.js
-
-# Firecrawl CLI cache (local job data, install-check artifacts)
-.firecrawl/
-
-# Framer secret (server-only)
-.env.framer
-hexastudio-backend.tar
-.lh-perf.json
-.tmp-lh-perf.json
-*.report.html
-
-# Local-only env files carrying real credentials — never commit
-*.env
-
-# Windows filesystem / OneDrive sync scratch artifacts
-nul
-
-# Scratch kanban exports (one-off dumps)
-kanban-*.html
-
-# Git worktrees (managed outside the repo tree)
-.worktrees/
-
-# WebDev security configuration (local only)
-.security-config
-
-# Temporary scratch files
-.hermes-tmp*
-test-debug.tsx
-
-# GitHub Actions workflow (project uses GitLab CI)
-.github/workflows/
-
-# Auto-generated scaffolding scripts (not production)
-scripts/anima-workflow.sh
-scripts/coordinate-agents.sh
-scripts/init-sprint.sh
-scripts/setup-git-config.sh
-scripts/setup-mcp-integration.sh
-scripts/sprint-development.sh
-scripts/webdev-quick-start.sh
-scripts/check-motion-tokens.mjs
-scripts/setup-security-config.sh
-scripts/verify-webdev-setup.sh
-
-# Generated artifacts
-create-mr.json
-hexa-session-video/
-
-# Environment
-.env
-.env.local
-.env.*.local
-create-user.json
+fix_*.py
+fix_*.sh
+test_api.sh
+token.txt
+ops/archive/
+_gitleaks_dl/
