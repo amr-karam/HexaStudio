@@ -105,6 +105,12 @@ scripts/mcp/server.err
 scripts/mcp/server.log
 scripts/mcp/node_modules/
 
+# Cache / config dirs
+.firecrawl/
+.gemini/
+.lighthouseci/
+.tmp-lh-perf.json
+
 # Misc
 create-mr.json
 create-user.json
