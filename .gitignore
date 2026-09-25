@@ -124,3 +124,21 @@ test_api.sh
 token.txt
 ops/archive/
 _gitleaks_dl/
+
+# CMS utility scripts (debug/admin tools)
+apps/cms/get_admin_user.js
+apps/cms/inspect_db.js
+apps/cms/scripts/debug_permissions.js
+
+# Ops scripts (internal tooling)
+ops/scripts/
+
+# Workflow / setup scripts
+scripts/anima-workflow.sh
+scripts/cdp-page-sweep.mjs
+scripts/coordinate-agents.sh
+scripts/init-sprint.sh
+scripts/setup-git-config.sh
+scripts/setup-mcp-integration.sh
+scripts/sprint-development.sh
+scripts/webdev-quick-start.sh
