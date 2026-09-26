@@ -64,7 +64,7 @@ export class AuthController {
     res.cookie(REFRESH_COOKIE_NAME, result.refreshToken, REFRESH_COOKIE_OPTIONS);
     const csrfToken = generateCsrfToken();
     res.cookie(CSRF_COOKIE_NAME, csrfToken, { ...COOKIE_OPTIONS, httpOnly: false });
-    return { user: result.user, accessToken: result.accessToken, refreshToken: result.refreshToken };
+    return { user: result.user, accessToken: result.accessToken };
   }
 
   @Post('login')
@@ -90,7 +90,7 @@ export class AuthController {
         details: { identifier: body.identifier },
       });
       
-      return { user: result.user, accessToken: result.accessToken, refreshToken: result.refreshToken };
+      return { user: result.user, accessToken: result.accessToken };
     } catch (error) {
       this.securityAuditService.logEvent({
         type: 'LOGIN_FAILURE',
@@ -145,7 +145,7 @@ export class AuthController {
     const result = await this.authService.refreshTokens(presented);
     res.cookie('auth_token', result.accessToken, COOKIE_OPTIONS);
     res.cookie(REFRESH_COOKIE_NAME, result.refreshToken, REFRESH_COOKIE_OPTIONS);
-    return { user: result.user, accessToken: result.accessToken, refreshToken: result.refreshToken };
+    return { user: result.user };
   }
 
   @Post('logout')
@@ -213,10 +213,6 @@ export class AuthController {
     );
     res.cookie('auth_token', result.accessToken, COOKIE_OPTIONS);
     res.cookie(REFRESH_COOKIE_NAME, result.refreshToken, REFRESH_COOKIE_OPTIONS);
-    return {
-      user: result.user,
-      accessToken: result.accessToken,
-      refreshToken: result.refreshToken,
-    };
+    return { user: result.user, accessToken: result.accessToken };
   }
 }

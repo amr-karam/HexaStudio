@@ -33,6 +33,7 @@ export class GitWebhookController {
   @Post('sync-odoo')
   @ApiOperation({ summary: 'GitLab → Odoo autonomous sync — MR/issue events drive project status' })
   @ApiResponse({ status: 200, description: 'Coordinator decision and Odoo result' })
+  @UseGuards(GitWebhookGuard)
   async handleSyncOdoo(
     @Body() payload: Record<string, unknown>,
     @Headers('x-gitlab-event') gitlabEvent?: string,

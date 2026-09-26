@@ -7,9 +7,10 @@
  *   GET  /assets/models      — list all Egyptian 3D models
  *   GET  /assets/models/:id  — get model metadata + download URL
  */
-import { Controller, Get, Param, NotFoundException } from "@nestjs/common";
+import { Controller, Get, Param, NotFoundException, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import * as modelsRaw from "../../data/assets/models/index.json";
+import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 
 interface AssetModel {
   id: string;
@@ -39,6 +40,7 @@ function readModelsIndex(): AssetModel[] {
 
 @Controller({ path: "assets", version: "1" })
 @ApiTags("assets")
+@UseGuards(JwtAuthGuard)
 export class AssetsController {
   private readonly models: AssetModel[] = readModelsIndex();
 
