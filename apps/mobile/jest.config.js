@@ -7,6 +7,7 @@ const jestConfig = {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@hexastudio/types$': '<rootDir>/../../packages/types',
     '^@hexastudio/utils$': '<rootDir>/../../packages/utils',
+    '^test-renderer$': 'react-test-renderer',
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testTimeout: 60000,
