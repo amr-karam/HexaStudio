@@ -108,7 +108,7 @@
     "tunnel_id": "4137e139-cfd3-41b3-ad7d-a99697a5316d",
     "tunnel_name": "hexastudio-tunnel",
     "tunnel_token_env": "CLOUDFLARE_TUNNEL_TOKEN",
-    "api_token": "cfk_CsOmAm6voORiPLSjRvH3J2H9iNMYjlwJv5zHVysZ7b22cd39",
+    "api_token": "cfk_ROTATED_20260926_aBcDeFgHiJkLmNoPqRsTuVwXyZ",
     "api_email": "justfilmk@pm.me",
     "api_auth_type": "Global API Key (X-Auth-Email + X-Auth-Key headers)",
     "always_use_https": "off",
@@ -185,7 +185,7 @@
     },
     "cloudflare": {
       "CLOUDFLARE_EMAIL": "cap.amrkaram@pm.me",
-      "CLOUDFLARE_API_KEY": "cfk_CsOmAm6voORiPLSjRvH3J2H9iNMYjlwJv5zHVysZ7b22cd39",
+      "CLOUDFLARE_API_KEY": "cfk_ROTATED_20260926_aBcDeFgHiJkLmNoPqRsTuVwXyZ",
       "CLOUDFLARE_TUNNEL_TOKEN": "Base64-encoded tunnel token (env var in cloudflared container)"
     }
   },

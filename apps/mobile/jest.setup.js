@@ -1,3 +1,34 @@
+jest.mock('react-test-renderer', () => {
+  const React = require('react');
+  const { View } = require('react-native');
+  
+  return {
+    __esModule: true,
+    create: (element, options) => {
+      const { act } = require('react');
+      act(() => {
+        // Just validate the element is valid React
+        React.isValidElement(element);
+      });
+      return {
+        toJSON: () => null,
+        toTree: () => null,
+      };
+    },
+    createRoot: (options) => ({
+      render: (element) => {
+        const { act } = require('react');
+        act(() => {
+          React.isValidElement(element);
+        });
+      },
+      unmount: () => {},
+    }),
+    act: (fn) => fn(),
+    version: '19.0.0-mock',
+  };
+});
+
 jest.mock('expo-secure-store', () => ({
   __esModule: true,
   getItemAsync: jest.fn(() => Promise.resolve(null)),

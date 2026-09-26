@@ -1,0 +1,171 @@
+http:
+  routers:
+    # Staging Website
+    website:
+      rule: "Host(`staging.hexastudio.net`)"
+      service: frontend
+      entrypoints:
+        - websecure
+
+    # Staging Backend API
+    api:
+      rule: "Host(`api-staging.hexastudio.net`)"
+      service: backend
+      middlewares:
+        - security-headers
+      entrypoints:
+        - websecure
+
+    # Staging CMS
+    cms:
+      rule: "Host(`cms-staging.hexastudio.net`)"
+      service: cms
+      middlewares:
+        - web-app-security-headers
+      entrypoints:
+        - websecure
+
+    # Staging Odoo ERP
+    odoo:
+      rule: "Host(`odoo-staging.hexastudio.net`)"
+      service: odoo
+      middlewares:
+        - forwarded-headers
+        - web-app-security-headers
+      entrypoints:
+        - websecure
+
+    # Staging Object Storage
+    files:
+      rule: "Host(`files-staging.hexastudio.net`)"
+      service: minio
+      middlewares:
+        - security-headers
+      entrypoints:
+        - websecure
+
+    # Staging Grafana
+    grafana:
+      rule: "Host(`grafana-staging.hexastudio.net`)"
+      service: grafana
+      middlewares:
+        - web-app-security-headers
+      entrypoints:
+        - websecure
+
+    # Staging Prometheus
+    prometheus:
+      rule: "Host(`prometheus-staging.hexastudio.net`)"
+      service: prometheus
+      middlewares:
+        - security-headers
+      entrypoints:
+        - websecure
+
+    # Staging Alertmanager
+    alertmanager:
+      rule: "Host(`alertmanager-staging.hexastudio.net`)"
+      service: alertmanager
+      middlewares:
+        - web-app-security-headers
+      entrypoints:
+        - websecure
+
+    # Staging Traefik Dashboard
+    traefik-dashboard:
+      rule: "Host(`traefik-staging.hexastudio.net`)"
+      service: api@internal
+      middlewares:
+        - traefik-auth
+      entrypoints:
+        - web
+
+    # Staging Tempo (Jaeger traces)
+    tempo:
+      rule: "Host(`tempo-staging.hexastudio.net`)"
+      service: tempo
+      entrypoints:
+        - websecure
+
+    # Staging Loki
+    loki:
+      rule: "Host(`loki-staging.hexastudio.net`)"
+      service: loki
+      middlewares:
+        - web-app-security-headers
+      entrypoints:
+        - websecure
+
+    # GitLab (TLS terminated at Cloudflare edge)
+    gitlab:
+      rule: "Host(`gitlab.hexastudio.net`)"
+      service: gitlab
+      entrypoints:
+        - web
+
+  services:
+    frontend:
+      loadBalancer:
+        servers: [{ url: "http://frontend:3000" }]
+    backend:
+      loadBalancer:
+        servers: [{ url: "http://backend:14000" }]
+    cms:
+      loadBalancer:
+        servers: [{ url: "http://cms:1337" }]
+    odoo:
+      loadBalancer:
+        servers: [{ url: "http://odoo:8069" }]
+    minio:
+      loadBalancer:
+        servers: [{ url: "http://minio:9000" }]
+    grafana:
+      loadBalancer:
+        servers: [{ url: "http://grafana:3000" }]
+    prometheus:
+      loadBalancer:
+        servers: [{ url: "http://prometheus:9090" }]
+    alertmanager:
+      loadBalancer:
+        servers: [{ url: "http://alertmanager:9093" }]
+    tempo:
+      loadBalancer:
+        servers: [{ url: "http://tempo:4318" }]
+    loki:
+      loadBalancer:
+        servers: [{ url: "http://loki:3100" }]
+    gitlab:
+      loadBalancer:
+        servers: [{ url: "http://hexa-gitlab-19:80" }]
+
+  middlewares:
+    traefik-auth:
+      basicAuth:
+        users:
+          - "${TRAEFIK_AUTH_USER}:${TRAEFIK_AUTH_HASH}"
+
+    forwarded-headers:
+      headers:
+        customRequestHeaders:
+          X-Forwarded-Proto: "https"
+          X-Forwarded-Ssl: "on"
+
+    security-headers:
+      headers:
+        customResponseHeaders:
+          Strict-Transport-Security: "max-age=31536000; includeSubDomains; preload"
+          X-Content-Type-Options: "nosniff"
+          X-Frame-Options: "SAMEORIGIN"
+          Referrer-Policy: "strict-origin-when-cross-origin"
+          Permissions-Policy: "camera=(), microphone=(), geolocation=(), xr-spatial-tracking=(self)"
+          Content-Security-Policy: "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+
+    web-app-security-headers:
+      headers:
+        customResponseHeaders:
+          Strict-Transport-Security: "max-age=31536000; includeSubDomains; preload"
+          X-Content-Type-Options: "nosniff"
+          X-Frame-Options: "SAMEORIGIN"
+          Referrer-Policy: "strict-origin-when-cross-origin"
+          Permissions-Policy: "camera=(), microphone=(), geolocation=(), xr-spatial-tracking=(self)"
+          Content-Security-Policy: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' wss: ws: https:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
