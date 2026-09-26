@@ -67,6 +67,7 @@ export function NewsletterSection() {
         >
           <div className="relative flex-1">
             <Input
+              label="Email address"
               placeholder="Enter your email"
               className="flex-1 transition-all duration-500 focus:ring-1 focus:ring-sl-gold-subtle/30 focus:border-sl-gold-subtle/50"
             />

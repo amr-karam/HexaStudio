@@ -54,7 +54,6 @@ export function BeforeAfterSlider({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (reduceMotion) return;
     let nextPos = position;
     if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
       nextPos = Math.max(0, position - (e.shiftKey ? 10 : 2));

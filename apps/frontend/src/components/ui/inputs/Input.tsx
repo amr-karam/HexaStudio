@@ -122,7 +122,7 @@ const Input = React.forwardRef<InputElement, InputComponentProps>(
     /*  Field wrapper (visual shell)                                      |
     /* ------------------------------------------------------------------ */
     const fieldWrapperClasses = cn(
-      'relative flex items-center rounded-lg transition-all duration-300',
+      'relative flex items-center rounded-lg transition-all duration-300 group',
       sizeConfig.height,
       sizeConfig.paddingX,
       // Focus ring

@@ -64,7 +64,8 @@ export default function AssetBrowser({ onModelSelected }: AssetBrowserProps) {
           placeholder="Search assets..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full px-2 py-1 text-xs rounded bg-sl-void border border-sl-border text-sl-alabaster"
+          aria-label="Search assets"
+          className="w-full px-2 py-1 text-xs rounded bg-sl-void border border-sl-border text-sl-alabaster focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sl-gold-subtle focus-visible:ring-offset-1 focus-visible:ring-offset-sl-card"
         />
 
         {/* Category filter */}
