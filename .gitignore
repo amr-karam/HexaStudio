@@ -113,6 +113,8 @@ scripts/mcp/node_modules/
 
 # Misc
 create-mr.json
+create_mr.ps1
+mr_body.json
 create-user.json
 generate_token.js
 generate_token_prod.js

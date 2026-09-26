@@ -11,5 +11,5 @@
       "@hexastudio/utils": ["../../packages/utils"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx"]
+  "include": ["**/*.ts", "**/*.tsx", "global.d.ts"]
 }
