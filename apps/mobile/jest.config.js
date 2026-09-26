@@ -8,6 +8,7 @@ const jestConfig = {
     '^@hexastudio/types$': '<rootDir>/../../packages/types',
     '^@hexastudio/utils$': '<rootDir>/../../packages/utils',
     '^test-renderer$': 'react-test-renderer',
+    '^react-native/asset-registry$': '<rootDir>/__mocks__/react-native-asset-registry.js',
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testTimeout: 60000,

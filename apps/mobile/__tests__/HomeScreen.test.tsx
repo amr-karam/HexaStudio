@@ -2,16 +2,18 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react-native';
 import HomeScreen from '../src/app/(tabs)/index';
 
+// Mock useAuth to return logged-out state by default
 jest.mock('../src/hooks/useAuth', () => ({
   __esModule: true,
-  useAuth: () => ({
+  useAuth: jest.fn(() => ({
     user: null,
     isLoading: false,
     login: jest.fn(),
     logout: jest.fn(),
-  }),
+  })),
 }));
 
+// Mock ThemeProvider
 jest.mock('../src/components/ThemeProvider', () => ({
   __esModule: true,
   useTheme: () => ({
@@ -46,9 +48,9 @@ jest.mock('../src/components/ThemeProvider', () => ({
   }),
 }));
 
+// Mock API
 jest.mock('../src/lib/api', () => ({
   __esModule: true,
-  ...jest.requireActual('../src/lib/api'),
   fetchPortalDashboard: jest.fn(() => Promise.resolve({
     project: { title: 'Test Project', category: 'Residential', status: 'In Progress' },
     timeline: [
@@ -63,11 +65,13 @@ jest.mock('../src/lib/api', () => ({
   })),
 }));
 
+// Mock haptics
 jest.mock('../src/lib/haptics', () => ({
   __esModule: true,
   hapticLight: jest.fn(),
 }));
 
+// Mock react-native-reanimated
 jest.mock('react-native-reanimated', () => {
   const React = jest.requireActual('react');
   const { View } = jest.requireActual('react-native');
@@ -92,32 +96,47 @@ jest.mock('react-native-reanimated', () => {
   };
 });
 
+// Mock expo-router
+jest.mock('expo-router', () => ({
+  router: { push: jest.fn(), replace: jest.fn() },
+  useRouter: () => ({ push: jest.fn(), replace: jest.fn() }),
+  useSegments: () => [''],
+  useLocalSearchParams: () => ({ id: '1', name: 'Test Project' }),
+  Redirect: () => null,
+  Stack: { Screen: () => null },
+  Tabs: { Screen: () => null },
+}));
+
 describe('HomeScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('prompts to sign in when logged out', async () => {
-    render(<HomeScreen />);
+    const { getByText } = render(<HomeScreen />);
     await waitFor(() => {
-      expect(screen.getByText(/Sign in to view your dashboard/)).toBeTruthy();
+      expect(getByText(/Sign in to view your dashboard/)).toBeTruthy();
     });
   });
 
   it('shows dashboard when authenticated', async () => {
+    // Override the useAuth mock for this test
     jest.doMock('../src/hooks/useAuth', () => ({
       __esModule: true,
-      useAuth: () => ({
+      useAuth: jest.fn(() => ({
         user: { id: 'u1', email: 'test@example.com', username: 'test', role: 'user' },
         isLoading: false,
         login: jest.fn(),
         logout: jest.fn(),
-      }),
+      })),
     }));
 
-    render(<HomeScreen />);
+    // Need to re-require the component to pick up the new mock
+    const HomeScreenAuthenticated = require('../src/app/(tabs)/index').default;
+    
+    const { getByText } = render(<HomeScreenAuthenticated />);
     await waitFor(() => {
-      expect(screen.getByText(/Welcome/)).toBeTruthy();
+      expect(getByText(/Welcome/)).toBeTruthy();
     });
   });
 });
