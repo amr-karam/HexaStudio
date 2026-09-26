@@ -116,7 +116,7 @@ describe('AgentsController', () => {
       const events: Array<{ data: string }> = [];
 
       for await (const event of controller.streamChat(req, 'Show revenue', undefined)) {
-        events.push({ data: event.data.toString() });
+        events.push({ data: (event.data ?? '').toString() });
       }
 
       expect(events.length).toBe(2);

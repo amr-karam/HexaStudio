@@ -1,7 +1,6 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react-native';
 import HomeScreen from '../src/app/(tabs)/index';
-import { fetchPortalDashboard as _fetchPortalDashboard } from '../src/lib/api';
 
 jest.mock('../src/hooks/useAuth', () => ({
   __esModule: true,
@@ -106,13 +105,15 @@ describe('HomeScreen', () => {
   });
 
   it('shows dashboard when authenticated', async () => {
-    const { useAuth } = jest.requireActual('../src/hooks/useAuth');
-    useAuth.mockReturnValue({
-      user: { id: 'u1', email: 'test@example.com', username: 'test', role: 'user' },
-      isLoading: false,
-      login: jest.fn(),
-      logout: jest.fn(),
-    });
+    jest.doMock('../src/hooks/useAuth', () => ({
+      __esModule: true,
+      useAuth: () => ({
+        user: { id: 'u1', email: 'test@example.com', username: 'test', role: 'user' },
+        isLoading: false,
+        login: jest.fn(),
+        logout: jest.fn(),
+      }),
+    }));
 
     render(<HomeScreen />);
     await waitFor(() => {
