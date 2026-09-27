@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react-native';
+import { render, waitFor } from '@testing-library/react-native';
 import ProjectMilestonesScreen from '../src/app/(tabs)/projects/[id]';
 import { fetchProjectDetail } from '../src/lib/api';
 import type { User } from '@hexastudio/types';
@@ -115,55 +115,49 @@ jest.mock('expo-router', () => ({
   Tabs: { Screen: () => null },
 }));
 
-// Auth state is controlled here so the screen's auth guard can be exercised
-// deterministically without simulating the session-restore network flow.
-const mockAuthState: { user: User | null; isLoading: boolean } = {
-  user: { id: 'u1', email: 'client@hexastudio.net', username: 'client', role: 'user' },
-  isLoading: false,
-};
-
 jest.setTimeout(60000);
 
 describe('ProjectMilestonesScreen', () => {
   beforeEach(() => {
-    mockAuthState.user = { id: 'u1', email: 'client@hexastudio.net', username: 'client', role: 'user' };
-    mockAuthState.isLoading = false;
     jest.clearAllMocks();
   });
 
   it('renders milestones from the API', async () => {
-    render(<ProjectMilestonesScreen />);
+    const { getByText } = render(<ProjectMilestonesScreen />);
     await waitFor(() => {
-      expect(screen.getByText('Concept Design')).toBeTruthy();
-      expect(screen.getByText('Final Render')).toBeTruthy();
+      expect(getByText('Concept Design')).toBeTruthy();
+      expect(getByText('Final Render')).toBeTruthy();
     });
   });
 
   it('shows completion state per milestone', async () => {
-    render(<ProjectMilestonesScreen />);
+    const { getByText } = render(<ProjectMilestonesScreen />);
     await waitFor(() => {
-      expect(screen.getByText(/Completed · 2026-07-01/)).toBeTruthy();
-      expect(screen.getByText(/Upcoming · 2026-08-15/)).toBeTruthy();
+      expect(getByText(/Completed · 2026-07-01/)).toBeTruthy();
+      expect(getByText(/Upcoming · 2026-08-15/)).toBeTruthy();
     });
   });
 
   it('renders project progress', async () => {
-    render(<ProjectMilestonesScreen />);
+    const { getByText } = render(<ProjectMilestonesScreen />);
     await waitFor(() => {
-      expect(screen.getByText('50% complete')).toBeTruthy();
+      expect(getByText('50% complete')).toBeTruthy();
     });
   });
 
   it('does not fetch project data when signed out', async () => {
-    const { useAuth } = jest.requireActual('../src/hooks/useAuth');
-    useAuth.mockReturnValue({
-      user: null,
-      isLoading: false,
-      login: jest.fn(),
-      logout: jest.fn(),
-    });
+    jest.doMock('../src/hooks/useAuth', () => ({
+      __esModule: true,
+      useAuth: () => ({
+        user: null,
+        isLoading: false,
+        login: jest.fn(),
+        logout: jest.fn(),
+      }),
+    }));
 
-    render(<ProjectMilestonesScreen />);
+    const ProjectMilestonesScreenSignedOut = require('../src/app/(tabs)/projects/[id]').default;
+    const { getByText } = render(<ProjectMilestonesScreenSignedOut />);
     await waitFor(() => {
       expect(fetchProjectDetail).not.toHaveBeenCalled();
     });

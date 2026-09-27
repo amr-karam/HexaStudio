@@ -1,0 +1,25 @@
+groups:
+  - name: hexastudio-staging-logs
+    interval: 60s
+    rules:
+      - alert: HighErrorRateLogs
+        expr: |
+          sum by (job, level) (rate({job=~".+"} |= "error" | logfmt [5m]))
+          /
+          sum by (job) (rate({job=~".+"} [5m])) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate in logs for {{ $labels.job }}"
+          description: "Error log rate for {{ $labels.job }} is above 5%"
+
+      - alert: LogVolumeSpike
+        expr: |
+          sum by (job) (rate({job=~".+"} [5m])) > 1000
+        for: 10m
+        labels:
+          severity: info
+        annotations:
+          summary: "Log volume spike for {{ $labels.job }}"
+          description: "Log ingestion rate for {{ $labels.job }} exceeded 1000 lines/sec"

@@ -1,0 +1,53 @@
+server:
+  http_listen_port: 3200
+  grpc_listen_port: 9096
+  log_level: info
+
+distributor:
+  receivers:
+    otlp:
+      protocols:
+        http:
+          endpoint: 0.0.0.0:4318
+        grpc:
+          endpoint: 0.0.0.0:4317
+
+ingester:
+  trace_idle_period: 10s
+  max_block_bytes: 1_000_000
+  max_block_duration: 5m
+  complete_block_timeout: 15m
+
+compactor:
+  compaction:
+    block_retention: 48h
+    compacted_block_retention: 1h
+
+storage:
+  trace:
+    backend: local
+    local:
+      path: /var/tempo/traces
+    wal:
+      path: /var/tempo/wal
+      encoding: snappy
+
+querier:
+  frontend_workers: 10
+
+query_frontend:
+  search:
+    duration_slo: 5s
+    throughput_bytes_slo: 1.073741824e+09
+
+limits:
+  ingestion_rate_limit: 1024
+  ingestion_burst_size: 2048
+  max_traces_per_user: 10000
+  max_bytes_per_trace: 52428800
+  max_search_bytes_per_query: 104857600
+  max_search_duration: 30m
+
+table_manager:
+  retention_deletes_enabled: true
+  retention_period: 48h

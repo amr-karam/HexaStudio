@@ -173,7 +173,7 @@ async function bootstrap(): Promise<void> {
     }
 
     try {
-      const decoded = verify(token, config.jwt.secret) as JwtPayload;
+      const decoded = verify(token, config.jwt.secret!) as JwtPayload;
       // JWT payload may be nested under `payload` or flat
       const user = (decoded.payload as Record<string, unknown>) ?? decoded;
 
@@ -264,7 +264,7 @@ async function bootstrap(): Promise<void> {
       try {
         // Verify the current (expiring) token — we allow expired tokens within
         // a grace period using ignoreExpiration: true, then check manually.
-        const decoded = verify(payload.currentToken, config.jwt.secret, {
+        const decoded = verify(payload.currentToken, config.jwt.secret!, {
           ignoreExpiration: true,
         }) as JwtPayload;
 
@@ -290,7 +290,7 @@ async function bootstrap(): Promise<void> {
           email: user.email,
           role: user.role,
         };
-        const newToken = sign(newPayload, config.jwt.secret, {
+        const newToken = sign(newPayload, config.jwt.secret as string, {
           expiresIn: config.jwt.expiresIn,
         });
 
