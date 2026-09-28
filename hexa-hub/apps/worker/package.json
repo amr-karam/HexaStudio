@@ -12,7 +12,7 @@
     "lint": "eslint \"src/**/*.ts\" --fix"
   },
   "dependencies": {
-    "@hexa-hub/types": "*",
+    "@hexa-hub/types": "file:../../packages/types",
     "@types/nodemailer": "^8.0.1",
     "axios": "^1.18.1",
     "bull": "^4.12.0",

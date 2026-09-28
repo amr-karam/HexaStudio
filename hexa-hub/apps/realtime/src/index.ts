@@ -290,9 +290,9 @@ async function bootstrap(): Promise<void> {
           email: user.email,
           role: user.role,
         };
-        const newToken = sign(newPayload, config.jwt.secret as string, {
+        const newToken = sign(newPayload, String(config.jwt.secret), {
           expiresIn: config.jwt.expiresIn,
-        });
+        } as any);
 
         const response: TokenRefreshResponse = {
           token: newToken,

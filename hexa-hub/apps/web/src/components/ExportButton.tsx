@@ -141,7 +141,7 @@ function downloadFile(content: string, filename: string, mimeType: string) {
   link.click();
 
   // Cleanup
-  setTimeout(() => {
+  window.setTimeout(() => {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   }, 150);
@@ -160,7 +160,7 @@ export function ExportButton({
   disabled = false,
 }: ExportButtonProps) {
   const [state, setState] = useState<'idle' | 'loading' | 'success'>('idle');
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timeoutRef = useRef<number | null>(null);
 
   const resolvedLabel = label ?? (format === 'csv' ? 'Export CSV' : 'Export PDF');
   const isEmpty = !data || data.length === 0;
@@ -172,7 +172,7 @@ export function ExportButton({
 
     // Small delay to show the loading state
     await new Promise((resolve) => {
-      timeoutRef.current = setTimeout(resolve, 400);
+      timeoutRef.current = window.setTimeout(resolve, 400);
     });
 
     try {
@@ -188,7 +188,7 @@ export function ExportButton({
       setState('success');
 
       // Reset back to idle after showing success checkmark
-      timeoutRef.current = setTimeout(() => {
+      timeoutRef.current = window.setTimeout(() => {
         setState('idle');
       }, 1800);
     } catch {
