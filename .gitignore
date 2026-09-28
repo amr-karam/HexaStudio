@@ -144,3 +144,5 @@ scripts/setup-git-config.sh
 scripts/setup-mcp-integration.sh
 scripts/sprint-development.sh
 scripts/webdev-quick-start.sh
+
+.env.staging
