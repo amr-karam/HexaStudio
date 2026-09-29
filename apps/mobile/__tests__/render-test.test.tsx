@@ -8,7 +8,6 @@ describe('render test', () => {
     console.log('render result:', Object.keys(result));
     console.log('getByText:', typeof result.getByText);
     console.log('queryByText:', typeof result.queryByText);
-    console.log('findByText:', typeof result.findByText);
     expect(typeof result.getByText).toBe('function');
   });
 });

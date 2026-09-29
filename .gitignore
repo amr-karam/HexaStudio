@@ -146,3 +146,8 @@ scripts/sprint-development.sh
 scripts/webdev-quick-start.sh
 
 .env.staging
+.vercel
+.env*
+
+# Staging tunnel credentials
+staging-secrets/

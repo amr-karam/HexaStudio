@@ -43,12 +43,17 @@ services:
   # Cloudflare Tunnel (no public IP required)
   # ---------------------------------------------------------------------------
   cloudflared:
-    image: cloudflare/cloudflared:2024.12.0
+    image: cloudflare/cloudflared:2025.8.1
     <<: *default-restart
     logging: *default-logging
-    command: tunnel run
+    command: tunnel run --config /etc/cloudflared/config.yml
     environment:
-      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN_STAGING:?CLOUDFLARE_TUNNEL_TOKEN_STAGING is required}
+      # TUNNEL_TOKEN removed - using config file
+    volumes:
+      - ./staging-secrets/tunnel.json:/etc/cloudflared/credentials.json:ro
+      - ./staging-secrets/config.yml:/etc/cloudflared/config.yml:ro
+      - ../staging-secrets/jwt_private.pem:/app/jwt_private.pem:ro
+      - ../staging-secrets/jwt_public.pem:/app/jwt_public.pem:ro
     networks:
       - staging-web
       - staging-internal
