@@ -19,7 +19,7 @@ describe('useOTAUpdates', () => {
   it('checks for updates on mount', async () => {
     mockCheckForUpdateAsync.mockResolvedValueOnce({ isAvailable: true });
 
-    const { result } = renderHook(() => useOTAUpdates());
+    const { result } = await renderHook(() => useOTAUpdates());
 
     await waitFor(() => {
       expect(result.current.status).toBe('available');
@@ -30,7 +30,7 @@ describe('useOTAUpdates', () => {
   it('reports up-to-date when no update is available', async () => {
     mockCheckForUpdateAsync.mockResolvedValueOnce({ isAvailable: false });
 
-    const { result } = renderHook(() => useOTAUpdates());
+    const { result } = await renderHook(() => useOTAUpdates());
 
     await waitFor(() => {
       expect(result.current.status).toBe('up-to-date');
@@ -41,7 +41,7 @@ describe('useOTAUpdates', () => {
     mockCheckForUpdateAsync.mockResolvedValueOnce({ isAvailable: true });
     mockFetchUpdateAsync.mockResolvedValueOnce({ isNew: true });
 
-    const { result } = renderHook(() => useOTAUpdates());
+    const { result } = await renderHook(() => useOTAUpdates());
 
     await waitFor(() => expect(result.current.status).toBe('available'));
 
@@ -63,7 +63,7 @@ describe('useOTAUpdates', () => {
   it('handles update check errors gracefully', async () => {
     mockCheckForUpdateAsync.mockRejectedValueOnce(new Error('Network failure'));
 
-    const { result } = renderHook(() => useOTAUpdates());
+    const { result } = await renderHook(() => useOTAUpdates());
 
     await waitFor(() => {
       expect(result.current.status).toBe('error');

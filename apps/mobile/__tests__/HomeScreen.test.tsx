@@ -1,52 +1,39 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react-native';
+import { render, waitFor } from '@testing-library/react-native';
 import HomeScreen from '../src/app/(tabs)/index';
 
-// Mock useAuth to return logged-out state by default
+/**
+ * Mutable auth state read by the `useAuth` mock below. Declared with a `mock`
+ * prefix so the hoisted `jest.mock` factory may close over it, and mutated per
+ * test so no module re-require is needed.
+ */
+let mockUser: { id: string; email: string; username: string; role: string } | null = null;
+
+// Mock useAuth - resolves the current user from the mutable `mockUser` above.
 jest.mock('../src/hooks/useAuth', () => ({
   __esModule: true,
   useAuth: jest.fn(() => ({
-    user: null,
+    user: mockUser,
     isLoading: false,
     login: jest.fn(),
     logout: jest.fn(),
   })),
 }));
 
-// Mock ThemeProvider
-jest.mock('../src/components/ThemeProvider', () => ({
-  __esModule: true,
-  useTheme: () => ({
-    colors: {
-      background: '#050505',
-      foreground: '#FFFFFF',
-      surface: '#0F0F10',
-      muted: '#6A6A6E',
-      gold: '#D4AF37',
-      textPrimary: '#FFFFFF',
-      textSecondary: '#A0A0A0',
-      border: '#333333',
-    },
-    typography: {
-      display: { fontSize: 36, fontWeight: '300', letterSpacing: -0.5, lineHeight: 42 },
-      h2: { fontSize: 24, fontWeight: '400', letterSpacing: -0.3, lineHeight: 30 },
-      body: { fontSize: 14, fontWeight: '400', letterSpacing: 0, lineHeight: 22 },
-      bodyS: { fontSize: 13, fontWeight: '400', letterSpacing: 0, lineHeight: 18 },
-      monoLabel: { fontSize: 10, fontWeight: '600', letterSpacing: 1.5, lineHeight: 14 },
-    },
-    spacing: { xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xl2: 24, xl3: 32, xl4: 48, xl5: 64, xl6: 80 },
-  }),
-  useColors: () => ({
-    background: '#050505',
-    foreground: '#FFFFFF',
-    surface: '#0F0F10',
-    muted: '#6A6A6E',
-    gold: '#D4AF37',
-    textPrimary: '#FFFFFF',
-    textSecondary: '#A0A0A0',
-    border: '#333333',
-  }),
-}));
+/**
+ * Theme is taken from the real design tokens rather than a hand-copied subset.
+ * A partial copy silently drifts as components start reading new tokens (this
+ * mock was missing `glass` and `radius`), which fails at render time rather
+ * than at type-check time.
+ */
+jest.mock('../src/components/ThemeProvider', () => {
+  const { theme } = jest.requireActual('../src/theme/tokens');
+  return {
+    __esModule: true,
+    useTheme: () => theme,
+    useColors: () => theme.colors,
+  };
+});
 
 // Mock API
 jest.mock('../src/lib/api', () => ({
@@ -110,31 +97,21 @@ jest.mock('expo-router', () => ({
 describe('HomeScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUser = null;
   });
 
   it('prompts to sign in when logged out', async () => {
-    const { getByText } = render(<HomeScreen />);
+    const { getByText } = await render(<HomeScreen />);
     await waitFor(() => {
       expect(getByText(/Sign in to view your dashboard/)).toBeTruthy();
     });
   });
 
   it('shows dashboard when authenticated', async () => {
-    // Override the useAuth mock for this test
-    jest.doMock('../src/hooks/useAuth', () => ({
-      __esModule: true,
-      useAuth: jest.fn(() => ({
-        user: { id: 'u1', email: 'test@example.com', username: 'test', role: 'user' },
-        isLoading: false,
-        login: jest.fn(),
-        logout: jest.fn(),
-      })),
-    }));
+    // Flip the mocked auth state; the component reads it at render time.
+    mockUser = { id: 'u1', email: 'test@example.com', username: 'test', role: 'user' };
 
-    // Need to re-require the component to pick up the new mock
-    const HomeScreenAuthenticated = require('../src/app/(tabs)/index').default;
-    
-    const { getByText } = render(<HomeScreenAuthenticated />);
+    const { getByText } = await render(<HomeScreen />);
     await waitFor(() => {
       expect(getByText(/Welcome/)).toBeTruthy();
     });

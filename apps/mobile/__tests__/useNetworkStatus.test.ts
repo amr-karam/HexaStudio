@@ -31,7 +31,7 @@ describe('useNetworkStatus', () => {
       type: 'wifi',
     });
 
-    const { result } = renderHook(() => useNetworkStatus());
+    const { result } = await renderHook(() => useNetworkStatus());
 
     await waitFor(() => {
       expect(result.current.isOnline).toBe(true);
@@ -47,7 +47,7 @@ describe('useNetworkStatus', () => {
       type: 'none',
     });
 
-    const { result } = renderHook(() => useNetworkStatus());
+    const { result } = await renderHook(() => useNetworkStatus());
 
     await waitFor(() => {
       expect(result.current.isOnline).toBe(false);
@@ -55,8 +55,8 @@ describe('useNetworkStatus', () => {
     });
   });
 
-  it('subscribes to network changes', () => {
-    renderHook(() => useNetworkStatus());
+it('subscribes to network changes', async () => {
+    await renderHook(() => useNetworkStatus());
     expect(mockAddEventListener).toHaveBeenCalled();
   });
 });

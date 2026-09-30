@@ -2,7 +2,13 @@ import React from 'react';
 import { render, waitFor } from '@testing-library/react-native';
 import ProjectMilestonesScreen from '../src/app/(tabs)/projects/[id]';
 import { fetchProjectDetail } from '../src/lib/api';
-import type { User } from '@hexastudio/types';
+
+/**
+ * Mutable auth state read by the `useAuth` mock below. Declared with a `mock`
+ * prefix so the hoisted `jest.mock` factory may close over it, and mutated per
+ * test so no module re-require is needed.
+ */
+let mockUser: { id: string; email: string; username: string; role: string } | null = null;
 
 jest.mock('../src/lib/api', () => ({
   __esModule: true,
@@ -29,57 +35,27 @@ jest.mock('../src/hooks/useAuth', () => ({
   __esModule: true,
   ...jest.requireActual('../src/hooks/useAuth'),
   useAuth: () => ({
-    user: { id: 'u1', email: 'client@hexastudio.net', username: 'client', role: 'user' },
+    user: mockUser,
     isLoading: false,
     login: jest.fn(),
     logout: jest.fn(),
   }),
 }));
 
-jest.mock('../src/components/ThemeProvider', () => ({
-  __esModule: true,
-  useTheme: () => ({
-    colors: {
-      background: '#050505',
-      foreground: '#FFFFFF',
-      surface: '#0F0F10',
-      muted: '#6A6A6E',
-      gold: '#D4AF37',
-      goldBright: '#E5C76B',
-      goldDeep: '#A8862E',
-      accent: '#D4AF37',
-      textPrimary: '#FFFFFF',
-      border: '#333333',
-      statusPaid: '#22C55E',
-      statusPending: '#D4AF37',
-      statusOverdue: '#EF4444',
-    },
-    typography: {
-      body: { fontSize: 14, fontWeight: '400', letterSpacing: 0, lineHeight: 22 },
-      bodyS: { fontSize: 13, fontWeight: '400', letterSpacing: 0, lineHeight: 18 },
-      h3: { fontSize: 18, fontWeight: '600', letterSpacing: -0.2, lineHeight: 24 },
-      monoLabel: { fontSize: 10, fontWeight: '600', letterSpacing: 1.5, lineHeight: 14 },
-      monoValue: { fontSize: 12, fontWeight: '500', letterSpacing: 0.5, lineHeight: 16 },
-    },
-    spacing: { xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xl2: 24, xl3: 32, xl4: 48, xl5: 64, xl6: 80 },
-    radius: { sm: 4, md: 8, lg: 12, xl: 16, xl2: 24, pill: 999 },
-  }),
-  useColors: () => ({
-    background: '#050505',
-    foreground: '#FFFFFF',
-    surface: '#0F0F10',
-    muted: '#6A6A6E',
-    gold: '#D4AF37',
-    goldBright: '#E5C76B',
-    goldDeep: '#A8862E',
-    accent: '#D4AF37',
-    textPrimary: '#FFFFFF',
-    border: '#333333',
-    statusPaid: '#22C55E',
-    statusPending: '#D4AF37',
-    statusOverdue: '#EF4444',
-  }),
-}));
+/**
+ * Theme is taken from the real design tokens rather than a hand-copied subset.
+ * A partial copy silently drifts as components start reading new tokens (this
+ * mock was missing `glass`), which fails at render time rather than at
+ * type-check time.
+ */
+jest.mock('../src/components/ThemeProvider', () => {
+  const { theme } = jest.requireActual('../src/theme/tokens');
+  return {
+    __esModule: true,
+    useTheme: () => theme,
+    useColors: () => theme.colors,
+  };
+});
 
 jest.mock('react-native-reanimated', () => {
   const React = jest.requireActual('react');
@@ -120,10 +96,12 @@ jest.setTimeout(60000);
 describe('ProjectMilestonesScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // Default to the signed-in client used by the rendering tests.
+    mockUser = { id: 'u1', email: 'client@hexastudio.net', username: 'client', role: 'user' };
   });
 
   it('renders milestones from the API', async () => {
-    const { getByText } = render(<ProjectMilestonesScreen />);
+    const { getByText } = await render(<ProjectMilestonesScreen />);
     await waitFor(() => {
       expect(getByText('Concept Design')).toBeTruthy();
       expect(getByText('Final Render')).toBeTruthy();
@@ -131,7 +109,7 @@ describe('ProjectMilestonesScreen', () => {
   });
 
   it('shows completion state per milestone', async () => {
-    const { getByText } = render(<ProjectMilestonesScreen />);
+    const { getByText } = await render(<ProjectMilestonesScreen />);
     await waitFor(() => {
       expect(getByText(/Completed · 2026-07-01/)).toBeTruthy();
       expect(getByText(/Upcoming · 2026-08-15/)).toBeTruthy();
@@ -139,25 +117,17 @@ describe('ProjectMilestonesScreen', () => {
   });
 
   it('renders project progress', async () => {
-    const { getByText } = render(<ProjectMilestonesScreen />);
+    const { getByText } = await render(<ProjectMilestonesScreen />);
     await waitFor(() => {
       expect(getByText('50% complete')).toBeTruthy();
     });
   });
 
   it('does not fetch project data when signed out', async () => {
-    jest.doMock('../src/hooks/useAuth', () => ({
-      __esModule: true,
-      useAuth: () => ({
-        user: null,
-        isLoading: false,
-        login: jest.fn(),
-        logout: jest.fn(),
-      }),
-    }));
+    // Flip the mocked auth state; the component reads it at render time.
+    mockUser = null;
 
-    const ProjectMilestonesScreenSignedOut = require('../src/app/(tabs)/projects/[id]').default;
-    const { getByText } = render(<ProjectMilestonesScreenSignedOut />);
+await render(<ProjectMilestonesScreen />);
     await waitFor(() => {
       expect(fetchProjectDetail).not.toHaveBeenCalled();
     });
