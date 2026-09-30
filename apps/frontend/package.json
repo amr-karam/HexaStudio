@@ -44,6 +44,7 @@
     "esbuild": "^0.28.1",
     "framer-motion": "^11.18.2",
     "gsap": "^3.12.5",
+    "hyperframes": "^0.8.93",
     "lenis": "^1.3.25",
     "lucide-react": "^0.460.0",
     "next": "^16.2.11",

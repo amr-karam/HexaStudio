@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>HEXA STUDIO — Brand Reveal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Azeret+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #000;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      .clip {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      /* ─── Background glow ─── */
+      .bg-glow {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 800px;
+        height: 800px;
+        margin-top: -400px;
+        margin-left: -400px;
+        background: radial-gradient(
+          ellipse,
+          rgba(0, 153, 255, 0.08) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
+      /* ─── Hexagon mark ─── */
+      .hex-mark {
+        position: relative;
+        width: 400px;
+        height: 400px;
+        margin-bottom: 60px;
+      }
+      .hex-mark svg {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+      .hex-path {
+        fill: none;
+        stroke: #0099ff;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .hex-fill {
+        fill: rgba(0, 153, 255, 0.03);
+        stroke: none;
+      }
+
+      /* ─── Wordmark ─── */
+      .wordmark {
+        display: flex;
+        align-items: baseline;
+        margin-bottom: 24px;
+      }
+      .wordmark .letter {
+        display: inline-block;
+        font-size: 72px;
+        font-weight: 600;
+        letter-spacing: -2px;
+        color: #ffffff;
+        line-height: 1;
+        will-change: transform, opacity;
+      }
+      .wordmark .space {
+        width: 24px;
+      }
+
+      /* ─── Tagline ─── */
+      .tagline {
+        font-family: "Azeret Mono", monospace;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0.4em;
+        color: #0099ff;
+        text-transform: uppercase;
+        margin-bottom: 48px;
+        overflow: hidden;
+      }
+      .tagline-inner {
+        display: block;
+      }
+
+      /* ─── CTA ─── */
+      .cta-button {
+        background: #ffffff;
+        color: #000000;
+        border: none;
+        padding: 16px 40px;
+        border-radius: 100px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        letter-spacing: -0.01em;
+        will-change: transform, opacity;
+      }
+
+      /* ─── Frame indicator ─── */
+      .frame-indicator {
+        position: absolute;
+        bottom: 32px;
+        right: 48px;
+        font-family: "Azeret Mono", monospace;
+        font-size: 11px;
+        color: #a6a6a6;
+        letter-spacing: 0.2em;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="hexa-brand-reveal"
+      data-start="0"
+      data-width="1920"
+      data-height="1080"
+      data-duration="8"
+    >
+      <div class="clip" data-start="0" data-duration="8">
+        <!-- Background glow -->
+        <div class="bg-glow" id="bg-glow"></div>
+
+        <!-- Hexagon mark -->
+        <div class="hex-mark" id="hex-mark">
+          <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+            <polygon
+              class="hex-fill"
+              id="hex-fill"
+              points="350,200 275,329.9 125,329.9 50,200 125,70.1 275,70.1"
+            />
+            <path
+              class="hex-path"
+              id="hex-path"
+              d="M 350 200 L 275 329.9 L 125 329.9 L 50 200 L 125 70.1 L 275 70.1 Z"
+            />
+          </svg>
+        </div>
+
+        <!-- Wordmark -->
+        <div class="wordmark" id="wordmark">
+          <span class="letter">H</span>
+          <span class="letter">E</span>
+          <span class="letter">X</span>
+          <span class="letter">A</span>
+          <span class="space"></span>
+          <span class="letter">S</span>
+          <span class="letter">T</span>
+          <span class="letter">U</span>
+          <span class="letter">D</span>
+          <span class="letter">I</span>
+          <span class="letter">O</span>
+        </div>
+
+        <!-- Tagline -->
+        <div class="tagline" id="tagline">
+          <span class="tagline-inner" id="tagline-inner"
+            >Architectural Visualization &amp; Spatial Intelligence</span
+          >
+        </div>
+
+        <!-- CTA -->
+        <button class="cta-button" id="cta">Explore Our Work</button>
+
+        <!-- Frame indicator -->
+        <div class="frame-indicator" id="frame-indicator">
+          § BRAND REVEAL
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const tl = gsap.timeline({ paused: true });
+
+      // ─── Phase 1: Hexagon draws itself (0 – 2.5s) ───
+
+      const hexPath = document.getElementById("hex-path");
+      const hexLength = hexPath.getTotalLength();
+
+      // Initial stroke state for pre-timeline render
+      gsap.set(hexPath, {
+        strokeDasharray: hexLength,
+        strokeDashoffset: hexLength,
+      });
+
+      // Hexagon outline draws stroke-by-stroke
+      tl.fromTo(
+        hexPath,
+        { strokeDashoffset: hexLength },
+        { strokeDashoffset: 0, duration: 2, ease: "power2.inOut" },
+        0
+      );
+
+      // Hexagon fill fades in after outline completes
+      tl.fromTo(
+        "#hex-fill",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.8, ease: "sine.inOut" },
+        1.8
+      );
+
+      // Background glow blooms behind the mark
+      tl.fromTo(
+        "#bg-glow",
+        { opacity: 0, scale: 0.8 },
+        { opacity: 1, scale: 1, duration: 2.5, ease: "sine.inOut" },
+        0
+      );
+
+      // ─── Phase 2: Wordmark letters stagger in (2 – 4s) ───
+
+      const letters = document.querySelectorAll(".wordmark .letter");
+      tl.fromTo(
+        letters,
+        { opacity: 0, y: 30, scale: 0.8 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.6,
+          ease: "back.out(2)",
+          stagger: 0.04,
+        },
+        2
+      );
+
+      // ─── Phase 3: Tagline wipes up (3.5 – 5s) ───
+
+      tl.fromTo(
+        "#tagline-inner",
+        { y: 40, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" },
+        3.5
+      );
+
+      // ─── Phase 4: CTA springs in (5 – 6.5s) ───
+
+      tl.fromTo(
+        "#cta",
+        { opacity: 0, scale: 0.7, y: 20 },
+        {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "back.out(2.5)",
+        },
+        5
+      );
+
+      // ─── Phase 5: Frame indicator fades in (6 – 7s) ───
+
+      tl.fromTo(
+        "#frame-indicator",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.5, ease: "sine.inOut" },
+        6
+      );
+
+      // ─── Settle: subtle glow dim (7 – 8s) ───
+
+      tl.to(
+        "#bg-glow",
+        { opacity: 0.7, duration: 1, ease: "sine.inOut" },
+        7
+      );
+
+      window.__timelines["hexa-brand-reveal"] = tl;
+    </script>
+  </body>
+</html>
