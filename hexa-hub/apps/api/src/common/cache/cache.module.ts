@@ -31,7 +31,7 @@ import { CacheManagerService } from './cache.service';
               database: 0,
               ttl,
             };
-          } catch (e) {
+          } catch {
             // Fall through to memory store on Redis connection failure
           }
         }

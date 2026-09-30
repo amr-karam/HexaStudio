@@ -1,16 +1,22 @@
 import { Injectable, UnauthorizedException, BadRequestException, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 import * as speakeasy from 'speakeasy';
 import * as qrcode from 'qrcode';
 import { CreateUserDto } from '../users/dto/create-user.dto';
+import { RefreshToken } from './entities/refresh-token.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    @InjectRepository(RefreshToken)
+    private readonly refreshTokenRepository: Repository<RefreshToken>,
   ) {}
 
   // ─── Standard Auth ───────────────────────────────────────────────────────
@@ -19,7 +25,7 @@ export class AuthService {
     email: string,
     pass: string,
   ): Promise<
-    | { access_token: string; user: { id: string; email: string; fullName: string; role: string } }
+    | { access_token: string; refresh_token: string; user: { id: string; email: string; fullName: string; role: string } }
     | { requiresTwoFactor: true; userId: string; tempToken: string }
   > {
     const user = await this.usersService.findByEmail(email);
@@ -41,8 +47,12 @@ export class AuthService {
     }
 
     const payload = { sub: user.id, email: user.email, role: user.role };
+    const accessToken = this.jwtService.sign(payload);
+    const refreshToken = await this.createRefreshToken(user.id);
+
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: accessToken,
+      refresh_token: refreshToken,
       user: {
         id: user.id,
         email: user.email,
@@ -127,7 +137,7 @@ export class AuthService {
     userId: string,
     tempToken: string,
     token: string,
-  ): Promise<{ access_token: string; user: { id: string; email: string; fullName: string; role: string } }> {
+  ): Promise<{ access_token: string; refresh_token: string; user: { id: string; email: string; fullName: string; role: string } }> {
     let tempPayload: { sub: string; purpose: string };
     try {
       tempPayload = this.jwtService.verify<{ sub: string; purpose: string }>(tempToken);
@@ -160,8 +170,12 @@ export class AuthService {
     }
 
     const payload = { sub: user.id, email: user.email, role: user.role };
+    const accessToken = this.jwtService.sign(payload);
+    const refreshToken = await this.createRefreshToken(user.id);
+
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: accessToken,
+      refresh_token: refreshToken,
       user: {
         id: user.id,
         email: user.email,
@@ -191,6 +205,96 @@ export class AuthService {
       twoFactorSecret: secret,
       twoFactorEnabled: false,
     });
+  }
+
+  // ─── Refresh Token Management ────────────────────────────────────
+
+  async createRefreshToken(userId: string): Promise<string> {
+    const rawToken = crypto.randomUUID();
+    const hashedToken = await bcrypt.hash(rawToken, 10);
+    const familyId = crypto.randomUUID();
+
+    const refreshToken = this.refreshTokenRepository.create({
+      jti: crypto.randomUUID(),
+      hashedToken,
+      familyId,
+      userId,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    });
+    await this.refreshTokenRepository.save(refreshToken);
+
+    return rawToken;
+  }
+
+  async refreshTokens(
+    refreshToken: string,
+  ): Promise<{ access_token: string; refresh_token: string }> {
+    const hashedToken = await bcrypt.hash(refreshToken, 10);
+
+    const tokenRecord = await this.refreshTokenRepository.findOne({
+      where: { hashedToken },
+      relations: ['user'],
+    });
+
+    if (!tokenRecord) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+
+    if (tokenRecord.isRevoked) {
+      throw new UnauthorizedException('Refresh token has been revoked');
+    }
+
+    if (tokenRecord.isUsed) {
+      await this.revokeFamilyTokens(tokenRecord.familyId);
+      throw new UnauthorizedException('Refresh token has already been used');
+    }
+
+    if (new Date() > tokenRecord.expiresAt) {
+      throw new UnauthorizedException('Refresh token has expired');
+    }
+
+    const user = await this.usersService.findById(tokenRecord.userId);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    tokenRecord.isUsed = true;
+    await this.refreshTokenRepository.save(tokenRecord);
+
+    const payload = { sub: user.id, email: user.email, role: user.role };
+    const newAccessToken = this.jwtService.sign(payload);
+    const newRefreshToken = await this.createRefreshToken(user.id);
+
+    return {
+      access_token: newAccessToken,
+      refresh_token: newRefreshToken,
+    };
+  }
+
+  async logout(refreshToken: string): Promise<void> {
+    const hashedToken = await bcrypt.hash(refreshToken, 10);
+    const tokenRecord = await this.refreshTokenRepository.findOne({
+      where: { hashedToken },
+    });
+
+    if (tokenRecord) {
+      tokenRecord.isRevoked = true;
+      await this.refreshTokenRepository.save(tokenRecord);
+    }
+  }
+
+  async revokeAllUserTokens(userId: string): Promise<void> {
+    await this.refreshTokenRepository.update(
+      { userId },
+      { isRevoked: true },
+    );
+  }
+
+  private async revokeFamilyTokens(familyId: string): Promise<void> {
+    await this.refreshTokenRepository.update(
+      { familyId },
+      { isRevoked: true },
+    );
   }
 
   // ─── Token Validation (for WebSocket gateways) ────────────────────────────
