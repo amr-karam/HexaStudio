@@ -111,6 +111,9 @@ scripts/mcp/node_modules/
 .lighthouseci/
 .tmp-lh-perf.json
 
+# Generated reports
+artifact/
+
 # Misc
 create-mr.json
 create_mr.ps1

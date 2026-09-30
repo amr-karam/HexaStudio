@@ -1,7 +1,7 @@
 # HEXA STUDIO — PROJECT STATUS REPORT
 
-**Last Updated: September 26, 2026 — Frontend/Backend gates PASS; mobile blocked by React 19 + jest-expo 53 incompatibility. Frontend: 854/854 tests verified. Backend: 453/453 tests verified. Mobile: 0/2 tests passing (blocked by framework incompatibility, see S-023 below).
-**Version:** 2.2.11
+**Last Updated: September 30, 2026 — All quality gates PASS across every workspace. The S-023 mobile blocker is CLOSED. Frontend: 854/854 tests. Backend: 453/453 tests. Mobile: 28/28 tests. HEXA Hub API: 96/96 tests.
+**Version:** 2.2.12
 **Authority Level:** 13 (Production)
 **Current Phase:** Production-Ready — Quad-Track Feature Delivery & Silent Luxury Design System (DEPLOYED)
 
@@ -27,19 +27,22 @@
 |---|---|---|---|
 || **Backend Tests** | 453 total (60 files) | `60 / 60 files, 453/453 tests (verified)` | ✅ PASS |
 ||| **Frontend Tests** | 854 total (130 files) | `130 / 130 files, 854/854 tests (verified)` | ✅ PASS |
-|| **Mobile Tests** | 26 passing | `0 / 2` (BLOCKED — React 19.2.8 + jest-expo 53 incompatibility; see S-023) | ❌ BLOCKED |
+|| **Mobile Tests** | 26 passing | `9 / 9 suites, 28/28 tests (verified)` | ✅ PASS |
+|| **HEXA Hub API Tests** | 96 total (10 suites) | `10 / 10 suites, 96/96 tests (verified)` | ✅ PASS |
 || **Frontend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 || **Backend Typecheck** | 0 errors | `0 errors` | ✅ PASS |
 || **Mobile Typecheck** | 0 errors | `0 errors` | ✅ PASS |
-|| **ESLint (all)** | 0 errors, 0 warnings | `0 errors, 0 warnings` (frontend, backend, mobile full `src` + `test`) | ✅ PASS |
+|| **HEXA Hub API Typecheck** | 0 errors | `0 errors` | ✅ PASS |
+|| **ESLint (all)** | 0 errors, 0 warnings | `0 errors, 0 warnings` (frontend, backend, mobile `src` + `__tests__`, hexa-hub api `src`) | ✅ PASS |
 || **Design Tokens** | All pass | `✓ ALL DESIGN TOKEN CHECKS PASSED` | ✅ PASS |
 || **Font Preloads** | All match | `✓ ALL FONT PRELOADS MATCH SERVED LATIN URLS` | ✅ PASS |
 
-- **Current Phase**: Phase 4 / Release Candidate & Live Operations (v2.2.11)
+- **Current Phase**: Phase 4 / Release Candidate & Live Operations (v2.2.12)
 - **Active Workspace Quality Gates**:
   - `apps/frontend`: 130 suites / 854 tests (verified) passed (100%), design tokens PASS, font preloads PASS, lint 0/0, typecheck 0 errors
   - `apps/backend`: 60 files / 453 tests (verified) passed (100%), 0 errors, 0 warnings
-  - `apps/mobile`: 0/2 tests passing (BLOCKED — React 19.2.8 + jest-expo 53 + @testing-library/react-native v14 incompatibility; see S-023), lint 0/0, typecheck 0 errors
+  - `apps/mobile`: 9 suites / 28 tests (verified) passed (100%), lint 0/0, typecheck 0 errors — **S-023 unblocked Sep 30**
+  - `hexa-hub/apps/api`: 10 suites / 96 tests (verified) passed (100%), lint 0/0, typecheck 0 errors (outside npm workspaces; gated separately)
 
 - **Production Server (`19.16.1.100`)**:
   - 28/28 containers **Up (healthy)**
@@ -261,9 +264,14 @@
 - [x] **Attempted fixes:**
   - Upgraded `jest-expo` from 53.0.14 to 58.0.0 → incompatible with Expo SDK 53
   - Downgraded to `jest-expo@53.0.0-canary-20250304` → `Object.defineProperty called on non-object` error in preset setup
-- [x] **Current blocker:** Mobile tests (2/2 in `HomeScreen.test.tsx`) cannot pass with React 19 + Expo SDK 53 + `@testing-library/react-native` v14
-- [ ] **Resolution path:** Downgrade mobile workspace to React 18.3.1 (requires removing root `overrides` in package.json) OR upgrade Expo to SDK 58+
-- [ ] **Status:** Mobile tests BLOCKED; frontend (854/854) and backend (453/453) gates GREEN
+- [x] **Actual root cause (corrected Sep 30 2026):** the diagnosis above blamed a framework incompatibility. It was a stale jest config. `moduleNameMapper` remapped `test-renderer` → `react-test-renderer`, a package that no longer exists under React 19 — so the renderer resolved to nothing and every suite failed before it could mount. The "upgrade jest-expo / downgrade React" resolution path was never the fix.
+- [x] **Fix applied (commit `fd3a60d0`):**
+  - Added the `test-renderer` dependency (the supported renderer for React 19 + RNTL v14)
+  - Removed the dead `'^test-renderer$': 'react-test-renderer'` moduleNameMapper entry
+  - Moved `IS_REACT_ACT_ENVIRONMENT = true` into `jest.act-setup.js` (registered via `setupFiles`, so it installs before React loads rather than after the test framework)
+  - Ported `HomeScreen`, `ProjectMilestonesScreen`, `render-test`, `useNetworkStatus`, `useOTAUpdates` onto `@testing-library/react-native` queries
+- [x] **Status: CLOSED** — `apps/mobile` runs 9 suites / 28 tests, all passing; lint 0/0 and typecheck 0 errors. No React or Expo downgrade was needed.
+- [x] **Known cosmetic residue:** RNTL v14's `helpers/wrap-async` sets `IS_REACT_ACT_ENVIRONMENT` to `false` across its async gaps, so React logs "The current testing environment is not configured to support act(...)" during the passive-effect flush inside those gaps. Library-internal and self-restoring; assertions are unaffected. Suppressing it would mean monkey-patching a global, which is not worth the cost.
 
 ---
 
@@ -1633,4 +1641,58 @@ curl http://localhost:8929/users/sign_in
 
 ---
 
-**Last Updated:** September 24, 2026 — All 9 quality gates PASS, chore/nestjs-12-migration merged to main (f865a648) and develop (0ed3bdfb)
+## 2026-09-30 — S-023 Mobile Gate Closure + Working-Tree Consolidation — COMPLETE
+
+**Status:** ✅ All gates green in every workspace (frontend, backend, mobile, hexa-hub api). Working tree clean. 8 commits on `develop`.
+
+### 1. S-023 mobile blocker — CLOSED
+See the S-023 block in §4 for the corrected root cause. The prior diagnosis ("React 19 + jest-expo 53 are fundamentally incompatible, downgrade React or upgrade Expo") was wrong and the migration attempts it drove were chasing a phantom. The real fault was a stale `moduleNameMapper` entry pointing the test renderer at `react-test-renderer`, removed in React 19. No framework version change was required.
+
+| Metric | Before | After |
+|---|---|---|
+| Mobile test suites | 0 / 2 | **9 / 9** |
+| Mobile tests | 0 passing | **28 / 28 passing** |
+
+### 2. Commits landed
+
+| Commit | Scope |
+|---|---|
+| `fd3a60d0` | `fix(mobile)`: unblock jest under React 19 + jest-expo 53 — S-023 closure |
+| `86da25db` | `perf(frontend)`: skip the intro curtain on fast loads so it stops deferring the LCP headline by ~1.9 s |
+| `46fd9f6e` | `perf(frontend)`: drop self-referential Turbopack `resolveAlias` entries that collapsed the 3D graph into an eagerly-fetched ~161 KB never-executed chunk |
+| `d2d2a2c2` | `feat(frontend)`: `HyperFramesPlayer` (sandboxed iframe + postMessage control) and the `/hyperframes-demo` route |
+| `16901b98` | `fix(backend)`: finish the DI module graph after NestJS 12 — `AIModule`↔`ProjectsModule`, `RealtimeModule` gains Auth/Projects, `AuditModule` gains Metrics, `DesignMetricsService` registers against the real prom-client registry |
+| `1031b1a5` | `feat(auth)`: rotating refresh tokens delivered as httpOnly cookies with family-based reuse detection |
+| `15db7bf9` | `fix(staging)`: correct cloudflared `--config` flag ordering |
+| `4dffe4b5` | `test(odoo)`: remove `any` casts from the webhook validation cases |
+| `623e19c9` | `chore(deps)`: sync `package-lock.json` |
+
+### 3. Quality Gates (verified Sep 30, 2026)
+
+| Workspace | Lint | Typecheck | Tests |
+|---|---|---|---|
+| `apps/frontend` | 0 / 0 (tokens + font preloads PASS) | 0 errors | 130 suites / **854 passed** |
+| `apps/backend` | 0 / 0 | 0 errors | 60 files / **453 passed** |
+| `apps/mobile` | 0 / 0 | 0 errors | 9 suites / **28 passed** |
+| `hexa-hub/apps/api` | 0 / 0 | 0 errors | 10 suites / **96 passed** |
+
+`hexa-hub/apps/api` sits outside the root npm workspaces, so the AGENTS.md gate sequence does not cover it. It was gated manually here and should be added to the documented sequence.
+
+### 4. Findings worth keeping
+
+- **`DesignMetricsService` was constructed against a DI token no provider supplied.** It injected `'prometheus'` and called `register()` on it, which threw on construction. Nothing in the test graph instantiated it, so 453/453 passed regardless. Now registered against the prom-client default registry. Any future service holding an injected token with no matching provider needs an explicit construction test — a green suite is not evidence the module graph resolves.
+- **`refresh_tokens` was already in `1700000000000-InitialSchema.ts`.** The entity had no migration *and* no table; verified against the migration before adding anything, so no redundant migration was written.
+- **`artifact/` was untracked and unignored** — a 45 KB generated HTML report. Added to `.gitignore` rather than committed.
+- **Stale `.git/index.lock`** (43 min, no holder — every live `git` process belonged to unrelated Hermes tooling) blocked staging. Removed after confirming no process held this repo's index.
+
+### 5. Still open
+
+- [ ] Blue/green deploy to production + post-deploy health verification (carried from Sep 24; requires `19.16.1.100`).
+- [ ] `@backend-dev` — TTFB ~3.5 s on `19.16.1.100` (edge cache / Redis-SSR / Traefik tuning).
+- [ ] `@frontend-dev` — below-fold `NewHomeSections` 3D bundle still owns the LCP/TBT window under real mobile 4G. The two commits above (`86da25db`, `46fd9f6e`) attack the same target but **have not been re-measured** — `lighthouse-after.report.json` is still the Sep 24 capture and predates both.
+- [ ] 102 Dependabot vulnerabilities on the default branch (2 critical, 37 high) — separate remediation wave.
+- [ ] `apps/frontend` `postbuild` (`scripts/inject-preloads.mjs`) throws `SyntaxError: Unexpected strict mode reserved word` on a TS `interface` under Node 24 strict ESM. `next build` itself succeeds; only the post-process fails.
+
+---
+
+**Last Updated:** September 30, 2026 — All gates PASS in all four workspaces. S-023 mobile blocker CLOSED (28/28). 8 commits landed on `develop`.
