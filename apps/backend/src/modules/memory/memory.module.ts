@@ -1,7 +1,6 @@
 import { Module, Global, forwardRef } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AIModule } from '../ai/ai.module';
-import { VectorStoreClient } from './vector/vector-store.client';
 import { VectorMemoryService } from './vector/vector-memory.service';
 
 /**
@@ -16,7 +15,7 @@ import { VectorMemoryService } from './vector/vector-memory.service';
     ConfigModule.forRoot({ isGlobal: true }),
     forwardRef(() => AIModule),
   ],
-  providers: [VectorStoreClient, VectorMemoryService],
+  providers: [VectorMemoryService],
   exports: [VectorMemoryService],
 })
 export class MemoryModule {}

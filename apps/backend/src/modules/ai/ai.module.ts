@@ -23,6 +23,7 @@ import { AiIntelligenceController } from './ai-intelligence.controller';
 import { StorageModule } from '../storage/storage.module';
 import { VectorModule } from '../vector/vector.module';
 import { RealtimeModule } from '../realtime/realtime.module';
+import { ProjectsModule } from '../projects/projects.module';
 import { ModelFusionService } from './model-fusion.service';
 import { ModelFusionController } from './model-fusion.controller';
 import { ModelFusionStreamController } from './model-fusion-stream.controller';
@@ -35,18 +36,18 @@ import { AiNarratorService } from './services/ai-narrator.service';
  * This module is part of a 3-way circular dependency:
  *   ProjectsModule ──► VectorModule (forwardRef)
  *   VectorModule ────► AIModule (forwardRef), ProjectsModule (forwardRef)
- *   AIModule ────────► VectorModule (forwardRef)
+ *   AIModule ────────► VectorModule (forwardRef), ProjectsModule (forwardRef)
  *
  * Reason: AI services (EmbeddingService, LightingService) consume
- * VectorService from VectorModule. VectorModule is @Global() but
- * AIModule is not, so the explicit import (with forwardRef) is required.
+ * VectorService from VectorModule. SummaryService consumes ProjectsService
+ * from ProjectsModule. Vector services consume ProjectsService and AI services.
  *
  * forwardRef() is used intentionally to break the cycle at the module level.
  * See ADR-003 for the planned resolution (interface-based IoC).
  * ════════════════════════════════════════════
  */
 @Module({
-  imports: [forwardRef(() => VectorModule), forwardRef(() => RealtimeModule), StorageModule],
+  imports: [forwardRef(() => VectorModule), forwardRef(() => RealtimeModule), forwardRef(() => ProjectsModule), StorageModule],
   controllers: [
     MultimodalController,
     AiChatController,

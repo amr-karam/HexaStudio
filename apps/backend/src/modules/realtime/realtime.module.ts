@@ -7,10 +7,12 @@ import { AnnotationsController } from './annotations.controller';
 import { EventBus } from './event-bus.service';
 import { AIModule } from '../ai/ai.module';
 import { AgentsModule } from '../agents/agents.module';
+import { AuthModule } from '../auth/auth.module';
+import { ProjectsModule } from '../projects/projects.module';
 import { REALTIME_PORT } from '../../ports/realtime.port';
 
 @Module({
-  imports: [forwardRef(() => AIModule), forwardRef(() => AgentsModule)],
+  imports: [forwardRef(() => AIModule), forwardRef(() => AgentsModule), forwardRef(() => AuthModule), forwardRef(() => ProjectsModule)],
   controllers: [ApprovalController, AnnotationsController],
   providers: [RealtimeGateway, ApprovalRepository, ApprovalService, EventBus, { provide: REALTIME_PORT, useExisting: EventBus }],
   exports: [RealtimeGateway, ApprovalService, EventBus, REALTIME_PORT],
