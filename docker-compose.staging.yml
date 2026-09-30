@@ -46,9 +46,7 @@ services:
     image: cloudflare/cloudflared:2025.8.1
     <<: *default-restart
     logging: *default-logging
-    command: tunnel run --config /etc/cloudflared/config.yml
-    environment:
-      # TUNNEL_TOKEN removed - using config file
+    command: tunnel --config /etc/cloudflared/config.yml run
     volumes:
       - ./staging-secrets/tunnel.json:/etc/cloudflared/credentials.json:ro
       - ./staging-secrets/config.yml:/etc/cloudflared/config.yml:ro
