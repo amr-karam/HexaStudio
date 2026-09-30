@@ -1,7 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OdooWebhookController } from './odoo-webhook.controller';
-import { OdooWebhookService } from './odoo-webhook.service';
+import { OdooWebhookService, WebhookPayload } from './odoo-webhook.service';
 import { BadRequestException } from '@nestjs/common';
+
+/**
+ * Wraps a deliberately malformed payload for the controller's runtime
+ * validation cases. Those objects intentionally omit or corrupt a required
+ * field, so they cannot satisfy `WebhookPayload` structurally. Asserting once
+ * here keeps the intent explicit and avoids `any` at each call site.
+ */
+const malformedPayload = (payload: object): WebhookPayload =>
+  payload as WebhookPayload;
 
 // ─── Mocks ──────────────────────────────────────────────────────────
 
@@ -71,21 +80,21 @@ describe('OdooWebhookController', () => {
 
     it('should throw BadRequestException when model is missing', async () => {
       const payload = { id: 1, action: 'create' as const, data: {} };
-      await expect(controller.handleWebhook(payload as any)).rejects.toThrow(
+      await expect(controller.handleWebhook(malformedPayload(payload))).rejects.toThrow(
         BadRequestException,
       );
     });
 
     it('should throw BadRequestException when id is missing', async () => {
       const payload = { model: 'sale.order', action: 'create' as const, data: {} };
-      await expect(controller.handleWebhook(payload as any)).rejects.toThrow(
+      await expect(controller.handleWebhook(malformedPayload(payload))).rejects.toThrow(
         BadRequestException,
       );
     });
 
     it('should throw BadRequestException when action is missing', async () => {
       const payload = { model: 'sale.order', id: 1, data: {} };
-      await expect(controller.handleWebhook(payload as any)).rejects.toThrow(
+      await expect(controller.handleWebhook(malformedPayload(payload))).rejects.toThrow(
         BadRequestException,
       );
     });
@@ -97,7 +106,7 @@ describe('OdooWebhookController', () => {
         action: 'invalid' as const,
         data: {},
       };
-      await expect(controller.handleWebhook(payload as any)).rejects.toThrow(
+      await expect(controller.handleWebhook(malformedPayload(payload))).rejects.toThrow(
         BadRequestException,
       );
     });
