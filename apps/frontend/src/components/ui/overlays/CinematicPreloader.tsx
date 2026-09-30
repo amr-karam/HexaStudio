@@ -23,6 +23,17 @@ const EXIT_DURATION = DUR.transition;
 const COUNT_BUDGET_MS = MAX_INTRO_MS - EXIT_DURATION * 1000;
 /** Progress the free-running counter eases toward while assets load. */
 const COUNT_PLATEAU = 92;
+/**
+ * Grace window before the intro is allowed to take over the screen.
+ *
+ * The curtain exists to cover a *slow* first load. If the document finishes
+ * loading within this window the hero already paints on first frame, and
+ * raising an opaque `fixed inset-0 z-[100]` panel would only get in the way:
+ * it defers the LCP headline by ~1.9s (COUNT_BUDGET_MS of counting plus the
+ * 0.7s lift) for no perceived benefit. Fast loads therefore skip the intro
+ * entirely and the hero is visible on first paint.
+ */
+const FAST_LOAD_GRACE_MS = 500;
 
 /**
  * Architectural corner registration ticks (atelier drafting-frame motif).
@@ -112,36 +123,69 @@ export function CinematicPreloader() {
       return;
     }
 
-    setPhase('active');
+    // Already loaded before we got here - the hero is painting, so a curtain
+    // raised now could only occlude it.
+    if (document.readyState === 'complete') {
+      announceIntroComplete();
+      return;
+    }
 
-    // Free-running counter eases toward the plateau while assets load.
-    const counter = animate(progress, COUNT_PLATEAU, {
-      duration: COUNT_BUDGET_MS / 1000,
-      ease: EASING.easeOutExpo,
-    });
+    const runIntro = () => {
+      setPhase('active');
 
-    const finish = () => {
-      if (hasFinished.current) return;
-      hasFinished.current = true;
-      counter.stop();
-      // Snap the counter to 100, then lift the curtain.
-      const snap = animate(progress, 100, { duration: 0.12, ease: 'linear' });
-      void snap.then(beginExit, beginExit);
+      // Free-running counter eases toward the plateau while assets load.
+      const counter = animate(progress, COUNT_PLATEAU, {
+        duration: COUNT_BUDGET_MS / 1000,
+        ease: EASING.easeOutExpo,
+      });
+
+      const finish = () => {
+        if (hasFinished.current) return;
+        hasFinished.current = true;
+        counter.stop();
+        // Snap the counter to 100, then lift the curtain.
+        const snap = animate(progress, 100, { duration: 0.12, ease: 'linear' });
+        void snap.then(beginExit, beginExit);
+      };
+
+      // Real progress: window load completes the counter early.
+      window.addEventListener('load', finish, { once: true });
+      // Timed fallback: the intro can never exceed the hard cap.
+      const capTimer = setTimeout(finish, COUNT_BUDGET_MS);
+
+      return () => {
+        counter.stop();
+        clearTimeout(capTimer);
+        window.removeEventListener('load', finish);
+      };
     };
 
-    // Real progress: window load completes the counter early.
-    if (document.readyState === 'complete') {
-      finish();
-    } else {
-      window.addEventListener('load', finish, { once: true });
-    }
-    // Timed fallback: the intro can never exceed the hard cap.
-    const capTimer = setTimeout(finish, COUNT_BUDGET_MS);
+    // Fast-load gate: the intro only earns its screen time on a load that is
+    // actually slow. If `load` wins the race against FAST_LOAD_GRACE_MS the
+    // hero is already visible, so skip the curtain entirely and release the
+    // hero's load choreography right away.
+    let settled = false;
+    let cleanupIntro: (() => void) | null = null;
+
+    const graceTimer = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      cleanupIntro = runIntro();
+    }, FAST_LOAD_GRACE_MS);
+
+    const onFastLoad = () => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(graceTimer);
+      announceIntroComplete();
+    };
+
+    window.addEventListener('load', onFastLoad, { once: true });
 
     return () => {
-      counter.stop();
-      clearTimeout(capTimer);
-      window.removeEventListener('load', finish);
+      clearTimeout(graceTimer);
+      window.removeEventListener('load', onFastLoad);
+      cleanupIntro?.();
     };
   }, [reducedMotion, progress, beginExit]);
 
