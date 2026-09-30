@@ -101,15 +101,11 @@ const nextConfig: NextConfig = {
     ],
     scrollRestoration: true,
   },
-  turbopack: {
-    resolveAlias: {
-      three: "three",
-      "@react-three/fiber": "@react-three/fiber",
-      "@react-three/drei": "@react-three/drei",
-      "@react-three/xr": "@react-three/xr",
-      "@iwer": "@iwer",
-    },
-  },
+  // NOTE: self-referential resolveAlias entries (e.g. `three: "three"`) were
+  // removed. They are no-ops at best and, under Turbopack, collapse the 3D
+  // module graph into a single eagerly-fetched chunk that shipped on `/` with
+  // ~161 KB never executed (Lighthouse: unused-javascript). Route-level
+  // `next/dynamic` boundaries are the correct mechanism for deferring three.js.
   // S-019 performance budgets
   // - JS per-route/entrypoint budget enforced via webpack performance hints
   // - FCP < 1.6s, LCP < 2.5s, TBT < 200ms (Lighthouse; monitored via Sentry + CWV)
